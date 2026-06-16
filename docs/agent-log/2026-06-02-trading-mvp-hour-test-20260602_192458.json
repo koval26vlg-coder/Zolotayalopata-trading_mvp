@@ -1,0 +1,15 @@
+{
+  "pid": 11224,
+  "started_at_local": "2026-06-02T19:24:58.3763904+03:00",
+  "expected_finish_local": "2026-06-02T20:24:58.3763904+03:00",
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "stdout": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\hour_test_20260602_192458.stdout.log",
+  "stderr": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\hour_test_20260602_192458.stderr.log",
+  "command": "C:\\Program Files\\PowerShell\\7\\pwsh.exe -NoProfile -File C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\run_mvp.ps1 -Action multi-run -DurationSec 3600 -Exchanges mexc,gateio,kucoin,bingx -MaxPairsPerExchange 3 -MaxSymbols 200 -PaperNotionalQuote 25",
+  "mode": "paper",
+  "exchanges": "mexc,gateio,kucoin,bingx",
+  "duration_sec": 3600,
+  "max_pairs_per_exchange": 3,
+  "max_symbols": 200,
+  "paper_notional_quote": 25
+}

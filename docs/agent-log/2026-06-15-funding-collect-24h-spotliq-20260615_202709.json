@@ -1,0 +1,14 @@
+{
+  "mode": "funding_collect_24h_spotliq_launch",
+  "pid": 14080,
+  "started_at": "2026-06-15T20:27:10.0108175+03:00",
+  "output": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\funding\\funding_collect_24h_spotliq_20260615_202709.jsonl",
+  "manifest": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\funding\\funding_collect_24h_spotliq_20260615_202709.manifest.json",
+  "stdout": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\funding_collect_24h_spotliq_20260615_202709.out.log",
+  "stderr": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\funding_collect_24h_spotliq_20260615_202709.err.log",
+  "launch": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\funding_collect_24h_spotliq_20260615_202709.launch.ps1",
+  "cycles": 288,
+  "poll_interval_sec": 300,
+  "max_pairs_per_exchange": 15,
+  "note": "New 24h collector launched after spot-liquidity required fields were added."
+}

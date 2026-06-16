@@ -1,0 +1,58 @@
+{
+  "date": "2026-06-08",
+  "request": "Continue Anufriev channel/trading_mvp goal by advancing the next research-only engineering branch.",
+  "result": "Implemented perp_replay research skeleton with short-side default behavior, mark/index/funding-aware state, funding PnL accounting, CLI/PowerShell actions, grid-search routing, tests, smoke artifacts, and refreshed setup registry.",
+  "changed_files": [
+    "trading_mvp/src/perp_replay.py",
+    "trading_mvp/src/ws_grid_search.py",
+    "trading_mvp/src/cli.py",
+    "trading_mvp/run_mvp.ps1",
+    "trading_mvp/src/experiments.py",
+    "trading_mvp/tests/test_perp_replay.py",
+    "trading_mvp/tests/test_experiments.py",
+    "trading_mvp/README.md",
+    "docs/analysis/2026-06-08-anufriev-strategy-economics-v2.md",
+    "docs/analysis/2026-06-06-anufriev-final-synthesis-v1.md",
+    "docs/analysis/2026-06-06-anufriev-requirements-coverage-audit.md",
+    "docs/analysis/2026-06-06-anufriev-strategy-decision-matrix.md",
+    "exports/trading-mvp/experiments/setup_registry.json"
+  ],
+  "artifacts": [
+    "exports/trading-mvp/backtests/perp_grid_smoke.json",
+    "exports/trading-mvp/backtests/perp_grid_search_signal_type_smoke_30m_20260608.json"
+  ],
+  "verification": [
+    "C:\\Windows\\py.exe -3 -m unittest discover -s trading_mvp\\tests -> 51 tests OK",
+    "run_mvp.ps1 -Action perp-grid-search on synthetic 5-event JSONL -> OK, 2 combinations",
+    "run_mvp.ps1 -Action perp-grid-search on ws_normalized_30m_20260604.jsonl -> OK, 167737 events, 192 combinations, 0 eligible"
+  ],
+  "key_metrics": {
+    "perp_30m_best_flow_continue": {
+      "trades": 19,
+      "win_rate": 0.5263157894736842,
+      "net_pnl_quote": 0.11237308458677271,
+      "profit_factor": 1.987751700717741,
+      "eligible": false,
+      "eligibility_reasons": [
+        "min_trades",
+        "min_win_rate"
+      ]
+    },
+    "perp_30m_best_fade_exhaustion": {
+      "trades": 15,
+      "win_rate": 0.2,
+      "net_pnl_quote": -0.28893529389928374,
+      "profit_factor": 0.05012056899539425,
+      "eligible": false
+    }
+  },
+  "limitations": [
+    "30m perp-grid used spot-normalized WS data without mark/index/funding fields, so funding_pnl_quote is 0 and this is only wiring/symmetric long-short smoke, not real perp evidence.",
+    "Full Anufriev objective remains active because transcript-level coverage is still incomplete under YouTube rate limiting."
+  ],
+  "next_steps": [
+    "Add real MEXC/Gate perp public WS/REST adapters and normalized perp dataset.",
+    "Run 6-24h perp replay/grid with mark/index/funding included.",
+    "Then implement liquidity_sweep_reversal and adverse-move/fill-quality metrics."
+  ]
+}

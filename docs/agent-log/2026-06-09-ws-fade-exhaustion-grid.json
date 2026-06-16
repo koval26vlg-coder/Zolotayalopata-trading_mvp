@@ -1,0 +1,47 @@
+{
+  "date": "2026-06-09",
+  "request": "Implement 6h Maker Grid + Fade Exhaustion Signal for trading_mvp as research-only.",
+  "result": "Verified and tightened the existing signal_type implementation. WS replay supports flow_continue and fade_exhaustion, CLI and run_mvp.ps1 expose --signal-type / --grid-signal-type / -GridSignalType, and the 6h maker quality grid was rerun on the existing 6h WebSocket dataset.",
+  "changed_files": [
+    "trading_mvp/src/ws_grid_search.py",
+    "docs/agent-log/2026-06-09-ws-fade-exhaustion-grid.json"
+  ],
+  "verification": [
+    "C:\\Windows\\py.exe -3 -m unittest discover -s trading_mvp\\tests -> Ran 64 tests in 0.120s, OK",
+    "30m smoke grid -> exports/trading-mvp/backtests/ws_grid_search_signal_type_maker_quality_30m_smoke_20260609_verify.json, events=167737, total_combinations=2, signal types flow_continue/fade_exhaustion present",
+    "6h maker quality grid -> exports/trading-mvp/backtests/ws_grid_search_signal_type_maker_quality_6h_20260609_verify.json, events=472583, total_combinations=192, eligible_combinations=0, signal types flow_continue/fade_exhaustion present"
+  ],
+  "metrics": {
+    "six_h_events": 472583,
+    "six_h_total_combinations": 192,
+    "six_h_eligible_combinations": 0,
+    "best_flow_continue": {
+      "total_trades": 45,
+      "win_rate": 0.4222222222222222,
+      "net_pnl_quote": -0.20648776152657344,
+      "expectancy_quote": -0.004588616922812743,
+      "profit_factor": 0.7214894218998544,
+      "eligibility_reasons": [
+        "min_win_rate",
+        "min_expectancy_quote",
+        "min_net_pnl_quote",
+        "min_profit_factor"
+      ]
+    },
+    "best_fade_exhaustion": {
+      "total_trades": 77,
+      "win_rate": 0.45454545454545453,
+      "net_pnl_quote": -0.43748136171628244,
+      "expectancy_quote": -0.005681576126185486,
+      "profit_factor": 0.6483269508101007,
+      "eligibility_reasons": [
+        "min_win_rate",
+        "min_expectancy_quote",
+        "min_net_pnl_quote",
+        "min_profit_factor"
+      ]
+    }
+  },
+  "decision": "Spot maker flow_continue/fade_exhaustion remains rejected by strict research gates on this dataset. Do not move this branch to live trading; continue with perp replay, stronger signal families, or execution-quality/fill-probability improvements.",
+  "risk_note": "All results are paper/replay research artifacts, not investment advice and not evidence of a live-trading edge."
+}

@@ -1,0 +1,184 @@
+{
+  "date": "2026-06-09",
+  "request": "Start 6h public perp collect for real MEXC/Gate no-Binance universe replay dataset.",
+  "status": "running_verified",
+  "pid": 27528,
+  "process_name": "powershell",
+  "started_local": "2026-06-09T17:59:41",
+  "expected_duration_sec": 21600,
+  "universe_csv": "exports\\trading-mvp\\universe\\no_binance_focus_2026-06-02.csv",
+  "output": "exports\\trading-mvp\\normalized\\perp_normalized_6h_20260609_175941.jsonl",
+  "manifest": "exports\\trading-mvp\\normalized\\perp_normalized_6h_20260609_175941.manifest.json",
+  "stdout": "exports\\trading-mvp\\run\\perp_collect_6h_20260609_175941.stdout.log",
+  "stderr": "exports\\trading-mvp\\run\\perp_collect_6h_20260609_175941.stderr.log",
+  "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\run_mvp.ps1 -Action perp-collect -InputPath exports\\trading-mvp\\universe\\no_binance_focus_2026-06-02.csv -OutputPath exports\\trading-mvp\\normalized\\perp_normalized_6h_20260609_175941.jsonl -Exchanges mexc,gateio -MaxSymbols 20 -MaxPairsPerExchange 5 -Cycles 720 -PollIntervalSec 30 -DepthLimit 20 -TradesLimit 50",
+  "parameters": {
+    "exchanges": "mexc,gateio",
+    "max_symbols": 20,
+    "max_pairs_per_exchange": 5,
+    "cycles": 720,
+    "poll_interval_sec": 30,
+    "depth_limit": 20,
+    "trades_limit": 50,
+    "research_only": true,
+    "live_orders": false,
+    "api_keys": false,
+    "binance_testnet": false
+  },
+  "next_postprocess": {
+    "action": "After process exits, validate manifest/output rows/errors, then run perp-grid-search strict EV gates and summarize by signal/market.",
+    "output_grid": "exports\\trading-mvp\\backtests\\perp_grid_search_6h_20260609_175941.json"
+  },
+  "verified_local": "2026-06-09T18:01:38",
+  "verified_processes": [
+    {
+      "ProcessId": 27528,
+      "ParentProcessId": 37156,
+      "Name": "powershell.exe",
+      "CreationDate": "2026-06-09T17:59:41.312127+03:00",
+      "CommandLine": "\"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\run_mvp.ps1 -Action perp-collect -InputPath exports\\trading-mvp\\universe\\no_binance_focus_2026-06-02.csv -OutputPath exports\\trading-mvp\\normalized\\perp_normalized_6h_20260609_175941.jsonl -Exchanges mexc,gateio -MaxSymbols 20 -MaxPairsPerExchange 5 -Cycles 720 -PollIntervalSec 30 -DepthLimit 20 -TradesLimit 50"
+    },
+    {
+      "ProcessId": 4840,
+      "ParentProcessId": 27528,
+      "Name": "python.exe",
+      "CreationDate": "2026-06-09T17:59:41.704204+03:00",
+      "CommandLine": "\"C:\\Program Files\\Python313\\python.exe\" C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\cli.py --config C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\config.json perp-collect --exchanges mexc,gateio --max-pairs-per-exchange 5 --max-symbols 20 --cycles 720 --poll-interval-sec 30 --depth-limit 20 --trades-limit 50 --universe exports\\trading-mvp\\universe\\no_binance_focus_2026-06-02.csv --output exports\\trading-mvp\\normalized\\perp_normalized_6h_20260609_175941.jsonl"
+    },
+    {
+      "ProcessId": 13576,
+      "ParentProcessId": 43868,
+      "Name": "pwsh.exe",
+      "CreationDate": "2026-06-09T18:01:38.231787+03:00",
+      "CommandLine": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -Command \"try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n$ErrorActionPreference = 'Stop'\n$metaPath = 'docs\\agent-log\\2026-06-09-perp-collect-6h-20260609_175941.json'\n$manifestPath = 'exports\\trading-mvp\\normalized\\perp_normalized_6h_20260609_175941.manifest.json'\n$meta = Get-Content -LiteralPath $metaPath -Raw | ConvertFrom-Json\n$manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json\n$processes = Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -like '*perp_normalized_6h_20260609_175941.jsonl*' } | Select-Object ProcessId,ParentProcessId,Name,CreationDate,CommandLine\n$meta.status = 'running_verified'\n$meta | Add-Member -NotePropertyName verified_local -NotePropertyValue (Get-Date).ToString('s') -Force\n$meta | Add-Member -NotePropertyName verified_processes -NotePropertyValue $processes -Force\n$meta | Add-Member -NotePropertyName first_manifest_check -NotePropertyValue ([ordered]@{\n  completed_cycles = $manifest.completed_cycles\n  rows = $manifest.rows\n  errors = $manifest.errors\n  final = $manifest.final\n  discovery = $manifest.discovery\n  cycle_summaries = @($manifest.cycle_summaries | Select-Object -First 2)\n}) -Force\n$meta | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath $metaPath -Encoding UTF8\nGet-Content -LiteralPath $metaPath -TotalCount 260\""
+    }
+  ],
+  "first_manifest_check": {
+    "completed_cycles": 3,
+    "rows": 918,
+    "errors": 0,
+    "final": false,
+    "discovery": {
+      "mexc": {
+        "available_contracts": 757,
+        "selected_contracts": 5,
+        "symbols": [
+          "H_USDT",
+          "HYPE_USDT",
+          "VVV_USDT",
+          "XMR_USDT",
+          "KAS_USDT"
+        ]
+      },
+      "gateio": {
+        "available_contracts": 734,
+        "selected_contracts": 5,
+        "symbols": [
+          "CC_USDT",
+          "CRO_USDT",
+          "FLR_USDT",
+          "GT_USDT",
+          "HYPE_USDT"
+        ]
+      }
+    },
+    "cycle_summaries": [
+      {
+        "cycle": 1,
+        "ts": 1781017203.3937242,
+        "duration_sec": 17.438173532485962,
+        "rows": 520,
+        "errors": 0,
+        "selected_by_exchange": {
+          "mexc": [
+            "H_USDT",
+            "HYPE_USDT",
+            "VVV_USDT",
+            "XMR_USDT",
+            "KAS_USDT"
+          ],
+          "gateio": [
+            "CC_USDT",
+            "CRO_USDT",
+            "FLR_USDT",
+            "GT_USDT",
+            "HYPE_USDT"
+          ]
+        },
+        "error_breakdown": []
+      },
+      {
+        "cycle": 2,
+        "ts": 1781017245.4285169,
+        "duration_sec": 12.032785654067993,
+        "rows": 195,
+        "errors": 0,
+        "selected_by_exchange": {
+          "mexc": [
+            "H_USDT",
+            "HYPE_USDT",
+            "VVV_USDT",
+            "XMR_USDT",
+            "KAS_USDT"
+          ],
+          "gateio": [
+            "CC_USDT",
+            "CRO_USDT",
+            "FLR_USDT",
+            "GT_USDT",
+            "HYPE_USDT"
+          ]
+        },
+        "error_breakdown": []
+      }
+    ]
+  },
+  "midrun_report": {
+    "created_local": "2026-06-09T18:11:49",
+    "path": "exports\\trading-mvp\\backtests\\perp_report_midrun_20260609_175941.json",
+    "rows": 3344,
+    "market_count": 10,
+    "cycles_seen": 15,
+    "events_by_kind": {
+      "bbo": 150,
+      "depth": 150,
+      "trade": 3044
+    },
+    "events_by_exchange": {
+      "mexc": 2259,
+      "gateio": 1085
+    },
+    "field_coverage": {
+      "mark_price": 3344,
+      "index_price": 3344,
+      "funding_rate": 3344,
+      "next_funding_ts": 3344,
+      "funding_interval_sec": 3344,
+      "open_interest": 3344,
+      "volume_24h_quote": 3344
+    },
+    "warnings": []
+  },
+  "postprocess_command_ready": {
+    "updated_local": "2026-06-09T20:38:57",
+    "command": ".\\trading_mvp\\run_mvp.ps1 -Action perp-postprocess -InputPath \"exports\\trading-mvp\\normalized\\perp_normalized_6h_20260609_175941.jsonl\" -ManifestPath \"exports\\trading-mvp\\normalized\\perp_normalized_6h_20260609_175941.manifest.json\" -ReportOutputPath \"exports\\trading-mvp\\backtests\\perp_report_6h_20260609_175941.json\" -GridOutputPath \"exports\\trading-mvp\\backtests\\perp_grid_search_6h_20260609_175941.json\"",
+    "guardrails": [
+      "requires final manifest by default",
+      "runs QA report before grid",
+      "blocks grid on report warnings or weak field coverage"
+    ]
+  },
+  "duration_sec_support_note": {
+    "updated_local": "2026-06-09T20:45:12",
+    "issue": "Current long-running job was launched before DurationSec support and is cycle-bound; 720 REST cycles may exceed 6 wall-clock hours because each cycle includes API latency.",
+    "fix": "perp-collect now supports -DurationSec/--duration-sec; future 6h runs should use -DurationSec 21600.",
+    "current_manifest": {
+      "final": false,
+      "completed_cycles": 127,
+      "cycles": 720,
+      "rows": 27359,
+      "errors": 125,
+      "duration_sec": 9896.633919477463
+    }
+  }
+}

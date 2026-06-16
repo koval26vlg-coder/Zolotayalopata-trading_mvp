@@ -1,0 +1,43 @@
+{
+  "date": "2026-06-09",
+  "request": "Continue active Anufriev/trading_mvp goal while 6h perp-collect is running by adding dataset QA/reporting before postprocess grid-search.",
+  "result": "Added a streaming perp-report module, CLI command, PowerShell action, tests, README instructions, and updated the existing postprocess heartbeat so it runs QA before strict perp-grid-search. Ran perp-report against the in-progress 6h perp dataset and confirmed current data quality is clean.",
+  "changed_files": [
+    "trading_mvp/src/perp_report.py",
+    "trading_mvp/src/cli.py",
+    "trading_mvp/run_mvp.ps1",
+    "trading_mvp/tests/test_perp_report.py",
+    "trading_mvp/README.md",
+    "docs/agent-log/2026-06-09-perp-report-qa-layer.json",
+    "docs/agent-log/2026-06-09-perp-collect-6h-20260609_175941.json"
+  ],
+  "artifacts": [
+    "exports/trading-mvp/backtests/perp_report_midrun_20260609_175941.json"
+  ],
+  "verification": [
+    "C:\\Windows\\py.exe -3 -m unittest discover -s trading_mvp\\tests -> Ran 59 tests, OK",
+    "run_mvp.ps1 -Action perp-report on in-progress perp_normalized_6h_20260609_175941.jsonl -> OK, 3344 rows, 10 markets, 15 cycles_seen, 0 warnings"
+  ],
+  "midrun_report": {
+    "rows": 3344,
+    "market_count": 10,
+    "cycles_seen": 15,
+    "events_by_kind": {"bbo": 150, "depth": 150, "trade": 3044},
+    "events_by_exchange": {"mexc": 2259, "gateio": 1085},
+    "field_coverage": {
+      "mark_price": 3344,
+      "index_price": 3344,
+      "funding_rate": 3344,
+      "next_funding_ts": 3344,
+      "funding_interval_sec": 3344,
+      "open_interest": 3344,
+      "volume_24h_quote": 3344
+    },
+    "warnings": []
+  },
+  "next_steps": [
+    "Let 6h public perp-collect finish.",
+    "Run final perp-report and only then strict perp-grid-search if QA remains clean.",
+    "Use results to compare perp long/short microstructure against rejected spot maker setup."
+  ]
+}

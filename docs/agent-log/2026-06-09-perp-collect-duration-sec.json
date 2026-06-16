@@ -1,0 +1,35 @@
+{
+  "date": "2026-06-09",
+  "request": "Continue active Anufriev/trading_mvp goal by correcting perp-collect wall-clock duration control.",
+  "result": "Added duration_sec to PerpCollectConfig and exposed --duration-sec / -DurationSec through CLI and run_mvp.ps1. Future 6h REST perp datasets can be bounded by wall-clock time instead of assuming cycle count equals duration.",
+  "changed_files": [
+    "trading_mvp/src/perp_collector.py",
+    "trading_mvp/src/cli.py",
+    "trading_mvp/run_mvp.ps1",
+    "trading_mvp/tests/test_perp_collector.py",
+    "trading_mvp/README.md",
+    "docs/agent-log/2026-06-09-perp-collect-duration-sec.json",
+    "docs/agent-log/2026-06-09-perp-collect-6h-20260609_175941.json"
+  ],
+  "verification": [
+    "C:\\Windows\\py.exe -3 -m unittest discover -s trading_mvp\\tests -> Ran 64 tests, OK",
+    "run_mvp.ps1 -Action perp-collect -DurationSec 1 smoke -> OK, manifest final true, duration bounded, 6 rows, 0 errors"
+  ],
+  "current_collect_status": {
+    "final": false,
+    "completed_cycles": 127,
+    "cycles": 720,
+    "rows": 27359,
+    "errors": 125,
+    "duration_sec": 9896.633919477463
+  },
+  "artifacts": [
+    "exports/trading-mvp/normalized/perp_normalized_duration_smoke_20260609.jsonl",
+    "exports/trading-mvp/normalized/perp_normalized_duration_smoke_20260609.manifest.json"
+  ],
+  "next_steps": [
+    "Do not start future 6h REST collections with only -Cycles 720.",
+    "Use -DurationSec 21600 for wall-clock 6h coverage.",
+    "Let current cycle-bound run continue or explicitly stop/relaunch only if clean 6h wall-clock data is required immediately."
+  ]
+}

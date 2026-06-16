@@ -1,0 +1,36 @@
+{
+  "date": "2026-06-09",
+  "request": "Continue active Anufriev/trading_mvp goal by automating final postprocess for the running 6h perp dataset.",
+  "result": "Added perp-postprocess: a guarded QA + strict grid-search command. It requires final manifest by default, runs perp-report first, blocks grid on bad QA, and then runs strict perp-grid-search only for valid datasets. Updated PowerShell runner, README, heartbeat prompt, and tests.",
+  "changed_files": [
+    "trading_mvp/src/perp_postprocess.py",
+    "trading_mvp/src/cli.py",
+    "trading_mvp/run_mvp.ps1",
+    "trading_mvp/tests/test_perp_postprocess.py",
+    "trading_mvp/README.md",
+    "docs/agent-log/2026-06-09-perp-postprocess-command.json",
+    "docs/agent-log/2026-06-09-perp-collect-6h-20260609_175941.json"
+  ],
+  "artifacts": [
+    "exports/trading-mvp/backtests/perp_report_smoke2_post2_20260609.json",
+    "exports/trading-mvp/backtests/perp_grid_smoke2_post2_20260609.json"
+  ],
+  "verification": [
+    "C:\\Windows\\py.exe -3 -m unittest discover -s trading_mvp\\tests -> Ran 63 tests, OK",
+    "run_mvp.ps1 -Action perp-postprocess on running 6h manifest -> status not_final, grid not run",
+    "run_mvp.ps1 -Action perp-postprocess on final smoke2 manifest -> status grid_completed, report and grid artifacts written"
+  ],
+  "current_collect_status": {
+    "final": false,
+    "completed_cycles": 118,
+    "cycles": 720,
+    "rows": 25931,
+    "errors": 125,
+    "duration_sec": 9544.801828622818
+  },
+  "next_steps": [
+    "Let 6h perp-collect finish.",
+    "Heartbeat should run final perp-postprocess command once manifest final=true.",
+    "Use final grid to decide whether current flow_continue/fade_exhaustion perp branch has positive expectancy or should be rejected in favor of liquidity_sweep_reversal."
+  ]
+}

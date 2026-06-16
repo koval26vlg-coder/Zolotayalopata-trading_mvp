@@ -1,0 +1,83 @@
+{
+  "date": "2026-06-09",
+  "request": "Implement and verify 6h maker grid with second order-book signal fade_exhaustion alongside flow_continue, research-only and no live orders.",
+  "result": "Verified existing implementation of StrategyConfig.signal_type, ws_replay signal routing, ws-grid-search signal dimension, CLI/PowerShell parameters, unit tests, 30m smoke grid, and full 6h maker quality grid. The 6h grid created the requested artifact and included both signal types, eligibility filters, skipped signal counters, and per-market metrics. No configuration passed the strict eligibility gate.",
+  "changed_files": [
+    "trading_mvp/src/config.py",
+    "trading_mvp/src/ws_replay.py",
+    "trading_mvp/src/ws_grid_search.py",
+    "trading_mvp/src/cli.py",
+    "trading_mvp/run_mvp.ps1",
+    "trading_mvp/tests/test_ws_replay.py",
+    "trading_mvp/tests/test_ws_grid_search.py",
+    "trading_mvp/README.md",
+    "docs/agent-log/2026-06-09-maker-grid-fade-exhaustion.json"
+  ],
+  "artifacts": [
+    "exports/trading-mvp/backtests/ws_grid_search_signal_type_smoke_30m_20260609.json",
+    "exports/trading-mvp/backtests/ws_grid_search_signal_type_maker_quality_6h_20260609.json"
+  ],
+  "verification": [
+    "C:\\Windows\\py.exe -3 -m unittest discover -s trading_mvp\\tests -> Ran 51 tests in 0.148s, OK",
+    "run_mvp.ps1 -Action ws-grid-search on ws_normalized_30m_20260604.jsonl -> OK, 167737 events, 32 combinations, both signal types present",
+    "run_mvp.ps1 -Action ws-grid-search on ws_normalized_6h_20260604.jsonl -> OK, 472583 events, 192 combinations, 0 eligible"
+  ],
+  "grid_6h_params": {
+    "execution_mode": "maker",
+    "maker_fee_bps": 0.0,
+    "taker_fee_bps": 10.0,
+    "slippage_bps": 0.0,
+    "latency_ms": 250,
+    "maker_queue_model": "top_qty_fraction",
+    "maker_queue_ahead_fraction": 1.0,
+    "maker_order_ttl_sec": 5.0,
+    "quality_filter": true,
+    "quality_window_sec": 60.0,
+    "quality_min_trade_count": 20,
+    "quality_min_trade_notional": 1000.0,
+    "quality_max_avg_spread_bps": 6.0,
+    "quality_min_quote_updates": 10,
+    "grid_signal_type": ["flow_continue", "fade_exhaustion"],
+    "grid_imbalance": [0.05, 0.1],
+    "grid_flow": [250.0, 1000.0, 2500.0],
+    "grid_spread": [3.0, 6.0],
+    "grid_take_profit": [6.0, 10.0],
+    "grid_stop_loss": [3.0, 6.0],
+    "grid_max_hold_sec": [15, 25],
+    "eligibility": {
+      "min_trades": 20,
+      "min_win_rate": 0.6,
+      "min_expectancy_quote": 0.0,
+      "min_net_pnl_quote": 0.0,
+      "min_profit_factor": 1.2,
+      "max_drawdown_quote": 5.0,
+      "min_net_take_profit_bps": 1.0
+    }
+  },
+  "key_metrics": {
+    "events": 472583,
+    "total_combinations": 192,
+    "eligible_combinations": 0,
+    "best_flow_continue": {
+      "trades": 45,
+      "win_rate": 0.4222222222222222,
+      "net_pnl_quote": -0.20648776152657344,
+      "expectancy_quote": -0.004588616922812743,
+      "profit_factor": 0.7214894218998544,
+      "eligibility_reasons": ["min_win_rate", "min_expectancy_quote", "min_net_pnl_quote", "min_profit_factor"]
+    },
+    "best_fade_exhaustion": {
+      "trades": 77,
+      "win_rate": 0.45454545454545453,
+      "net_pnl_quote": -0.43748136171628244,
+      "expectancy_quote": -0.005681576126185486,
+      "profit_factor": 0.6483269508101007,
+      "eligibility_reasons": ["min_win_rate", "min_expectancy_quote", "min_net_pnl_quote", "min_profit_factor"]
+    }
+  },
+  "interpretation": [
+    "Infrastructure acceptance passed: both signal families are represented in grid output and artifacts include eligibility/skipped/per-market metrics.",
+    "Research acceptance did not pass: no current spot maker configuration clears strict positive-PnL/profit-factor/win-rate filters.",
+    "The current flow_continue/fade_exhaustion family should remain research-only. Next work should be real perp/funding replay or a new signal family, not live trading."
+  ]
+}

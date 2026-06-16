@@ -1,0 +1,56 @@
+{
+  "date": "2026-06-09",
+  "request": "Continue active Anufriev/trading_mvp goal after negative spot maker grids by moving toward real perp/funding replay evidence.",
+  "result": "Integrated the existing public REST perp collector into the main CLI and PowerShell runner, added unit coverage for MEXC/Gate payload normalization and CLI parsing, documented the new perp-collect workflow, verified public MEXC/Gate endpoints, collected short live public perp datasets, and ran a real-perp-field grid smoke artifact. No API keys, live orders, Binance testnet, leverage, or margin execution were used.",
+  "changed_files": [
+    "trading_mvp/src/cli.py",
+    "trading_mvp/run_mvp.ps1",
+    "trading_mvp/tests/test_perp_collector.py",
+    "trading_mvp/README.md",
+    "docs/analysis/2026-06-08-anufriev-strategy-economics-v2.md",
+    "docs/agent-log/2026-06-09-perp-rest-collect-integration.json"
+  ],
+  "artifacts": [
+    "exports/trading-mvp/normalized/perp_normalized_smoke_20260609.jsonl",
+    "exports/trading-mvp/normalized/perp_normalized_smoke_20260609.manifest.json",
+    "exports/trading-mvp/normalized/perp_normalized_smoke2_20260609.jsonl",
+    "exports/trading-mvp/normalized/perp_normalized_smoke2_20260609.manifest.json",
+    "exports/trading-mvp/backtests/perp_grid_search_live_smoke_20260609.json"
+  ],
+  "verification": [
+    "Official docs checked: MEXC contract depth/funding endpoints and Gate futures trades/tickers/funding endpoints.",
+    "Live REST smoke: MEXC depth/deals BTC_USDT and Gate futures order_book/trades BTC_USDT returned current public payloads.",
+    "C:\\Windows\\py.exe -3 -m unittest discover -s trading_mvp\\tests -> Ran 55 tests, OK",
+    "run_mvp.ps1 -Action perp-collect -> OK, 1 cycle, 48 rows, 0 errors, MEXC HYPE_USDT/XMR_USDT, Gate CC_USDT/CRO_USDT",
+    "run_mvp.ps1 -Action perp-collect -> OK, 2 cycles, 73 rows, 0 errors, MEXC HYPE_USDT, Gate CC_USDT",
+    "run_mvp.ps1 -Action perp-grid-search on perp_normalized_smoke2_20260609.jsonl -> OK, 73 events, 16 combinations, both signal types present"
+  ],
+  "key_metrics": {
+    "perp_collect_smoke": {
+      "rows": 48,
+      "errors": 0,
+      "events_by_kind": {"bbo": 4, "depth": 4, "trade": 40},
+      "markets": ["gateio:CC_USDT", "gateio:CRO_USDT", "mexc:HYPE_USDT", "mexc:XMR_USDT"],
+      "has_mark_price_rows": 48,
+      "has_index_price_rows": 48,
+      "has_funding_rate_rows": 48
+    },
+    "perp_grid_live_smoke": {
+      "events": 73,
+      "total_combinations": 16,
+      "signal_types": ["flow_continue", "fade_exhaustion"],
+      "total_trades": 0,
+      "interpretation": "wiring/data-shape smoke only; dataset is too short for strategy inference"
+    }
+  },
+  "limitations": [
+    "The live smoke dataset is intentionally tiny and produced zero replay trades; it proves data plumbing, not edge or profitability.",
+    "REST polling is sufficient for research bootstrap but not final execution-quality evaluation; 6-24h and preferably WebSocket perp data are still needed.",
+    "Full Anufriev channel objective remains active because transcript-level coverage is incomplete under YouTube rate limiting."
+  ],
+  "next_steps": [
+    "Run perp-collect for 6-24h on MEXC/Gate with 5-10 no-Binance universe candidates.",
+    "Run perp-grid-search with strict EV gates and compare flow_continue vs fade_exhaustion on real perp/funding fields.",
+    "If still negative, implement liquidity_sweep_reversal instead of loosening win-rate gates."
+  ]
+}

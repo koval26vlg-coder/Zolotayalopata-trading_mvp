@@ -1,0 +1,37 @@
+{
+  "exchange": {
+    "name": "binance-spot-reference",
+    "base_url": "https://api.binance.com",
+    "symbol": "BTCUSDT",
+    "depth_limit": 20,
+    "trades_limit": 100,
+    "poll_interval_sec": 0.5,
+    "timeout_sec": 30
+  },
+  "strategy": {
+    "signal_type": "flow_continue",
+    "entry_imbalance_abs": 0.25,
+    "entry_signed_flow_notional": 5000.0,
+    "max_spread_bps": 3.0,
+    "take_profit_bps": 6.0,
+    "stop_loss_bps": 6.0,
+    "max_hold_sec": 25
+  },
+  "risk": {
+    "max_notional_per_trade": 50.0,
+    "max_position_qty": 1000000.0,
+    "max_trades_per_day": 200,
+    "daily_loss_limit_quote": 20.0,
+    "min_net_take_profit_bps": 1.0,
+    "max_open_positions_per_market": 1
+  },
+  "paths": {
+    "raw_dir": "exports/trading-mvp/raw",
+    "normalized_dir": "exports/trading-mvp/normalized",
+    "backtest_dir": "exports/trading-mvp/backtests",
+    "run_dir": "exports/trading-mvp/run",
+    "universe_dir": "exports/trading-mvp/universe",
+    "funding_dir": "exports/trading-mvp/funding",
+    "experiment_dir": "exports/trading-mvp/experiments"
+  }
+}

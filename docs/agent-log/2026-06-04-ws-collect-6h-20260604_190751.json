@@ -1,0 +1,14 @@
+{
+  "pid": 9896,
+  "started_at_local": "2026-06-04T19:07:51.3408781+03:00",
+  "expected_finish_local": "2026-06-05T01:07:51.3439270+03:00",
+  "command": "pwsh.exe -NoProfile -File C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\run_mvp.ps1 -Action ws-collect -Exchanges mexc,gateio -DurationSec 21600 -MaxPairsPerExchange 5 -MaxSymbols 300 -UpdateInterval 100ms",
+  "stdout": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\ws_collect_6h_20260604_190751.stdout.log",
+  "stderr": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\ws_collect_6h_20260604_190751.stderr.log",
+  "duration_sec": 21600,
+  "exchanges": "mexc,gateio",
+  "max_pairs_per_exchange": 5,
+  "max_symbols": 300,
+  "update_interval": "100ms",
+  "postprocess": "Normalize manifest to ws_normalized_6h_20260604.jsonl and run maker top_qty_fraction grid-search."
+}

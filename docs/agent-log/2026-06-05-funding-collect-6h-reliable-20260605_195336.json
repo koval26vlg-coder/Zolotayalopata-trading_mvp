@@ -1,0 +1,17 @@
+{
+  "mode": "funding_collect_6h_reliable",
+  "started_at_local": "2026-06-05T19:53:36",
+  "pid": 19340,
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "output": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\funding\\funding_collect_6h_reliable_20260605_195336.jsonl",
+  "stdout": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\funding_collect_6h_reliable_20260605_195336.stdout.log",
+  "stderr": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\funding_collect_6h_reliable_20260605_195336.stderr.log",
+  "exchanges": "mexc,gateio",
+  "max_pairs_per_exchange": 1,
+  "max_symbols": 50,
+  "cycles": 72,
+  "poll_interval_sec": 300,
+  "notional_quote": 100,
+  "stopped_previous": "PID 11828/20532 stopped because first cycle did not write rows after several minutes",
+  "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\run_mvp.ps1 -Action funding-collect -Exchanges mexc,gateio -MaxPairsPerExchange 1 -MaxSymbols 50 -Cycles 72 -PollIntervalSec 300 -NotionalQuote 100 -FundingMinRate 0 -FundingMaxSpotSpreadBps 30 -FundingMaxPerpSpreadBps 30 -FundingMaxAbsBasisBps 500 -OutputPath C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\funding\\funding_collect_6h_reliable_20260605_195336.jsonl"
+}

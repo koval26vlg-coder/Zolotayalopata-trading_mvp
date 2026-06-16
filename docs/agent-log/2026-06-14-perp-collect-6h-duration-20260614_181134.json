@@ -1,0 +1,32 @@
+{
+  "date": "2026-06-14",
+  "request": "Start clean wall-clock 6h public perp collect after interrupted cycle-bound dataset.",
+  "status": "running_started",
+  "pid": 13236,
+  "started_local": "2026-06-14T18:11:34",
+  "duration_sec": 21600,
+  "universe_csv": "exports\\trading-mvp\\universe\\no_binance_focus_2026-06-02.csv",
+  "output": "exports\\trading-mvp\\normalized\\perp_normalized_6h_duration_20260614_181134.jsonl",
+  "manifest": "exports\\trading-mvp\\normalized\\perp_normalized_6h_duration_20260614_181134.manifest.json",
+  "stdout": "exports\\trading-mvp\\run\\perp_collect_6h_duration_20260614_181134.stdout.log",
+  "stderr": "exports\\trading-mvp\\run\\perp_collect_6h_duration_20260614_181134.stderr.log",
+  "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\run_mvp.ps1 -Action perp-collect -InputPath exports\\trading-mvp\\universe\\no_binance_focus_2026-06-02.csv -OutputPath exports\\trading-mvp\\normalized\\perp_normalized_6h_duration_20260614_181134.jsonl -Exchanges mexc,gateio -MaxSymbols 20 -MaxPairsPerExchange 5 -DurationSec 21600 -PollIntervalSec 30 -DepthLimit 20 -TradesLimit 50",
+  "parameters": {
+    "exchanges": "mexc,gateio",
+    "max_symbols": 20,
+    "max_pairs_per_exchange": 5,
+    "duration_sec": 21600,
+    "poll_interval_sec": 30,
+    "depth_limit": 20,
+    "trades_limit": 50,
+    "research_only": true,
+    "live_orders": false,
+    "api_keys": false,
+    "binance_testnet": false
+  },
+  "next_postprocess": {
+    "action": "After manifest final=true, run perp-postprocess without AllowPartial.",
+    "report_output": "exports\\trading-mvp\\backtests\\perp_report_6h_duration_20260614_181134.json",
+    "grid_output": "exports\\trading-mvp\\backtests\\perp_grid_search_6h_duration_20260614_181134.json"
+  }
+}

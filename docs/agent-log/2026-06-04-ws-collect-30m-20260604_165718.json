@@ -1,0 +1,14 @@
+{
+  "pid": 14388,
+  "started_at_local": "2026-06-04T16:57:18.9447851+03:00",
+  "expected_finish_local": "2026-06-04T17:27:18.9516860+03:00",
+  "command": "pwsh.exe -NoProfile -File C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\run_mvp.ps1 -Action ws-collect -Exchanges mexc,gateio -DurationSec 1800 -MaxPairsPerExchange 5 -MaxSymbols 300 -UpdateInterval 100ms",
+  "stdout": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\ws_collect_30m_20260604_165718.stdout.log",
+  "stderr": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\ws_collect_30m_20260604_165718.stderr.log",
+  "duration_sec": 1800,
+  "exchanges": "mexc,gateio",
+  "max_pairs_per_exchange": 5,
+  "max_symbols": 300,
+  "update_interval": "100ms",
+  "next_steps": "After completion: inspect stdout/stderr, normalize manifest, run ws-grid-search, summarize results."
+}
