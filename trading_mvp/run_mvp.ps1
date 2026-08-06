@@ -1,6 +1,6 @@
 param(
     [string]$Config = "",
-    [ValidateSet("universe","collect","backtest","run","multi-run","ws-collect","ws-normalize","perp-collect","perp-report","event-quality-report","event-slice-optimizer","perp-postprocess","ws-replay","ws-grid-search","perp-replay","perp-grid-search","funding-scan","funding-coverage","funding-collect","funding-status","funding-collect-diagnostics","funding-wait-ready","funding-rank","funding-gate-report","funding-regime-report","funding-frontier-report","funding-decision-report","funding-progress-report","funding-backtest","funding-sensitivity","funding-oos-backtest","funding-walk-forward","funding-postprocess","funding-finalize","funding-final-review","funding-paper-plan","funding-paper-forward","funding-paper-decision-report","funding-goal-audit","fast-edge-basis-v2-paper-observer-fixture-plan","fast-edge-basis-v2-paper-observer-fixture-run","fast-edge-basis-v2-paper-observer-fixture-sink","setup-registry","experiment-record","experiment-list")]
+    [ValidateSet("universe","collect","backtest","run","multi-run","ws-collect","ws-normalize","ws-data-quality","ws-postprocess","perp-collect","perp-report","event-quality-report","event-slice-optimizer","event-validation-report","cross-venue-dislocation","perp-postprocess","ws-replay","ws-grid-search","perp-replay","perp-grid-search","funding-scan","funding-coverage","funding-collect","funding-status","funding-collect-diagnostics","funding-wait-ready","funding-rank","funding-gate-report","funding-regime-report","funding-frontier-report","funding-decision-report","funding-progress-report","funding-backtest","funding-sensitivity","funding-oos-backtest","funding-walk-forward","funding-postprocess","funding-finalize","funding-final-review","funding-paper-plan","funding-paper-forward","funding-paper-decision-report","funding-goal-audit","resolve-active-run","fast-edge-membership-plan","fast-edge-membership-probe","fast-edge-membership-v2-plan","fast-edge-membership-v2-probe","fast-edge-membership-v3-source-plan","fast-edge-membership-v3-source-probe","fast-edge-membership-v3-history-plan","fast-edge-membership-v3-history-collect","fast-edge-membership-v3-history-quality-plan","fast-edge-membership-v3-history-quality","fast-edge-membership-history-plan","fast-edge-membership-history-collect","fast-edge-membership-history-quality","fast-edge-membership-momentum-train-plan","fast-edge-membership-momentum-train","fast-edge-membership-momentum-v2-train-plan","fast-edge-membership-momentum-v2-train","fast-edge-membership-momentum-v2-oos-plan","fast-edge-membership-momentum-v2-oos","fast-edge-membership-momentum-v2-execution-probe-plan","fast-edge-membership-momentum-v2-execution-probe-validate","fast-edge-membership-momentum-v2-market-snapshot-plan","fast-edge-membership-momentum-v2-market-snapshot-collect","fast-edge-membership-momentum-v2-execution-selection","fast-edge-membership-momentum-v2-execution-selection-validate","fast-edge-membership-momentum-v2-execution-probe-window-plan","fast-edge-membership-momentum-v2-execution-probe-collect","fast-edge-membership-momentum-v2-execution-probe-evaluate","fast-edge-membership-momentum-v2-paper-plan","fast-edge-membership-momentum-v2-paper-validate","fast-edge-membership-momentum-v2-paper-approve","fast-edge-membership-momentum-v2-paper-init","fast-edge-membership-momentum-v2-paper-execution-window-plan","fast-edge-membership-momentum-v2-paper-execution-raw","fast-edge-membership-momentum-v2-paper-funding-raw","fast-edge-membership-momentum-v2-paper-source","fast-edge-membership-momentum-v2-paper-evidence","fast-edge-membership-momentum-v2-paper-event","fast-edge-membership-momentum-v2-paper-apply","fast-edge-membership-momentum-v2-paper-status","fast-edge-membership-momentum-v2-paper-incident","fast-edge-membership-momentum-oos-plan","fast-edge-membership-momentum-oos","fast-edge-plan","fast-edge-evaluate","fast-edge-basis-universe-build","fast-edge-basis-plan","fast-edge-basis-history-collect","fast-edge-basis-history-quality","fast-edge-basis-evaluate","fast-edge-basis-probe-plan","fast-edge-basis-probe","fast-edge-basis-report","fast-edge-basis-paper-init","fast-edge-basis-paper-observe","fast-edge-basis-paper-status","fast-edge-basis-v2-preflight","fast-edge-basis-v2-plan","fast-edge-basis-v2-cache-audit","fast-edge-basis-v2-history-collect","fast-edge-basis-v2-history-quality","fast-edge-basis-v2-train-postprocess","fast-edge-basis-v2-oos-postprocess","fast-edge-basis-v2-evaluate","fast-edge-basis-v2-report","fast-edge-basis-v2-execution-probe-plan","fast-edge-basis-v2-execution-probe","fast-edge-basis-v2-execution-probe-evaluate","fast-edge-basis-v2-paper-plan","fast-edge-basis-v2-paper-init","fast-edge-basis-v2-paper-observe","fast-edge-basis-v2-paper-status","fast-edge-basis-v2-paper-observer-fixture-plan","fast-edge-basis-v2-paper-observer-fixture-run","fast-edge-basis-v2-paper-observer-fixture-sink","fast-edge-funding-persistence-v2-plan","fast-edge-funding-persistence-v2-validate","fast-edge-funding-persistence-v2-train-feasibility","fast-edge-funding-persistence-v2-oos","fast-edge-v2-validate","fast-edge-v2-evaluate","fast-edge-v3-validate","fast-edge-v3-evaluate","fast-edge-v4-validate","fast-edge-v4-evaluate","fast-edge-v5-validate","fast-edge-v5-evaluate","fast-edge-v6-validate","fast-edge-v6-evaluate","fast-edge-data-track-plan","fast-edge-night-schedule-plan","fast-edge-night-schedule-status","fast-edge-night-schedule-quality","fast-edge-pit-futility-plan","fast-edge-pit-futility-evaluate","fast-edge-pit-input-plan","fast-edge-pit-feasibility","fast-edge-pit-evaluate","fast-edge-pit-execution-probe-plan","fast-edge-pit-execution-probe-evaluate","fast-edge-pit-paper-plan","fast-edge-pit-paper-evaluate","fast-edge-feasibility","fast-edge-execution-probe","fast-edge-report","paper-forward-segment","setup-registry","experiment-record","experiment-list")]
     [string]$Action = "run",
     [ValidateSet("paper")]
     [string]$Mode = "paper",
@@ -27,21 +27,6 @@ param(
     [string]$WalkForwardOutputPath = "",
     [string]$PaperOutputPath = "",
     [string]$PaperSummaryOutputPath = "",
-    [string]$PaperObserverPaperPlanPath = "",
-    [string]$PaperObserverProbeReportPath = "",
-    [string]$PaperObserverRuntimeContractPath = "",
-    [string]$PaperObserverHealthContractPath = "",
-    [string]$PaperObserverFixturePath = "",
-    [string]$PaperObserverPlanPath = "",
-    [string]$PaperObserverExpectedPlanHash = "",
-    [string]$PaperObserverAuditPath = "",
-    [string]$PaperObserverAcceptedPath = "",
-    [string]$PaperObserverManifestPath = "",
-    [string]$PaperObserverRunId = "",
-    [string]$PaperObserverLedgerPath = "",
-    [string]$PaperObserverStatePath = "",
-    [ValidateRange(1, 1800)]
-    [int]$PaperObserverMaxRuntimeSec = 600,
     [string]$FundingPlanPath = "",
     [string]$GateReportPath = "",
     [string]$RegimeReportPath = "",
@@ -57,6 +42,8 @@ param(
     [double]$TakerFeeBps = 10.0,
     [double]$MakerFeeBps = 0.0,
     [double]$SlippageBps = 1.0,
+    [string]$VenueCostsJson = "",
+    [double]$MaxQuoteAgeSec = 2.0,
     [int]$LatencyMs = 250,
     [double]$FlowWindowSec = 5.0,
     [switch]$AllowShort,
@@ -95,6 +82,7 @@ param(
     [double]$MinProfitFactor = 0.0,
     [double]$MaxDrawdownQuote = 0.0,
     [int]$TopN = 20,
+    [int]$MaxGridCombinations = 10000,
     [double]$FundingMaxSpotSpreadBps = 30.0,
     [double]$FundingMaxPerpSpreadBps = 30.0,
     [double]$FundingMaxAbsBasisBps = 500.0,
@@ -185,6 +173,17 @@ param(
     [double]$EventMaxPreSpreadBps = 0.0,
     [double]$EventCooldownSec = 10.0,
     [int]$EventMaxEvents = 5000,
+    [double]$CrossVenueStaleQuoteSec = 2.0,
+    [double]$CrossVenueMinTopNotionalQuote = 25.0,
+    [double]$CrossVenueRoundTripFeeBps = 39.0,
+    [double]$CrossVenueSlippageBps = 10.0,
+    [double]$CrossVenueInventoryRebalanceBufferBps = 20.0,
+    [double]$CrossVenueMinNetEdgeBps = 0.0,
+    [double]$CrossVenueCooldownSec = 60.0,
+    [int]$CrossVenueMaxRows = 0,
+    [int]$CrossVenueMaxEvents = 1000,
+    [int]$CrossVenueProgressEveryRows = 0,
+    [string]$CrossVenueIncludeBases = "",
     [int]$SliceMinEvents = 20,
     [int]$SliceMinReclaimed = 10,
     [double]$SliceMinTargetBeforeStopRate = 0.60,
@@ -197,8 +196,29 @@ param(
     [string]$SliceMaxPreSpreadBps = "0,1,3,6",
     [string]$SliceMaxAbsBasisBps = "0,5,10,25,100",
     [string]$SliceMinTradeNotionalQuote = "0,2500,5000,10000",
+    [double]$ValidationTrainFraction = 0.70,
+    [int]$ValidationWalkForwardWindows = 4,
+    [double]$ValidationWalkForwardMinPassRatio = 0.75,
+    [double]$ValidationMaxFalseSweepRate = 0.50,
+    [double]$ValidationMinFavorableToAdverse = 1.0,
+    [double]$ValidationStressFavorableHaircutBps = 1.0,
+    [double]$ValidationStressAdverseWidenBps = 1.0,
+    [double]$ValidationStressTargetBps = 6.0,
+    [double]$ValidationStressStopBps = 3.0,
+    [int]$WsQualityMinRows = 1,
+    [int]$WsQualityMinExchanges = 1,
+    [int]$WsQualityMinMarkets = 1,
+    [double]$WsQualityMinSpanHours = 0.0,
+    [double]$WsQualityMinDurationRatio = 0.0,
+    [double]$WsQualityMaxParseErrorRate = 1.0,
+    [string]$WsQualityRequiredEventKinds = "bbo,depth,trade",
+    [int]$WsQualityMinMarketsWithRequiredKinds = 0,
+    [double]$WsQualityMaxMarketEventShare = 1.0,
+    [double]$WsQualityMaxGapSec = 0.0,
+    [int]$WsQualityMaxManifestErrorCount = 1000000,
     [string]$SourceVideoId = "",
     [string]$SourceUrl = "",
+    [string]$SourceChannel = "https://www.youtube.com/@AnufrievNikita/",
     [string]$Participant = "",
     [string]$ClaimFamily = "",
     [string]$Hypothesis = "",
@@ -211,7 +231,91 @@ param(
     [string]$Verdict = "untested",
     [string]$VerdictReason = "",
     [string]$Tags = "",
-    [string]$Notes = ""
+    [string]$Notes = "",
+    [string]$FeeScheduleRevision = "unspecified",
+    [string]$EvaluationScope = "unspecified",
+    [string]$OosStatus = "not_evaluated",
+    [string]$HypothesisBankPath = "",
+    [string]$GoalPath = "",
+    [string]$DataType = "",
+    [string]$InputMerkleSha256 = "",
+    [string]$TrackId = "",
+    [int]$TrainCandidateEvents = 0,
+    [int]$TrainValidEvents = 0,
+    [int]$OosCandidateEvents = 0,
+    [string]$PerVenueOosCandidateEventsJson = "",
+    [int]$UniqueOosDates = 0,
+    [double]$DualVenueCoverage = 0.0,
+    [double]$CapacityProxyQuotePerSelectedLeg = 0.0,
+    [string]$ScheduleStartDate = "",
+    [ValidateRange(1, 14)]
+    [int]$ScheduleNights = 14,
+    [string]$ScheduleStartLocal = "23:00",
+    [ValidateSet("train_accrual", "oos_accrual")]
+    [string]$ScheduleCollectionStage = "train_accrual",
+    [ValidateRange(1, 10800)]
+    [int]$ScheduleSegmentDurationSec = 1200,
+    [ValidateRange(1, 10800)]
+    [int]$ScheduleIntervalSec = 300,
+    [string]$ScheduleOutputRoot = "E:\ZolotyayLopata-data\exports\trading-mvp\pit-universe-v2",
+    [ValidateRange(1, 10800)]
+    [int]$MaxRuntimeSec = 1200,
+    [long]$NotBeforeDay = 0,
+    [ValidateRange(1, 20)]
+    [int]$ShortlistLimit = 20,
+    [double]$FastEdgeNotionalPerLeg = 1000.0,
+    [double]$IntervalSec = 5.0,
+    [string]$PlanPath = "",
+    [string]$CoinRegistryPath = "",
+    [string]$BasisCodeSnapshotRoot = "E:\ZolotyayLopata-data\exports\trading-mvp\historical-basis\code-snapshots",
+    [ValidateSet("train_feasibility", "full_evaluation")]
+    [string]$PitPlanStage = "train_feasibility",
+    [string]$TrainPlanPath = "",
+    [string]$ExpectedPlanHash = "",
+    [string]$ExpectedArtifactHash = "",
+    [string]$ExpectedEvidenceHash = "",
+    [string]$ExpectedRawManifestHash = "",
+    [string]$EntrySourcePath = "",
+    [string]$ExpectedEntrySourceHash = "",
+    [string]$ExitSourcePath = "",
+    [string]$ExpectedExitSourceHash = "",
+    [string]$FundingHistoryPaths = "",
+    [ValidateSet("entry", "exit")]
+    [string]$PaperBoundary = "entry",
+    [string]$QualityReportPath = "",
+    [string]$FundingOutputPath = "",
+    [string]$ProbePlanPath = "",
+    [string]$ProbeManifestPaths = "",
+    [string]$SamplesPath = "",
+    [string]$WindowManifestPath = "",
+    [string]$FirstProbeWindowStartUtc = "",
+    [ValidateRange(0, 2)]
+    [int]$WindowIndex = 0,
+    [ValidateRange(1, 8)]
+    [int]$ProbeWorkers = 4,
+    [string]$ParallelParentRunId = "",
+    [string]$ApprovalRecordRoot = "",
+    [string]$PaperApprovalPath = "",
+    [string]$QualityLedgerPath = "",
+    [string]$EvaluationPath = "",
+    [string]$ClosurePath = "",
+    [string]$FeasibilityPath = "",
+    [string]$ExpectedFeasibilityResultHash = "",
+    [string]$ExecutionProbePath = "",
+    [string]$FastEdgeReportPath = "",
+    [string]$SprintReportPath = "",
+    [string]$ObservationPath = "",
+    [string]$StatePath = "",
+    [string]$LedgerPath = "",
+    [double]$DailyLossLimitQuote = 50.0,
+    [string]$RunId = "",
+    [string]$ActiveRunGatePath = "",
+    [string]$Reason = "Explicitly rejected as incomplete; preserve for diagnostics only.",
+    [switch]$ConfirmedPaperForward,
+    [ValidateSet("data_quality", "execution_quality", "reconciliation", "manual_stop")]
+    [string]$PaperIncidentType = "manual_stop",
+    [switch]$Resume,
+    [switch]$PlanOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -225,6 +329,7 @@ $pythonCandidates = @(
     $env:TRADING_MVP_PYTHON,
     (Join-Path $ProjectRoot ".venv\Scripts\python.exe"),
     (Join-Path $PSScriptRoot ".venv\Scripts\python.exe"),
+    "C:\Program Files\Python313\python.exe",
     "C:\Users\koval\Documents\ОК.ру\.venv\Scripts\python.exe"
 ) | Where-Object { $_ }
 
@@ -240,105 +345,357 @@ if (-not $python) {
 }
 
 $cli = Join-Path $PSScriptRoot "src\cli.py"
-$paperObserverRuntime = Join-Path $PSScriptRoot "src\paper_observer_runtime.py"
+$fastEdgeCli = Join-Path $PSScriptRoot "src\fast_edge.py"
+$residualDispersionCli = Join-Path $PSScriptRoot "src\residual_dispersion.py"
+$lotteryMaxCli = Join-Path $PSScriptRoot "src\lottery_max_evaluator.py"
+$fundingPressureCli = Join-Path $PSScriptRoot "src\funding_pressure_reversal.py"
+$wickRejectionCli = Join-Path $PSScriptRoot "src\wick_rejection_reversal.py"
+$weekendLiquidityCli = Join-Path $PSScriptRoot "src\weekend_liquidity_window.py"
+$feasibilityGateCli = Join-Path $PSScriptRoot "src\feasibility_gate.py"
+$dataTrackContractCli = Join-Path $PSScriptRoot "src\data_track_contract.py"
+$nightSchedulePlanCli = Join-Path $PSScriptRoot "src\night_schedule_plan.py"
+$nightScheduleStatusCli = Join-Path $PSScriptRoot "src\night_schedule_status.py"
+$nightScheduleQualityCli = Join-Path $PSScriptRoot "src\night_schedule_quality.py"
+$pitMembershipDriftFutilityCli = Join-Path $PSScriptRoot "src\pit_membership_drift_futility.py"
+$pitMembershipDriftCli = Join-Path $PSScriptRoot "src\pit_membership_drift_evaluator.py"
+$pitMembershipDriftProbeCli = Join-Path $PSScriptRoot "src\pit_membership_drift_execution_probe.py"
+$pitMembershipDriftPaperCli = Join-Path $PSScriptRoot "src\pit_membership_drift_paper_forward.py"
+$historicalBasisEdgeCli = Join-Path $PSScriptRoot "src\historical_basis_edge.py"
+$historicalBasisUniverseCli = Join-Path $PSScriptRoot "src\historical_basis_universe.py"
+$historicalBasisCollectorCli = Join-Path $PSScriptRoot "src\historical_basis_collector.py"
+$historicalBasisQualityCli = Join-Path $PSScriptRoot "src\historical_basis_quality.py"
+$historicalBasisEvaluatorCli = Join-Path $PSScriptRoot "src\historical_basis_evaluator.py"
+$historicalBasisProbeCli = Join-Path $PSScriptRoot "src\historical_basis_probe.py"
+$basisPaperOmsCli = Join-Path $PSScriptRoot "src\basis_paper_oms.py"
+$historicalBasisCodeSnapshotCli = Join-Path $PSScriptRoot "src\historical_basis_code_snapshot.py"
+$historicalBasisV2PreflightCli = Join-Path $PSScriptRoot "src\historical_basis_v2_preflight.py"
+$historicalBasisV2Cli = Join-Path $PSScriptRoot "src\historical_basis_v2.py"
+$historicalBasisV2CollectorCli = Join-Path $PSScriptRoot "src\historical_basis_v2_collector.py"
+$historicalBasisV2QualityCli = Join-Path $PSScriptRoot "src\historical_basis_v2_quality.py"
+$historicalBasisV2PostprocessCli = Join-Path $PSScriptRoot "src\historical_basis_v2_postprocess.py"
+$historicalBasisV2OosPostprocessCli = Join-Path $PSScriptRoot "src\historical_basis_v2_oos_postprocess.py"
+$historicalBasisV2EvaluatorCli = Join-Path $PSScriptRoot "src\historical_basis_v2_evaluator.py"
+$historicalBasisV2ReportCli = Join-Path $PSScriptRoot "src\historical_basis_v2_report.py"
+$historicalBasisV2ExecutionProbeCli = Join-Path $PSScriptRoot "src\historical_basis_v2_execution_probe.py"
+$historicalBasisV2PaperOmsCli = Join-Path $PSScriptRoot "src\historical_basis_v2_paper_oms.py"
+$paperObserverRuntimeCli = Join-Path $PSScriptRoot "src\paper_observer_runtime.py"
+$historicalBasisV2CacheAuditCli = Join-Path $ProjectRoot "tools\audit_historical_basis_v2_cache.py"
+$fundingRegimePersistenceV2Cli = Join-Path $PSScriptRoot "src\funding_regime_persistence_v2.py"
+$fundingRegimePersistenceV2EvaluatorCli = Join-Path $PSScriptRoot "src\funding_regime_persistence_v2_evaluator.py"
+$fundingRegimePersistenceV2OosCli = Join-Path $PSScriptRoot "src\funding_regime_persistence_v2_oos.py"
+
+function New-BasisCodeSnapshot {
+    $sourceDir = Join-Path $PSScriptRoot "src"
+    $raw = & $python $historicalBasisCodeSnapshotCli --source-dir $sourceDir --output-root $BasisCodeSnapshotRoot
+    if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) {
+        throw "Failed to create historical basis code snapshot."
+    }
+    $snapshot = ($raw | Out-String | ConvertFrom-Json)
+    if (-not $snapshot.code_snapshot_hash -or -not (Test-Path -LiteralPath $snapshot.manifest_path)) {
+        throw "Historical basis code snapshot is invalid."
+    }
+    Write-Host "CODE_SNAPSHOT hash=$($snapshot.code_snapshot_hash) files=$($snapshot.file_count) cache_hit=$($snapshot.cache_hit) path=$($snapshot.snapshot_path)"
+    return $snapshot
+}
+
+function Set-RunTimedOutIncomplete {
+    param([string]$TimedOutAction)
+
+    if ($ActiveRunGatePath) {
+        $resolvedGatePath = [System.IO.Path]::GetFullPath($ActiveRunGatePath)
+        $agentLogDir = Split-Path -Parent $resolvedGatePath
+        $paths = @($resolvedGatePath, (Join-Path $agentLogDir "current-run.json"))
+    } else {
+        $agentLogDir = Join-Path $ProjectRoot "docs\agent-log"
+        $paths = @(
+            (Join-Path $agentLogDir "active-run-gate.json"),
+            (Join-Path $agentLogDir "current-run.json")
+        )
+    }
+    $now = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ss.fffffffK")
+    foreach ($path in $paths) {
+        if (-not (Test-Path -LiteralPath $path)) { continue }
+        try {
+            $document = Get-Content -Raw -LiteralPath $path | ConvertFrom-Json
+            foreach ($entry in @(
+                @("status", "STOPPED_INCOMPLETE"),
+                @("updated_at", $now),
+                @("collector_pid", $null),
+                @("monitor_pid", $null),
+                @("process_ids", @()),
+                @("stop_reason", "MAX_RUNTIME_SEC_EXCEEDED"),
+                @("failure", "Action '$TimedOutAction' exceeded MaxRuntimeSec=$MaxRuntimeSec")
+            )) {
+                if ($document.PSObject.Properties.Name -contains $entry[0]) {
+                    $document.($entry[0]) = $entry[1]
+                } else {
+                    $document | Add-Member -NotePropertyName $entry[0] -NotePropertyValue $entry[1]
+                }
+            }
+            if ([string]$document.schema -eq "active_run_gate_v2") {
+                foreach ($entry in @(
+                    @("gate_status", "STOPPED_INCOMPLETE"),
+                    @("final", $false),
+                    @("replay_allowed", $false),
+                    @("grid_allowed", $false),
+                    @("backtest_allowed", $false),
+                    @("paper_forward_allowed", $false),
+                    @("next_goal_decision", "FAST_FIRST_MAX_RUNTIME_EXCEEDED")
+                )) {
+                    if ($document.PSObject.Properties.Name -contains $entry[0]) {
+                        $document.($entry[0]) = $entry[1]
+                    } else {
+                        $document | Add-Member -NotePropertyName $entry[0] -NotePropertyValue $entry[1]
+                    }
+                }
+            }
+            $temp = "$path.tmp.$PID"
+            $document | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $temp -Encoding utf8
+            Move-Item -LiteralPath $temp -Destination $path -Force
+        } catch {
+            Write-Warning "Could not mark timed-out run incomplete at ${path}: $($_.Exception.Message)"
+        }
+    }
+}
+
+function Invoke-TradingMvpCli {
+    param(
+        [object[]]$ArgsList,
+        [string]$ScriptPath = $cli
+    )
+
+    if ($MaxRuntimeSec -lt 1 -or $MaxRuntimeSec -gt 10800) {
+        throw "MaxRuntimeSec must be in [1, 10800]."
+    }
+    $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
+    $startInfo.FileName = $python
+    $startInfo.UseShellExecute = $false
+    $startInfo.RedirectStandardOutput = $false
+    $startInfo.RedirectStandardError = $false
+    $startInfo.WorkingDirectory = $ProjectRoot
+    $startInfo.ArgumentList.Add($ScriptPath)
+    foreach ($argument in $ArgsList) {
+        $startInfo.ArgumentList.Add([string]$argument)
+    }
+    $process = [System.Diagnostics.Process]::new()
+    $process.StartInfo = $startInfo
+    if (-not $process.Start()) {
+        throw "Failed to start Python process: $ScriptPath"
+    }
+    if (-not $process.WaitForExit($MaxRuntimeSec * 1000)) {
+        try { $process.Kill($true) } catch { }
+        try { $process.WaitForExit(5000) } catch { }
+        Set-RunTimedOutIncomplete -TimedOutAction $Action
+        throw "Process exceeded MaxRuntimeSec=$MaxRuntimeSec and was terminated: $ScriptPath"
+    }
+    if ($process.ExitCode -ne 0) {
+        exit $process.ExitCode
+    }
+}
+
+function Get-FastEdgeGateResult {
+    param(
+        [switch]$OfflineWork,
+        [string[]]$ReadResourcePath = @(),
+        [string[]]$WriteResourcePath = @()
+    )
+
+    $checker = Join-Path $ProjectRoot "tools\check_active_run_gate.ps1"
+    if (-not (Test-Path -LiteralPath $checker)) {
+        throw "Active run gate checker not found: $checker"
+    }
+    $checkerArgs = @{
+        Json = $true
+    }
+    if ($OfflineWork) {
+        $checkerArgs.OfflineWork = $true
+        $checkerArgs.ReadResourcePath = @($ReadResourcePath)
+        $checkerArgs.WriteResourcePath = @($WriteResourcePath)
+    }
+    if ($ActiveRunGatePath) {
+        if (-not (Test-Path -LiteralPath $ActiveRunGatePath)) {
+            throw "Active run gate override not found: $ActiveRunGatePath"
+        }
+        $checkerArgs.GatePath = $ActiveRunGatePath
+    }
+    return (& $checker @checkerArgs | ConvertFrom-Json)
+}
+
+function Assert-BasisActionGate {
+    param([switch]$OfflineWork)
+
+    $reads = @()
+    $writes = @()
+    if ($OfflineWork) {
+        $reads += @($InputPath, $PlanPath, $ManifestPath, $QualityReportPath, $FeasibilityPath, $EvaluationPath, $ClosurePath, $ProbePlanPath, $CoinRegistryPath, $SprintReportPath, $ObservationPath, $StatePath, $LedgerPath) |
+            Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) }
+        if ($ProbeManifestPaths) {
+            $reads += @($ProbeManifestPaths -split "," | Where-Object { $_.Trim() })
+        }
+        $writes += @($OutputPath, $ReportOutputPath, $QualityReportPath, $StatePath, $LedgerPath, $SamplesPath, $WindowManifestPath) |
+            Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) }
+    }
+    $gateResult = if ($OfflineWork) {
+        Get-FastEdgeGateResult -OfflineWork -ReadResourcePath $reads -WriteResourcePath $writes
+    } else {
+        Get-FastEdgeGateResult
+    }
+    if ([string]$gateResult.status -eq "STOPPED_INCOMPLETE") {
+        throw "Basis action blocked: active run is STOPPED_INCOMPLETE and must be resumed or rejected first."
+    }
+    if ([string]$gateResult.status -eq "RUNNING") {
+        if (-not $OfflineWork) {
+            throw "Basis market-data writer blocked by active run_id=$($gateResult.run_id)."
+        }
+        if ($null -eq $gateResult.scope_decision -or -not [bool]$gateResult.scope_decision.allowed) {
+            $decision = if ($gateResult.scope_decision) { [string]$gateResult.scope_decision.decision } else { "missing_scope_decision" }
+            throw "Basis offline action overlaps active run or has unknown scope: $decision"
+        }
+    }
+}
+
+function Assert-FastEdgeGateOpen {
+    $gateResult = Get-FastEdgeGateResult
+    $ownedFastEdgeV2Run = (
+        $Action -in @("fast-edge-v2-validate", "fast-edge-v2-evaluate") -and
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "FAST_FIRST_V2_EVALUATION_RUNNING"
+    )
+    $ownedFastEdgeV3Run = (
+        $Action -in @("fast-edge-v3-validate", "fast-edge-v3-evaluate") -and
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "FAST_FIRST_V3_EVALUATION_RUNNING"
+    )
+    $ownedFastEdgeV4Run = (
+        $Action -in @("fast-edge-v4-validate", "fast-edge-v4-evaluate") -and
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "FAST_FIRST_V4_EVALUATION_RUNNING"
+    )
+    $ownedFastEdgeV5Run = (
+        $Action -in @("fast-edge-v5-validate", "fast-edge-v5-evaluate") -and
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "FAST_FIRST_V5_EVALUATION_RUNNING"
+    )
+    $ownedFastEdgeV6Run = (
+        $Action -in @("fast-edge-v6-validate", "fast-edge-v6-evaluate") -and
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "FAST_FIRST_V6_EVALUATION_RUNNING"
+    )
+    $ownedPitTrainFeasibilityRun = (
+        $Action -in @("fast-edge-pit-input-plan", "fast-edge-pit-feasibility", "fast-edge-night-schedule-plan") -and
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "PIT_TRAIN_FEASIBILITY_RUNNING"
+    )
+    $ownedPitFutilityRun = (
+        $Action -in @("fast-edge-pit-futility-plan", "fast-edge-pit-futility-evaluate") -and
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "PIT_FUTILITY_RUNNING"
+    )
+    $ownedPitFullEvaluationRun = (
+        $Action -in @("fast-edge-pit-input-plan", "fast-edge-pit-evaluate", "fast-edge-pit-execution-probe-plan") -and
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "PIT_FULL_EVALUATION_RUNNING"
+    )
+    $ownedPitExecutionProbeRun = (
+        $Action -in @("fast-edge-pit-execution-probe-evaluate", "fast-edge-pit-paper-plan") -and
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "PIT_MEMBERSHIP_DRIFT_EXECUTION_PROBE_RUNNING"
+    )
+    if (
+        [string]$gateResult.status -eq "STOPPED_INCOMPLETE" -or
+        ([string]$gateResult.status -eq "RUNNING" -and -not $ownedFastEdgeV2Run -and -not $ownedFastEdgeV3Run -and -not $ownedFastEdgeV4Run -and -not $ownedFastEdgeV5Run -and -not $ownedFastEdgeV6Run -and -not $ownedPitTrainFeasibilityRun -and -not $ownedPitFutilityRun -and -not $ownedPitFullEvaluationRun -and -not $ownedPitExecutionProbeRun)
+    ) {
+        throw "Fast-edge action blocked by active run gate status=$($gateResult.status), run_id=$($gateResult.run_id)."
+    }
+}
+
+function Assert-FastEdgeV3EvaluationAuthorized {
+    $gateResult = Get-FastEdgeGateResult
+    $authorized = (
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "FAST_FIRST_V3_EVALUATION_RUNNING"
+    )
+    if (-not $authorized) {
+        throw "Fast-edge v3 evaluation requires an owned visible gate: status=$($gateResult.status), run_id=$($gateResult.run_id), decision=$($gateResult.next_goal_decision)."
+    }
+}
+
+
+function Assert-FastEdgeV5EvaluationAuthorized {
+    $gateResult = Get-FastEdgeGateResult
+    $authorized = (
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "FAST_FIRST_V5_EVALUATION_RUNNING"
+    )
+    if (-not $authorized) {
+        throw "Fast-edge v5 evaluation requires an owned visible gate: status=$($gateResult.status), run_id=$($gateResult.run_id), decision=$($gateResult.next_goal_decision)."
+    }
+}
+
+function Assert-FastEdgeV6EvaluationAuthorized {
+    $gateResult = Get-FastEdgeGateResult
+    $authorized = (
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "FAST_FIRST_V6_EVALUATION_RUNNING"
+    )
+    if (-not $authorized) {
+        throw "Fast-edge v6 evaluation requires an owned visible gate: status=$($gateResult.status), run_id=$($gateResult.run_id), decision=$($gateResult.next_goal_decision)."
+    }
+}
+function Assert-FastEdgeV4EvaluationAuthorized {
+    $gateResult = Get-FastEdgeGateResult
+    $authorized = (
+        $RunId -and
+        [string]$gateResult.run_id -eq $RunId -and
+        [string]$gateResult.status -eq "RUNNING" -and
+        [string]$gateResult.next_goal_decision -eq "FAST_FIRST_V4_EVALUATION_RUNNING"
+    )
+    if (-not $authorized) {
+        throw "Fast-edge v4 evaluation requires an owned visible gate: status=$($gateResult.status), run_id=$($gateResult.run_id), decision=$($gateResult.next_goal_decision)."
+    }
+}
 
 Push-Location $ProjectRoot
 try {
     switch ($Action) {
         "collect" {
-            & $python $cli --config $Config collect --seconds $Seconds
+            Invoke-TradingMvpCli -ArgsList @("--config", $Config, "collect", "--seconds", $Seconds)
             break
         }
         "backtest" {
-            & $python $cli --config $Config backtest
+            Invoke-TradingMvpCli -ArgsList @("--config", $Config, "backtest")
             break
         }
         "run" {
-            & $python $cli --config $Config run --mode $Mode --cycles $Cycles
+            Invoke-TradingMvpCli -ArgsList @("--config", $Config, "run", "--mode", $Mode, "--cycles", $Cycles)
             break
         }
         "universe" {
-            & $python $cli --config $Config universe
-            break
-        }
-        "fast-edge-basis-v2-paper-observer-fixture-plan" {
-            $required = @(
-                @{ Name = "PaperObserverPaperPlanPath"; Value = $PaperObserverPaperPlanPath },
-                @{ Name = "PaperObserverProbeReportPath"; Value = $PaperObserverProbeReportPath },
-                @{ Name = "PaperObserverRuntimeContractPath"; Value = $PaperObserverRuntimeContractPath },
-                @{ Name = "PaperObserverHealthContractPath"; Value = $PaperObserverHealthContractPath },
-                @{ Name = "PaperObserverFixturePath"; Value = $PaperObserverFixturePath },
-                @{ Name = "PaperObserverPlanPath"; Value = $PaperObserverPlanPath },
-                @{ Name = "PaperObserverAuditPath"; Value = $PaperObserverAuditPath },
-                @{ Name = "PaperObserverAcceptedPath"; Value = $PaperObserverAcceptedPath },
-                @{ Name = "PaperObserverManifestPath"; Value = $PaperObserverManifestPath },
-                @{ Name = "PaperObserverRunId"; Value = $PaperObserverRunId }
-            )
-            foreach ($item in $required) {
-                if ([string]::IsNullOrWhiteSpace([string]$item.Value)) {
-                    throw "$($item.Name) is required for $Action"
-                }
-            }
-            $argsList = @(
-                "plan",
-                "--paper-plan", $PaperObserverPaperPlanPath,
-                "--probe-report", $PaperObserverProbeReportPath,
-                "--runtime-contract", $PaperObserverRuntimeContractPath,
-                "--health-contract", $PaperObserverHealthContractPath,
-                "--fixture", $PaperObserverFixturePath,
-                "--output", $PaperObserverPlanPath,
-                "--audit", $PaperObserverAuditPath,
-                "--accepted", $PaperObserverAcceptedPath,
-                "--manifest", $PaperObserverManifestPath,
-                "--run-id", $PaperObserverRunId,
-                "--max-runtime-sec", $PaperObserverMaxRuntimeSec
-            )
-            & $python $paperObserverRuntime @argsList
-            if ($LASTEXITCODE -ne 0) {
-                throw "paper observer fixture plan failed with exit code $LASTEXITCODE"
-            }
-            break
-        }
-        "fast-edge-basis-v2-paper-observer-fixture-run" {
-            if ([string]::IsNullOrWhiteSpace($PaperObserverPlanPath)) {
-                throw "PaperObserverPlanPath is required for $Action"
-            }
-            if ([string]::IsNullOrWhiteSpace($PaperObserverExpectedPlanHash)) {
-                throw "PaperObserverExpectedPlanHash is required for $Action"
-            }
-            & $python $paperObserverRuntime run `
-                --plan $PaperObserverPlanPath `
-                --expected-plan-hash $PaperObserverExpectedPlanHash
-            if ($LASTEXITCODE -ne 0) {
-                throw "paper observer fixture run failed with exit code $LASTEXITCODE"
-            }
-            break
-        }
-        "fast-edge-basis-v2-paper-observer-fixture-sink" {
-            $required = @(
-                @{ Name = "PaperObserverPlanPath"; Value = $PaperObserverPlanPath },
-                @{ Name = "PaperObserverExpectedPlanHash"; Value = $PaperObserverExpectedPlanHash },
-                @{ Name = "PaperObserverLedgerPath"; Value = $PaperObserverLedgerPath },
-                @{ Name = "PaperObserverStatePath"; Value = $PaperObserverStatePath },
-                @{ Name = "PaperObserverManifestPath"; Value = $PaperObserverManifestPath }
-            )
-            foreach ($item in $required) {
-                if ([string]::IsNullOrWhiteSpace([string]$item.Value)) {
-                    throw "$($item.Name) is required for $Action"
-                }
-            }
-            $argsList = @(
-                "sink",
-                "--plan", $PaperObserverPlanPath,
-                "--expected-plan-hash", $PaperObserverExpectedPlanHash,
-                "--ledger", $PaperObserverLedgerPath,
-                "--state", $PaperObserverStatePath,
-                "--manifest", $PaperObserverManifestPath
-            )
-            & $python $paperObserverRuntime @argsList
-            if ($LASTEXITCODE -ne 0) {
-                throw "paper observer fixture sink failed with exit code $LASTEXITCODE"
-            }
+            Invoke-TradingMvpCli -ArgsList @("--config", $Config, "universe")
             break
         }
         "multi-run" {
@@ -348,7 +705,7 @@ try {
             } else {
                 $argsList += @("--cycles", $Cycles)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "ws-collect" {
@@ -357,7 +714,10 @@ try {
                 $duration = $Seconds
             }
             $argsList = @("--config", $Config, "ws-collect", "--exchanges", $Exchanges, "--max-pairs-per-exchange", $MaxPairsPerExchange, "--max-symbols", $MaxSymbols, "--duration-sec", $duration, "--update-interval", $UpdateInterval)
-            & $python $cli @argsList
+            if ($InputPath) {
+                $argsList += @("--universe", $InputPath)
+            }
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "ws-normalize" {
@@ -368,7 +728,69 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
+            break
+        }
+        "ws-data-quality" {
+            $argsList = @(
+                "--config", $Config,
+                "ws-data-quality",
+                "--min-rows", $WsQualityMinRows,
+                "--min-exchanges", $WsQualityMinExchanges,
+                "--min-markets", $WsQualityMinMarkets,
+                "--min-span-hours", $WsQualityMinSpanHours,
+                "--min-duration-ratio", $WsQualityMinDurationRatio,
+                "--max-parse-error-rate", $WsQualityMaxParseErrorRate,
+                "--required-event-kinds", $WsQualityRequiredEventKinds,
+                "--min-markets-with-required-kinds", $WsQualityMinMarketsWithRequiredKinds,
+                "--max-market-event-share", $WsQualityMaxMarketEventShare,
+                "--max-gap-sec", $WsQualityMaxGapSec,
+                "--max-manifest-error-count", $WsQualityMaxManifestErrorCount
+            )
+            if ($InputPath) {
+                $argsList += @("--input", $InputPath)
+            }
+            if ($ManifestPath) {
+                $argsList += @("--manifest", $ManifestPath)
+            }
+            if ($OutputPath) {
+                $argsList += @("--output", $OutputPath)
+            }
+            Invoke-TradingMvpCli -ArgsList $argsList
+            break
+        }
+        "ws-postprocess" {
+            $argsList = @(
+                "--config", $Config,
+                "ws-postprocess",
+                "--min-rows", $WsQualityMinRows,
+                "--min-exchanges", $WsQualityMinExchanges,
+                "--min-markets", $WsQualityMinMarkets,
+                "--min-span-hours", $WsQualityMinSpanHours,
+                "--min-duration-ratio", $WsQualityMinDurationRatio,
+                "--max-parse-error-rate", $WsQualityMaxParseErrorRate,
+                "--required-event-kinds", $WsQualityRequiredEventKinds,
+                "--min-markets-with-required-kinds", $WsQualityMinMarketsWithRequiredKinds,
+                "--max-market-event-share", $WsQualityMaxMarketEventShare,
+                "--max-gap-sec", $WsQualityMaxGapSec,
+                "--max-manifest-error-count", $WsQualityMaxManifestErrorCount
+            )
+            if ($InputPath) {
+                $argsList += @("--input", $InputPath)
+            }
+            if ($ManifestPath) {
+                $argsList += @("--manifest", $ManifestPath)
+            }
+            if ($OutputPath) {
+                $argsList += @("--normalized-output", $OutputPath)
+            }
+            if ($ReportOutputPath) {
+                $argsList += @("--quality-output", $ReportOutputPath)
+            }
+            if ($PostprocessReportPath) {
+                $argsList += @("--output", $PostprocessReportPath)
+            }
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "perp-collect" {
@@ -393,7 +815,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "perp-report" {
@@ -404,7 +826,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "event-quality-report" {
@@ -427,7 +849,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "event-slice-optimizer" {
@@ -454,7 +876,70 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
+            break
+        }
+        "event-validation-report" {
+            $argsList = @(
+                "--config", $Config,
+                "event-validation-report",
+                "--train-fraction", $ValidationTrainFraction,
+                "--walk-forward-windows", $ValidationWalkForwardWindows,
+                "--walk-forward-min-pass-ratio", $ValidationWalkForwardMinPassRatio,
+                "--min-events", $SliceMinEvents,
+                "--min-reclaimed", $SliceMinReclaimed,
+                "--min-target-before-stop-rate", $SliceMinTargetBeforeStopRate,
+                "--min-target-rate-all", $SliceMinTargetRateAll,
+                "--max-false-sweep-rate", $ValidationMaxFalseSweepRate,
+                "--max-avg-adverse-bps", $SliceMaxAvgAdverseBps,
+                "--min-favorable-to-adverse", $ValidationMinFavorableToAdverse,
+                "--min-sweep-intensity-bps", $SliceMinSweepIntensityBps,
+                "--max-time-to-reclaim-sec", $SliceMaxTimeToReclaimSec,
+                "--max-pre-spread-bps", $SliceMaxPreSpreadBps,
+                "--max-abs-basis-bps", $SliceMaxAbsBasisBps,
+                "--min-trade-notional-quote", $SliceMinTradeNotionalQuote,
+                "--stress-favorable-haircut-bps", $ValidationStressFavorableHaircutBps,
+                "--stress-adverse-widen-bps", $ValidationStressAdverseWidenBps,
+                "--stress-target-bps", $ValidationStressTargetBps,
+                "--stress-stop-bps", $ValidationStressStopBps,
+                "--top-n", $TopN
+            )
+            if ($InputPath) {
+                $argsList += @("--input", $InputPath)
+            }
+            if ($OutputPath) {
+                $argsList += @("--output", $OutputPath)
+            }
+            Invoke-TradingMvpCli -ArgsList $argsList
+            break
+        }
+        "cross-venue-dislocation" {
+            if (-not $InputPath) {
+                throw "cross-venue-dislocation requires -InputPath pointing to a clean normalized WS JSONL file."
+            }
+            $argsList = @(
+                "--config", $Config,
+                "cross-venue-dislocation",
+                "--input", $InputPath,
+                "--quote", $Quote,
+                "--stale-quote-sec", $CrossVenueStaleQuoteSec,
+                "--min-top-notional-quote", $CrossVenueMinTopNotionalQuote,
+                "--round-trip-fee-bps", $CrossVenueRoundTripFeeBps,
+                "--slippage-bps", $CrossVenueSlippageBps,
+                "--inventory-rebalance-buffer-bps", $CrossVenueInventoryRebalanceBufferBps,
+                "--min-net-edge-bps", $CrossVenueMinNetEdgeBps,
+                "--cooldown-sec", $CrossVenueCooldownSec,
+                "--max-rows", $CrossVenueMaxRows,
+                "--max-events", $CrossVenueMaxEvents,
+                "--progress-every-rows", $CrossVenueProgressEveryRows
+            )
+            if ($OutputPath) {
+                $argsList += @("--output", $OutputPath)
+            }
+            if ($CrossVenueIncludeBases) {
+                $argsList += @("--include-bases", $CrossVenueIncludeBases)
+            }
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "perp-postprocess" {
@@ -474,7 +959,7 @@ try {
             if ($AllowPartial) {
                 $argsList += @("--allow-partial")
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "ws-replay" {
@@ -487,6 +972,7 @@ try {
                 "--taker-fee-bps", $TakerFeeBps,
                 "--maker-fee-bps", $MakerFeeBps,
                 "--slippage-bps", $SlippageBps,
+                "--max-quote-age-sec", $MaxQuoteAgeSec,
                 "--latency-ms", $LatencyMs,
                 "--flow-window-sec", $FlowWindowSec,
                 "--max-open-positions", $MaxOpenPositions,
@@ -512,6 +998,9 @@ try {
             if ($InputPath) {
                 $argsList += @("--input", $InputPath)
             }
+            if ($VenueCostsJson) {
+                $argsList += @("--venue-costs-json", $VenueCostsJson)
+            }
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
@@ -521,7 +1010,7 @@ try {
             if ($QualityFilter) {
                 $argsList += @("--quality-filter")
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "ws-grid-search" {
@@ -533,6 +1022,7 @@ try {
                 "--taker-fee-bps", $TakerFeeBps,
                 "--maker-fee-bps", $MakerFeeBps,
                 "--slippage-bps", $SlippageBps,
+                "--max-quote-age-sec", $MaxQuoteAgeSec,
                 "--latency-ms", $LatencyMs,
                 "--flow-window-sec", $FlowWindowSec,
                 "--max-open-positions", $MaxOpenPositions,
@@ -567,10 +1057,14 @@ try {
                 "--min-net-pnl-quote", $MinNetPnlQuote,
                 "--min-profit-factor", $MinProfitFactor,
                 "--max-drawdown-quote", $MaxDrawdownQuote,
-                "--top-n", $TopN
+                "--top-n", $TopN,
+                "--max-grid-combinations", $MaxGridCombinations
             )
             if ($InputPath) {
                 $argsList += @("--input", $InputPath)
+            }
+            if ($VenueCostsJson) {
+                $argsList += @("--venue-costs-json", $VenueCostsJson)
             }
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
@@ -581,7 +1075,7 @@ try {
             if ($QualityFilter) {
                 $argsList += @("--quality-filter")
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "perp-replay" {
@@ -594,6 +1088,7 @@ try {
                 "--taker-fee-bps", $TakerFeeBps,
                 "--maker-fee-bps", $MakerFeeBps,
                 "--slippage-bps", $SlippageBps,
+                "--max-quote-age-sec", $MaxQuoteAgeSec,
                 "--latency-ms", $LatencyMs,
                 "--flow-window-sec", $FlowWindowSec,
                 "--max-open-positions", $MaxOpenPositions,
@@ -619,13 +1114,16 @@ try {
             if ($InputPath) {
                 $argsList += @("--input", $InputPath)
             }
+            if ($VenueCostsJson) {
+                $argsList += @("--venue-costs-json", $VenueCostsJson)
+            }
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
             if ($QualityFilter) {
                 $argsList += @("--quality-filter")
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "perp-grid-search" {
@@ -637,6 +1135,7 @@ try {
                 "--taker-fee-bps", $TakerFeeBps,
                 "--maker-fee-bps", $MakerFeeBps,
                 "--slippage-bps", $SlippageBps,
+                "--max-quote-age-sec", $MaxQuoteAgeSec,
                 "--latency-ms", $LatencyMs,
                 "--flow-window-sec", $FlowWindowSec,
                 "--max-open-positions", $MaxOpenPositions,
@@ -671,10 +1170,14 @@ try {
                 "--min-net-pnl-quote", $MinNetPnlQuote,
                 "--min-profit-factor", $MinProfitFactor,
                 "--max-drawdown-quote", $MaxDrawdownQuote,
-                "--top-n", $TopN
+                "--top-n", $TopN,
+                "--max-grid-combinations", $MaxGridCombinations
             )
             if ($InputPath) {
                 $argsList += @("--input", $InputPath)
+            }
+            if ($VenueCostsJson) {
+                $argsList += @("--venue-costs-json", $VenueCostsJson)
             }
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
@@ -682,7 +1185,7 @@ try {
             if ($QualityFilter) {
                 $argsList += @("--quality-filter")
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-scan" {
@@ -714,7 +1217,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-collect" {
@@ -751,7 +1254,7 @@ try {
             if ($FundingResume) {
                 $argsList += @("--resume")
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-status" {
@@ -779,7 +1282,7 @@ try {
             if ($ManifestPath) {
                 $argsList += @("--manifest", $ManifestPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-collect-diagnostics" {
@@ -803,7 +1306,7 @@ try {
             if ($FundingQualityRequiredRowFields) {
                 $argsList += @("--required-row-fields", $FundingQualityRequiredRowFields)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-wait-ready" {
@@ -836,7 +1339,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-coverage" {
@@ -856,7 +1359,7 @@ try {
             if ($MatchedUniverseOutputPath) {
                 $argsList += @("--matched-universe-output", $MatchedUniverseOutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-rank" {
@@ -894,7 +1397,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-gate-report" {
@@ -935,7 +1438,7 @@ try {
             if ($QualityUniverseOutputPath) {
                 $argsList += @("--quality-universe-output", $QualityUniverseOutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-regime-report" {
@@ -973,7 +1476,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-frontier-report" {
@@ -1011,7 +1514,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-decision-report" {
@@ -1059,7 +1562,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-progress-report" {
@@ -1100,7 +1603,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-backtest" {
@@ -1132,13 +1635,16 @@ try {
                 "--max-avg-spot-spread-bps", $FundingMaxAvgSpotSpreadBps,
                 "--max-avg-perp-spread-bps", $FundingMaxAvgPerpSpreadBps
             )
+            if ($VenueCostsJson) {
+                $argsList += @("--venue-costs-json", $VenueCostsJson)
+            }
             if ($InputPath) {
                 $argsList += @("--input", $InputPath)
             }
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-sensitivity" {
@@ -1220,7 +1726,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-oos-backtest" {
@@ -1283,7 +1789,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-walk-forward" {
@@ -1352,7 +1858,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-postprocess" {
@@ -1456,7 +1962,7 @@ try {
             if ($AllowPartial) {
                 $argsList += @("--allow-partial")
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-finalize" {
@@ -1566,7 +2072,7 @@ try {
             if ($PaperOutputPath) {
                 $argsList += @("--paper-output", $PaperOutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-final-review" {
@@ -1709,7 +2215,7 @@ try {
                     "--wait-stale-after-sec", $FundingStatusStaleAfterSec
                 )
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-paper-plan" {
@@ -1734,7 +2240,7 @@ try {
             if ($PaperOutputPath) {
                 $argsList += @("--paper-output", $PaperOutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-paper-forward" {
@@ -1760,7 +2266,7 @@ try {
             if ($FundingAllowSourceInput) {
                 $argsList += @("--allow-source-input")
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-paper-decision-report" {
@@ -1779,7 +2285,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "funding-goal-audit" {
@@ -1822,7 +2328,2033 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
+            break
+        }
+        "resolve-active-run" {
+            if (-not $RunId) { throw "RunId is required for resolve-active-run" }
+            $resolver = Join-Path $ProjectRoot "tools\resolve_active_run.ps1"
+            if (-not (Test-Path -LiteralPath $resolver)) {
+                throw "Active run resolver not found: $resolver"
+            }
+            & $resolver -RunId $RunId -RejectIncomplete -Reason $Reason
+            if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+            break
+        }
+        "fast-edge-membership-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $InputPath) { throw "InputPath is required for fast-edge-membership-plan (daily manifest JSON)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-plan" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-membership-plan" }
+            $membershipScript = Join-Path $PSScriptRoot "src\gate_historical_membership_v1.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipScript -ArgsList @(
+                "plan",
+                "--daily-manifest", $InputPath,
+                "--output", $OutputPath,
+                "--run-id", $RunId,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-probe" {
+            Assert-BasisActionGate
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-probe" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-probe" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-probe" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-membership-probe" }
+            $membershipScript = Join-Path $PSScriptRoot "src\gate_historical_membership_v1.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipScript -ArgsList @(
+                "probe",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-v2-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $InputPath) { throw "InputPath is required for fast-edge-membership-v2-plan (daily manifest JSON)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-v2-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-v2-plan" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-membership-v2-plan" }
+            $membershipV2Script = Join-Path $PSScriptRoot "src\gate_historical_membership_v2.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipV2Script -ArgsList @(
+                "plan",
+                "--daily-manifest", $InputPath,
+                "--output", $OutputPath,
+                "--run-id", $RunId,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-v2-probe" {
+            Assert-BasisActionGate
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-v2-probe" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-v2-probe" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-v2-probe" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-membership-v2-probe" }
+            $membershipV2Script = Join-Path $PSScriptRoot "src\gate_historical_membership_v2.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipV2Script -ArgsList @(
+                "probe",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-v3-source-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $ClosurePath) { throw "ClosurePath is required for fast-edge-membership-v3-source-plan (membership-v2 closure manifest JSON)" }
+            if (-not $InputPath) { throw "InputPath is required for fast-edge-membership-v3-source-plan (daily manifest JSON)" }
+            if (-not $CoinRegistryPath) { throw "CoinRegistryPath is required for fast-edge-membership-v3-source-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-v3-source-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-v3-source-plan" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-membership-v3-source-plan" }
+            $membershipV3Script = Join-Path $PSScriptRoot "src\gate_historical_membership_v3.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipV3Script -ArgsList @(
+                "plan",
+                "--closure-manifest", $ClosurePath,
+                "--daily-manifest", $InputPath,
+                "--coin-registry", $CoinRegistryPath,
+                "--output", $OutputPath,
+                "--run-id", $RunId,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-v3-source-probe" {
+            Assert-BasisActionGate
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-v3-source-probe" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-v3-source-probe" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-v3-source-probe" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-v3-source-probe" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-membership-v3-source-probe" }
+            $membershipV3VisibleWrapper = Join-Path $ProjectRoot "tools\start_gate_historical_membership_v3_probe_visible.ps1"
+            if (-not (Test-Path -LiteralPath $membershipV3VisibleWrapper -PathType Leaf)) {
+                throw "Visible membership-v3 wrapper not found: $membershipV3VisibleWrapper"
+            }
+            $visibleCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$membershipV3VisibleWrapper`" -PlanPath `"$PlanPath`" -ExpectedPlanHash `"$ExpectedPlanHash`" -OutputPath `"$OutputPath`" -RunId `"$RunId`" -MaxRuntimeSec $MaxRuntimeSec -ConfirmedPublicProbe"
+            throw "Direct membership-v3 network execution is disabled. Launch the approved probe through the visible owned wrapper: $visibleCommand"
+        }
+        "fast-edge-membership-history-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-history-plan (accepted probe report JSON)" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-history-plan" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-history-plan" }
+            if (-not $InputPath) { throw "InputPath is required for fast-edge-membership-history-plan (daily manifest JSON)" }
+            if (-not $CoinRegistryPath) { throw "CoinRegistryPath is required for fast-edge-membership-history-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-history-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-history-plan" }
+            if ($MaxRuntimeSec -gt 7200) { throw "MaxRuntimeSec must be <= 7200 for fast-edge-membership-history-plan" }
+            $historyPlanScript = Join-Path $PSScriptRoot "src\gate_historical_membership_history_plan.py"
+            Invoke-TradingMvpCli -ScriptPath $historyPlanScript -ArgsList @(
+                "--probe-report", $PlanPath,
+                "--expected-probe-plan-hash", $ExpectedPlanHash,
+                "--expected-probe-artifact-hash", $ExpectedArtifactHash,
+                "--daily-manifest", $InputPath,
+                "--coin-registry", $CoinRegistryPath,
+                "--output", $OutputPath,
+                "--run-id", $RunId,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-history-collect" {
+            Assert-BasisActionGate
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-history-collect" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-history-collect" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-history-collect (archive root)" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-membership-history-collect" }
+            if ($MaxRuntimeSec -gt 7200) { throw "MaxRuntimeSec must be <= 7200 for fast-edge-membership-history-collect" }
+            $historyCollectorScript = Join-Path $PSScriptRoot "src\gate_historical_membership_history_collector.py"
+            Invoke-TradingMvpCli -ScriptPath $historyCollectorScript -ArgsList @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output-root", $OutputPath,
+                "--manifest", $ManifestPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-history-quality" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-history-quality" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-history-quality" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-membership-history-quality (collector manifest)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-history-quality (collector artifact hash)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-history-quality (normalized root)" }
+            if (-not $QualityReportPath) { throw "QualityReportPath is required for fast-edge-membership-history-quality" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-history-quality" }
+            $historyQualityScript = Join-Path $PSScriptRoot "src\gate_historical_membership_history_quality.py"
+            Invoke-TradingMvpCli -ScriptPath $historyQualityScript -ArgsList @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--collect-manifest", $ManifestPath,
+                "--expected-collect-artifact-hash", $ExpectedArtifactHash,
+                "--output-root", $OutputPath,
+                "--report", $QualityReportPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-v3-history-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-v3-history-plan (accepted source probe report JSON)" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-v3-history-plan" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-v3-history-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-v3-history-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-v3-history-plan" }
+            if ($MaxRuntimeSec -gt 7200) { throw "MaxRuntimeSec must be <= 7200 for fast-edge-membership-v3-history-plan" }
+            $membershipV3HistoryPlan = Join-Path $PSScriptRoot "src\gate_historical_membership_v3_history_plan.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipV3HistoryPlan -ArgsList @(
+                "--source-probe-report", $PlanPath,
+                "--expected-source-plan-hash", $ExpectedPlanHash,
+                "--expected-source-artifact-hash", $ExpectedArtifactHash,
+                "--output", $OutputPath,
+                "--run-id", $RunId,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-v3-history-collect" {
+            Assert-BasisActionGate
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-v3-history-collect" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-v3-history-collect" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-v3-history-collect (archive root)" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-membership-v3-history-collect" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-v3-history-collect" }
+            if ($MaxRuntimeSec -gt 7200) { throw "MaxRuntimeSec must be <= 7200 for fast-edge-membership-v3-history-collect" }
+            $membershipV3HistoryVisibleWrapper = Join-Path $ProjectRoot "tools\start_gate_historical_membership_v3_history_collect_visible.ps1"
+            if (-not (Test-Path -LiteralPath $membershipV3HistoryVisibleWrapper -PathType Leaf)) {
+                throw "Visible membership-v3 history wrapper not found: $membershipV3HistoryVisibleWrapper"
+            }
+            $visibleCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$membershipV3HistoryVisibleWrapper`" -PlanPath `"$PlanPath`" -ExpectedPlanHash `"$ExpectedPlanHash`" -OutputRoot `"$OutputPath`" -ManifestPath `"$ManifestPath`" -RunId `"$RunId`" -MaxRuntimeSec $MaxRuntimeSec -ConfirmedPublicHistoryCollect"
+            throw "Direct membership-v3 history network execution is disabled. Launch the approved collect through the visible owned wrapper: $visibleCommand"
+        }
+        "fast-edge-membership-v3-history-quality-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-v3-history-quality-plan (history PlanOnly)" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-v3-history-quality-plan (history plan hash)" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-membership-v3-history-quality-plan (collector manifest)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-v3-history-quality-plan (collector artifact hash)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-v3-history-quality-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-v3-history-quality-plan" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-v3-history-quality-plan" }
+            $membershipV3HistoryQuality = Join-Path $PSScriptRoot "src\gate_historical_membership_v3_history_quality.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipV3HistoryQuality -ArgsList @(
+                "plan",
+                "--history-plan", $PlanPath,
+                "--expected-history-plan-hash", $ExpectedPlanHash,
+                "--collect-manifest", $ManifestPath,
+                "--expected-collect-artifact-hash", $ExpectedArtifactHash,
+                "--output", $OutputPath,
+                "--run-id", $RunId,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-v3-history-quality" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-v3-history-quality (quality PlanOnly)" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-v3-history-quality" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-v3-history-quality (normalized root)" }
+            if (-not $QualityReportPath) { throw "QualityReportPath is required for fast-edge-membership-v3-history-quality" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-v3-history-quality" }
+            $membershipV3HistoryQuality = Join-Path $PSScriptRoot "src\gate_historical_membership_v3_history_quality.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipV3HistoryQuality -ArgsList @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output-root", $OutputPath,
+                "--report", $QualityReportPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-momentum-train-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-train-plan (accepted quality report)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-train-plan (quality artifact hash)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-train-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-momentum-train-plan" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-train-plan" }
+            $membershipMomentumScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_train.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipMomentumScript -ArgsList @(
+                "plan",
+                "--quality-report", $PlanPath,
+                "--expected-quality-hash", $ExpectedArtifactHash,
+                "--output", $OutputPath,
+                "--run-id", $RunId,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-momentum-train" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-train" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-train" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-train" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-train" }
+            $membershipMomentumScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_train.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipMomentumScript -ArgsList @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-train-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-train-plan (accepted v3 quality report)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-train-plan (quality artifact hash)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-train-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-momentum-v2-train-plan" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-train-plan" }
+            $membershipMomentumV2Script = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_train.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipMomentumV2Script -ArgsList @(
+                "plan",
+                "--quality-report", $PlanPath,
+                "--expected-quality-hash", $ExpectedArtifactHash,
+                "--output", $OutputPath,
+                "--run-id", $RunId,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-train" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-train" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-train" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-train" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-train" }
+            $membershipMomentumV2Script = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_train.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipMomentumV2Script -ArgsList @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-oos-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-oos-plan (accepted v3 quality report)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-oos-plan (quality artifact hash)" }
+            if (-not $TrainPlanPath) { throw "TrainPlanPath is required for fast-edge-membership-momentum-v2-oos-plan" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-oos-plan (train plan hash)" }
+            if (-not $FeasibilityPath) { throw "FeasibilityPath is required for fast-edge-membership-momentum-v2-oos-plan (feasible train result)" }
+            if (-not $ExpectedFeasibilityResultHash) { throw "ExpectedFeasibilityResultHash is required for fast-edge-membership-momentum-v2-oos-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-oos-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-momentum-v2-oos-plan" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-oos-plan" }
+            $membershipMomentumV2OosScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_oos.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipMomentumV2OosScript -ArgsList @(
+                "plan",
+                "--quality-report", $PlanPath,
+                "--expected-quality-hash", $ExpectedArtifactHash,
+                "--train-plan", $TrainPlanPath,
+                "--expected-train-plan-hash", $ExpectedPlanHash,
+                "--train-result", $FeasibilityPath,
+                "--expected-train-result-hash", $ExpectedFeasibilityResultHash,
+                "--output", $OutputPath,
+                "--run-id", $RunId,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-oos" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-oos" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-oos" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-oos" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-oos" }
+            $membershipMomentumV2OosScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_oos.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipMomentumV2OosScript -ArgsList @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-execution-probe-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-execution-probe-plan (accepted OOS plan)" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-execution-probe-plan (OOS plan hash)" }
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-membership-momentum-v2-execution-probe-plan (accepted OOS result)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-execution-probe-plan (OOS result hash)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-execution-probe-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-momentum-v2-execution-probe-plan" }
+            if ($NotBeforeDay -le 0) { throw "NotBeforeDay must be a positive UTC epoch day for fast-edge-membership-momentum-v2-execution-probe-plan" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-execution-probe-plan" }
+            $membershipMomentumV2ProbeScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_execution_probe.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipMomentumV2ProbeScript -ArgsList @(
+                "plan",
+                "--oos-plan", $PlanPath,
+                "--expected-oos-plan-hash", $ExpectedPlanHash,
+                "--oos-result", $EvaluationPath,
+                "--expected-oos-result-hash", $ExpectedArtifactHash,
+                "--output", $OutputPath,
+                "--run-id", $RunId,
+                "--not-before-day", $NotBeforeDay
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-execution-probe-validate" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-execution-probe-validate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-execution-probe-validate" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-execution-probe-validate" }
+            $membershipMomentumV2ProbeScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_execution_probe.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipMomentumV2ProbeScript -ArgsList @(
+                "validate",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-market-snapshot-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-market-snapshot-plan (execution-probe PlanOnly)" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-market-snapshot-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-market-snapshot-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-momentum-v2-market-snapshot-plan" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-membership-momentum-v2-market-snapshot-plan" }
+            $marketSnapshotScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_market_snapshot.py"
+            Invoke-TradingMvpCli -ScriptPath $marketSnapshotScript -ArgsList @(
+                "plan",
+                "--probe-plan", $PlanPath,
+                "--expected-probe-plan-hash", $ExpectedPlanHash,
+                "--output", $OutputPath,
+                "--run-id", $RunId,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-market-snapshot-collect" {
+            Assert-BasisActionGate
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-market-snapshot-collect" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-market-snapshot-collect" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-market-snapshot-collect" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-momentum-v2-market-snapshot-collect" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-membership-momentum-v2-market-snapshot-collect" }
+            $marketSnapshotWrapper = Join-Path $ProjectRoot "tools\start_gate_membership_momentum_v2_market_snapshot_visible.ps1"
+            if (-not (Test-Path -LiteralPath $marketSnapshotWrapper -PathType Leaf)) {
+                throw "Visible momentum-v2 market snapshot wrapper not found: $marketSnapshotWrapper"
+            }
+            $visibleCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$marketSnapshotWrapper`" -PlanPath `"$PlanPath`" -ExpectedPlanHash $ExpectedPlanHash -OutputPath `"$OutputPath`" -RunId $RunId -MaxRuntimeSec $MaxRuntimeSec -ConfirmedPublicMarketSnapshotCollect"
+            throw "Direct market-snapshot network execution is disabled. Launch the exact-approved collect through the visible wrapper: $visibleCommand"
+        }
+        "fast-edge-membership-momentum-v2-execution-selection" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-execution-selection (probe PlanOnly)" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-execution-selection (probe plan hash)" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-membership-momentum-v2-execution-selection (daily market snapshot)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-execution-selection (snapshot hash)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-execution-selection" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-execution-selection" }
+            $membershipMomentumV2SelectionScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_execution_selection.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipMomentumV2SelectionScript -ArgsList @(
+                "select",
+                "--probe-plan", $PlanPath,
+                "--expected-probe-plan-hash", $ExpectedPlanHash,
+                "--market-snapshot-manifest", $ManifestPath,
+                "--expected-market-snapshot-hash", $ExpectedArtifactHash,
+                "--output", $OutputPath
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-execution-selection-validate" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-execution-selection-validate (selection artifact)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-execution-selection-validate" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-execution-selection-validate" }
+            $membershipMomentumV2SelectionScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_execution_selection.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipMomentumV2SelectionScript -ArgsList @(
+                "validate",
+                "--selection", $PlanPath,
+                "--expected-artifact-hash", $ExpectedArtifactHash
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-execution-probe-window-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-execution-probe-window-plan (probe PlanOnly)" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-execution-probe-window-plan (probe plan hash)" }
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-membership-momentum-v2-execution-probe-window-plan (causal selection)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-execution-probe-window-plan (selection hash)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-execution-probe-window-plan" }
+            if (-not $SamplesPath) { throw "SamplesPath is required for fast-edge-membership-momentum-v2-execution-probe-window-plan" }
+            if (-not $WindowManifestPath) { throw "WindowManifestPath is required for fast-edge-membership-momentum-v2-execution-probe-window-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-momentum-v2-execution-probe-window-plan" }
+            if ($MaxRuntimeSec -lt 1200 -or $MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be in [1200, 1800] for fast-edge-membership-momentum-v2-execution-probe-window-plan" }
+            $runtimeScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_execution_probe_runtime.py"
+            Invoke-TradingMvpCli -ScriptPath $runtimeScript -ArgsList @(
+                "plan-window",
+                "--probe-plan", $PlanPath,
+                "--expected-probe-plan-hash", $ExpectedPlanHash,
+                "--selection", $EvaluationPath,
+                "--expected-selection-hash", $ExpectedArtifactHash,
+                "--output", $OutputPath,
+                "--samples", $SamplesPath,
+                "--manifest", $WindowManifestPath,
+                "--run-id", $RunId,
+                "--window-index", $WindowIndex,
+                "--max-runtime-sec", $MaxRuntimeSec,
+                "--workers", $ProbeWorkers
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-execution-probe-collect" {
+            Assert-BasisActionGate
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-execution-probe-collect (window PlanOnly)" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-execution-probe-collect (window plan hash)" }
+            if ($MaxRuntimeSec -lt 1200 -or $MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be in [1200, 1800] for fast-edge-membership-momentum-v2-execution-probe-collect" }
+            $visibleWrapper = Join-Path $ProjectRoot "tools\start_gate_membership_momentum_v2_execution_probe_visible.ps1"
+            if (-not (Test-Path -LiteralPath $visibleWrapper -PathType Leaf)) {
+                throw "Visible momentum-v2 execution-probe wrapper not found: $visibleWrapper"
+            }
+            $visibleCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$visibleWrapper`" -WindowPlanPath `"$PlanPath`" -ExpectedPlanHash $ExpectedPlanHash -MaxRuntimeSec $MaxRuntimeSec -ConfirmedPublicExecutionProbe"
+            throw "Direct execution-probe network execution is disabled. Launch the exact-approved window through the visible wrapper: $visibleCommand"
+        }
+        "fast-edge-membership-momentum-v2-execution-probe-evaluate" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-execution-probe-evaluate (probe PlanOnly)" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-execution-probe-evaluate (probe plan hash)" }
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-membership-momentum-v2-execution-probe-evaluate (causal selection)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-execution-probe-evaluate (selection hash)" }
+            if (-not $ProbeManifestPaths) { throw "ProbeManifestPaths is required for fast-edge-membership-momentum-v2-execution-probe-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-execution-probe-evaluate" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-execution-probe-evaluate" }
+            $runtimeScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_execution_probe_runtime.py"
+            Invoke-TradingMvpCli -ScriptPath $runtimeScript -ArgsList @(
+                "evaluate",
+                "--probe-plan", $PlanPath,
+                "--expected-probe-plan-hash", $ExpectedPlanHash,
+                "--selection", $EvaluationPath,
+                "--expected-selection-hash", $ExpectedArtifactHash,
+                "--manifests", $ProbeManifestPaths,
+                "--output", $OutputPath
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-membership-momentum-v2-paper-plan (PAPER_FORWARD_READY execution report)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-paper-plan (execution report result hash)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-paper-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-momentum-v2-paper-plan" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-paper-plan" }
+            $paperPlanScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_paper_plan.py"
+            Invoke-TradingMvpCli -ScriptPath $paperPlanScript -ArgsList @(
+                "plan",
+                "--execution-report", $EvaluationPath,
+                "--expected-execution-report-hash", $ExpectedArtifactHash,
+                "--output", $OutputPath,
+                "--run-id", $RunId
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-validate" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-paper-validate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-paper-validate" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-paper-validate" }
+            $paperPlanScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_paper_plan.py"
+            Invoke-TradingMvpCli -ScriptPath $paperPlanScript -ArgsList @(
+                "validate",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-approve" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-paper-approve" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-paper-approve" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-paper-approve" }
+            if (-not $ConfirmedPaperForward) { throw "ConfirmedPaperForward is required for fast-edge-membership-momentum-v2-paper-approve" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-paper-approve" }
+            $paperStateScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_paper_state.py"
+            Invoke-TradingMvpCli -ScriptPath $paperStateScript -ArgsList @(
+                "approve",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output", $OutputPath,
+                "--confirmed-paper-forward"
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-init" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-paper-init" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-paper-init" }
+            if (-not $PaperApprovalPath) { throw "PaperApprovalPath is required for fast-edge-membership-momentum-v2-paper-init" }
+            if (-not $LedgerPath) { throw "LedgerPath is required for fast-edge-membership-momentum-v2-paper-init" }
+            if (-not $StatePath) { throw "StatePath is required for fast-edge-membership-momentum-v2-paper-init" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-paper-init" }
+            $paperStateScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_paper_state.py"
+            Invoke-TradingMvpCli -ScriptPath $paperStateScript -ArgsList @(
+                "init",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--approval", $PaperApprovalPath,
+                "--ledger", $LedgerPath,
+                "--state", $StatePath
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-execution-window-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-paper-execution-window-plan (paper PlanOnly)" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-paper-execution-window-plan" }
+            if (-not $PaperApprovalPath) { throw "PaperApprovalPath is required for fast-edge-membership-momentum-v2-paper-execution-window-plan" }
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-membership-momentum-v2-paper-execution-window-plan (causal selection)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-paper-execution-window-plan (selection hash)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-paper-execution-window-plan" }
+            if (-not $SamplesPath) { throw "SamplesPath is required for fast-edge-membership-momentum-v2-paper-execution-window-plan" }
+            if (-not $WindowManifestPath) { throw "WindowManifestPath is required for fast-edge-membership-momentum-v2-paper-execution-window-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-momentum-v2-paper-execution-window-plan" }
+            if ($MaxRuntimeSec -lt 1200 -or $MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be in [1200, 1800] for fast-edge-membership-momentum-v2-paper-execution-window-plan" }
+            $runtimeScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_execution_probe_runtime.py"
+            Invoke-TradingMvpCli -ScriptPath $runtimeScript -ArgsList @(
+                "plan-paper-window",
+                "--paper-plan", $PlanPath,
+                "--expected-paper-plan-hash", $ExpectedPlanHash,
+                "--approval", $PaperApprovalPath,
+                "--selection", $EvaluationPath,
+                "--expected-selection-hash", $ExpectedArtifactHash,
+                "--boundary", $PaperBoundary,
+                "--output", $OutputPath,
+                "--samples", $SamplesPath,
+                "--manifest", $WindowManifestPath,
+                "--run-id", $RunId,
+                "--window-index", $WindowIndex,
+                "--max-runtime-sec", $MaxRuntimeSec,
+                "--workers", $ProbeWorkers
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-execution-raw" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-paper-execution-raw (paper PlanOnly)" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-paper-execution-raw" }
+            if (-not $PaperApprovalPath) { throw "PaperApprovalPath is required for fast-edge-membership-momentum-v2-paper-execution-raw" }
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-membership-momentum-v2-paper-execution-raw (causal selection)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-paper-execution-raw (selection hash)" }
+            if (-not $ProbeManifestPaths) { throw "ProbeManifestPaths is required for fast-edge-membership-momentum-v2-paper-execution-raw" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-paper-execution-raw (raw input)" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-membership-momentum-v2-paper-execution-raw (raw manifest)" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-paper-execution-raw" }
+            $paperStateScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_paper_state.py"
+            $manifestArgs = @()
+            $manifestValues = @(
+                $ProbeManifestPaths.Split(",") |
+                    ForEach-Object { $_.Trim() } |
+                    Where-Object { $_ }
+            )
+            if ($manifestValues.Count -ne 3) { throw "ProbeManifestPaths must contain exactly three paper execution window manifests" }
+            foreach ($value in $manifestValues) { $manifestArgs += @("--window-manifest", $value) }
+            Invoke-TradingMvpCli -ScriptPath $paperStateScript -ArgsList @(
+                "build-execution-raw",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--approval", $PaperApprovalPath,
+                "--selection", $EvaluationPath,
+                "--expected-selection-hash", $ExpectedArtifactHash,
+                "--boundary", $PaperBoundary,
+                $manifestArgs,
+                "--raw-input-output", $OutputPath,
+                "--raw-manifest-output", $ManifestPath
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-funding-raw" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $EntrySourcePath) { throw "EntrySourcePath is required for fast-edge-membership-momentum-v2-paper-funding-raw" }
+            if (-not $ExpectedEntrySourceHash) { throw "ExpectedEntrySourceHash is required for fast-edge-membership-momentum-v2-paper-funding-raw" }
+            if (-not $ExitSourcePath) { throw "ExitSourcePath is required for fast-edge-membership-momentum-v2-paper-funding-raw" }
+            if (-not $ExpectedExitSourceHash) { throw "ExpectedExitSourceHash is required for fast-edge-membership-momentum-v2-paper-funding-raw" }
+            if (-not $FundingHistoryPaths) { throw "FundingHistoryPaths is required for fast-edge-membership-momentum-v2-paper-funding-raw" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-paper-funding-raw (raw input)" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-membership-momentum-v2-paper-funding-raw (raw manifest)" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-paper-funding-raw" }
+            $historyPaths = @(
+                $FundingHistoryPaths.Split(",") |
+                    ForEach-Object { $_.Trim() } |
+                    Where-Object { $_ }
+            )
+            if ($historyPaths.Count -lt 1) {
+                throw "FundingHistoryPaths must contain at least one funding history artifact"
+            }
+            $paperStateScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_paper_state.py"
+            $argsList = @(
+                "build-funding-raw",
+                "--entry-source", $EntrySourcePath,
+                "--expected-entry-source-hash", $ExpectedEntrySourceHash,
+                "--exit-source", $ExitSourcePath,
+                "--expected-exit-source-hash", $ExpectedExitSourceHash,
+                "--raw-input-output", $OutputPath,
+                "--raw-manifest-output", $ManifestPath
+            )
+            foreach ($historyPath in $historyPaths) {
+                $argsList += @("--funding-history", $historyPath)
+            }
+            Invoke-TradingMvpCli -ScriptPath $paperStateScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-source" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $ObservationPath) { throw "ObservationPath is required for fast-edge-membership-momentum-v2-paper-source (raw manifest)" }
+            if (-not $ExpectedRawManifestHash) { throw "ExpectedRawManifestHash is required for fast-edge-membership-momentum-v2-paper-source" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-paper-source" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-paper-source" }
+            $paperStateScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_paper_state.py"
+            Invoke-TradingMvpCli -ScriptPath $paperStateScript -ArgsList @(
+                "build-source",
+                "--raw-manifest", $ObservationPath,
+                "--expected-raw-manifest-hash", $ExpectedRawManifestHash,
+                "--output", $OutputPath
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-evidence" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-paper-evidence" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-paper-evidence" }
+            if (-not $PaperApprovalPath) { throw "PaperApprovalPath is required for fast-edge-membership-momentum-v2-paper-evidence" }
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-membership-momentum-v2-paper-evidence (causal selection)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-paper-evidence (selection hash)" }
+            if (-not $ProbeManifestPaths) { throw "ProbeManifestPaths is required for fast-edge-membership-momentum-v2-paper-evidence" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-paper-evidence" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-paper-evidence" }
+            $sourcePaths = @(
+                $ProbeManifestPaths.Split(",") |
+                    ForEach-Object { $_.Trim() } |
+                    Where-Object { $_ }
+            )
+            if ($sourcePaths.Count -ne 3) {
+                throw "ProbeManifestPaths must contain exactly three source artifacts: entry, exit, funding"
+            }
+            $paperStateScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_paper_state.py"
+            $argsList = @(
+                "build-evidence",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--approval", $PaperApprovalPath,
+                "--selection", $EvaluationPath,
+                "--expected-selection-hash", $ExpectedArtifactHash,
+                "--output", $OutputPath
+            )
+            foreach ($sourcePath in $sourcePaths) {
+                $argsList += @("--source", $sourcePath)
+            }
+            Invoke-TradingMvpCli -ScriptPath $paperStateScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-event" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-paper-event" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-paper-event" }
+            if (-not $PaperApprovalPath) { throw "PaperApprovalPath is required for fast-edge-membership-momentum-v2-paper-event" }
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-membership-momentum-v2-paper-event (causal selection)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-paper-event (selection hash)" }
+            if (-not $ObservationPath) { throw "ObservationPath is required for fast-edge-membership-momentum-v2-paper-event (execution/funding evidence)" }
+            if (-not $ExpectedEvidenceHash) { throw "ExpectedEvidenceHash is required for fast-edge-membership-momentum-v2-paper-event" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-v2-paper-event" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-paper-event" }
+            $paperStateScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_paper_state.py"
+            Invoke-TradingMvpCli -ScriptPath $paperStateScript -ArgsList @(
+                "build-event",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--approval", $PaperApprovalPath,
+                "--selection", $EvaluationPath,
+                "--expected-selection-hash", $ExpectedArtifactHash,
+                "--evidence", $ObservationPath,
+                "--expected-evidence-hash", $ExpectedEvidenceHash,
+                "--output", $OutputPath
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-apply" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-paper-apply" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-paper-apply" }
+            if (-not $PaperApprovalPath) { throw "PaperApprovalPath is required for fast-edge-membership-momentum-v2-paper-apply" }
+            if (-not $ObservationPath) { throw "ObservationPath is required for fast-edge-membership-momentum-v2-paper-apply (paper event)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-v2-paper-apply (event hash)" }
+            if (-not $LedgerPath) { throw "LedgerPath is required for fast-edge-membership-momentum-v2-paper-apply" }
+            if (-not $StatePath) { throw "StatePath is required for fast-edge-membership-momentum-v2-paper-apply" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-paper-apply" }
+            $paperStateScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_paper_state.py"
+            Invoke-TradingMvpCli -ScriptPath $paperStateScript -ArgsList @(
+                "apply",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--approval", $PaperApprovalPath,
+                "--event", $ObservationPath,
+                "--expected-event-hash", $ExpectedArtifactHash,
+                "--ledger", $LedgerPath,
+                "--state", $StatePath
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-status" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-paper-status" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-paper-status" }
+            if (-not $PaperApprovalPath) { throw "PaperApprovalPath is required for fast-edge-membership-momentum-v2-paper-status" }
+            if (-not $LedgerPath) { throw "LedgerPath is required for fast-edge-membership-momentum-v2-paper-status" }
+            if (-not $StatePath) { throw "StatePath is required for fast-edge-membership-momentum-v2-paper-status" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-paper-status" }
+            $paperStateScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_paper_state.py"
+            Invoke-TradingMvpCli -ScriptPath $paperStateScript -ArgsList @(
+                "status",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--approval", $PaperApprovalPath,
+                "--ledger", $LedgerPath,
+                "--state", $StatePath
+            )
+            break
+        }
+        "fast-edge-membership-momentum-v2-paper-incident" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-v2-paper-incident" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-v2-paper-incident" }
+            if (-not $PaperApprovalPath) { throw "PaperApprovalPath is required for fast-edge-membership-momentum-v2-paper-incident" }
+            if (-not $LedgerPath) { throw "LedgerPath is required for fast-edge-membership-momentum-v2-paper-incident" }
+            if (-not $StatePath) { throw "StatePath is required for fast-edge-membership-momentum-v2-paper-incident" }
+            if (-not $Reason) { throw "Reason is required for fast-edge-membership-momentum-v2-paper-incident" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-v2-paper-incident" }
+            $paperStateScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_v2_paper_state.py"
+            Invoke-TradingMvpCli -ScriptPath $paperStateScript -ArgsList @(
+                "incident",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--approval", $PaperApprovalPath,
+                "--ledger", $LedgerPath,
+                "--state", $StatePath,
+                "--incident-type", $PaperIncidentType,
+                "--reason", $Reason
+            )
+            break
+        }
+        "fast-edge-membership-momentum-oos-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-oos-plan (accepted quality report)" }
+            if (-not $ExpectedArtifactHash) { throw "ExpectedArtifactHash is required for fast-edge-membership-momentum-oos-plan (quality artifact hash)" }
+            if (-not $TrainPlanPath) { throw "TrainPlanPath is required for fast-edge-membership-momentum-oos-plan" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-oos-plan (train plan hash)" }
+            if (-not $FeasibilityPath) { throw "FeasibilityPath is required for fast-edge-membership-momentum-oos-plan (feasible train result)" }
+            if (-not $ExpectedFeasibilityResultHash) { throw "ExpectedFeasibilityResultHash is required for fast-edge-membership-momentum-oos-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-oos-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-membership-momentum-oos-plan" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-oos-plan" }
+            $membershipMomentumOosScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_oos.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipMomentumOosScript -ArgsList @(
+                "plan",
+                "--quality-report", $PlanPath,
+                "--expected-quality-hash", $ExpectedArtifactHash,
+                "--train-plan", $TrainPlanPath,
+                "--expected-train-plan-hash", $ExpectedPlanHash,
+                "--train-result", $FeasibilityPath,
+                "--expected-train-result-hash", $ExpectedFeasibilityResultHash,
+                "--output", $OutputPath,
+                "--run-id", $RunId,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-membership-momentum-oos" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-membership-momentum-oos" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-membership-momentum-oos" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-membership-momentum-oos" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-membership-momentum-oos" }
+            $membershipMomentumOosScript = Join-Path $PSScriptRoot "src\gate_membership_momentum_oos.py"
+            Invoke-TradingMvpCli -ScriptPath $membershipMomentumOosScript -ArgsList @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            break
+        }
+        "fast-edge-basis-universe-build" {
+            Assert-BasisActionGate
+            if (-not $InputPath) { throw "InputPath is required for fast-edge-basis-universe-build (PIT universe_state.json)" }
+            if (-not $CoinRegistryPath) { throw "CoinRegistryPath is required for fast-edge-basis-universe-build" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-universe-build" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-basis-universe-build" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $basisGate = if ($ActiveRunGatePath) { $ActiveRunGatePath } else { Join-Path $ProjectRoot "docs\agent-log\active-run-gate.json" }
+            $argsList = @(
+                "--pit-state", $InputPath,
+                "--coin-registry", $CoinRegistryPath,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec,
+                "--active-run-gate", $basisGate,
+                "--code-snapshot-hash", $codeSnapshot.code_snapshot_hash,
+                "--code-snapshot-manifest", $codeSnapshot.manifest_path
+            )
+            if ($RunId) { $argsList += @("--run-id", $RunId) }
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_universe.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $InputPath) { throw "InputPath is required for fast-edge-basis-plan (canonical universe JSON)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-plan" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-basis-plan" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "plan",
+                "--universe", $InputPath,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec,
+                "--code-snapshot-hash", $codeSnapshot.code_snapshot_hash,
+                "--code-snapshot-manifest", $codeSnapshot.manifest_path
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_edge.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-history-collect" {
+            Assert-BasisActionGate
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-history-collect" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-history-collect" }
+            if ($MaxRuntimeSec -gt 7200) { throw "MaxRuntimeSec must be <= 7200 for fast-edge-basis-history-collect" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $basisOutputRoot = if ($OutputPath) { $OutputPath } else { "E:\ZolotyayLopata-data\exports\trading-mvp\historical-basis" }
+            $basisGate = if ($ActiveRunGatePath) { $ActiveRunGatePath } else { Join-Path $ProjectRoot "docs\agent-log\active-run-gate.json" }
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output-root", $basisOutputRoot,
+                "--max-runtime-sec", $MaxRuntimeSec,
+                "--active-run-gate", $basisGate,
+                "--code-snapshot-hash", $codeSnapshot.code_snapshot_hash,
+                "--code-snapshot-manifest", $codeSnapshot.manifest_path
+            )
+            if ($RunId) { $argsList += @("--run-id", $RunId) }
+            if ($ParallelParentRunId) { $argsList += @("--parallel-parent-run-id", $ParallelParentRunId) }
+            if ($Resume) { $argsList += "--resume" }
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_collector.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-history-quality" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-history-quality" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-history-quality" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-basis-history-quality" }
+            if (-not $OutputPath) { throw "OutputPath is required for normalized basis JSONL" }
+            if (-not $ReportOutputPath) { throw "ReportOutputPath is required for basis quality report" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-history-quality" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--manifest", $ManifestPath,
+                "--normalized-output", $OutputPath,
+                "--report-output", $ReportOutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_quality.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-evaluate" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-evaluate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-evaluate" }
+            if (-not $QualityReportPath) { throw "QualityReportPath is required for fast-edge-basis-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-evaluate" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-evaluate" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--quality-report", $QualityReportPath,
+                "--output", $OutputPath,
+                "--stage", $PitPlanStage,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            if ($PitPlanStage -eq "full_evaluation") {
+                if (-not $FeasibilityPath) { throw "FeasibilityPath is required for full_evaluation" }
+                $argsList += @("--feasibility", $FeasibilityPath)
+            } elseif ($FeasibilityPath) {
+                throw "FeasibilityPath is not allowed for train_feasibility"
+            }
+            if ($ParallelParentRunId) { $argsList += @("--parallel-parent-run-id", $ParallelParentRunId) }
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_evaluator.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-probe-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-basis-probe-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-probe-plan" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-basis-probe-plan" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @("plan", "--evaluation", $EvaluationPath, "--output", $OutputPath)
+            if ($FirstProbeWindowStartUtc) { $argsList += @("--first-window-start-utc", $FirstProbeWindowStartUtc) }
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_probe.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-probe" {
+            Assert-BasisActionGate
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-probe" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-probe" }
+            if (-not $OutputPath) { throw "OutputPath is required for probe samples JSONL" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for probe manifest" }
+            if ($MaxRuntimeSec -lt 1200 -or $MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be in [1200, 1800] for fast-edge-basis-probe" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $basisGate = if ($ActiveRunGatePath) { $ActiveRunGatePath } else { Join-Path $ProjectRoot "docs\agent-log\active-run-gate.json" }
+            $argsList = @(
+                "collect",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--window-index", $WindowIndex,
+                "--samples", $OutputPath,
+                "--manifest", $ManifestPath,
+                "--max-runtime-sec", $MaxRuntimeSec,
+                "--active-run-gate", $basisGate,
+                "--code-snapshot-hash", $codeSnapshot.code_snapshot_hash,
+                "--code-snapshot-manifest", $codeSnapshot.manifest_path
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_probe.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-report" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-basis-report" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-report" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-report" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @("report", "--evaluation", $EvaluationPath, "--output", $OutputPath)
+            if ($ProbePlanPath) { $argsList += @("--probe-plan", $ProbePlanPath) }
+            if ($ProbeManifestPaths) { $argsList += @("--manifests", $ProbeManifestPaths) }
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_probe.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-paper-init" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-paper-init" }
+            if (-not $SprintReportPath) { throw "SprintReportPath is required for fast-edge-basis-paper-init" }
+            if (-not $LedgerPath) { throw "LedgerPath is required for fast-edge-basis-paper-init" }
+            if (-not $StatePath) { throw "StatePath is required for fast-edge-basis-paper-init" }
+            $argsList = @(
+                "init",
+                "--plan", $PlanPath,
+                "--report", $SprintReportPath,
+                "--ledger", $LedgerPath,
+                "--state", $StatePath,
+                "--daily-loss-limit-quote", $DailyLossLimitQuote
+            )
+            Invoke-TradingMvpCli -ScriptPath $basisPaperOmsCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-paper-observe" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-paper-observe" }
+            if (-not $SprintReportPath) { throw "SprintReportPath is required for fast-edge-basis-paper-observe" }
+            if (-not $LedgerPath) { throw "LedgerPath is required for fast-edge-basis-paper-observe" }
+            if (-not $StatePath) { throw "StatePath is required for fast-edge-basis-paper-observe" }
+            if (-not $ObservationPath) { throw "ObservationPath is required for fast-edge-basis-paper-observe" }
+            $argsList = @(
+                "observe",
+                "--plan", $PlanPath,
+                "--report", $SprintReportPath,
+                "--ledger", $LedgerPath,
+                "--state", $StatePath,
+                "--observation", $ObservationPath
+            )
+            Invoke-TradingMvpCli -ScriptPath $basisPaperOmsCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-paper-status" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $LedgerPath) { throw "LedgerPath is required for fast-edge-basis-paper-status" }
+            if (-not $StatePath) { throw "StatePath is required for fast-edge-basis-paper-status" }
+            $argsList = @("status", "--ledger", $LedgerPath, "--state", $StatePath)
+            Invoke-TradingMvpCli -ScriptPath $basisPaperOmsCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-preflight" {
+            Assert-BasisActionGate
+            if (-not $InputPath) { throw "InputPath is required for fast-edge-basis-v2-preflight (PIT universe_state.json)" }
+            if (-not $CoinRegistryPath) { throw "CoinRegistryPath is required for fast-edge-basis-v2-preflight" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-basis-v2-preflight (daily cache manifest)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-v2-preflight" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-v2-preflight" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "--pit-state", $InputPath,
+                "--coin-registry", $CoinRegistryPath,
+                "--daily-cache-manifest", $ManifestPath,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_preflight.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $InputPath) { throw "InputPath is required for fast-edge-basis-v2-plan (accepted preflight artifact)" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-v2-plan" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-basis-v2-plan" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "plan",
+                "--preflight", $InputPath,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec,
+                "--code-snapshot-hash", $codeSnapshot.code_snapshot_hash,
+                "--code-snapshot-manifest", $codeSnapshot.manifest_path
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-cache-audit" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-v2-cache-audit" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-v2-cache-audit" }
+            if (-not $InputPath) { throw "InputPath is required for fast-edge-basis-v2-cache-audit cache root" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-v2-cache-audit report" }
+            if ($MaxRuntimeSec -gt 300) { throw "MaxRuntimeSec must be <= 300 for fast-edge-basis-v2-cache-audit" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $basisOutputRoot = $InputPath
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output-root", $basisOutputRoot,
+                "--report-output", $OutputPath,
+                "--code-snapshot-dir", $codeSnapshot.snapshot_path,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            Invoke-TradingMvpCli -ScriptPath $historicalBasisV2CacheAuditCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-history-collect" {
+            Assert-BasisActionGate
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-v2-history-collect" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-v2-history-collect" }
+            if ($MaxRuntimeSec -gt 5400) { throw "MaxRuntimeSec must be <= 5400 for fast-edge-basis-v2-history-collect" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $basisOutputRoot = if ($OutputPath) { $OutputPath } else { "E:\ZolotyayLopata-data\exports\trading-mvp\historical-basis-1h-v2" }
+            $basisGate = if ($ActiveRunGatePath) { $ActiveRunGatePath } else { Join-Path $ProjectRoot "docs\agent-log\active-run-gate.json" }
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output-root", $basisOutputRoot,
+                "--max-runtime-sec", $MaxRuntimeSec,
+                "--active-run-gate", $basisGate,
+                "--code-snapshot-hash", $codeSnapshot.code_snapshot_hash,
+                "--code-snapshot-manifest", $codeSnapshot.manifest_path
+            )
+            if ($RunId) { $argsList += @("--run-id", $RunId) }
+            if ($Resume) { $argsList += "--resume" }
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_collector.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-history-quality" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-v2-history-quality" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-v2-history-quality" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-basis-v2-history-quality" }
+            if (-not $OutputPath) { throw "OutputPath is required for normalized v2 candles JSONL" }
+            if (-not $FundingOutputPath) { throw "FundingOutputPath is required for v2 funding events JSONL" }
+            if (-not $ReportOutputPath) { throw "ReportOutputPath is required for v2 quality report" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-v2-history-quality" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--manifest", $ManifestPath,
+                "--candles-output", $OutputPath,
+                "--funding-output", $FundingOutputPath,
+                "--report-output", $ReportOutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_quality.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-train-postprocess" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-v2-train-postprocess" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-v2-train-postprocess" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-basis-v2-train-postprocess" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-v2-train-postprocess" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-v2-train-postprocess" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--collector-manifest", $ManifestPath,
+                "--output-root", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            if ($PlanOnly) { $argsList += "--plan-only" }
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_postprocess.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-oos-postprocess" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-v2-oos-postprocess" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-v2-oos-postprocess" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-basis-v2-oos-postprocess" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-v2-oos-postprocess" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-v2-oos-postprocess" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--train-postprocess-manifest", $ManifestPath,
+                "--output-root", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            if ($PlanOnly) { $argsList += "--plan-only" }
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_oos_postprocess.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-evaluate" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-v2-evaluate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-v2-evaluate" }
+            if (-not $QualityReportPath) { throw "QualityReportPath is required for fast-edge-basis-v2-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-v2-evaluate" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-v2-evaluate" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--quality-report", $QualityReportPath,
+                "--output", $OutputPath,
+                "--stage", $PitPlanStage,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            if ($PitPlanStage -eq "full_evaluation") {
+                if (-not $FeasibilityPath) { throw "FeasibilityPath is required for v2 full_evaluation" }
+                $argsList += @("--feasibility", $FeasibilityPath)
+            } elseif ($FeasibilityPath) {
+                throw "FeasibilityPath is not allowed for v2 train_feasibility"
+            }
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_evaluator.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-report" {
+            Assert-BasisActionGate -OfflineWork
+            $hasEvaluation = -not [string]::IsNullOrWhiteSpace($EvaluationPath)
+            $hasClosure = -not [string]::IsNullOrWhiteSpace($ClosurePath)
+            if ($hasEvaluation -eq $hasClosure) {
+                throw "Exactly one of EvaluationPath or ClosurePath is required for fast-edge-basis-v2-report"
+            }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-v2-report" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-v2-report" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @("--output", $OutputPath)
+            if ($hasEvaluation) {
+                $argsList += @("--evaluation", $EvaluationPath)
+            } else {
+                $argsList += @("--closure-manifest", $ClosurePath)
+            }
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_report.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-execution-probe-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-basis-v2-execution-probe-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-v2-execution-probe-plan" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-basis-v2-execution-probe-plan" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @("plan", "--evaluation", $EvaluationPath, "--output", $OutputPath)
+            if ($FirstProbeWindowStartUtc) { $argsList += @("--first-window-start-utc", $FirstProbeWindowStartUtc) }
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_execution_probe.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-execution-probe" {
+            Assert-BasisActionGate
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-v2-execution-probe" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-v2-execution-probe" }
+            if (-not $OutputPath) { throw "OutputPath is required for v2 probe samples JSONL" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for v2 probe manifest" }
+            if ($MaxRuntimeSec -lt 1200 -or $MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be in [1200, 1800] for fast-edge-basis-v2-execution-probe" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $basisGate = if ($ActiveRunGatePath) { $ActiveRunGatePath } else { Join-Path $ProjectRoot "docs\agent-log\active-run-gate.json" }
+            $argsList = @(
+                "collect",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--window-index", $WindowIndex,
+                "--samples", $OutputPath,
+                "--manifest", $ManifestPath,
+                "--max-runtime-sec", $MaxRuntimeSec,
+                "--active-run-gate", $basisGate,
+                "--code-snapshot-hash", $codeSnapshot.code_snapshot_hash,
+                "--code-snapshot-manifest", $codeSnapshot.manifest_path
+            )
+            if ($RunId) { $argsList += @("--run-id", $RunId) }
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_execution_probe.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-execution-probe-evaluate" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-basis-v2-execution-probe-evaluate" }
+            if (-not $ProbePlanPath) { throw "ProbePlanPath is required for fast-edge-basis-v2-execution-probe-evaluate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-v2-execution-probe-evaluate" }
+            if (-not $ProbeManifestPaths) { throw "ProbeManifestPaths is required for fast-edge-basis-v2-execution-probe-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-v2-execution-probe-evaluate" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-v2-execution-probe-evaluate" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "evaluate",
+                "--evaluation", $EvaluationPath,
+                "--plan", $ProbePlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--manifests", $ProbeManifestPaths,
+                "--output", $OutputPath
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_execution_probe.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-paper-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $InputPath) { throw "InputPath is required for fast-edge-basis-v2-paper-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-basis-v2-paper-plan" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-basis-v2-paper-plan" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @("plan", "--probe-report", $InputPath, "--output", $OutputPath)
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_paper_oms.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-paper-init" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-v2-paper-init" }
+            if (-not $SprintReportPath) { throw "SprintReportPath is required for fast-edge-basis-v2-paper-init" }
+            if (-not $LedgerPath) { throw "LedgerPath is required for fast-edge-basis-v2-paper-init" }
+            if (-not $StatePath) { throw "StatePath is required for fast-edge-basis-v2-paper-init" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-basis-v2-paper-init" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "init",
+                "--plan", $PlanPath,
+                "--probe-report", $SprintReportPath,
+                "--ledger", $LedgerPath,
+                "--state", $StatePath,
+                "--daily-loss-limit-quote", $DailyLossLimitQuote
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_paper_oms.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-paper-observe" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-v2-paper-observe" }
+            if (-not $SprintReportPath) { throw "SprintReportPath is required for fast-edge-basis-v2-paper-observe" }
+            if (-not $LedgerPath) { throw "LedgerPath is required for fast-edge-basis-v2-paper-observe" }
+            if (-not $StatePath) { throw "StatePath is required for fast-edge-basis-v2-paper-observe" }
+            if (-not $ObservationPath) { throw "ObservationPath is required for fast-edge-basis-v2-paper-observe" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-basis-v2-paper-observe" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "observe",
+                "--plan", $PlanPath,
+                "--probe-report", $SprintReportPath,
+                "--ledger", $LedgerPath,
+                "--state", $StatePath,
+                "--observation", $ObservationPath
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_paper_oms.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-paper-status" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-v2-paper-status" }
+            if (-not $LedgerPath) { throw "LedgerPath is required for fast-edge-basis-v2-paper-status" }
+            if (-not $StatePath) { throw "StatePath is required for fast-edge-basis-v2-paper-status" }
+            if ($MaxRuntimeSec -gt 300) { throw "MaxRuntimeSec must be <= 300 for fast-edge-basis-v2-paper-status" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @("status", "--plan", $PlanPath, "--ledger", $LedgerPath, "--state", $StatePath)
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "historical_basis_v2_paper_oms.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-paper-observer-fixture-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required as the paper plan for fast-edge-basis-v2-paper-observer-fixture-plan" }
+            if (-not $SprintReportPath) { throw "SprintReportPath is required for fast-edge-basis-v2-paper-observer-fixture-plan" }
+            if (-not $InputPath) { throw "InputPath is required as fixture JSONL for fast-edge-basis-v2-paper-observer-fixture-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required as observer PlanOnly for fast-edge-basis-v2-paper-observer-fixture-plan" }
+            if (-not $StatePath) { throw "StatePath is required as observer audit JSONL for fast-edge-basis-v2-paper-observer-fixture-plan" }
+            if (-not $LedgerPath) { throw "LedgerPath is required as accepted observation JSONL for fast-edge-basis-v2-paper-observer-fixture-plan" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-basis-v2-paper-observer-fixture-plan" }
+            if (-not $RunId) { throw "RunId is required for fast-edge-basis-v2-paper-observer-fixture-plan" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-v2-paper-observer-fixture-plan" }
+            $runtimeContract = "E:\ZolotyayLopata-data\exports\trading-mvp\autopilot\research\paper-observer-runtime-contract-v1.json"
+            $healthContract = "E:\ZolotyayLopata-data\exports\trading-mvp\autopilot\research\paper-venue-health-gate-contract-v1.json"
+            if (-not (Test-Path -LiteralPath $runtimeContract)) { throw "Frozen paper observer runtime contract is missing: $runtimeContract" }
+            if (-not (Test-Path -LiteralPath $healthContract)) { throw "Frozen paper venue health contract is missing: $healthContract" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "plan",
+                "--paper-plan", $PlanPath,
+                "--probe-report", $SprintReportPath,
+                "--runtime-contract", $runtimeContract,
+                "--health-contract", $healthContract,
+                "--fixture", $InputPath,
+                "--output", $OutputPath,
+                "--audit", $StatePath,
+                "--accepted", $LedgerPath,
+                "--manifest", $ManifestPath,
+                "--run-id", $RunId,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "paper_observer_runtime.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-paper-observer-fixture-run" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-v2-paper-observer-fixture-run" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-v2-paper-observer-fixture-run" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-v2-paper-observer-fixture-run" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "run",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "paper_observer_runtime.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-basis-v2-paper-observer-fixture-sink" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-basis-v2-paper-observer-fixture-sink" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-basis-v2-paper-observer-fixture-sink" }
+            if (-not $LedgerPath) { throw "LedgerPath is required as paper OMS ledger for fast-edge-basis-v2-paper-observer-fixture-sink" }
+            if (-not $StatePath) { throw "StatePath is required as paper OMS state for fast-edge-basis-v2-paper-observer-fixture-sink" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-basis-v2-paper-observer-fixture-sink" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-basis-v2-paper-observer-fixture-sink" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "sink",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--ledger", $LedgerPath,
+                "--state", $StatePath,
+                "--manifest", $ManifestPath
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "paper_observer_runtime.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-funding-persistence-v2-plan" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $QualityReportPath) { throw "QualityReportPath is required for fast-edge-funding-persistence-v2-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-funding-persistence-v2-plan" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-funding-persistence-v2-plan" }
+            $bankPath = if ($HypothesisBankPath) {
+                $HypothesisBankPath
+            } else {
+                Join-Path $ProjectRoot "docs\research\trading_mvp_hypothesis_bank_v1.json"
+            }
+            $frozenGoalPath = if ($GoalPath) {
+                $GoalPath
+            } else {
+                Join-Path $ProjectRoot "docs\plans\2026-07-16-trading-mvp-one-week-historical-edge-sprint-v2.md"
+            }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "plan",
+                "--quality-report", $QualityReportPath,
+                "--hypothesis-bank", $bankPath,
+                "--goal", $frozenGoalPath,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "funding_regime_persistence_v2.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-funding-persistence-v2-validate" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-funding-persistence-v2-validate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-funding-persistence-v2-validate" }
+            if ($MaxRuntimeSec -gt 600) { throw "MaxRuntimeSec must be <= 600 for fast-edge-funding-persistence-v2-validate" }
+            $argsList = @(
+                "validate",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--verify-files"
+            )
+            Invoke-TradingMvpCli -ScriptPath $fundingRegimePersistenceV2Cli -ArgsList $argsList
+            break
+        }
+        "fast-edge-funding-persistence-v2-train-feasibility" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-funding-persistence-v2-train-feasibility" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-funding-persistence-v2-train-feasibility" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-funding-persistence-v2-train-feasibility" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-funding-persistence-v2-train-feasibility" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "funding_regime_persistence_v2_evaluator.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-funding-persistence-v2-oos" {
+            Assert-BasisActionGate -OfflineWork
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-funding-persistence-v2-oos" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-funding-persistence-v2-oos" }
+            if (-not $FeasibilityPath) { throw "FeasibilityPath is required for fast-edge-funding-persistence-v2-oos" }
+            if (-not $ExpectedFeasibilityResultHash) { throw "ExpectedFeasibilityResultHash is required for fast-edge-funding-persistence-v2-oos" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-funding-persistence-v2-oos" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-funding-persistence-v2-oos" }
+            $codeSnapshot = New-BasisCodeSnapshot
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--feasibility", $FeasibilityPath,
+                "--expected-feasibility-result-hash", $ExpectedFeasibilityResultHash,
+                "--output", $OutputPath,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            $snapshotScript = Join-Path $codeSnapshot.snapshot_path "funding_regime_persistence_v2_oos.py"
+            Invoke-TradingMvpCli -ScriptPath $snapshotScript -ArgsList $argsList
+            break
+        }
+        "fast-edge-plan" {
+            Assert-FastEdgeGateOpen
+            if (-not $Dataset) { throw "Dataset is required for fast-edge-plan" }
+            $argsList = @(
+                "fast-edge-plan",
+                "--dataset", $Dataset,
+                "--max-runtime-sec", $MaxRuntimeSec,
+                "--shortlist-limit", $ShortlistLimit,
+                "--notional-per-leg", $FastEdgeNotionalPerLeg
+            )
+            if ($OutputPath) { $argsList += @("--output", $OutputPath) }
+            Invoke-TradingMvpCli -ScriptPath $fastEdgeCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-evaluate" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-evaluate" }
+            $argsList = @("fast-edge-evaluate", "--plan", $PlanPath)
+            if ($OutputPath) { $argsList += @("--output", $OutputPath) }
+            Invoke-TradingMvpCli -ScriptPath $fastEdgeCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-v2-validate" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-v2-validate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-v2-validate" }
+            $argsList = @(
+                "validate-seal",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            Invoke-TradingMvpCli -ScriptPath $residualDispersionCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-v2-evaluate" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-v2-evaluate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-v2-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-v2-evaluate" }
+            $argsList = @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--output", $OutputPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            Invoke-TradingMvpCli -ScriptPath $residualDispersionCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-v3-validate" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-v3-validate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-v3-validate" }
+            $argsList = @(
+                "validate-seal",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            Invoke-TradingMvpCli -ScriptPath $lotteryMaxCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-v3-evaluate" {
+            Assert-FastEdgeV3EvaluationAuthorized
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-v3-evaluate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-v3-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-v3-evaluate" }
+            $argsList = @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--output", $OutputPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            Invoke-TradingMvpCli -ScriptPath $lotteryMaxCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-v4-validate" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-v4-validate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-v4-validate" }
+            $argsList = @(
+                "validate-seal",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            if ($OutputPath) { $argsList += @("--output", $OutputPath) }
+            Invoke-TradingMvpCli -ScriptPath $fundingPressureCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-v4-evaluate" {
+            Assert-FastEdgeV4EvaluationAuthorized
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-v4-evaluate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-v4-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-v4-evaluate" }
+            $argsList = @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--output", $OutputPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            Invoke-TradingMvpCli -ScriptPath $fundingPressureCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-v5-validate" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-v5-validate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-v5-validate" }
+            $argsList = @(
+                "validate-seal",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            if ($OutputPath) { $argsList += @("--output", $OutputPath) }
+            Invoke-TradingMvpCli -ScriptPath $wickRejectionCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-v5-evaluate" {
+            Assert-FastEdgeV5EvaluationAuthorized
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-v5-evaluate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-v5-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-v5-evaluate" }
+            $argsList = @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--output", $OutputPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            Invoke-TradingMvpCli -ScriptPath $wickRejectionCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-v6-validate" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-v6-validate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-v6-validate" }
+            $argsList = @(
+                "validate-seal",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            if ($OutputPath) { $argsList += @("--output", $OutputPath) }
+            Invoke-TradingMvpCli -ScriptPath $weekendLiquidityCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-v6-evaluate" {
+            Assert-FastEdgeV6EvaluationAuthorized
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-v6-evaluate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-v6-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-v6-evaluate" }
+            $argsList = @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--output", $OutputPath,
+                "--expected-plan-hash", $ExpectedPlanHash
+            )
+            Invoke-TradingMvpCli -ScriptPath $weekendLiquidityCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-data-track-plan" {
+            Assert-FastEdgeGateOpen
+            if (-not $Hypothesis) { throw "Hypothesis is required for fast-edge-data-track-plan" }
+            if (-not $DataType) { throw "DataType is required for fast-edge-data-track-plan" }
+            if (-not $Dataset) { throw "Dataset is required for fast-edge-data-track-plan" }
+            if (-not $InputMerkleSha256) { throw "InputMerkleSha256 is required for fast-edge-data-track-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-data-track-plan" }
+            if ($MaxRuntimeSec -gt 1200) { throw "MaxRuntimeSec must be <= 1200 for fast-edge-data-track-plan" }
+            if ($TrainCandidateEvents -le 0) { throw "TrainCandidateEvents must be > 0 for fast-edge-data-track-plan" }
+            if ($TrainValidEvents -lt 0 -or $TrainValidEvents -gt $TrainCandidateEvents) {
+                throw "TrainValidEvents must be in [0, TrainCandidateEvents] for fast-edge-data-track-plan"
+            }
+            if ($OosCandidateEvents -le 0) { throw "OosCandidateEvents must be > 0 for fast-edge-data-track-plan" }
+            if ($UniqueOosDates -le 0) { throw "UniqueOosDates must be > 0 for fast-edge-data-track-plan" }
+
+            $bankPath = if ($HypothesisBankPath) {
+                $HypothesisBankPath
+            } else {
+                Join-Path $ProjectRoot "docs\research\trading_mvp_hypothesis_bank_v1.json"
+            }
+            $goalPath = Join-Path $ProjectRoot "docs\plans\2026-07-14-trading-mvp-canonical-goal-v3.md"
+            $argsList = @(
+                "build",
+                "--hypothesis-bank", $bankPath,
+                "--hypothesis-id", $Hypothesis,
+                "--data-type", $DataType,
+                "--dataset-id", $Dataset,
+                "--input-merkle-sha256", $InputMerkleSha256,
+                "--output", $OutputPath,
+                "--goal", $goalPath,
+                "--train-candidate-events", $TrainCandidateEvents,
+                "--train-valid-events", $TrainValidEvents,
+                "--oos-candidate-events", $OosCandidateEvents,
+                "--unique-oos-dates", $UniqueOosDates,
+                "--dual-venue-coverage", $DualVenueCoverage,
+                "--capacity-proxy-quote-per-selected-leg", $CapacityProxyQuotePerSelectedLeg,
+                "--max-runtime-sec", $MaxRuntimeSec
+            )
+            if ($PerVenueOosCandidateEventsJson) {
+                $argsList += @("--per-venue-oos-candidate-events-json", $PerVenueOosCandidateEventsJson)
+            }
+            if ($TrackId) { $argsList += @("--track-id", $TrackId) }
+            if ($InputPath) { $argsList += @("--dataset-root", $InputPath) }
+            Invoke-TradingMvpCli -ScriptPath $dataTrackContractCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-night-schedule-plan" {
+            Assert-FastEdgeGateOpen
+            if (-not $Hypothesis) { throw "Hypothesis is required for fast-edge-night-schedule-plan" }
+            if (-not $DataType) { throw "DataType is required for fast-edge-night-schedule-plan" }
+            if (-not $ScheduleStartDate) { throw "ScheduleStartDate is required for fast-edge-night-schedule-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-night-schedule-plan" }
+            if ($MaxRuntimeSec -gt 1200) { throw "MaxRuntimeSec must be <= 1200 for fast-edge-night-schedule-plan" }
+
+            $bankPath = if ($HypothesisBankPath) {
+                $HypothesisBankPath
+            } else {
+                Join-Path $ProjectRoot "docs\research\trading_mvp_hypothesis_bank_v1.json"
+            }
+            $goalPath = Join-Path $ProjectRoot "docs\plans\2026-07-14-trading-mvp-canonical-goal-v3.md"
+            $argsList = @(
+                "build",
+                "--hypothesis-bank", $bankPath,
+                "--hypothesis-id", $Hypothesis,
+                "--data-type", $DataType,
+                "--goal", $goalPath,
+                "--output", $OutputPath,
+                "--schedule-start-date", $ScheduleStartDate,
+                "--nights", $ScheduleNights,
+                "--segment-start-local", $ScheduleStartLocal,
+                "--segment-duration-sec", $ScheduleSegmentDurationSec,
+                "--interval-sec", $ScheduleIntervalSec,
+                "--output-root", $ScheduleOutputRoot,
+                "--collection-stage", $ScheduleCollectionStage
+            )
+            if ($QualityLedgerPath) { $argsList += @("--quality-ledger", $QualityLedgerPath) }
+            if ($ScheduleCollectionStage -eq "oos_accrual") {
+                if (-not $TrainPlanPath -or -not $FeasibilityPath) {
+                    throw "TrainPlanPath and FeasibilityPath are required for oos_accrual schedule planning"
+                }
+                $argsList += @("--train-plan", $TrainPlanPath, "--feasibility", $FeasibilityPath)
+            } elseif ($TrainPlanPath -or $FeasibilityPath) {
+                throw "TrainPlanPath and FeasibilityPath are not allowed for train_accrual schedule planning"
+            }
+            Invoke-TradingMvpCli -ScriptPath $nightSchedulePlanCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-night-schedule-status" {
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-night-schedule-status" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-night-schedule-status" }
+            if ($MaxRuntimeSec -gt 120) { throw "MaxRuntimeSec must be <= 120 for fast-edge-night-schedule-status" }
+            $resolvedApprovalRoot = if ($ApprovalRecordRoot) {
+                $ApprovalRecordRoot
+            } else {
+                Join-Path $ProjectRoot "docs\agent-log\night-schedule-approvals"
+            }
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--approval-record-root", $resolvedApprovalRoot
+            )
+            if ($OutputPath) { $argsList += @("--output", $OutputPath) }
+            Invoke-TradingMvpCli -ScriptPath $nightScheduleStatusCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-night-schedule-quality" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-night-schedule-quality" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-night-schedule-quality" }
+            if (-not $QualityLedgerPath) { throw "QualityLedgerPath is required for fast-edge-night-schedule-quality" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-night-schedule-quality" }
+            $resolvedApprovalRoot = if ($ApprovalRecordRoot) {
+                $ApprovalRecordRoot
+            } else {
+                Join-Path $ProjectRoot "docs\agent-log\night-schedule-approvals"
+            }
+            $argsList = @(
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--approval-record-root", $resolvedApprovalRoot,
+                "--ledger", $QualityLedgerPath
+            )
+            if ($OutputPath) { $argsList += @("--output", $OutputPath) }
+            Invoke-TradingMvpCli -ScriptPath $nightScheduleQualityCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-pit-futility-plan" {
+            Assert-FastEdgeGateOpen
+            if (-not $QualityLedgerPath) { throw "QualityLedgerPath is required for fast-edge-pit-futility-plan" }
+            if (-not $Hypothesis) { throw "Hypothesis is required for fast-edge-pit-futility-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-pit-futility-plan" }
+            if ($MaxRuntimeSec -gt 1200) { throw "MaxRuntimeSec must be <= 1200 for fast-edge-pit-futility-plan" }
+            $bankPath = if ($HypothesisBankPath) {
+                $HypothesisBankPath
+            } else {
+                Join-Path $ProjectRoot "docs\research\trading_mvp_hypothesis_bank_v1.json"
+            }
+            $argsList = @(
+                "plan",
+                "--quality-ledger", $QualityLedgerPath,
+                "--hypothesis-bank", $bankPath,
+                "--hypothesis-id", $Hypothesis,
+                "--output", $OutputPath
+            )
+            Invoke-TradingMvpCli -ScriptPath $pitMembershipDriftFutilityCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-pit-futility-evaluate" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-pit-futility-evaluate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-pit-futility-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-pit-futility-evaluate" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-pit-futility-evaluate" }
+            $argsList = @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output", $OutputPath
+            )
+            Invoke-TradingMvpCli -ScriptPath $pitMembershipDriftFutilityCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-pit-input-plan" {
+            Assert-FastEdgeGateOpen
+            if (-not $QualityLedgerPath) { throw "QualityLedgerPath is required for fast-edge-pit-input-plan" }
+            if (-not $Hypothesis) { throw "Hypothesis is required for fast-edge-pit-input-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-pit-input-plan" }
+            if ($MaxRuntimeSec -gt 1200) { throw "MaxRuntimeSec must be <= 1200 for fast-edge-pit-input-plan" }
+            $bankPath = if ($HypothesisBankPath) {
+                $HypothesisBankPath
+            } else {
+                Join-Path $ProjectRoot "docs\research\trading_mvp_hypothesis_bank_v1.json"
+            }
+            $argsList = @(
+                "plan",
+                "--quality-ledger", $QualityLedgerPath,
+                "--hypothesis-bank", $bankPath,
+                "--hypothesis-id", $Hypothesis,
+                "--plan-stage", $PitPlanStage,
+                "--output", $OutputPath
+            )
+            if ($PitPlanStage -eq "full_evaluation") {
+                if (-not $TrainPlanPath) { throw "TrainPlanPath is required for full_evaluation" }
+                if (-not $FeasibilityPath) { throw "FeasibilityPath is required for full_evaluation" }
+                $argsList += @("--train-plan", $TrainPlanPath, "--feasibility", $FeasibilityPath)
+            } elseif ($TrainPlanPath -or $FeasibilityPath) {
+                throw "TrainPlanPath and FeasibilityPath are not allowed for train_feasibility"
+            }
+            Invoke-TradingMvpCli -ScriptPath $pitMembershipDriftCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-pit-feasibility" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-pit-feasibility" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-pit-feasibility" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-pit-feasibility" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-pit-feasibility" }
+            $argsList = @(
+                "feasibility",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output", $OutputPath
+            )
+            Invoke-TradingMvpCli -ScriptPath $pitMembershipDriftCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-pit-evaluate" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-pit-evaluate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-pit-evaluate" }
+            if (-not $FeasibilityPath) { throw "FeasibilityPath is required for fast-edge-pit-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-pit-evaluate" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-pit-evaluate" }
+            $argsList = @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--feasibility", $FeasibilityPath,
+                "--output", $OutputPath
+            )
+            Invoke-TradingMvpCli -ScriptPath $pitMembershipDriftCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-pit-execution-probe-plan" {
+            Assert-FastEdgeGateOpen
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-pit-execution-probe-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-pit-execution-probe-plan" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-pit-execution-probe-plan" }
+            $argsList = @(
+                "plan",
+                "--evaluation", $EvaluationPath,
+                "--output", $OutputPath
+            )
+            Invoke-TradingMvpCli -ScriptPath $pitMembershipDriftProbeCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-pit-execution-probe-evaluate" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-pit-execution-probe-evaluate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-pit-execution-probe-evaluate" }
+            if (-not $ManifestPath) { throw "ManifestPath is required for fast-edge-pit-execution-probe-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-pit-execution-probe-evaluate" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-pit-execution-probe-evaluate" }
+            $argsList = @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--manifest", $ManifestPath,
+                "--output", $OutputPath
+            )
+            Invoke-TradingMvpCli -ScriptPath $pitMembershipDriftProbeCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-pit-paper-plan" {
+            Assert-FastEdgeGateOpen
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-pit-paper-plan" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-pit-paper-plan" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-pit-paper-plan" }
+            $argsList = @(
+                "plan",
+                "--execution-evaluation", $EvaluationPath,
+                "--output", $OutputPath
+            )
+            Invoke-TradingMvpCli -ScriptPath $pitMembershipDriftPaperCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-pit-paper-evaluate" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-pit-paper-evaluate" }
+            if (-not $ExpectedPlanHash) { throw "ExpectedPlanHash is required for fast-edge-pit-paper-evaluate" }
+            if (-not $PaperApprovalPath) { throw "PaperApprovalPath is required for fast-edge-pit-paper-evaluate" }
+            if (-not $OutputPath) { throw "OutputPath is required for fast-edge-pit-paper-evaluate" }
+            if ($MaxRuntimeSec -gt 1800) { throw "MaxRuntimeSec must be <= 1800 for fast-edge-pit-paper-evaluate" }
+            $argsList = @(
+                "evaluate",
+                "--plan", $PlanPath,
+                "--approval", $PaperApprovalPath,
+                "--expected-plan-hash", $ExpectedPlanHash,
+                "--output", $OutputPath
+            )
+            Invoke-TradingMvpCli -ScriptPath $pitMembershipDriftPaperCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-feasibility" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-feasibility" }
+            $argsList = @(
+                "evaluate",
+                "--plan", $PlanPath
+            )
+            if ($OutputPath) { $argsList += @("--output", $OutputPath) }
+            Invoke-TradingMvpCli -ScriptPath $feasibilityGateCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-execution-probe" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-execution-probe" }
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-execution-probe" }
+            $probeDuration = if ($DurationSec -gt 0) { $DurationSec } else { 1200 }
+            if ($probeDuration -gt $MaxRuntimeSec) {
+                throw "DurationSec=$probeDuration must be <= MaxRuntimeSec=$MaxRuntimeSec"
+            }
+            $argsList = @(
+                "fast-edge-execution-probe",
+                "--plan", $PlanPath,
+                "--evaluation", $EvaluationPath,
+                "--duration-sec", $probeDuration,
+                "--interval-sec", $IntervalSec,
+                "--max-runtime-sec", $MaxRuntimeSec,
+                "--top-n", $TopN
+            )
+            if ($ExecutionProbePath) { $argsList += @("--output", $ExecutionProbePath) }
+            elseif ($OutputPath) { $argsList += @("--output", $OutputPath) }
+            if ($Resume) { $argsList += "--resume" }
+            Invoke-TradingMvpCli -ScriptPath $fastEdgeCli -ArgsList $argsList
+            break
+        }
+        "fast-edge-report" {
+            Assert-FastEdgeGateOpen
+            if (-not $PlanPath) { throw "PlanPath is required for fast-edge-report" }
+            if (-not $EvaluationPath) { throw "EvaluationPath is required for fast-edge-report" }
+            $argsList = @(
+                "fast-edge-report",
+                "--plan", $PlanPath,
+                "--evaluation", $EvaluationPath
+            )
+            if ($ExecutionProbePath) { $argsList += @("--execution-probe", $ExecutionProbePath) }
+            if ($OutputPath) { $argsList += @("--output", $OutputPath) }
+            Invoke-TradingMvpCli -ScriptPath $fastEdgeCli -ArgsList $argsList
+            break
+        }
+        "paper-forward-segment" {
+            Assert-FastEdgeGateOpen
+            if (-not $FastEdgeReportPath) { throw "FastEdgeReportPath is required for paper-forward-segment" }
+            if (-not $ObservationPath) { throw "ObservationPath is required for paper-forward-segment" }
+            if (-not $StatePath) { throw "StatePath is required for paper-forward-segment" }
+            $argsList = @(
+                "paper-forward-segment",
+                "--report", $FastEdgeReportPath,
+                "--observation", $ObservationPath,
+                "--state", $StatePath
+            )
+            Invoke-TradingMvpCli -ScriptPath $fastEdgeCli -ArgsList $argsList
             break
         }
         "setup-registry" {
@@ -1830,7 +4362,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "experiment-record" {
@@ -1845,6 +4377,7 @@ try {
                 "experiment-record",
                 "--source-video-id", $SourceVideoId,
                 "--source-url", $SourceUrl,
+                "--source-channel", $SourceChannel,
                 "--participant", $Participant,
                 "--claim-family", $ClaimFamily,
                 "--hypothesis", $Hypothesis,
@@ -1852,7 +4385,10 @@ try {
                 "--dataset", $Dataset,
                 "--verdict", $Verdict,
                 "--verdict-reason", $VerdictReason,
-                "--notes", $Notes
+                "--notes", $Notes,
+                "--fee-schedule-revision", $FeeScheduleRevision,
+                "--evaluation-scope", $EvaluationScope,
+                "--oos-status", $OosStatus
             )
             if ($ConfigJson) {
                 $argsList += @("--config-json", $ConfigJson)
@@ -1869,7 +4405,7 @@ try {
             if ($OutputPath) {
                 $argsList += @("--output", $OutputPath)
             }
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
         "experiment-list" {
@@ -1887,7 +4423,7 @@ try {
                 $argsList += @("--setup-id", $SetupId)
             }
             $argsList += @("--top-n", $TopN)
-            & $python $cli @argsList
+            Invoke-TradingMvpCli -ArgsList $argsList
             break
         }
     }
