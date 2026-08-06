@@ -13,6 +13,7 @@ SRC = Path(__file__).resolve().parents[1] / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+import dense_ws_campaign_contract as campaign  # noqa: E402
 from dense_ws_acceptance_proposal import (  # noqa: E402
     PROPOSAL_SCHEMA,
     ProposalIntegrityError,
@@ -32,9 +33,9 @@ def _review_draft() -> dict:
         "status": "DRAFT_NOT_FROZEN_NOT_AUTHORIZED",
         "research_only": True,
         "source_campaign": {
-            "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
-            "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
-            "data_type": "DENSE_WS_SEGMENTED",
+            "campaign_id": campaign.AEF_CAMPAIGN_ID,
+            "hypothesis_id": campaign.HYPOTHESIS_ID,
+            "data_type": campaign.DATA_TYPE,
             "plan": {
                 "path": "E:/evidence/plan.json",
                 "file_sha256": "1" * 64,

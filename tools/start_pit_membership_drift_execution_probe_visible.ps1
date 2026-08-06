@@ -16,6 +16,9 @@ param(
     [string]$WorkerToken = ""
 )
 
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+$OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+
 $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 $RunMvp = Join-Path $ProjectRoot "trading_mvp\run_mvp.ps1"
