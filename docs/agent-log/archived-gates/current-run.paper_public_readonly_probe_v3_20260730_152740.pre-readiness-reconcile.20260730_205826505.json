@@ -1,0 +1,17 @@
+{
+  "schema": "active_run_pointer_v1",
+  "project": "trading_mvp",
+  "run_id": "paper_public_readonly_probe_v3_20260730_152740",
+  "status": "READY_FOR_POSTPROCESS",
+  "updated_at": "2026-07-30T18:29:58.6635616+03:00",
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\public-readonly-probe-runs\\paper_public_readonly_probe_v3_20260730_152740\\manifest.json",
+  "output": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\public-readonly-probe-runs\\paper_public_readonly_probe_v3_20260730_152740\\snapshots.jsonl",
+    "kind": "file"
+  },
+  "collector_pid": null,
+  "monitor_pid": null,
+  "process_ids": null,
+  "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\paper_public_readonly_probe_v3_20260730_152740.public-readonly-probe.visible-launch.json",
+  "evidence_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-readonly-probe-evidence-v3.json"
+}

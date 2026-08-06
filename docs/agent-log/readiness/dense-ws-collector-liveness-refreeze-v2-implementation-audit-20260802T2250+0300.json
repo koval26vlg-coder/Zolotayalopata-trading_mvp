@@ -1,0 +1,97 @@
+{
+  "schema": "trading_mvp_dense_ws_collector_liveness_refreeze_implementation_audit_v2",
+  "status": "PASS_READY_FOR_SEPARATE_EXACT_LAUNCH_APPROVAL",
+  "generated_at_local": "2026-08-02T22:48:52.4733412+03:00",
+  "generated_at_utc": "2026-08-02T19:48:52.4767392Z",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+  "proposal_hash": "a3cfdf5e71da1d9485ceb0fe725aab7b35037e9eee4419a3dbb06e97aa7dbd61",
+  "evidence": {
+    "approval_receipt": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-collector-liveness-refreeze-v2-approval.json",
+      "sha256": "29d1518cc9fd1a44e05f8916ad01f55ab420d07830b52738928f7f3ef3bbf283"
+    },
+    "runtime_dependency_manifest": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-collector-liveness-runtime-dependencies-20260802-v2.json",
+      "sha256": "368a23cad5064024f424c320c71e47980941a4b6024bf20f784b01680a0aa92d"
+    },
+    "regression_log": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\regressions\\dense-ws-collector-liveness-refreeze-v2-20260802T2239+0300.txt",
+      "sha256": "78ef9f15f0f5a3bea82ac17c26d698e6af8000cb6a0b2e32153d3d0dc4ae4985"
+    },
+    "contract_v2": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260803-aef-24h-v2.json",
+      "sha256": "cdfbee9ceaafcff3a170d81347b6822c612aaa401300ede676b1aa13fdefbdd8"
+    },
+    "plan_v2": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v2.json",
+      "sha256": "9fe19c6e220897b80098fd6a3cd5eb767aa1a7eccb6bf54b59d7c8485e64731a"
+    }
+  },
+  "frozen_identifiers": {
+    "contract_hash": "99e752bada6c951815296dafecfd7b558058455e183a53c5723d69b25dcf9e53",
+    "plan_hash": "651502c3104ffea904f0520afc7ffbde7e9ab993213d5d74962c00ef91f4916e",
+    "candidate_contract_hash": "e0c080d7eb37deef31dc31724acaf8bc1b598038aa5165960050ca323f9e258f"
+  },
+  "verification": {
+    "offline_tests": {
+      "tests_run": 73,
+      "failures": 0,
+      "errors": 0,
+      "status": "PASS",
+      "network_access": false
+    },
+    "frozen_v1_v2_comparison": {
+      "candidate_frozen": true,
+      "universe_contract": true,
+      "causal_regime_contract": true,
+      "execution_sampling_contract": true,
+      "cost_risk_no_grid_contract": true,
+      "evidence_acceptance_contract": true,
+      "window": true,
+      "phases": true,
+      "resources": true,
+      "materializer_sha_unchanged": true
+    },
+    "old_plan_preflight": {
+      "status": "FAIL_CLOSED_EXPECTED",
+      "actual_launch": false,
+      "reason": "v1 raw_schema_contract is incompatible with the refrozen validator and cannot be reused"
+    },
+    "new_plan_pre_policy_preflight": {
+      "status": "FAIL_CLOSED_EXPECTED",
+      "actual_launch": false,
+      "reason": "policy still referenced the v1 plan and was not READY_FOR_APPROVAL"
+    },
+    "new_plan_safety": {
+      "actual_collection_allowed": false,
+      "approval_state": "NOT_APPROVED",
+      "collector_launch_authorized": false,
+      "stopped_incomplete_retry_authorized": false
+    }
+  },
+  "swarm_review": {
+    "attempted": true,
+    "agent_id": "019fc3ff-ef7c-7521-9584-9db76b890d3b",
+    "completed": false,
+    "swarm_limited": true,
+    "disposition": "no review result claimed; local deterministic audit remains authoritative for this bounded refreeze"
+  },
+  "residual_risks": [
+    "synthetic/static tests cannot prove real exchange behavior; the separately approved visible campaign is the first public read-only integration evidence",
+    "STOPPED_INCOMPLETE remains non-retriable without a new exact approval"
+  ],
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "market_dataset_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "decision": "BIND_V2_POLICY_AS_READY_FOR_SEPARATE_EXACT_APPROVAL_NO_LAUNCH"
+}

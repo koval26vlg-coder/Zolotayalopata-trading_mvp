@@ -1,0 +1,134 @@
+{
+  "schema": "trading_mvp_dense_ws_aef_time_only_refreeze_preview_audit_v1",
+  "mode": "OfflineUnappliedPatchAudit",
+  "status": "PASS_EXACT_PATCH_READY_NOT_APPLIED_NOT_AUTHORIZED",
+  "source": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+    "current_sha256": "e000f2ad4bf124920f6b2ed62c3802273a83fb1ceca741e2b7191353f46cd1f6",
+    "source_file_unchanged": true
+  },
+  "proposed": {
+    "sha256_after_apply": "86ef5411a49b3bc80e8e2e50da5708460877d07b03822d27d6d0ab7d133dd1cc",
+    "patch_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-time-only-reschedule-refreeze-implementation-preview-20260803-v1.patch",
+    "patch_file_sha256": "25717ed79a4727a20838c7a1b93a9091d13452cdf8c4e98dd4699fd5f7ee80bc",
+    "replacement_checks": [
+      {
+        "old": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+        "new": "dense_ws_microstructure_regime_filter_v1_20260804_aef_24h",
+        "expected_count": 1,
+        "observed_count": 1,
+        "match": true
+      },
+      {
+        "old": "e0c080d7eb37deef31dc31724acaf8bc1b598038aa5165960050ca323f9e258f",
+        "new": "a1d262d1cf5ef1c70771ab9005b12eb0d875ff5235492ffadf8e1af4790a8643",
+        "expected_count": 1,
+        "observed_count": 1,
+        "match": true
+      },
+      {
+        "old": "EVIDENCE_EXCEPTION_2026-08-03_24H",
+        "new": "EVIDENCE_EXCEPTION_2026-08-04_24H",
+        "expected_count": 1,
+        "observed_count": 1,
+        "match": true
+      },
+      {
+        "old": "2026-08-03T01:30:00+03:00",
+        "new": "2026-08-04T01:40:00+03:00",
+        "expected_count": 2,
+        "observed_count": 2,
+        "match": true
+      },
+      {
+        "old": "2026-08-04T01:30:00+03:00",
+        "new": "2026-08-05T01:40:00+03:00",
+        "expected_count": 2,
+        "observed_count": 2,
+        "match": true
+      },
+      {
+        "old": "2026-08-04T02:00:00+03:00",
+        "new": "2026-08-05T02:10:00+03:00",
+        "expected_count": 2,
+        "observed_count": 2,
+        "match": true
+      },
+      {
+        "old": "pit_universe_v2_forward_20260804_n07",
+        "new": "pit_universe_v2_forward_20260805_n08",
+        "expected_count": 1,
+        "observed_count": 1,
+        "match": true
+      }
+    ],
+    "changed_ranges": [
+      {
+        "tag": "replace",
+        "current_start_line": 96,
+        "current_end_line": 96,
+        "proposed_start_line": 96,
+        "proposed_end_line": 96
+      },
+      {
+        "tag": "replace",
+        "current_start_line": 98,
+        "current_end_line": 98,
+        "proposed_start_line": 98,
+        "proposed_end_line": 98
+      },
+      {
+        "tag": "replace",
+        "current_start_line": 100,
+        "current_end_line": 100,
+        "proposed_start_line": 100,
+        "proposed_end_line": 100
+      },
+      {
+        "tag": "replace",
+        "current_start_line": 103,
+        "current_end_line": 106,
+        "proposed_start_line": 103,
+        "proposed_end_line": 106
+      },
+      {
+        "tag": "replace",
+        "current_start_line": 111,
+        "current_end_line": 113,
+        "proposed_start_line": 111,
+        "proposed_end_line": 113
+      }
+    ],
+    "changes_confined_to_lines_96_116": true,
+    "python_compile_pass": true,
+    "python_ast_parse_pass": true
+  },
+  "unchanged_constants": {
+    "AEF_EXPECTED_WRITER_SEC": 86400,
+    "AEF_EXPECTED_MAX_RUNTIME_SEC": 88200,
+    "AEF_HARD_OUTPUT_CAP_BYTES": 25000000000,
+    "AEF_EXPECTED_PHASES[0].writer_duration_sec": 86400,
+    "AEF_EXPECTED_PHASES[0].complete_durable_segments": 24
+  },
+  "authorization": {
+    "patch_applied": false,
+    "implementation_authorized": false,
+    "collector_launch_authorized": false,
+    "exact_proposal_hash_required": "e7af0e69a8b66da5b009624e3ccb230a6ae7f169aed1f4352ad71049f9fa5435"
+  },
+  "safety": {
+    "network_access": false,
+    "collector_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "audit_hash_method": "sha256_canonical_json_excluding_audit_hash",
+  "audit_hash": "60f7600f43fe95b420e3a174920f23bf68907fd043dc10f6ad91eeebb591f877"
+}

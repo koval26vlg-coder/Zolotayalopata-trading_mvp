@@ -1,0 +1,49 @@
+{
+  "schema": "trading_mvp_dense_ws_collector_liveness_refreeze_approval_v1",
+  "approval_id": "dense_ws_collector_liveness_refreeze_v2_20260802",
+  "approved_at_local": "2026-08-02T22:03:03.2819898+03:00",
+  "approved_at_utc": "2026-08-02T19:03:03.2855186Z",
+  "approved_by": "user",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-collector-liveness-refreeze-proposal-20260802-v2.json",
+    "file_sha256": "c09b6cc4203b674e02c7b1ceb2c6271f362b78dfcc2a8daa6c56036f8a3751d8",
+    "proposal_hash": "a3cfdf5e71da1d9485ceb0fe725aab7b35037e9eee4419a3dbb06e97aa7dbd61",
+    "canonical_hash_verified": true
+  },
+  "user_authorization_text": "Разрешаю collector-liveness refreeze v2 only по proposal_hash=a3cfdf5e71da1d9485ceb0fe725aab7b35037e9eee4419a3dbb06e97aa7dbd61: изменить только перечисленные в proposal runtime/quality/contract файлы, выполнить offline synthetic/static tests без network и построить новые immutable contract/PlanOnly/runtime manifest; не менять hypothesis/venue/universe/signal/cost/risk/duration/cap/materializer/evaluator; без collector launch/returns/PnL/OOS/grid/retune/paper/live/private API/real capital/leverage/margin. Это не разрешение на запуск кампании; STOPPED_INCOMPLETE не retry.",
+  "authorized_scope": {
+    "runtime_quality_contract_files_listed_in_proposal_only": true,
+    "offline_synthetic_static_tests": true,
+    "network_during_tests": false,
+    "new_versioned_immutable_contract": true,
+    "new_versioned_immutable_planonly": true,
+    "new_versioned_runtime_dependency_manifest": true
+  },
+  "frozen_invariants": {
+    "hypothesis_change_allowed": false,
+    "venue_change_allowed": false,
+    "universe_change_allowed": false,
+    "signal_change_allowed": false,
+    "cost_change_allowed": false,
+    "risk_change_allowed": false,
+    "duration_change_allowed": false,
+    "cap_change_allowed": false,
+    "materializer_change_allowed": false,
+    "evaluator_change_allowed": false
+  },
+  "prohibited_actions": {
+    "collector_launch": true,
+    "returns_read": true,
+    "pnl_computed": true,
+    "oos_run": true,
+    "grid_or_retune": true,
+    "paper_or_live": true,
+    "private_api_keys": true,
+    "real_capital": true,
+    "leverage_or_margin": true,
+    "stopped_incomplete_retry": true
+  },
+  "campaign_launch_authorized": false,
+  "new_exact_hash_bound_launch_approval_required": true,
+  "single_use": true
+}

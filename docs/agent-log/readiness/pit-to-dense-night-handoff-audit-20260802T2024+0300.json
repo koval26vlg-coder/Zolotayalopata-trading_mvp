@@ -1,0 +1,104 @@
+{
+  "schema": "trading_mvp_pit_to_dense_night_handoff_audit_v1",
+  "generated_at_local": "2026-08-02T20:24:00+03:00",
+  "purpose": "Prove that the approved PIT n06, dense_ws campaign, and dense_ws postrun checkpoints form a fail-closed sequential handoff without starting any writer.",
+  "automation": {
+    "path": "C:\\Users\\koval\\.codex\\automations\\trading-continuous-production\\automation.toml",
+    "sha256": "de9cd586e5d2208dfae79966253fe26731706a8eb0e58c46a8ad7d2220330a54",
+    "rrule": "FREQ=DAILY;BYHOUR=0,1;BYMINUTE=0,25,30,35,55",
+    "checkpoint_coverage": {
+      "pit_n06_prelaunch_local": "2026-08-03T00:55:00+03:00",
+      "pit_n06_writer_window_local": "2026-08-03T01:00:00+03:00/2026-08-03T01:20:00+03:00",
+      "dense_prelaunch_local": "2026-08-03T01:25:00+03:00",
+      "dense_due_rechecks_local": [
+        "2026-08-03T01:30:00+03:00",
+        "2026-08-03T01:35:00+03:00"
+      ],
+      "dense_postrun_rechecks_local": [
+        "2026-08-04T01:30:00+03:00",
+        "2026-08-04T01:35:00+03:00"
+      ]
+    }
+  },
+  "handoff_invariants": {
+    "one_global_market_writer": true,
+    "pit_releases_global_claim_only_after_collector_gate_ready": true,
+    "dense_phase_waits_for_pit_postrun_complete": true,
+    "dense_market_writer_cannot_start_while_pit_postrun_is_incomplete": true,
+    "dense_late_start_tolerance_sec": 300,
+    "dense_postrun_deadline_is_min_of_runtime_cap_and_absolute_hard_deadline": true,
+    "stopped_incomplete_auto_retry_allowed": false
+  },
+  "latest_representative_pit_timing": {
+    "run_id": "pit_universe_v2_forward_20260802_n05",
+    "global_claim_acquired_at_utc": "2026-08-01T22:00:05.120207+00:00",
+    "global_claim_released_at_utc": "2026-08-01T22:20:14.490229+00:00",
+    "postrun_finished_at_local": "2026-08-02T01:20:21.1802478+03:00",
+    "postrun_elapsed_after_claim_release_sec": 6.69,
+    "margin_to_equivalent_dense_start_sec": 578.82,
+    "status": "POSTRUN_FINISHED",
+    "decision": "WAITING_EVENT"
+  },
+  "current_preflight": {
+    "pit": {
+      "status": "READY_NOT_DUE",
+      "run_id": "pit_universe_v2_forward_20260803_n06",
+      "plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+      "schedule_status": "WAITING",
+      "sealed_runtime_tools_verified": 12,
+      "other_countdown_owners": [],
+      "global_market_writer_claim": null,
+      "side_effects": "NO_RUN_OR_OUTPUT_WRITES"
+    },
+    "dense": {
+      "status": "EXACT_APPROVAL_VALIDATED_PREFLIGHT_ONLY",
+      "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+      "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+      "authorization_verified": true,
+      "runtime_dependency_status": "READY",
+      "runtime_dependency_blockers": [],
+      "runtime_dependency_warnings": [],
+      "underlying_status": "STRUCTURALLY_VALID_NOT_DUE",
+      "no_run_or_output_writes": true
+    }
+  },
+  "tests": [
+    {
+      "suite": "trading_mvp.tests.test_autopilot_visible_pipeline",
+      "passed": 11,
+      "failed": 0
+    },
+    {
+      "suite": "trading_mvp.tests.test_dense_ws_postrun_orchestration",
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "suite": "trading_mvp.tests.test_dense_ws_campaign_contract",
+      "passed": 24,
+      "failed": 0,
+      "evidence_reference": "docs/agent-log/readiness/dense-ws-runtime-dependency-readiness-audit-20260802T2012+0300.json"
+    }
+  ],
+  "bound_code": {
+    "pit_countdown_sha256": "51d7b3351e4d6b9cd6bfa7896c60f264017a9c9e11054a1554d802890f28cce4",
+    "dense_runner_sha256": "ed804ff811c321e4d9a5a8f56593f24ca320c635088fe7b271eec0bdacb4a977",
+    "dense_gateway_sha256": "56933c8a18edc75b8ee89c7da238e84df9c3c44145ed522f1d24b7266c9de6da",
+    "dense_postrun_orchestrator_sha256": "4781219d0c06af686508cb0c8a76424be22825e657a1b80f43c1799df43398ed"
+  },
+  "safety": {
+    "writer_started": false,
+    "collector_started": false,
+    "network_request_performed": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live_started": false,
+    "private_api_or_real_capital_used": false,
+    "leverage_or_margin_used": false
+  },
+  "decision": "HANDOFF_READY_NO_CODE_CHANGE_REQUIRED",
+  "next_action": "At 00:55 local, run only the exact visible PIT n06 countdown. At 01:25 or the due rechecks, launch dense only through the exact approval gateway; its phase gate must continue to require PIT postrun COMPLETE."
+}

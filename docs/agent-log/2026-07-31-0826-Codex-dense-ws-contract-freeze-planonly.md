@@ -1,0 +1,35 @@
+# Dense WS contract freeze and immutable PlanOnly
+
+- Observed at: `2026-07-31T08:26:44+03:00`
+- Agent: Codex
+- Authorization: contract-freeze and immutable PlanOnly only for `dense_ws_microstructure_regime_filter_v1_20260731_weekend`; candidate contract hash `4cebe947e9997df1ae061231bd24a78d10bb7735697a259bf2eabd7a6bbb1386`. This was not campaign-launch approval.
+- Frozen scope:
+  - venues: MEXC and Gate spot USDT;
+  - data type: `DENSE_WS_SEGMENTED`;
+  - universe SHA-256: `ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3`, 1,388 rows;
+  - exact raw JSONL envelope, segment validity, causal regime labels/timestamps, execution sampling and stale-quote limits;
+  - normal/stress cost totals `69/89` bps, simulation-only risk limits, one frozen parameter combination, no grid or retune.
+- Immutable artifacts:
+  - contract: `E:\ZolotyayLopata-data\exports\trading-mvp\autopilot\campaigns\dense-ws-microstructure-regime-filter-contract-20260731-weekend-v1.json`;
+  - contract file SHA-256: `cd27a0d385b2e6451801431be066dad5301f067a3e9a70d46ef0aee9801d7dfd`;
+  - contract hash: `f71c094f9ac4334a70eed3fef2e9b9de81809001cface62b51d42d64d4261612`;
+  - PlanOnly: `E:\ZolotyayLopata-data\exports\trading-mvp\autopilot\campaigns\dense-ws-microstructure-regime-filter-planonly-20260731-weekend-v1.json`;
+  - PlanOnly file SHA-256: `40c3b67515d5aee3b4e714652cd796ff585bef4cefc9fd702cf8abacb4aa5c89`;
+  - PlanOnly hash: `ab24b245ee4a9c3e4d0f2cfcbd396034fd1f9465e43ca57002df9ff27ecd8081`.
+- Plan state:
+  - `approval_state=NOT_APPROVED`;
+  - `actual_collection_allowed=false`;
+  - `launch_control_status=IMPLEMENTATION_REQUIRED_BEFORE_APPROVAL`;
+  - two phases contain exactly 86,400 seconds of writer time;
+  - a separate exact hash-bound approval remains mandatory after visible launcher/status/stop controls exist.
+- Implementation:
+  - deterministic fail-closed builder/validator: `trading_mvp/src/dense_ws_campaign_contract.py`;
+  - regression tests: `trading_mvp/tests/test_dense_ws_campaign_contract.py`;
+  - focused suite: `41/41` passed;
+  - independent persisted-file validator and explicit field audit: `VALID`;
+  - external read-only review initially found four fail-open validation gaps; candidate re-binding, operational PlanOnly assertions, mandatory CLI file/hash/policy binding and tamper regressions were added;
+  - repeat external review: all four findings resolved, no residual findings; its focused tests were `6/6`.
+- Policy binding: `docs/plans/trading-mvp-autopilot-policy-v1.json` now records the exact contract/PlanOnly paths and hashes with status `CONTRACT_FROZEN_PLANONLY_CONTROLS_REQUIRED`.
+- Authoritative guard after binding: `ACTIVE`, quota `100%`, no active writer, decision `ACTIVE_NO_POSITIVE_RUN_CANDIDATE`; next preapproved PIT segment remains `pit_universe_v2_forward_20260801_n04`.
+- Safety: no collector, network writer, replay, OOS, returns/PnL, grid, retune, paper/live action, private API key, leverage, margin, or campaign launch was used.
+- Next long-campaign action: implement and test hash-bound visible launcher/status/stop controls without starting the campaign. Only then may an exact PlanOnly-hash-bound campaign approval packet be requested at the due window.

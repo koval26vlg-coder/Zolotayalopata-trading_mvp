@@ -1,0 +1,37 @@
+{
+  "schema": "trading_mvp_basis_v2_refreeze_handoff_v1",
+  "generated_at": "2026-07-16T13:16:24.3665131+03:00",
+  "decision": "BASIS_V2_REFROZEN_AWAIT_EXPLICIT_PUBLIC_HISTORY_COLLECT_APPROVAL",
+  "reason": "full_evaluation artifact guard now requires OOS access audit, frozen economics gates, robustness, and matching episode ledgers before report/probe eligibility",
+  "old_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2\\plans\\basis_v2_planonly_20260716_124214.json",
+  "old_plan_hash": "1a5cc89ff97fbe9e97a7ba282a675df5dfda6b89592e2e9b4a2a0e91cf9e24dc",
+  "old_preview_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\basis_v2_history_20260716_125552.planonly-preview.json",
+  "old_preview_status": "SUPERSEDED_BY_CODE_REFREEZE",
+  "new_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2\\plans\\basis_v2_planonly_20260716_131340_artifact_guard.json",
+  "new_plan_hash": "354422b317d3112b3da73ff3f8126e2bf09948795f2781e64acb47f611060665",
+  "new_snapshot_hash": "f1371568f71792541ed94d822a87066fc0e496acfa4f37720c224a326e5a3a9b",
+  "new_preview_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\basis_v2_history_20260716_131700_guarded.planonly-preview.json",
+  "semantic_contract_equal": true,
+  "semantic_contract_sha256": "015e62bf3ed5f716e98d678b54677b8bbebe27a957cdc9a54312e7e9ba03c483",
+  "verification": {
+    "v2_tests": "96 OK",
+    "compileall": true,
+    "git_diff_check": true,
+    "network_access": false,
+    "collector_started": false,
+    "oos_read": false,
+    "pnl_computed": false,
+    "launch_record_exists": false,
+    "run_directory_exists": false,
+    "log_exists": false
+  },
+  "limits": {
+    "collect_max_runtime_sec": 1200,
+    "train_postprocess_max_runtime_sec": 1800,
+    "end_to_end_runtime_cap_sec": 3075,
+    "hard_deadline": "2026-07-16T22:00:00+03:00",
+    "automatic_oos": false
+  },
+  "approval_phrase": "Подтверждаю visible basis-v2 history collect plan_hash=354422b317d3112b3da73ff3f8126e2bf09948795f2781e64acb47f611060665, run_id=basis_v2_history_20260716_131700_guarded, MaxRuntimeSec=1200, collect hard deadline=2026-07-16T22:00:00.0000000+03:00, затем visible train-only postprocess MaxRuntimeSec=1800 без automatic OOS, end-to-end runtime cap=3075 sec, public API only, без grid/OOS/live/private API keys.",
+  "next_allowed_action": "user supplies exact hash-bound approval phrase, then run one visible public history collect followed only by visible train-only postprocess"
+}

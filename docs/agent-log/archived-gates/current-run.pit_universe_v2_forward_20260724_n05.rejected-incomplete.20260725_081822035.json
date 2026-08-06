@@ -1,0 +1,19 @@
+{
+  "schema": "active_run_pointer_v1",
+  "project": "trading_mvp",
+  "run_id": "pit_universe_v2_forward_20260724_n05",
+  "status": "REJECTED_INCOMPLETE",
+  "updated_at": "2026-07-24T23:21:25.0354427+03:00",
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260724_n05\\manifest.json",
+  "output": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260724_n05\\snapshots.jsonl",
+    "kind": "file"
+  },
+  "collector_pid": null,
+  "monitor_pid": null,
+  "process_ids": [],
+  "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\pit_universe_v2_forward_20260724_n05.launch.json",
+  "original_status": "STOPPED_INCOMPLETE",
+  "rejected_at": "2026-07-25T08:18:22.0358583+03:00",
+  "rejection_reason": "Rejected after incomplete 3/4-cycle PIT segment: visible collector stopped with OSError [Errno 22] Invalid argument. Preserve manifest and snapshots for diagnostics only; do not resume under stale schedule hash."
+}

@@ -1,0 +1,72 @@
+{
+  "schema": "trading_mvp_dense_ws_host_continuity_readiness_audit_v1",
+  "observed_at_local": "2026-08-02T19:46:11.6362523+03:00",
+  "decision": "HOST_CONTINUITY_READY_RECHECK_REQUIRED_BEFORE_ACTUAL_LAUNCH",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+  "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+  "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+  "plan_file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+  "checker": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_dense_ws_host_readiness.ps1",
+    "sha256": "77e197d1eef209d2ec0bf61f1449efdc285593a2eb46bea199ae99c69882211d",
+    "powershell_parse_errors": 0,
+    "exact_plan_status": "READY",
+    "wrong_plan_hash_rejected": true,
+    "no_run_or_output_writes": true
+  },
+  "power": {
+    "ac_online": true,
+    "battery_life_percent": 100,
+    "standby_ac_sec": 0,
+    "standby_dc_sec": 180,
+    "hibernate_ac_sec": 0,
+    "hibernate_dc_sec": 0,
+    "disk_idle_ac_sec": 30,
+    "disk_idle_dc_sec": 30,
+    "blockers": [],
+    "warnings": [
+      "battery_sleep_enabled",
+      "disk_idle_timeout_enabled_but_continuous_writer_is_expected"
+    ]
+  },
+  "disk": {
+    "drive": "E:\\",
+    "available_free_bytes": 825070010368,
+    "hard_output_cap_bytes": 25000000000,
+    "required_free_bytes": 50000000000,
+    "ready": true
+  },
+  "time": {
+    "timezone": "Volgograd Standard Time",
+    "windows_time_status_available": true,
+    "parse_mode": "verbose_field_order_fallback",
+    "phase_offset_sec": 0.0000943,
+    "max_abs_phase_offset_sec": 0.5,
+    "root_dispersion_sec": 7.7750599,
+    "last_good_sync_age_sec": 116772.0980596,
+    "last_good_sync_warning": true,
+    "manual_resync_status": "ACCESS_DENIED_NO_CHANGE",
+    "causal_relevance": "recv_ts uses local time.time; same-host relative quote age and cross-venue skew share this clock"
+  },
+  "automation": {
+    "id": "trading-continuous-production",
+    "status": "ACTIVE",
+    "rrule": "FREQ=DAILY;BYHOUR=0,1;BYMINUTE=0,25,30,35,55",
+    "toml_sha256": "c76dc2598f2e2c265378f12caf152a516d9587b90aaadd3f05f7b33102cf8c6c",
+    "checker_path_and_hash_bound_in_prompt": true,
+    "recheck_immediately_before_actual_launch": true,
+    "blocked_status_prevents_writer_launch": true
+  },
+  "actions_performed": {
+    "system_setting_changed": false,
+    "network_request_performed_by_checker": false,
+    "market_data_collector_started": false,
+    "writer_started": false,
+    "postrun_started": false,
+    "evaluator_started": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false
+  }
+}

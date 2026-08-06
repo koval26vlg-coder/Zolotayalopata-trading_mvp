@@ -1,0 +1,26 @@
+# Authoritative PIT postrun disposition
+
+- Observed at: `2026-07-30T23:25:15+03:00`
+- Agent: Codex
+- Request: keep `trading_mvp` continuous production active, avoid idle schedule waiting, and make exact PIT postrun/replay decisions autonomous without repeated permission or manual argument substitution.
+- Scope: read-only control-plane composition, tests, and the existing heartbeat prompt. No frozen schedule, pointer, approval, quality ledger, sealed runtime, market output, hypothesis, venue, universe, signal, costs, risk, duration, or evidence contract was changed.
+- Implemented:
+  - `tools\check_trading_mvp_pit_postrun_summary.ps1` now accepts an authoritative guard snapshot and first proves that `gate.run_id` belongs to exactly one segment in the active pointer-bound plan;
+  - unrelated `READY_FOR_POSTPROCESS` gates return `NOT_APPLICABLE` instead of a false integrity conflict;
+  - `tools\check_trading_mvp_autopilot.ps1` now embeds `pit_postrun_disposition` in every returned and persisted guard state;
+  - exact PIT states remain `MISSING`, `DEFERRED`, `COMPLETE`, or `INTEGRITY_CONFLICT`;
+  - an integrity conflict makes the guard fail closed with a one-time persisted notification flag;
+  - the existing `trading-continuous-production` heartbeat now consumes the embedded disposition and no longer substitutes plan/run arguments into a second checker call.
+- Verification:
+  - PowerShell parser: passed for both modified scripts;
+  - focused checker and wrapper tests: `10/10`;
+  - linked schedule, pointer, guard, postrun, train-target, completion-audit, visible-pipeline, and queue tests: `120/120`;
+  - live authoritative guard: `ACTIVE`, weekly remaining `48%`, telemetry fresh, current unrelated public-probe gate classified `NOT_APPLICABLE`, notification false;
+  - exact n03 preflight: `READY_NOT_DUE`, `checks_passed=true`, `launch_allowed_now=false`, `NO_RUN_OR_OUTPUT_WRITES`, sealed runtime `12/12`;
+  - exact n03 postrun `PlanOnly`: `PLAN_VALIDATED`, accepted dates `4/20`, mutation false, returns/PnL false;
+  - heartbeat remains `ACTIVE` with `FREQ=MINUTELY;INTERVAL=20` and the same target task.
+- Risks and limits:
+  - active-run gate lifecycle remains unchanged; the embedded durable summary disposition is the replay/idempotency guard;
+  - no writer was started because n03 was not due and was more than five minutes away;
+  - long-campaign contract remains a separate already-notified user-review branch.
+- Next: at n03 due time, launch only the preapproved visible 20-minute segment. After its exact gate reaches `READY_FOR_POSTPROCESS`, obey the embedded disposition before postrun or retry.

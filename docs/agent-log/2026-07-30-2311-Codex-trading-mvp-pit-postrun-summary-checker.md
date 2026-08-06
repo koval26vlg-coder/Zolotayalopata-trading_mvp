@@ -1,0 +1,28 @@
+# PIT postrun summary disposition checker
+
+- Observed at: `2026-07-30T23:11:42+03:00`
+- Scope: new read-only control-plane checker, its offline tests, and the existing heartbeat prompt. No market rows, returns, PnL, OOS, sealed runtime, schedule, pointer, approval, quality ledger, hypothesis, venue, universe, signal, costs, risk, or evidence contract was changed.
+- Added `tools\check_trading_mvp_pit_postrun_summary.ps1`:
+  - validates the exact plan hash and schedule segment;
+  - binds the dynamic PIT pointer, plan path/hash, hypothesis, data type, collection stage, and quality ledger;
+  - validates durable summary identity, created-at syntax, decision, next action, and all embargo fields;
+  - returns one machine-readable disposition: `MISSING`, `DEFERRED`, `COMPLETE`, or `INTEGRITY_CONFLICT`;
+  - never permits a new collector;
+  - permits one exact postrun only for `MISSING`;
+  - requires quota above 15 before retrying `DEFERRED`;
+  - forbids repeated postrun for `COMPLETE`.
+- Heartbeat binding:
+  - `trading-continuous-production` now invokes the checker before every exact PIT postrun decision;
+  - cadence remains `FREQ=MINUTELY;INTERVAL=20`;
+  - status remains `ACTIVE`;
+  - target task is unchanged.
+- Verification:
+  - PowerShell parser passed;
+  - checker tests cover missing, complete, all three deferred quota outcomes, run/hash drift, and returns embargo drift: `4/4`;
+  - linked regression suite: `135/135`;
+  - exact n03 checker disposition: `MISSING`, exact postrun allowed, new collector forbidden, market rows read false;
+  - exact n03 countdown preflight: `READY_NOT_DUE`, `NO_RUN_OR_OUTPUT_WRITES`, sealed runtime tools `12/12`;
+  - exact postrun `PlanOnly`: `PLAN_VALIDATED`, mutation false, returns/PnL false;
+  - active gate SHA-256, quality ledger SHA-256, summary/output existence unchanged;
+  - matching writer, collector, or countdown processes: `0`.
+- Next: retain the exact schedule. After n03 writer completion, use this checker as the sole postrun idempotency decision before any exact postrun or retry.

@@ -1,0 +1,82 @@
+{
+  "schema": "trading_mvp_public_readonly_probe_v3_critical_authorization_v1",
+  "authorization_id": "trading_mvp_public_probe_v3_one_time_c48c251ada02ee79",
+  "decision": "AUTHORIZED",
+  "status": "ONE_TIME_FOR_EXACT_PLAN_HASH",
+  "project": "trading_mvp",
+  "thread_id": "019e738a-b37c-7a33-ae04-6cc80739f184",
+  "source_user_authorization": "Разрешаю contract v3: MEXC max quote age 6000 ms, Gate 5000 ms, один новый видимый bounded probe; остальные standing limits без изменений.",
+  "plan": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-readonly-probe-plan-v3.json",
+    "file_sha256": "6459e82c656b8bba03da2988f43e3cc9bbcaf9b5a3918a5304561b46dfeec151",
+    "plan_hash_sha256": "c48c251ada02ee79f3d94633c70cbe23056e4989662e8f144d7d4fb0a87709d5"
+  },
+  "standing_limits": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\trading-mvp-public-readonly-standing-authorization-v1.json",
+    "file_sha256": "0f44ea9eb210a22bb500ceae6fa95541b49d692e9f70d2cd64708ba5798faef3",
+    "authorization_hash_sha256": "9b34452c59824c028ecb2016a1abd986238bc2f3119d9f838de4c5f238395ea5",
+    "authorization_id": "trading_mvp_public_probe_standing_20260730_v1"
+  },
+  "source_failure_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\2026-07-30-1804-Codex-trading-mvp-public-probe-v2-stale-quote-critical.json",
+    "file_sha256": "18a0f33b0c3eb3add4652ef7e53d75184bfaaf44c5dca0a98a933e9426fb2f0a",
+    "run_id": "paper_public_readonly_probe_v2_20260730_145817",
+    "source_plan_hash_sha256": "f2135b1059be438da5e1f9d2d48ce871e7012ad738a288716b521ed952dde9b6",
+    "deterministic_result_hash": "ed07721661c2b810f722c4995e7599fb6faafe5001c53999852b7d41866cf1d1"
+  },
+  "approved_change": {
+    "maximum_quote_age_ms_before": {
+      "mexc": 5000,
+      "gateio": 5000
+    },
+    "maximum_quote_age_ms_after": {
+      "mexc": 6000,
+      "gateio": 5000
+    },
+    "maximum_runs_for_exact_plan_hash": 1,
+    "visible_terminal_required": true,
+    "automatic_retry_after_stopped_incomplete": false
+  },
+  "unchanged_standing_limits": {
+    "methods": [
+      "GET"
+    ],
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "base_urls": [
+      "https://contract.mexc.com",
+      "https://api.gateio.ws/api/v4"
+    ],
+    "endpoint_ids": {
+      "mexc": [
+        "mexc_contracts",
+        "mexc_tickers",
+        "mexc_funding",
+        "mexc_depth"
+      ],
+      "gateio": [
+        "gateio_contracts",
+        "gateio_tickers",
+        "gateio_funding",
+        "gateio_depth"
+      ]
+    },
+    "symbol": "HYPE_USDT",
+    "canonical_base": "hype",
+    "duration_sec": 120,
+    "max_runtime_sec": 180,
+    "maximum_public_get_attempts": 576,
+    "single_market_data_writer": true,
+    "returns_or_pnl_read": false,
+    "oos_read": false,
+    "private_api_keys": false,
+    "live_orders": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "grid_or_retune": false
+  },
+  "authorization_hash_sha256": "111d8c4e226bbd009f67f8b76b5871665063ddbe1c77510138928f6692856b21",
+  "generated_at_utc": "2026-07-30T15:26:52.352455+00:00"
+}

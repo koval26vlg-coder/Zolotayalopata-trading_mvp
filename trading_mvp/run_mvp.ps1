@@ -1,6 +1,6 @@
 param(
     [string]$Config = "",
-    [ValidateSet("universe","collect","backtest","run","multi-run","ws-collect","ws-normalize","perp-collect","perp-report","event-quality-report","event-slice-optimizer","perp-postprocess","ws-replay","ws-grid-search","perp-replay","perp-grid-search","funding-scan","funding-coverage","funding-collect","funding-status","funding-collect-diagnostics","funding-wait-ready","funding-rank","funding-gate-report","funding-regime-report","funding-frontier-report","funding-decision-report","funding-progress-report","funding-backtest","funding-sensitivity","funding-oos-backtest","funding-walk-forward","funding-postprocess","funding-finalize","funding-final-review","funding-paper-plan","funding-paper-forward","funding-paper-decision-report","funding-goal-audit","setup-registry","experiment-record","experiment-list")]
+    [ValidateSet("universe","collect","backtest","run","multi-run","ws-collect","ws-normalize","perp-collect","perp-report","event-quality-report","event-slice-optimizer","perp-postprocess","ws-replay","ws-grid-search","perp-replay","perp-grid-search","funding-scan","funding-coverage","funding-collect","funding-status","funding-collect-diagnostics","funding-wait-ready","funding-rank","funding-gate-report","funding-regime-report","funding-frontier-report","funding-decision-report","funding-progress-report","funding-backtest","funding-sensitivity","funding-oos-backtest","funding-walk-forward","funding-postprocess","funding-finalize","funding-final-review","funding-paper-plan","funding-paper-forward","funding-paper-decision-report","funding-goal-audit","fast-edge-basis-v2-paper-observer-fixture-plan","fast-edge-basis-v2-paper-observer-fixture-run","fast-edge-basis-v2-paper-observer-fixture-sink","setup-registry","experiment-record","experiment-list")]
     [string]$Action = "run",
     [ValidateSet("paper")]
     [string]$Mode = "paper",
@@ -27,6 +27,21 @@ param(
     [string]$WalkForwardOutputPath = "",
     [string]$PaperOutputPath = "",
     [string]$PaperSummaryOutputPath = "",
+    [string]$PaperObserverPaperPlanPath = "",
+    [string]$PaperObserverProbeReportPath = "",
+    [string]$PaperObserverRuntimeContractPath = "",
+    [string]$PaperObserverHealthContractPath = "",
+    [string]$PaperObserverFixturePath = "",
+    [string]$PaperObserverPlanPath = "",
+    [string]$PaperObserverExpectedPlanHash = "",
+    [string]$PaperObserverAuditPath = "",
+    [string]$PaperObserverAcceptedPath = "",
+    [string]$PaperObserverManifestPath = "",
+    [string]$PaperObserverRunId = "",
+    [string]$PaperObserverLedgerPath = "",
+    [string]$PaperObserverStatePath = "",
+    [ValidateRange(1, 1800)]
+    [int]$PaperObserverMaxRuntimeSec = 600,
     [string]$FundingPlanPath = "",
     [string]$GateReportPath = "",
     [string]$RegimeReportPath = "",
@@ -225,6 +240,7 @@ if (-not $python) {
 }
 
 $cli = Join-Path $PSScriptRoot "src\cli.py"
+$paperObserverRuntime = Join-Path $PSScriptRoot "src\paper_observer_runtime.py"
 
 Push-Location $ProjectRoot
 try {
@@ -243,6 +259,86 @@ try {
         }
         "universe" {
             & $python $cli --config $Config universe
+            break
+        }
+        "fast-edge-basis-v2-paper-observer-fixture-plan" {
+            $required = @(
+                @{ Name = "PaperObserverPaperPlanPath"; Value = $PaperObserverPaperPlanPath },
+                @{ Name = "PaperObserverProbeReportPath"; Value = $PaperObserverProbeReportPath },
+                @{ Name = "PaperObserverRuntimeContractPath"; Value = $PaperObserverRuntimeContractPath },
+                @{ Name = "PaperObserverHealthContractPath"; Value = $PaperObserverHealthContractPath },
+                @{ Name = "PaperObserverFixturePath"; Value = $PaperObserverFixturePath },
+                @{ Name = "PaperObserverPlanPath"; Value = $PaperObserverPlanPath },
+                @{ Name = "PaperObserverAuditPath"; Value = $PaperObserverAuditPath },
+                @{ Name = "PaperObserverAcceptedPath"; Value = $PaperObserverAcceptedPath },
+                @{ Name = "PaperObserverManifestPath"; Value = $PaperObserverManifestPath },
+                @{ Name = "PaperObserverRunId"; Value = $PaperObserverRunId }
+            )
+            foreach ($item in $required) {
+                if ([string]::IsNullOrWhiteSpace([string]$item.Value)) {
+                    throw "$($item.Name) is required for $Action"
+                }
+            }
+            $argsList = @(
+                "plan",
+                "--paper-plan", $PaperObserverPaperPlanPath,
+                "--probe-report", $PaperObserverProbeReportPath,
+                "--runtime-contract", $PaperObserverRuntimeContractPath,
+                "--health-contract", $PaperObserverHealthContractPath,
+                "--fixture", $PaperObserverFixturePath,
+                "--output", $PaperObserverPlanPath,
+                "--audit", $PaperObserverAuditPath,
+                "--accepted", $PaperObserverAcceptedPath,
+                "--manifest", $PaperObserverManifestPath,
+                "--run-id", $PaperObserverRunId,
+                "--max-runtime-sec", $PaperObserverMaxRuntimeSec
+            )
+            & $python $paperObserverRuntime @argsList
+            if ($LASTEXITCODE -ne 0) {
+                throw "paper observer fixture plan failed with exit code $LASTEXITCODE"
+            }
+            break
+        }
+        "fast-edge-basis-v2-paper-observer-fixture-run" {
+            if ([string]::IsNullOrWhiteSpace($PaperObserverPlanPath)) {
+                throw "PaperObserverPlanPath is required for $Action"
+            }
+            if ([string]::IsNullOrWhiteSpace($PaperObserverExpectedPlanHash)) {
+                throw "PaperObserverExpectedPlanHash is required for $Action"
+            }
+            & $python $paperObserverRuntime run `
+                --plan $PaperObserverPlanPath `
+                --expected-plan-hash $PaperObserverExpectedPlanHash
+            if ($LASTEXITCODE -ne 0) {
+                throw "paper observer fixture run failed with exit code $LASTEXITCODE"
+            }
+            break
+        }
+        "fast-edge-basis-v2-paper-observer-fixture-sink" {
+            $required = @(
+                @{ Name = "PaperObserverPlanPath"; Value = $PaperObserverPlanPath },
+                @{ Name = "PaperObserverExpectedPlanHash"; Value = $PaperObserverExpectedPlanHash },
+                @{ Name = "PaperObserverLedgerPath"; Value = $PaperObserverLedgerPath },
+                @{ Name = "PaperObserverStatePath"; Value = $PaperObserverStatePath },
+                @{ Name = "PaperObserverManifestPath"; Value = $PaperObserverManifestPath }
+            )
+            foreach ($item in $required) {
+                if ([string]::IsNullOrWhiteSpace([string]$item.Value)) {
+                    throw "$($item.Name) is required for $Action"
+                }
+            }
+            $argsList = @(
+                "sink",
+                "--plan", $PaperObserverPlanPath,
+                "--expected-plan-hash", $PaperObserverExpectedPlanHash,
+                "--ledger", $PaperObserverLedgerPath,
+                "--state", $PaperObserverStatePath,
+                "--manifest", $PaperObserverManifestPath
+            )
+            & $python $paperObserverRuntime @argsList
+            if ($LASTEXITCODE -ne 0) {
+                throw "paper observer fixture sink failed with exit code $LASTEXITCODE"
+            }
             break
         }
         "multi-run" {

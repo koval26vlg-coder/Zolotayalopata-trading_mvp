@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_night_schedule_approval_v1",
+  "status": "ACTIVE",
+  "approved_at": "2026-07-15T00:11:39.1090080+03:00",
+  "expires_at": "2026-07-15T07:00:00.0000000+03:00",
+  "approved_by": "User",
+  "approval_scope": "one frozen collection-stage schedule; no auto-resume; no OOS evaluation/grid/paper/live/API keys",
+  "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_supplemental_3h_planonly_20260715_000830.json",
+  "plan_hash": "155d211ccf002cd607f0644e98f9a417de45e0644122b54b2dcbe6b4e1d81d92",
+  "plan_file_sha256": "5d5f6f8dbd889a0f57e34f789b002e8c519a12a6d9c842e0d7df22811cec202c",
+  "data_type": "PIT_UNIVERSE_V2_FORWARD",
+  "collection_stage": "train_accrual",
+  "quality_ledger_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\quality-certifications.jsonl",
+  "accepted_distinct_dates_at_approval": 1,
+  "stage_target_distinct_dates": 20,
+  "segment_run_ids": [
+    "pit_universe_v2_forward_20260715_n01"
+  ],
+  "visible_terminal_required": true,
+  "data_embargo": true,
+  "auto_resume_allowed": false
+}

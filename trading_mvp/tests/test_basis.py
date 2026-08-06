@@ -531,6 +531,62 @@ class BasisTests(unittest.TestCase):
         self.assertEqual(result["metrics"]["total_trades"], 1)
         self.assertGreater(result["metrics"]["funding_pnl_quote"], 0)
 
+    def test_backtest_does_not_prorate_funding_before_next_settlement(self) -> None:
+        rows = [
+            {
+                **opportunity_from_snapshots(_spot(ts=1.0), _funding(ts=1.0), BasisScanConfig()),
+                "total_score": 1.0,
+            },
+            {
+                **opportunity_from_snapshots(_spot(ts=7_201.0), _funding(ts=7_201.0), BasisScanConfig()),
+                "total_score": 1.0,
+            },
+        ]
+
+        result = run_funding_backtest(
+            rows,  # type: ignore[arg-type]
+            FundingBacktestConfig(
+                notional_quote=100.0,
+                spot_fee_bps=0.0,
+                perp_fee_bps=0.0,
+                slippage_bps=0.0,
+                min_total_score=0.0,
+            ),
+        )
+
+        self.assertEqual(result["metrics"]["funding_pnl_quote"], 0.0)
+        self.assertEqual(result["trades"][0]["funding_pnl_quote"], 0.0)
+
+    def test_backtest_uses_base_tier_costs_for_each_exchange(self) -> None:
+        rows = [
+            {
+                **opportunity_from_snapshots(_spot(ts=1.0), _funding(ts=1.0), BasisScanConfig()),
+                "total_score": 1.0,
+            },
+            {
+                **opportunity_from_snapshots(_spot(ts=14_401.0), _funding(ts=14_401.0), BasisScanConfig()),
+                "total_score": 1.0,
+            },
+        ]
+
+        result = run_funding_backtest(
+            rows,  # type: ignore[arg-type]
+            FundingBacktestConfig(
+                notional_quote=100.0,
+                spot_fee_bps=10.0,
+                perp_fee_bps=7.5,
+                slippage_bps=1.0,
+                spot_fee_bps_by_exchange={"gateio": 5.0},
+                perp_fee_bps_by_exchange={"gateio": 2.5},
+                slippage_bps_by_exchange={"gateio": 0.5},
+                min_total_score=0.0,
+            ),
+        )
+
+        trade = result["trades"][0]
+        self.assertAlmostEqual(trade["fees_quote"], 0.15)
+        self.assertAlmostEqual(trade["slippage_quote"], 0.02)
+
     def test_backtest_reports_equity_curve_and_drawdown(self) -> None:
         profitable_entry = {
             **opportunity_from_snapshots(_spot(ts=1.0), _funding(ts=1.0), BasisScanConfig()),
@@ -776,6 +832,8 @@ class BasisTests(unittest.TestCase):
         assert row2 is not None
         assert row3 is not None
         assert row4 is not None
+        row1["next_funding_ts"] = 1801.0
+        row3["next_funding_ts"] = 5401.0
 
         result = run_funding_backtest(
             [

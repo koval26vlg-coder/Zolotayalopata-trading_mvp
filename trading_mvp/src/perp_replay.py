@@ -99,6 +99,8 @@ class PerpPosition(ReplayPosition):
     last_funding_ts: float = 0.0
     last_funding_rate: float = 0.0
     funding_interval_sec: float = 28_800.0
+    next_funding_ts: float | None = None
+    funding_settlements: int = 0
     entry_mark_price: float | None = None
     entry_index_price: float | None = None
     entry_funding_rate: float | None = None
@@ -113,6 +115,7 @@ class PerpTrade(ReplayTrade):
     exit_index_price: float | None = None
     entry_funding_rate: float | None = None
     exit_funding_rate: float | None = None
+    funding_settlements: int = 0
 
 
 class PerpReplayBacktester(EventDrivenReplayBacktester):
@@ -142,10 +145,14 @@ class PerpReplayBacktester(EventDrivenReplayBacktester):
         self.events_by_kind[kind] += 1
         self.events_by_exchange[str(event.get("exchange"))] += 1
         state = self._state_for(event)
-        state.update(event)
         ts = _event_ts(event)
-        self._accrue_funding(key, state, ts)
+        self.risk.advance_time(ts)
+        self._settle_funding(key, state, ts)
+        state.update(event)
+        self._sync_funding_schedule(key, state, ts)
         self._try_execute_pending(key, state, ts, event)
+        if self.risk.mark_unrealized(self._unrealized_pnl_quote(), ts=ts):
+            self._record_equity(ts)
         if not state.ready():
             return
         if key in self.positions and key not in self.pending:
@@ -153,27 +160,38 @@ class PerpReplayBacktester(EventDrivenReplayBacktester):
         if key not in self.positions and key not in self.pending:
             self._maybe_schedule_entry(key, state, ts)
 
-    def _accrue_funding(self, key: str, state: PerpMarketState, ts: float) -> None:
+    def _settle_funding(self, key: str, state: PerpMarketState, ts: float) -> None:
         position = self.positions.get(key)
         if position is None:
             return
-        last_ts = position.last_funding_ts or position.entry_ts
-        dt = ts - last_ts
-        if dt <= 0:
+        next_funding_ts = position.next_funding_ts
+        if next_funding_ts is None or ts < next_funding_ts:
             return
-        rate = state.funding_rate if state.funding_rate is not None else position.last_funding_rate
-        interval = float(state.funding_interval_sec or position.funding_interval_sec or 28_800.0)
+        rate = position.last_funding_rate
+        interval = float(position.funding_interval_sec or 28_800.0)
         if interval <= 0:
             interval = 28_800.0
         effective_price = state.effective_price() or position.entry_price
         if effective_price is None:
             return
         notional = position.qty * effective_price
-        funding_delta = -position.side * notional * rate * (dt / interval)
-        position.funding_pnl_quote += funding_delta
-        position.last_funding_ts = ts
-        position.last_funding_rate = rate
-        position.funding_interval_sec = interval
+        while next_funding_ts <= ts:
+            position.funding_pnl_quote += -position.side * notional * rate
+            position.last_funding_ts = next_funding_ts
+            position.funding_settlements += 1
+            next_funding_ts += interval
+        position.next_funding_ts = next_funding_ts
+
+    def _sync_funding_schedule(self, key: str, state: PerpMarketState, ts: float) -> None:
+        position = self.positions.get(key)
+        if position is None:
+            return
+        if state.funding_rate is not None:
+            position.last_funding_rate = state.funding_rate
+        if state.funding_interval_sec is not None and state.funding_interval_sec > 0:
+            position.funding_interval_sec = float(state.funding_interval_sec)
+        if position.next_funding_ts is None and state.next_funding_ts is not None and state.next_funding_ts > ts:
+            position.next_funding_ts = state.next_funding_ts
 
     def _execute_taker_entry(self, order: PendingOrder, state: PerpMarketState, ts: float) -> None:
         price = self._entry_price(state, order.side)
@@ -185,6 +203,9 @@ class PerpReplayBacktester(EventDrivenReplayBacktester):
             price=price,
             open_positions=len(self.positions),
             max_open_positions=self.replay_cfg.max_open_positions,
+            market_open_positions=1 if order.market in self.positions else 0,
+            max_open_positions_per_market=self.risk.cfg.max_open_positions_per_market,
+            ts=ts,
         )
         if not ok:
             self.skipped_signals[reason] += 1
@@ -197,17 +218,19 @@ class PerpReplayBacktester(EventDrivenReplayBacktester):
             qty=qty,
             entry_price=price,
             entry_ts=ts,
-            entry_fee_quote=self._taker_fee(notional),
+            entry_fee_quote=self._taker_fee(notional, state.exchange),
             entry_notional_quote=notional,
             funding_pnl_quote=0.0,
             last_funding_ts=ts,
             last_funding_rate=float(state.funding_rate or 0.0),
             funding_interval_sec=float(state.funding_interval_sec or 28_800.0),
+            next_funding_ts=state.next_funding_ts if state.next_funding_ts is not None and state.next_funding_ts > ts else None,
+            funding_settlements=0,
             entry_mark_price=state.effective_price(),
             entry_index_price=state.index_price,
             entry_funding_rate=state.funding_rate,
         )
-        self.risk.register_open()
+        self.risk.register_open(ts=ts)
 
     def _execute_taker_exit(self, order: PendingOrder, state: PerpMarketState, ts: float) -> None:
         position = self.positions.get(order.market)
@@ -218,49 +241,89 @@ class PerpReplayBacktester(EventDrivenReplayBacktester):
             return
         gross = (price - position.entry_price) * position.qty * position.side
         exit_notional = position.qty * price
-        exit_fee = self._taker_fee(exit_notional)
+        exit_fee = self._taker_fee(exit_notional, state.exchange)
         self._record_close(order, position, state, ts, price, gross, exit_fee)
 
-    def _fill_maker_entry(self, order: PendingOrder, state: PerpMarketState, ts: float) -> None:
+    def _fill_maker_entry(
+        self,
+        order: PendingOrder,
+        state: PerpMarketState,
+        ts: float,
+        fill_qty: float,
+    ) -> bool:
         if order.limit_price is None or order.qty is None:
-            return
-        ok, reason = self.risk.can_open(
-            qty=order.qty,
-            price=order.limit_price,
-            open_positions=len(self.positions),
-            max_open_positions=self.replay_cfg.max_open_positions,
-        )
-        if not ok:
-            self.skipped_signals[reason] += 1
-            return
-        notional = order.qty * order.limit_price
-        self.positions[order.market] = PerpPosition(
-            exchange=state.exchange,
-            symbol=state.symbol,
-            side=order.side,
-            qty=order.qty,
-            entry_price=order.limit_price,
-            entry_ts=ts,
-            entry_fee_quote=self._maker_fee(notional),
-            entry_notional_quote=notional,
-            funding_pnl_quote=0.0,
-            last_funding_ts=ts,
-            last_funding_rate=float(state.funding_rate or 0.0),
-            funding_interval_sec=float(state.funding_interval_sec or 28_800.0),
-            entry_mark_price=state.effective_price(),
-            entry_index_price=state.index_price,
-            entry_funding_rate=state.funding_rate,
-        )
-        self.risk.register_open()
+            return False
+        position = self.positions.get(order.market)
+        if position is None:
+            ok, reason = self.risk.can_open(
+                qty=order.qty,
+                price=order.limit_price,
+                open_positions=len(self.positions),
+                max_open_positions=self.replay_cfg.max_open_positions,
+                market_open_positions=0,
+                max_open_positions_per_market=self.risk.cfg.max_open_positions_per_market,
+                ts=ts,
+            )
+            if not ok:
+                self.skipped_signals[reason] += 1
+                return False
+            notional = fill_qty * order.limit_price
+            self.positions[order.market] = PerpPosition(
+                exchange=state.exchange,
+                symbol=state.symbol,
+                side=order.side,
+                qty=fill_qty,
+                entry_price=order.limit_price,
+                entry_ts=ts,
+                entry_fee_quote=self._maker_fee(notional, state.exchange),
+                entry_notional_quote=notional,
+                funding_pnl_quote=0.0,
+                last_funding_ts=ts,
+                last_funding_rate=float(state.funding_rate or 0.0),
+                funding_interval_sec=float(state.funding_interval_sec or 28_800.0),
+                next_funding_ts=(
+                    state.next_funding_ts
+                    if state.next_funding_ts is not None and state.next_funding_ts > ts
+                    else None
+                ),
+                funding_settlements=0,
+                entry_mark_price=state.effective_price(),
+                entry_index_price=state.index_price,
+                entry_funding_rate=state.funding_rate,
+            )
+            self.risk.register_open(ts=ts)
+            return True
+        notional = fill_qty * order.limit_price
+        position.qty += fill_qty
+        position.entry_notional_quote += notional
+        position.entry_fee_quote += self._maker_fee(notional, state.exchange)
+        return True
 
-    def _fill_maker_exit(self, order: PendingOrder, state: PerpMarketState, ts: float) -> None:
+    def _fill_maker_exit(
+        self,
+        order: PendingOrder,
+        state: PerpMarketState,
+        ts: float,
+        fill_qty: float,
+    ) -> bool:
         position = self.positions.get(order.market)
         if position is None or order.limit_price is None:
-            return
-        gross = (order.limit_price - position.entry_price) * position.qty * position.side
-        exit_notional = position.qty * order.limit_price
-        exit_fee = self._maker_fee(exit_notional)
-        self._record_close(order, position, state, ts, order.limit_price, gross, exit_fee)
+            return False
+        close_qty = min(position.qty, fill_qty)
+        gross = (order.limit_price - position.entry_price) * close_qty * position.side
+        exit_notional = close_qty * order.limit_price
+        exit_fee = self._maker_fee(exit_notional, state.exchange)
+        self._record_close(
+            order,
+            position,
+            state,
+            ts,
+            order.limit_price,
+            gross,
+            exit_fee,
+            close_qty=close_qty,
+        )
+        return True
 
     def _record_close(
         self,
@@ -271,9 +334,18 @@ class PerpReplayBacktester(EventDrivenReplayBacktester):
         price: float,
         gross: float,
         exit_fee: float,
+        close_qty: float | None = None,
     ) -> None:
-        funding = position.funding_pnl_quote
-        net = gross + funding - position.entry_fee_quote - exit_fee
+        position_qty_before = position.qty
+        qty = position_qty_before if close_qty is None else min(position_qty_before, max(0.0, close_qty))
+        if qty <= 0:
+            return
+        allocation = qty / position_qty_before
+        funding = position.funding_pnl_quote * allocation
+        entry_fee = position.entry_fee_quote * allocation
+        entry_notional = position.entry_notional_quote * allocation
+        settlements = position.funding_settlements
+        net = gross + funding - entry_fee - exit_fee
         trade = PerpTrade(
             exchange=position.exchange,
             symbol=position.symbol,
@@ -281,10 +353,10 @@ class PerpReplayBacktester(EventDrivenReplayBacktester):
             entry_ts=position.entry_ts,
             exit_ts=ts,
             hold_sec=ts - position.entry_ts,
-            qty=position.qty,
+            qty=qty,
             entry_price=position.entry_price,
             exit_price=price,
-            entry_fee_quote=position.entry_fee_quote,
+            entry_fee_quote=entry_fee,
             exit_fee_quote=exit_fee,
             gross_pnl_quote=gross,
             net_pnl_quote=net,
@@ -297,10 +369,17 @@ class PerpReplayBacktester(EventDrivenReplayBacktester):
             exit_index_price=state.index_price,
             entry_funding_rate=position.entry_funding_rate,
             exit_funding_rate=state.funding_rate,
+            funding_settlements=settlements,
         )
         self.trades.append(trade)
-        self.risk.register_close(net)
-        self.positions.pop(order.market, None)
+        self.risk.register_close(net, ts=ts)
+        position.qty -= qty
+        position.entry_fee_quote -= entry_fee
+        position.entry_notional_quote -= entry_notional
+        position.funding_pnl_quote -= funding
+        if position.qty <= 1e-12:
+            self.positions.pop(order.market, None)
+        self.risk.mark_unrealized(self._unrealized_pnl_quote(), ts=ts)
         self._record_equity(ts)
 
     def _per_market(self) -> dict[str, dict[str, Any]]:
@@ -372,6 +451,7 @@ def run_perp_grid_search_file(
     min_net_pnl_quote: float = -1e9,
     min_profit_factor: float = 0.0,
     max_drawdown_quote: float = 0.0,
+    max_combinations: int = 10_000,
 ) -> dict[str, Any]:
     replay_cfg = replace(replay_cfg, allow_short=True)
     result = _run_grid_search_file(
@@ -388,6 +468,7 @@ def run_perp_grid_search_file(
         min_net_pnl_quote=min_net_pnl_quote,
         min_profit_factor=min_profit_factor,
         max_drawdown_quote=max_drawdown_quote,
+        max_combinations=max_combinations,
         backtester_cls=PerpReplayBacktester,
     )
     result["mode"] = "perp_event_driven_replay_grid_search"

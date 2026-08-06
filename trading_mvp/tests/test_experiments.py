@@ -27,6 +27,16 @@ class ExperimentTests(unittest.TestCase):
         setup_ids = {item["setup_id"] for item in payload["setups"]}
         self.assertEqual(payload["count"], len(SETUP_REGISTRY))
         self.assertTrue({"flow_continue", "fade_exhaustion", "perp_replay", "liquidity_sweep_reversal", "funding_basis_carry"}.issubset(setup_ids))
+        self.assertTrue(
+            {
+                "cross_venue_dislocation",
+                "listing_event_drift_reversal",
+                "slow_liquidity_reversal",
+                "pit_universe_event_liquidity",
+                "venue_local_lottery_max_factor_v1",
+                "venue_local_funding_pressure_reversal_v1",
+            }.issubset(setup_ids)
+        )
 
     def test_record_roundtrip_and_summary(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -85,6 +95,85 @@ class ExperimentTests(unittest.TestCase):
                 metrics={},
                 verdict="untested",
                 verdict_reason="",
+            )
+
+    def test_record_captures_reproducible_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            dataset = root / "dataset.jsonl"
+            artifact = root / "result.json"
+            dataset.write_text('{"x":1}\n', encoding="utf-8")
+            artifact.write_text(json.dumps({"metrics": {"net_pnl_quote": 1.0}}), encoding="utf-8")
+
+            record = make_experiment_record(
+                source_video_id="",
+                source_url="",
+                participant="internal research",
+                claim_family="point_in_time_universe",
+                hypothesis="PIT universe events may contain a structural liquidity edge.",
+                setup_id="pit_universe_event_liquidity",
+                dataset=str(dataset),
+                config={"spot_fee_bps": 10.0},
+                result_artifact=str(artifact),
+                metrics={"net_pnl_quote": 1.0},
+                verdict="promising",
+                verdict_reason="research gate passed",
+                fee_schedule_revision="base_tier_2026-07",
+                evaluation_scope="chronological_oos",
+                oos_status="passed",
+            )
+
+            self.assertEqual(len(record.dataset_sha256), 64)
+            self.assertEqual(len(record.result_artifact_sha256), 64)
+            self.assertEqual(len(record.config_sha256), 64)
+            self.assertTrue(record.python_version)
+            self.assertTrue(record.platform)
+            self.assertEqual(record.fee_schedule_revision, "base_tier_2026-07")
+            self.assertEqual(record.evaluation_scope, "chronological_oos")
+            self.assertTrue(record.provenance_complete)
+
+    def test_append_rejects_artifact_changed_after_record_creation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            dataset = root / "dataset.jsonl"
+            artifact = root / "result.json"
+            ledger = root / "ledger.jsonl"
+            dataset.write_text("{}\n", encoding="utf-8")
+            artifact.write_text("{}", encoding="utf-8")
+            record = make_experiment_record(
+                source_video_id="",
+                source_url="",
+                participant="internal research",
+                claim_family="listing_event",
+                hypothesis="fixture",
+                setup_id="listing_event_drift_reversal",
+                dataset=str(dataset),
+                config={},
+                result_artifact=str(artifact),
+                metrics={},
+                verdict="rejected",
+                verdict_reason="fixture",
+            )
+            artifact.write_text('{"changed":true}', encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "hash mismatch"):
+                append_experiment_record(ledger, record)
+
+    def test_positive_verdict_requires_existing_dataset_and_result(self) -> None:
+        with self.assertRaisesRegex(ValueError, "requires existing"):
+            make_experiment_record(
+                source_video_id="",
+                source_url="",
+                participant="internal research",
+                claim_family="listing_event",
+                hypothesis="fixture",
+                setup_id="listing_event_drift_reversal",
+                dataset="missing.jsonl",
+                config={},
+                result_artifact="missing.json",
+                metrics={},
+                verdict="promising",
+                verdict_reason="should be blocked",
             )
 
 

@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import itertools
 import json
+import math
 from dataclasses import asdict, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 from config import RiskConfig, StrategyConfig
-from ws_replay import EventDrivenReplayBacktester, ReplayConfig, load_normalized_events
+from ws_replay import EventDrivenReplayBacktester, ReplayConfig, _event_ts, load_normalized_events
 
 
 def utc_stamp() -> str:
@@ -90,6 +91,7 @@ def run_grid_search(
     min_net_pnl_quote: float = -1e9,
     min_profit_factor: float = 0.0,
     max_drawdown_quote: float = 0.0,
+    max_combinations: int = 10_000,
     backtester_cls: type[EventDrivenReplayBacktester] = EventDrivenReplayBacktester,
 ) -> dict[str, Any]:
     signal_types = grid.get("signal_type", [base_strategy.signal_type])
@@ -98,25 +100,32 @@ def run_grid_search(
     breakout_bps = grid.get("breakout_bps", [base_strategy.breakout_bps])
     breakout_lookback_sec = grid.get("breakout_lookback_sec", [base_strategy.breakout_lookback_sec])
     breakout_min_samples = grid.get("breakout_min_samples", [base_strategy.breakout_min_samples])
-    combinations = list(
-        itertools.product(
-            signal_types,
-            grid["entry_imbalance_abs"],
-            grid["entry_signed_flow_notional"],
-            grid["max_spread_bps"],
-            grid["take_profit_bps"],
-            grid["stop_loss_bps"],
-            grid["max_hold_sec"],
-            breakout_bps,
-            breakout_lookback_sec,
-            breakout_min_samples,
-        )
+    if max_combinations <= 0:
+        raise ValueError("max_combinations must be positive")
+    dimensions = (
+        signal_types,
+        grid["entry_imbalance_abs"],
+        grid["entry_signed_flow_notional"],
+        grid["max_spread_bps"],
+        grid["take_profit_bps"],
+        grid["stop_loss_bps"],
+        grid["max_hold_sec"],
+        breakout_bps,
+        breakout_lookback_sec,
+        breakout_min_samples,
     )
+    combination_count = math.prod(len(values) for values in dimensions)
+    if combination_count > max_combinations:
+        raise ValueError(
+            f"grid has {combination_count} combinations, exceeding multiple-testing budget {max_combinations}"
+        )
+    combinations = list(itertools.product(*dimensions))
     results: list[dict[str, Any]] = []
+    ordered_events = sorted(events, key=_event_ts)
     for combo in combinations:
         strategy = _strategy_from_base(base_strategy, *combo)
         replay = backtester_cls(strategy, risk_cfg, replay_cfg)
-        payload = replay.run(events)
+        payload = replay.run(ordered_events, assume_sorted=True)
         metrics = payload["metrics"]
         eligible, eligibility_reasons = _eligible_metrics(
             metrics,
@@ -137,6 +146,7 @@ def run_grid_search(
                 "skipped_signals": payload["skipped_signals"],
                 "per_market": payload["per_market"],
                 "eligible": eligible,
+                "in_sample_eligible": eligible,
                 "eligibility_reasons": eligibility_reasons,
             }
         )
@@ -150,6 +160,21 @@ def run_grid_search(
 
     return {
         "mode": "event_driven_replay_grid_search",
+        "evaluation_scope": "in_sample_grid_search_only",
+        "strategy_accepted": False,
+        "paper_forward_allowed": False,
+        "oos_evaluated": False,
+        "oos_status": "not_run",
+        "acceptance_note": "Eligibility ranks in-sample configurations only; independent OOS/walk-forward/stress gates are mandatory.",
+        "requires_sealed_holdout": True,
+        "multiple_testing": {
+            "budget_combinations": max_combinations,
+            "tested_combinations": len(combinations),
+            "budget_exhausted": len(combinations) >= max_combinations,
+            "sealed_holdout_required": True,
+            "holdout_consumed": False,
+            "acceptance_from_this_grid_forbidden": True,
+        },
         "events": len(events),
         "grid": grid,
         "eligibility_filters": {
@@ -183,6 +208,7 @@ def run_grid_search_file(
     min_net_pnl_quote: float = -1e9,
     min_profit_factor: float = 0.0,
     max_drawdown_quote: float = 0.0,
+    max_combinations: int = 10_000,
     backtester_cls: type[EventDrivenReplayBacktester] = EventDrivenReplayBacktester,
 ) -> dict[str, Any]:
     events = load_normalized_events(input_path)
@@ -199,6 +225,7 @@ def run_grid_search_file(
         min_net_pnl_quote=min_net_pnl_quote,
         min_profit_factor=min_profit_factor,
         max_drawdown_quote=max_drawdown_quote,
+        max_combinations=max_combinations,
         backtester_cls=backtester_cls,
     )
     result["input"] = str(input_path)

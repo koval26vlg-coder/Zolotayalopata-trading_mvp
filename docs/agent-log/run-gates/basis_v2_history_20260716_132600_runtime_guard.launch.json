@@ -1,0 +1,21 @@
+{
+  "schema": "active_run_launch_record_v1",
+  "project": "trading_mvp",
+  "run_id": "basis_v2_history_20260716_132600_runtime_guard",
+  "run_type": "historical_basis_v2_history_collect",
+  "created_at": "2026-07-16T15:48:19.657754+00:00",
+  "command": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\code-snapshots\\f1371568f71792541ed94d822a87066fc0e496acfa4f37720c224a326e5a3a9b\\historical_basis_v2_collector.py --plan E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2\\plans\\basis_v2_planonly_20260716_131340_artifact_guard.json --expected-plan-hash 354422b317d3112b3da73ff3f8126e2bf09948795f2781e64acb47f611060665 --output-root E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2 --max-runtime-sec 1200 --active-run-gate C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\active-run-gate.json --code-snapshot-hash f1371568f71792541ed94d822a87066fc0e496acfa4f37720c224a326e5a3a9b --code-snapshot-manifest E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\code-snapshots\\f1371568f71792541ed94d822a87066fc0e496acfa4f37720c224a326e5a3a9b\\snapshot-manifest.json --run-id basis_v2_history_20260716_132600_runtime_guard",
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "output": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2\\runs\\basis_v2_history_20260716_132600_runtime_guard",
+    "kind": "directory"
+  },
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2\\runs\\basis_v2_history_20260716_132600_runtime_guard\\manifest.json",
+  "owner_output_prefix": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2\\runs\\basis_v2_history_20260716_132600_runtime_guard",
+  "code_snapshot_hash": "f1371568f71792541ed94d822a87066fc0e496acfa4f37720c224a326e5a3a9b",
+  "parallel_parent_run_id": null,
+  "research_only": true,
+  "live_orders": false,
+  "api_keys": false,
+  "leverage_or_margin": false
+}

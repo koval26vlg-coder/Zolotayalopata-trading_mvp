@@ -1,0 +1,32 @@
+{
+  "schema": "trading_mvp_agent_checkpoint_v1",
+  "generated_at": "2026-07-16T13:30:29.6434786+03:00",
+  "agent": "Codex",
+  "request": "возобнови цель",
+  "goal": "One-Week Historical Edge Sprint: cross-venue MEXC/Gate perp basis convergence",
+  "active_gate_status": "READY_FOR_POSTPROCESS",
+  "work_completed": [
+    "Resolved frozen plan data contract",
+    "Derived 120 authoritative candle cache paths without reading rows",
+    "Verified 40 funding reference paths and SHA-256 hashes",
+    "Confirmed no collector process was launched"
+  ],
+  "artifact_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2\\cache-audits\\basis_v2_cache_coverage_20260716_102940.json",
+  "artifact_sha256": "7f80caf22751a0d1449cc7a1d69d4626bff56abee44d1899549d15a52eb9493d",
+  "decision": "NETWORK_COLLECT_REQUIRED",
+  "candle_cache_expected": 120,
+  "candle_cache_present": 0,
+  "funding_references_verified": 40,
+  "network_accessed": false,
+  "oos_read": false,
+  "next_required_action": "Exact approval, then one visible public-history collector and train-only postprocess; no automatic OOS",
+  "approval_phrase": "Подтверждаю visible basis-v2 history collect plan_hash=354422b317d3112b3da73ff3f8126e2bf09948795f2781e64acb47f611060665, run_id=basis_v2_history_20260716_132600_runtime_guard, MaxRuntimeSec=1200, collect hard deadline=2026-07-16T22:00:00.0000000+03:00, затем visible train-only postprocess MaxRuntimeSec=1800 без automatic OOS, end-to-end runtime cap=3075 sec, public API only, без grid/OOS/live/private API keys.",
+  "restrictions": [
+    "no grid",
+    "no OOS",
+    "no live orders",
+    "no private API keys",
+    "no leverage",
+    "no margin"
+  ]
+}

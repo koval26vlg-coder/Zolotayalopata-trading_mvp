@@ -1,0 +1,26 @@
+{
+  "schema": "trading_mvp_offline_regression_receipt_v1",
+  "status": "PASS",
+  "observed_at_utc": "2026-08-03T16:20:25.2100904+00:00",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-n08-no-skip-refreeze-proposal-20260803-v1.json",
+    "sha256": "c89b32fe53f51326e9f27461fc6e447a4b0554f88e6503e804638d2e3ff3cdba",
+    "proposal_hash": "86d303cbee016ffb31ac654c6a62cda5287bcebdbcb864daf4934f1b412b20ce",
+    "canonical_hash_verified": true
+  },
+  "preview_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-aef-n08-no-skip-refreeze-preview-audit-20260803-v1.json",
+    "sha256": "0715fc35b0b739db066c96eb7e63657a72c6266bd21d957f2241b0eec2808442",
+    "status": "PASS_PLANONLY_REFREEZE_READY"
+  },
+  "command": "python -m unittest trading_mvp.tests.test_pit_schedule_time_amendment trading_mvp.tests.test_dense_ws_n08_no_skip_feasibility_amendment trading_mvp.tests.test_dense_ws_campaign_feasibility trading_mvp.tests.test_dense_ws_campaign_contract",
+  "result": {
+    "tests_run": 36,
+    "failures": 0,
+    "errors": 0,
+    "network_access": false,
+    "collector_launch": false,
+    "data_plane_writes": false
+  },
+  "note": "Test fixture writes were confined to the local process temporary directory; no market-data collector, schedule pointer, contract source, or output namespace was changed."
+}

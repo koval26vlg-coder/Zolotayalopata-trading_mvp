@@ -1,0 +1,213 @@
+{
+  "schema": "trading_mvp_dense_ws_signal_evaluator_contract_v1",
+  "mode": "FrozenSignalEvaluatorContract",
+  "status": "FROZEN_NOT_AUTHORIZED",
+  "research_only": true,
+  "identity": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "data_type": "DENSE_WS_SEGMENTED"
+  },
+  "source_proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-acceptance-proposal-20260802-v1.json",
+    "file_sha256": "ec1fab4989dad1ec872b595d429cb029d74831dc8adf24b306dfb7dbce2050fa",
+    "proposal_hash": "a9ec751329e436c1ea30b63433c57cf0e9ffd35370a097735c9ce91f71bb40d7"
+  },
+  "source_review_draft": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-signal-evaluator-review-draft-20260802-v1.json",
+    "file_sha256": "c3f7e1e95721adeb004a9c0ace83c94f1e756fe737a4aa31e6c77171c00526e3",
+    "draft_hash": "9325445a68aea9f8224658690367862662c342fc8f624a824f4c805d9c293573"
+  },
+  "source_campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "data_type": "DENSE_WS_SEGMENTED",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "contract_hash": "8f2021053b83551edb9bfb57847810caccdef30fd3368349ff98aedfe1cf9485"
+  },
+  "approval_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-signal-evaluator-contract-freeze-approval.json",
+    "file_sha256": "2660b5a502568cd1e6c1edcb8048aad30d50efffa16e6967c39aa845072b4952",
+    "schema": "trading_mvp_dense_ws_contract_freeze_approval_v1",
+    "approval_type": "EXACT_HASH_BOUND_SIGNAL_EVALUATOR_CONTRACT_FREEZE_ONLY",
+    "status": "APPROVED",
+    "thread_id": "019e738a-b37c-7a33-ae04-6cc80739f184",
+    "approved_at_utc": "2026-08-02T07:57:51.3859134Z",
+    "proposal_hash": "a9ec751329e436c1ea30b63433c57cf0e9ffd35370a097735c9ce91f71bb40d7",
+    "scope": "CONTRACT_FREEZE_ONLY"
+  },
+  "signal_contract": {
+    "eligible_regime": "DENSE_BOTH",
+    "directions": [
+      "buy_mexc_sell_gateio",
+      "buy_gateio_sell_mexc"
+    ],
+    "displayed_gross_edge_bps_formula": "(sell_bid / buy_ask - 1) * 10000",
+    "displayed_normal_net_edge_bps_formula": "displayed_gross_edge_bps - 69",
+    "trigger_when_displayed_normal_net_edge_bps_gt": 0.0,
+    "minimum_displayed_capacity_quote": 50.0,
+    "cooldown_sec_per_base_and_direction": 60,
+    "one_event_per_base_direction_per_cooldown": true,
+    "event_selected_before_outcome_quotes": true,
+    "threshold_learned_from_returns_pnl_or_oos": false,
+    "parameter_combinations": 1
+  },
+  "execution_realization_contract": {
+    "source": "same immutable campaign raw BBO stream and causal materialization",
+    "normal_latency_ms": 250,
+    "stress_latency_ms": 1000,
+    "execution_ts_formula": "signal_sample_ts + latency_ms / 1000",
+    "outcome_quote_selection": "latest raw BBO with recv_ts <= execution_ts; no future quote",
+    "future_rows_allowed_for_signal": false,
+    "future_rows_allowed_only_for_outcome_measurement": true,
+    "max_quote_age_ms": {
+      "mexc": 6000,
+      "gateio": 5000
+    },
+    "max_cross_venue_recv_ts_skew_ms": 2000,
+    "minimum_execution_capacity_quote_each_leg": 50.0,
+    "both_legs_required": true,
+    "unfillable_events_remain_in_fill_rate_denominator": true,
+    "paired_fill_gross_edge_bps_formula": "(execution_sell_bid / execution_buy_ask - 1) * 10000",
+    "normal_total_cost_bps": 69.0,
+    "stress_total_cost_bps": 89.0,
+    "normal_net_edge_bps_formula": "paired_fill_gross_edge_bps - 69",
+    "stress_net_edge_bps_formula": "paired_fill_gross_edge_bps - 89",
+    "maker_fill_or_queue_assumption": false,
+    "one_leg_fill_profit_credited": false
+  },
+  "evaluation_design_contract": {
+    "input_ordering": "valid observations sorted by causal sample_ts",
+    "primary_split": {
+      "train_fraction": 0.7,
+      "oos_fraction": 0.3,
+      "split_type": "single contiguous chronological split",
+      "embargo_sec": 300
+    },
+    "walk_forward": {
+      "folds": 5,
+      "ordering": "chronological",
+      "formula_refit_between_folds": false,
+      "regime_parameters_refit_on_oos": false
+    },
+    "parameter_combinations": 1,
+    "grid_search": false,
+    "retune": false,
+    "threshold_selection_from_returns_or_pnl": false,
+    "threshold_selection_from_oos": false
+  },
+  "acceptance_contract": {
+    "sample": {
+      "minimum_total_independent_events": 60,
+      "minimum_train_events": 40,
+      "minimum_oos_events": 20,
+      "minimum_events_per_walk_forward_fold": 8,
+      "minimum_distinct_utc_hours": 8,
+      "minimum_distinct_bases": 8,
+      "minimum_events_per_direction": 10,
+      "independence_rule": "60-second cooldown per base and direction",
+      "below_minimum_action": "INSUFFICIENT_DATA_NOT_REJECTED"
+    },
+    "economics": {
+      "oos_normal_net_expectancy_bps_gt": 0.0,
+      "oos_normal_net_pnl_quote_gt": 0.0,
+      "oos_normal_profit_factor_gte": 1.2,
+      "oos_cluster_block_bootstrap_95pct_expectancy_lower_bound_gt": 0.0,
+      "oos_stress_net_expectancy_bps_gte": 0.0,
+      "oos_stress_net_pnl_quote_gte": 0.0,
+      "oos_stress_profit_factor_gte": 1.0,
+      "each_direction_oos_normal_expectancy_bps_gte": 0.0
+    },
+    "robustness": {
+      "walk_forward_folds": 5,
+      "minimum_positive_walk_forward_folds": 4,
+      "minimum_normal_paired_fill_rate": 0.95,
+      "minimum_stress_paired_fill_rate": 0.9,
+      "maximum_drawdown_fraction_allocated_capital": 0.1,
+      "allocated_capital_quote": 150.0,
+      "maximum_drawdown_quote": 15.0,
+      "maximum_single_event_positive_pnl_share": 0.25,
+      "maximum_single_base_positive_pnl_share": 0.25,
+      "maximum_single_utc_hour_positive_pnl_share": 0.25,
+      "maximum_single_direction_positive_pnl_share": 0.75,
+      "deterministic_repeats": 2,
+      "matching_result_hash_required": true
+    },
+    "capacity": {
+      "minimum_displayed_capacity_quote_each_leg": 50.0,
+      "minimum_execution_capacity_quote_each_leg": 50.0,
+      "capacity_shortfall_counts_as_unfillable": true
+    }
+  },
+  "paper_forward_contract": {
+    "public_readonly_only": true,
+    "duration_days": 7,
+    "minimum_independent_decisions": 100,
+    "minimum_distinct_utc_dates": 5,
+    "normal_net_expectancy_bps_gt": 0.0,
+    "normal_profit_factor_gte": 1.2,
+    "stress_net_expectancy_bps_gte": 0.0,
+    "minimum_normal_paired_fill_rate": 0.95,
+    "maximum_drawdown_fraction_allocated_capital": 0.1,
+    "terminal_result_requires_user_review": true,
+    "live_or_private_api_allowed": false
+  },
+  "decision_contract": {
+    "ordered_verdicts": [
+      "REJECT_DATA_QUALITY",
+      "INSUFFICIENT_DATA_NOT_REJECTED",
+      "REJECT_HISTORICAL_ECONOMICS_OR_EXECUTION",
+      "ACCEPT_FOR_PUBLIC_READONLY_PAPER_FORWARD",
+      "REJECT_PAPER_FORWARD",
+      "RESEARCH_ACCEPTED_AWAIT_SEPARATE_LIVE_REVIEW"
+    ],
+    "insufficient_sample_verdict": "INSUFFICIENT_DATA_NOT_REJECTED",
+    "maximum_historical_verdict": "ACCEPT_FOR_PUBLIC_READONLY_PAPER_FORWARD",
+    "historical_result_can_accept_strategy": false,
+    "stop_on_first_failed_gate": true,
+    "no_grid_or_retune_after_failure": true,
+    "terminal_accept_or_reject_requires_user_review": true
+  },
+  "materialization_binding_contract": {
+    "status": "FUTURE_OUTPUT_HASH_BINDING_REQUIRED",
+    "required_before_evaluator": true,
+    "required_manifest_schema": "trading_mvp_dense_ws_causal_materialization_v1",
+    "required_snapshot_schema": "trading_mvp_dense_ws_execution_snapshot_v1",
+    "required_materialization_decision": "DATA_READY_FOR_SIGNAL_CONTRACT_REVIEW",
+    "required_materialization_accepted": true,
+    "required_future_bindings": [
+      "campaign_manifest_sha256",
+      "campaign_quality_report_sha256",
+      "causal_materialization_manifest_sha256",
+      "causal_materialization_deterministic_result_hash",
+      "regime_labels_sha256",
+      "execution_snapshots_sha256",
+      "raw_bbo_segment_chain_and_file_hashes"
+    ],
+    "raw_bbo_binding_source": "same accepted immutable campaign segments referenced by the hash-bound quality report",
+    "unbound_input_action": "REFUSE_EVALUATOR"
+  },
+  "authorization": {
+    "contract_freeze_authorized": true,
+    "planonly_build_authorized": true,
+    "evaluation_authorized": false,
+    "materialization_output_bound": false,
+    "returns_pnl_oos_allowed": false,
+    "paper_forward_authorized": false,
+    "live_or_private_api_authorized": false
+  },
+  "safety": {
+    "network_access": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_read": false,
+    "grid_or_retune": false,
+    "paper_forward": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "WAIT_FOR_CAMPAIGN_AND_CAUSAL_MATERIALIZATION_THEN_REQUEST_EXACT_EVALUATOR_APPROVAL",
+  "contract_hash": "b70975468fbd67acf550dea39aac21c116fb3a86a57ed56d400f40f0fa287954"
+}

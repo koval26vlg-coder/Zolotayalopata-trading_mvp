@@ -1,0 +1,136 @@
+{
+  "schema": "trading_mvp_autopilot_research_catalog_v1",
+  "catalog_id": "trading_mvp_autopilot_research_catalog_20260728_v1",
+  "project": "trading_mvp",
+  "mode": "bounded_offline_product_readiness",
+  "constraints": {
+    "max_runtime_sec_per_task": 1800,
+    "one_task_at_a_time": true,
+    "network_access": false,
+    "market_data_writer": false,
+    "returns_or_pnl_read": false,
+    "new_hypothesis": false,
+    "grid_or_retune": false,
+    "paper_positions": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "leverage_or_margin": false
+  },
+  "tasks": [
+    {
+      "id": "paper_contract_validator_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-contract-validator-v1.json",
+      "objective": "Implement deterministic validators and tamper tests for the observer runtime, venue-health and private-boundary contracts. No network access or strategy changes.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_observer_runtime.py",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-observer-runtime-contract-v1.json",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-venue-health-gate-contract-v1.json",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\private-boundary-attestation-contract-v1.json"
+      ]
+    },
+    {
+      "id": "paper_oms_fixture_sink_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-oms-fixture-sink-v1.json",
+      "objective": "Connect accepted fixture observations to the paper OMS through an injected sink, preserving single-writer, chronology, reconciliation and PAPER_FORWARD_READY gates. Fixtures only.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_observer_runtime.py",
+        "trading_mvp/src/historical_basis_v2_paper_oms.py",
+        "trading_mvp/src/basis_paper_oms.py",
+        "trading_mvp/tests"
+      ]
+    },
+    {
+      "id": "paper_observer_incident_state_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-observer-incident-state-v1.json",
+      "objective": "Implement fixture-tested observer incident states for transient venue degradation, persistent stale data, schema failure and recovery without turning transient API failures into fake strategy PnL.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_observer_runtime.py",
+        "trading_mvp/src/paper_execution_guard.py",
+        "trading_mvp/tests"
+      ]
+    },
+    {
+      "id": "paper_runtime_acl_policy_v1",
+      "max_runtime_sec": 1200,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-runtime-acl-policy-v1.json",
+      "objective": "Define and fixture-test a Windows ACL policy separating public research artifacts from future private runtime state. Do not change live machine ACLs.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "docs/plans"
+      ]
+    },
+    {
+      "id": "paper_secret_provider_interface_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-secret-provider-interface-v1.json",
+      "objective": "Implement a credential-provider interface, redacted handle type and in-memory test provider only. Do not request, read or persist real credentials and do not add private exchange clients.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\private-boundary-attestation-contract-v1.json"
+      ]
+    },
+    {
+      "id": "paper_log_redaction_guard_v1",
+      "max_runtime_sec": 1200,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-log-redaction-guard-v1.json",
+      "objective": "Implement deterministic log redaction tests for credential-like headers, query parameters and payload fields before any private integration exists.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests"
+      ]
+    },
+    {
+      "id": "paper_reconciliation_fixture_adapter_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-reconciliation-fixture-adapter-v1.json",
+      "objective": "Implement a read-only reconciliation interface and deterministic fixture adapter for balances, orders and positions. No authenticated requests or order methods.",
+      "allowed_inputs": [
+        "trading_mvp/src/basis_paper_oms.py",
+        "trading_mvp/src/historical_basis_v2_paper_oms.py",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\private-boundary-attestation-contract-v1.json"
+      ]
+    },
+    {
+      "id": "paper_observer_visible_monitor_fixture_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-observer-visible-monitor-fixture-v1.json",
+      "objective": "Implement a visible fixture monitor showing progress, ETA, sample counts, last write, venue health and errors. No public or private network collection.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_observer_runtime.py",
+        "trading_mvp/run_mvp.ps1",
+        "tools",
+        "trading_mvp/tests"
+      ]
+    },
+    {
+      "id": "paper_runtime_fault_injection_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-runtime-fault-injection-v1.json",
+      "objective": "Run deterministic fixture fault injection for interruption, duplicate samples, stale lock, truncated JSONL, disk-write failure and hash drift; prove fail-closed recovery behavior.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_observer_runtime.py",
+        "trading_mvp/src/basis_paper_oms.py",
+        "trading_mvp/tests"
+      ]
+    },
+    {
+      "id": "paper_product_readiness_audit_v2",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v2.json",
+      "objective": "Re-audit paper product readiness after the bounded implementation queue, map remaining blockers to historical/PIT evidence gates, and emit only actionable gaps without changing the hypothesis.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "docs/agent-log",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research"
+      ]
+    }
+  ]
+}

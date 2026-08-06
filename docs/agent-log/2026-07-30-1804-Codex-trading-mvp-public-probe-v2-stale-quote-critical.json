@@ -1,0 +1,86 @@
+{
+  "schema": "trading_mvp_public_readonly_probe_failure_audit_v1",
+  "status": "USER_REVIEW_REQUIRED",
+  "generated_at": "2026-07-30T18:02:40.7534717+03:00",
+  "run_id": "paper_public_readonly_probe_v2_20260730_145817",
+  "plan": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-readonly-probe-plan-v2.json",
+    "file_sha256": "ec2201bcb96c7d0e9ef045808880a7bbadb2f16873c3509c69afbf5e73f6477f",
+    "plan_hash_sha256": "f2135b1059be438da5e1f9d2d48ce871e7012ad738a288716b521ed952dde9b6"
+  },
+  "standing_authorization": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\trading-mvp-public-readonly-standing-authorization-v1.json",
+    "authorization_hash_sha256": "9b34452c59824c028ecb2016a1abd986238bc2f3119d9f838de4c5f238395ea5"
+  },
+  "result": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\public-readonly-probe-runs\\paper_public_readonly_probe_v2_20260730_145817\\manifest.json",
+    "file_sha256": "0589a411f00d4c5b0a4080298a6ab39bfd2e5cc84f99ff7b495bbc56febd3e53",
+    "deterministic_result_hash": "ed07721661c2b810f722c4995e7599fb6faafe5001c53999852b7d41866cf1d1",
+    "status": "STOPPED_INCOMPLETE",
+    "final": false,
+    "verdict": "PUBLIC_READONLY_PROBE_STOPPED_INCOMPLETE"
+  },
+  "quality": {
+    "expected_snapshot_count": 48,
+    "snapshot_count": 46,
+    "error_count": 2,
+    "application_error_rate": 0.041666666666666664,
+    "planned_endpoint_reads": 192,
+    "network_requests": 192,
+    "retry_count": 0
+  },
+  "failure": {
+    "category": "stale_quote",
+    "venue": "mexc",
+    "endpoint_id": "mexc_tickers",
+    "frozen_max_quote_age_ms": 5000,
+    "observed_rejected_quote_ages_ms": [
+      5323,
+      5396
+    ],
+    "accepted_quote_age_ms": {
+      "min": 1714,
+      "p50": 3024,
+      "p95": 4739,
+      "max": 4990
+    },
+    "gateio_quote_age_ms": {
+      "min": 212,
+      "p50": 214,
+      "p95": 297,
+      "max": 302
+    },
+    "schema_mismatch_count": 0,
+    "transport_error_count": 0
+  },
+  "safety": {
+    "public_get_only": true,
+    "returns_or_pnl_read": false,
+    "signals_read": false,
+    "oms_mutations": 0,
+    "private_api_keys": false,
+    "live_orders": false,
+    "leverage_or_margin": false,
+    "grid_or_retune": false,
+    "hypothesis_changed": false
+  },
+  "automatic_retry_permitted": false,
+  "critical_checkpoint": {
+    "reason": "Changing venue-specific quote freshness or accepting partial output changes the frozen evidence/risk contract.",
+    "recommended_option": "contract_v3_mexc_max_quote_age_ms_6000_gateio_5000_one_new_visible_bounded_probe",
+    "unchanged": [
+      "venue",
+      "universe",
+      "symbol",
+      "hypothesis",
+      "signal",
+      "cost",
+      "normalized_output_schema",
+      "public_GET_only",
+      "180_second_runtime_cap",
+      "one_run_per_plan_hash",
+      "no_live_or_private_api"
+    ]
+  },
+  "next_allowed_action": "USER_REVIEW_REQUIRED_QUOTE_FRESHNESS_CONTRACT"
+}

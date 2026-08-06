@@ -1,0 +1,118 @@
+{
+  "schema": "trading_mvp_dense_ws_postrun_runtime_refreeze_proposal_v1",
+  "mode": "PlanOnlyReviewProposal",
+  "status": "PROPOSAL_NOT_APPROVED_NOT_EXECUTABLE",
+  "generated_at_local": "2026-08-02T13:16:00+03:00",
+  "research_only": true,
+  "source_campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+    "plan_file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "writer_start_local": "2026-08-03T01:30:00+03:00",
+    "writer_deadline_local": "2026-08-04T01:30:00+03:00",
+    "collector_contract_changed": false,
+    "collector_approval_changed": false
+  },
+  "source_calibration": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-aef-24h-postrun-runtime-calibration-20260802T1307+0300.json",
+    "file_sha256": "0807cbe05706b6aa51d644d92e3d69ae4153641b0e96497d68cc01d0342fd30e",
+    "projected_core_runtime_sec": 2559.987,
+    "projected_core_runtime_minutes": 42.666,
+    "projection_includes_output_write_overhead": false,
+    "current_shared_limit_sec": 1800,
+    "current_limit_shortfall_sec": 759.987
+  },
+  "current_bindings": {
+    "policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "policy_sha256": "f79f0e029fc4861249a11929545186127223a743411cc9fc8c229511d60da3cc",
+    "orchestrator_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_dense_ws_postrun_visible.ps1",
+    "orchestrator_sha256": "ea18fd8e883a45089840974a1eb138c49c7fced5fd7e3f42109ea8b5a3e5dda9",
+    "quality_tool_sha256": "6796f534ab5018ad54ea3f453c7cf522fe21e8f1d70844cd552ed2cc7c8059b3",
+    "materializer_tool_sha256": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c",
+    "orchestration_test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_postrun_orchestration.py",
+    "orchestration_test_sha256": "9d9c12cf02fc7300aa242e20deaa65f6d46d2e184cef2044f903a4bf49686045"
+  },
+  "proposed_runtime_contract": {
+    "postrun_not_before_local": "2026-08-04T01:30:00+03:00",
+    "postrun_hard_deadline_local": "2026-08-04T02:30:00+03:00",
+    "total_max_runtime_sec": 3600,
+    "stages": [
+      {
+        "sequence": 1,
+        "stage": "CAMPAIGN_DATA_QUALITY",
+        "max_runtime_sec": 1800,
+        "starts_after": "exact completed campaign manifest and matching READY_FOR_POSTPROCESS gate",
+        "failure_action": "stop before causal materialization and persist bounded failure owner"
+      },
+      {
+        "sequence": 2,
+        "stage": "CAUSAL_MATERIALIZATION",
+        "max_runtime_sec": 1800,
+        "starts_after": "quality accepted with exact campaign and plan bindings",
+        "failure_action": "stop with no evaluator progression and persist bounded failure owner"
+      }
+    ],
+    "stages_are_sequential": true,
+    "one_visible_terminal": true,
+    "one_postrun_owner": true,
+    "no_intentional_timeout_or_retry": true,
+    "stopped_incomplete_recovery_requires_new_exact_approval": true
+  },
+  "authorized_change_scope_after_exact_approval": {
+    "allowed_files": [
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_dense_ws_postrun_visible.ps1",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_postrun_orchestration.py",
+      "C:\\Users\\koval\\.codex\\automations\\trading-continuous-production\\automation.toml",
+      "new approval, audit, regression and agent-log artifacts"
+    ],
+    "quality_tool_change_allowed": false,
+    "materializer_tool_change_allowed": false,
+    "campaign_plan_or_contract_change_allowed": false,
+    "venue_universe_signal_cost_risk_change_allowed": false,
+    "collector_launch_or_duration_change_allowed": false
+  },
+  "implementation_requirements": {
+    "orchestrator_accepts_exact_total_runtime_sec": 3600,
+    "each_stage_has_independent_deadline_sec": 1800,
+    "second_stage_never_borrows_future_time_beyond_total_deadline": true,
+    "preflight_only_remains_no_run_or_output_writes": true,
+    "visible_terminal_and_owner_verification_preserved": true,
+    "policy_binds_new_orchestrator_sha256": true,
+    "automation_unfences_postrun_only_after_new_policy_hash_and_approval_receipt_match": true,
+    "evaluator_progression_still_stops_after_materialization": true
+  },
+  "verification_requirements": {
+    "targeted_orchestration_tests": "all pass",
+    "campaign_quality_and_materializer_tests": "all pass",
+    "fast_regression": "all pass with deterministic result hash unchanged unless the lane definition itself is explicitly audited",
+    "preflight_only": "returns no_run_or_output_writes=true",
+    "final_guard": "ACTIVE or the exact expected waiting state; collector approval remains APPROVED",
+    "new_hashes_recorded": true
+  },
+  "authorization": {
+    "authorized": false,
+    "executable": false,
+    "runtime_contract_refreeze_allowed": false,
+    "postrun_allowed_now": false,
+    "exact_user_approval_required": true
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "REQUEST_EXACT_HASH_BOUND_POSTRUN_RUNTIME_REFREEZE_APPROVAL",
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf40662"
+}

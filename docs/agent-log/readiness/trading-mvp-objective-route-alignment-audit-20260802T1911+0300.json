@@ -1,0 +1,170 @@
+{
+  "schema": "trading_mvp_objective_route_alignment_audit_v1",
+  "generated_at_local": "2026-08-02T19:11:15+03:00",
+  "mode": "OFFLINE_METADATA_ONLY",
+  "purpose": "Verify that the active Dense WS and PIT routes still advance the persistent non-Binance edge objective after the frozen cross-venue basis routes terminated, without reading market results, returns, PnL or OOS.",
+  "objective_sources": {
+    "original_sprint": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\2026-07-15-trading-mvp-one-week-historical-edge-sprint.md",
+      "sha256": "cbf88e1f634735360910ea3b8934c99cb98cfb38be7b9b9b50369c0fc29b8626"
+    },
+    "current_goal_document": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\2026-07-14-trading-mvp-current-goal.md",
+      "sha256": "52c7435dbafa08cebe0a2a55e7516d345eacf8d98d7a4ffef00c1ea1c5097554"
+    },
+    "accelerated_evidence_factory": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\2026-08-01-trading-mvp-accelerated-evidence-factory-v1.md",
+      "sha256": "4db3c7eb770a8ebb98d9a370c42945e5c6adb08c1155583d48d9911141017b0f"
+    },
+    "autopilot_policy": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+      "sha256": "13c2b98d76a6486eee43b60cf37c07fa2aa2dfbad3479f6c6c5285aff57ba842"
+    }
+  },
+  "closed_primary_route": {
+    "currentness_audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\cross-venue-basis-terminal-currentness-audit-20260802T1323+0300.json",
+    "currentness_audit_sha256": "8640b20c5a5e9257998646c66afa1b5f574c3295c56a117a9d0f6fc591be83d2",
+    "v1": {
+      "hypothesis_id": "cross_venue_perp_basis_convergence_history_v1",
+      "terminal_verdict": "INSUFFICIENT_DATA",
+      "reason": "Gate public 5m history covered about 34.722 days versus the frozen 220-day requirement.",
+      "edge_evaluated": false,
+      "same_contract_repeat_or_retune_allowed": false
+    },
+    "v2": {
+      "hypothesis_id": "cross_venue_perp_basis_convergence_1h_v2",
+      "terminal_verdict": "INSUFFICIENT_EXECUTABLE_UNIVERSE",
+      "reason": "Five train-liquidity survivors remained versus the frozen minimum of eight.",
+      "oos_or_returns_read": false,
+      "same_contract_repeat_or_retune_allowed": false
+    },
+    "interpretation": "The primary basis route was honestly closed before edge evaluation. It is not a negative edge verdict and cannot be reopened without a materially new contract."
+  },
+  "active_materially_distinct_route": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "venues": [
+      "MEXC",
+      "Gate"
+    ],
+    "binance_execution_or_testnet": false,
+    "data_type": "DENSE_WS_SEGMENTED",
+    "campaign_plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "launch_approval": {
+      "status": "APPROVED_WAITING_EXACT_WINDOW",
+      "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-aef-24h-launch-approval.json",
+      "receipt_sha256": "5c18fbcbc3646aa5456c917dc0084c5ef141615dc00a8bd952378042b31b8b2e",
+      "writer_start_local": "2026-08-03T01:30:00+03:00",
+      "writer_deadline_local": "2026-08-04T01:30:00+03:00",
+      "hard_deadline_local": "2026-08-04T02:00:00+03:00",
+      "hard_output_cap_bytes": 25000000000
+    },
+    "why_materially_distinct": [
+      "It uses a new dense public WebSocket BBO/depth/trade dataset rather than the unavailable frozen 220-day Gate 5m history.",
+      "It has a separate causal materialization contract and a separate no-grid signal/evaluator contract.",
+      "It does not relax, repeat or retune either closed historical basis contract."
+    ]
+  },
+  "runtime_limit_reconciliation": {
+    "original_general_limit_sec": 10800,
+    "exact_campaign_exception": true,
+    "exception_source": "The user later approved this exact hash-bound 24-hour campaign and explicitly replaced the earlier fixed run intervals with the Accelerated Evidence Factory schedule.",
+    "exception_is_global": false,
+    "all_other_new_long_runs_remain_separately_approval_bound": true,
+    "postrun_refreeze": {
+      "status": "APPROVED",
+      "proposal_hash": "0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf40662",
+      "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-postrun-runtime-refreeze-approval.json",
+      "receipt_sha256": "b6b739c466ac7c21abc9fed32752011304075f4aad269a30ff095be45a52e3b0",
+      "quality_max_runtime_sec": 1800,
+      "materialization_max_runtime_sec": 1800,
+      "total_max_runtime_sec": 3600
+    }
+  },
+  "goal_requirement_alignment": [
+    {
+      "requirement": "Find, prove or honestly reject one new non-Binance MEXC/Gate edge after costs.",
+      "status": "ALIGNED_IN_PROGRESS_NOT_PROVEN",
+      "evidence": "Dense WS is a new MEXC/Gate public-data hypothesis, but no accepted dataset or edge verdict exists yet."
+    },
+    {
+      "requirement": "Data-quality and train feasibility gates.",
+      "status": "ALIGNED_FROZEN_NOT_RUN",
+      "evidence": "Campaign quality and causal materialization are hash-bound and runtime-approved, but cannot run before the campaign completes."
+    },
+    {
+      "requirement": "Chronological OOS and five-fold walk-forward without grid or retune.",
+      "status": "ALIGNED_CONTRACT_FROZEN_NOT_AUTHORIZED",
+      "evidence": "The frozen evaluator contract requires chronological OOS and five folds with at least four positive folds. No evaluator run is authorized."
+    },
+    {
+      "requirement": "Positive net expectancy after costs, stress, economics and execution-capacity gates.",
+      "status": "ALIGNED_CONTRACT_FROZEN_NOT_RUN",
+      "evidence": "Normal and stress costs, paired fill, sample, concentration, drawdown and capacity thresholds are frozen; no results were read."
+    },
+    {
+      "requirement": "Continue PIT_UNIVERSE_V2_FORWARD as a separate 20-minute shadow track.",
+      "status": "ALIGNED_IN_PROGRESS_6_OF_20",
+      "evidence": "The next exact preapproved segment is pit_universe_v2_forward_20260803_n06 from 01:00 to 01:20 +03:00."
+    },
+    {
+      "requirement": "Keep live orders, private API keys, leverage and margin disabled before LIVE_REVIEW_ELIGIBLE.",
+      "status": "ALIGNED_ENFORCED",
+      "evidence": "The campaign, postrun and evaluator contracts all remain research-only and public-read-only."
+    }
+  ],
+  "unresolved_evaluator_checkpoint": {
+    "frozen_contract_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\frozen\\dense-ws-signal-evaluator-contract-20260802-v1.json",
+    "frozen_contract_file_sha256": "a9ef768d6f61297d01d8fe37a9d4e00b27cf5b2d52f122ab8ca9a0c3fae5a81d",
+    "contract_hash": "b70975468fbd67acf550dea39aac21c116fb3a86a57ed56d400f40f0fa287954",
+    "frozen_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\frozen\\dense-ws-signal-evaluator-planonly-20260802-v1.json",
+    "frozen_plan_file_sha256": "2ae9f20892eeb65772aa40c8bee0c905935dd50af2c57e29232ecc9418168fdb",
+    "plan_hash": "620b1711a5436c722acea99d41c4b81ba57bd317069456282814939b3eefeea2",
+    "semantics_gap_audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-evaluator-semantics-gap-audit-20260802T1854+0300.json",
+    "semantics_gap_audit_sha256": "bc5b607df71e13fef64904f4197fdafec066882ee89919e9e9402744078595f9",
+    "amendment_proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-evaluator-implementation-semantics-amendment-20260802-v1.json",
+    "amendment_proposal_file_sha256": "3663a2109670ff67cb20a69ae8862c9374504700eac76000f0ea9a2393261bbd",
+    "amendment_proposal_hash": "2c17be85d008d57b008136d0bb0bdcbef3f7bc7168620ba0aacd4e5f08645724",
+    "status": "USER_REVIEW_REQUIRED_FOR_SEMANTICS_AND_RUNTIME_IMPLEMENTATION_ONLY",
+    "campaign_collection_blocked_by_this_checkpoint": false,
+    "quality_or_materialization_blocked_by_this_checkpoint": false,
+    "real_evaluator_blocked": true
+  },
+  "launch_readiness": {
+    "evidence_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\upcoming-market-writer-launch-preflight-20260802T1908+0300.json",
+    "evidence_sha256": "cd68255ff95c27630ae235e4309656f916179f73c845b4503c3879f43167c2c5",
+    "pit_status": "READY_NOT_DUE",
+    "dense_status": "STRUCTURALLY_VALID_NOT_DUE"
+  },
+  "verdict": {
+    "status": "OBJECTIVE_ALIGNED_MATERIALLY_DISTINCT_SUCCESSOR_NOT_YET_PROVEN",
+    "goal_complete": false,
+    "edge_proven": false,
+    "edge_rejected": false,
+    "historical_accept": false,
+    "paper_forward_ready": false,
+    "live_review_eligible": false,
+    "current_route_should_continue": true,
+    "same_contract_basis_rerun_allowed": false
+  },
+  "next_actions": [
+    "Run only the exact visible PIT n06 segment when due.",
+    "Run only the exact approved visible Dense WS campaign when due.",
+    "After exact campaign completion, run only the approved quality and causal materialization postrun.",
+    "Do not implement or run the evaluator until the separate exact semantics/runtime checkpoint is approved."
+  ],
+  "safety": {
+    "network_access": false,
+    "collector_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  }
+}

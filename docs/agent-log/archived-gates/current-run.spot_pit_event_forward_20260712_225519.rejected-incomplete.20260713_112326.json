@@ -1,0 +1,19 @@
+{
+  "schema": "active_run_pointer_v1",
+  "project": "trading_mvp",
+  "run_id": "spot_pit_event_forward_20260712_225519",
+  "status": "REJECTED_INCOMPLETE",
+  "updated_at": "2026-07-13T08:49:30+03:00",
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\spot-pit-event-forward\\spot_pit_event_forward_20260712_225519\\manifest.json",
+  "output": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\spot-pit-event-forward\\spot_pit_event_forward_20260712_225519",
+    "kind": "directory"
+  },
+  "collector_pid": null,
+  "monitor_pid": null,
+  "process_ids": [],
+  "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\spot_pit_event_forward_20260712_225519.launch.json",
+  "original_status": "STOPPED_INCOMPLETE",
+  "rejected_at": "2026-07-13T11:23:26.2885302+03:00",
+  "rejection_reason": "Replaced by user-approved trading_mvp Fast-First objective; preserve as diagnostic only and do not resume or use as edge evidence."
+}

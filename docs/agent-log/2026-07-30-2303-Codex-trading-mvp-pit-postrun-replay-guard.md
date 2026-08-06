@@ -1,0 +1,21 @@
+# PIT postrun replay guard
+
+- Observed at: `2026-07-30T23:03:56+03:00`
+- Scope: existing `trading-continuous-production` heartbeat prompt only. Cadence, target task, status, PIT schedule, sealed runtime, gate schema, quality ledger, hypothesis, venue, universe, signal, costs, risk, and evidence contract were not changed.
+- Defect:
+  - successful PIT postrun does not change the existing `READY_FOR_POSTPROCESS` gate status;
+  - without a durable-summary idempotency rule, a later heartbeat could invoke the same already-complete exact postrun again, recreating quality reports and wasting quota.
+- Fix:
+  - before postrun, the heartbeat must inspect `docs\agent-log\run-gates\<run_id>.postrun.json`;
+  - a missing bound summary permits one exact postrun;
+  - malformed or mismatched run/plan/hash/embargo metadata is an integrity conflict;
+  - a bound deferred quota summary permits only an exact postrun retry after fresh weekly quota exceeds 15%, never a new collector;
+  - every other bound non-deferred summary proves postrun already completed and forbids a repeat; the heartbeat follows `next_allowed_action` and the current guard instead.
+- Verification:
+  - automation id remains `trading-continuous-production`;
+  - kind remains `heartbeat`;
+  - status remains `ACTIVE`;
+  - cadence remains `FREQ=MINUTELY;INTERVAL=20`;
+  - all three exact deferred next-action values are present;
+  - the application rendered the updated automation successfully.
+- Next: exact n03 remains the only preapproved short segment. On completion, its durable postrun summary now prevents an idempotent-but-wasteful replay loop.

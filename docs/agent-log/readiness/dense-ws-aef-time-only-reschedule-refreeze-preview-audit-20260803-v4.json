@@ -1,0 +1,40 @@
+{
+  "schema": "trading_mvp_dense_ws_aef_time_only_refreeze_preview_audit_v4",
+  "mode": "OfflineCurrentStateBindingAudit",
+  "status": "PASS_V4_REVIEW_DRAFT_CURRENT_STATE_BOUND_NOT_AUTHORIZED",
+  "generated_at_utc": "2026-08-03T10:26:33.686369Z",
+  "proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-time-only-reschedule-refreeze-proposal-20260803-v4.json",
+  "proposal_file_sha256": "081afc8d68b07f921707c210dabebdf1721a689a5c8e39386f60208e9279a0bb",
+  "proposal_hash": "3f01c0724ca488bb6149d8b4690b225051a2f17d3664ca97a8bf93bcd6482c8e",
+  "v3_staleness": {
+    "v3_expected_policy_sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+    "actual_policy_sha256": "aa6679f11725ef612c0d65713aa0c5d366e59ca36a49d903046d0d06164c00cb",
+    "v3_may_be_implemented": false
+  },
+  "current_state": {
+    "source_sha256": "80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb",
+    "active_policy_sha256": "aa6679f11725ef612c0d65713aa0c5d366e59ca36a49d903046d0d06164c00cb",
+    "candidate_policy_sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+    "policy_promotion_required_after_approval": true
+  },
+  "time_only_evidence": {
+    "audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-time-only-reschedule-diff-audit-20260803-v1.json",
+    "audit_sha256": "8d53d41f2baa412ef4d505474cd848cb84a7377910c6754108a21167c15617dd",
+    "postimage_verifier_audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-time-only-postimage-verifier-maintenance-20260803-v1.json",
+    "postimage_verifier_audit_sha256": "8d38131c96874661a4592125c1fc2daa18372762ba984bc381e2be36fe3e8820"
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false,
+    "source_or_policy_mutated": false
+  }
+}

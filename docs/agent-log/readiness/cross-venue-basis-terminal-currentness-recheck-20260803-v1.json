@@ -1,0 +1,54 @@
+{
+  "schema": "trading_mvp_cross_venue_basis_terminal_currentness_recheck_v1",
+  "recorded_at_utc": "2026-08-03T10:51:05.3294166Z",
+  "status": "PASS_BRANCHES_REMAIN_TERMINAL",
+  "purpose": "Reverify immutable terminal-report identities without opening any market, returns, PnL or OOS data.",
+  "source_audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\cross-venue-basis-terminal-currentness-audit-20260802T1323+0300.json",
+  "source_audit_sha256": "8640b20c5a5e9257998646c66afa1b5f574c3295c56a117a9d0f6fc591be83d2",
+  "active_gate_status": "READY_FOR_POSTPROCESS",
+  "terminal_reports": [
+    {
+      "id": "basis_v1_retention_closure",
+      "report_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\reports\\basis_sprint_retention_closure_20260715_115819.json",
+      "report_sha256": "55fe4c4e07d54e5ffd48aac04f49b4087cb0d6539bc387171dc19a7e02d6d19c",
+      "terminal_reason": "GATE_5M_PUBLIC_HISTORY_RETENTION_LT_FROZEN_220D",
+      "frozen_requirement": "220 days",
+      "observed_limit": "34.722 days",
+      "repeat_or_retune_allowed": false
+    },
+    {
+      "id": "basis_v2_quality_reject",
+      "report_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2\\reports\\basis_v2_terminal_report_quality_reject_primary_20260716_1916.json",
+      "report_sha256": "a2759d2c47ac3388d7b171e9071edb565bdf83b3dc35f2f38b2783210ae09d02",
+      "terminal_reason": "TRAIN_LIQUIDITY_SURVIVORS_BELOW_FROZEN_MINIMUM",
+      "frozen_requirement": "8 assets",
+      "observed_limit": "5 assets",
+      "repeat_or_retune_allowed": false
+    }
+  ],
+  "next_allowed_route": "Continue only the separately approved PIT shadow track and the Dense WS branch after its own exact v4 approval.",
+  "prohibited_actions": [
+    "recollect basis history",
+    "rerun same basis contracts",
+    "retune",
+    "OOS",
+    "returns",
+    "PnL",
+    "grid",
+    "paper",
+    "live",
+    "private API",
+    "leverage",
+    "margin"
+  ],
+  "safety": {
+    "network_access": false,
+    "collector_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "source_or_contract_mutated": false
+  }
+}

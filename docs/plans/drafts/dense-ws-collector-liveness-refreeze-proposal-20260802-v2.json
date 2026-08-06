@@ -1,0 +1,296 @@
+{
+  "schema": "trading_mvp_dense_ws_collector_liveness_refreeze_proposal_v2",
+  "mode": "PlanOnlyReviewProposal",
+  "status": "USER_REVIEW_REQUIRED_NOT_FROZEN_NOT_AUTHORIZED",
+  "generated_at_local": "2026-08-02T21:39:00+03:00",
+  "generated_at_utc": "2026-08-02T18:39:00Z",
+  "research_only": true,
+  "supersedes": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-collector-liveness-refreeze-proposal-20260802-v1.json",
+    "file_sha256": "a50796f3f69f203f76a75e5a9e9261414bd7367c97b36e5e5bc02143feda0d6e",
+    "proposal_hash": "cb070b3d88b23ff4a1cc46dbd68407d467f4c8ed110ee870d0fd72a5e4e5be3a",
+    "disposition": "SUPERSEDED_REJECTED_BY_INDEPENDENT_REVIEW",
+    "may_be_approved_or_implemented": false
+  },
+  "source_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-market-liveness-integrity-audit-20260802T2110+0300.json",
+    "file_sha256": "79d8a65d64a4ac4feb52065a8010adfcf39464f921f028b1969bc2360eb6e2a2",
+    "verdict": "FAIL_LAUNCH_BLOCKING_REFREEZE_REQUIRED"
+  },
+  "independent_review": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-collector-liveness-independent-review-20260802T2138+0300.json",
+    "file_sha256": "52088887f16513b0ec105a763fe0e564b60c194c1cb011db07cf189d5f99b8c9",
+    "verdict": "V1_REJECTED_AMENDMENT_REQUIRED",
+    "reviewer_agent_ids": [
+      "019fc3b8-1895-7a91-815b-7a5e24989f9a",
+      "019fc3b8-5182-78b2-8c96-398cf6ee3106"
+    ]
+  },
+  "source_campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+    "plan_file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260803-aef-24h-v1.json",
+    "contract_file_sha256": "e2411cc57fb8827f1d527393e5b4bdb31ca85e9f0ea60e46b3b915531c66a9cc",
+    "contract_hash": "8f2021053b83551edb9bfb57847810caccdef30fd3368349ff98aedfe1cf9485",
+    "launch_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-aef-24h-launch-approval.json",
+    "launch_receipt_sha256": "5c18fbcbc3646aa5456c917dc0084c5ef141615dc00a8bd952378042b31b8b2e",
+    "launch_disposition": "SUSPEND_SUPERSEDE_NO_LAUNCH"
+  },
+  "current_runtime_bindings": {
+    "raw_writer": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_collector.py",
+      "sha256": "c9137841d56059b8ae00ace3c4875564afc4891945b20be251ebabb65534d86a"
+    },
+    "durable_collector": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_durable_collector.py",
+      "sha256": "ba1975d3a5e9b5b6519224cb64f1ffdf27d51ec8c1eab550e78b5b640abbf8cc"
+    },
+    "normalizer_and_shared_classifier": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_normalizer.py",
+      "sha256": "0b6308cefcecf7001a0c293346d4d506aaf08ccd4717051dd89206a4f6a11d24"
+    },
+    "campaign_runner": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_runner.py",
+      "sha256": "ed804ff811c321e4d9a5a8f56593f24ca320c635088fe7b271eec0bdacb4a977"
+    },
+    "campaign_quality": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_quality.py",
+      "sha256": "6796f534ab5018ad54ea3f453c7cf522fe21e8f1d70844cd552ed2cc7c8059b3"
+    },
+    "campaign_contract": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+      "sha256": "22b2952e9af8096228cce6bc66f56aee9bc7a007fd256359bd7c4fc3d568c0fc"
+    }
+  },
+  "frozen_invariants": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "data_type": "DENSE_WS_SEGMENTED",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "universe_rows": 1388,
+    "writer_start_local": "2026-08-03T01:30:00+03:00",
+    "writer_deadline_local": "2026-08-04T01:30:00+03:00",
+    "hard_deadline_local": "2026-08-04T02:00:00+03:00",
+    "target_writer_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000,
+    "market_max_gap_sec": 300,
+    "unplanned_gap_sec_max_per_valid_segment": 300,
+    "result_errors_max": 0,
+    "hypothesis_venue_universe_signal_cost_risk_duration_cap_change_allowed": false,
+    "causal_materializer_change_allowed": false,
+    "evaluator_change_allowed": false,
+    "grid_or_retune_allowed": false
+  },
+  "proposed_runtime_refreeze": {
+    "connection_liveness_contract": {
+      "market_silence_reconnect_sec": 120,
+      "elapsed_clock": "time.monotonic",
+      "wall_clock_use": "recorded recv_ts and human-readable timestamps only",
+      "timer_starts_after_exact_subscriptions_are_sent": true,
+      "refresh_rule": "at least one structurally valid normalized event matching the exact subscribed venue, symbol and channel",
+      "non_refreshing_messages": [
+        "subscription acknowledgement",
+        "PING",
+        "PONG",
+        "heartbeat",
+        "unknown channel",
+        "foreign symbol",
+        "empty trade packet",
+        "partially decoded protobuf",
+        "malformed market update",
+        "control-only row"
+      ],
+      "silence_action": "write market_silence_detected control evidence, close the socket, record a bounded attempt error, reconnect and resubscribe without extending the original wall-clock deadline",
+      "silence_marks_segment_dirty": true,
+      "market_silence_events_gt_zero_implies_liveness_clean_false": true
+    },
+    "shared_market_classifier_contract": {
+      "implementation_binding": "trading_mvp/src/ws_normalizer.py",
+      "classifier_hash_bound_in_new_contract_and_plan": true,
+      "mexc": {
+        "channels": {
+          "bbo": "spot@public.aggre.bookTicker.v3.api.pb@<interval>@<symbol>",
+          "depth": "spot@public.limit.depth.v3.api.pb@<symbol>@<levels>",
+          "trade": "spot@public.aggre.deals.v3.api.pb@<interval>@<symbol>"
+        },
+        "requirements": "protobuf wrapper decodes; decoded channel and symbol match the exact subscription; body_type matches the channel; at least one event has finite positive market fields; BBO ask is not below bid"
+      },
+      "gateio": {
+        "channels": {
+          "bbo": "spot.book_ticker",
+          "depth": "spot.order_book_update",
+          "trade": "spot.trades"
+        },
+        "requirements": "event=update; channel and symbol match the exact subscription; payload structure is valid; at least one event has finite positive market fields; BBO ask is not below bid"
+      }
+    },
+    "segment_state_contract": {
+      "duration_completed": "the requested segment wall-clock duration was reached",
+      "liveness_clean": "no market silence breach, no unresolved connection error and no classifier integrity error",
+      "quality_eligible": "duration_completed and liveness_clean and existing result error limit passes",
+      "legacy_completed_field": "equals quality_eligible so unmodified consumers fail closed",
+      "durable_continuation": "a duration-completed but liveness-dirty segment is retained as diagnostic-only and the next scheduled segment may start within the original campaign window",
+      "stitched_manifest": "must expose runtime_completed, liveness_clean, quality_eligible and dirty segment identifiers separately",
+      "stopped_incomplete_retry": "not authorized without a new exact user approval"
+    },
+    "counter_contract": {
+      "required_counters": [
+        "transport_rows",
+        "market_envelope_rows",
+        "normalized_events",
+        "control_rows",
+        "unclassified_messages",
+        "market_silence_events",
+        "reconnect_attempts"
+      ],
+      "total_events_compatibility": "transport rows only; never sufficient evidence of a live market feed"
+    },
+    "expected_subscription_quality_contract": {
+      "expected_market_source": "<campaign_root>/_control/symbol-plan.json",
+      "symbol_plan_is_immutable": true,
+      "symbol_plan_sha256_captured_by_runner": true,
+      "symbol_plan_validation_fields": [
+        "campaign_id",
+        "plan_hash",
+        "contract_hash",
+        "universe_sha256",
+        "symbols_by_exchange",
+        "symbols_arg"
+      ],
+      "expected_market_scope": "every venue and symbol in the validated symbol plan",
+      "missing_expected_market_reason": "missing_market:<exchange>:<symbol>",
+      "bbo_and_depth_rules": {
+        "required_per_expected_market": true,
+        "leading_gap_checked": true,
+        "internal_gaps_checked": true,
+        "trailing_gap_checked": true,
+        "threshold_sec": 300,
+        "greater_than_threshold_rejects": true,
+        "exactly_threshold_is_allowed": true
+      },
+      "trade_rules": {
+        "subscription_sent_required_per_expected_market": true,
+        "per_market_300_second_gap_required": false,
+        "reason": "no trade can be a real market condition",
+        "existing_segment_global_trade_kind_requirement_preserved": true,
+        "any_observed_trade_must_pass_the_shared_classifier": true
+      }
+    },
+    "quality_row_accounting_contract": {
+      "transport_rows": "all non-empty raw lines",
+      "market_envelope_rows": "raw rows that yield at least one structurally valid normalized market event",
+      "normalized_events": "all structurally valid normalized events produced from market envelopes",
+      "control_rows": "valid service rows that yield no market event",
+      "existing_raw_rows_min": 600,
+      "raw_rows_min_applies_to": "market_envelope_rows",
+      "new_threshold_or_strategy_tuning": false
+    },
+    "segment_time_boundary_contract": {
+      "segment_started_epoch_required_finite": true,
+      "segment_finished_epoch_required_finite": true,
+      "finish_must_be_after_start": true,
+      "duration_agreement_tolerance_sec": 2.0,
+      "every_counted_recv_ts_inside_closed_interval": true,
+      "max_gap_formula": "max(first_event-start, every_internal_interval, finish-last_event) per required expected market channel",
+      "future_or_pre_start_rows_reject": true
+    }
+  },
+  "authorized_change_scope_after_exact_approval": {
+    "allowed_files": [
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_collector.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_durable_collector.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_normalizer.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_runner.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_quality.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_ws_collector.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_ws_durable_collector.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_ws_normalizer.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_campaign_quality.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_campaign_contract.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_campaign_runner_liveness.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+      "C:\\Users\\koval\\.codex\\automations\\trading-continuous-production\\automation.toml",
+      "new versioned immutable dense-ws campaign contract and PlanOnly",
+      "new versioned runtime dependency manifest with all changed source hashes",
+      "new exact approval, audit, regression and agent-log artifacts"
+    ],
+    "raw_writer_change_allowed": true,
+    "durable_collector_change_allowed": true,
+    "shared_normalizer_classifier_change_allowed": true,
+    "campaign_runner_change_allowed": true,
+    "campaign_data_quality_change_allowed": true,
+    "campaign_contract_validator_change_allowed": true,
+    "causal_materializer_change_allowed": false,
+    "signal_or_evaluator_change_allowed": false,
+    "venue_universe_cost_risk_duration_cap_change_allowed": false
+  },
+  "verification_requirements": {
+    "silent_socket": "120 seconds without a qualifying market event reconnects and makes the segment non-clean",
+    "control_only_socket": "control traffic does not refresh market liveness and cannot satisfy raw_rows_min",
+    "foreign_symbol": "a valid-looking event for a symbol outside the exact connection chunk does not refresh liveness",
+    "malformed_gate_update": "event=update with invalid or empty market fields does not refresh liveness",
+    "mexc_wrapper_without_matching_body": "a decoded wrapper without the expected body does not refresh liveness",
+    "healthy_market_feed": "valid exact-subscription market events remain clean and duration-complete",
+    "partial_subscription_silence": "an active symbol cannot hide a missing expected market or required BBO/depth channel",
+    "missing_expected_market": "one absent market rejects even when aggregate metrics otherwise pass",
+    "control_density": "600 control rows plus insufficient market envelopes rejects",
+    "segment_boundaries": "missing bounds, pre-start event and post-finish event reject",
+    "gap_edges": "exactly 300 seconds passes and 300 seconds plus epsilon rejects",
+    "durable_dirty_segment": "a duration-completed dirty segment is preserved diagnostic-only, the schedule can continue, and stitched quality eligibility is false",
+    "resume": "no STOPPED_INCOMPLETE retry is authorized by this proposal",
+    "existing_suites": "all affected offline unit and deterministic contract suites pass",
+    "launcher_preflight": "old plan stays fail-closed and the new plan stays non-executable until a separate exact hash-bound launch receipt exists",
+    "pit_priority": "pit_universe_v2_forward_20260803_n06 remains preapproved and has priority when due",
+    "network_during_tests": false
+  },
+  "refreeze_outputs": {
+    "production_code_changes_before_approval": false,
+    "old_contract_and_plan_are_never_overwritten": true,
+    "new_contract_and_plan_use_new_versioned_paths": true,
+    "new_contract_hash_required": true,
+    "new_plan_hash_required": true,
+    "new_runtime_dependency_manifest_required": true,
+    "new_policy_hash_required": true,
+    "new_exact_hash_bound_launch_approval_required_after_hashes_exist": true,
+    "automatic_launch_before_new_exact_receipt": false,
+    "stopped_incomplete_retry_requires_new_exact_approval": true
+  },
+  "existing_downstream_authorization": {
+    "proposal_hash": "0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf40662",
+    "scope": "dense_ws postrun runtime-refreeze only",
+    "status": "PRESERVED_DORMANT",
+    "collector_launch_authorization": false,
+    "may_run_before_successful_collection_and_quality_gate": false
+  },
+  "authorization": {
+    "authorized": false,
+    "executable": false,
+    "runtime_refreeze_allowed": false,
+    "collector_launch_allowed": false,
+    "exact_user_approval_required": true
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "market_dataset_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "REQUEST_EXACT_HASH_BOUND_COLLECTOR_LIVENESS_REFREEZE_V2_APPROVAL",
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "a3cfdf5e71da1d9485ceb0fe725aab7b35037e9eee4419a3dbb06e97aa7dbd61"
+}

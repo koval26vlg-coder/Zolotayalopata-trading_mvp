@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+*.log
+*.tmp
+
+.venv/
+venv/
+
+exports/
+wireguard-out/
+
+trading_mvp/src/__pycache__/
+trading_mvp/tests/__pycache__/
+
+# Scratch-каталоги тестов и агентов (создаются прогонами, не артефакты проекта)
+.test-tmp/
+.tmp-tests/
+.codex-test-tmp/
+.audit-tmp/
+tmp*/
+.serena/

@@ -1,0 +1,24 @@
+# PIT postrun stale-gate recovery
+
+- Observed at: `2026-07-31T01:38:06+03:00`
+- Agent: Codex
+- Run: `pit_universe_v2_forward_20260731_n03`
+- Schedule plan hash: `31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7`
+- Collection result: final `COMPLETED`, 4 cycles, 7,124 rows, 0 errors, MEXC depth coverage 1.0, duration 1,200.0955 seconds.
+- Failure class: postrun rejected an exact final manifest because the reused active-run gate retained stale `expected_outputs` entries from an older public probe.
+- Scope: bounded offline control-plane repair and tests only. No collector, network operation, market-row read, returns/PnL/OOS read, grid, retune, paper/live action, private API key, leverage, or margin.
+- Implemented:
+  - postrun readiness now binds directly to the exact schedule segment, checker output, final manifest, and three expected segment artifacts instead of trusting a stale aggregate `expected_outputs_complete`;
+  - the original failed postrun summary remains immutable;
+  - an explicit `-ReconcileFailedSummary` path can create only one hash-bound superseding summary for this known failure class;
+  - reconciliation requires a matching current `PIT_POSTRUN_FAILED` critical checkpoint and archives it before writing a resolution receipt;
+  - the summary checker exposes `RECOVERY_REQUIRED` until exact approval and fails closed on reconciliation identity, hash, plan, ledger, or embargo drift;
+  - the autopilot guard requests one reconciliation approval without pausing unrelated permitted work.
+- Verification:
+  - PowerShell parser passed for all three modified scripts;
+  - focused reconciliation tests passed `23/23`;
+  - linked active-run, visible-pipeline, autopilot, schedule, quality, pointer, and postrun tests passed `131/131`;
+  - exact postrun `PlanOnly`: `PLAN_VALIDATED`, accepted dates `4/20`, mutation false, returns/PnL false;
+  - sealed runtime tools verified `12/12`;
+  - authoritative guard: `ACTIVE`, `USER_REVIEW_REQUIRED_PIT_POSTRUN_RECOVERY`, weekly remaining 44%.
+- Pending approval: one exact local reconciliation for n03, `MaxRuntimeSec<=1800`, no collector/network/returns/PnL/OOS. It has not been executed.

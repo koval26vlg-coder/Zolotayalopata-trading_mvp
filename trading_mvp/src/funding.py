@@ -88,6 +88,7 @@ class FundingClient:
     exchange_id = ""
     display_name = ""
     base_url = ""
+    TICKERS_CACHE_TTL_SEC = 300.0
 
     def __init__(self, timeout_sec: int = 10) -> None:
         self.timeout_sec = timeout_sec
@@ -117,7 +118,7 @@ class FundingClient:
                     time.sleep(0.5 * (attempt + 1))
         if last_error is not None:
             raise last_error
-        raise RuntimeError(f"Не удалось выполнить GET {url}")
+        raise RuntimeError(f"GET failed: {url}")
 
 
 def _mexc_data(payload: Any) -> Any:
@@ -195,6 +196,7 @@ class MexcFundingClient(FundingClient):
         super().__init__(timeout_sec=timeout_sec)
         self._contracts_cache: dict[str, FundingContract] | None = None
         self._tickers_cache: dict[str, dict[str, Any]] | None = None
+        self._tickers_cache_ts = 0.0
 
     def fetch_contracts(self) -> list[FundingContract]:
         payload = self._get("/api/v1/contract/detail")
@@ -234,9 +236,12 @@ class MexcFundingClient(FundingClient):
         return self._contracts_cache or {}
 
     def _ticker_map(self) -> dict[str, dict[str, Any]]:
-        if self._tickers_cache is None:
+        now = time.time()
+        cache_expired = now - self._tickers_cache_ts > self.TICKERS_CACHE_TTL_SEC
+        if self._tickers_cache is None or cache_expired:
             payload = self._get("/api/v1/contract/ticker")
             self._tickers_cache = {str(item["symbol"]): item for item in _mexc_data(payload)}
+            self._tickers_cache_ts = now
         return self._tickers_cache
 
 

@@ -1,0 +1,20 @@
+{
+  "schema_version": "visible_public_probe_launch_v1",
+  "run_id": "mexc_depth_concurrency_probe_20260716_v3",
+  "pid": 800,
+  "started_at": "2026-07-16T23:37:51.9728255+03:00",
+  "max_runtime_sec": 180,
+  "visible_terminal": true,
+  "script": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\2026-07-16-mexc-depth-rate-probe-v3-visible.ps1",
+  "output": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\quality\\mexc_depth_concurrency_probe_20260716_v3.json",
+  "stdout": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\mexc_depth_concurrency_probe_20260716_v3.stdout.log",
+  "stderr": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\mexc_depth_concurrency_probe_20260716_v3.stderr.log",
+  "purpose": "technical MEXC depth coverage verification only",
+  "forbidden": [
+    "PnL",
+    "OOS",
+    "grid",
+    "live",
+    "API keys"
+  ]
+}

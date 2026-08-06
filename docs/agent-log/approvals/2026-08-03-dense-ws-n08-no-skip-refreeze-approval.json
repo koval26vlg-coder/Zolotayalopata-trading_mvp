@@ -1,0 +1,53 @@
+{
+  "schema": "trading_mvp_dense_ws_aef_n08_no_skip_refreeze_approval_v2",
+  "approval_id": "dense_ws_aef_n08_no_skip_refreeze_v2_20260803",
+  "approved_at_local": "2026-08-03T20:08:59.7944979+03:00",
+  "approved_at_utc": "2026-08-03T17:08:59.7944979+00:00",
+  "approved_by": "user",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-n08-no-skip-refreeze-proposal-20260803-v2.json",
+    "file_sha256": "d72e464598f9a36aa6730ad67d8854215b0a5891e67cdcea38c468d26d9efba9",
+    "proposal_hash": "026fde587365aa6daf0d5f2f99f23c5df380c11b82f77346c033063f32d31e39",
+    "canonical_hash_verified": true
+  },
+  "implementation": {
+    "patch_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-n08-no-skip-refreeze-implementation-preview-20260803-v2.patch",
+    "patch_sha256": "b67ea7873591a845b5628c289fda60c552c7c8da491a24b717a7dd5b42b54124",
+    "source_sha256_after_apply": "3dfc2346a1694bf756674c3817495a776facfb35d42f11a19799a62a2d7ca177",
+    "policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-continuous-production-policy-v1.json",
+    "policy_sha256_before_promotion": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+    "policy_sha256_after_promotion": "077db2c25c799ea1fd848bc2d569c4a40e417bba1c7f5eb8873958758d492153",
+    "prior_policy_backup_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\recovery\\2026-08-03-trading-mvp-continuous-policy-before-n08-no-skip-refreeze-v2.json",
+    "prior_policy_backup_sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056"
+  },
+  "user_authorization_text": "Разрешаю N08 no-skip refreeze v2 по proposal_hash=026fde587365aa6daf0d5f2f99f23c5df380c11b82f77346c033063f32d31e39: применить exact patch sha256=b67ea7873591a845b5628c289fda60c552c7c8da491a24b717a7dd5b42b54124, продвинуть candidate policy sha256=077db2c25c799ea1fd848bc2d569c4a40e417bba1c7f5eb8873958758d492153, выполнить offline tests и собрать новый immutable Dense contract/PlanOnly/runtime manifest; без запуска collector, без смены PIT pointer и без торговых действий.",
+  "authorized_scope": {
+    "runtime_quality_contract_files_listed_in_proposal_only": true,
+    "promote_candidate_policy_byte_exactly": true,
+    "offline_synthetic_static_tests": true,
+    "network_during_tests": false,
+    "new_versioned_immutable_contract": true,
+    "new_versioned_immutable_planonly": true,
+    "new_versioned_runtime_dependency_manifest": true,
+    "rebind_autopilot_and_heartbeat_only_after_immutable_artifact_validation": true
+  },
+  "prohibited_actions": {
+    "collector_launch": true,
+    "pit_pointer_change": true,
+    "network_access": true,
+    "market_dataset_read": true,
+    "returns_read": true,
+    "pnl_computed": true,
+    "oos_run": true,
+    "evaluator_run": true,
+    "grid_or_retune": true,
+    "paper_or_live": true,
+    "private_api_or_real_capital": true,
+    "leverage_or_margin": true,
+    "stopped_incomplete_retry": true
+  },
+  "campaign_launch_authorized": false,
+  "new_exact_hash_bound_launch_approval_required": true,
+  "stopped_incomplete_retry_authorized": false,
+  "single_use": true
+}

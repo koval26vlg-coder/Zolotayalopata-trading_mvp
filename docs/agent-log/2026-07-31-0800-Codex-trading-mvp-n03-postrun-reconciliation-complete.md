@@ -1,0 +1,21 @@
+# n03 postrun reconciliation completed
+
+- Observed at: `2026-07-31T07:56:30+03:00`
+- Agent: Codex
+- User authorization: exact local `-ReconcileFailedSummary` for `pit_universe_v2_forward_20260731_n03`, schedule plan hash `31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7`, `MaxRuntimeSec=1800`.
+- Launch: separate visible PowerShell terminal, PID `31728`; no collector or hidden writer.
+- Result:
+  - reconciliation summary: `docs/agent-log/run-gates/pit_universe_v2_forward_20260731_n03.postrun.reconciliation.json`;
+  - summary SHA-256: `1c8ae28957f25df5a3811bdc8e8534f2817fdfd9f9d54d9cbb7d0c9427ce51ef`;
+  - resolution receipt: `docs/agent-log/run-gates/pit_universe_v2_forward_20260731_n03.postrun.reconciliation-resolution.json`;
+  - receipt SHA-256: `ac83a1b2fe21aa3abf73da029095bbc53cf752b32f860ca6bec398de3f111763`;
+  - resolution: `PIT_POSTRUN_RECOVERED`;
+  - authoritative disposition: `COMPLETE`;
+  - accepted distinct train dates: `5/20`.
+- The original failed summary remains immutable and is superseded only by its exact hash-bound reconciliation.
+- Safety:
+  - no new collector or network operation;
+  - no returns/PnL/OOS read or run;
+  - no grid, retune, paper/live action, private API key, leverage, or margin.
+- Next PIT action: wait for the next exact preapproved segment `pit_universe_v2_forward_20260801_n04`; no repeat postrun is allowed.
+- New independent checkpoint: `dense_ws_microstructure_regime_filter_v1_20260731_weekend` remains `USER_REVIEW_REQUIRED_CONTRACT_FREEZE`. Contract freeze/PlanOnly approval is not collector approval; the long campaign must receive a separate exact immutable launch approval after a complete plan exists.

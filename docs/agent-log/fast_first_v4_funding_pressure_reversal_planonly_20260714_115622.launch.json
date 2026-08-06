@@ -1,0 +1,22 @@
+{
+  "schema": "fast_first_v4_planonly_record_v1",
+  "mode": "REGISTER_EXISTING_PLANONLY",
+  "run_id": "fast_first_v4_funding_pressure_reversal_planonly_20260714_115622",
+  "process_started": false,
+  "visible_terminal_required": true,
+  "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-v4\\plans\\fast_first_funding_pressure_reversal_planonly_20260714_114839.json",
+  "plan_hash": "738e7a458afe6e056386ee19f092cc45097be954a303ea3fd3cebc552deb99e3",
+  "plan_file_sha256": "30a4a5cb25257d67cba86bddf21e1f3925f4f6215dbe925539ed426fed7819b4",
+  "input_merkle_sha256": "1bab335f1de674b9ce074c803fa1ac937e38356cf87852e5e04455bd1f266ab1",
+  "started_at": "2026-07-14T11:56:23.7316195+03:00",
+  "finished_at": "2026-07-14T11:56:26.1619708+03:00",
+  "actual_duration_sec": 1.425,
+  "max_runtime_sec": 1200,
+  "grid_search": false,
+  "evaluation": false,
+  "execution_probe": false,
+  "paper_forward": false,
+  "live_orders": false,
+  "api_keys": false,
+  "status_command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_active_run_gate.ps1\" -Json"
+}

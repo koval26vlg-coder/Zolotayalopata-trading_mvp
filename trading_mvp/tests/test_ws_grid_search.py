@@ -11,7 +11,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from config import RiskConfig, StrategyConfig  # noqa: E402
-from ws_grid_search import parse_float_list, parse_int_list, parse_str_list, run_grid_search_file  # noqa: E402
+from ws_grid_search import parse_float_list, parse_int_list, parse_str_list, run_grid_search, run_grid_search_file  # noqa: E402
 from ws_replay import ReplayConfig  # noqa: E402
 
 
@@ -46,6 +46,58 @@ def _trade(ts: float, side: str, price: float, qty: float) -> dict[str, object]:
 
 
 class WsGridSearchTests(unittest.TestCase):
+    def test_grid_search_is_explicitly_in_sample_and_cannot_accept_strategy(self) -> None:
+        result = run_grid_search(
+            events=[_bbo(1.0, 100.0, 100.01), _trade(1.1, "buy", 100.01, 10.0), _bbo(1.2, 100.0, 100.01)],
+            base_strategy=StrategyConfig(),
+            risk_cfg=RiskConfig(
+                max_notional_per_trade=100.0,
+                max_position_qty=10.0,
+                max_trades_per_day=10,
+                daily_loss_limit_quote=100.0,
+            ),
+            replay_cfg=ReplayConfig(notional_quote=25.0, taker_fee_bps=0.0, slippage_bps=0.0, latency_ms=0),
+            grid={
+                "entry_imbalance_abs": [0.1],
+                "entry_signed_flow_notional": [50.0],
+                "max_spread_bps": [5.0],
+                "take_profit_bps": [3.0],
+                "stop_loss_bps": [3.0],
+                "max_hold_sec": [10],
+            },
+            min_trades=0,
+            top_n=1,
+        )
+
+        self.assertEqual(result["evaluation_scope"], "in_sample_grid_search_only")
+        self.assertFalse(result["strategy_accepted"])
+        self.assertFalse(result["paper_forward_allowed"])
+        self.assertFalse(result["oos_evaluated"])
+        self.assertEqual(result["oos_status"], "not_run")
+        self.assertTrue(result["multiple_testing"]["sealed_holdout_required"])
+        self.assertEqual(result["multiple_testing"]["tested_combinations"], 1)
+        self.assertTrue(result["top_results"][0]["in_sample_eligible"] in {True, False})
+
+    def test_grid_search_rejects_combinations_above_budget(self) -> None:
+        grid = {
+            "entry_imbalance_abs": [0.1, 0.2],
+            "entry_signed_flow_notional": [50.0],
+            "max_spread_bps": [5.0],
+            "take_profit_bps": [3.0],
+            "stop_loss_bps": [3.0],
+            "max_hold_sec": [10],
+        }
+
+        with self.assertRaisesRegex(ValueError, "multiple-testing budget"):
+            run_grid_search(
+                events=[_bbo(1.0, 100.0, 100.01)],
+                base_strategy=StrategyConfig(),
+                risk_cfg=RiskConfig(),
+                replay_cfg=ReplayConfig(),
+                grid=grid,
+                max_combinations=1,
+            )
+
     def test_parse_grid_values(self) -> None:
         self.assertEqual(parse_float_list("0.1, 0.25"), [0.1, 0.25])
         self.assertEqual(parse_int_list("5, 25"), [5, 25])

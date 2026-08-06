@@ -1,0 +1,132 @@
+{
+  "schema": "trading_mvp_dense_ws_aef_n08_no_skip_refreeze_proposal_v2",
+  "mode": "PLANONLY",
+  "status": "USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+  "generated_at_utc": "2026-08-03T16:33:09.004737Z",
+  "research_only": true,
+  "purpose": "Keep PIT n08 instead of suppressing it. Dense remains exactly 24 hours; n08 is deferred after Dense hard finalization.",
+  "current_verified_state": {
+    "active_gate_status": "READY_FOR_POSTPROCESS",
+    "active_writer_present": false,
+    "active_pit_pointer_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+    "active_pit_pointer_remains_unchanged_until_future_conditional_activation": true,
+    "contract_source": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+      "sha256": "80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb",
+      "required_postimage_sha256": "3dfc2346a1694bf756674c3817495a776facfb35d42f11a19799a62a2d7ca177"
+    },
+    "active_continuous_policy": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-continuous-production-policy-v1.json",
+      "sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056"
+    },
+    "candidate_continuous_policy": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-n08-no-skip-planonly-v1.json",
+      "sha256": "077db2c25c799ea1fd848bc2d569c4a40e417bba1c7f5eb8873958758d492153",
+      "promotion_mode": "BYTE_EXACT_ONLY_AFTER_APPROVAL"
+    },
+    "autopilot_policy": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+      "sha256": "0f16c4c03cdffd92e3e72022032a3e887b3cfdcb6925fe498cea99b4d1510e5b",
+      "rebind_allowed_only_after_immutable_artifact_validation": true
+    }
+  },
+  "no_skip_candidate": {
+    "feasibility": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-feasibility-20260803-aef-continuous24h-n08-no-skip-v1.json",
+      "sha256": "e7327a535c45a0db9d51510e7af806677dcce14d6e97c7ff31c355576cf76f2a",
+      "candidate_contract_hash": "bee6a03381f818dd623d330419150307341f9a9fb0c9ed0f80f69c622811c335"
+    },
+    "amended_pit_plan": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n08_20260805_0215_planonly_v1.json",
+      "sha256": "9bddd1dd6aa28e934b07eea963ecf9ebe453101928038e018232ecdd51a10e19",
+      "plan_hash": "ffb4edc802fef776e202fdffb67d1bb3c67bd83d8a14e4cfa55a0863fac2cfa7",
+      "base_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7"
+    },
+    "n08": {
+      "run_id": "pit_universe_v2_forward_20260805_n08",
+      "original_start_local": "2026-08-05T01:00:00+03:00",
+      "deferred_start_local": "2026-08-05T02:15:00+03:00",
+      "deferred_end_local": "2026-08-05T02:35:00+03:00",
+      "hard_deadline_local": "2026-08-05T07:00:00+03:00",
+      "dense_hard_finalization_local": "2026-08-05T02:10:00+03:00",
+      "global_writer_gap_sec": 300,
+      "disposition": "PRESERVED_NOT_SKIPPED"
+    }
+  },
+  "exact_implementation": {
+    "patch": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-n08-no-skip-refreeze-implementation-preview-20260803-v2.patch",
+      "sha256": "b67ea7873591a845b5628c289fda60c552c7c8da491a24b717a7dd5b42b54124",
+      "source_sha256_before_apply": "80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb",
+      "source_sha256_after_apply": "3dfc2346a1694bf756674c3817495a776facfb35d42f11a19799a62a2d7ca177",
+      "changes": [
+        "Bind dense contract to candidate_contract_hash bee6a03381f818dd623d330419150307341f9a9fb0c9ed0f80f69c622811c335.",
+        "Replace the n08 suppression list with an empty list."
+      ]
+    },
+    "policy_promotion": {
+      "source_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-continuous-production-policy-v1.json",
+      "source_sha256_before_promotion": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+      "candidate_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-n08-no-skip-planonly-v1.json",
+      "candidate_sha256_after_promotion": "077db2c25c799ea1fd848bc2d569c4a40e417bba1c7f5eb8873958758d492153",
+      "allowed_change": "Only no-skip/deferred-n08 bindings already present in the immutable candidate policy."
+    },
+    "immutable_outputs": {
+      "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260804-aef-24h-n08-no-skip-v1.json",
+      "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-n08-no-skip-v1.json",
+      "runtime_dependency_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-runtime-dependencies-20260803-n08-no-skip-v1.json",
+      "refreeze_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-03-dense-ws-n08-no-skip-refreeze-approval.json"
+    }
+  },
+  "required_verification": {
+    "preview_audit": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-aef-n08-no-skip-refreeze-preview-audit-20260803-v2.json",
+      "sha256": "0ad661573fecde97f9fd32f57102f48df03142fe11b701e1433f64315d64f07f",
+      "status": "PASS_PLANONLY_REFREEZE_READY"
+    },
+    "offline_test_command": "python -m unittest trading_mvp.tests.test_pit_schedule_time_amendment trading_mvp.tests.test_dense_ws_n08_no_skip_feasibility_amendment trading_mvp.tests.test_dense_ws_campaign_feasibility trading_mvp.tests.test_dense_ws_campaign_contract",
+    "network_during_tests": false,
+    "build_immutable_contract_and_planonly": true,
+    "new_plan_must_remain_planonly": true,
+    "autopilot_rebind_only_after_contract_plan_runtime_manifest_validation": true,
+    "deferred_n08_pointer_activation": "NOT_IN_THIS_REFREEZE; only after a separate exact dense launch approval, dense finalization, and absence of the global writer claim."
+  },
+  "frozen_invariants": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "data_type": "DENSE_WS_SEGMENTED",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "universe_rows": 1388,
+    "raw_schema_change_allowed": false,
+    "segment_validity_change_allowed": false,
+    "causal_regime_change_allowed": false,
+    "execution_sampling_change_allowed": false,
+    "cost_risk_no_grid_change_allowed": false,
+    "duration_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000
+  },
+  "safety": {
+    "collector_launch_allowed": false,
+    "schedule_pointer_change_allowed": false,
+    "network_access_allowed": false,
+    "market_rows_read": false,
+    "returns_pnl_oos_evaluator_allowed": false,
+    "grid_or_retune_allowed": false,
+    "paper_live_private_api_real_capital_leverage_margin_allowed": false,
+    "stopped_incomplete_retry_allowed": false
+  },
+  "next_allowed_action": "REQUEST_EXACT_HASH_BOUND_N08_NO_SKIP_REFREEZE_APPROVAL",
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "supersedes": {
+    "v1_proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-n08-no-skip-refreeze-proposal-20260803-v1.json",
+    "v1_proposal_sha256": "c89b32fe53f51326e9f27461fc6e447a4b0554f88e6503e804638d2e3ff3cdba",
+    "v1_proposal_hash": "86d303cbee016ffb31ac654c6a62cda5287bcebdbcb864daf4934f1b412b20ce",
+    "reason": "V1 preview patch was not git-apply compatible; v2 changes only the patch envelope and its audit binding.",
+    "trading_contract_change": false
+  },
+  "proposal_hash": "026fde587365aa6daf0d5f2f99f23c5df380c11b82f77346c033063f32d31e39"
+}

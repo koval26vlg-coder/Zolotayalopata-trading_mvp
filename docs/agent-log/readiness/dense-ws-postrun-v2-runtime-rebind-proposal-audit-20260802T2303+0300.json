@@ -1,0 +1,75 @@
+{
+  "schema": "trading_mvp_dense_ws_postrun_v2_runtime_rebind_proposal_audit_v1",
+  "status": "PASS_USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+  "generated_at_local": "2026-08-02T23:00:02.5945584+03:00",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-postrun-runtime-rebind-proposal-20260802-v2.json",
+    "file_sha256": "1b023a6b33f0419e384784643efbe6d0a563413b80d8e2fcc8a435d43e05f25e",
+    "proposal_hash": "3d327a5069212df8fab2ddb0d612a9e452d57b8b29a5d573465c7b7b42d221fb",
+    "canonical_hash_verified": true
+  },
+  "binding_transition": {
+    "old_plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "new_plan_hash": "651502c3104ffea904f0520afc7ffbde7e9ab993213d5d74962c00ef91f4916e",
+    "old_quality_sha256": "6796f534ab5018ad54ea3f453c7cf522fe21e8f1d70844cd552ed2cc7c8059b3",
+    "new_quality_sha256": "966aa25cc5198995adf7bd8cd46499b87a3e771505568d5f41072b493e2f7ef0",
+    "materializer_sha256": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c",
+    "materializer_unchanged": true,
+    "orchestrator_sha256": "4781219d0c06af686508cb0c8a76424be22825e657a1b80f43c1799df43398ed",
+    "orchestrator_unchanged": true
+  },
+  "verification": {
+    "core_quality_materializer_tests": {
+      "status": "PASS",
+      "tests_run": 17,
+      "log_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\regressions\\dense-ws-postrun-v2-core-compatibility-20260802T2258+0300.txt",
+      "log_sha256": "c0f54c5d1230b48f1abeea760f9a097b28e9b7d88b7da9c0220813cf3a4f2a8c"
+    },
+    "combined_pre_rebind_tests": {
+      "status": "EXPECTED_FAIL_CLOSED",
+      "tests_run": 22,
+      "passed": 21,
+      "failed": 1,
+      "failure": "old test requires READY status while policy intentionally remains DORMANT",
+      "log_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\regressions\\dense-ws-postrun-v2-rebind-compatibility-20260802T2257+0300.txt",
+      "log_sha256": "650894700bf7c19965a08bb1460e0c3fc930662103a13bc07cd14d93bf48a8b5"
+    },
+    "preflight": {
+      "status": "EXPECTED_FAIL_CLOSED",
+      "reason": "quality/materializer code hash mismatch against dormant v1 binding",
+      "actual_execution": false,
+      "output_writes": false
+    }
+  },
+  "change_scope": {
+    "policy_binding_only": true,
+    "one_policy_assertion_test_update": true,
+    "automation_binding_update": true,
+    "orchestrator_code_change": false,
+    "quality_code_change": false,
+    "materializer_code_change": false,
+    "campaign_plan_change": false,
+    "venue_universe_signal_cost_risk_change": false
+  },
+  "authorization": {
+    "authorized": false,
+    "executable": false,
+    "postrun_allowed_now": false,
+    "exact_user_approval_required": true
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "decision": "REQUEST_EXACT_HASH_BOUND_POSTRUN_V2_RUNTIME_REBIND_APPROVAL"
+}

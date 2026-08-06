@@ -1,0 +1,25 @@
+# PIT n03 automation readiness
+
+- Observed at: `2026-07-30T22:46:06+03:00`
+- Scope: read-only automation/orchestration audit. No automation, schedule, writer, collector, output, evidence contract, or sealed file was changed.
+- Active automation:
+  - id: `trading-continuous-production`;
+  - kind: `heartbeat`;
+  - status: `ACTIVE`;
+  - cadence: `FREQ=MINUTELY;INTERVAL=20`;
+  - target thread: current trading task;
+  - no second trading/PIT automation exists under the local Codex automation registry.
+- Exact `n03` timing:
+  - frozen start: `2026-07-31T01:00:00+03:00`;
+  - last cadence point before start: approximately `00:45:45+03:00`;
+  - first cadence point after start: approximately `01:05:45+03:00`;
+  - expected 20-minute finish: approximately `01:25:45+03:00`;
+  - frozen hard deadline: `07:00:00+03:00`.
+- Contract check:
+  - the collector enforces not-before and finish-before-hard-deadline;
+  - the sealed quality certifier accepts artifact timestamps from frozen start through hard deadline;
+  - a post-start delay of about six minutes does not change `scheduled_date` or violate the quality window.
+- Decision:
+  - there is no cadence gap that can miss the approved segment;
+  - do not increase heartbeat frequency and spend quota without evidence value;
+  - retain the existing automation and rely on launch-time hash, pointer, guard, disk, and duplicate-owner checks.

@@ -1,0 +1,53 @@
+{
+  "schema": "trading_mvp_dense_ws_postrun_v2_rebind_candidate_finalization_v1",
+  "status": "COMPLETE_USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+  "generated_at_local": "2026-08-02T23:02:18.1737113+03:00",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-postrun-runtime-rebind-proposal-20260802-v2.json",
+    "file_sha256": "1b023a6b33f0419e384784643efbe6d0a563413b80d8e2fcc8a435d43e05f25e",
+    "proposal_hash": "3d327a5069212df8fab2ddb0d612a9e452d57b8b29a5d573465c7b7b42d221fb"
+  },
+  "policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "sha256": "b17370b2b9a143a2a5f2ad03cb8154b0f92396917300e063695d64ed5de1fbe3",
+    "long_status": "READY_FOR_APPROVAL",
+    "postrun_status": "PRESERVED_DORMANT_V1_BINDING_NOT_EXECUTABLE_FOR_V2"
+  },
+  "automation": {
+    "id": "trading-continuous-production",
+    "sha256": "7bcb22f5d4e31660abd14be7b1a1395c3c3ce24f94c343ddf7d36da76256314d",
+    "status": "ACTIVE"
+  },
+  "guard": {
+    "status": "ACTIVE",
+    "decision": "AWAIT_EXPLICIT_LONG_CAMPAIGN_APPROVAL",
+    "remaining_percent": 44,
+    "schedule_run_id": "pit_universe_v2_forward_20260803_n06",
+    "schedule_status": "WAITING",
+    "long_approval": "NOT_APPROVED"
+  },
+  "tests": {
+    "core_quality_materializer": "17/17 PASS",
+    "pre_rebind_combined": "21 PASS, 1 expected dormant-status failure",
+    "postrun_preflight": "FAIL_CLOSED_EXPECTED quality/materializer hash mismatch"
+  },
+  "safety": {
+    "campaign_output_exists": false,
+    "global_writer_claim_exists": false,
+    "postrun_owner_exists": false,
+    "collector_started": false,
+    "postrun_started": false,
+    "network_access": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_action": "USER_MAY_APPROVE_EXACT_V2_CAMPAIGN_LAUNCH_AND_POSTRUN_V2_REBIND_IN_ONE_EXPLICIT_MESSAGE"
+}

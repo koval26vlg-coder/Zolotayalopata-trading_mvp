@@ -1,0 +1,333 @@
+[CmdletBinding()]
+param(
+    [Parameter(Mandatory = $true)][string]$PlanPath,
+    [Parameter(Mandatory = $true)][string]$ExpectedPlanHash,
+    [Parameter(Mandatory = $true)][string]$CollectorManifestPath,
+    [string]$OutputRoot = "E:\ZolotyayLopata-data\exports\trading-mvp\historical-basis-1h-v2\postprocess",
+    [string]$GatePath = "",
+    [string]$LaunchRecordPath = "",
+    [string]$LogPath = "",
+    [ValidateRange(1, 1800)][int]$MaxRuntimeSec = 1800,
+    [ValidateRange(0, 120)][int]$HoldOpenSec = 60,
+    [switch]$PlanOnly,
+    [switch]$Worker,
+    [string]$WorkerToken = ""
+)
+
+$ErrorActionPreference = "Stop"
+
+$ProjectRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+$RunMvp = Join-Path $ProjectRoot "trading_mvp\run_mvp.ps1"
+$LivePostprocessCli = Join-Path $ProjectRoot "trading_mvp\src\historical_basis_v2_postprocess.py"
+if (-not $GatePath) {
+    $GatePath = Join-Path $ProjectRoot "docs\agent-log\active-run-gate.json"
+}
+
+function Resolve-Python {
+    $candidates = @(
+        $env:TRADING_MVP_PYTHON,
+        (Join-Path $ProjectRoot ".venv\Scripts\python.exe"),
+        (Join-Path $ProjectRoot "trading_mvp\.venv\Scripts\python.exe"),
+        "C:\Program Files\Python313\python.exe",
+        "C:\Users\koval\Documents\ОК.ру\.venv\Scripts\python.exe",
+        "C:\Users\koval\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+    ) | Where-Object { $_ }
+    foreach ($candidate in $candidates) {
+        if (-not (Test-Path -LiteralPath $candidate)) { continue }
+        try {
+            & $candidate -c "import requests" 2>$null
+            if ($LASTEXITCODE -eq 0) {
+                return [System.IO.Path]::GetFullPath($candidate)
+            }
+        } catch { }
+    }
+    $command = Get-Command python -ErrorAction SilentlyContinue
+    if ($command) {
+        try {
+            & $command.Source -c "import requests" 2>$null
+            if ($LASTEXITCODE -eq 0) { return $command.Source }
+        } catch { }
+    }
+    throw "Python runtime with requests is required. Set TRADING_MVP_PYTHON."
+}
+
+function Get-TextSha256 {
+    param([Parameter(Mandatory = $true)][string]$Value)
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        $bytes = [System.Text.Encoding]::UTF8.GetBytes($Value)
+        return ([BitConverter]::ToString($sha.ComputeHash($bytes))).Replace("-", "").ToLowerInvariant()
+    } finally {
+        $sha.Dispose()
+    }
+}
+
+function Set-ObjectProperty {
+    param(
+        [Parameter(Mandatory = $true)]$Object,
+        [Parameter(Mandatory = $true)][string]$Name,
+        $Value
+    )
+    if ($Object.PSObject.Properties.Name -contains $Name) {
+        $Object.$Name = $Value
+    } else {
+        $Object | Add-Member -NotePropertyName $Name -NotePropertyValue $Value
+    }
+}
+
+function Write-JsonAtomic {
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [Parameter(Mandatory = $true)]$Value
+    )
+    $parent = Split-Path -Parent $Path
+    if ($parent) { New-Item -ItemType Directory -Force -Path $parent | Out-Null }
+    $temporary = "$Path.tmp.$PID.$([DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds())"
+    try {
+        $Value | ConvertTo-Json -Depth 40 | Set-Content -LiteralPath $temporary -Encoding UTF8
+        Move-Item -LiteralPath $temporary -Destination $Path -Force
+    } finally {
+        Remove-Item -LiteralPath $temporary -Force -ErrorAction SilentlyContinue
+    }
+}
+
+function Assert-GateAllowsOfflinePostprocess {
+    if (-not (Test-Path -LiteralPath $GatePath)) {
+        throw "Active run gate is missing: $GatePath"
+    }
+    $gate = Get-Content -LiteralPath $GatePath -Raw | ConvertFrom-Json
+    $status = if ($gate.gate_status) { [string]$gate.gate_status } else { [string]$gate.status }
+    if ($status -eq "RUNNING") {
+        throw "Train postprocess waits until the active market-data writer finishes."
+    }
+    if ($status -eq "STOPPED_INCOMPLETE") {
+        throw "Resolve STOPPED_INCOMPLETE before train postprocess."
+    }
+    return $status
+}
+
+function Get-Preview {
+    $python = Resolve-Python
+    $env:TRADING_MVP_PYTHON = $python
+    $plan = Get-Content -LiteralPath $PlanPath -Raw | ConvertFrom-Json
+    $provenance = $plan.code_provenance
+    $postprocessCli = $LivePostprocessCli
+    if ($provenance -and $provenance.immutable_snapshot -eq $true) {
+        $manifestPath = [string]$provenance.code_snapshot_manifest
+        if (-not $manifestPath -or -not (Test-Path -LiteralPath $manifestPath)) {
+            throw "Frozen code snapshot manifest is missing: $manifestPath"
+        }
+        $snapshotManifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+        if ([string]$snapshotManifest.code_snapshot_hash -ne [string]$provenance.code_snapshot_hash) {
+            throw "Frozen code snapshot hash does not match the plan."
+        }
+        $postprocessCli = Join-Path (Split-Path -Parent $manifestPath) "historical_basis_v2_postprocess.py"
+        if (-not (Test-Path -LiteralPath $postprocessCli)) {
+            throw "Frozen train postprocess CLI is missing: $postprocessCli"
+        }
+    }
+    $raw = & $python $postprocessCli `
+        --plan $PlanPath `
+        --expected-plan-hash $ExpectedPlanHash `
+        --collector-manifest $CollectorManifestPath `
+        --output-root $OutputRoot `
+        --max-runtime-sec $MaxRuntimeSec `
+        --plan-only
+    if ($LASTEXITCODE -ne 0) {
+        throw "Train postprocess preview failed with exit code $LASTEXITCODE."
+    }
+    return ((@($raw) -join [Environment]::NewLine) | ConvertFrom-Json)
+}
+
+function Update-LaunchRecord {
+    param([Parameter(Mandatory = $true)][hashtable]$Values)
+    if (-not (Test-Path -LiteralPath $LaunchRecordPath)) { return }
+    $record = Get-Content -LiteralPath $LaunchRecordPath -Raw | ConvertFrom-Json
+    foreach ($entry in $Values.GetEnumerator()) {
+        Set-ObjectProperty -Object $record -Name ([string]$entry.Key) -Value $entry.Value
+    }
+    Write-JsonAtomic -Path $LaunchRecordPath -Value $record
+}
+
+$PlanPath = [System.IO.Path]::GetFullPath($PlanPath)
+$CollectorManifestPath = [System.IO.Path]::GetFullPath($CollectorManifestPath)
+$OutputRoot = [System.IO.Path]::GetFullPath($OutputRoot)
+$GatePath = [System.IO.Path]::GetFullPath($GatePath)
+$gateStatus = Assert-GateAllowsOfflinePostprocess
+$preview = Get-Preview
+$collectorRunId = [string]$preview.collector_run_id
+if (-not $LaunchRecordPath) {
+    $LaunchRecordPath = Join-Path $ProjectRoot "docs\agent-log\run-gates\$collectorRunId.train-postprocess.visible-launch.json"
+}
+if (-not $LogPath) {
+    $LogPath = Join-Path $ProjectRoot "exports\trading-mvp\run\$collectorRunId.train-postprocess.visible.log"
+}
+$LaunchRecordPath = [System.IO.Path]::GetFullPath($LaunchRecordPath)
+$LogPath = [System.IO.Path]::GetFullPath($LogPath)
+
+if ($PlanOnly) {
+    $preview | Add-Member -NotePropertyName "gate_status" -NotePropertyValue $gateStatus
+    $preview | Add-Member -NotePropertyName "visible_terminal_required" -NotePropertyValue $true
+    $preview | Add-Member -NotePropertyName "collector_started" -NotePropertyValue $false
+    $preview | Add-Member -NotePropertyName "python_runtime" -NotePropertyValue ([string]$env:TRADING_MVP_PYTHON)
+    $preview | Add-Member -NotePropertyName "launch_record_path" -NotePropertyValue $LaunchRecordPath
+    $preview | Add-Member -NotePropertyName "log_path" -NotePropertyValue $LogPath
+    $preview | ConvertTo-Json -Depth 20
+    exit 0
+}
+
+if ([string]$preview.decision -ne "READY_FOR_VISIBLE_TRAIN_POSTPROCESS") {
+    throw "Train postprocess preview rejected launch: $($preview.decision)"
+}
+
+if ($Worker) {
+    if (-not $WorkerToken) { throw "WorkerToken is required in worker mode." }
+    if (-not (Test-Path -LiteralPath $LaunchRecordPath)) {
+        throw "Worker launch record is missing: $LaunchRecordPath"
+    }
+    $launch = Get-Content -LiteralPath $LaunchRecordPath -Raw | ConvertFrom-Json
+    if ((Get-TextSha256 -Value $WorkerToken) -ne [string]$launch.worker_token_sha256) {
+        throw "Worker token mismatch."
+    }
+    if (
+        [string]$launch.collector_run_id -ne $collectorRunId -or
+        [string]$launch.plan_hash -ne $ExpectedPlanHash -or
+        [System.IO.Path]::GetFullPath([string]$launch.python_runtime) -ne $env:TRADING_MVP_PYTHON
+    ) {
+        throw "Worker launch record does not match the frozen postprocess run."
+    }
+    $env:PYTHONUNBUFFERED = "1"
+    try { $Host.UI.RawUI.WindowTitle = "trading_mvp basis-v2 train postprocess - $collectorRunId" } catch { }
+    Update-LaunchRecord -Values @{
+        status = "RUNNING"
+        worker_pid = $PID
+        worker_started_at = ([DateTimeOffset]::Now.ToString("o"))
+    }
+    Write-Host "trading_mvp basis-v2 visible train-only postprocess" -ForegroundColor Cyan
+    Write-Host "collector_run_id=$collectorRunId"
+    Write-Host "plan_hash=$ExpectedPlanHash"
+    Write-Host "output_root=$OutputRoot"
+    try {
+        & $RunMvp `
+            -Action fast-edge-basis-v2-train-postprocess `
+            -PlanPath $PlanPath `
+            -ExpectedPlanHash $ExpectedPlanHash `
+            -ManifestPath $CollectorManifestPath `
+            -OutputPath $OutputRoot `
+            -ActiveRunGatePath $GatePath `
+            -MaxRuntimeSec $MaxRuntimeSec 2>&1 | Tee-Object -FilePath $LogPath
+        if ($LASTEXITCODE -ne 0) {
+            throw "run_mvp exited with code $LASTEXITCODE"
+        }
+        $resultPath = [string]$preview.paths.manifest
+        if (-not (Test-Path -LiteralPath $resultPath)) {
+            throw "Train postprocess exited without final manifest: $resultPath"
+        }
+        $result = Get-Content -LiteralPath $resultPath -Raw | ConvertFrom-Json
+        if ($result.final -ne $true -or $result.oos_read -ne $false) {
+            throw "Train postprocess result violates the train-only contract."
+        }
+        Update-LaunchRecord -Values @{
+            status = "COMPLETED"
+            completed_at = ([DateTimeOffset]::Now.ToString("o"))
+            result_manifest_path = $resultPath
+            result_status = [string]$result.status
+            result_verdict = [string]$result.verdict
+            deterministic_result_hash = [string]$result.deterministic_result_hash
+            worker_exit_code = 0
+        }
+        Write-Host "TRAIN_POSTPROCESS_COMPLETE status=$($result.status) verdict=$($result.verdict)" -ForegroundColor Green
+        Write-Host "result_manifest=$resultPath"
+        if ($HoldOpenSec -gt 0) { Start-Sleep -Seconds $HoldOpenSec }
+        exit 0
+    } catch {
+        $message = "{0}: {1}" -f $_.Exception.GetType().Name, $_.Exception.Message
+        Update-LaunchRecord -Values @{
+            status = "STOPPED_INCOMPLETE"
+            completed_at = ([DateTimeOffset]::Now.ToString("o"))
+            failure = $message
+            worker_exit_code = 1
+        }
+        Write-Host "STOPPED_INCOMPLETE: $message" -ForegroundColor Red
+        if ($HoldOpenSec -gt 0) { Start-Sleep -Seconds $HoldOpenSec }
+        exit 1
+    }
+}
+
+if (Test-Path -LiteralPath $LaunchRecordPath) {
+    throw "Refusing to overwrite immutable launch record: $LaunchRecordPath"
+}
+
+$token = [Guid]::NewGuid().ToString("N")
+$launchRecord = [ordered]@{
+    schema = "trading_mvp_basis_v2_visible_train_postprocess_launch_v1"
+    project = "trading_mvp"
+    status = "LAUNCHING"
+    created_at = [DateTimeOffset]::Now.ToString("o")
+    collector_run_id = $collectorRunId
+    plan_path = $PlanPath
+    plan_hash = $ExpectedPlanHash
+    collector_manifest_path = $CollectorManifestPath
+    collector_manifest_sha256 = [string]$preview.collector_manifest_sha256
+    python_runtime = [string]$env:TRADING_MVP_PYTHON
+    output_root = $OutputRoot
+    result_manifest_path = [string]$preview.paths.manifest
+    log_path = $LogPath
+    cwd = $ProjectRoot
+    max_runtime_sec = $MaxRuntimeSec
+    visible_terminal = $true
+    worker_token_sha256 = Get-TextSha256 -Value $token
+    network_access = $false
+    oos_read = $false
+    grid_search = $false
+    retune = $false
+    live_orders = $false
+    private_api_keys = $false
+    leverage_or_margin = $false
+}
+Write-JsonAtomic -Path $LaunchRecordPath -Value $launchRecord
+New-Item -ItemType Directory -Force -Path (Split-Path -Parent $LogPath) | Out-Null
+
+$pwsh = (Get-Command pwsh -ErrorAction Stop).Source
+$arguments = @(
+    "-NoLogo", "-NoProfile", "-ExecutionPolicy", "Bypass",
+    "-File", "`"$PSCommandPath`"",
+    "-Worker", "-WorkerToken", "`"$token`"",
+    "-PlanPath", "`"$PlanPath`"",
+    "-ExpectedPlanHash", $ExpectedPlanHash,
+    "-CollectorManifestPath", "`"$CollectorManifestPath`"",
+    "-OutputRoot", "`"$OutputRoot`"",
+    "-GatePath", "`"$GatePath`"",
+    "-LaunchRecordPath", "`"$LaunchRecordPath`"",
+    "-LogPath", "`"$LogPath`"",
+    "-MaxRuntimeSec", "$MaxRuntimeSec",
+    "-HoldOpenSec", "$HoldOpenSec"
+)
+$process = Start-Process -FilePath $pwsh -ArgumentList $arguments -WindowStyle Normal -PassThru
+Update-LaunchRecord -Values @{
+    status = "RUNNING"
+    worker_pid = $process.Id
+    started_at = ([DateTimeOffset]::Now.ToString("o"))
+}
+Write-Host "Visible basis-v2 train postprocess opened. PID=$($process.Id)" -ForegroundColor Green
+Write-Host "Hard runtime limit: $MaxRuntimeSec sec"
+Write-Host "Result: $($preview.paths.manifest)"
+Write-Host "Log: $LogPath"
+
+$waitMs = ($MaxRuntimeSec + $HoldOpenSec + 30) * 1000
+if (-not $process.WaitForExit($waitMs)) {
+    try { $process.Kill($true) } catch { }
+    try { $process.WaitForExit(5000) } catch { }
+    Update-LaunchRecord -Values @{
+        status = "STOPPED_INCOMPLETE"
+        completed_at = ([DateTimeOffset]::Now.ToString("o"))
+        failure = "Visible train postprocess exceeded MaxRuntimeSec."
+        worker_exit_code = -1
+    }
+    throw "Visible train postprocess exceeded MaxRuntimeSec."
+}
+if ($process.ExitCode -ne 0) {
+    throw "Visible train postprocess exited with code $($process.ExitCode)."
+}
+
+Get-Content -LiteralPath $LaunchRecordPath -Raw

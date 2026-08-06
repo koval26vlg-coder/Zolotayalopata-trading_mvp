@@ -1,0 +1,21 @@
+{
+  "schema": "active_run_launch_record_v1",
+  "project": "trading_mvp",
+  "run_id": "pit_universe_snapshot_collect_20260710_154144",
+  "run_type": "pit_universe_snapshot_collect",
+  "created_at": "2026-07-10T15:42:07+03:00",
+  "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -Hours 24 -DurationSec 86400 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\trading_mvp\\pit-universe-snapshots\" -RunId pit_universe_snapshot_collect_20260710_154144 -ConfirmedPitUniverseSnapshotCollect",
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "output_root": "E:\\trading_mvp\\pit-universe-snapshots",
+  "snapshots_path": "E:\\trading_mvp\\pit-universe-snapshots\\pit_universe_snapshot_collect_20260710_154144\\snapshots.jsonl",
+  "cycles_path": "E:\\trading_mvp\\pit-universe-snapshots\\pit_universe_snapshot_collect_20260710_154144\\cycles.jsonl",
+  "manifest_path": "E:\\trading_mvp\\pit-universe-snapshots\\pit_universe_snapshot_collect_20260710_154144\\manifest.json",
+  "duration_sec": 86400,
+  "interval_sec": 300,
+  "timeout_sec": 10,
+  "min_contracts_per_exchange": 50,
+  "research_only": true,
+  "live_orders": false,
+  "api_keys": false,
+  "leverage_or_margin": false
+}

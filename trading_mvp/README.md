@@ -362,7 +362,95 @@ In-sample replay v2 example:
 
 Этот replay нужен только для проверки среза. Если после учета исполнения, latency, maker queue и fees он не проходит eligibility, срез нельзя переносить в paper/live.
 
-13) Funding / basis carry research engine:
+13) Fast-First Edge Lab:
+
+Fast-First фиксирует гипотезу до просмотра OOS, использует единый консервативный `CostProfile` и дает одно из трех решений: `ACCEPT_FOR_PAPER`, `REJECT` или `INSUFFICIENT_DATA`. По умолчанию каждый шаг ограничен 20 минутами; `MaxRuntimeSec` жестко ограничен диапазоном `1..10800`. Новые collectors, execution probes и paper-forward запускаются только в видимом терминале.
+
+```powershell
+$root = "E:\ZolotyayLopata-data\exports\trading-mvp\fast-edge"
+$plan = "$root\plans\fast_edge_plan_full_20260713.json"
+$evaluation = "$root\evaluations\fast_edge_evaluation_full_20260713.json"
+$report = "$root\reports\fast_edge_report_full_20260713.json"
+
+.\trading_mvp\run_mvp.ps1 -Action fast-edge-plan `
+  -Dataset ".\exports\trading-mvp\daily\daily_forward_20260713" `
+  -OutputPath $plan `
+  -MaxRuntimeSec 1200
+
+.\trading_mvp\run_mvp.ps1 -Action fast-edge-evaluate `
+  -PlanPath $plan `
+  -OutputPath $evaluation `
+  -MaxRuntimeSec 1200
+
+.\trading_mvp\run_mvp.ps1 -Action fast-edge-report `
+  -PlanPath $plan `
+  -EvaluationPath $evaluation `
+  -OutputPath $report `
+  -MaxRuntimeSec 1200
+```
+
+`fast-edge-evaluate` проверяет funding carry первым, затем только переиспользует frozen listing-event и slow-liquidity артефакты без grid-search и повторной настройки. Execution probe разрешен исключительно когда evaluation возвращает `next_allowed_command=fast-edge-execution-probe`:
+
+```powershell
+.\trading_mvp\run_mvp.ps1 -Action fast-edge-execution-probe `
+  -PlanPath $plan `
+  -EvaluationPath $evaluation `
+  -ExecutionProbePath "$root\execution\fast_edge_execution_probe.jsonl" `
+  -DurationSec 1200 `
+  -IntervalSec 5 `
+  -MaxRuntimeSec 1200
+```
+
+Текущий frozen run `fast_edge_plan_full_20260713` завершен решением `NO_FAST_EDGE_FOUND`: funding дал `0` historical candidates, а frozen listing-event и slow-liquidity ветки отклонены. Поэтому execution probe, paper-forward, API keys и live orders для этого run запрещены.
+
+Технический журнал frozen night schedule проверяется без сети и без чтения market rows/returns/PnL:
+
+```powershell
+.\trading_mvp\run_mvp.ps1 -Action fast-edge-night-schedule-status `
+  -PlanPath "E:\ZolotyayLopata-data\exports\trading-mvp\fast-edge-track\schedules\pit_universe_v2_night_schedule_planonly_20260714_184844.json" `
+  -ExpectedPlanHash "2c484b7b2cbb94ee94f87b8ae65519501d812647ef4848219abc4bf01dff1c45" `
+  -OutputPath "E:\ZolotyayLopata-data\exports\trading-mvp\fast-edge-track\schedules\pit_universe_v2_night_schedule_status.json" `
+  -MaxRuntimeSec 120
+```
+
+Команда разрешена как status-only даже при активном collector gate. Она не запускает collector, не выполняет quality/OOS и не меняет approval.
+
+После технического завершения сегментов их hash-bound quality certification записывается в append-only ledger. Команда не читает returns/PnL и не разрешает OOS:
+
+```powershell
+.\trading_mvp\run_mvp.ps1 -Action fast-edge-night-schedule-quality `
+  -PlanPath "E:\ZolotyayLopata-data\exports\trading-mvp\fast-edge-track\schedules\pit_universe_v2_night_schedule_planonly_20260714_184844.json" `
+  -ExpectedPlanHash "2c484b7b2cbb94ee94f87b8ae65519501d812647ef4848219abc4bf01dff1c45" `
+  -QualityLedgerPath "E:\ZolotyayLopata-data\exports\trading-mvp\fast-edge-track\quality\pit_universe_v2_quality_certifications.jsonl" `
+  -OutputPath "E:\ZolotyayLopata-data\exports\trading-mvp\fast-edge-track\quality\pit_universe_v2_quality_report.json" `
+  -MaxRuntimeSec 1800
+```
+
+Этот schedule дополнительно связывает полный hypothesis contract (`93895bd0f765d37c3bc78e206749a81ba5b6ec9287cde427233b237559bc4db9`) и девять runtime hashes. Минимум для следующего feasibility шага составляет 80 quality-certified дат: 20 technical-train и 60 untouched OOS. Старые plan hashes `bce81a...` и `8fa86b...` superseded и не должны утверждаться.
+
+Fast-First v3 `venue_local_lottery_max_factor_v1` использует отдельный hash-bound no-grid evaluator. Разрешенная до OOS команда только повторно проверяет canonical plan и 195-file input seal:
+
+```powershell
+$v3Plan = "E:\ZolotyayLopata-data\exports\trading-mvp\fast-edge-v3\plans\fast_first_lottery_max_planonly_20260713.json"
+$v3Hash = "3f086ac9c0f59c9690a63870f03ba44543559e08271333e73ae7957e86e240f7"
+
+.\trading_mvp\run_mvp.ps1 -Action fast-edge-v3-validate `
+  -PlanPath $v3Plan `
+  -ExpectedPlanHash $v3Hash `
+  -MaxRuntimeSec 1800
+```
+
+`fast-edge-v3-evaluate` намеренно fail-closed: он требует совпадающий `RunId`, видимый owned-run gate `FAST_FIRST_V3_EVALUATION_RUNNING` и отдельное разрешение пользователя. Grid, execution probe, paper-forward, API keys и live orders эта команда не включает.
+
+Явное закрытие старого incomplete-run выполняется только по его `run_id`; resolver архивирует gate и не удаляет исходные данные:
+
+```powershell
+.\trading_mvp\run_mvp.ps1 -Action resolve-active-run `
+  -RunId "spot_pit_event_forward_20260712_225519" `
+  -Reason "rejected by approved Fast-First plan"
+```
+
+14) Funding / basis carry research engine:
 
 ```powershell
 .\trading_mvp\run_mvp.ps1 -Action funding-scan `
@@ -415,7 +503,7 @@ Backtest long spot + short perp carry по собранным snapshots:
 
 Funding-модуль является research-only: он не использует API keys, не открывает реальные позиции, не включает leverage/margin execution и не является торговой рекомендацией. V1 проверяет гипотезу `long spot + short perp`, где положительный funding потенциально платит short-perp стороне, а spot-leg снижает directional exposure.
 
-14) Experiment ledger and setup registry:
+15) Experiment ledger and setup registry:
 
 ```powershell
 .\trading_mvp\run_mvp.ps1 -Action setup-registry
@@ -452,6 +540,9 @@ This layer is research-only and exists to keep every channel-derived hypothesis 
 - `exports/trading-mvp/funding/funding_collect_*.jsonl` — периодические funding/basis snapshots;
 - `exports/trading-mvp/funding/funding_rank_*.json` — ranked carry opportunities;
 - `exports/trading-mvp/backtests/funding_backtest_*.json` — funding carry backtest;
+- `exports/trading-mvp/fast-edge/plans/*.json` — frozen Fast-First plans and input hashes;
+- `exports/trading-mvp/fast-edge/evaluations/*.json` — OOS/walk-forward/stress/economics results;
+- `exports/trading-mvp/fast-edge/reports/*.json` — final Fast-First decisions and allowed next command;
 - `exports/trading-mvp/experiments/setup_registry.json` — research-only setup registry;
 - `exports/trading-mvp/experiments/experiment_ledger.jsonl` — append-only hypothesis/result/verdict ledger;
 - `exports/trading-mvp/backtests/*.json` — метрики и сделки;

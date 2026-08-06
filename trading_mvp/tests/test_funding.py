@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1] / "src"
 if str(ROOT) not in sys.path:
@@ -108,6 +109,22 @@ class FundingParsingTests(unittest.TestCase):
     def test_parse_filters_inactive_or_non_usdt_contracts(self) -> None:
         self.assertIsNone(parse_mexc_contract({"symbol": "ABC_USDT", "quoteCoin": "USDT", "settleCoin": "USDT", "state": 1}))
         self.assertIsNone(parse_gate_contract({"name": "ABC_USDT", "status": "delisted"}))
+
+    def test_mexc_ticker_cache_uses_ttl(self) -> None:
+        client = MexcFundingClient()
+        calls: list[str] = []
+
+        def fake_get(path: str, params: dict[str, object] | None = None) -> dict[str, object]:
+            calls.append(path)
+            return {"success": True, "data": [{"symbol": "HYPE_USDT", "fairPrice": "100"}]}
+
+        client._get = fake_get  # type: ignore[method-assign]
+        with patch("funding.time.time", side_effect=[100.0, 101.0, 500.0]):
+            self.assertIn("HYPE_USDT", client._ticker_map())
+            self.assertIn("HYPE_USDT", client._ticker_map())
+            self.assertIn("HYPE_USDT", client._ticker_map())
+
+        self.assertEqual(calls, ["/api/v1/contract/ticker", "/api/v1/contract/ticker"])
 
 
 if __name__ == "__main__":

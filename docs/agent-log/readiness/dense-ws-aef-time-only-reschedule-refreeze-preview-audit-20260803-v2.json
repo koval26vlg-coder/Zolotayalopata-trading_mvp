@@ -1,0 +1,144 @@
+{
+  "schema": "trading_mvp_dense_ws_aef_time_only_refreeze_preview_audit_v2",
+  "mode": "OfflineUnappliedPatchAudit",
+  "status": "PASS_EXACT_RAW_BYTES_PATCH_READY_NOT_APPLIED_NOT_AUTHORIZED",
+  "supersedes": {
+    "patch_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-time-only-reschedule-refreeze-implementation-preview-20260803-v1.patch",
+    "patch_file_sha256": "25717ed79a4727a20838c7a1b93a9091d13452cdf8c4e98dd4699fd5f7ee80bc",
+    "audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-aef-time-only-reschedule-refreeze-preview-audit-20260803-v1.json",
+    "audit_file_sha256": "d6b6b055b9030fb33c6daa70d9cd07955194543df7c0fbb2ffb94f2a29f1e933",
+    "disposition": "SUPERSEDED_NORMALIZED_TEXT_HASH_WAS_MISLABELED_AS_SOURCE_FILE_HASH",
+    "may_be_used_for_implementation_binding": false
+  },
+  "source": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+    "file_sha256": "5b405ac2e857065f2147e849f79439622b77aa1e94560088c67e403008fde117",
+    "newline_style": "CRLF",
+    "source_file_unchanged": true
+  },
+  "proposed": {
+    "file_sha256_after_byte_preserving_replacements": "9aac8ceac80acff9971b3bf72acdcabfd3560d2f42fd5e8a14912d659c150aac",
+    "newline_style_after_apply": "CRLF",
+    "patch_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-time-only-reschedule-refreeze-implementation-preview-20260803-v2.patch",
+    "patch_file_sha256": "56e94998befa154b5260b77fd35966aa205c99c91280abb5f514dbba54833b3a",
+    "replacement_checks": [
+      {
+        "old": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+        "new": "dense_ws_microstructure_regime_filter_v1_20260804_aef_24h",
+        "expected_count": 1,
+        "observed_count": 1,
+        "match": true
+      },
+      {
+        "old": "e0c080d7eb37deef31dc31724acaf8bc1b598038aa5165960050ca323f9e258f",
+        "new": "a1d262d1cf5ef1c70771ab9005b12eb0d875ff5235492ffadf8e1af4790a8643",
+        "expected_count": 1,
+        "observed_count": 1,
+        "match": true
+      },
+      {
+        "old": "EVIDENCE_EXCEPTION_2026-08-03_24H",
+        "new": "EVIDENCE_EXCEPTION_2026-08-04_24H",
+        "expected_count": 1,
+        "observed_count": 1,
+        "match": true
+      },
+      {
+        "old": "2026-08-03T01:30:00+03:00",
+        "new": "2026-08-04T01:40:00+03:00",
+        "expected_count": 2,
+        "observed_count": 2,
+        "match": true
+      },
+      {
+        "old": "2026-08-04T01:30:00+03:00",
+        "new": "2026-08-05T01:40:00+03:00",
+        "expected_count": 2,
+        "observed_count": 2,
+        "match": true
+      },
+      {
+        "old": "2026-08-04T02:00:00+03:00",
+        "new": "2026-08-05T02:10:00+03:00",
+        "expected_count": 2,
+        "observed_count": 2,
+        "match": true
+      },
+      {
+        "old": "pit_universe_v2_forward_20260804_n07",
+        "new": "pit_universe_v2_forward_20260805_n08",
+        "expected_count": 1,
+        "observed_count": 1,
+        "match": true
+      }
+    ],
+    "changed_ranges": [
+      {
+        "tag": "replace",
+        "current_start_line": 96,
+        "current_end_line": 96,
+        "proposed_start_line": 96,
+        "proposed_end_line": 96
+      },
+      {
+        "tag": "replace",
+        "current_start_line": 98,
+        "current_end_line": 98,
+        "proposed_start_line": 98,
+        "proposed_end_line": 98
+      },
+      {
+        "tag": "replace",
+        "current_start_line": 100,
+        "current_end_line": 100,
+        "proposed_start_line": 100,
+        "proposed_end_line": 100
+      },
+      {
+        "tag": "replace",
+        "current_start_line": 103,
+        "current_end_line": 106,
+        "proposed_start_line": 103,
+        "proposed_end_line": 106
+      },
+      {
+        "tag": "replace",
+        "current_start_line": 111,
+        "current_end_line": 113,
+        "proposed_start_line": 111,
+        "proposed_end_line": 113
+      }
+    ],
+    "changes_confined_to_lines_96_116": true,
+    "python_compile_pass": true
+  },
+  "unchanged_constants": {
+    "AEF_EXPECTED_WRITER_SEC": 86400,
+    "AEF_EXPECTED_MAX_RUNTIME_SEC": 88200,
+    "AEF_HARD_OUTPUT_CAP_BYTES": 25000000000,
+    "AEF_EXPECTED_PHASES[0].writer_duration_sec": 86400,
+    "AEF_EXPECTED_PHASES[0].complete_durable_segments": 24
+  },
+  "authorization": {
+    "patch_applied": false,
+    "implementation_authorized": false,
+    "collector_launch_authorized": false,
+    "proposal_v1_hash": "e7af0e69a8b66da5b009624e3ccb230a6ae7f169aed1f4352ad71049f9fa5435",
+    "new_hash_bound_proposal_required_to_bind_this_v2_preview": true
+  },
+  "safety": {
+    "network_access": false,
+    "collector_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "audit_hash_method": "sha256_canonical_json_excluding_audit_hash",
+  "audit_hash": "86151d7c88f6ac2967cb55c26b54d39db1563727757bda71f4757d3571db92f3"
+}

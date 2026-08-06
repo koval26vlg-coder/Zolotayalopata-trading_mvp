@@ -1,0 +1,88 @@
+{
+  "schema": "trading_mvp_autopilot_research_catalog_v1",
+  "catalog_id": "trading_mvp_autopilot_research_catalog_20260728_v3",
+  "project": "trading_mvp",
+  "mode": "bounded_offline_public_data_plane_readiness",
+  "parent_audit": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v3.json",
+    "file_sha256": "74b50598b91ef10c30838c2cc817a044845d45cbda473ced4b11f93b08187b44",
+    "deterministic_result_hash": "73d9a862ca593c6da6a020768a2e0329d8794260a7696e019c1a4d768598fb69"
+  },
+  "constraints": {
+    "max_runtime_sec_per_task": 1800,
+    "one_task_at_a_time": true,
+    "network_access": false,
+    "market_data_writer": false,
+    "returns_or_pnl_read": false,
+    "new_hypothesis": false,
+    "grid_or_retune": false,
+    "paper_positions": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "leverage_or_margin": false
+  },
+  "tasks": [
+    {
+      "id": "paper_code_provenance_merkle_v2",
+      "max_runtime_sec": 1200,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-code-provenance-merkle-v2.json",
+      "objective": "Refresh the deterministic code-only Merkle baseline after catalog v2 implementation. Do not stage, revert, commit or copy data artifacts.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "trading_mvp/run_mvp.ps1",
+        "tools",
+        "AGENTS.md"
+      ]
+    },
+    {
+      "id": "paper_public_retry_rate_limit_fixture_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-retry-rate-limit-fixture-v1.json",
+      "objective": "Implement deterministic fixture-only token-bucket, bounded retry and Retry-After behavior for the frozen public reader. No network requests.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_public_reader_contract.py",
+        "trading_mvp/src/paper_public_reader.py",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-contract-v1.json"
+      ]
+    },
+    {
+      "id": "paper_public_snapshot_observer_bridge_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-snapshot-observer-bridge-v1.json",
+      "objective": "Implement a fixture-only bridge from two normalized venue snapshots to one hash-bound dual-venue observer health sample. No network or OMS mutation.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_public_reader.py",
+        "trading_mvp/src/paper_observer_runtime.py",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-fixture-v1.json"
+      ]
+    },
+    {
+      "id": "paper_public_transport_adapter_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-transport-adapter-v1.json",
+      "objective": "Implement and fixture-test a requests-based public GET transport behind the frozen allowlist, timeout, byte-limit and no-auth boundaries. Do not make actual network requests.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_public_reader_contract.py",
+        "trading_mvp/src/paper_public_reader.py",
+        "trading_mvp/src/paper_log_redaction.py",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-contract-v1.json"
+      ]
+    },
+    {
+      "id": "paper_product_readiness_audit_v4",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v4.json",
+      "objective": "Re-audit fixture/public-data-plane readiness after catalog v3, preserve PIT evidence blockers and emit the next bounded gap list. No hypothesis change, network collection, PnL or returns.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "docs/agent-log",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research"
+      ]
+    }
+  ]
+}

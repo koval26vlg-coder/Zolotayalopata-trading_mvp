@@ -1,0 +1,25 @@
+# PIT postrun deferred-state handoff
+
+- Observed at: `2026-07-30T22:59:57+03:00`
+- Scope: unsealed visible countdown control plane and regression tests. No sealed runtime tool, schedule, pointer, approval, market output, quality ledger, hypothesis, venue, universe, signal, cost, risk, duration, or evidence contract was changed.
+- Defect:
+  - exact postrun has three legitimate weekly-quota branches that return exit code zero while deferring unfinished continuation;
+  - the earliest branch runs before active-gate validation and technical quality commit;
+  - countdown previously treated every zero exit as `POSTRUN_FINISHED`, which could hide a required postrun retry after quota reset.
+- Fix:
+  - require a fresh durable `trading_mvp_pit_postrun_v1` summary after every zero-exit postrun;
+  - bind the summary to the exact `run_id`, schedule path, and plan hash;
+  - validate summary freshness plus returns/PnL/OOS/grid/live/private-key embargo fields;
+  - persist summary path, SHA-256, decision, and next action in countdown metadata;
+  - classify all three weekly-quota continuation outcomes as `POSTRUN_DEFERRED`;
+  - retain `POSTRUN_FINISHED` only for a complete technical postrun outcome such as `WAITING_EVENT`, a quality verdict, train verdict, or exact extension checkpoint.
+- Verification:
+  - PowerShell parser passed;
+  - focused visible-pipeline tests: `10/10`;
+  - linked schedule, pointer, guard, postrun, train-target, completion-audit, and autopilot queue tests: `131/131`;
+  - executable disposition smoke cases correctly classify early quota pause and train-feasibility pause as deferred, and `WAITING_EVENT` as finished;
+  - exact `pit_universe_v2_forward_20260731_n03` `PreflightOnly`: `READY_NOT_DUE`, `WAITING`, `NO_RUN_OR_OUTPUT_WRITES`, sealed runtime tools `12/12`, countdown owners `0`;
+  - exact countdown and postrun `PlanOnly`: both `PLAN_VALIDATED`; postrun mutation disabled and returns/PnL false;
+  - active gate SHA-256, quality-ledger SHA-256, n03 metadata/launch/postrun-summary/output existence all remained unchanged;
+  - matching writer, collector, or countdown processes: `0`.
+- Next: retain the exact n03 schedule. On quota pause after collection, the active gate and durable summary remain available for autonomous exact postrun retry after authoritative reset; do not launch another collector.

@@ -1,0 +1,82 @@
+{
+  "schema": "trading_mvp_night_launch_preflight_and_postrun_fence_v1",
+  "generated_at_local": "2026-08-02T13:13:32.1956748+03:00",
+  "purpose": "Verify the next PIT and approved dense WebSocket launch paths without writes, and prevent the known-insufficient postrun deadline from being launched automatically.",
+  "guard": {
+    "status": "ACTIVE",
+    "decision": "WAIT_APPROVED_LONG_CAMPAIGN_WINDOW",
+    "weekly_remaining_percent_at_checkpoint": 70.0,
+    "stop_new_actions": false,
+    "action_due": false
+  },
+  "automation": {
+    "id": "trading-continuous-production",
+    "status": "ACTIVE",
+    "target_thread_id": "019e738a-b37c-7a33-ae04-6cc80739f184",
+    "config_path": "C:\\Users\\koval\\.codex\\automations\\trading-continuous-production\\automation.toml",
+    "config_sha256": "0d5daa03279a07d9a6699b446118a9420a5564cab6464092310c8620e0a46c07",
+    "postrun_runtime_fence_present": true,
+    "calibration_sha256_bound": "0807cbe05706b6aa51d644d92e3d69ae4153641b0e96497d68cc01d0342fd30e",
+    "collector_launch_unchanged": true,
+    "postrun_launch_blocked_until_runtime_refreeze": true
+  },
+  "pit_n06_preflight": {
+    "run_id": "pit_universe_v2_forward_20260803_n06",
+    "schedule_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+    "status": "READY_NOT_DUE",
+    "checks_passed": true,
+    "launch_allowed_now": false,
+    "not_before_local": "2026-08-03T01:00:00+03:00",
+    "scheduled_end_local": "2026-08-03T01:20:00+03:00",
+    "sealed_runtime_tools_verified": 12,
+    "free_disk_gib": 768.406,
+    "minimum_free_disk_gib": 5.0,
+    "other_countdown_owners": 0,
+    "global_market_writer_claim": null,
+    "side_effects": "NO_RUN_OR_OUTPUT_WRITES"
+  },
+  "dense_campaign_preflight": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "external_approval_status_from_guard": "APPROVED",
+    "status": "STRUCTURALLY_VALID_NOT_DUE",
+    "structurally_valid": true,
+    "can_launch_now": false,
+    "writer_start_local": "2026-08-03T01:30:00+03:00",
+    "latest_launch_local": "2026-08-03T01:35:00+03:00",
+    "free_bytes": 825070010368,
+    "required_free_bytes": 53687091200,
+    "existing_campaign_output_bytes": 0,
+    "hard_output_cap_bytes": 25000000000,
+    "global_writer_claim": null,
+    "reasons": [],
+    "side_effects": "NO_RUN_OR_OUTPUT_WRITES"
+  },
+  "independent_write_check": {
+    "pit_n06_output_exists": false,
+    "dense_campaign_output_exists": false,
+    "global_writer_claim_exists": false
+  },
+  "verdict": {
+    "status": "NIGHT_LAUNCH_PATH_READY_POSTRUN_BRANCH_GUARDED",
+    "pit_n06_should_launch_when_due": true,
+    "dense_campaign_should_launch_when_due": true,
+    "duplicate_writer_risk_observed": false,
+    "postrun_should_launch_under_current_1800_sec_shared_limit": false,
+    "user_action_still_required": "Approve the narrow postrun runtime refreeze only; collector approvals remain valid."
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  }
+}

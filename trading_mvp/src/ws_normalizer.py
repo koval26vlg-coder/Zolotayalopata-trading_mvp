@@ -2,17 +2,39 @@ from __future__ import annotations
 
 import base64
 import json
+import math
 from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Collection, Mapping
 
 
 WIRE_VARINT = 0
 WIRE_64BIT = 1
 WIRE_LENGTH_DELIMITED = 2
 WIRE_32BIT = 5
+
+GATE_MARKET_CHANNELS = {
+    "spot.book_ticker": "bbo",
+    "spot.order_book_update": "depth",
+    "spot.trades": "trade",
+}
+MEXC_CHANNEL_PREFIXES = {
+    "spot@public.aggre.bookTicker.v3.api.pb": ("bbo", "aggre_book_ticker"),
+    "spot@public.limit.depth.v3.api.pb": ("depth", "limit_depth"),
+    "spot@public.aggre.deals.v3.api.pb": ("trade", "aggre_deals"),
+}
+CONTROL_EVENT_TYPES = {
+    "collector_start",
+    "collector_stop",
+    "collector_error",
+    "connect_attempt",
+    "connect_attempt_error",
+    "subscribe_sent",
+    "heartbeat_sent",
+    "market_silence_detected",
+}
 
 
 def utc_stamp() -> str:
@@ -27,9 +49,10 @@ def _as_float(value: Any) -> float | None:
     if value is None:
         return None
     try:
-        return float(value)
+        number = float(value)
     except (TypeError, ValueError):
         return None
+    return number if math.isfinite(number) else None
 
 
 def _epoch_seconds(value: Any) -> float | None:
@@ -54,6 +77,10 @@ def _spread_bps(bid: float | None, ask: float | None) -> float | None:
 
 class ProtoDecodeError(RuntimeError):
     pass
+
+
+class MarketDataClassificationError(ValueError):
+    """A market-looking frame failed the frozen structural contract."""
 
 
 @dataclass(frozen=True)
@@ -237,63 +264,171 @@ def _base_event(raw_row: dict[str, Any], symbol: str | None, kind: str, exchange
     }
 
 
+def _positive_float(value: Any, *, label: str) -> float:
+    number = _as_float(value)
+    if number is None or number <= 0:
+        raise MarketDataClassificationError(f"{label} must be finite and positive")
+    return number
+
+
+def _validated_levels(value: Any, *, label: str) -> list[list[float]]:
+    if not isinstance(value, list):
+        raise MarketDataClassificationError(f"{label} must be a list")
+    levels: list[list[float]] = []
+    for index, item in enumerate(value):
+        if not isinstance(item, (list, tuple)) or len(item) != 2:
+            raise MarketDataClassificationError(f"{label}[{index}] must be [price, qty]")
+        price = _positive_float(item[0], label=f"{label}[{index}].price")
+        qty = _as_float(item[1])
+        if qty is None or qty < 0:
+            raise MarketDataClassificationError(
+                f"{label}[{index}].qty must be finite and non-negative"
+            )
+        levels.append([price, qty])
+    return levels
+
+
+def _mexc_channel_contract(channel: Any) -> tuple[str, str, str]:
+    value = str(channel or "")
+    for prefix, (kind, body_type) in MEXC_CHANNEL_PREFIXES.items():
+        marker = f"{prefix}@"
+        if not value.startswith(marker):
+            continue
+        tail = value[len(marker) :].split("@")
+        if len(tail) != 2:
+            break
+        if kind == "depth":
+            symbol, levels = tail
+            if levels not in {"5", "10", "20"}:
+                break
+        else:
+            interval, symbol = tail
+            if interval not in {"10ms", "100ms"}:
+                break
+        if not symbol or symbol != symbol.upper():
+            break
+        return kind, body_type, symbol
+    raise MarketDataClassificationError(f"unsupported or malformed MEXC channel: {value!r}")
+
+
+def expected_market_channels(
+    exchange: str,
+    symbol: str,
+    *,
+    update_interval: str = "100ms",
+    depth_levels: int = 20,
+) -> dict[str, str]:
+    venue = exchange.strip().lower()
+    market = symbol.strip().upper()
+    if venue == "gateio":
+        return {kind: channel for channel, kind in GATE_MARKET_CHANNELS.items()}
+    if venue == "mexc":
+        interval = "10ms" if update_interval == "10ms" else "100ms"
+        levels = 20 if depth_levels >= 20 else 10 if depth_levels >= 10 else 5
+        return {
+            "bbo": f"spot@public.aggre.bookTicker.v3.api.pb@{interval}@{market}",
+            "depth": f"spot@public.limit.depth.v3.api.pb@{market}@{levels}",
+            "trade": f"spot@public.aggre.deals.v3.api.pb@{interval}@{market}",
+        }
+    raise ValueError(f"unsupported WS exchange: {exchange!r}")
+
+
 def _normalize_mexc_row(raw_row: dict[str, Any]) -> list[dict[str, Any]]:
     payload = raw_row.get("payload") or {}
     if payload.get("encoding") != "base64":
         return []
-    decoded = decode_mexc_wrapper(base64.b64decode(payload["data"]))
+    data = payload.get("data")
+    if not isinstance(data, str):
+        raise MarketDataClassificationError("MEXC base64 payload data is missing")
+    try:
+        decoded = decode_mexc_wrapper(base64.b64decode(data, validate=True))
+    except (ValueError, TypeError, ProtoDecodeError) as exc:
+        raise MarketDataClassificationError(f"MEXC protobuf decode failed: {exc}") from exc
     body = decoded.get("body") or {}
-    symbol = decoded.get("symbol")
-    channel = decoded.get("channel") or raw_row.get("channel")
+    channel = decoded.get("channel")
+    kind, expected_body_type, channel_symbol = _mexc_channel_contract(channel)
+    symbol = str(decoded.get("symbol") or "")
+    if symbol != channel_symbol:
+        raise MarketDataClassificationError(
+            f"MEXC symbol/channel mismatch: symbol={symbol!r} channel_symbol={channel_symbol!r}"
+        )
+    raw_channel = raw_row.get("channel")
+    if raw_channel is not None and raw_channel != channel:
+        raise MarketDataClassificationError("MEXC envelope channel mismatch")
+    raw_symbol = raw_row.get("symbol")
+    if raw_symbol is not None and str(raw_symbol).upper() != symbol:
+        raise MarketDataClassificationError("MEXC envelope symbol mismatch")
     exchange_ts = decoded.get("send_time") or decoded.get("create_time")
     body_type = decoded.get("body_type")
+    if body_type != expected_body_type or not isinstance(body, dict):
+        raise MarketDataClassificationError(
+            f"MEXC body/channel mismatch: kind={kind!r} body_type={body_type!r}"
+        )
 
-    if body_type in {"aggre_book_ticker", "book_ticker"}:
-        bid = body.get("bid_price")
-        ask = body.get("ask_price")
+    if kind == "bbo":
+        bid = _positive_float(body.get("bid_price"), label="MEXC bid_price")
+        bid_qty = _positive_float(body.get("bid_qty"), label="MEXC bid_qty")
+        ask = _positive_float(body.get("ask_price"), label="MEXC ask_price")
+        ask_qty = _positive_float(body.get("ask_qty"), label="MEXC ask_qty")
+        if ask < bid:
+            raise MarketDataClassificationError("MEXC ask_price is below bid_price")
         event = _base_event(raw_row, symbol, "bbo", exchange_ts)
         event.update(
             {
                 "channel": channel,
                 "bid_price": bid,
-                "bid_qty": body.get("bid_qty"),
+                "bid_qty": bid_qty,
                 "ask_price": ask,
-                "ask_qty": body.get("ask_qty"),
+                "ask_qty": ask_qty,
                 "spread_bps": _spread_bps(bid, ask),
             }
         )
         return [event]
 
-    if body_type == "limit_depth":
+    if kind == "depth":
+        bids = _validated_levels(body.get("bids"), label="MEXC bids")
+        asks = _validated_levels(body.get("asks"), label="MEXC asks")
+        if not bids and not asks:
+            raise MarketDataClassificationError("MEXC depth has no positive levels")
         event = _base_event(raw_row, symbol, "depth", exchange_ts)
         event.update(
             {
                 "channel": channel,
                 "depth_type": "snapshot",
-                "bids": body.get("bids", []),
-                "asks": body.get("asks", []),
+                "bids": bids,
+                "asks": asks,
                 "version": body.get("version"),
             }
         )
         return [event]
 
-    if body_type == "aggre_deals":
+    if kind == "trade":
+        deals = body.get("deals")
+        if not isinstance(deals, list) or not deals:
+            raise MarketDataClassificationError("MEXC trade packet is empty")
         out: list[dict[str, Any]] = []
-        for item in body.get("deals", []):
+        for index, item in enumerate(deals):
+            if not isinstance(item, dict):
+                raise MarketDataClassificationError(f"MEXC trade[{index}] is not an object")
+            price = _positive_float(item.get("price"), label=f"MEXC trade[{index}].price")
+            qty = _positive_float(item.get("qty"), label=f"MEXC trade[{index}].qty")
+            side = item.get("side")
+            if side not in {"buy", "sell"}:
+                raise MarketDataClassificationError(f"MEXC trade[{index}].side is invalid")
             event = _base_event(raw_row, symbol, "trade", item.get("trade_ts") or exchange_ts)
             event.update(
                 {
                     "channel": channel,
-                    "price": item.get("price"),
-                    "qty": item.get("qty"),
-                    "side": item.get("side"),
+                    "price": price,
+                    "qty": qty,
+                    "side": side,
                     "trade_type": item.get("trade_type"),
                 }
             )
             out.append(event)
         return out
 
-    return []
+    raise MarketDataClassificationError(f"unsupported MEXC market kind: {kind!r}")
 
 
 def _gate_result(payload_data: dict[str, Any]) -> dict[str, Any] | None:
@@ -310,55 +445,81 @@ def _normalize_gate_row(raw_row: dict[str, Any]) -> list[dict[str, Any]]:
         return []
     result = _gate_result(data)
     if result is None:
-        return []
-    channel = data.get("channel")
+        raise MarketDataClassificationError("Gate update result is missing")
+    channel = str(data.get("channel") or "")
+    kind = GATE_MARKET_CHANNELS.get(channel)
+    if kind is None:
+        raise MarketDataClassificationError(f"unsupported Gate market channel: {channel!r}")
+    raw_channel = raw_row.get("channel")
+    if raw_channel is not None and raw_channel != channel:
+        raise MarketDataClassificationError("Gate envelope channel mismatch")
     exchange_ts = _epoch_seconds(data.get("time_ms") or result.get("t") or data.get("time"))
 
-    if channel == "spot.book_ticker":
-        bid = _as_float(result.get("b"))
-        ask = _as_float(result.get("a"))
-        event = _base_event(raw_row, result.get("s"), "bbo", exchange_ts)
+    if kind == "bbo":
+        symbol = str(result.get("s") or "")
+        bid = _positive_float(result.get("b"), label="Gate bid_price")
+        bid_qty = _positive_float(result.get("B"), label="Gate bid_qty")
+        ask = _positive_float(result.get("a"), label="Gate ask_price")
+        ask_qty = _positive_float(result.get("A"), label="Gate ask_qty")
+        if ask < bid:
+            raise MarketDataClassificationError("Gate ask_price is below bid_price")
+        event = _base_event(raw_row, symbol, "bbo", exchange_ts)
         event.update(
             {
                 "channel": channel,
                 "bid_price": bid,
-                "bid_qty": _as_float(result.get("B")),
+                "bid_qty": bid_qty,
                 "ask_price": ask,
-                "ask_qty": _as_float(result.get("A")),
+                "ask_qty": ask_qty,
                 "spread_bps": _spread_bps(bid, ask),
                 "sequence": result.get("u"),
             }
         )
-        return [event]
-
-    if channel == "spot.order_book_update":
-        event = _base_event(raw_row, result.get("s"), "depth", exchange_ts)
+    elif kind == "depth":
+        symbol = str(result.get("s") or "")
+        bids = _validated_levels(result.get("b"), label="Gate bids")
+        asks = _validated_levels(result.get("a"), label="Gate asks")
+        if not bids and not asks:
+            raise MarketDataClassificationError("Gate depth has no positive levels")
+        event = _base_event(raw_row, symbol, "depth", exchange_ts)
         event.update(
             {
                 "channel": channel,
                 "depth_type": "delta",
-                "bids": [[_as_float(p), _as_float(q)] for p, q in result.get("b", [])],
-                "asks": [[_as_float(p), _as_float(q)] for p, q in result.get("a", [])],
+                "bids": bids,
+                "asks": asks,
                 "first_update_id": result.get("U"),
                 "last_update_id": result.get("u"),
             }
         )
-        return [event]
-
-    if channel == "spot.trades":
-        event = _base_event(raw_row, result.get("currency_pair"), "trade", _epoch_seconds(result.get("create_time_ms")) or exchange_ts)
+    else:
+        symbol = str(result.get("currency_pair") or "")
+        price = _positive_float(result.get("price"), label="Gate trade.price")
+        qty = _positive_float(result.get("amount"), label="Gate trade.qty")
+        side = result.get("side")
+        if side not in {"buy", "sell"}:
+            raise MarketDataClassificationError("Gate trade.side is invalid")
+        event = _base_event(
+            raw_row,
+            symbol,
+            "trade",
+            _epoch_seconds(result.get("create_time_ms")) or exchange_ts,
+        )
         event.update(
             {
                 "channel": channel,
                 "trade_id": result.get("id"),
-                "price": _as_float(result.get("price")),
-                "qty": _as_float(result.get("amount")),
-                "side": result.get("side"),
+                "price": price,
+                "qty": qty,
+                "side": side,
             }
         )
-        return [event]
-
-    return []
+    if not symbol or symbol != symbol.upper():
+        raise MarketDataClassificationError("Gate symbol is missing or non-canonical")
+    raw_symbol = raw_row.get("symbol")
+    if raw_symbol is not None and str(raw_symbol).upper() != symbol:
+        raise MarketDataClassificationError("Gate envelope symbol mismatch")
+    return [event]
 
 
 def normalize_ws_row(raw_row: dict[str, Any]) -> list[dict[str, Any]]:
@@ -368,6 +529,110 @@ def normalize_ws_row(raw_row: dict[str, Any]) -> list[dict[str, Any]]:
     if exchange == "gateio":
         return _normalize_gate_row(raw_row)
     return []
+
+
+def _is_control_row(raw_row: Mapping[str, Any]) -> bool:
+    event_type = str(raw_row.get("event_type") or "")
+    if event_type in CONTROL_EVENT_TYPES:
+        return True
+    payload = raw_row.get("payload")
+    if not isinstance(payload, Mapping):
+        return False
+    encoding = str(payload.get("encoding") or "")
+    data = payload.get("data")
+    if encoding == "text" and isinstance(data, str):
+        return data.strip().upper() in {"PING", "PONG"}
+    if encoding != "json" or not isinstance(data, Mapping):
+        return False
+    method = str(data.get("method") or "").upper()
+    event = str(data.get("event") or "").lower()
+    channel = str(data.get("channel") or "").lower()
+    message = str(data.get("msg") or "").upper()
+    return (
+        method in {"PING", "PONG", "SUBSCRIPTION", "UNSUBSCRIPTION"}
+        or event in {"subscribe", "unsubscribe"}
+        or channel in {"spot.ping", "spot.pong"}
+        or message in {"PING", "PONG"}
+    )
+
+
+def classify_ws_row(
+    raw_row: Mapping[str, Any],
+    *,
+    expected_exchange: str | None = None,
+    expected_symbols: Collection[str] | None = None,
+    expected_channels_by_symbol: Mapping[str, Collection[str]] | None = None,
+) -> dict[str, Any]:
+    """Classify a raw frame using the same fail-closed rules everywhere."""
+
+    row = dict(raw_row)
+    exchange = str(row.get("exchange") or "").lower()
+    expected_venue = str(expected_exchange or exchange).lower()
+    if exchange != expected_venue:
+        return {
+            "classification": "unclassified",
+            "reason": "exchange_mismatch",
+            "events": [],
+            "qualifies_market_liveness": False,
+        }
+    expected_symbol_set = (
+        {str(item).strip().upper() for item in expected_symbols}
+        if expected_symbols is not None
+        else None
+    )
+    try:
+        events = normalize_ws_row(row)
+    except (MarketDataClassificationError, ProtoDecodeError, ValueError, TypeError) as exc:
+        return {
+            "classification": "unclassified",
+            "reason": f"market_structure:{type(exc).__name__}:{exc}",
+            "events": [],
+            "qualifies_market_liveness": False,
+        }
+    if events:
+        for event in events:
+            event_exchange = str(event.get("exchange") or "").lower()
+            symbol = str(event.get("symbol") or "").upper()
+            channel = str(event.get("channel") or "")
+            if event_exchange != expected_venue:
+                reason = "normalized_exchange_mismatch"
+                break
+            if expected_symbol_set is not None and symbol not in expected_symbol_set:
+                reason = f"foreign_symbol:{symbol}"
+                break
+            if expected_channels_by_symbol is not None:
+                allowed_channels = {
+                    str(item) for item in expected_channels_by_symbol.get(symbol, ())
+                }
+                if channel not in allowed_channels:
+                    reason = f"foreign_channel:{channel}"
+                    break
+        else:
+            return {
+                "classification": "market",
+                "reason": "valid_exact_market_event",
+                "events": events,
+                "qualifies_market_liveness": True,
+            }
+        return {
+            "classification": "unclassified",
+            "reason": reason,
+            "events": [],
+            "qualifies_market_liveness": False,
+        }
+    if _is_control_row(row):
+        return {
+            "classification": "control",
+            "reason": "recognized_control",
+            "events": [],
+            "qualifies_market_liveness": False,
+        }
+    return {
+        "classification": "unclassified",
+        "reason": "no_valid_market_event_or_known_control",
+        "events": [],
+        "qualifies_market_liveness": False,
+    }
 
 
 def _read_manifest_or_raw_paths(input_path: Path) -> list[Path]:

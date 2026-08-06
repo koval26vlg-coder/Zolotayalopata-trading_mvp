@@ -1,0 +1,106 @@
+{
+  "schema": "trading_mvp_dense_ws_postrun_runtime_refreeze_implementation_audit_v1",
+  "status": "RUNTIME_REFROZEN_APPROVED_NOT_STARTED",
+  "generated_at_utc": "2026-08-02T15:00:00Z",
+  "generated_at_local": "2026-08-02T18:00:00+03:00",
+  "thread_id": "019e738a-b37c-7a33-ae04-6cc80739f184",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-postrun-runtime-refreeze-proposal-20260802-v1.json",
+    "file_sha256": "eef9fdee67a9dbcd23c9c66c62869ef2a041b43525306cb70c0f94fbaf88e380",
+    "proposal_hash": "0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf40662",
+    "canonical_hash_verified": true
+  },
+  "approval": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-postrun-runtime-refreeze-approval.json",
+    "file_sha256": "b6b739c466ac7c21abc9fed32752011304075f4aad269a30ff095be45a52e3b0",
+    "single_use": true,
+    "consumed_once": true,
+    "stop_incomplete_recovery_authorized": false
+  },
+  "runtime_contract": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "postrun_not_before_local": "2026-08-04T01:30:00+03:00",
+    "postrun_hard_deadline_local": "2026-08-04T02:30:00+03:00",
+    "quality_max_runtime_sec": 1800,
+    "materialization_max_runtime_sec": 1800,
+    "total_max_runtime_sec": 3600,
+    "stages_are_sequential": true,
+    "one_visible_terminal": true,
+    "one_postrun_owner": true,
+    "no_automatic_retry": true
+  },
+  "bindings": {
+    "policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "policy_sha256": "13c2b98d76a6486eee43b60cf37c07fa2aa2dfbad3479f6c6c5285aff57ba842",
+    "orchestrator_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_dense_ws_postrun_visible.ps1",
+    "orchestrator_sha256": "4781219d0c06af686508cb0c8a76424be22825e657a1b80f43c1799df43398ed",
+    "orchestration_test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_postrun_orchestration.py",
+    "orchestration_test_sha256": "e48072e3f2577aac45c0c45fa75f687d370177ebfc95d7f9bddb48eafd9e9a18",
+    "quality_tool_sha256_unchanged": "6796f534ab5018ad54ea3f453c7cf522fe21e8f1d70844cd552ed2cc7c8059b3",
+    "materializer_tool_sha256_unchanged": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c",
+    "automation_path": "C:\\Users\\koval\\.codex\\automations\\trading-continuous-production\\automation.toml",
+    "automation_sha256": "faa7959e00ad86820743f7c93340fe43d8903800789a5d02c3e6c91dd1f0f447",
+    "automation_status": "ACTIVE"
+  },
+  "verification": {
+    "powershell_parse": "PASS",
+    "targeted_orchestration_tests": {
+      "tests_run": 5,
+      "failures": 0,
+      "errors": 0
+    },
+    "selected_dense_ws_and_guard_tests": {
+      "tests_run": 69,
+      "failures": 0,
+      "errors": 0
+    },
+    "fast_regression": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-postrun-runtime-refreeze-fast-regression-final-20260802T1758+0300.json",
+      "file_sha256": "cd2baf6af5c5305ccd59253c3d0227b1149fd5856693fb26cd5908998523a2cd",
+      "tests_run": 263,
+      "failures": 0,
+      "errors": 0,
+      "verdict": "FAST_REGRESSION_PASS",
+      "module_list_hash_sha256": "a604c1d47b1947d3aa0cf015cd0936eb9759c5a3e75bcecf5ce581ab170e53c0",
+      "runner_file_sha256": "c85e060606137bc37eebbbabaa0fcf76b211871cded6e4ce3830d460720347bc",
+      "deterministic_result_hash": "98d8ae16180e42eb617afc4206804023088aebf9882260b0be399f5985ff9c3a",
+      "previous_tests_run": 262,
+      "previous_deterministic_result_hash": "afbb86736024656b0337a4406a9718796778a5337581a34c497c5ca5ad728c92",
+      "result_hash_change_reason": "one approved runtime-contract test was added; module list and runner hashes are unchanged"
+    },
+    "preflight_only": {
+      "status": "BLOCKED_EXPECTED_BEFORE_WINDOW",
+      "date_parsed_as": "2026-08-04",
+      "reason_present": "postrun_window_not_open",
+      "no_run_or_output_writes": true,
+      "postrun_root_exists_after": false,
+      "owner_exists_after": false,
+      "reservation_exists_after": false,
+      "visible_log_exists_after": false
+    },
+    "final_guard": {
+      "status": "ACTIVE",
+      "decision": "WAIT_APPROVED_LONG_CAMPAIGN_WINDOW",
+      "weekly_remaining_percent": 65.0,
+      "campaign_approval_status": "APPROVED",
+      "campaign_launch_window_status": "WAITING",
+      "critical_checkpoint_notification_required": false
+    }
+  },
+  "safety": {
+    "collector_started": false,
+    "postrun_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "WAIT_FOR_PIT_N06_THEN_APPROVED_DENSE_WS_CAMPAIGN; POSTRUN_ONLY_AFTER_EXACT_COMPLETED_CAMPAIGN_AND_READY_GUARD"
+}

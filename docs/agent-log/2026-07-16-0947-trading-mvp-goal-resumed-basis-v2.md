@@ -1,0 +1,24 @@
+# trading_mvp goal resumed: historical basis v2 A0 accepted
+
+- recorded_at: 2026-07-16T09:46:35.1042323+03:00
+- agent: Codex
+- user_request: возобнови цель
+- goal_state: active
+- hypothesis_id: cross_venue_perp_basis_convergence_1h_v2
+- preflight_status: PREFLIGHT_ACCEPTED_NOT_COLLECTED
+- preflight_path: E:\ZolotyayLopata-data\exports\trading-mvp\historical-basis-1h-v2\preflight\preflight_20260716_094016.json
+- preflight_hash: 83b87e3ffe327787e807007eaa2399714964ceeadb93e0a73b6e11a90d5bae77
+- preflight_runtime_sec: 90.716
+- candidates: 20
+- boundary_probes: 240/240 available
+- data_embargo: returns_read=false; pnl_read=false; signals_read=false; oos_metrics_read=false
+- plan_path: E:\ZolotyayLopata-data\exports\trading-mvp\historical-basis-1h-v2\plans\basis_v2_planonly_20260716_094355.json
+- plan_hash: 710307b8dbb49f05089e1f3bccbb597c7107bfc505d2cf3e9488d7fa738c7faa
+- plan_file_sha256: c864ceebb531f7614cb9c97fce34e25140f98dbe9edaba7dbaf22aab18bb25e9
+- deterministic_repeat: true
+- universe_hash_repeat: true
+- cost_profile_hash_repeat: true
+- targeted_tests: 9/9 passed
+- next_step: explicit approval for one visible public history collect; proposed MaxRuntimeSec=1200, estimated 360 requests and <=750 sec, STOPPED_INCOMPLETE on timeout/interruption.
+- independent_shadow_track: PIT schedule hash 14f687e8e8491bb58c1e697d9a467d89ab360f6b683782caca43f8b33a0684a0 remains active for 23:00 local and was not modified.
+- prohibited: grid, retune, OOS read before train gate, probe, paper-forward, live orders, private API keys, leverage, margin.

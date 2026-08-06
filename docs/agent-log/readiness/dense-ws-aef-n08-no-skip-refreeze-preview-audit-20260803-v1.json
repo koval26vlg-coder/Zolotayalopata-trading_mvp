@@ -1,0 +1,81 @@
+{
+  "schema": "trading_mvp_dense_ws_n08_no_skip_refreeze_preview_audit_v1",
+  "status": "PASS_PLANONLY_REFREEZE_READY",
+  "observed_at_utc": "2026-08-03T16:15:46.2511018+00:00",
+  "purpose": "Preserve PIT n08 after dense writer finalization without changing any trading contract or launching collection.",
+  "inputs": {
+    "contract_source": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+      "sha256": "80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb"
+    },
+    "implementation_patch": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-n08-no-skip-refreeze-implementation-preview-20260803-v1.patch",
+      "sha256": "5707859428015d158b3bad8958083ce1ed028b19b0638b047b7000e0768eac4f"
+    },
+    "active_continuous_policy": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-continuous-production-policy-v1.json",
+      "sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056"
+    },
+    "candidate_continuous_policy": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-n08-no-skip-planonly-v1.json",
+      "sha256": "077db2c25c799ea1fd848bc2d569c4a40e417bba1c7f5eb8873958758d492153"
+    },
+    "no_skip_feasibility": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-feasibility-20260803-aef-continuous24h-n08-no-skip-v1.json",
+      "sha256": "e7327a535c45a0db9d51510e7af806677dcce14d6e97c7ff31c355576cf76f2a",
+      "candidate_contract_hash": "bee6a03381f818dd623d330419150307341f9a9fb0c9ed0f80f69c622811c335"
+    },
+    "amended_pit_plan": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n08_20260805_0215_planonly_v1.json",
+      "sha256": "9bddd1dd6aa28e934b07eea963ecf9ebe453101928038e018232ecdd51a10e19",
+      "plan_hash": "ffb4edc802fef776e202fdffb67d1bb3c67bd83d8a14e4cfa55a0863fac2cfa7"
+    }
+  },
+  "exact_source_postimage": {
+    "sha256": "3dfc2346a1694bf756674c3817495a776facfb35d42f11a19799a62a2d7ca177",
+    "changed_blocks": [
+      {
+        "field": "AEF_EXPECTED_CANDIDATE_HASH",
+        "old": "a1d262d1cf5ef1c70771ab9005b12eb0d875ff5235492ffadf8e1af4790a8643",
+        "new": "bee6a03381f818dd623d330419150307341f9a9fb0c9ed0f80f69c622811c335"
+      },
+      {
+        "field": "AEF_SUPPRESSED_PIT_RUN_IDS",
+        "old": [
+          "pit_universe_v2_forward_20260805_n08"
+        ],
+        "new": []
+      }
+    ],
+    "source_written": false
+  },
+  "no_skip_validation": {
+    "n08_run_id": "pit_universe_v2_forward_20260805_n08",
+    "n08_original_start_local": "2026-08-05T01:00:00+03:00",
+    "n08_start_local": "2026-08-05T02:15:00+03:00",
+    "n08_end_local": "2026-08-05T02:35:00+03:00",
+    "dense_hard_finalization_local": "2026-08-05T02:10:00+03:00",
+    "dense_to_n08_gap_sec": 300,
+    "suppressed_pit_run_ids": [],
+    "trade_contract_changed": false,
+    "legacy_partial_dataset_reread": false
+  },
+  "invariants_preserved": {
+    "hypothesis": "dense_ws_microstructure_regime_filter_v1",
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "data_type": "DENSE_WS_SEGMENTED",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "duration_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000,
+    "collector_launch_allowed": false,
+    "network_access_allowed": false,
+    "returns_pnl_oos_evaluator_allowed": false,
+    "grid_or_retune_allowed": false,
+    "paper_live_private_real_capital_leverage_margin_allowed": false
+  },
+  "next_required_user_action": "EXACT_HASH_BOUND_N08_NO_SKIP_REFREEZE_APPROVAL"
+}

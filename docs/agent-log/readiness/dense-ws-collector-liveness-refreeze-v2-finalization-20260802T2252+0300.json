@@ -1,0 +1,75 @@
+{
+  "schema": "trading_mvp_dense_ws_collector_liveness_refreeze_finalization_v2",
+  "status": "COMPLETE_AWAIT_EXPLICIT_LONG_CAMPAIGN_APPROVAL",
+  "generated_at_local": "2026-08-02T22:52:30.4186470+03:00",
+  "proposal_hash": "a3cfdf5e71da1d9485ceb0fe725aab7b35037e9eee4419a3dbb06e97aa7dbd61",
+  "contract": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260803-aef-24h-v2.json",
+    "file_sha256": "cdfbee9ceaafcff3a170d81347b6822c612aaa401300ede676b1aa13fdefbdd8",
+    "contract_hash": "99e752bada6c951815296dafecfd7b558058455e183a53c5723d69b25dcf9e53"
+  },
+  "plan": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v2.json",
+    "file_sha256": "9fe19c6e220897b80098fd6a3cd5eb767aa1a7eccb6bf54b59d7c8485e64731a",
+    "plan_hash": "651502c3104ffea904f0520afc7ffbde7e9ab993213d5d74962c00ef91f4916e",
+    "approval_state": "NOT_APPROVED",
+    "actual_collection_allowed": false
+  },
+  "policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "sha256": "5e66b0bc30eb2b85093518a79a286a820e31decc26d32c8750ed6df30f2c3f2e",
+    "status": "READY_FOR_APPROVAL"
+  },
+  "automation": {
+    "id": "trading-continuous-production",
+    "path": "C:\\Users\\koval\\.codex\\automations\\trading-continuous-production\\automation.toml",
+    "sha256": "2c82e10e5fd42b52289d8acdcf7d13bbac2ec264c1efbc88cf2740c55c894d35",
+    "status": "ACTIVE"
+  },
+  "preflight": {
+    "status": "STRUCTURALLY_VALID_NOT_DUE",
+    "structurally_valid": true,
+    "can_launch_now": false,
+    "no_run_or_output_writes": true,
+    "earliest_launch_at": "2026-08-03T01:00:00+03:00",
+    "writer_start_at": "2026-08-03T01:30:00+03:00",
+    "latest_launch_at": "2026-08-03T01:35:00+03:00"
+  },
+  "guard": {
+    "status": "ACTIVE",
+    "decision": "AWAIT_EXPLICIT_LONG_CAMPAIGN_APPROVAL",
+    "usage_status": "AVAILABLE",
+    "remaining_percent": 45,
+    "long_status": "READY_FOR_APPROVAL",
+    "long_approval": "NOT_APPROVED"
+  },
+  "output_state": {
+    "campaign_output_exists": false,
+    "campaign_output_bytes": 0,
+    "global_writer_claim_exists": false
+  },
+  "old_v1": {
+    "launch_allowed": false,
+    "receipt_reusable": false,
+    "contract_sha256": "e2411cc57fb8827f1d527393e5b4bdb31ca85e9f0ea60e46b3b915531c66a9cc",
+    "plan_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21"
+  },
+  "postrun": {
+    "status": "PRESERVED_DORMANT_V1_BINDING_NOT_EXECUTABLE_FOR_V2",
+    "automatic_v2_postrun_authorized": false
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "next_action": "REQUEST_ONE_EXACT_HASH_BOUND_V2_CAMPAIGN_LAUNCH_APPROVAL"
+}

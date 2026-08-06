@@ -1,0 +1,90 @@
+{
+  "schema": "trading_mvp_dense_ws_collector_liveness_refreeze_v2_hold_verification_v1",
+  "status": "PASS_FAIL_CLOSED_USER_REVIEW_REQUIRED",
+  "verified_at_local": "2026-08-02T21:45:00+03:00",
+  "verified_at_utc": "2026-08-02T18:45:00Z",
+  "policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "file_sha256": "f10207ca04646c3c9483c75f508f463a218e12a9512c7911737cbfe06d9966d6",
+    "status": "ACTIVE",
+    "decision": "USER_REVIEW_REQUIRED_LONG_CAMPAIGN_CONTRACT",
+    "next_action": "request_exact_hash_bound_collector_liveness_refreeze_v2_a3cfdf5e71da1d9485ceb0fe725aab7b35037e9eee4419a3dbb06e97aa7dbd61"
+  },
+  "proposal_v2": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-collector-liveness-refreeze-proposal-20260802-v2.json",
+    "file_sha256": "c09b6cc4203b674e02c7b1ceb2c6271f362b78dfcc2a8daa6c56036f8a3751d8",
+    "proposal_hash": "a3cfdf5e71da1d9485ceb0fe725aab7b35037e9eee4419a3dbb06e97aa7dbd61",
+    "canonical_hash_match": true,
+    "authorized": false,
+    "collector_launch_allowed": false
+  },
+  "proposal_v1": {
+    "proposal_hash": "cb070b3d88b23ff4a1cc46dbd68407d467f4c8ed110ee870d0fd72a5e4e5be3a",
+    "disposition": "SUPERSEDED_REJECTED_BY_INDEPENDENT_REVIEW",
+    "may_be_approved_or_implemented": false
+  },
+  "independent_review": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-collector-liveness-independent-review-20260802T2138+0300.json",
+    "file_sha256": "52088887f16513b0ec105a763fe0e564b60c194c1cb011db07cf189d5f99b8c9",
+    "verdict": "V1_REJECTED_AMENDMENT_REQUIRED",
+    "reviewers": 2
+  },
+  "old_dense_launch_preflight": {
+    "script": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_dense_ws_campaign_visible.ps1",
+    "preflight_only": true,
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "exit_code": 1,
+    "blocked": true,
+    "reason": "policy.candidate.status mismatch",
+    "run_or_output_writes": false
+  },
+  "automation": {
+    "id": "trading-continuous-production",
+    "status": "ACTIVE",
+    "file_sha256": "0da40c295df8e4c4b60184a9d64547be619e8f9b4c46070abbf9a5a1957cdd78",
+    "policy_hash_bound": true,
+    "proposal_v2_hash_bound": true,
+    "proposal_v1_marked_superseded": true,
+    "pit_n06_preserved": true
+  },
+  "pit_shadow_track": {
+    "run_id": "pit_universe_v2_forward_20260803_n06",
+    "classification": "PREAPPROVED_SHORT_SEGMENT",
+    "status": "WAITING",
+    "start_local": "2026-08-03T01:00:00+03:00",
+    "end_local": "2026-08-03T01:20:00+03:00",
+    "duration_sec": 1200,
+    "priority_when_due": true
+  },
+  "quota": {
+    "status": "AVAILABLE",
+    "remaining_percent": 49.0,
+    "decision": "CONTINUE"
+  },
+  "preserved_downstream_runtime_refreeze": {
+    "proposal_hash": "0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf40662",
+    "scope": "dense_ws postrun only",
+    "status": "PRESERVED_DORMANT",
+    "collector_launch_authorization": false
+  },
+  "production_code": {
+    "changed": false,
+    "affected_unit_suites_rerun_this_checkpoint": false,
+    "reason_not_rerun": "proposal and policy documents changed; runtime implementation remains frozen pending exact approval"
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "market_dataset_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "REQUEST_EXACT_V2_REFREEZE_APPROVAL_ONLY"
+}

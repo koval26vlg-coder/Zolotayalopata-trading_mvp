@@ -1,0 +1,21 @@
+# trading_mvp quick status guard
+
+- time: 2026-06-30 17:12:21 +03:00
+- agent: Codex
+- user_request: continue active trading_mvp goal
+- goal_context: current rejected WS postprocess has replay_allowed=false; next proof step requires visible 72h dense WS collect after exact START72H.
+- gate_status_verified: READY_FOR_POSTPROCESS
+- replay_allowed_verified: false
+- swarm_status_verified: SWARM_LIMITED
+- changes:
+  - added C:\Users\koval\Documents\ZolotyayLopata\tools\trading_quick_status.ps1
+  - added C:\Users\koval\Documents\ZolotyayLopata\TRADING_QUICK_STATUS.cmd
+  - added quick-status unit coverage in C:\Users\koval\Documents\ZolotyayLopata\trading_mvp\tests\test_visible_ws_collect_wrapper.py
+- purpose: provide a no-start, low-cost status path for frequent goal continuations/questions while waiting for START72H; avoid repeatedly running heavy approval packet/preflight unless actually needed.
+- verification:
+  - pwsh -NoProfile -ExecutionPolicy Bypass -File tools\trading_quick_status.ps1 -Json => AWAITING_START72H_APPROVAL, gate READY_FOR_POSTPROCESS, replay_allowed=false, required_user_input=START72H, 72h/16 pairs, swarm SWARM_LIMITED
+  - targeted tests: 18 OK, skipped=1
+  - full tests: 224 OK, skipped=1
+- not_done: no collector, replay, grid, postprocess, live orders, API keys, leverage or margin started.
+- next_required_action: user must provide exact START72H or launch TRADING_START_DENSE_WS_CONFIRMED.cmd and type START72H to start visible 72h dense WS collect.
+- operational_shortcut: C:\Users\koval\Documents\ZolotyayLopata\TRADING_QUICK_STATUS.cmd can be used for quick status without heavy checks.

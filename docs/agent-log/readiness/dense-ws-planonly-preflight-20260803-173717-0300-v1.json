@@ -1,0 +1,37 @@
+{
+  "schema": "trading_mvp_dense_ws_campaign_preflight_v1",
+  "status": "STRUCTURALLY_VALID_NOT_DUE",
+  "structurally_valid": true,
+  "can_launch_now": false,
+  "no_run_or_output_writes": true,
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260804_aef_24h",
+  "candidate_contract_hash": "a1d262d1cf5ef1c70771ab9005b12eb0d875ff5235492ffadf8e1af4790a8643",
+  "contract_hash": "43aa896e6226d3ad8013e29fda550deca4eeee7cbac205d5d94ef4f951749c4b",
+  "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-v1.json",
+  "plan_hash": "709bdf57446de9d12447d11e0bb7836e29dac0ce0fd5d43b3247f621384d70bf",
+  "approval_state": "NOT_APPROVED",
+  "launch_control_status": "READY_FOR_SEPARATE_EXACT_APPROVAL",
+  "window": {
+    "status": "NOT_DUE",
+    "observed_at": "2026-08-03T17:37:17.324388+03:00",
+    "earliest_launch_at": "2026-08-04T01:10:00+03:00",
+    "writer_start_at": "2026-08-04T01:40:00+03:00",
+    "latest_launch_at": "2026-08-04T01:45:00+03:00",
+    "seconds_to_writer_start": 28963
+  },
+  "gate_status": "READY_FOR_POSTPROCESS",
+  "gate_run_id": "pit_universe_v2_forward_20260803_n06",
+  "free_bytes": 825030361088,
+  "required_free_bytes": 53687091200,
+  "existing_campaign_output_bytes": 0,
+  "hard_output_cap_bytes": 25000000000,
+  "global_writer_claim": null,
+  "global_writer_claim_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\active-market-data-writer-claim.json",
+  "reasons": [],
+  "safety": {
+    "collector_started": false,
+    "network_used": false,
+    "output_written": false,
+    "approval_granted": false
+  }
+}

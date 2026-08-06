@@ -1,0 +1,142 @@
+{
+  "schema": "trading_mvp_dense_ws_collector_liveness_independent_review_v1",
+  "mode": "ReadOnlyIndependentReview",
+  "status": "COMPLETE",
+  "generated_at_local": "2026-08-02T21:38:00+03:00",
+  "generated_at_utc": "2026-08-02T18:38:00Z",
+  "research_only": true,
+  "source_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-market-liveness-integrity-audit-20260802T2110+0300.json",
+    "file_sha256": "79d8a65d64a4ac4feb52065a8010adfcf39464f921f028b1969bc2360eb6e2a2",
+    "verdict": "FAIL_LAUNCH_BLOCKING_REFREEZE_REQUIRED"
+  },
+  "reviewed_proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-collector-liveness-refreeze-proposal-20260802-v1.json",
+    "file_sha256": "a50796f3f69f203f76a75e5a9e9261414bd7367c97b36e5e5bc02143feda0d6e",
+    "proposal_hash": "cb070b3d88b23ff4a1cc46dbd68407d467f4c8ed110ee870d0fd72a5e4e5be3a"
+  },
+  "reviewers": [
+    {
+      "agent_id": "019fc3b8-1895-7a91-815b-7a5e24989f9a",
+      "agent_name": "Goodall",
+      "role": "collector_and_runtime_liveness_review",
+      "changed_files": false,
+      "network_access": false,
+      "collector_started": false,
+      "findings": [
+        {
+          "priority": "P1",
+          "id": "duration_completion_is_not_liveness_clean",
+          "required_amendment": "Keep duration_completed, liveness_clean and quality_eligible as separate fail-closed fields; a dirty segment may not count as evidence."
+        },
+        {
+          "priority": "P1",
+          "id": "market_message_classifier_is_not_strict_or_hash_bound",
+          "required_amendment": "Refresh liveness only for a structurally valid normalized event matching the exact subscribed venue, symbol and channel."
+        },
+        {
+          "priority": "P1",
+          "id": "one_active_subscription_can_hide_other_dead_subscriptions",
+          "required_amendment": "Separate connection liveness from expected subscription completeness and compare quality to the frozen symbol plan."
+        },
+        {
+          "priority": "P2",
+          "id": "market_and_control_counters_are_mixed",
+          "required_amendment": "Record transport, market, control, unclassified, silence and reconnect counters separately."
+        },
+        {
+          "priority": "P2",
+          "id": "wall_clock_is_used_for_elapsed_time",
+          "required_amendment": "Use a monotonic clock for runtime, heartbeat and silence deadlines; use wall time only for recorded timestamps."
+        }
+      ]
+    },
+    {
+      "agent_id": "019fc3b8-5182-78b2-8c96-398cf6ee3106",
+      "agent_name": "Halley",
+      "role": "quality_and_contract_review",
+      "changed_files": false,
+      "network_access": false,
+      "collector_started": false,
+      "findings": [
+        {
+          "priority": "P1",
+          "id": "observed_only_markets_miss_zero_event_markets",
+          "required_amendment": "Use the exact hash-bound symbol plan as the expected market set and reject any missing expected market."
+        },
+        {
+          "priority": "P1",
+          "id": "control_rows_can_satisfy_raw_rows_min",
+          "required_amendment": "Apply the existing 600-row threshold to market envelopes that yield at least one valid market event, not to control rows."
+        },
+        {
+          "priority": "P1",
+          "id": "segment_time_boundaries_are_fail_open",
+          "required_amendment": "Require finite start and finish bounds, validate duration agreement, bound every recv_ts and include leading and trailing gaps."
+        },
+        {
+          "priority": "P1",
+          "id": "v1_change_scope_is_self_contradictory",
+          "required_amendment": "Allow campaign data-quality and contract validator changes while keeping the causal materializer unchanged."
+        },
+        {
+          "priority": "P2",
+          "id": "event_kind_completeness_is_only_global",
+          "required_amendment": "Define per-market BBO and depth completeness; keep trade absence distinct because no trade can be a real market condition."
+        }
+      ]
+    }
+  ],
+  "cross_review_verdict": "V1_REJECTED_AMENDMENT_REQUIRED",
+  "v1_disposition": "SUPERSEDED_REJECTED_BY_INDEPENDENT_REVIEW",
+  "required_v2_contract": {
+    "connection_silence_sec": 120,
+    "existing_market_gap_sec": 300,
+    "expected_market_source": "campaign_root/_control/symbol-plan.json",
+    "required_market_channels_per_expected_market": [
+      "bbo",
+      "depth"
+    ],
+    "trade_gap_rule": "no per-market 300-second trade gap; subscription must be sent and any observed trade must validate",
+    "required_counter_split": [
+      "transport_rows",
+      "market_envelope_rows",
+      "normalized_events",
+      "control_rows",
+      "unclassified_messages",
+      "market_silence_events",
+      "reconnect_attempts"
+    ],
+    "dirty_segment_policy": "continue the original schedule when safe, but never count a liveness-dirty segment as valid evidence",
+    "old_contract_or_plan_reuse_allowed": false,
+    "new_exact_launch_approval_required_after_refreeze": true
+  },
+  "frozen_invariants_unchanged": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "data_type": "DENSE_WS_SEGMENTED",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "universe_rows": 1388,
+    "signal_cost_risk_duration_cap_change_allowed": false,
+    "grid_or_retune_allowed": false
+  },
+  "safety": {
+    "production_code_changed": false,
+    "collector_started": false,
+    "network_access": false,
+    "market_dataset_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "BUILD_SUPERSEDING_PROPOSAL_V2_ONLY"
+}

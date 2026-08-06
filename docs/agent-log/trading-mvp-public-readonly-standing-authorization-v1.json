@@ -1,0 +1,87 @@
+{
+  "schema": "trading_mvp_public_readonly_probe_standing_authorization_v1",
+  "authorization_id": "trading_mvp_public_probe_standing_20260730_v1",
+  "decision": "AUTHORIZED",
+  "status": "ACTIVE_UNTIL_REVOKED_OR_SCOPE_CHANGE",
+  "project": "trading_mvp",
+  "project_root": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "source_user_authorization": {
+    "contract_v2": "Разрешаю contract v2 с MEXC depth L1 и один новый видимый bounded probe.",
+    "permission_minimization": "давай минимизируем все разрешения"
+  },
+  "policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "file_sha256": "d3a1d5b90f3d480321ebe533a03ed485be28192beb8083b2eb35121e57db3567",
+    "policy_id": "trading_mvp_autopilot_20260728_v1",
+    "thread_id": "019e738a-b37c-7a33-ae04-6cc80739f184"
+  },
+  "scope": {
+    "plan_versions": [
+      "v2"
+    ],
+    "methods": [
+      "GET"
+    ],
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "base_urls": [
+      "https://contract.mexc.com",
+      "https://api.gateio.ws/api/v4"
+    ],
+    "endpoint_ids": {
+      "mexc": [
+        "mexc_contracts",
+        "mexc_tickers",
+        "mexc_funding",
+        "mexc_depth"
+      ],
+      "gateio": [
+        "gateio_contracts",
+        "gateio_tickers",
+        "gateio_funding",
+        "gateio_depth"
+      ]
+    },
+    "symbol": "HYPE_USDT",
+    "canonical_base": "hype",
+    "duration_sec": 120,
+    "max_runtime_sec": 180,
+    "maximum_public_get_attempts": 576,
+    "maximum_runs_per_distinct_plan_hash": 1,
+    "visible_terminal_required": true,
+    "single_market_data_writer": true,
+    "existing_hosts_and_endpoint_ids_only": true,
+    "technical_response_compatibility_only": true,
+    "normalized_output_schema_changed": false,
+    "venue_universe_hypothesis_signal_cost_risk_changed": false,
+    "returns_or_pnl_read": false,
+    "oos_read": false,
+    "private_api_keys": false,
+    "live_orders": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "grid_or_retune": false,
+    "automatic_retry_after_stopped_incomplete": false
+  },
+  "routine_actions_without_new_user_confirmation": [
+    "freeze one compatibility-only contract and plan per distinct hash",
+    "create one run authorization bound to the standing and plan hashes",
+    "start one visible bounded public GET probe per distinct plan hash",
+    "run exact immutable postprocess and technical readiness audit"
+  ],
+  "still_requires_user_checkpoint": [
+    "materially new or changed hypothesis",
+    "venue, universe, signal, cost, risk or acceptance-contract change",
+    "historical or paper verdict that accepts or finally rejects a hypothesis",
+    "irreversible data-integrity or safety conflict",
+    "live orders, private API keys, real capital, leverage, margin or withdrawal capability",
+    "new host or endpoint",
+    "second run for the same plan hash",
+    "automatic retry after STOPPED_INCOMPLETE",
+    "collector or writer exceeding 180 seconds"
+  ],
+  "authorization_hash_sha256": "9b34452c59824c028ecb2016a1abd986238bc2f3119d9f838de4c5f238395ea5",
+  "generated_at_utc": "2026-07-30T14:54:17.781571+00:00"
+}

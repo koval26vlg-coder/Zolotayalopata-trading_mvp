@@ -1,0 +1,96 @@
+{
+  "schema": "trading_mvp_dense_ws_immediate19_time_only_reschedule_proposal_v1",
+  "mode": "PlanOnlyRescheduleProposal",
+  "status": "USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+  "generated_at_utc": "2026-08-03T15:22:24.5167099Z",
+  "research_only": true,
+  "user_request": {
+    "intent": "Start the dense WS evidence campaign before 01:00 local time.",
+    "safe_interpretation": "Use the earliest policy-consistent start at 19:00 local time; do not launch before a new exact immutable PlanOnly is approved."
+  },
+  "baseline": {
+    "active_policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-continuous-production-policy-v1.json",
+    "active_policy_sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260804_aef_24h",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-v1.json",
+    "plan_file_sha256": "8a7f8c45b03a9d79bb2e70a6509e9311540e4b9bf0602e2ee081a75f4516bf75",
+    "plan_hash": "709bdf57446de9d12447d11e0bb7836e29dac0ce0fd5d43b3247f621384d70bf",
+    "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260804-aef-24h-v1.json",
+    "contract_file_sha256": "70505047f30543083a3c5ad582396fd930c74b2715246276182b2dd8dc3e8a1c",
+    "contract_hash": "43aa896e6226d3ad8013e29fda550deca4eeee7cbac205d5d94ef4f951749c4b",
+    "baseline_start_local": "",
+    "baseline_hard_deadline_local": ""
+  },
+  "proposed_time_only_candidate": {
+    "candidate_policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-immediate19-planonly-v1.json",
+    "candidate_policy_sha256": "71fb6f18f419a585851e8b8426a9928a8e728ffeeef1e109414090b967b218d4",
+    "feasibility_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-feasibility-20260803-aef-immediate19-reschedule-v1.json",
+    "feasibility_file_sha256": "f405040de251a99c024930016befcf0fdfd696b5a0345c8b8c57f15f0adac347",
+    "candidate_contract_hash": "b437616795db1567f98e9079434a4e9a9afe88d76b63032f2e4929d160f4c8ef",
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h_immediate19",
+    "window_id": "EVIDENCE_EXCEPTION_2026-08-03_24H_IMMEDIATE19",
+    "writer_start_local": "08/03/2026 19:00:00",
+    "writer_finish_local": "08/04/2026 19:00:00",
+    "hard_deadline_local": "08/04/2026 19:30:00",
+    "target_writer_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000,
+    "single_writer": true,
+    "uninterrupted_required": true,
+    "proposed_suppressed_pit_run_ids": [
+      "pit_universe_v2_forward_20260804_n07"
+    ],
+    "actual_collection_allowed": false
+  },
+  "unchanged_contracts": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "data_type": "DENSE_WS_SEGMENTED",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "universe_rows": 1388,
+    "raw_schema_change_allowed": false,
+    "segment_validity_change_allowed": false,
+    "causal_regime_change_allowed": false,
+    "execution_sampling_change_allowed": false,
+    "cost_risk_no_grid_change_allowed": false,
+    "collector_liveness_change_allowed": false,
+    "quality_or_materializer_change_allowed": false,
+    "signal_or_evaluator_change_allowed": false,
+    "duration_change_allowed": false,
+    "cap_change_allowed": false
+  },
+  "proposed_implementation_after_exact_refreeze_approval": {
+    "promote_only_candidate_policy_to_active_policy": true,
+    "create_refreeze_approval_receipt": true,
+    "run_offline_regression": true,
+    "build_new_runtime_dependency_manifest": true,
+    "build_new_immutable_contract_and_planonly": true,
+    "rebind_autopilot_and_heartbeat_after_validation": true,
+    "new_contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260803-aef-immediate19-24h-v1.json",
+    "new_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-immediate19-24h-v1.json",
+    "new_output_root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-v1-20260803-aef-immediate19-24h"
+  },
+  "required_next_launch_approval": {
+    "separate_exact_hash_bound_user_approval_required": true,
+    "must_bind_new_campaign_id": true,
+    "must_bind_new_plan_hash": true,
+    "must_state_pit_n07_suppression": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "safety": {
+    "collector_launch_allowed": false,
+    "network_access_allowed": false,
+    "returns_or_pnl_allowed": false,
+    "oos_or_evaluator_allowed": false,
+    "grid_or_retune_allowed": false,
+    "paper_or_live_allowed": false,
+    "private_api_or_real_capital_allowed": false,
+    "leverage_or_margin_allowed": false
+  },
+  "next_allowed_action": "REQUEST_EXACT_HASH_BOUND_IMMEDIATE19_TIME_ONLY_REFREEZE_APPROVAL",
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "961e2303a7047627a9bce14963f177a3cb2173d45c4ee0bb2c04d0fa1ddc4848"
+}

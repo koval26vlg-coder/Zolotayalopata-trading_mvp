@@ -1,0 +1,19 @@
+{
+  "schema": "trading_mvp_dense_ws_time_only_v2_partial_safety_rollback_aborted_v1",
+  "observed_at_utc": "2026-08-03T07:51:13.4479767Z",
+  "result": "FAIL_CLOSED_RESTORED_TO_PRE_RECOVERY_PARTIAL_STATE",
+  "reason": "The exact old source hash could not be reproduced after reverse patch application. The reverse-produced source was restored from the byte-exact v2 backup before any policy binding change.",
+  "v2_partial_source_sha256": "80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb",
+  "v2_partial_policy_sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+  "reverse_produced_source_sha256": "9fc98dcbe25c5715b453bbc8409dc095d196ccb157278d9ab0381bb7b5024bec",
+  "expected_old_source_sha256": "5b405ac2e857065f2147e849f79439622b77aa1e94560088c67e403008fde117",
+  "expected_old_policy_sha256": "aa6679f11725ef612c0d65713aa0c5d366e59ca36a49d903046d0d06164c00cb",
+  "source_backup_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\recovery\\2026-08-03-dense-ws-time-only-v2-partial-source-before-safety-rollback.py",
+  "policy_unchanged": true,
+  "collector_started": false,
+  "network_access": false,
+  "returns_pnl_oos_read": false,
+  "grid_or_retune": false,
+  "paper_live_private_api_real_capital_leverage_margin": false,
+  "next_allowed_action": "Require exact v3 reconciliation approval before any refreeze or policy rebind."
+}

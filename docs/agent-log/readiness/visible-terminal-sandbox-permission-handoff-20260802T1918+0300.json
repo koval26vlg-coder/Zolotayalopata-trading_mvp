@@ -1,0 +1,58 @@
+{
+  "schema": "trading_mvp_visible_terminal_sandbox_permission_handoff_v1",
+  "generated_at_local": "2026-08-02T19:18:18+03:00",
+  "mode": "AUTOMATION_INSTRUCTION_ONLY",
+  "purpose": "Prevent the exact approved visible launch windows from being lost because Windows process inventory and GUI terminal creation are denied inside the default tool sandbox.",
+  "observed_failure": {
+    "script": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_approved_pit_segment_countdown_visible.ps1",
+    "invocation_mode": "exact PreflightOnly in default sandbox",
+    "error_source": "Get-CimInstance Win32_Process",
+    "error": "Клиенту не удалось получить доступ к ресурсу CIM.",
+    "collector_started": false,
+    "run_or_output_writes": false
+  },
+  "verified_resolution": {
+    "invocation_mode": "same exact PreflightOnly with shell_command sandbox_permissions=require_escalated",
+    "status": "READY_NOT_DUE",
+    "checks_passed": true,
+    "sealed_runtime_tools_verified": 12,
+    "other_countdown_owners": [],
+    "global_market_writer_claim": null,
+    "side_effects": "NO_RUN_OR_OUTPUT_WRITES"
+  },
+  "automation": {
+    "id": "trading-continuous-production",
+    "kind": "heartbeat",
+    "status": "ACTIVE",
+    "toml_path": "C:\\Users\\koval\\.codex\\automations\\trading-continuous-production\\automation.toml",
+    "toml_sha256": "03fabb739eca4947b9d789a1cd7ab207791abaca06cfe88dc239d821982f037e",
+    "instruction_added": "Actual visible-terminal launchers use require_escalated only for Windows process inventory and GUI terminal permission; exact plan, hash, command, guard and research approval remain unchanged.",
+    "pit_preflight_rule": "Use the exact same escalated PreflightOnly for the known CIM sandbox denial; any other error remains fail-closed.",
+    "actual_retry_authorized": false
+  },
+  "unchanged_bindings": {
+    "autopilot_policy_sha256": "13c2b98d76a6486eee43b60cf37c07fa2aa2dfbad3479f6c6c5285aff57ba842",
+    "pit_countdown_script_sha256": "51d7b3351e4d6b9cd6bfa7896c60f264017a9c9e11054a1554d802890f28cce4",
+    "dense_campaign_launcher_sha256": "6f35fbfe46c12b2cfb566a809de21ba84847ec42b2a6b5a33f3dce143b288321",
+    "dense_postrun_launcher_sha256": "4781219d0c06af686508cb0c8a76424be22825e657a1b80f43c1799df43398ed",
+    "pit_schedule_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+    "dense_campaign_plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b"
+  },
+  "permission_boundary": {
+    "new_research_approval_created": false,
+    "schedule_or_plan_changed": false,
+    "scope_changed": false,
+    "collector_launched": false,
+    "market_data_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "At the exact due window, rerun authoritative guard and launch only the approved top-level visible writer using the unchanged command and hashes."
+}

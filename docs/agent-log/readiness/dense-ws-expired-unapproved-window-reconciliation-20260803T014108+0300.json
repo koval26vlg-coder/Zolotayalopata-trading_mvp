@@ -1,0 +1,85 @@
+{
+  "schema": "trading_mvp_dense_ws_expired_unapproved_window_reconciliation_v1",
+  "status": "EXPIRED_UNAPPROVED_FAIL_CLOSED",
+  "generated_at_local": "2026-08-03T01:41:08.8483720+03:00",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+  "plan": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v2.json",
+    "file_sha256": "9fe19c6e220897b80098fd6a3cd5eb767aa1a7eccb6bf54b59d7c8485e64731a",
+    "plan_hash": "651502c3104ffea904f0520afc7ffbde7e9ab993213d5d74962c00ef91f4916e"
+  },
+  "expired_window": {
+    "status": "EXPIRED",
+    "observed_at": "2026-08-03T01:41:04.280514+03:00",
+    "earliest_launch_at": "2026-08-03T01:00:00+03:00",
+    "writer_start_at": "2026-08-03T01:30:00+03:00",
+    "latest_launch_at": "2026-08-03T01:35:00+03:00",
+    "seconds_to_writer_start": -664
+  },
+  "preflight": {
+    "status": "BLOCKED",
+    "structurally_valid": true,
+    "can_launch_now": false,
+    "no_run_or_output_writes": true,
+    "reasons": []
+  },
+  "guard": {
+    "status": "ACTIVE",
+    "decision": "USER_REVIEW_REQUIRED_LONG_CAMPAIGN_WINDOW_EXPIRED",
+    "action_due": false,
+    "critical_checkpoint_notification_required": false,
+    "long_campaign_approval": {
+      "status": "NOT_APPROVED",
+      "launch_window_status": "EXPIRED",
+      "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+      "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v2.json",
+      "plan_file_sha256": "9fe19c6e220897b80098fd6a3cd5eb767aa1a7eccb6bf54b59d7c8485e64731a",
+      "plan_hash": "651502c3104ffea904f0520afc7ffbde7e9ab993213d5d74962c00ef91f4916e",
+      "earliest_launch_local": "2026-08-03T01:00:00+03:00",
+      "writer_start_local": "2026-08-03T01:30:00+03:00",
+      "latest_launch_local": "2026-08-03T01:35:00+03:00",
+      "hard_deadline_local": "2026-08-04T02:00:00+03:00",
+      "single_use": true,
+      "stop_incomplete_recovery_authorized": false
+    },
+    "next_action": "prepare_new_exact_long_campaign_window_without_resume",
+    "weekly_remaining_percent": 42.0
+  },
+  "implementation": {
+    "code_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\autopilot_guard.py",
+    "code_sha256": "e13c30ba21b64fd4907d8cef37d36ce4cd710871b43a7a2057b74c3b12ee5e0d",
+    "tests_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_autopilot_guard.py",
+    "tests_sha256": "e3b49889e02b394b9b6d6a659378f69b1fedc10ea2776f96c153246217b20888",
+    "regression_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\regressions\\autopilot-unapproved-long-window-expiry-20260803T0140+0300.txt",
+    "regression_sha256": "207463b569c52ce5034a9919a5be21e4df9e2412e6b07f3783fb6bfba5f67ff1",
+    "regression_tests": 43,
+    "regression_status": "PASS"
+  },
+  "output_state": {
+    "global_writer_claim_exists": false,
+    "campaign_output_root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\dense-ws-campaigns\\dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "campaign_output_exists": false
+  },
+  "disposition": {
+    "old_plan_launch_allowed": false,
+    "late_approval_may_launch_old_plan": false,
+    "stopped_incomplete_retry_allowed": false,
+    "new_exact_window_requires_new_hash_bound_plan_and_user_review": true,
+    "pit_shadow_track_continues": true
+  },
+  "safety": {
+    "network_access": false,
+    "collector_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "audit_hash_method": "sha256_utf8_compact_json_without_audit_hash",
+  "audit_hash": "8012aa57bbb755437e6d236198b56124be93087c6cf95949fcaa37cad99a24ad"
+}

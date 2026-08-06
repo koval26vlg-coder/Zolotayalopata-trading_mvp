@@ -1,0 +1,29 @@
+{
+  "schema": "trading_mvp_dense_ws_contract_freeze_approval_v1",
+  "status": "APPROVED",
+  "approval_type": "EXACT_HASH_BOUND_SIGNAL_EVALUATOR_CONTRACT_FREEZE_ONLY",
+  "thread_id": "019e738a-b37c-7a33-ae04-6cc80739f184",
+  "approved_at_utc": "2026-08-02T07:57:51.3859134Z",
+  "approved_at_local": "2026-08-02T10:57:51.3859134+03:00",
+  "proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-acceptance-proposal-20260802-v1.json",
+  "proposal_file_sha256": "ec1fab4989dad1ec872b595d429cb029d74831dc8adf24b306dfb7dbce2050fa",
+  "proposal_hash": "a9ec751329e436c1ea30b63433c57cf0e9ffd35370a097735c9ce91f71bb40d7",
+  "allowed_actions": [
+    "freeze_signal_evaluator_contract",
+    "build_immutable_non_executable_planonly"
+  ],
+  "forbidden_actions": [
+    "run_evaluator",
+    "read_returns_or_pnl",
+    "read_oos",
+    "grid_or_retune",
+    "paper_forward",
+    "live_orders",
+    "private_api_keys",
+    "real_capital",
+    "leverage_or_margin"
+  ],
+  "evaluation_authorized": false,
+  "single_use": true,
+  "approval_text": "Разрешаю contract-freeze only для dense_ws signal/evaluator proposal_hash=a9ec751329e436c1ea30b63433c57cf0e9ffd35370a097735c9ce91f71bb40d7. Это не разрешение на evaluator, returns/PnL/OOS, grid/retune, paper/live/private API/real capital/leverage/margin."
+}

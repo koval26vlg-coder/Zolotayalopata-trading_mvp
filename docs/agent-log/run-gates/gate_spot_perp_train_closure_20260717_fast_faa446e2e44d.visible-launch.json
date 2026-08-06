@@ -1,0 +1,20 @@
+{
+  "schema": "trading_mvp_visible_launch_v1",
+  "project": "trading_mvp",
+  "run_id": "gate_spot_perp_train_closure_20260717_fast_faa446e2e44d",
+  "kind": "deterministic_train_branch_closure",
+  "started_at": "2026-07-17T04:14:44.4954360+03:00",
+  "terminal_pid": 17584,
+  "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_gate_spot_perp_train_closure_visible.ps1\" -ParentPlan \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\gate-spot-perp-v2\\plans\\gate_spot_perp_planonly_20260717_032235.json\" -ExpectedParentPlanHash 5377550919d3d77caea3e76d8af9d017ae84a63c05433c7899afd41c6eb139a2 -CollectorManifest \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\gate-spot-perp-v2\\runs\\gate_spot_perp_history_20260717_fast20m\\manifest.json\" -QualityReport \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\gate-spot-perp-v2\\quality\\gate_spot_perp_history_20260717_fast20m_3a5dbd9bc362\\quality-report.json\" -TrainPlan \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\gate-spot-perp-v2\\train\\gate_spot_perp_train_20260717_fast_e753f25a6ce8\\train-plan.json\" -ExpectedTrainPlanHash 6ac62370e46b7830d4daab084f19b4b4583e074490b91ccdef214da2ec14d40f -TrainResult \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\gate-spot-perp-v2\\train\\gate_spot_perp_train_20260717_fast_e753f25a6ce8\\train-result.json\" -OutputDirectory \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\gate-spot-perp-v2\\reports\" -RunId gate_spot_perp_train_closure_20260717_fast_faa446e2e44d -MaxRuntimeSec 1800 -HoldOpenSec 60",
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "max_runtime_sec": 1800,
+  "expected_duration_sec": 300,
+  "closure_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\gate-spot-perp-v2\\reports\\gate_spot_perp_train_closure_20260717_fast_faa446e2e44d.closure.json",
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\gate-spot-perp-v2\\reports\\gate_spot_perp_train_closure_20260717_fast_faa446e2e44d.closure.manifest.json",
+  "log_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\gate_spot_perp_train_closure_20260717_fast_faa446e2e44d.closure.visible.log",
+  "source_train_result": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\gate-spot-perp-v2\\train\\gate_spot_perp_train_20260717_fast_e753f25a6ce8\\train-result.json",
+  "no_oos": true,
+  "no_grid": true,
+  "no_retune": true,
+  "no_live": true
+}

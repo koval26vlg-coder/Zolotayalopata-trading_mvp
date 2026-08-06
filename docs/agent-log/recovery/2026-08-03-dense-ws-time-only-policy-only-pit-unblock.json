@@ -1,0 +1,16 @@
+{
+  "schema": "trading_mvp_dense_ws_time_only_policy_only_pit_unblock_v1",
+  "observed_at_utc": "2026-08-03T10:02:15.5456702Z",
+  "reason": "Restore the exact previously bound continuous-production policy so the independent preapproved PIT shadow-track is not blocked by an unactivated dense campaign reschedule partial state.",
+  "policy_before_sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+  "policy_restored_sha256": "aa6679f11725ef612c0d65713aa0c5d366e59ca36a49d903046d0d06164c00cb",
+  "policy_backup_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\recovery\\2026-08-03-dense-ws-time-only-v2-partial-policy-before-pit-unblock.json",
+  "source_left_at_sha256": "80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb",
+  "long_campaign_branch": "NOT_ACTIVATED_AND_REQUIRES_SEPARATE_RECONCILIATION_APPROVAL",
+  "pit_branch": "RESTORED_TO_AUTHORITATIVE_HASH_BOUND_POLICY",
+  "collector_started": false,
+  "network_access": false,
+  "returns_pnl_oos_read": false,
+  "grid_or_retune": false,
+  "paper_live_private_api_real_capital_leverage_margin": false
+}

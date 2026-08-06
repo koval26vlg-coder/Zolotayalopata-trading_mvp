@@ -1,0 +1,83 @@
+{
+  "schema": "trading_mvp_night_launch_readiness_audit_v1",
+  "observed_at_local": "2026-08-02T18:07:38.999+03:00",
+  "observed_at_utc": "2026-08-02T15:07:38.999Z",
+  "result": "READY_WAITING_APPROVED_WINDOWS",
+  "authoritative_policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "sha256": "13c2b98d76a6486eee43b60cf37c07fa2aa2dfbad3479f6c6c5285aff57ba842",
+    "guard_status": "ACTIVE",
+    "guard_decision": "WAIT_APPROVED_LONG_CAMPAIGN_WINDOW",
+    "weekly_remaining_percent": 65.0
+  },
+  "global_writer": {
+    "claim_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\active-market-data-writer-claim.json",
+    "claim_exists": false,
+    "other_live_owners": [],
+    "free_disk_gib": 768.406
+  },
+  "pit_preflight": {
+    "status": "READY_NOT_DUE",
+    "checks_passed": true,
+    "launch_allowed_now": false,
+    "run_id": "pit_universe_v2_forward_20260803_n06",
+    "schedule_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_planonly_20260729_20260728_102711.json",
+    "schedule_plan_file_sha256": "89f9f8d44c3af7d4a9ca2c27793a52335666901e1be18596a79a349e869c5205",
+    "schedule_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+    "start_local": "2026-08-03T01:00:00+03:00",
+    "scheduled_end_local": "2026-08-03T01:20:00+03:00",
+    "hard_deadline_local": "2026-08-03T07:00:00+03:00",
+    "sealed_runtime_tools_verified": 12,
+    "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_approved_pit_segment_countdown_visible.ps1",
+    "launcher_sha256": "51d7b3351e4d6b9cd6bfa7896c60f264017a9c9e11054a1554d802890f28cce4",
+    "side_effects": "NO_RUN_OR_OUTPUT_WRITES"
+  },
+  "dense_ws_preflight": {
+    "status": "STRUCTURALLY_VALID_NOT_DUE",
+    "structurally_valid": true,
+    "launch_allowed_now": false,
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+    "plan_file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "earliest_launch_local": "2026-08-03T01:00:00+03:00",
+    "writer_start_local": "2026-08-03T01:30:00+03:00",
+    "latest_launch_local": "2026-08-03T01:35:00+03:00",
+    "writer_end_local": "2026-08-04T01:30:00+03:00",
+    "hard_deadline_local": "2026-08-04T02:00:00+03:00",
+    "hard_output_cap_bytes": 25000000000,
+    "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_dense_ws_campaign_visible.ps1",
+    "launcher_sha256": "6f35fbfe46c12b2cfb566a809de21ba84847ec42b2a6b5a33f3dce143b288321",
+    "approval_semantics": "Immutable PlanOnly remains NOT_APPROVED by design; the separate exact user approval receipt and ConfirmedLongCampaign launch switch authorize the single run.",
+    "side_effects": "NO_RUN_OR_OUTPUT_WRITES"
+  },
+  "dense_ws_postrun_runtime": {
+    "status": "READY_AUTOMATIC_SAME_HASH_RUNTIME_REFROZEN",
+    "proposal_hash": "0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf40662",
+    "quality_max_runtime_sec": 1800,
+    "causal_materialization_max_runtime_sec": 1800,
+    "total_max_runtime_sec": 3600,
+    "not_before_local": "2026-08-04T01:30:00+03:00",
+    "hard_deadline_local": "2026-08-04T02:30:00+03:00",
+    "orchestrator_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_dense_ws_postrun_visible.ps1",
+    "orchestrator_sha256": "4781219d0c06af686508cb0c8a76424be22825e657a1b80f43c1799df43398ed",
+    "stop_incomplete_retry_authorized": false
+  },
+  "write_free_verification": {
+    "pit_output_exists": false,
+    "pit_countdown_metadata_exists": false,
+    "pit_launch_metadata_exists": false,
+    "dense_campaign_root_exists": false,
+    "dense_control_root_exists": false
+  },
+  "forbidden_actions_started": {
+    "collector": false,
+    "postrun": false,
+    "evaluator": false,
+    "returns_or_pnl_or_oos": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false
+  }
+}

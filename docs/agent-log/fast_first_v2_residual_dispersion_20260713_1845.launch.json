@@ -1,0 +1,22 @@
+{
+  "schema": "fast_first_v2_visible_evaluation_launch_v1",
+  "mode": "VISIBLE_RESUME",
+  "run_id": "fast_first_v2_residual_dispersion_20260713_1845",
+  "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-v2\\plans\\fast_first_residual_dispersion_planonly_20260713.json",
+  "expected_plan_hash": "a73a54627477030bea0d4c57395c717cf74b1a243862ef9f8726356780e50566",
+  "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-v2\\evaluations\\fast_first_v2_residual_dispersion_20260713_1845.json",
+  "repeat_output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-v2\\evaluations\\fast_first_v2_residual_dispersion_20260713_1845.repeat.json",
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-v2\\manifests\\fast_first_v2_residual_dispersion_20260713_1845.manifest.json",
+  "max_runtime_sec": 300,
+  "visible_terminal": true,
+  "deterministic_repeats": 2,
+  "grid_search": false,
+  "execution_probe": false,
+  "paper_forward": false,
+  "live_orders": false,
+  "api_keys": false,
+  "worker_pid": 37484,
+  "started_at": "2026-07-13T18:46:21.0034908+03:00",
+  "expected_finish_not_later_than": "2026-07-13T18:51:21.0034908+03:00",
+  "status_command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_active_run_gate.ps1\""
+}

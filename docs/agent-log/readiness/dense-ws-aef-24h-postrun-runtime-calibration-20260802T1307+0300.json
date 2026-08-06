@@ -1,0 +1,157 @@
+{
+  "schema": "trading_mvp_dense_ws_postrun_runtime_calibration_v1",
+  "generated_at_utc": "2026-08-02T10:06:45.2739134Z",
+  "generated_at_local": "2026-08-02T13:06:45.2739134+03:00",
+  "purpose": "Bound the expected runtime and memory of the approved dense WebSocket campaign quality and causal materialization stages before collection starts.",
+  "campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+    "plan_file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260803-aef-24h-v1.json",
+    "contract_file_sha256": "e2411cc57fb8827f1d527393e5b4bdb31ca85e9f0ea60e46b3b915531c66a9cc",
+    "contract_hash": "8f2021053b83551edb9bfb57847810caccdef30fd3368349ff98aedfe1cf9485",
+    "projected_raw_rows": 25018151,
+    "projected_raw_bytes": 12278246229,
+    "max_pairs_per_venue": 16
+  },
+  "current_runtime_contract": {
+    "orchestrator_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_dense_ws_postrun_visible.ps1",
+    "orchestrator_sha256": "ea18fd8e883a45089840974a1eb138c49c7fced5fd7e3f42109ea8b5a3e5dda9",
+    "total_max_runtime_sec": 1800,
+    "quality_and_materialization_share_one_deadline": true,
+    "quality_tool_sha256": "6796f534ab5018ad54ea3f453c7cf522fe21e8f1d70844cd552ed2cc7c8059b3",
+    "quality_tool_matches_plan": true,
+    "materializer_tool_sha256": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c",
+    "materializer_tool_matches_plan": true
+  },
+  "streaming_architecture": {
+    "raw_files_loaded_whole": false,
+    "raw_rows_processed_one_at_a_time": true,
+    "normalized_streams_heap_merged": true,
+    "outputs_streamed_to_temporary_jsonl": true,
+    "state_pruned_to_trailing_reference_window": true
+  },
+  "measurements": {
+    "synthetic_materialization_engine": {
+      "bases": 16,
+      "synthetic_hours": 2,
+      "elapsed_sec": 7.6352,
+      "projected_24h_sec": 91.62,
+      "labels": 1936,
+      "snapshots": 0,
+      "note": "The synthetic pattern exercised the frozen 16-base state machine; output sinks were no-op for CPU calibration."
+    },
+    "bounded_memory": {
+      "bases": 16,
+      "synthetic_hours": 2,
+      "observation_slots": 23040,
+      "tracemalloc_current_mib": 4.357,
+      "tracemalloc_peak_mib": 4.405,
+      "elapsed_with_tracing_sec": 32.9475,
+      "expected_growth_with_campaign_duration": "bounded_by_trailing_window"
+    },
+    "raw_diagnostic_sample": {
+      "diagnostic_only": true,
+      "used_for_edge_evidence": false,
+      "source_root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw-durable\\ws_durable_72h_20260704_000015\\seg_005",
+      "sample_lines_per_file": 100000,
+      "sample_files": 3,
+      "total_sample_rows": 300000,
+      "quality_like": {
+        "sample_bytes": 147318427,
+        "average_bytes_per_row": 491.061,
+        "elapsed_sec": 14.8078,
+        "rows_per_sec": 20259.52,
+        "mib_per_sec": 9.488,
+        "errors": 0,
+        "normalized_rows": 300012,
+        "event_kinds": {
+          "bbo": 211985,
+          "depth": 77539,
+          "trade": 10488
+        }
+      },
+      "materializer_parse_like": {
+        "sample_bytes": 147018427,
+        "average_bytes_per_row": 490.061,
+        "elapsed_sec": 12.4141,
+        "rows_per_sec": 24166.16,
+        "mib_per_sec": 11.294,
+        "errors": 0,
+        "bbo_events": 211985,
+        "event_kinds": {
+          "bbo": 211985,
+          "depth": 77539,
+          "trade": 10488
+        }
+      },
+      "market_values_emitted": false
+    },
+    "sequential_sha256": {
+      "sample_file_bytes": 639904630,
+      "elapsed_sec": 10.2521,
+      "throughput_mib_per_sec": 59.53,
+      "sample_sha256": "77763a6c993758a760d6f458507c26efff60cbef61e089a04cc0610be9676dde"
+    }
+  },
+  "conservative_projection": {
+    "method": "For each parse stage take the slower of row-rate and byte-rate projections, then add the materializer hash pass and frozen 16-base engine projection.",
+    "quality_sec": 1234.884,
+    "materializer_parse_sec": 1036.785,
+    "materializer_hash_sec": 196.698,
+    "materializer_engine_sec": 91.62,
+    "core_total_sec": 2559.987,
+    "core_total_minutes": 42.666,
+    "current_limit_sec": 1800,
+    "limit_shortfall_sec": 759.987,
+    "output_write_and_misc_overhead_included": false,
+    "projection_is_lower_bound": true
+  },
+  "verification": {
+    "targeted_tests": {
+      "tests_run": 18,
+      "failures": 0,
+      "campaign_quality_tests": 6,
+      "causal_materializer_tests": 8,
+      "postrun_orchestration_tests": 4
+    },
+    "fast_regression": {
+      "artifact_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-postrun-calibration-fast-regression-20260802T1308+0300.json",
+      "artifact_sha256": "a93baeec45ae0eb765a2f6a5c7c3a948eafdf60e7521fd4281374702dc86b36f",
+      "tests_run": 262,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "deterministic_result_hash": "afbb86736024656b0337a4406a9718796778a5337581a34c497c5ca5ad728c92"
+    }
+  },
+  "verdict": {
+    "status": "POSTRUN_RUNTIME_CONTRACT_INSUFFICIENT_COLLECTION_STILL_USEFUL",
+    "collection_approval_should_remain_active": true,
+    "collector_contract_changed": false,
+    "postrun_branch_requires_user_review": true,
+    "recommended_runtime_model": "TWO_VISIBLE_STAGES_WITH_1800_SEC_EACH",
+    "recommended_total_cap_sec": 3600,
+    "recommended_stage_caps_sec": {
+      "campaign_data_quality": 1800,
+      "causal_materialization": 1800
+    },
+    "reason": "The measured lower-bound projection is about 43 minutes, so one shared 30-minute deadline is expected to expire. Two 30-minute stage budgets preserve bounded execution and provide measured headroom without authorizing evaluator or trading actions."
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "old_raw_market_rows_read_for_operational_calibration": true,
+    "old_dataset_used_for_edge_evidence": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  }
+}

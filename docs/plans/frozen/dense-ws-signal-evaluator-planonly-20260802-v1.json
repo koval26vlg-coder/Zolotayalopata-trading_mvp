@@ -1,0 +1,84 @@
+{
+  "schema": "trading_mvp_dense_ws_signal_evaluator_planonly_v1",
+  "mode": "NonExecutablePlanOnly",
+  "status": "FROZEN_NOT_AUTHORIZED",
+  "research_only": true,
+  "executable": false,
+  "identity": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "data_type": "DENSE_WS_SEGMENTED"
+  },
+  "source_proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-acceptance-proposal-20260802-v1.json",
+    "file_sha256": "ec1fab4989dad1ec872b595d429cb029d74831dc8adf24b306dfb7dbce2050fa",
+    "proposal_hash": "a9ec751329e436c1ea30b63433c57cf0e9ffd35370a097735c9ce91f71bb40d7"
+  },
+  "contract": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\frozen\\dense-ws-signal-evaluator-contract-20260802-v1.json",
+    "file_sha256": "a9ef768d6f61297d01d8fe37a9d4e00b27cf5b2d52f122ab8ca9a0c3fae5a81d",
+    "contract_hash": "b70975468fbd67acf550dea39aac21c116fb3a86a57ed56d400f40f0fa287954"
+  },
+  "materialization_input": {
+    "status": "UNBOUND",
+    "required_before_evaluator": true,
+    "binding_contract": {
+      "status": "FUTURE_OUTPUT_HASH_BINDING_REQUIRED",
+      "required_before_evaluator": true,
+      "required_manifest_schema": "trading_mvp_dense_ws_causal_materialization_v1",
+      "required_snapshot_schema": "trading_mvp_dense_ws_execution_snapshot_v1",
+      "required_materialization_decision": "DATA_READY_FOR_SIGNAL_CONTRACT_REVIEW",
+      "required_materialization_accepted": true,
+      "required_future_bindings": [
+        "campaign_manifest_sha256",
+        "campaign_quality_report_sha256",
+        "causal_materialization_manifest_sha256",
+        "causal_materialization_deterministic_result_hash",
+        "regime_labels_sha256",
+        "execution_snapshots_sha256",
+        "raw_bbo_segment_chain_and_file_hashes"
+      ],
+      "raw_bbo_binding_source": "same accepted immutable campaign segments referenced by the hash-bound quality report",
+      "unbound_input_action": "REFUSE_EVALUATOR"
+    }
+  },
+  "allowed_actions": [
+    "validate_frozen_contract_and_plan",
+    "bind_future_same_campaign_materialization_in_a_new_hash_bound_run_plan",
+    "request_exact_evaluator_approval_after_binding"
+  ],
+  "forbidden_actions": [
+    "run_evaluator",
+    "read_returns_or_pnl",
+    "read_oos",
+    "grid_or_retune",
+    "paper_forward",
+    "live_orders",
+    "private_api_keys",
+    "real_capital",
+    "leverage_or_margin"
+  ],
+  "authorization": {
+    "contract_freeze_authorized": true,
+    "planonly_build_authorized": true,
+    "evaluation_authorized": false,
+    "materialization_output_bound": false,
+    "returns_pnl_oos_allowed": false,
+    "paper_forward_authorized": false,
+    "live_or_private_api_authorized": false
+  },
+  "safety": {
+    "network_access": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_read": false,
+    "grid_or_retune": false,
+    "paper_forward": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "WAIT_FOR_CAMPAIGN_AND_CAUSAL_MATERIALIZATION_THEN_REQUEST_EXACT_EVALUATOR_APPROVAL",
+  "plan_hash": "620b1711a5436c722acea99d41c4b81ba57bd317069456282814939b3eefeea2"
+}

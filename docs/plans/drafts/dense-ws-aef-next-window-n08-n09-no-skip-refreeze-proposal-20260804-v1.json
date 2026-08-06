@@ -1,0 +1,166 @@
+{
+  "schema": "trading_mvp_dense_ws_next_window_n08_n09_no_skip_refreeze_proposal_v1",
+  "mode": "PLANONLY",
+  "status": "USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+  "generated_at_utc": "2026-08-04T06:49:21.707437+00:00",
+  "purpose": "Replace the expired 2026-08-04 Dense window without resume. Preserve PIT n08 before Dense and defer only PIT n09 after Dense finalization.",
+  "source_expired_campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260804_aef_24h",
+    "plan_hash": "629680e8ec4a1879dcd596a540c90c92b600ab465bd94bdd0d29b79ea972c141",
+    "disposition": "EXPIRED_FAIL_CLOSED_NO_LAUNCH_OR_RESUME"
+  },
+  "candidate": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260805_aef_24h",
+    "candidate_policy": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-20260805-n08-n09-no-skip-planonly-v1.json",
+      "sha256": "1d57317b56d54964f1d53c62825400bc48992b5464cdf1e6b743eb2d5854f12f"
+    },
+    "n09_time_only_plan": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\pit_universe_v2_train_schedule_time_amendment_n09_20260806_0215_planonly_v1.json",
+      "file_sha256": "4348d3bc11ea69b53109a97ce47c9538f7f5d426a5e82072e1ed12f214369199",
+      "plan_hash": "89538adb5695e482db7399b08d0fe052ae57a5c9b07fcc5645754e007b221b7e",
+      "amendment": {
+        "schema": "fast_first_night_schedule_time_amendment_v1",
+        "kind": "DEFER_ONE_PIT_SEGMENT_WITHIN_SAME_NIGHT",
+        "base_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_planonly_20260729_20260728_102711.json",
+        "base_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+        "run_id": "pit_universe_v2_forward_20260806_n09",
+        "original_start_local": "2026-08-06T01:00:00+03:00",
+        "original_end_local": "2026-08-06T01:20:00+03:00",
+        "new_start_local": "2026-08-06T02:15:00+03:00",
+        "new_end_local": "2026-08-06T02:35:00+03:00",
+        "hard_deadline_local": "2026-08-06T07:00:00+03:00",
+        "reason": "PRESERVE_GLOBAL_SINGLE_WRITER_WITHOUT_SKIPPING_PIT_DATE",
+        "trade_contract_changed": false
+      }
+    },
+    "dense_feasibility": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-feasibility-20260805-aef-24h-n08-n09-no-skip-planonly-v1.json",
+      "file_sha256": "abe87142c1ca4c49f683e30805aafc7b5af1fbe47ada2f0b95c56398a1a50a13",
+      "candidate_contract_hash": "dad1e472e62920be71ceb5e0c61824859f63fa664ba293e22c5c814bd719c8b8",
+      "verdict": "FEASIBILITY_CONFIRMED_CONTRACT_FREEZE_REQUIRED",
+      "window": {
+        "window_id": "EVIDENCE_EXCEPTION_2026-08-05_24H",
+        "window_type": "EVIDENCE_VALUE_EXCEPTION",
+        "campaign_start_local": "2026-08-05T01:40:00+03:00",
+        "campaign_end_local": "2026-08-06T01:40:00+03:00",
+        "writer_deadline_local": "2026-08-06T01:40:00+03:00",
+        "hard_deadline_local": "2026-08-06T02:10:00+03:00",
+        "target_writer_sec": 86400,
+        "minimum_writer_sec": 86400,
+        "planned_writer_sec": 86400,
+        "unallocated_writer_sec": 0,
+        "complete_durable_segments": 24,
+        "phases": [
+          {
+            "phase_id": "phase_01",
+            "start_local": "2026-08-05T01:40:00+03:00",
+            "end_local": "2026-08-06T01:40:00+03:00",
+            "hard_end_local": "2026-08-06T02:10:00+03:00",
+            "writer_duration_sec": 86400,
+            "complete_durable_segments": 24
+          }
+        ],
+        "pit_blackouts": [],
+        "collection_windows": [
+          {
+            "sequence": 1,
+            "window_id": "EVIDENCE_EXCEPTION_2026-08-05_24H",
+            "window_type": "EVIDENCE_VALUE_EXCEPTION",
+            "writer_start_local": "2026-08-05T01:40:00+03:00",
+            "writer_deadline_local": "2026-08-06T01:40:00+03:00",
+            "hard_deadline_local": "2026-08-06T02:10:00+03:00"
+          }
+        ],
+        "uninterrupted_required": true,
+        "suppressed_pit_run_ids": []
+      },
+      "estimated_disk_bytes": 12278246229,
+      "hard_output_cap_bytes": 25000000000
+    },
+    "timeline": {
+      "pit_n08": {
+        "start_local": "2026-08-05T01:00:00+03:00",
+        "end_local": "2026-08-05T01:20:00+03:00",
+        "disposition": "PRESERVED_NOT_SKIPPED"
+      },
+      "dense": {
+        "start_local": "2026-08-05T01:40:00+03:00",
+        "writer_duration_sec": 86400,
+        "writer_deadline_local": "2026-08-06T01:40:00+03:00",
+        "hard_deadline_local": "2026-08-06T02:10:00+03:00",
+        "hard_output_cap_bytes": 25000000000,
+        "uninterrupted_required": true
+      },
+      "pit_n09": {
+        "start_local": "2026-08-06T02:15:00+03:00",
+        "end_local": "2026-08-06T02:35:00+03:00",
+        "disposition": "PRESERVED_NOT_SKIPPED",
+        "requires_dense_finalization": true,
+        "requires_global_writer_claim_absent": true
+      }
+    }
+  },
+  "frozen_invariants": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "data_type": "DENSE_WS_SEGMENTED",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "universe_rows": 1388,
+    "raw_schema_change_allowed": false,
+    "segment_validity_change_allowed": false,
+    "causal_regime_change_allowed": false,
+    "execution_sampling_change_allowed": false,
+    "cost_risk_no_grid_change_allowed": false,
+    "duration_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000
+  },
+  "exact_changes_after_refreeze_approval": {
+    "allowed": [
+      "promote the candidate continuous policy byte-exactly after preimage verification",
+      "materialize versioned immutable N09 time-amendment, Dense contract, PlanOnly, and runtime manifest from these bindings",
+      "run the same local offline regression suite and postimage audit",
+      "rebind the autopilot only after all immutable artifacts validate"
+    ],
+    "forbidden": [
+      "collector launch",
+      "network access",
+      "evaluator",
+      "returns",
+      "PnL",
+      "OOS",
+      "grid",
+      "retune",
+      "paper",
+      "live",
+      "private API",
+      "real capital",
+      "leverage",
+      "margin"
+    ]
+  },
+  "verification": {
+    "preview_audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-aef-next-window-n08-n09-no-skip-preview-audit-20260804-v1.json",
+    "preview_audit_sha256": "e8169ca26a27589822e4b13532922c76501dfee3a594882fcb96d12d3bbf6401",
+    "offline_tests": {
+      "command": "C:\\Program Files\\Python313\\python.exe -m unittest trading_mvp.tests.test_pit_schedule_time_amendment trading_mvp.tests.test_dense_ws_campaign_feasibility trading_mvp.tests.test_dense_ws_campaign_contract",
+      "result": "PASS",
+      "tests_run": 33,
+      "network_access": false
+    },
+    "candidate_policy_only_expected_changes": true
+  },
+  "approval_boundary": {
+    "this_is_not_launch_approval": true,
+    "collector_launch_allowed": false,
+    "stopped_incomplete_retry_authorized": false,
+    "new_exact_launch_approval_required_after_refreeze": true
+  },
+  "next_allowed_action": "REQUEST_EXACT_HASH_BOUND_NEXT_WINDOW_N08_N09_NO_SKIP_REFREEZE_APPROVAL",
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "070fb41ede9b0f30f485f524f896f5ebdb7f5cfe51a941dc46e1c3bdd43d9f2f"
+}

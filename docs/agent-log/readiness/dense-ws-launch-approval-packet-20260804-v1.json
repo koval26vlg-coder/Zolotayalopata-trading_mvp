@@ -1,0 +1,64 @@
+{
+  "schema": "trading_mvp_dense_ws_campaign_launch_approval_packet_v1",
+  "status": "READY_FOR_FUTURE_EXACT_USER_APPROVAL_NOT_APPROVED",
+  "created_at_utc": "2026-08-03T13:38:47Z",
+  "purpose": "Prepared approval packet only; this file does not approve or start a campaign.",
+  "approval_window": {
+    "not_before_local": "2026-08-04T01:10:00+03:00",
+    "latest_launch_local": "2026-08-04T01:45:00+03:00",
+    "writer_start_local": "2026-08-04T01:40:00+03:00",
+    "writer_finish_local": "2026-08-05T01:40:00+03:00",
+    "hard_deadline_local": "2026-08-05T02:10:00+03:00"
+  },
+  "campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260804_aef_24h",
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "data_type": "DENSE_WS_SEGMENTED",
+    "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260804-aef-24h-v1.json",
+    "contract_file_sha256": "70505047f30543083a3c5ad582396fd930c74b2715246276182b2dd8dc3e8a1c",
+    "contract_hash": "43aa896e6226d3ad8013e29fda550deca4eeee7cbac205d5d94ef4f951749c4b",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-v1.json",
+    "plan_file_sha256": "8a7f8c45b03a9d79bb2e70a6509e9311540e4b9bf0602e2ee081a75f4516bf75",
+    "plan_hash": "709bdf57446de9d12447d11e0bb7836e29dac0ce0fd5d43b3247f621384d70bf",
+    "expected_writer_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000,
+    "output_root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-v1-20260804-aef-24h",
+    "suppressed_pit_run_ids": [
+      "pit_universe_v2_forward_20260805_n08"
+    ]
+  },
+  "commands": {
+    "preflight_only": "powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_dense_ws_campaign_visible.ps1\" -PlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-v1.json\" -ExpectedPlanHash \"709bdf57446de9d12447d11e0bb7836e29dac0ce0fd5d43b3247f621384d70bf\" -PreflightOnly -Json",
+    "visible_start_after_exact_approval": "powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_dense_ws_campaign_visible.ps1\" -PlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-v1.json\" -ExpectedPlanHash \"709bdf57446de9d12447d11e0bb7836e29dac0ce0fd5d43b3247f621384d70bf\" -ConfirmedLongCampaign -Json",
+    "status": "powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\get_dense_ws_campaign_status.ps1\" -PlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-v1.json\" -ExpectedPlanHash \"709bdf57446de9d12447d11e0bb7836e29dac0ce0fd5d43b3247f621384d70bf\" -Json",
+    "stop": "powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\stop_dense_ws_campaign.ps1\" -PlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-v1.json\" -ExpectedPlanHash \"709bdf57446de9d12447d11e0bb7836e29dac0ce0fd5d43b3247f621384d70bf\" -Reason \"user_stop_request\" -Json",
+    "visible_terminal_required": true,
+    "shell_command_require_escalated": true
+  },
+  "required_conditions_before_start": [
+    "new exact user approval bound to this plan hash",
+    "fresh authoritative guard permits the exact campaign",
+    "fresh PreflightOnly has no active exact owner",
+    "no live PIT or other global market-data writer",
+    "launch remains within the exact immutable window"
+  ],
+  "approval_template": {
+    "must_bind_campaign_id": "dense_ws_microstructure_regime_filter_v1_20260804_aef_24h",
+    "must_bind_plan_hash": "709bdf57446de9d12447d11e0bb7836e29dac0ce0fd5d43b3247f621384d70bf",
+    "must_state": [
+      "one visible public read-only campaign only",
+      "24-hour target writer duration and 25GB aggregate cap",
+      "hard stop at 2026-08-05T02:10:00+03:00",
+      "no STOPPED_INCOMPLETE retry without a new exact approval",
+      "no returns/PnL/OOS/evaluator/grid/retune/paper/live/private API/real capital/leverage/margin"
+    ]
+  },
+  "safety": {
+    "actual_collection_authorized": false,
+    "network_access_now": false,
+    "single_writer": true,
+    "stopped_incomplete_retry_authorized": false,
+    "old_expired_plan_651502c3104ffea904f0520afc7ffbde7e9ab993213d5d74962c00ef91f4916e": "TERMINALLY_DISABLED"
+  }
+}

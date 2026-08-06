@@ -1,0 +1,24 @@
+{
+  "schema": "trading_mvp_agent_log_v1",
+  "created_at": "2026-07-16T19:04:26.6082941+03:00",
+  "goal": "One-Week Historical Edge Sprint",
+  "hypothesis_id": "cross_venue_perp_basis_convergence_1h_v2",
+  "run_id": "basis_v2_history_20260716_132600_runtime_guard",
+  "collector_status": "COMPLETED_120_OF_120_NO_ERRORS",
+  "train_postprocess_status": "BRANCH_CLOSED_QUALITY_REJECTED",
+  "verdict": "INSUFFICIENT_EXECUTABLE_UNIVERSE",
+  "reason": "5 liquidity-surviving canonical assets versus frozen minimum 8",
+  "oos_read": false,
+  "pnl_read": false,
+  "branch_closed_without_retune": true,
+  "closure_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2\\reports\\basis_v2_branch_closure_20260716_190426.json",
+  "closure_file_sha256": "24e68e5a5e5db31d8a658968324b17f6c88c926074fd2ce8a4757d86a9670fcd",
+  "closure_manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2\\reports\\basis_v2_branch_closure_20260716_190426.manifest.json",
+  "closure_manifest_sha256": "61573c25198c35a015b6034cb1de813c77ec7838b4d8a0373e8f9205dec3667d",
+  "code_fixes": [
+    "named PowerShell parameter splatting in visible history collector wrapper",
+    "hash-bound immutable snapshot preview in visible train postprocess wrapper"
+  ],
+  "verification": "101 basis-v2 tests OK; PowerShell parse OK; frozen PlanOnly smoke OK",
+  "next_allowed_action": "open_materially_new_planonly_hypothesis_or_continue_independent_pit_shadow_track"
+}

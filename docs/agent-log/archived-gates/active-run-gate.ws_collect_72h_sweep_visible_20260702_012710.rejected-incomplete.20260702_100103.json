@@ -1,0 +1,101 @@
+{
+  "schema": "active_run_gate_v1",
+  "project": "trading_mvp",
+  "run_id": "ws_collect_72h_sweep_visible_20260702_012710",
+  "status": "STOPPED_INCOMPLETE",
+  "created_at": "2026-07-02T01:27:53+03:00",
+  "purpose": "Visible research-only WS collect for spot maker liquidity sweep/reversal branch; blocks next goal step until collector exits.",
+  "blocking_rule": "While status is RUNNING, do not run postprocess, grid/search, code changes, broad analysis, or new collectors. Only status/ETA checks are allowed.",
+  "monitor_pid": 23584,
+  "process_ids": [
+    23584,
+    23856
+  ],
+  "monitor_script": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_ws_collect_visible.ps1",
+  "output_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\raw",
+  "manifest_glob": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\raw\\ws_collect_*.json",
+  "duration_sec": 259200,
+  "exchanges": "mexc,gateio",
+  "max_symbols": 300,
+  "max_pairs_per_exchange": 16,
+  "universe_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\universe\\no_binance_dense_ws_sweep_20260628.csv",
+  "update_interval": "100ms",
+  "self_preflight_guard": {
+    "enabled": true,
+    "script": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\trading_edge_preflight.ps1",
+    "required_status": "READY_FOR_EDGE_PROOF_STEP",
+    "required_check": "current_scorecard_freshness",
+    "action": "refuse_confirmed_long_run_before_start",
+    "preflight_status": "READY_FOR_EDGE_PROOF_STEP",
+    "preflight_generated_at": "2026-07-02 01:26:59 +03:00",
+    "current_scorecard": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\anufriev_strategy_scorecard_current_20260628.csv"
+  },
+  "early_density_guard": {
+    "enabled": true,
+    "check_after_minutes": 60,
+    "min_lines_per_minute": 10.0,
+    "min_raw_lines": 600,
+    "min_raw_files": 1,
+    "action": "stop_child_collector_and_mark_stopped_incomplete"
+  },
+  "zero_line_guard": {
+    "enabled": true,
+    "abort_after_minutes": 10,
+    "min_raw_lines": 1,
+    "action": "stop_child_collector_and_mark_stopped_incomplete"
+  },
+  "schema_probe": {
+    "enabled": true,
+    "check_after_minutes": 1,
+    "max_lines": 20,
+    "required_fields": [
+      "recv_ts",
+      "exchange",
+      "event_type",
+      "channel",
+      "symbol",
+      "payload"
+    ],
+    "action": "stop_child_collector_and_mark_stopped_incomplete_on_invalid_raw_jsonl"
+  },
+  "next_goal_decision": "STOPPED_INCOMPLETE_GOAL_V2_SWARM_LIMITED_NEXT_FIX_COLLECTOR_OR_CLEAN_RERUN",
+  "next_goal_reason": "72h WS collect stopped after ~7.3h due reconnect failures. Goal v2 now optimizes net expectancy after costs, not winrate. Current dataset is not accepted as proof; use only tooling QA unless explicitly accepted incomplete. Antigravity swarm L1 unavailable, so Codex fallback is active until swarm recovers.",
+  "branch_decision": "NEXT_BRANCH_SPOT_MAKER_LIQUIDITY_SWEEP_REVERSAL",
+  "selected_branch": "spot_maker_liquidity_sweep_reversal_event_quality",
+  "branch_source": "trading_branch_selector",
+  "resume_incomplete": false,
+  "resumed_from_run_id": null,
+  "resumed_from_status": null,
+  "readiness_guard": {
+    "enabled": true,
+    "script": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\trading_ws_collect_readiness.ps1",
+    "required_status": "READY_FOR_VISIBLE_72H_WS_COLLECT_CONFIRMATION",
+    "required_ok": true,
+    "action": "refuse_confirmed_long_run_before_start",
+    "readiness_status": "READY_FOR_VISIBLE_72H_WS_COLLECT_CONFIRMATION",
+    "readiness_generated_at": "2026-07-02 01:27:10 +03:00",
+    "readiness_output_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\trading_ws_collect_readiness_current.json"
+  },
+  "status_check_command": "pwsh -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_active_run_gate.ps1",
+  "postprocess_command_after_ready": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_ws_postprocess_visible.ps1\" -ManifestPath <manifest_path_from_completed_ws_collect>",
+  "replay_validation_plan_after_postprocess": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_ws_replay_validation_visible.ps1\" -PostprocessPath <exports\\trading-mvp\\backtests\\ws_postprocess_*.json> -ExpectedManifestPath <manifest_path_from_completed_ws_collect> -PlanOnly",
+  "replay_validation_after_review": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_ws_replay_validation_visible.ps1\" -PostprocessPath <exports\\trading-mvp\\backtests\\ws_postprocess_*.json> -ExpectedManifestPath <manifest_path_from_completed_ws_collect> -ConfirmedResearchRun",
+  "next_step_after_ready": "STOPPED_INCOMPLETE: either visibly resume/clean-run the collect, or explicitly declare this dataset incomplete before any postprocess. Рой checkpoint may review the revised objective and decide resume vs discard, but must not run replay/grid on this incomplete dataset.",
+  "final": false,
+  "manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\raw\\ws_collect_20260702_054555.json",
+  "stop_reason": "collector_exited_before_requested_duration_after_reconnect_failures",
+  "requested_duration_sec": 259200,
+  "actual_duration_sec": 26274.98,
+  "total_events": 7716396,
+  "error_count": 9,
+  "last_state_update_at": "2026-07-02T09:48:52.9595377+03:00",
+  "postprocess_block": "Dataset is incomplete versus requested 72h; do not run postprocess/grid/replay unless explicitly accepted as incomplete research sample or resumed/clean-collected.",
+  "goal_v2_doc": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\2026-07-02-trading-edge-goal-v2.md",
+  "replay_allowed": false,
+  "requires_explicit_user_approval_for_incomplete_dataset_postprocess": true,
+  "next_valid_steps": [
+    "fix_collector_resilience_and_visible_monitor_then_clean_72h_collect",
+    "resume_or_segment_collect_with_manifest_stitching_and_gap_accounting_then_data_quality_gate",
+    "pivot_to_funding_basis_multiweek_collection_if_ws_branch_paused"
+  ]
+}

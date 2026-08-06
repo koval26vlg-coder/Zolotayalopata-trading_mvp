@@ -1,0 +1,111 @@
+{
+  "schema": "trading_mvp_dense_ws_capacity_readiness_audit_v1",
+  "generated_at_utc": "2026-08-02T09:32:48.6182180+00:00",
+  "generated_at_local": "2026-08-02T12:32:48.6200779+03:00",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+  "purpose": "Verify that the frozen 24-hour dense WebSocket campaign has adequate storage headroom and fail-closed output-cap enforcement.",
+  "scope": {
+    "contract_or_plan_changed": false,
+    "runtime_tool_changed": false,
+    "collector_started": false,
+    "network_access": false,
+    "raw_market_rows_read": false,
+    "only_frozen_feasibility_summary_read": true,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "immutable_bindings": {
+    "feasibility_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-feasibility-20260802-aef-continuous24h-v3.json",
+    "feasibility_sha256": "e5911d9eebb79fd3a898c0394b6d25b0d28b6d35d746c5a134616d5f54d87d47",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+    "plan_file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "runner_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_runner.py",
+    "runner_sha256": "ed804ff811c321e4d9a5a8f56593f24ca320c635088fe7b271eec0bdacb4a977",
+    "runner_sha256_matches_plan": true
+  },
+  "throughput_baseline": {
+    "source_root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw-durable\\ws_durable_72h_20260704_000015",
+    "use": "throughput_and_operational_feasibility_only",
+    "admissible_for_hypothesis_evidence": false,
+    "manifests_seen": 25,
+    "valid_dual_venue_segments": 21,
+    "rejected_segments": 4,
+    "median_events_per_sec": 289.5619345411094,
+    "median_bytes_per_sec": 142109.33135979643,
+    "sample_segments_in_plan": 4
+  },
+  "capacity_model": {
+    "target_writer_sec": 86400,
+    "estimated_events": 25018151,
+    "estimated_disk_bytes": 12278246229,
+    "recomputed_estimated_disk_bytes": 12278246229,
+    "hard_output_cap_bytes": 25000000000,
+    "estimate_fraction_of_cap": 0.49113,
+    "cap_to_estimate_multiplier": 2.036121,
+    "headroom_bytes_over_estimate": 12721753771,
+    "cap_equivalent_average_bytes_per_sec_for_24h": 289351.851852,
+    "projected_hours_to_cap_at_baseline_rate": 48.867,
+    "expected_to_fit_under_cap": true
+  },
+  "disk_headroom": {
+    "drive": "E:",
+    "observed_free_bytes": 825070010368,
+    "required_free_bytes": 53687091200,
+    "minimum_absolute_free_bytes": 53687091200,
+    "free_to_required_multiplier": 15.368127,
+    "free_to_cap_multiplier": 33.0028,
+    "free_to_estimate_multiplier": 67.197708,
+    "passes_prelaunch_headroom": true
+  },
+  "output_cap_enforcement": {
+    "aggregate_recursive_campaign_size": true,
+    "prelaunch_blocks_at_or_above_cap": true,
+    "running_monitor_stops_at_or_above_cap": true,
+    "monitor_interval_sec": 10,
+    "stopped_run_becomes_stopped_incomplete": true,
+    "stopped_incomplete_requires_new_exact_approval": true,
+    "byte_exact_filesystem_quota": false,
+    "estimated_bytes_written_during_one_monitor_interval_at_baseline": 1421094,
+    "residual_note": "The cap is a fail-closed monitored stop threshold, not an OS byte quota. A small overshoot during the 10-second observation and graceful termination interval is possible; such a run is STOPPED_INCOMPLETE and cannot enter the evidence pipeline.",
+    "source_locations": [
+      "dense_ws_campaign_runner.py:60",
+      "dense_ws_campaign_runner.py:316",
+      "dense_ws_campaign_runner.py:427",
+      "dense_ws_campaign_runner.py:788",
+      "dense_ws_campaign_runner.py:1351",
+      "dense_ws_campaign_runner.py:1417",
+      "dense_ws_campaign_runner.py:1571"
+    ]
+  },
+  "verification": {
+    "test_file": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_campaign_contract.py",
+    "test_file_sha256": "6d5afb9c1330ddecc89b5d1a2bd6d68d534fb5a204c8e4b215d86edab8528ac3",
+    "added_tests": [
+      "test_campaign_output_bytes_counts_entire_campaign_namespace",
+      "test_runner_preflight_blocks_when_campaign_cap_is_reached"
+    ],
+    "contract_test_file_tests_run": 23,
+    "contract_test_file_failures": 0,
+    "fast_regression_artifact": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-capacity-fast-regression-20260802T122955+0300.json",
+    "fast_regression_artifact_sha256": "66d4e054768039c103abc83c92ab36e15e4a189228df5bb4cfef950acfc45482",
+    "fast_regression_tests_run": 262,
+    "fast_regression_failures": 0,
+    "fast_regression_errors": 0,
+    "fast_regression_deterministic_result_hash": "afbb86736024656b0337a4406a9718796778a5337581a34c497c5ca5ad728c92"
+  },
+  "verdict": {
+    "status": "CAPACITY_READY_MONITORED_FAIL_CLOSED_STOP",
+    "expected_volume_fits_cap": true,
+    "disk_headroom_passes": true,
+    "frozen_runtime_hash_preserved": true,
+    "campaign_branch_blocked": false,
+    "next_action": "Keep the campaign approval active and rerun exact launch-time guard/preflight before the visible writer starts."
+  }
+}

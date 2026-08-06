@@ -1,0 +1,168 @@
+{
+  "schema": "trading_mvp_objective_route_alignment_audit_v2",
+  "generated_at_local": "2026-08-02T23:13:01.0510391+03:00",
+  "mode": "OFFLINE_METADATA_ONLY",
+  "purpose": "Replace stale route status after collector-liveness refreeze v2 without granting collection, postrun or evaluator authority.",
+  "authoritative_precedence": [
+    "current autopilot guard",
+    "current policy hash bindings",
+    "immutable v2 contract and PlanOnly",
+    "terminal basis evidence",
+    "older route audits"
+  ],
+  "policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "file_sha256": "b17370b2b9a143a2a5f2ad03cb8154b0f92396917300e063695d64ed5de1fbe3",
+    "status": "ACTIVE",
+    "decision": "AWAIT_EXPLICIT_LONG_CAMPAIGN_APPROVAL",
+    "weekly_remaining_percent": 44.0
+  },
+  "closed_primary_route": {
+    "source_audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\cross-venue-basis-terminal-currentness-audit-20260802T1323+0300.json",
+    "source_audit_sha256": "8640b20c5a5e9257998646c66afa1b5f574c3295c56a117a9d0f6fc591be83d2",
+    "v1": {
+      "hypothesis_id": "cross_venue_perp_basis_convergence_history_v1",
+      "verdict": "INSUFFICIENT_DATA",
+      "reason_code": "GATE_5M_PUBLIC_HISTORY_RETENTION_LT_FROZEN_220D",
+      "edge_evaluated": false,
+      "same_contract_repeat_or_retune_allowed": false
+    },
+    "v2": {
+      "hypothesis_id": "cross_venue_perp_basis_convergence_1h_v2",
+      "verdict": "INSUFFICIENT_EXECUTABLE_UNIVERSE",
+      "reason_code": "TRAIN_LIQUIDITY_SURVIVORS_BELOW_FROZEN_MINIMUM",
+      "edge_evaluated": false,
+      "same_contract_repeat_or_retune_allowed": false
+    },
+    "interpretation": "Primary basis route was honestly closed before OOS/returns/PnL because frozen data and executable-universe gates failed."
+  },
+  "active_materially_distinct_route": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "data_type": "DENSE_WS_SEGMENTED",
+    "venues": [
+      "MEXC",
+      "Gate"
+    ],
+    "contract": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260803-aef-24h-v2.json",
+      "file_sha256": "cdfbee9ceaafcff3a170d81347b6822c612aaa401300ede676b1aa13fdefbdd8",
+      "contract_hash": "99e752bada6c951815296dafecfd7b558058455e183a53c5723d69b25dcf9e53"
+    },
+    "plan": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v2.json",
+      "file_sha256": "9fe19c6e220897b80098fd6a3cd5eb767aa1a7eccb6bf54b59d7c8485e64731a",
+      "plan_hash": "651502c3104ffea904f0520afc7ffbde7e9ab993213d5d74962c00ef91f4916e",
+      "approval_state": "NOT_APPROVED",
+      "actual_collection_allowed": false,
+      "start_local": "2026-08-03T01:30:00+03:00",
+      "writer_deadline_local": "2026-08-04T01:30:00+03:00",
+      "hard_deadline_local": "2026-08-04T02:00:00+03:00",
+      "max_runtime_sec": 88200,
+      "hard_output_cap_bytes": 25000000000
+    },
+    "collector_liveness_refreeze": {
+      "status": "COMPLETE_AWAIT_EXPLICIT_LONG_CAMPAIGN_APPROVAL",
+      "proposal_hash": "a3cfdf5e71da1d9485ceb0fe725aab7b35037e9eee4419a3dbb06e97aa7dbd61",
+      "finalization_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-collector-liveness-refreeze-v2-finalization-20260802T2252+0300.json",
+      "finalization_sha256": "2c007d0d96bbacc2a2c86ba22d05efdb065c877ffbe38f6eeb91f27985a55675",
+      "tests_passed": 73
+    },
+    "launch_authority": {
+      "status": "NOT_APPROVED",
+      "old_v1_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-aef-24h-launch-approval.json",
+      "old_v1_receipt_sha256": "5c18fbcbc3646aa5456c917dc0084c5ef141615dc00a8bd952378042b31b8b2e",
+      "old_v1_plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+      "current_v2_plan_hash": "651502c3104ffea904f0520afc7ffbde7e9ab993213d5d74962c00ef91f4916e",
+      "hashes_match": false,
+      "old_v1_receipt_valid_for_v2": false,
+      "collection_allowed_now": false,
+      "exact_v2_user_approval_required": true
+    }
+  },
+  "pit_shadow_track": {
+    "status": "WAITING",
+    "classification": "PREAPPROVED_SHORT_SEGMENT",
+    "run_id": "pit_universe_v2_forward_20260803_n06",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_planonly_20260729_20260728_102711.json",
+    "plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+    "start_local": "2026-08-03T01:00:00+03:00",
+    "end_local": "2026-08-03T01:20:00+03:00",
+    "duration_sec": 1200,
+    "accepted_distinct_dates": 6,
+    "target_distinct_dates": 20,
+    "duplicate_owner_observed": false,
+    "actual_launch_performed_by_this_audit": false
+  },
+  "downstream_gates": {
+    "postrun": {
+      "status": "PRESERVED_DORMANT_V1_BINDING_NOT_EXECUTABLE_FOR_V2",
+      "rebind_proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-postrun-runtime-rebind-proposal-20260802-v2.json",
+      "rebind_proposal_sha256": "1b023a6b33f0419e384784643efbe6d0a563413b80d8e2fcc8a435d43e05f25e",
+      "rebind_proposal_hash": "3d327a5069212df8fab2ddb0d612a9e452d57b8b29a5d573465c7b7b42d221fb",
+      "authorized": false,
+      "execution_allowed_now": false
+    },
+    "evaluator": {
+      "status": "USER_REVIEW_REQUIRED_NOT_FROZEN_NOT_AUTHORIZED",
+      "amendment_proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-evaluator-implementation-semantics-amendment-20260802-v1.json",
+      "amendment_proposal_sha256": "3663a2109670ff67cb20a69ae8862c9374504700eac76000f0ea9a2393261bbd",
+      "amendment_proposal_hash": "2c17be85d008d57b008136d0bb0bdcbef3f7bc7168620ba0aacd4e5f08645724",
+      "authorized": false,
+      "execution_allowed_now": false
+    },
+    "returns_pnl_oos_allowed_now": false
+  },
+  "requirement_alignment": [
+    {
+      "requirement": "Find, prove or honestly reject a new non-Binance MEXC/Gate edge after costs.",
+      "status": "IN_PROGRESS_NOT_PROVEN",
+      "evidence": "Basis route is terminally closed; dense_ws v2 has no accepted dataset or edge verdict."
+    },
+    {
+      "requirement": "Data quality and train feasibility.",
+      "status": "FROZEN_WAITING_COLLECTION",
+      "evidence": "Collector liveness v2 is tested, but campaign v2 is not launch-approved."
+    },
+    {
+      "requirement": "Chronological OOS, five-fold walk-forward, stress, economics and execution capacity without grid/retune.",
+      "status": "CONTRACT_CHECKPOINT_NOT_AUTHORIZED",
+      "evidence": "Postrun rebind and evaluator semantics/runtime remain exact user checkpoints."
+    },
+    {
+      "requirement": "PIT shadow-track to train gate.",
+      "status": "IN_PROGRESS",
+      "evidence": "Next preapproved segment pit_universe_v2_forward_20260803_n06, accepted dates 6/20."
+    },
+    {
+      "requirement": "No live/private API/real capital/leverage/margin.",
+      "status": "ENFORCED",
+      "evidence": "All current contracts remain research-only and public-read-only."
+    }
+  ],
+  "verdict": {
+    "status": "OBJECTIVE_ACTIVE_V2_ROUTE_READY_FOR_EXACT_APPROVAL_PIT_CONTINUES",
+    "goal_complete": false,
+    "edge_proven": false,
+    "edge_rejected": false,
+    "historical_accept": false,
+    "paper_forward_ready": false,
+    "live_review_eligible": false,
+    "next_action": "Run PIT n06 only when due; do not launch dense_ws v2 without exact hash-bound approval."
+  },
+  "safety": {
+    "network_access": false,
+    "collector_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "audit_hash_method": "sha256_utf8_compact_json_without_audit_hash",
+  "audit_hash": "e871463ef0f9ab97cf1f335fafa1e36bb09d7df34d53f474ef854e022743af87"
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "active_run_pointer_v1",
+  "project": "trading_mvp",
+  "run_id": "basis_v2_history_20260716_132600_runtime_guard",
+  "status": "REJECTED_INCOMPLETE",
+  "updated_at": "2026-07-16T18:42:54.9241419+03:00",
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2\\runs\\basis_v2_history_20260716_132600_runtime_guard\\manifest.json",
+  "output": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\reports\\basis_sprint_retention_closure_20260715_115819.json",
+    "kind": "file"
+  },
+  "collector_pid": null,
+  "monitor_pid": null,
+  "process_ids": [],
+  "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\historical_basis_retention_closure_final_20260715_120300.launch.json",
+  "gate_status": "STOPPED_INCOMPLETE",
+  "final": false,
+  "errors": 1,
+  "stop_reason": "basis_v2_visible_worker_failed",
+  "failure": "ParameterBindingValidationException: Cannot validate argument on parameter 'Mode'. The argument \"-PlanPath\" does not belong to the set \"paper\" specified by the ValidateSet attribute. Supply an argument that is in the set and then try the command again.",
+  "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis-1h-v2\\runs\\basis_v2_history_20260716_132600_runtime_guard",
+  "replay_allowed": false,
+  "grid_allowed": false,
+  "original_status": "STOPPED_INCOMPLETE",
+  "rejected_at": "2026-07-16T18:46:13.3596313+03:00",
+  "rejection_reason": "Rejected zero-network preflight attempt: PowerShell array splatting passed named tokens positionally; no run directory, manifest, cache writes, or public API requests were created."
+}

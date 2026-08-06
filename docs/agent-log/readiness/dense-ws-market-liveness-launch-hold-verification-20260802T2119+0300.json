@@ -1,0 +1,81 @@
+{
+  "schema": "trading_mvp_dense_ws_market_liveness_launch_hold_verification_v1",
+  "status": "COMPLETE",
+  "generated_at_local": "2026-08-02T21:19:01.5926405+03:00",
+  "source_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-market-liveness-integrity-audit-20260802T2110+0300.json",
+    "sha256": "79d8a65d64a4ac4feb52065a8010adfcf39464f921f028b1969bc2360eb6e2a2"
+  },
+  "refreeze_proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-collector-liveness-refreeze-proposal-20260802-v1.json",
+    "file_sha256": "a50796f3f69f203f76a75e5a9e9261414bd7367c97b36e5e5bc02143feda0d6e",
+    "proposal_hash": "cb070b3d88b23ff4a1cc46dbd68407d467f4c8ed110ee870d0fd72a5e4e5be3a",
+    "canonical_hash_verified": true,
+    "authorized": false
+  },
+  "policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "sha256": "33ad7a32e28fd396da7ee7d7cf1e3b2c08f5dcf42fac930a2cb7525a9103330f",
+    "candidate_status": "USER_REVIEW_REQUIRED_COLLECTOR_LIVENESS_REFREEZE",
+    "old_launch_approval_status": "SUSPENDED_RUNTIME_LIVENESS_INTEGRITY",
+    "old_plan_launch_allowed": false
+  },
+  "authoritative_guard": {
+    "status": "ACTIVE",
+    "decision": "USER_REVIEW_REQUIRED_LONG_CAMPAIGN_CONTRACT",
+    "stop_new_actions": false,
+    "long_campaign_approval_status": "NOT_APPROVED",
+    "next_action": "request_exact_hash_bound_collector_liveness_refreeze_cb070b3d88b23ff4a1cc46dbd68407d467f4c8ed110ee870d0fd72a5e4e5be3a",
+    "pit_run_id": "pit_universe_v2_forward_20260803_n06",
+    "pit_status": "WAITING",
+    "pit_start_local": "2026-08-03T01:00:00+03:00",
+    "pit_schedule_preserved": true
+  },
+  "old_launcher_preflight": {
+    "script": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_dense_ws_campaign_visible.ps1",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "exit_code": 1,
+    "blocked": true,
+    "error": "policy.candidate.status mismatch",
+    "run_or_output_writes": false
+  },
+  "automation": {
+    "id": "trading-continuous-production",
+    "status": "ACTIVE",
+    "file_sha256": "289f3c260a5a79f90d6b174c04a6186a3cc403520ab2bd9648525b45ce1939eb",
+    "bound_policy_sha256": "33ad7a32e28fd396da7ee7d7cf1e3b2c08f5dcf42fac930a2cb7525a9103330f",
+    "liveness_hold_present": true,
+    "old_approved_launch_block_removed": true,
+    "pit_n06_instruction_preserved": true
+  },
+  "tests": {
+    "command": "python -m unittest trading_mvp.tests.test_ws_collector trading_mvp.tests.test_dense_ws_campaign_quality trading_mvp.tests.test_autopilot_guard",
+    "tests_run": 56,
+    "failures": 0,
+    "errors": 0,
+    "result": "PASS",
+    "network_access": false,
+    "market_dataset_read": false
+  },
+  "production_changes": {
+    "raw_writer_changed": false,
+    "durable_collector_changed": false,
+    "campaign_runner_changed": false,
+    "quality_tool_changed": false,
+    "contract_or_plan_changed": false,
+    "old_approval_receipt_overwritten": false
+  },
+  "next_allowed_action": "WAIT_FOR_EXACT_COLLECTOR_LIVENESS_REFREEZE_APPROVAL_WHILE_PIT_BRANCH_REMAINS_ACTIVE",
+  "safety": {
+    "collector_started": false,
+    "evaluator_run": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  }
+}

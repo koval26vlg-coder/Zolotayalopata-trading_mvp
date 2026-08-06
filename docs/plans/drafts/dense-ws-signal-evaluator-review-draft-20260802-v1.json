@@ -1,0 +1,171 @@
+{
+  "schema": "trading_mvp_dense_ws_signal_evaluator_review_draft_v1",
+  "mode": "PlanOnlyReviewDraft",
+  "status": "DRAFT_NOT_FROZEN_NOT_AUTHORIZED",
+  "research_only": true,
+  "source_campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "data_type": "DENSE_WS_SEGMENTED",
+    "plan": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+      "file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+      "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b"
+    },
+    "contract": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260803-aef-24h-v1.json",
+      "file_sha256": "e2411cc57fb8827f1d527393e5b4bdb31ca85e9f0ea60e46b3b915531c66a9cc",
+      "contract_hash": "8f2021053b83551edb9bfb57847810caccdef30fd3368349ff98aedfe1cf9485"
+    }
+  },
+  "source_scope": {
+    "execution_sampling_contract": {
+      "sample_clock": "UTC epoch boundaries where timestamp modulo 5 seconds is zero",
+      "sample_interval_sec": 5,
+      "quote_selection": "latest BBO with recv_ts <= sample_ts; never nearest or forward-filled from a future row",
+      "max_quote_age_ms": {
+        "mexc": 6000,
+        "gateio": 5000
+      },
+      "max_cross_venue_recv_ts_skew_ms": 2000,
+      "max_spread_bps_each_venue": 3.0,
+      "min_top_notional_quote_each_side": 25.0,
+      "eligible_regime": "DENSE_BOTH",
+      "one_snapshot_per_base_per_boundary": true,
+      "stale_or_incomplete_snapshot_action": "exclude and count by reason",
+      "minimum_eligible_snapshots": 180,
+      "execution_mode_for_future_evaluation": "taker_at_opposite_top_of_book",
+      "maker_fill_or_queue_assumption": false
+    },
+    "cost_risk_no_grid_contract": {
+      "cost": {
+        "base_tier_only": true,
+        "normal": {
+          "round_trip_fee_bps": 39.0,
+          "slippage_bps": 10.0,
+          "inventory_rebalance_buffer_bps": 20.0,
+          "total_cost_bps": 69.0
+        },
+        "stress": {
+          "round_trip_fee_bps": 39.0,
+          "slippage_bps": 20.0,
+          "inventory_rebalance_buffer_bps": 30.0,
+          "total_cost_bps": 89.0
+        },
+        "fee_tier_optimism": false,
+        "maker_rebate_credit": false,
+        "transfer_latency_benefit": false
+      },
+      "risk": {
+        "research_simulation_only": true,
+        "direction": "long_only_spot_no_short",
+        "notional_quote_per_synthetic_trade": 50.0,
+        "max_concurrent_synthetic_positions": 3,
+        "max_gross_synthetic_exposure_quote": 150.0,
+        "max_holding_sec": 25,
+        "cooldown_sec_per_base": 60,
+        "one_position_per_base": true,
+        "leverage": false,
+        "margin": false,
+        "real_capital": false
+      },
+      "no_grid": {
+        "parameter_combinations": 1,
+        "grid_search": false,
+        "retune": false,
+        "threshold_selection_from_returns_or_pnl": false,
+        "threshold_selection_from_oos": false
+      }
+    },
+    "future_split_if_separately_authorized": {
+      "ordering": "valid observations sorted by causal sample_ts",
+      "train_fraction": 0.7,
+      "oos_fraction": 0.3,
+      "split_type": "single contiguous chronological split",
+      "embargo_sec": 300,
+      "regime_parameters_refit_on_oos": false
+    }
+  },
+  "signal_contract": {
+    "source_snapshot_schema": "trading_mvp_dense_ws_execution_snapshot_v1",
+    "eligible_regime": "DENSE_BOTH",
+    "directions": [
+      "buy_mexc_sell_gateio",
+      "buy_gateio_sell_mexc"
+    ],
+    "buy_price_field": "ask_price",
+    "sell_price_field": "bid_price",
+    "gross_edge_bps_formula": "(sell_bid / buy_ask - 1) * 10000",
+    "capacity_quote_formula": "min(buy_ask * buy_ask_qty, sell_bid * sell_bid_qty)",
+    "minimum_capacity_quote": 50.0,
+    "normal_total_cost_bps": 69.0,
+    "stress_total_cost_bps": 89.0,
+    "normal_net_edge_bps_formula": "gross_edge_bps - 69",
+    "stress_net_edge_bps_formula": "gross_edge_bps - 89",
+    "event_clock": "causal sample_ts",
+    "cooldown_sec_per_base_and_direction": 60,
+    "one_event_per_base_direction_per_cooldown": true,
+    "inventory_model": "pre_positioned_spot_inventory_research_simulation_only",
+    "inventory_rebalance_buffer_credited": false,
+    "maker_fill_assumption": false,
+    "short_sale": false,
+    "parameter_combinations": 1,
+    "threshold_learned_from_returns_pnl_or_oos": false
+  },
+  "evaluation_design": {
+    "input_ordering": "valid observations sorted by causal sample_ts",
+    "primary_split": {
+      "train_fraction": 0.7,
+      "oos_fraction": 0.3,
+      "split_type": "single contiguous chronological split",
+      "embargo_sec": 300
+    },
+    "walk_forward": {
+      "folds": 5,
+      "ordering": "chronological",
+      "formula_refit_between_folds": false,
+      "regime_parameters_refit_on_oos": false
+    },
+    "required_reports": [
+      "train",
+      "chronological_oos",
+      "five_fold_walk_forward",
+      "normal_cost_economics",
+      "stress_cost_economics",
+      "drawdown_sample_size_capacity_fill_risk"
+    ],
+    "downstream_stops_on_first_failed_gate": true
+  },
+  "acceptance_review": {
+    "minimum_trade_events": "UNSET_REQUIRES_USER_REVIEW",
+    "minimum_net_expectancy_bps": "UNSET_REQUIRES_USER_REVIEW",
+    "minimum_profit_factor": "UNSET_REQUIRES_USER_REVIEW",
+    "maximum_drawdown_quote": "UNSET_REQUIRES_USER_REVIEW",
+    "minimum_oos_fold_passes": "UNSET_REQUIRES_USER_REVIEW",
+    "minimum_stress_expectancy_bps": "UNSET_REQUIRES_USER_REVIEW",
+    "minimum_capacity_quote": 50.0,
+    "strategy_accepted": false,
+    "terminal_verdict_allowed": false
+  },
+  "evaluation_authorization": {
+    "authorized": false,
+    "status": "USER_REVIEW_REQUIRED",
+    "materialization_binding_present": false,
+    "returns_pnl_oos_allowed": false,
+    "reason": "acceptance thresholds and exact materialization output hashes are not frozen"
+  },
+  "safety": {
+    "network_access": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_read": false,
+    "grid_or_retune": false,
+    "paper_forward": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "USER_REVIEW_REQUIRED_SIGNAL_AND_EVALUATOR_CONTRACT",
+  "draft_hash": "9325445a68aea9f8224658690367862662c342fc8f624a824f4c805d9c293573"
+}

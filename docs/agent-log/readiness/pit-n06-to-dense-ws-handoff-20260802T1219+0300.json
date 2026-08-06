@@ -1,0 +1,68 @@
+{
+  "schema": "trading_mvp_writer_handoff_timing_audit_v1",
+  "status": "HANDOFF_MARGIN_ADEQUATE_FAIL_CLOSED",
+  "observed_at_local": "2026-08-02T12:19:00+03:00",
+  "policy_hash": "f79f0e029fc4861249a11929545186127223a743411cc9fc8c229511d60da3cc",
+  "source_pit_sample": {
+    "run_id": "pit_universe_v2_forward_20260802_n05",
+    "schedule_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+    "scheduled_end_local": "2026-08-02T01:20:00+03:00",
+    "writer_claim_released_local": "2026-08-02T01:20:14.4904923+03:00",
+    "postrun_finished_local": "2026-08-02T01:20:21.1802478+03:00",
+    "writer_claim_release_lag_sec": 14.4904923,
+    "postrun_completion_lag_sec": 21.1802478,
+    "final_status": "POSTRUN_FINISHED",
+    "postrun_decision": "WAITING_EVENT"
+  },
+  "planned_handoff": {
+    "pit_run_id": "pit_universe_v2_forward_20260803_n06",
+    "pit_start_local": "2026-08-03T01:00:00+03:00",
+    "pit_scheduled_end_local": "2026-08-03T01:20:00+03:00",
+    "dense_campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "dense_campaign_plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "dense_launch_heartbeat_local": "2026-08-03T01:25:00+03:00",
+    "dense_writer_start_local": "2026-08-03T01:30:00+03:00",
+    "end_to_heartbeat_buffer_sec": 300.0,
+    "end_to_writer_start_buffer_sec": 600.0,
+    "observed_postrun_margin_before_heartbeat_sec": 278.8197522,
+    "observed_postrun_margin_before_writer_sec": 578.8197522,
+    "writer_start_buffer_to_observed_postrun_ratio": 28.33
+  },
+  "current_status_tool_check": {
+    "schema": "trading_mvp_dense_ws_campaign_status_v1",
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "state": null,
+    "owner": null,
+    "reservation": null,
+    "orchestrator_alive": false,
+    "writer_alive": false,
+    "terminal_alive": false,
+    "raw_files": 0,
+    "campaign_manifest_exists": false,
+    "stop_request_exists": false
+  },
+  "failure_boundary": {
+    "pit_postrun_must_finish_before_dense_launch": true,
+    "global_writer_claim_must_be_absent_before_dense_launch": true,
+    "dense_preflight_rechecks_gate_and_global_writer_claim": true,
+    "second_writer_on_conflict": false,
+    "automatic_stopped_incomplete_recovery": false
+  },
+  "evidence_limitations": [
+    "CURRENT_CONTROL_PLANE_TIMING_HAS_ONE_FULLY_SUCCESSFUL_POSTRUN_SAMPLE",
+    "HISTORICAL_N03_POSTRUN_FAILED_AND_WAS_EXPLICITLY_RECONCILED",
+    "FRESH_PREFLIGHT_AT_LAUNCH_REMAINS_AUTHORITATIVE"
+  ],
+  "safety": {
+    "market_data_read": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "writer_started": false,
+    "live_or_private_api": false,
+    "real_capital_leverage_margin": false
+  },
+  "next_allowed_action": "FRESH_GUARD_AND_PREFLIGHT_THEN_EXACT_VISIBLE_LAUNCHES"
+}

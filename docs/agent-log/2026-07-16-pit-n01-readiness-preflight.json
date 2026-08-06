@@ -1,0 +1,29 @@
+{
+  "schema": "trading_mvp_pit_segment_readiness_preflight_v1",
+  "generated_at": "2026-07-16T19:31:05+03:00",
+  "research_only": true,
+  "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_reseal_primary_immutable_sources_planonly_20260716_082454.json",
+  "plan_hash": "14f687e8e8491bb58c1e697d9a467d89ab360f6b683782caca43f8b33a0684a0",
+  "plan_file_sha256": "d3fe4b1326667d61b94c186039b59d6066d2422c49551c6209ea2f69b1ea0c67",
+  "run_id": "pit_universe_v2_forward_20260716_n01",
+  "scheduled_window": "2026-07-16T23:00:00+03:00..2026-07-16T23:20:00+03:00",
+  "authorization_verdict": "AUTHORIZED",
+  "collection_stage": "train_accrual",
+  "accepted_distinct_dates_before_run": 2,
+  "remaining_stage_dates_before_run": 18,
+  "stage_target_distinct_dates": 20,
+  "approval_status": "ACTIVE",
+  "approval_expires_at": "2026-07-30T07:00:00+03:00",
+  "output_exists_before_run": false,
+  "collector_process_alive": false,
+  "disk": {
+    "E_ready": true,
+    "E_free_gib": 780.43,
+    "C_ready": true,
+    "C_free_gib": 72.35
+  },
+  "returns_read": false,
+  "pnl_read": false,
+  "collection_started": false,
+  "next_allowed_action": "wait_for_automation_checkpoint_at_2026-07-16T22:58:00+03:00"
+}

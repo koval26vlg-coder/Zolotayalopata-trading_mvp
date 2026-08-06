@@ -1,0 +1,21 @@
+{
+  "schema": "active_run_launch_record_v1",
+  "project": "trading_mvp",
+  "run_id": "historical_basis_universe_20260715_114700",
+  "run_type": "historical_basis_universe_availability",
+  "created_at": "2026-07-15T08:47:51.992457+00:00",
+  "command": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\code-snapshots\\381320556c4e8d830b637b7066f470d34fd65e0ad2343df89b4129b9de8359ed\\historical_basis_universe.py --pit-state E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260715_n01\\universe_state.json --coin-registry C:\\Users\\koval\\Documents\\ZolotyayLopata\\coins_not_on_binance_full_2026-05-29.csv --output E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\universe\\basis_universe_20260715_114700.json --max-runtime-sec 600 --active-run-gate C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\active-run-gate.json --code-snapshot-hash 381320556c4e8d830b637b7066f470d34fd65e0ad2343df89b4129b9de8359ed --code-snapshot-manifest E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\code-snapshots\\381320556c4e8d830b637b7066f470d34fd65e0ad2343df89b4129b9de8359ed\\snapshot-manifest.json --run-id historical_basis_universe_20260715_114700",
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "output": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\universe\\basis_universe_20260715_114700.json",
+    "kind": "file"
+  },
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\universe\\basis_universe_20260715_114700.json",
+  "owner_output_prefix": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\universe",
+  "code_snapshot_hash": "381320556c4e8d830b637b7066f470d34fd65e0ad2343df89b4129b9de8359ed",
+  "parallel_parent_run_id": null,
+  "research_only": true,
+  "live_orders": false,
+  "api_keys": false,
+  "leverage_or_margin": false
+}

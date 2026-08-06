@@ -1,0 +1,23 @@
+# PIT sealed-certifier integrity restored
+
+- Observed at: `2026-07-30T22:24:00+03:00`
+- Scope: control-plane and offline tests only; no collector, market replay, returns, PnL, OOS rows, grid, retune, paper, or live execution.
+- Integrity finding:
+  - the active immutable PIT schedule seals `night_schedule_quality.py` at SHA-256 `dbb1c3fe25d6ee5196cb01d05311c270a5fb7b377e0f67d22de390e3d139d5b8`;
+  - postrun hardening at `21:26` had moved a contract-scope check into that sealed file without resealing the schedule;
+  - the later `22:12` atomic-ledger change compounded that drift and therefore could not be used by the approved schedule.
+- Correction:
+  - reconstructed the exact approved certifier bytes from the local append-only rollout patch history and restored the sealed SHA-256;
+  - moved the additional hypothesis/data/contract ledger validation into the unsealed dry-run layer;
+  - added a postrun precondition that hashes every sealed runtime tool and fails before `PlanOnly` or mutation on any missing file, bad metadata, path mismatch, or SHA mismatch;
+  - explicitly bound the postrun schedule planner and quality certifier executable paths to their sealed plan entries.
+- Supersession:
+  - the implementation claim in `2026-07-30-2212-Codex-trading-mvp-pit-quality-ledger-transaction.md` is superseded;
+  - the atomic OS-lock ledger implementation is not active because adopting it would require a new hash-bound evidence contract and approval;
+  - no production ledger entry was written by either the reverted change or this correction.
+- Verification:
+  - all `12/12` runtime tools in plan `31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7` match their sealed hashes;
+  - exact current postrun `-PlanOnly` returned `PLAN_VALIDATED`, `sealed_runtime_tools_verified=12`, `4/20`, `returns_read=false`, `pnl_read=false`, and `mutation=false`;
+  - PowerShell parser and Python compile checks passed;
+  - `105` linked schedule, pointer, guard, postrun, train-target, and completion-audit tests passed.
+- Next: retain the exact approved `n03` schedule. Any future certifier hardening must be implemented only under a newly reviewed hash-bound schedule/evidence contract; the current run must use the restored sealed certifier.

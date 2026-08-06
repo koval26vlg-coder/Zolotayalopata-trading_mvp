@@ -1,0 +1,23 @@
+# PIT post-writer fail-closed handoff
+
+- Observed at: `2026-07-30T22:53:15+03:00`
+- Scope: unsealed visible countdown control plane and its regression tests. No sealed runtime tool, schedule plan, approval, pointer, hypothesis, venue, universe, signal, cost, risk, quality policy, duration, or evidence contract was changed.
+- Defect:
+  - the sealed visible wrapper can correctly leave the active-run gate at `STOPPED_INCOMPLETE` when the collector exits zero but its manifest is not final;
+  - the countdown previously invoked the wrapper in-process and immediately recorded `COLLECTOR_FINISHED` without an explicit process exit or exact gate postcondition check;
+  - that could incorrectly enter postrun, which would classify the incomplete collector state as `PIT_POSTRUN_FAILED` instead of preserving the existing incomplete-run recovery boundary.
+- Fix:
+  - invoke the exact sealed visible wrapper as a visible child `pwsh` process in the same terminal;
+  - require child exit code zero;
+  - re-read the active-run gate and require exact `READY_FOR_POSTPROCESS` plus the same immutable `run_id`;
+  - record `COLLECTOR_FINISHED` and invoke exact postrun only after those checks;
+  - any process, gate, or postrun failure reaches the countdown `FAILED` handler, while the collector-owned active gate remains available for exact recovery handling.
+- Verification:
+  - PowerShell parser passed;
+  - focused visible-pipeline tests: `9/9`;
+  - linked schedule, pointer, guard, postrun, train-target, completion-audit, and autopilot queue tests: `130/130`;
+  - exact `pit_universe_v2_forward_20260731_n03` `PreflightOnly`: `READY_NOT_DUE`, `WAITING`, `NO_RUN_OR_OUTPUT_WRITES`, sealed runtime tools `12/12`, other countdown owners `0`;
+  - exact countdown `PlanOnly`: `PLAN_VALIDATED` for plan hash `31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7`;
+  - exact postrun `PlanOnly`: `PLAN_VALIDATED`, mutation disabled, returns/PnL embargo preserved;
+  - matching visible writer, collector, or countdown processes after verification: `0`.
+- Next: retain the exact current schedule. At the approved window, the existing automation may launch only `pit_universe_v2_forward_20260731_n03`; incomplete output cannot enter postrun and still requires a new exact recovery approval.

@@ -1,0 +1,39 @@
+{
+  "schema": "trading_mvp_pit_train_horizon_continuity_v1",
+  "generated_at": "2026-07-16T19:34:00+03:00",
+  "research_only": true,
+  "current_accepted_distinct_dates": 2,
+  "train_target_distinct_dates": 20,
+  "primary": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_reseal_primary_immutable_sources_planonly_20260716_082454.json",
+    "plan_hash": "14f687e8e8491bb58c1e697d9a467d89ab360f6b683782caca43f8b33a0684a0",
+    "file_sha256": "d3fe4b1326667d61b94c186039b59d6066d2422c49551c6209ea2f69b1ea0c67",
+    "valid": true,
+    "approved": true,
+    "segments": 14,
+    "first_date": "2026-07-16",
+    "last_date": "2026-07-29"
+  },
+  "extension": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_reseal_extension_immutable_sources_planonly_20260716_082454.json",
+    "plan_hash": "bba084f7a81dd4c19abab108ab18e1b0cfe33e968d4269c9d55b1f8b14cd84e4",
+    "file_sha256": "f86187583e42d67d5988a40998f93f1e14a7f5c7aa2e6b024b09726fb6a656d2",
+    "valid": true,
+    "approved": false,
+    "segments": 4,
+    "first_date": "2026-07-30",
+    "last_date": "2026-08-02"
+  },
+  "continuity": {
+    "future_distinct_dates": 18,
+    "projected_total_if_all_quality_accepted": 20,
+    "overlap_dates": [],
+    "date_gaps": [],
+    "reaches_train_gate_exactly": true
+  },
+  "returns_read": false,
+  "pnl_read": false,
+  "collection_started": false,
+  "decision": "HORIZON_COMPLETE_EXTENSION_REMAINS_UNAPPROVED",
+  "next_allowed_action": "continue_primary_schedule_and_request_separate_extension_approval_only_after_primary_schedule_completion"
+}

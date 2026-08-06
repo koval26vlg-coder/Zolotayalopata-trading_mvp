@@ -1,0 +1,50 @@
+{
+  "schema": "trading_mvp_pit_visible_preflight_evidence_v1",
+  "status": "READY_NOT_DUE",
+  "checks_passed": true,
+  "observed_at_local": "2026-08-02T21:49:46.5615479+03:00",
+  "run_id": "pit_universe_v2_forward_20260803_n06",
+  "classification": "PREAPPROVED_SHORT_SEGMENT",
+  "schedule_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_planonly_20260729_20260728_102711.json",
+  "schedule_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+  "schedule_status": "WAITING",
+  "launch_allowed_now": false,
+  "eta_sec": 11414,
+  "not_before": "2026-08-03T01:00:00+03:00",
+  "scheduled_end": "2026-08-03T01:20:00+03:00",
+  "hard_deadline": "2026-08-03T07:00:00+03:00",
+  "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260803_n06",
+  "sealed_runtime_tools_verified": 12,
+  "sealed_runtime_tool_names": [
+    "schedule_planner",
+    "visible_wrapper",
+    "collector",
+    "public_probe_client",
+    "approval_script",
+    "status_tool",
+    "quality_certifier",
+    "segment_quality_evaluator",
+    "hypothesis_contract_validator",
+    "costs_module",
+    "feasibility_estimator",
+    "membership_drift_evaluator"
+  ],
+  "resources": {
+    "free_disk_gib": 768.406,
+    "min_free_disk_gib": 5.0,
+    "other_countdown_owners": [],
+    "global_market_writer_claim": null
+  },
+  "guard": {
+    "status": "ACTIVE",
+    "decision": "USER_REVIEW_REQUIRED_LONG_CAMPAIGN_CONTRACT",
+    "weekly_remaining_percent": 49.0,
+    "gate_status": "READY_FOR_POSTPROCESS",
+    "gate_run_id": "pit_universe_v2_forward_20260802_n05",
+    "dense_branch_checkpoint_does_not_block_pit": true
+  },
+  "side_effects": "NO_RUN_OR_OUTPUT_WRITES",
+  "collector_started": false,
+  "network_access": false,
+  "next_allowed_action": "RECHECK_AND_LAUNCH_EXACT_VISIBLE_N06_ONLY_WHEN_DUE_OR_WITHIN_5_MINUTES"
+}

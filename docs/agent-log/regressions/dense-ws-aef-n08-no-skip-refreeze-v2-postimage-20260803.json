@@ -1,0 +1,17 @@
+{
+  "schema": "trading_mvp_offline_regression_evidence_v1",
+  "evidence_id": "dense_ws_aef_n08_no_skip_refreeze_v2_postimage_20260803",
+  "executed_at_utc": "2026-08-03T17:15:19.9587372+00:00",
+  "command": "python -m unittest trading_mvp.tests.test_pit_schedule_time_amendment trading_mvp.tests.test_dense_ws_n08_no_skip_feasibility_amendment trading_mvp.tests.test_dense_ws_campaign_feasibility trading_mvp.tests.test_dense_ws_campaign_contract",
+  "tests_run": 36,
+  "failures": 0,
+  "errors": 0,
+  "status": "PASS",
+  "network_access": false,
+  "collector_launch": false,
+  "market_dataset_read": false,
+  "returns_read": false,
+  "pnl_computed": false,
+  "oos_run": false,
+  "grid_or_retune": false
+}

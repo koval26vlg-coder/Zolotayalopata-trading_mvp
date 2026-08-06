@@ -1,0 +1,18 @@
+dense-ws postrun v2 quality/materializer compatibility
+started_at_local=
+2026-08-02T22:57:22.0357651+03:00
+network_access=false
+market_rows_read=false
+postrun_execution=false
+command=python -m unittest test_dense_ws_campaign_quality test_dense_ws_causal_materializer
+
+.................
+----------------------------------------------------------------------
+Ran 17 tests in 0.610s
+
+OK
+
+finished_at_local=
+2026-08-02T22:57:22.8587817+03:00
+exit_code=
+0

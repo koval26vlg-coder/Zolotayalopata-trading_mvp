@@ -1,0 +1,137 @@
+{
+  "schema": "trading_mvp_dense_ws_market_liveness_integrity_audit_v1",
+  "status": "COMPLETE_IMMUTABLE",
+  "verdict": "FAIL_LAUNCH_BLOCKING_REFREEZE_REQUIRED",
+  "generated_at_local": "2026-08-02T21:10:00+03:00",
+  "generated_at_utc": "2026-08-02T18:10:00Z",
+  "research_only": true,
+  "campaign_binding": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+    "plan_file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260803-aef-24h-v1.json",
+    "contract_file_sha256": "e2411cc57fb8827f1d527393e5b4bdb31ca85e9f0ea60e46b3b915531c66a9cc",
+    "contract_hash": "8f2021053b83551edb9bfb57847810caccdef30fd3368349ff98aedfe1cf9485",
+    "writer_start_local": "2026-08-03T01:30:00+03:00",
+    "writer_deadline_local": "2026-08-04T01:30:00+03:00",
+    "hard_deadline_local": "2026-08-04T02:00:00+03:00",
+    "hard_output_cap_bytes": 25000000000
+  },
+  "source_bindings": {
+    "raw_writer": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_collector.py",
+      "sha256": "c9137841d56059b8ae00ace3c4875564afc4891945b20be251ebabb65534d86a"
+    },
+    "durable_collector": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_durable_collector.py",
+      "sha256": "ba1975d3a5e9b5b6519224cb64f1ffdf27d51ec8c1eab550e78b5b640abbf8cc"
+    },
+    "campaign_runner": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_runner.py",
+      "sha256": "ed804ff811c321e4d9a5a8f56593f24ca320c635088fe7b271eec0bdacb4a977"
+    },
+    "quality_tool": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_quality.py",
+      "sha256": "6796f534ab5018ad54ea3f453c7cf522fe21e8f1d70844cd552ed2cc7c8059b3"
+    },
+    "writer_tests_sha256": "3f5e5493e226100ad9833358100a1db70503dc823bd34b4adce374f4b591fc76",
+    "quality_tests_sha256": "32c5390076370e1d76a6fcc971690f376774bbfeae5018faa5c3783f603e2688"
+  },
+  "frozen_thresholds": {
+    "market_max_gap_sec": 300,
+    "unplanned_gap_sec_max_per_valid_segment": 300,
+    "result_errors_max": 0,
+    "threshold_change_proposed": false
+  },
+  "static_findings": [
+    {
+      "id": "COLLECTOR_TIMEOUT_HAS_NO_MARKET_SILENCE_DEADLINE",
+      "severity": "LAUNCH_BLOCKING",
+      "evidence": "ws_collector.py catches WebSocketTimeoutException and immediately continues until the wall-clock duration expires; it does not track the last real market-data message."
+    },
+    {
+      "id": "SILENT_SOCKET_CAN_FINISH_AS_COMPLETED",
+      "severity": "LAUNCH_BLOCKING",
+      "evidence": "When the duration expires inside the receive loop, the collector sets completed=true and stop_reason=duration_sec even if no market message was received."
+    },
+    {
+      "id": "QUALITY_OMITS_SEGMENT_BOUNDARY_GAPS",
+      "severity": "LAUNCH_BLOCKING",
+      "evidence": "The quality tool compares only max_market_gap_sec computed between observed market events. It does not compare segment start to the first event or the last event to segment finish."
+    },
+    {
+      "id": "RUNNER_HAS_NO_CONTINUOUS_POST_HOUR_LIVENESS_GATE",
+      "severity": "HIGH",
+      "evidence": "The campaign runner has early fixed gates but no continuous market-message silence owner after those gates."
+    }
+  ],
+  "local_no_network_reproduction": {
+    "method": "fake clock plus fake WebSocket that returns only timeout exceptions; temporary local JSONL fixtures; no outbound network",
+    "silent_socket": {
+      "completed": true,
+      "stop_reason": "duration_sec",
+      "attempts": 1,
+      "errors": [],
+      "raw_rows_including_controls": 6,
+      "market_messages": 0,
+      "connections_opened": 1
+    },
+    "trailing_silence_quality": {
+      "accepted": true,
+      "decision": "DATA_READY_FOR_TRAIN_ONLY_REVIEW",
+      "segment_start_epoch": 1000,
+      "last_market_event_epoch": 1004,
+      "segment_finished_epoch": 4600,
+      "tail_silence_sec": 3596,
+      "contract_market_max_gap_sec": 300,
+      "reported_max_market_gap_sec": 1,
+      "segment_reasons": []
+    },
+    "baseline_regression": {
+      "command": "python -m unittest trading_mvp.tests.test_ws_collector trading_mvp.tests.test_dense_ws_campaign_quality",
+      "tests_run": 14,
+      "failures": 0,
+      "errors": 0,
+      "interpretation": "Existing tests pass because they do not cover a silent open socket or segment-boundary silence."
+    }
+  },
+  "impact": {
+    "false_success_possible": true,
+    "continuous_market_evidence_proven": false,
+    "old_plan_safe_to_launch": false,
+    "old_launch_approval_must_be_suspended": true,
+    "pit_shadow_track_affected": false
+  },
+  "required_refreeze_scope": {
+    "market_silence_reconnect_sec": 120,
+    "quality_boundary_gap_limit_sec": 300,
+    "quality_boundary_gap_uses_existing_contract_threshold": true,
+    "raw_writer_hash_must_change": true,
+    "quality_tool_hash_must_change": true,
+    "contract_and_plan_bindings_must_be_refrozen": true,
+    "new_exact_launch_approval_required": true,
+    "hypothesis_venue_universe_signal_cost_risk_duration_cap_unchanged": true
+  },
+  "decision": {
+    "dense_campaign_branch": "FAIL_CLOSED_USER_REVIEW_REQUIRED",
+    "pit_branch": "CONTINUE_PREAPPROVED_SCHEDULE",
+    "next_allowed_action": "BUILD_HASH_BOUND_COLLECTOR_LIVENESS_REFREEZE_PROPOSAL_ONLY",
+    "collector_launch_authorized": false,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "market_dataset_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  }
+}

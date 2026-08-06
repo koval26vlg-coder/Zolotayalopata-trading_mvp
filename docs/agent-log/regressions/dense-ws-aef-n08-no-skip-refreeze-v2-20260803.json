@@ -1,0 +1,42 @@
+{
+  "schema": "trading_mvp_dense_ws_n08_no_skip_refreeze_regression_v2",
+  "status": "PASS",
+  "observed_at_utc": "2026-08-03T16:34:29.137069Z",
+  "scope": "offline deterministic tests and patch validation only",
+  "proposal_hash": "026fde587365aa6daf0d5f2f99f23c5df380c11b82f77346c033063f32d31e39",
+  "artifacts": {
+    "v2_patch": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-n08-no-skip-refreeze-implementation-preview-20260803-v2.patch",
+      "sha256": "b67ea7873591a845b5628c289fda60c552c7c8da491a24b717a7dd5b42b54124"
+    },
+    "v2_audit": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-aef-n08-no-skip-refreeze-preview-audit-20260803-v2.json",
+      "sha256": "0ad661573fecde97f9fd32f57102f48df03142fe11b701e1433f64315d64f07f"
+    },
+    "v2_proposal": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-n08-no-skip-refreeze-proposal-20260803-v2.json",
+      "sha256": "d72e464598f9a36aa6730ad67d8854215b0a5891e67cdcea38c468d26d9efba9"
+    }
+  },
+  "commands": [
+    "git apply --check --verbose dense-ws-aef-n08-no-skip-refreeze-implementation-preview-20260803-v2.patch",
+    "python -m unittest trading_mvp.tests.test_pit_schedule_time_amendment trading_mvp.tests.test_dense_ws_n08_no_skip_feasibility_amendment trading_mvp.tests.test_dense_ws_campaign_feasibility trading_mvp.tests.test_dense_ws_campaign_contract"
+  ],
+  "results": {
+    "git_apply_check": "PASS",
+    "unit_tests": {
+      "ran": 36,
+      "failures": 0,
+      "errors": 0,
+      "status": "OK"
+    }
+  },
+  "safety": {
+    "network_access": false,
+    "collector_launch": false,
+    "market_rows_read": false,
+    "returns_pnl_oos_evaluator": false,
+    "grid_or_retune": false,
+    "paper_live_private_api_real_capital_leverage_margin": false
+  }
+}

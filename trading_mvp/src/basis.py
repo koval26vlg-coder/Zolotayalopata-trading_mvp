@@ -5,7 +5,7 @@ import json
 import math
 import time
 from collections import Counter, defaultdict
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from datetime import datetime, timezone
 from itertools import product
 from pathlib import Path
@@ -100,6 +100,9 @@ class FundingBacktestConfig:
     spot_fee_bps: float = 10.0
     perp_fee_bps: float = 7.5
     slippage_bps: float = 1.0
+    spot_fee_bps_by_exchange: dict[str, float] = field(default_factory=dict)
+    perp_fee_bps_by_exchange: dict[str, float] = field(default_factory=dict)
+    slippage_bps_by_exchange: dict[str, float] = field(default_factory=dict)
     min_funding_rate: float = 0.0
     min_total_score: float = 0.0
     max_spot_spread_bps: float = 30.0
@@ -236,6 +239,8 @@ class FundingPosition:
     last_ts: float
     last_funding_rate: float
     funding_interval_sec: float
+    next_funding_ts: float | None = None
+    funding_settlements: int = 0
 
 
 @dataclass(frozen=True)
@@ -259,6 +264,7 @@ class FundingTrade:
     slippage_quote: float
     net_pnl_quote: float
     exit_reason: str
+    funding_settlements: int = 0
 
 
 def contract_index_by_base(contracts: list[FundingContract], quote: str = "USDT") -> dict[str, FundingContract]:
@@ -4505,17 +4511,30 @@ def _exit_reason(row: dict[str, Any], cfg: FundingBacktestConfig) -> str:
     return ""
 
 
+def _funding_venue_costs(cfg: FundingBacktestConfig, exchange: str) -> tuple[float, float, float]:
+    normalized = exchange.strip().lower()
+    aliases = {"gate": "gateio", "gate.io": "gateio"}
+    key = aliases.get(normalized, normalized)
+    return (
+        float(cfg.spot_fee_bps_by_exchange.get(key, cfg.spot_fee_bps)),
+        float(cfg.perp_fee_bps_by_exchange.get(key, cfg.perp_fee_bps)),
+        float(cfg.slippage_bps_by_exchange.get(key, cfg.slippage_bps)),
+    )
+
+
 def _open_position(market: str, row: dict[str, Any], cfg: FundingBacktestConfig) -> FundingPosition:
     spot_entry = float(row["spot_ask"])
     perp_entry = float(row["perp_bid"])
     spot_qty = cfg.notional_quote / spot_entry
     perp_qty = cfg.notional_quote / perp_entry
-    entry_fee = _fee(cfg.notional_quote, cfg.spot_fee_bps) + _fee(cfg.notional_quote, cfg.perp_fee_bps)
-    entry_slippage = _fee(cfg.notional_quote * 2.0, cfg.slippage_bps)
+    exchange = str(row.get("exchange") or "")
+    spot_fee_bps, perp_fee_bps, slippage_bps = _funding_venue_costs(cfg, exchange)
+    entry_fee = _fee(cfg.notional_quote, spot_fee_bps) + _fee(cfg.notional_quote, perp_fee_bps)
+    entry_slippage = _fee(cfg.notional_quote * 2.0, slippage_bps)
     interval = float(row.get("funding_interval_sec") or 28_800)
     return FundingPosition(
         market=market,
-        exchange=str(row.get("exchange")),
+        exchange=exchange,
         base=str(row.get("base")),
         spot_symbol=str(row.get("spot_symbol")),
         perp_symbol=str(row.get("perp_symbol")),
@@ -4531,21 +4550,38 @@ def _open_position(market: str, row: dict[str, Any], cfg: FundingBacktestConfig)
         last_ts=float(row.get("ts") or 0.0),
         last_funding_rate=float(row.get("funding_rate") or 0.0),
         funding_interval_sec=max(interval, 1.0),
+        next_funding_ts=(
+            float(row["next_funding_ts"])
+            if row.get("next_funding_ts") is not None and float(row["next_funding_ts"]) > float(row.get("ts") or 0.0)
+            else None
+        ),
+        funding_settlements=0,
     )
 
 
 def _accrue_funding(position: FundingPosition, row: dict[str, Any]) -> FundingPosition:
     ts = float(row.get("ts") or position.last_ts)
-    dt = max(0.0, ts - position.last_ts)
-    funding_pnl = position.funding_pnl_quote + position.notional_quote * position.last_funding_rate * (dt / position.funding_interval_sec)
-    interval = float(row.get("funding_interval_sec") or position.funding_interval_sec)
+    interval = max(float(position.funding_interval_sec or 0.0), 1.0)
+    funding_pnl = position.funding_pnl_quote
+    settlements = position.funding_settlements
+    next_funding_ts = position.next_funding_ts
+    while next_funding_ts is not None and next_funding_ts <= ts:
+        funding_pnl += position.notional_quote * position.last_funding_rate
+        settlements += 1
+        next_funding_ts += interval
+    updated_interval = max(float(row.get("funding_interval_sec") or interval), 1.0)
+    row_next_funding_ts = _row_float(row, "next_funding_ts", 0.0)
+    if next_funding_ts is None and row_next_funding_ts > ts:
+        next_funding_ts = row_next_funding_ts
     return FundingPosition(
         **{
             **position.__dict__,
             "funding_pnl_quote": funding_pnl,
             "last_ts": ts,
             "last_funding_rate": float(row.get("funding_rate") or 0.0),
-            "funding_interval_sec": max(interval, 1.0),
+            "funding_interval_sec": updated_interval,
+            "next_funding_ts": next_funding_ts,
+            "funding_settlements": settlements,
         }
     )
 
@@ -4556,8 +4592,9 @@ def _close_position(position: FundingPosition, row: dict[str, Any], cfg: Funding
     spot_pnl = (spot_exit - position.spot_entry_price) * position.spot_qty
     perp_pnl = (position.perp_entry_price - perp_exit) * position.perp_qty
     basis_pnl = spot_pnl + perp_pnl
-    exit_fees = _fee(position.notional_quote, cfg.spot_fee_bps) + _fee(position.notional_quote, cfg.perp_fee_bps)
-    exit_slippage = _fee(position.notional_quote * 2.0, cfg.slippage_bps)
+    spot_fee_bps, perp_fee_bps, slippage_bps = _funding_venue_costs(cfg, position.exchange)
+    exit_fees = _fee(position.notional_quote, spot_fee_bps) + _fee(position.notional_quote, perp_fee_bps)
+    exit_slippage = _fee(position.notional_quote * 2.0, slippage_bps)
     total_fees = position.entry_fee_quote + exit_fees
     total_slippage = position.entry_slippage_quote + exit_slippage
     total_cost = total_fees + total_slippage
@@ -4583,6 +4620,7 @@ def _close_position(position: FundingPosition, row: dict[str, Any], cfg: Funding
         slippage_quote=total_slippage,
         net_pnl_quote=net,
         exit_reason=reason,
+        funding_settlements=position.funding_settlements,
     )
 
 

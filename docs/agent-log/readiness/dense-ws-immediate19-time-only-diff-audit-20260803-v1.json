@@ -1,0 +1,32 @@
+{
+  "schema": "trading_mvp_dense_ws_time_only_diff_audit_v1",
+  "status": "PASS",
+  "generated_at_utc": "2026-08-03T15:22:24.6456323Z",
+  "baseline_policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-continuous-production-policy-v1.json",
+  "baseline_policy_sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+  "candidate_policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-immediate19-planonly-v1.json",
+  "candidate_policy_sha256": "71fb6f18f419a585851e8b8426a9928a8e728ffeeef1e109414090b967b218d4",
+  "proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-immediate19-time-only-reschedule-proposal-20260803-v1.json",
+  "proposal_file_sha256": "7d8a93a6105383563c5095cdeef269b9e68e1da9cf0a2d4a79207051b37d70a3",
+  "proposal_hash": "961e2303a7047627a9bce14963f177a3cb2173d45c4ee0bb2c04d0fa1ddc4848",
+  "allowed_change_summary": [
+    "policy metadata marks the file as PlanOnly only",
+    "continuous evidence exception moves from 2026-08-04 01:40 to 2026-08-03 19:00",
+    "writer and hard deadlines move by the same duration",
+    "PIT n07 becomes proposed suppression only when the new one-writer campaign is separately approved",
+    "long campaign sequence row binds the new campaign identifier and times"
+  ],
+  "invariant_checks": {
+    "run_windows_unchanged": true,
+    "runtime_unchanged": true,
+    "orchestration_unchanged": true,
+    "invariants_unchanged": true,
+    "dense_writer_target_unchanged": true,
+    "output_cap_unchanged": true,
+    "current_contract_universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "current_contract_universe_rows": 1388,
+    "feasibility_network_access": false,
+    "feasibility_actual_collection_allowed": false
+  },
+  "conclusion": "Only scheduling and the explicit one-writer PIT n07 conflict resolution are proposed. The candidate remains PlanOnly and cannot launch."
+}

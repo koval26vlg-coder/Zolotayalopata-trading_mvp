@@ -1,0 +1,161 @@
+{
+  "schema": "trading_mvp_goal_progress_audit_v1",
+  "generated_at_local": "2026-08-02T13:39:05.3060061+03:00",
+  "goal_status": "ACTIVE_NOT_PROVEN",
+  "purpose": "Map every material goal requirement to current authoritative evidence without reading market returns, PnL or OOS.",
+  "authoritative_context": {
+    "objective_document": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\2026-08-01-trading-mvp-accelerated-evidence-factory-v1.md",
+      "sha256": "4db3c7eb770a8ebb98d9a370c42945e5c6adb08c1155583d48d9911141017b0f"
+    },
+    "autopilot_policy": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+      "sha256": "f79f0e029fc4861249a11929545186127223a743411cc9fc8c229511d60da3cc"
+    },
+    "guard_observed_at_utc": "2026-08-02T10:34:31.246944Z",
+    "guard_status": "ACTIVE",
+    "guard_decision": "WAIT_APPROVED_LONG_CAMPAIGN_WINDOW",
+    "weekly_remaining_percent": 67.0
+  },
+  "requirements": [
+    {
+      "id": "R01_NON_BINANCE_MEXC_GATE_EDGE",
+      "requirement": "Find, prove or honestly reject one new non-Binance MEXC/Gate edge after costs.",
+      "status": "IN_PROGRESS_NOT_PROVEN",
+      "evidence": "The materially distinct dense_ws_microstructure_regime_filter_v1 candidate is frozen and approved for collection, but no accepted campaign dataset or edge verdict exists yet."
+    },
+    {
+      "id": "R02_PRIMARY_BASIS_V1",
+      "requirement": "Evaluate cross_venue_perp_basis_convergence_history_v1 without grid or retune.",
+      "status": "TERMINAL_INSUFFICIENT_DATA_PRE_OOS",
+      "evidence": "The immutable v1 report closed the branch because only about 34.722 days were publicly available versus the frozen 220-day requirement; edge_evaluated=false and pnl_read=false.",
+      "same_contract_repeat_allowed": false
+    },
+    {
+      "id": "R03_BASIS_V2_FEASIBILITY",
+      "requirement": "Use the bounded v2 fallback only if it passes its frozen executable-universe gate.",
+      "status": "TERMINAL_INSUFFICIENT_EXECUTABLE_UNIVERSE_PRE_OOS",
+      "evidence": "Five assets passed the frozen liquidity gate versus a minimum of eight; deterministic repeat matched and OOS/returns/PnL were not read.",
+      "same_contract_repeat_allowed": false
+    },
+    {
+      "id": "R04_DENSE_DATA_QUALITY",
+      "requirement": "Collect one uninterrupted 24-hour dense public MEXC/Gate dataset and pass schema, gap, venue and segment-integrity gates.",
+      "status": "APPROVED_WAITING_WINDOW",
+      "evidence": "The exact campaign is approved for 2026-08-03 01:30 through 2026-08-04 01:30 +03:00 with a 25 GB cap; no campaign output exists yet."
+    },
+    {
+      "id": "R05_TRAIN_FEASIBILITY",
+      "requirement": "Pass the frozen train and minimum-sample gates.",
+      "status": "PENDING_ACCEPTED_MATERIALIZATION",
+      "evidence": "The frozen contract requires at least 60 independent events, 40 train events, eight UTC hours, eight bases and ten events per direction."
+    },
+    {
+      "id": "R06_CHRONOLOGICAL_OOS",
+      "requirement": "Run chronological OOS only after train and immutable materialization gates pass.",
+      "status": "NOT_AUTHORIZED_NOT_RUN",
+      "evidence": "evaluation_authorized=false, materialization_output_bound=false and returns_pnl_oos_allowed=false."
+    },
+    {
+      "id": "R07_FIVE_FOLD_WALK_FORWARD",
+      "requirement": "Pass five-fold chronological walk-forward without refit or retune on OOS.",
+      "status": "CONTRACT_FROZEN_NOT_RUN",
+      "evidence": "The frozen contract requires five folds and at least four positive folds; no evaluator is authorized."
+    },
+    {
+      "id": "R08_STRESS_ECONOMICS_EXECUTION",
+      "requirement": "Pass normal/stress economics, drawdown, liquidity, paired-fill and execution-capacity gates after costs.",
+      "status": "CONTRACT_FROZEN_NOT_RUN",
+      "evidence": "The no-grid contract freezes positive normal expectancy/PnL, profit factor >=1.2, non-negative stress metrics, paired-fill gates and concentration limits."
+    },
+    {
+      "id": "R09_PIT_SHADOW_TRACK",
+      "requirement": "Continue separate 20-minute PIT_UNIVERSE_V2_FORWARD train accrual to 20 accepted dates.",
+      "status": "IN_PROGRESS_6_OF_20",
+      "evidence": "The next preapproved segment is pit_universe_v2_forward_20260803_n06 from 01:00 to 01:20 +03:00 under plan hash 31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7."
+    },
+    {
+      "id": "R10_RUNTIME_BOUND",
+      "requirement": "Keep processing bounded and visible while preserving the evidence contract.",
+      "status": "USER_REVIEW_REQUIRED_POSTRUN_ONLY",
+      "evidence": "Measured postrun core time is about 2559.987 seconds versus the current shared 1800-second cap. Proposal 0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf40662 requests two sequential visible stages of at most 1800 seconds each; no approval receipt exists."
+    },
+    {
+      "id": "R11_LIVE_SAFETY",
+      "requirement": "Keep live orders, private API keys, real capital, leverage and margin disabled before separate review.",
+      "status": "ENFORCED",
+      "evidence": "The policy and frozen signal/evaluator PlanOnly prohibit all listed actions; no such action was run."
+    },
+    {
+      "id": "R12_TERMINAL_EDGE_DECISION",
+      "requirement": "Produce an evidence-backed terminal ACCEPT or REJECT for one executable strategy.",
+      "status": "NOT_ACHIEVED",
+      "evidence": "Historical basis branches stopped before OOS, while the dense branch has not collected or evaluated its evidence."
+    }
+  ],
+  "source_evidence": {
+    "basis_terminal_currentness_audit": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\cross-venue-basis-terminal-currentness-audit-20260802T1323+0300.json",
+      "sha256": "8640b20c5a5e9257998646c66afa1b5f574c3295c56a117a9d0f6fc591be83d2"
+    },
+    "pit_pointer": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\trading-mvp-autopilot-schedule-pointer.json",
+      "sha256": "75e8e337dd8ffa00da4254939b7a0e0ca7305c6da0386a3eca9c60924db792ba"
+    },
+    "dense_campaign_plan": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+      "file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+      "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b"
+    },
+    "dense_launch_approval": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-aef-24h-launch-approval.json",
+      "sha256": "5c18fbcbc3646aa5456c917dc0084c5ef141615dc00a8bd952378042b31b8b2e"
+    },
+    "frozen_signal_evaluator_contract": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\frozen\\dense-ws-signal-evaluator-contract-20260802-v1.json",
+      "file_sha256": "a9ef768d6f61297d01d8fe37a9d4e00b27cf5b2d52f122ab8ca9a0c3fae5a81d",
+      "contract_hash": "b70975468fbd67acf550dea39aac21c116fb3a86a57ed56d400f40f0fa287954"
+    },
+    "postrun_runtime_calibration": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-aef-24h-postrun-runtime-calibration-20260802T1307+0300.json",
+      "sha256": "0807cbe05706b6aa51d644d92e3d69ae4153641b0e96497d68cc01d0342fd30e"
+    },
+    "postrun_runtime_refreeze_proposal": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-postrun-runtime-refreeze-proposal-20260802-v1.json",
+      "file_sha256": "eef9fdee67a9dbcd23c9c66c62869ef2a041b43525306cb70c0f94fbaf88e380",
+      "proposal_hash": "0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf40662",
+      "approval_receipt_present": false
+    }
+  },
+  "next_automatic_actions": [
+    "Launch exact preapproved PIT n06 visibly when due.",
+    "Finalize PIT and release the global writer claim.",
+    "Launch the exact approved 24-hour dense campaign visibly when due.",
+    "Do not run dense postrun under the known-insufficient shared 1800-second deadline."
+  ],
+  "next_user_checkpoint": "Approve only the hash-bound postrun runtime refreeze if uninterrupted automatic quality and causal materialization are desired.",
+  "completion_verdict": {
+    "status": "GOAL_NOT_COMPLETE_EVIDENCE_COLLECTION_PENDING",
+    "edge_proven": false,
+    "edge_rejected": false,
+    "historical_accept": false,
+    "paper_forward_ready": false,
+    "live_review_eligible": false
+  },
+  "safety": {
+    "network_access": false,
+    "new_writer_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "audit_hash_method": "sha256_canonical_json_excluding_audit_hash",
+  "audit_hash": "ebf7e6f5528b7d7a95b661d6bb67ca3d947804ef1a813d832f5ab6ed8cfec658"
+}

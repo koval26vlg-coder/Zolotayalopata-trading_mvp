@@ -1,0 +1,30 @@
+{
+  "schema": "trading_mvp_dense_ws_offline_regression_receipt_v1",
+  "recorded_at_utc": "2026-08-03T10:35:54.3964783Z",
+  "status": "PASS_REVIEW_ONLY_NOT_ACTIVATED",
+  "scope": "approved_v2_offline_tests_only",
+  "proposal_hash": "3f01c0724ca488bb6149d8b4690b225051a2f17d3664ca97a8bf93bcd6482c8e",
+  "source_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+  "source_sha256": "80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb",
+  "active_policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-continuous-production-policy-v1.json",
+  "active_policy_sha256": "aa6679f11725ef612c0d65713aa0c5d366e59ca36a49d903046d0d06164c00cb",
+  "candidate_policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-reschedule-20260804-planonly-v2.json",
+  "candidate_policy_sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+  "tests": [
+    "test_ws_normalizer",
+    "test_ws_collector",
+    "test_ws_durable_collector",
+    "test_dense_ws_campaign_runner_liveness",
+    "test_dense_ws_campaign_quality",
+    "test_dense_ws_campaign_contract"
+  ],
+  "tests_run": 73,
+  "tests_passed": 73,
+  "runtime_sec": 8.54,
+  "network_access": false,
+  "collector_launch": false,
+  "source_or_contract_mutated_by_test": false,
+  "v4_implementation_activated": false,
+  "v4_user_approval_required": true,
+  "note": "This receipt records only an offline regression. It does not promote the candidate policy, create a contract or PlanOnly, or authorize a campaign launch."
+}

@@ -1,0 +1,77 @@
+{
+  "schema": "trading_mvp_dense_ws_host_continuity_hardening_audit_v1",
+  "generated_at_local": "2026-08-02T20:33:00+03:00",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+  "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+  "finding": {
+    "status": "CLOSED",
+    "before": "The host preflight checked AC power, sleep, hibernate, disk and clock but did not inspect the hidden lid-close action or strong Windows reboot-pending markers.",
+    "risk": "A closed lid configured to sleep on AC, or a CBS/Windows Update hard reboot requirement, could interrupt the approved 24-hour writer.",
+    "resolution": "The read-only checker now fails closed on AC lid interruption, unavailable reboot status, CBS reboot pending and Windows Update reboot required. DC-only lid/sleep and PendingFileRenameOperations remain explicit warnings."
+  },
+  "bindings": {
+    "checker_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_dense_ws_host_readiness.ps1",
+    "checker_sha256": "7936517167650aed547109a30f73778a679eba40de4b65d607916a50b34b192e",
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_host_readiness.py",
+    "test_sha256": "8bce51237829ce61908e11bc822526230ca33eebd14ceb5fbafb292c15c6ce55",
+    "automation_path": "C:\\Users\\koval\\.codex\\automations\\trading-continuous-production\\automation.toml",
+    "automation_sha256": "63d797ab8b28cc63be0a9cd6ca98320c93d5a30accae9449ba3dda5eecdccc14",
+    "automation_status": "ACTIVE",
+    "automation_rrule": "FREQ=DAILY;BYHOUR=0,1;BYMINUTE=0,25,30,35,55"
+  },
+  "current_host_preflight": {
+    "status": "READY",
+    "blockers": [],
+    "ac_online": true,
+    "battery_percent": 100,
+    "standby_ac_sec": 0,
+    "hibernate_ac_sec": 0,
+    "lid_action_ac_index": 0,
+    "lid_action_dc_index": 1,
+    "hard_reboot_pending": false,
+    "cbs_reboot_pending": false,
+    "windows_update_reboot_required": false,
+    "pending_file_rename_operations_count": 214,
+    "disk_available_free_bytes": 825070010368,
+    "disk_required_free_bytes": 50000000000,
+    "clock_phase_offset_sec": -0.000207,
+    "warnings": [
+      "battery_sleep_enabled",
+      "battery_lid_close_can_interrupt_run",
+      "pending_file_rename_operations_present",
+      "disk_idle_timeout_enabled_but_continuous_writer_is_expected",
+      "last_good_time_sync_older_than_24h"
+    ]
+  },
+  "warning_interpretation": {
+    "battery_sleep_and_lid": "Non-blocking while AC remains connected. The exact preflight blocks launch if AC is offline.",
+    "pending_file_rename_operations": "A weak and often stale marker; it is not treated as a hard reboot requirement unless CBS or Windows Update strong markers are present.",
+    "disk_idle": "Non-blocking because the approved campaign continuously writes to the output drive.",
+    "time_sync_age": "Non-blocking because the observed absolute phase offset is far below the 0.5-second blocker threshold."
+  },
+  "verification": {
+    "tdd_red_confirmed": true,
+    "tests_passed": 3,
+    "tests_failed": 0,
+    "powershell_parse_errors": 0,
+    "exact_live_preflight_passed": true,
+    "automation_new_hash_count": 1,
+    "automation_old_hash_count": 0
+  },
+  "safety": {
+    "network_request_performed": false,
+    "system_setting_changed": false,
+    "writer_started": false,
+    "collector_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live_started": false,
+    "private_api_or_real_capital_used": false,
+    "leverage_or_margin_used": false
+  },
+  "decision": "HOST_READY_KEEP_AC_CONNECTED",
+  "next_action": "Repeat the exact read-only host preflight immediately before actual dense launch and proceed only with status READY and no blockers."
+}

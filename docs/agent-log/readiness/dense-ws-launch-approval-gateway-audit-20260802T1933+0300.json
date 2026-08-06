@@ -1,0 +1,92 @@
+{
+  "schema": "trading_mvp_dense_ws_launch_approval_gateway_audit_v1",
+  "observed_at_local": "2026-08-02T19:33:31.3227576+03:00",
+  "decision": "EXACT_APPROVAL_GATEWAY_ACTIVE_FROZEN_CAMPAIGN_UNCHANGED",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+  "finding": {
+    "severity": "HIGH",
+    "description": "The PlanOnly-bound launcher required ConfirmedLongCampaign but did not itself verify the exact approval receipt or receipt hash.",
+    "direct_launcher_edit_allowed": false,
+    "reason": "The launcher SHA256 is already bound inside the immutable PlanOnly. Editing it would invalidate the approved plan."
+  },
+  "immutable_bindings": {
+    "policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "policy_sha256": "13c2b98d76a6486eee43b60cf37c07fa2aa2dfbad3479f6c6c5285aff57ba842",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "plan_file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+    "approval_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-aef-24h-launch-approval.json",
+    "approval_receipt_sha256": "5c18fbcbc3646aa5456c917dc0084c5ef141615dc00a8bd952378042b31b8b2e"
+  },
+  "remediation": {
+    "type": "OUTER_FAIL_CLOSED_APPROVAL_GATEWAY",
+    "gateway_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_dense_ws_campaign_visible.ps1",
+    "gateway_sha256": "231a08cb55b47499f58906b1f164a760da1e065d60eb03ed0a823f6d8e50dcd0",
+    "frozen_launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_dense_ws_campaign_visible.ps1",
+    "frozen_launcher_sha256": "6f35fbfe46c12b2cfb566a809de21ba84847ec42b2a6b5a33f3dce143b288321",
+    "direct_heartbeat_launcher_call_prohibited": true,
+    "gateway_adds_confirmation_only_after_exact_validation": true,
+    "validated_fields": [
+      "fresh guard status/quota/policy hash",
+      "campaign id and PlanOnly path/hash/file SHA256",
+      "approval receipt path/file SHA256/schema/status/type",
+      "approval timestamp/thread/campaign/contract bindings",
+      "writer window/runtime/hard deadline/25GB cap",
+      "single-use true and STOPPED_INCOMPLETE recovery false",
+      "allowed and forbidden action lists",
+      "PlanOnly-bound frozen launcher path/SHA256"
+    ]
+  },
+  "verification": {
+    "powershell_parse_errors": 0,
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\test_dense_ws_launch_approval_gateway.ps1",
+    "test_sha256": "a1e382852812d5d8c5b81994bd3aeb2e7783cf7333b7105fc94d318c800fc315",
+    "tests_passed": 9,
+    "tests_failed": 0,
+    "negative_cases_rejected": [
+      "receipt status change",
+      "receipt plan hash change",
+      "STOPPED_INCOMPLETE recovery permission change",
+      "runtime change",
+      "guard approval removal",
+      "policy receipt hash change",
+      "PlanOnly launcher hash change",
+      "current launcher file hash change"
+    ],
+    "integration_preflight_status": "EXACT_APPROVAL_VALIDATED_PREFLIGHT_ONLY",
+    "underlying_preflight_status": "STRUCTURALLY_VALID_NOT_DUE",
+    "authorization_verified": true,
+    "no_run_or_output_writes": true
+  },
+  "frozen_code_unchanged": {
+    "launcher_sha256_matches_plan": true,
+    "runner_sha256_matches_plan": true,
+    "quality_sha256_matches_plan": true,
+    "materializer_sha256_matches_plan": true,
+    "collector_plan_or_duration_changed": false,
+    "venue_universe_signal_cost_risk_changed": false,
+    "quality_or_materializer_code_changed": false
+  },
+  "automation": {
+    "id": "trading-continuous-production",
+    "status": "ACTIVE",
+    "rrule": "FREQ=DAILY;BYHOUR=0,1;BYMINUTE=0,25,30,35,55",
+    "toml_sha256": "53e0134e7da9b5f639156aa7376c2facdcbe072be2cb01ddc6bab0a554d9801a",
+    "gateway_sha256_bound_in_prompt": true,
+    "direct_confirmed_launcher_call_prohibited_in_prompt": true
+  },
+  "actions_performed": {
+    "market_rows_read": false,
+    "network_collector_started": false,
+    "postrun_started": false,
+    "evaluator_started": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live_started": false,
+    "private_api_used": false,
+    "real_capital_used": false,
+    "leverage_or_margin_used": false
+  }
+}

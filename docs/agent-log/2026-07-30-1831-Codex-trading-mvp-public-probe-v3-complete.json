@@ -1,0 +1,75 @@
+{
+  "schema": "trading_mvp_public_readonly_probe_checkpoint_v1",
+  "project": "trading_mvp",
+  "agent": "Codex",
+  "observed_at": "2026-07-30T18:31:31+03:00",
+  "event": "PUBLIC_READONLY_PROBE_V3_COMPLETED_AND_POSTPROCESSED",
+  "authorization": {
+    "scope": "one visible bounded public read-only probe",
+    "mexc_maximum_quote_age_ms": 6000,
+    "gateio_maximum_quote_age_ms": 5000,
+    "other_standing_limits_changed": false,
+    "authorization_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\trading-mvp-public-readonly-v3-critical-authorization.json",
+    "authorization_file_sha256": "42de481961d28a538d8e5594434a5b7f632305a1b825875da2cb700d81489da5",
+    "authorization_hash_sha256": "111d8c4e226bbd009f67f8b76b5871665063ddbe1c77510138928f6692856b21"
+  },
+  "contract": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-contract-v3.json",
+    "file_sha256": "e14bf1c7243ef697ab4b011315e191e044cf26e3c43e5ae887594a74d700b557",
+    "contract_hash_sha256": "9d692fa0c014b6c657947b68cfba48a2ccc9ee597ab641411323c6ddff3af716"
+  },
+  "plan": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-readonly-probe-plan-v3.json",
+    "file_sha256": "6459e82c656b8bba03da2988f43e3cc9bbcaf9b5a3918a5304561b46dfeec151",
+    "plan_hash_sha256": "c48c251ada02ee79f3d94633c70cbe23056e4989662e8f144d7d4fb0a87709d5"
+  },
+  "run": {
+    "run_id": "paper_public_readonly_probe_v3_20260730_152740",
+    "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\public-readonly-probe-runs\\paper_public_readonly_probe_v3_20260730_152740\\manifest.json",
+    "manifest_file_sha256": "7bfc8e8c2aeacec74c255a4b937fa188c3adb726d18208b706747ee9e6d4fdf0",
+    "runtime_sec": 117.324415900046,
+    "snapshots_expected": 48,
+    "snapshots_written": 48,
+    "planned_endpoint_reads": 192,
+    "network_requests": 192,
+    "retry_count": 0,
+    "error_count": 0,
+    "partial_output": false,
+    "status": "READY_FOR_POSTPROCESS"
+  },
+  "postprocess": {
+    "decision": "PUBLIC_READONLY_PROBE_POSTRUN_COMPLETE",
+    "evidence_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-readonly-probe-evidence-v3.json",
+    "evidence_file_sha256": "587b4876e72cfc949a27ccfd022f66531f79d1a6e945eaf682b7137a857c7fea",
+    "evidence_deterministic_result_hash": "ef3a43225a5c2a37c533f347d4a298cd1cfd298951e3e971b484002d61da2df7",
+    "verdict": "PUBLIC_READONLY_PROBE_EVIDENCE_ACCEPTED",
+    "next_allowed_action": "paper_product_readiness_audit_v8"
+  },
+  "verification": {
+    "targeted_tests_passed": 83,
+    "python_compile_passed": true,
+    "powershell_ast_passed": true,
+    "v2_contract_hash_unchanged": "7ab51ec0a694e9367c01214abbf73e229fb98f0e07bda9ab65439901d594bbd2",
+    "v2_plan_hash_unchanged": "f2135b1059be438da5e1f9d2d48ce871e7012ad738a288716b521ed952dde9b6"
+  },
+  "safety": {
+    "public_get_only": true,
+    "returns_or_pnl_read": false,
+    "signals_read": false,
+    "oms_mutations": 0,
+    "private_api_keys": false,
+    "live_orders": false,
+    "leverage_or_margin": false,
+    "grid_or_retune": false,
+    "hypothesis_changed": false
+  },
+  "guard_checkpoint": {
+    "status": "CRITICAL_STOP",
+    "decision": "USER_REVIEW_REQUIRED",
+    "cause": "latest readiness audit is still v7 and points to the superseded v1 probe checkpoint",
+    "active_gate_next_goal_decision": "RUN_PAPER_PRODUCT_READINESS_AUDIT_V8",
+    "implementation_gap": "paper_product_readiness_audit_v8 is referenced by exact postrun but is not implemented or registered",
+    "new_permission_required": false,
+    "branch_action": "FAIL_CLOSED_NO_NEW_DEPENDENT_WORK"
+  }
+}

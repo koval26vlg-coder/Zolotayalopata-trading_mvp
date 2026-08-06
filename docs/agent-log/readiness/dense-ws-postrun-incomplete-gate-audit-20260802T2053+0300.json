@@ -1,0 +1,75 @@
+{
+  "schema": "trading_mvp_dense_ws_postrun_incomplete_gate_audit_v1",
+  "generated_at_local": "2026-08-02T20:53:12.7462600+03:00",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+  "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+  "runtime_contract": {
+    "proposal_hash": "0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf40662",
+    "status": "APPROVED",
+    "postrun_not_before_local": "2026-08-04T01:30:00+03:00",
+    "postrun_hard_deadline_local": "2026-08-04T02:30:00+03:00",
+    "quality_max_runtime_sec": 1800,
+    "materialization_max_runtime_sec": 1800,
+    "total_max_runtime_sec": 3600,
+    "stages_are_sequential": true,
+    "one_visible_terminal": true,
+    "stopped_incomplete_recovery_requires_new_exact_approval": true
+  },
+  "frozen_code": {
+    "quality_tool_sha256": "6796f534ab5018ad54ea3f453c7cf522fe21e8f1d70844cd552ed2cc7c8059b3",
+    "materializer_tool_sha256": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c",
+    "orchestrator_sha256": "4781219d0c06af686508cb0c8a76424be22825e657a1b80f43c1799df43398ed",
+    "autopilot_guard_sha256": "4cb2424b01617e1f32aaf1fa020f8e87f8d9102844bdafdeab3a298a93db4aa6",
+    "quality_or_materializer_changed": false,
+    "orchestrator_changed": false,
+    "policy_or_plan_changed_by_audit": false
+  },
+  "verification": {
+    "quality_gate": {
+      "result": "PASS",
+      "behavior": "A campaign with completed=false, final=false, or a non-READY phase returns accepted=false and decision=STOPPED_INCOMPLETE before raw segment evaluation.",
+      "dynamic_test": "DenseWsCampaignQualityTests.test_incomplete_campaign_stops_before_reading_raw_output",
+      "test_file_sha256": "32c5390076370e1d76a6fcc971690f376774bbfeae5018faa5c3783f603e2688"
+    },
+    "materialization_gate": {
+      "result": "PASS",
+      "behavior": "Materialization requires quality.accepted=true and DATA_READY_FOR_TRAIN_ONLY_REVIEW before raw reads or output creation.",
+      "dynamic_test": "DenseWsCausalMaterializerTests.test_incomplete_quality_stops_before_reading_raw_or_creating_outputs",
+      "test_file_sha256": "a17239f84849a54efee5e7fca8061af28b21eab4140fb1e31b53b8ac35456652"
+    },
+    "guard_recovery_gate": {
+      "result": "PASS",
+      "behavior": "A dense WS postrun STOPPED_INCOMPLETE disposition becomes USER_REVIEW_REQUIRED_DENSE_WS_POSTRUN_RECOVERY and does not stop unrelated safe branches.",
+      "dynamic_test": "AutopilotGuardTests.test_dense_ws_postrun_failure_stops_only_dense_branch",
+      "test_file_sha256": "6b240dad07e5d0d67341757e60a77c4a17433815f95ff4a03acc21feb9eafeb7"
+    },
+    "orchestrator_static_contract": {
+      "result": "PASS",
+      "test_file_sha256": "e48072e3f2577aac45c0c45fa75f687d370177ebfc95d7f9bddb48eafd9e9a18"
+    },
+    "full_related_suite_result": "PASS",
+    "full_related_suite_tests": 62,
+    "network_request_performed": false,
+    "writer_started": false,
+    "campaign_data_read": false,
+    "returns_pnl_or_oos_read": false,
+    "grid_or_retune": false,
+    "evaluator_started": false,
+    "paper_live_or_private_api": false
+  },
+  "residual": {
+    "status_alias_present": true,
+    "scenario": "If campaign completeness changes after the authoritative preflight but before quality validation, quality can return STOPPED_INCOMPLETE while the frozen orchestrator records owner status FAILED rather than the more specific STOPPED_INCOMPLETE.",
+    "materialization_can_start_in_scenario": false,
+    "guard_effect": "The guard maps any unexpected final owner status, including FAILED, to STOPPED_INCOMPLETE and requires exact recovery approval.",
+    "normal_preflight_makes_scenario_unreachable_without_race_or_tamper": true,
+    "safety_contract_violated": false,
+    "status_clarity_only": true
+  },
+  "verdict": {
+    "status": "PASS_SAFETY_WITH_STATUS_ALIAS_RESIDUAL",
+    "launch_blocking": false,
+    "runtime_refreeze_required": false,
+    "reason": "Incomplete campaign evidence cannot reach raw-data materialization or evaluator work. The remaining FAILED versus STOPPED_INCOMPLETE label difference is fail-closed, maps to the required recovery checkpoint, and does not weaken the approved contract."
+  }
+}

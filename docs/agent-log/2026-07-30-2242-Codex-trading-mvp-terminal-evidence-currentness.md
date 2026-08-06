@@ -1,0 +1,26 @@
+# One-Week sprint terminal evidence currentness
+
+- Observed at: `2026-07-30T22:42:56+03:00`
+- Scope: bounded read-only provenance audit. No returns, PnL, OOS rows, replay, evaluator, grid, retune, collector, probe, paper, or live action was run.
+- Primary frozen branch:
+  - `cross_venue_perp_basis_convergence_history_v1` remains terminal `INSUFFICIENT_DATA`;
+  - the frozen 220-day Gate 5m history contract could not be satisfied;
+  - train feasibility, chronological OOS, walk-forward, stress, economics, and capacity were therefore not opened;
+  - there is no allowed command to repeat or weaken this branch.
+- Existing completion audit:
+  - schema: `trading_mvp_one_week_sprint_completion_audit_v1`;
+  - status: `HISTORICAL_SPRINT_TERMINAL_PIT_TRAIN_ACCRUAL`;
+  - `goal_complete=false`, `historical_edge_proven=false`;
+  - `returns_read=false`, `pnl_read=false`, `oos_run=false`;
+  - repeated audit has the same deterministic-state and input-Merkle hashes.
+- Currentness verification:
+  - terminal report SHA matches;
+  - PIT quality-ledger SHA matches;
+  - dynamic schedule-pointer SHA matches;
+  - schedule plan file SHA and plan hash match;
+  - approval-record SHA matches;
+  - accepted PIT dates remain `4/20`.
+- Decision:
+  - no additional bounded evaluator, replay, cache scan, or research task has positive information value under the current frozen contracts;
+  - the only open proof gate is the approved PIT calendar accrual;
+  - keep the goal `ACTIVE`, do not mark it blocked, and give `pit_universe_v2_forward_20260731_n03` priority when it becomes due.

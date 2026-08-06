@@ -1,0 +1,151 @@
+{
+  "schema": "trading_mvp_dense_ws_collector_liveness_runtime_dependencies_v2",
+  "mode": "ImmutableOfflineRefreezeEvidence",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+  "generated_at_local": "2026-08-02T22:40:30.7527771+03:00",
+  "generated_at_utc": "2026-08-02T19:40:30.7545856Z",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-collector-liveness-refreeze-proposal-20260802-v2.json",
+    "sha256": "c09b6cc4203b674e02c7b1ceb2c6271f362b78dfcc2a8daa6c56036f8a3751d8",
+    "bytes": 16227
+  },
+  "proposal_hash": "a3cfdf5e71da1d9485ceb0fe725aab7b35037e9eee4419a3dbb06e97aa7dbd61",
+  "approval_receipt": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-collector-liveness-refreeze-v2-approval.json",
+    "sha256": "29d1518cc9fd1a44e05f8916ad01f55ab420d07830b52738928f7f3ef3bbf283",
+    "bytes": 2538
+  },
+  "source_campaign": {
+    "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260803-aef-24h-v1.json",
+    "contract_file_sha256": "e2411cc57fb8827f1d527393e5b4bdb31ca85e9f0ea60e46b3b915531c66a9cc",
+    "contract_hash": "8f2021053b83551edb9bfb57847810caccdef30fd3368349ff98aedfe1cf9485",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+    "plan_file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "disposition": "SUPERSEDED_FAIL_CLOSED_NO_LAUNCH"
+  },
+  "frozen_invariants": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "data_type": "DENSE_WS_SEGMENTED",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "universe_rows": 1388,
+    "writer_start_local": "2026-08-03T01:30:00+03:00",
+    "writer_deadline_local": "2026-08-04T01:30:00+03:00",
+    "hard_deadline_local": "2026-08-04T02:00:00+03:00",
+    "target_writer_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000,
+    "signal_cost_risk_changed": false,
+    "materializer_changed": false,
+    "evaluator_changed": false
+  },
+  "implementation_bindings": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_collector.py",
+      "sha256": "e8d79ef4685bd743a7e436847944330f27d6be590cc524c4703697328a563ec0",
+      "bytes": 25340,
+      "baseline_sha256": "c9137841d56059b8ae00ace3c4875564afc4891945b20be251ebabb65534d86a"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_durable_collector.py",
+      "sha256": "05c6343590c0f1b30f22810fddc70c848844a6338606de8837a4cd42f35f8cca",
+      "bytes": 29544,
+      "baseline_sha256": "ba1975d3a5e9b5b6519224cb64f1ffdf27d51ec8c1eab550e78b5b640abbf8cc"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_normalizer.py",
+      "sha256": "c39c14e6f58e605bcd35e22ce2b27cedc0b9079bd2025f8a1ab876d385a715ad",
+      "bytes": 25636,
+      "baseline_sha256": "0b6308cefcecf7001a0c293346d4d506aaf08ccd4717051dd89206a4f6a11d24"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_runner.py",
+      "sha256": "b3c4183df3d0aaeabdcc8849cf67110be01c62eaf700349f88c58af6ec2425c3",
+      "bytes": 85924,
+      "baseline_sha256": "ed804ff811c321e4d9a5a8f56593f24ca320c635088fe7b271eec0bdacb4a977"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_quality.py",
+      "sha256": "966aa25cc5198995adf7bd8cd46499b87a3e771505568d5f41072b493e2f7ef0",
+      "bytes": 55508,
+      "baseline_sha256": "6796f534ab5018ad54ea3f453c7cf522fe21e8f1d70844cd552ed2cc7c8059b3"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+      "sha256": "5b405ac2e857065f2147e849f79439622b77aa1e94560088c67e403008fde117",
+      "bytes": 96871,
+      "baseline_sha256": "22b2952e9af8096228cce6bc66f56aee9bc7a007fd256359bd7c4fc3d568c0fc"
+    }
+  ],
+  "test_bindings": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_ws_collector.py",
+      "sha256": "6cf331b6494c653e965b80c1e5b179f4c45c98a3c910afe75342d95ab1e1e873",
+      "bytes": 12944
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_ws_durable_collector.py",
+      "sha256": "a5ebfc879ae39255ef189a57520e256c349320d5d22c408c306a1cd3dc4a5a34",
+      "bytes": 15509
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_ws_normalizer.py",
+      "sha256": "e211b8dd729d8a71beadde1bc1bb6e5ef6803038a937df68b5c93ec3eafde972",
+      "bytes": 9306
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_campaign_quality.py",
+      "sha256": "8d1c5eb3eda36d00330c614dac1f2ea17f473da5ad6592e9086f9946275ef6d5",
+      "bytes": 22645
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_campaign_contract.py",
+      "sha256": "2e5319799d1393d9d9c3b76fa15bcf364b319de5d175caf7c414bca891af0e88",
+      "bytes": 75353
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_campaign_runner_liveness.py",
+      "sha256": "cdbde0a90b171f0a078baeac95be1b5d522105615d5bb073d5838c5c7fa70446",
+      "bytes": 3532
+    }
+  ],
+  "regression": {
+    "evidence": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\regressions\\dense-ws-collector-liveness-refreeze-v2-20260802T2239+0300.txt",
+      "sha256": "78ef9f15f0f5a3bea82ac17c26d698e6af8000cb6a0b2e32153d3d0dc4ae4985",
+      "bytes": 877
+    },
+    "tests_run": 73,
+    "failures": 0,
+    "errors": 0,
+    "status": "PASS",
+    "network_access": false,
+    "collector_launch": false
+  },
+  "liveness_contract": {
+    "market_silence_reconnect_sec": 120,
+    "elapsed_clock": "time.monotonic",
+    "shared_classifier": "ws_normalizer.classify_ws_row",
+    "control_traffic_refreshes_market_liveness": false,
+    "foreign_or_malformed_rows_refresh_market_liveness": false,
+    "duration_completed_separate_from_quality_eligible": true,
+    "dirty_duration_complete_segment_is_diagnostic_only": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "collector_launch_authorized": false,
+  "network_access": false,
+  "market_dataset_read": false,
+  "returns_read": false,
+  "pnl_computed": false,
+  "oos_run": false,
+  "grid_or_retune": false,
+  "paper_or_live": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "next_allowed_action": "BUILD_NEW_IMMUTABLE_CONTRACT_AND_PLANONLY_NO_LAUNCH"
+}

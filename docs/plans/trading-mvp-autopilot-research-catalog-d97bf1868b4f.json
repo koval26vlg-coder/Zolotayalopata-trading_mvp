@@ -1,0 +1,87 @@
+{
+  "schema": "trading_mvp_autopilot_research_catalog_v1",
+  "catalog_id": "trading_mvp_autopilot_research_catalog_d97bf1868b4f",
+  "project": "trading_mvp",
+  "mode": "bounded_offline_public_data_plane_readiness",
+  "parent_audit": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v5.json",
+    "file_sha256": "d97bf1868b4f279d45cc639dcd1cc7fd909b7d515755a577f67ad0f85ad3316a",
+    "deterministic_result_hash": "8a4bf89c71d40b57e63f2e9f70fdb99bff600cb60a87354bb5f00c018432a621"
+  },
+  "constraints": {
+    "max_runtime_sec_per_task": 1800,
+    "one_task_at_a_time": true,
+    "network_access": false,
+    "market_data_writer": false,
+    "returns_or_pnl_read": false,
+    "new_hypothesis": false,
+    "grid_or_retune": false,
+    "paper_positions": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "leverage_or_margin": false
+  },
+  "tasks": [
+    {
+      "id": "paper_code_provenance_merkle_v4",
+      "max_runtime_sec": 1200,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-code-provenance-merkle-v4.json",
+      "objective": "Refresh the deterministic code-only Merkle baseline after transport wiring, streamed-limit, health binding and v5 audit implementation. Do not stage, revert, commit or copy data artifacts.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "trading_mvp/run_mvp.ps1",
+        "tools",
+        "AGENTS.md"
+      ]
+    },
+    {
+      "id": "paper_public_system_clock_fixture_v1",
+      "max_runtime_sec": 1200,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-system-clock-fixture-v1.json",
+      "objective": "Implement a bounded runtime clock contract for the normalized public reader and prove sleep, monotonic refill and Retry-After handling with a fake clock only. No network.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_public_reader.py",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-contract-v1.json"
+      ]
+    },
+    {
+      "id": "paper_public_transport_retry_wiring_fixture_v2",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-transport-retry-wiring-fixture-v2.json",
+      "objective": "Prove bounded retry and token-bucket behavior through the requests transport and normalized reader using a fake session. No network requests.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_public_reader.py",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-contract-v1.json",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-transport-wiring-fixture-v1.json"
+      ]
+    },
+    {
+      "id": "paper_public_cache_transport_integration_fixture_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-cache-transport-integration-fixture-v1.json",
+      "objective": "Bind normalized transport output to the content-addressed public cache and prove deterministic replay with a fake session only. No network or OMS mutation.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_public_reader.py",
+        "trading_mvp/src/paper_public_cache.py",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-cache-idempotency-v1.json",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-transport-wiring-fixture-v1.json"
+      ]
+    },
+    {
+      "id": "paper_product_readiness_audit_v6",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v6.json",
+      "objective": "Re-audit runtime clock, retry and cache transport wiring while preserving PIT, paper and live evidence blockers. No network, returns, PnL or hypothesis changes.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "docs/agent-log",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research"
+      ]
+    }
+  ]
+}

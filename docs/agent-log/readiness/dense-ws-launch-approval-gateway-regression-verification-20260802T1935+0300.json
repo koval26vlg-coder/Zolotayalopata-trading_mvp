@@ -1,0 +1,43 @@
+{
+  "schema": "trading_mvp_dense_ws_launch_approval_gateway_regression_verification_v1",
+  "observed_at_utc": "2026-08-02T16:35:37.759012Z",
+  "base_audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-launch-approval-gateway-audit-20260802T1933+0300.json",
+  "base_audit_sha256": "55a574211ff2c3bd65cc0f25a6e35371bc6aac2dbb199a4bb284e551f22cef84",
+  "approval_gateway_tests": {
+    "passed": 9,
+    "failed": 0
+  },
+  "existing_dense_ws_campaign_contract_regression": {
+    "passed": 24,
+    "failed": 0,
+    "runtime_sec": 1.56,
+    "sandbox_first_attempt": "TEMP_DIRECTORY_PERMISSION_DENIED",
+    "sandbox_first_attempt_is_code_failure": false,
+    "verified_retry": "same tests with writable temp directory and no pytest cache"
+  },
+  "final_guard": {
+    "status": "ACTIVE",
+    "decision": "WAIT_APPROVED_LONG_CAMPAIGN_WINDOW",
+    "action_due": false,
+    "remaining_percent": 59.0,
+    "usage_status": "AVAILABLE",
+    "gate_status": "READY_FOR_POSTPROCESS",
+    "gate_run_id": "pit_universe_v2_forward_20260802_n05",
+    "campaign_approval": "APPROVED",
+    "campaign_window_status": "WAITING",
+    "dense_postrun_status": "NOT_APPLICABLE",
+    "global_writer_claim_exists": false,
+    "next_action": "continue_safe_offline_work_until_approved_window"
+  },
+  "actions_performed": {
+    "network_collector_started": false,
+    "visible_writer_started": false,
+    "postrun_started": false,
+    "evaluator_started": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false
+  },
+  "verdict": "GATEWAY_AND_FROZEN_CAMPAIGN_REGRESSION_VERIFIED"
+}

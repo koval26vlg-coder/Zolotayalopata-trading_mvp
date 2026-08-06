@@ -1,0 +1,17 @@
+{
+  "schema": "trading_mvp_visible_launch_v1",
+  "project": "trading_mvp",
+  "run_id": "trading_mvp_full_regression_20260717_0426",
+  "kind": "full_regression",
+  "started_at": "2026-07-17T04:26:04.1705719+03:00",
+  "terminal_pid": 22116,
+  "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_trading_mvp_full_regression_visible.ps1\" -RunId trading_mvp_full_regression_20260717_0426 -MaxRuntimeSec 1200 -HoldOpenSec 60",
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "max_runtime_sec": 1200,
+  "expected_duration_sec": 480,
+  "log_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\trading_mvp_full_regression_20260717_0426.full-regression.visible.log",
+  "temp_root": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\.test-tmp\\trading_mvp_full_regression_20260717_0426",
+  "market_data_writer": false,
+  "network_collector": false,
+  "live_orders": false
+}

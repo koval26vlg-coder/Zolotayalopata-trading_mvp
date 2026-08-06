@@ -1,0 +1,21 @@
+{
+  "schema": "fast_first_v3_planonly_record_v1",
+  "mode": "PLAN_ONLY_NO_PROCESS",
+  "run_id": "fast_first_v3_lottery_max_planonly_20260713_213349",
+  "process_started": false,
+  "would_start": false,
+  "visible_terminal_required": false,
+  "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-v3\\plans\\fast_first_lottery_max_planonly_20260713.json",
+  "expected_plan_hash": "3f086ac9c0f59c9690a63870f03ba44543559e08271333e73ae7957e86e240f7",
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-v3\\manifests\\fast_first_v3_lottery_max_planonly_20260713_213349.manifest.json",
+  "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-v3\\plans\\fast_first_lottery_max_planonly_20260713.json",
+  "started_at": "2026-07-13T21:33:49.3236570+03:00",
+  "finished_at": "2026-07-13T21:33:49.3236570+03:00",
+  "grid_search": false,
+  "evaluation": false,
+  "execution_probe": false,
+  "paper_forward": false,
+  "live_orders": false,
+  "api_keys": false,
+  "status_command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_active_run_gate.ps1\" -Json"
+}

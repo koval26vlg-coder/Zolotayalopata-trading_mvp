@@ -1,0 +1,59 @@
+{
+  "schema": "trading_mvp_dense_ws_output_cap_enforcement_audit_v1",
+  "generated_at_local": "2026-08-02T20:43:31.3514324+03:00",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+  "plan": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+    "hard_output_cap_bytes": 25000000000,
+    "estimated_disk_bytes": 12278246229,
+    "headroom_bytes": 12721753771,
+    "cap_to_estimate_ratio": 2.036121,
+    "contractual_check_interval_sec": 60
+  },
+  "frozen_runtime": {
+    "runner_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_runner.py",
+    "runner_sha256": "ed804ff811c321e4d9a5a8f56593f24ca320c635088fe7b271eec0bdacb4a977",
+    "runner_changed": false,
+    "monitor_interval_sec": 10,
+    "aggregate_scope": "entire campaign root",
+    "prestart_check": true,
+    "in_run_check": true,
+    "stop_reason": "campaign_output_cap_reached",
+    "failure_status": "STOPPED_INCOMPLETE",
+    "graceful_signal_wait_sec": 20,
+    "terminate_wait_sec": 10,
+    "force_kill_fallback": true
+  },
+  "verification": {
+    "dynamic_test": "DenseWsCampaignContractTests.test_runtime_stops_writer_when_campaign_cap_is_reached",
+    "dynamic_test_result": "PASS",
+    "full_contract_suite_result": "PASS",
+    "full_contract_suite_tests": 25,
+    "test_file_sha256": "8d80909704054a4b06808b7f70c3463745b8f0f477ffb9d3ec34084eb638a937",
+    "runtime_dependency_readiness": "READY",
+    "runtime_dependency_checks_failed": 0,
+    "network_request_performed": false,
+    "writer_started": false,
+    "market_rows_read": false,
+    "returns_pnl_or_oos_read": false,
+    "grid_or_retune": false,
+    "paper_live_or_private_api": false
+  },
+  "residual": {
+    "strict_byte_ceiling_guaranteed": false,
+    "reason": "The sampled monitor begins shutdown after observing aggregate bytes at or above the cap; bytes can still arrive between checks and during process shutdown.",
+    "conservative_detection_plus_shutdown_window_sec": 40,
+    "maximum_historical_baseline_bytes_per_sec": 162108.41779532324,
+    "historical_baseline_tail_estimate_bytes": 6484336.71,
+    "historical_baseline_tail_estimate_percent_of_cap": 0.025937,
+    "tail_estimate_is_absolute_bound": false
+  },
+  "verdict": {
+    "status": "PASS_WITH_DOCUMENTED_SAMPLED_STOP_RESIDUAL",
+    "contractual_sampled_stop_compliant": true,
+    "launch_blocking": false,
+    "reason": "The immutable PlanOnly requires a sampled cap check every 60 seconds and fail-closed STOPPED_INCOMPLETE handling. The frozen runtime checks every 10 seconds, stops the writer, and prevents consumption as complete. The expected output is below half the cap. Byte-exact filesystem quota semantics were not promised or implemented."
+  }
+}

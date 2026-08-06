@@ -1,0 +1,435 @@
+{
+  "version": "1.4",
+  "status": "PLAN_ONLY_NOT_EVALUATED",
+  "canonical_goal": "docs/plans/2026-07-14-trading-mvp-canonical-goal-v3.md",
+  "closed_track": "NO_FAST_EDGE_ON_CURRENT_DAILY_DATA",
+  "rules": {
+    "max_hypotheses_per_input_merkle": 3,
+    "grid_search_allowed": false,
+    "retune_allowed": false,
+    "oos_before_feasibility_allowed": false,
+    "live_orders_allowed": false,
+    "api_keys_allowed": false
+  },
+  "hypotheses": [
+    {
+      "id": "pit_universe_membership_drift_reversion_v1",
+      "status": "BANKED_NEEDS_NEW_DATA",
+      "required_data_type": "PIT_UNIVERSE_V2_FORWARD",
+      "thesis": "Point-in-time availability/listing drift may create temporary venue-local mispricing that mean-reverts after eligibility changes.",
+      "minimum_data": {
+        "days": 120,
+        "train_eligibility_days": 20,
+        "oos_closed_days": 100,
+        "portfolio_events": 20,
+        "per_venue_events": 10,
+        "unique_dates": 10
+      },
+      "forbidden": [
+        "daily-data retune",
+        "grid-search",
+        "same-input-merkle OOS"
+      ],
+      "next_artifact": "20-date quality-certified PIT v2 train seal with dual-venue L1 BBO capacity and feasibility first; only after FEASIBLE_FOR_OOS, a separate 120-date hash-bound no-grid OOS seal",
+      "contract": {
+        "schema": "trading_mvp_frozen_hypothesis_contract_v1",
+        "contract_version": "pit_universe_membership_drift_reversion_v1.3.0",
+        "mode": "PlanOnly",
+        "research_only": true,
+        "frozen_at_utc": "2026-07-14T18:16:00+00:00",
+        "id": "pit_universe_membership_drift_reversion_v1",
+        "status": "BANKED_NEEDS_NEW_DATA",
+        "required_data_type": "PIT_UNIVERSE_V2_FORWARD",
+        "thesis": "A newly reactivated venue-local linear perpetual that remains continuously tradable on the other venue can show a temporary cross-venue mid-price dislocation that mean-reverts after delayed entry.",
+        "frozen_parameters_no_grid": true,
+        "grid_search": false,
+        "retune": false,
+        "universe": {
+          "venues": [
+            "mexc",
+            "gateio"
+          ],
+          "market_type": "linear_perp",
+          "quote": "USDT",
+          "binance_role": "reference_exclusion_only",
+          "require_non_binance_spot_at_event": true,
+          "require_matching_base_quote": true
+        },
+        "observation_model": {
+          "unit": "quality_certified_local_date",
+          "source": "last_two_consistent_cycles_of_each_visible_night_segment",
+          "daily_state_confirmation_cycles": 2,
+          "require_consecutive_calendar_dates": true,
+          "unobserved_date_gap": "break_event_and_position_sequence",
+          "event_and_position_may_span_consecutive_quality_dates": true
+        },
+        "event_definition": {
+          "transition": "missing_to_observed_on_one_venue_while_other_remains_observed",
+          "activation_confirmation_cycles": 2,
+          "reference_continuity_prior_cycles": 2,
+          "event_unit": "base_activation_venue_local_date",
+          "dedup_cooldown_calendar_days": 30,
+          "require_both_venues_successful_in_event_cycles": true,
+          "tombstone_on_failed_exchange_is_not_an_event": true,
+          "cycle_unit": "quality_certified_local_date"
+        },
+        "signal": {
+          "route": "cross_venue_perp_perp",
+          "side": "long_cheaper_perp_short_expensive_perp",
+          "entry_delay_cycles": 1,
+          "minimum_gross_dislocation_bps": 130.0,
+          "max_leg_spread_bps": 20.0,
+          "minimum_volume_24h_quote_per_leg": 100000.0,
+          "price_source": "next_cycle_executable_bbo",
+          "one_position_per_event": true
+        },
+        "position": {
+          "notional_quote_per_leg": 500.0,
+          "gross_leverage": 1.0,
+          "margin_mode": "fully_collateralized_research_simulation",
+          "simultaneous_entry_required": true,
+          "partial_leg_entry": "reject_event",
+          "capacity_model": {
+            "source": "entry_and_exit_top_of_book_quantity",
+            "required_on_entry_and_exit": true,
+            "minimum_quote_per_leg": 500.0,
+            "missing_or_insufficient_quantity": "reject_event",
+            "volume_24h_proxy_allowed": false
+          }
+        },
+        "exit": {
+          "convergence_threshold_bps": 20.0,
+          "maximum_holding_calendar_days": 3,
+          "exit_price_source": "first_available_executable_bbo",
+          "force_end": true,
+          "take_profit_search": false,
+          "stop_loss_search": false
+        },
+        "robustness": {
+          "scenario": "one_additional_entry_cycle_same_exit_rule",
+          "entry_delay_cycles": 2,
+          "cycle_cost_source": "economics.normal_cycle_cost",
+          "parameter_refit": false
+        },
+        "stress": {
+          "scenario": "one_additional_entry_cycle_and_stress_cycle_cost",
+          "entry_delay_cycles": 2,
+          "cycle_cost_source": "economics.stress_cycle_cost",
+          "favorable_funding": "zero",
+          "adverse_funding": "retain",
+          "parameter_refit": false
+        },
+        "economics": {
+          "cost_profile_name": "base_api",
+          "cost_profile": {
+            "name": "base_api",
+            "maker_fill_probability": 0.5,
+            "slippage_bps_per_order": 1.0,
+            "rebalance_buffer_bps": 10.0,
+            "default_spread_bps": 10.0,
+            "default_impact_bps": 2.0,
+            "funding_haircut": 1.0,
+            "schedules": {
+              "gateio": {
+                "exchange": "gateio",
+                "spot_maker_bps": 10.0,
+                "spot_taker_bps": 10.0,
+                "perp_maker_bps": 10.0,
+                "perp_taker_bps": 10.0,
+                "source": "https://www.gate.com/docs/developers/apiv4/en/futures/",
+                "effective_at": null,
+                "account_verified": false,
+                "conservative_floor_bps": 10.0
+              },
+              "mexc": {
+                "exchange": "mexc",
+                "spot_maker_bps": 10.0,
+                "spot_taker_bps": 10.0,
+                "perp_maker_bps": 6.0,
+                "perp_taker_bps": 8.0,
+                "source": "https://www.mexc.com/en-GB/announcements/article/updates-to-api-futures-trading-fees-jun-1-2026-17827791535742",
+                "effective_at": "2026-06-01T08:00:00Z",
+                "account_verified": true,
+                "conservative_floor_bps": 0.0
+              }
+            }
+          },
+          "cost_profile_sha256": "dfdf738d156f519681e17b73f6b9d051dd0f5c2edfc1fa3cc354bdba70631a15",
+          "entry_order_type": "taker",
+          "exit_order_type": "taker",
+          "normal_cycle_cost": {
+            "profile": "base_api",
+            "stress": false,
+            "maker_fill_probability": 0.0,
+            "fees_bps": 36.0,
+            "spread_bps": 0.0,
+            "impact_bps": 8.0,
+            "slippage_bps": 4.0,
+            "rebalance_buffer_bps": 10.0,
+            "total_bps": 58.0,
+            "legs": [
+              {
+                "exchange": "mexc",
+                "market_type": "perp",
+                "spread_bps": 0.0,
+                "impact_bps": 2.0,
+                "entry_fee_bps": 8.0,
+                "exit_fee_bps": 8.0,
+                "entry_spread_bps": 0.0,
+                "exit_spread_bps": 0.0,
+                "entry_impact_bps": 2.0,
+                "exit_impact_bps": 2.0
+              },
+              {
+                "exchange": "gateio",
+                "market_type": "perp",
+                "spread_bps": 0.0,
+                "impact_bps": 2.0,
+                "entry_fee_bps": 10.0,
+                "exit_fee_bps": 10.0,
+                "entry_spread_bps": 0.0,
+                "exit_spread_bps": 0.0,
+                "entry_impact_bps": 2.0,
+                "exit_impact_bps": 2.0
+              }
+            ]
+          },
+          "stress_cycle_cost": {
+            "profile": "base_api_stress",
+            "stress": false,
+            "maker_fill_probability": 0.0,
+            "fees_bps": 36.0,
+            "spread_bps": 20.0,
+            "impact_bps": 40.0,
+            "slippage_bps": 4.0,
+            "rebalance_buffer_bps": 20.0,
+            "total_bps": 120.0,
+            "legs": [
+              {
+                "exchange": "mexc",
+                "market_type": "perp",
+                "spread_bps": 10.0,
+                "impact_bps": 10.0,
+                "entry_fee_bps": 8.0,
+                "exit_fee_bps": 8.0,
+                "entry_spread_bps": 5.0,
+                "exit_spread_bps": 5.0,
+                "entry_impact_bps": 10.0,
+                "exit_impact_bps": 10.0
+              },
+              {
+                "exchange": "gateio",
+                "market_type": "perp",
+                "spread_bps": 10.0,
+                "impact_bps": 10.0,
+                "entry_fee_bps": 10.0,
+                "exit_fee_bps": 10.0,
+                "entry_spread_bps": 5.0,
+                "exit_spread_bps": 5.0,
+                "entry_impact_bps": 10.0,
+                "exit_impact_bps": 10.0
+              }
+            ]
+          },
+          "spread_accounting": "embedded_in_executable_bbo",
+          "normal_bbo_spread_cap_bps_per_leg": 20.0,
+          "stress_bbo_spread_target_bps_per_leg": 30.0,
+          "normal_max_all_in_cycle_cost_bps": 98.0,
+          "stress_max_all_in_cycle_cost_bps": 160.0,
+          "funding_treatment": "reported_separately_and_cannot_rescue_negative_price_only_pnl",
+          "vip_or_rebate_assumption": false
+        },
+        "sample_plan": {
+          "train_eligibility_days": 20,
+          "train_usage": "event_frequency_and_fill_rate_only_no_return_or_threshold_optimization",
+          "oos_closed_days": 100,
+          "required_quality_dates": 120,
+          "oos_order": "chronological_after_train_eligibility_window",
+          "forward_rows_embargoed_until_contract_and_quality_seals": true
+        },
+        "feasibility": {
+          "must_run_before_oos": true,
+          "estimator_version": "feasibility_gate_v1_wilson_lower_bound",
+          "estimator_version_hash": "086232c4371580576b793336d5a6f2d58296936587e13ff4ad578f3bc443976f",
+          "maximum_non_burning_infeasible_hypotheses_per_track": 2
+        },
+        "validation_protocol": {
+          "minimum_oos_closed_days": 60,
+          "minimum_oos_portfolio_events_total": 20,
+          "minimum_oos_portfolio_events_per_venue": 10,
+          "minimum_unique_oos_signal_dates": 10,
+          "minimum_dual_venue_coverage": 0.8,
+          "price_only_expectancy_positive_each_venue": true,
+          "minimum_combined_profit_factor": 1.2,
+          "minimum_positive_event_rate": 0.6,
+          "walk_forward": {
+            "folds": 5,
+            "test_days_per_fold": 20,
+            "non_overlapping": true,
+            "refit": false,
+            "minimum_positive_combined_folds": 4,
+            "minimum_positive_folds_per_venue": 3
+          },
+          "normal_price_only_pnl_positive": true,
+          "robustness_price_only_pnl_positive": true,
+          "stress_price_only_pnl_nonnegative": true,
+          "maximum_drawdown_fraction_allocated_collateral": 0.1,
+          "maximum_single_event_positive_pnl_share": 0.25,
+          "maximum_single_base_positive_pnl_share": 0.25,
+          "maximum_single_venue_positive_pnl_share": 0.75,
+          "maximum_break_even_holding_days": 3,
+          "minimum_capacity_quote_per_leg": 500.0,
+          "maximum_historical_verdict": "ACCEPT_FOR_SHORT_EXECUTION_PROBE",
+          "deterministic_repeats": 2,
+          "matching_result_hash_required": true
+        },
+        "multiplicity": {
+          "track_id": "pit_universe_v2_forward_track_v1",
+          "hypothesis_slot": 1,
+          "maximum_hypotheses_per_input_merkle": 3,
+          "same_input_oos_evaluations_used_before_track": 0
+        },
+        "data_access_audit": {
+          "forward_market_rows_read": false,
+          "returns_read": false,
+          "pnl_computed": false,
+          "signal_scores_computed": false,
+          "network_access": false,
+          "collector_started": false
+        },
+        "execution_probe_allowed": false,
+        "paper_forward_allowed": false,
+        "live_orders": false,
+        "api_keys": false,
+        "leverage_or_margin": false,
+        "next_allowed_action": "collect_quality_certified_pit_universe_v2_forward_under_explicit_schedule",
+        "contract_hash": "b5e3abd4942fc117b92c324e931d8d91671df3de99b403875bcf38983c26d857"
+      }
+    },
+    {
+      "id": "dense_ws_microstructure_regime_filter_v1",
+      "status": "BANKED_NEEDS_NEW_DATA",
+      "required_data_type": "DENSE_WS_SEGMENTED",
+      "thesis": "Only specific dense-liquidity regimes may be executable after base API costs; regime detection must be frozen before OOS.",
+      "minimum_data": {
+        "hours": 24,
+        "valid_segments": 8,
+        "dual_venue_coverage": 0.8,
+        "execution_snapshots": 180
+      },
+      "forbidden": [
+        "HFT latency claim",
+        "orderbook grid",
+        "post-hoc regime labels"
+      ],
+      "next_artifact": "segmented WS data contract and feasibility estimator"
+    },
+    {
+      "id": "listing_forward_liquidity_decay_v1",
+      "status": "BANKED_NEEDS_NEW_DATA",
+      "required_data_type": "LISTING_FORWARD_MONITOR",
+      "thesis": "New non-Binance listings may show deterministic liquidity decay or spread normalization after activation.",
+      "minimum_data": {
+        "listing_events": 20,
+        "venues": 2,
+        "unique_bases": 20,
+        "post_listing_days": 14
+      },
+      "forbidden": [
+        "survivorship-only historical listing set",
+        "manual cherry-pick",
+        "P2P/off-ramp analysis"
+      ],
+      "next_artifact": "listing monitor data-quality report before PlanOnly"
+    },
+    {
+      "id": "funding_regime_persistence_carry_v2",
+      "status": "BANKED_NEEDS_NEW_DATA",
+      "required_data_type": "FUNDING_HISTORY_EXTENSION",
+      "thesis": "Persistent funding regimes may support hedged carry only when execution, basis and stress haircuts survive base fees.",
+      "minimum_data": {
+        "days": 90,
+        "settlements": 180,
+        "dual_leg_coverage": 0.8,
+        "execution_snapshots": 180
+      },
+      "forbidden": [
+        "favorable funding rescues negative price-only gate where not allowed",
+        "VIP/rebate assumption",
+        "leverage"
+      ],
+      "next_artifact": "funding history cache-diff and no-grid carry PlanOnly"
+    },
+    {
+      "id": "cross_venue_basis_dislocation_execution_gate_v2",
+      "status": "BANKED_NEEDS_NEW_DATA",
+      "required_data_type": "DENSE_WS_SEGMENTED_AND_MARK_INDEX",
+      "thesis": "Cross-venue perp/mark basis dislocation is only testable if execution-capacity and stale-quote gates are frozen first.",
+      "minimum_data": {
+        "valid_dislocations": 20,
+        "per_venue_events": 10,
+        "dual_venue_coverage": 0.8,
+        "capacity_usd_per_leg": 500
+      },
+      "forbidden": [
+        "spot-dislocation retune",
+        "negative synthetic round-trip fee",
+        "stale quote alpha"
+      ],
+      "next_artifact": "basis data contract plus feasibility gate"
+    },
+    {
+      "id": "cross_venue_perp_basis_convergence_history_v1",
+      "status": "FROZEN_PIPELINE_IMPLEMENTED_NOT_COLLECTED",
+      "required_data_type": "HISTORICAL_PERP_MARK_INDEX_FUNDING_V1",
+      "thesis": "A sufficiently large MEXC/Gate mark-index basis spread may converge after conservative four-operation API costs, funding cashflows and execution stress.",
+      "universe": {
+        "venues": ["mexc", "gateio"],
+        "binance_role": "reference_exclusion_only",
+        "maximum_candidates": 20,
+        "minimum_surviving_assets": 8,
+        "canonical_identity_required": true
+      },
+      "frozen_strategy": {
+        "interval": "5m",
+        "entry": "next_trade_bar_open_after_closed_mark_index_signal",
+        "exit_basis_spread_bps": 20.0,
+        "maximum_holding_hours": 72,
+        "entry_threshold_formula": "stress_cycle_cost_bps + 20 exit_bps + 20 safety_bps",
+        "notional_quote_per_leg": 500.0,
+        "gross_leverage": 1.0,
+        "grid_search": false
+      },
+      "minimum_data": {
+        "closed_days": 220,
+        "warmup_days": 20,
+        "train_days": 100,
+        "oos_days": 100,
+        "walk_forward_folds": 5,
+        "minimum_oos_episodes": 40
+      },
+      "forbidden": [
+        "parameter tuning on OOS",
+        "maker-fill assumption from OHLCV",
+        "cross-gap PnL",
+        "funding rescuing negative price-only expectancy",
+        "VIP or rebate assumptions",
+        "live orders before paper-forward gates"
+      ],
+      "next_artifact": "visible fast-edge-basis-history-collect after frozen PlanOnly"
+    }
+  ],
+  "updated_at_utc": "2026-07-15T06:55:00+00:00",
+  "pit_universe_v2_preregistration": {
+    "track_id": "pit_universe_v2_forward_track_v1",
+    "contract_schema": "trading_mvp_frozen_hypothesis_contract_v1",
+    "contract_hash": "e0d5057dd58ca3399169c3f74fdf11faf4d8909d44798de9749cd8c0ab29fa07",
+    "hypothesis_slots_used": 1,
+    "hypothesis_slots_maximum": 3,
+    "forward_market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "required_quality_dates": 120,
+    "evaluator_required_before_collection": true
+  }
+}

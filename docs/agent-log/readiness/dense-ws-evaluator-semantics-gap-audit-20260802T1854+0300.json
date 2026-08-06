@@ -1,0 +1,150 @@
+{
+  "schema": "trading_mvp_dense_ws_evaluator_semantics_gap_audit_v1",
+  "observed_at_utc": "2026-08-02T15:54:23.2145723Z",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+  "research_only": true,
+  "source_bindings": {
+    "campaign_plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "evaluator_proposal_hash": "a9ec751329e436c1ea30b63433c57cf0e9ffd35370a097735c9ce91f71bb40d7",
+    "frozen_contract": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\frozen\\dense-ws-signal-evaluator-contract-20260802-v1.json",
+      "file_sha256": "a9ef768d6f61297d01d8fe37a9d4e00b27cf5b2d52f122ab8ca9a0c3fae5a81d",
+      "contract_hash": "b70975468fbd67acf550dea39aac21c116fb3a86a57ed56d400f40f0fa287954"
+    },
+    "frozen_planonly": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\frozen\\dense-ws-signal-evaluator-planonly-20260802-v1.json",
+      "file_sha256": "2ae9f20892eeb65772aa40c8bee0c905935dd50af2c57e29232ecc9418168fdb",
+      "plan_hash": "620b1711a5436c722acea99d41c4b81ba57bd317069456282814939b3eefeea2"
+    },
+    "source_review_draft": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-signal-evaluator-review-draft-20260802-v1.json",
+      "file_sha256": "c3f7e1e95721adeb004a9c0ace83c94f1e756fe737a4aa31e6c77171c00526e3",
+      "draft_hash": "9325445a68aea9f8224658690367862662c342fc8f624a824f4c805d9c293573"
+    }
+  },
+  "directly_frozen_semantics": [
+    "DENSE_BOTH signal eligibility and two fixed directions",
+    "displayed edge trigger above 69 bps normal cost",
+    "50 quote displayed and execution capacity minimums",
+    "60-second per-base-and-direction cooldown",
+    "250 ms normal and 1000 ms stress execution latency",
+    "latest non-future raw BBO outcome selection",
+    "MEXC 6000 ms and Gate 5000 ms maximum quote age",
+    "2000 ms maximum cross-venue receive-time skew",
+    "both legs required and unfillable events retained in fill-rate denominator",
+    "69 bps normal and 89 bps stress total costs",
+    "70/30 chronological split with a 300-second embargo",
+    "five chronological walk-forward folds with no formula or regime refit",
+    "fixed sample, economics, fill, drawdown, concentration and decision thresholds",
+    "two deterministic repeats with matching result hash"
+  ],
+  "hash_bound_but_not_promoted_semantics": [
+    "50 quote notional per synthetic trade",
+    "maximum three concurrent synthetic positions",
+    "150 quote maximum gross synthetic exposure",
+    "25-second maximum holding time",
+    "60-second cooldown per base",
+    "one position per base",
+    "five-second UTC sample clock",
+    "three-bps maximum own-venue spread",
+    "25 quote minimum top notional per side",
+    "pre-positioned spot inventory research model"
+  ],
+  "deterministic_gaps": [
+    {
+      "id": "EVENT_ORDER_AND_RAW_QUOTE_TIES",
+      "severity": "BLOCKING",
+      "missing": "Tie-breaks for equal sample_ts and equal raw recv_ts are not frozen.",
+      "risk": "Different valid readers can select different events or outcome quotes."
+    },
+    {
+      "id": "RISK_ADMISSION_PRECEDENCE",
+      "severity": "BLOCKING",
+      "missing": "The per-base cooldown, per-base-and-direction cooldown, one-position rule, concurrency cap and holding interval have no precedence or admission order.",
+      "risk": "The event set and capital usage can differ across implementations."
+    },
+    {
+      "id": "UNFILLED_ECONOMICS",
+      "severity": "BLOCKING",
+      "missing": "Unfillable events are defined for fill rate but not for expectancy, PnL, profit factor, direction metrics or bootstrap.",
+      "risk": "An implementation can silently omit failed fills and overstate economics."
+    },
+    {
+      "id": "TRADE_NOTIONAL_AND_PNL_FORMULA",
+      "severity": "BLOCKING",
+      "missing": "The frozen evaluator subcontracts do not directly define fixed notional and the quote-PnL conversion formula.",
+      "risk": "PnL, drawdown and concentration can be scaled differently."
+    },
+    {
+      "id": "PRIMARY_SPLIT_BOUNDARY",
+      "severity": "BLOCKING",
+      "missing": "The 70/30 rounding rule, same-timestamp treatment and exact embargo boundary are not frozen.",
+      "risk": "Train and OOS membership can differ."
+    },
+    {
+      "id": "WALK_FORWARD_CONSTRUCTION",
+      "severity": "BLOCKING",
+      "missing": "The fold horizon, boundary algorithm, expanding-window behavior, remainder allocation and positive-fold definition are not frozen.",
+      "risk": "The four-of-five gate is not reproducible."
+    },
+    {
+      "id": "BOOTSTRAP_METHOD",
+      "severity": "BLOCKING",
+      "missing": "Cluster key, replicate count, seed, resampling algorithm, confidence-tail convention and insufficient-cluster action are not frozen.",
+      "risk": "The bootstrap gate can change without changing the data."
+    },
+    {
+      "id": "METRIC_EDGE_CASES",
+      "severity": "BLOCKING",
+      "missing": "No-loss profit factor, zero-positive-PnL concentration, direction denominators, drawdown ordering and numeric precision are not frozen.",
+      "risk": "Boundary verdicts can differ."
+    },
+    {
+      "id": "SAMPLE_GATE_SCOPE",
+      "severity": "BLOCKING",
+      "missing": "Distinct-hour, distinct-base, per-direction and fill-rate thresholds are not explicitly scoped to total, train or OOS rows.",
+      "risk": "An implementation can pass the sample gate using train evidence."
+    },
+    {
+      "id": "RESULT_CANONICALIZATION",
+      "severity": "BLOCKING",
+      "missing": "Deterministic output schemas, excluded volatile fields and canonical result-hash payload are not frozen.",
+      "risk": "The required repeat-hash comparison is undefined."
+    }
+  ],
+  "contract_conflicts": [
+    {
+      "id": "COOLDOWN_SCOPE",
+      "frozen_contract": "60 seconds per base and direction",
+      "hash_bound_source_review": "60 seconds per base",
+      "required_resolution": "Choose an explicit conservative precedence before implementation."
+    },
+    {
+      "id": "POSITION_MODEL",
+      "frozen_execution": "paired taker fill after at most 1000 ms",
+      "hash_bound_source_review": "up to 25-second synthetic holding period and three concurrent positions",
+      "required_resolution": "Define the capital-reservation interval without inventing an outcome-dependent hold."
+    }
+  ],
+  "independent_review": {
+    "status": "SWARM_LIMITED_NO_FINAL_REPORT",
+    "agent_id": "019fc31f-0a33-71e1-b215-d6a6646487a2",
+    "observed_progress": "The independent agent reached the same gap categories but did not produce a final response after bounded waits and two stop requests.",
+    "files_changed_by_agent": false
+  },
+  "decision": "EVALUATOR_CONTRACT_SEMANTICS_INCOMPLETE_IMPLEMENTATION_MUST_WAIT",
+  "next_allowed_action": "BUILD_HASH_BOUND_NON_EXECUTABLE_SEMANTICS_AMENDMENT_PROPOSAL",
+  "safety": {
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "network_access": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  }
+}

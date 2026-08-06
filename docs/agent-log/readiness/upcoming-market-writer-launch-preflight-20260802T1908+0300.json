@@ -1,0 +1,60 @@
+{
+  "schema": "trading_mvp_upcoming_market_writer_launch_preflight_v1",
+  "mode": "PREFLIGHT_ONLY",
+  "observed_at_local": "2026-08-02T19:07:30+03:00",
+  "policy_id": "trading_mvp_autopilot_20260802_v3",
+  "policy_sha256": "13c2b98d76a6486eee43b60cf37c07fa2aa2dfbad3479f6c6c5285aff57ba842",
+  "decision": "READY_NOT_DUE",
+  "pit_segment": {
+    "run_id": "pit_universe_v2_forward_20260803_n06",
+    "schedule_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+    "status": "READY_NOT_DUE",
+    "checks_passed": true,
+    "launch_allowed_now": false,
+    "not_before": "2026-08-03T01:00:00+03:00",
+    "scheduled_end": "2026-08-03T01:20:00+03:00",
+    "hard_deadline": "2026-08-03T07:00:00+03:00",
+    "sealed_runtime_tools_verified": 12,
+    "free_disk_gib": 768.406,
+    "min_free_disk_gib": 5.0,
+    "other_countdown_owners": [],
+    "global_market_writer_claim": null,
+    "side_effects": "NO_RUN_OR_OUTPUT_WRITES"
+  },
+  "dense_ws_campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "status": "STRUCTURALLY_VALID_NOT_DUE",
+    "structurally_valid": true,
+    "launch_allowed_now": false,
+    "earliest_launch_at": "2026-08-03T01:00:00+03:00",
+    "writer_start_at": "2026-08-03T01:30:00+03:00",
+    "latest_launch_at": "2026-08-03T01:35:00+03:00",
+    "free_bytes": 825070010368,
+    "required_free_bytes": 53687091200,
+    "existing_campaign_output_bytes": 0,
+    "hard_output_cap_bytes": 25000000000,
+    "global_market_writer_claim": null,
+    "reasons": [],
+    "side_effects": "NO_RUN_OR_OUTPUT_WRITES"
+  },
+  "shared_gate": {
+    "status": "READY_FOR_POSTPROCESS",
+    "run_id": "pit_universe_v2_forward_20260802_n05",
+    "live_market_writer_detected": false
+  },
+  "safety": {
+    "collector_started": false,
+    "market_data_read": false,
+    "market_data_written": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "WAIT_FOR_EXACT_DUE_WINDOW_THEN_RUN_ONLY_THE_AUTHORIZED_VISIBLE_WRITER"
+}

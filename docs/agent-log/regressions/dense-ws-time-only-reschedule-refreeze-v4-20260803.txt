@@ -1,0 +1,10 @@
+[segment 1/2] DISK GUARD: free=77.6GB < 1000000000GB, stop
+[segment 1/2] start duration=10s
+[segment 1/2] done events=10 duration_completed=True quality_eligible=False
+[segment 2/2] start duration=10s
+[segment 2/2] done events=10 duration_completed=True quality_eligible=True
+.........................................................................
+----------------------------------------------------------------------
+Ran 73 tests in 7.625s
+
+OK

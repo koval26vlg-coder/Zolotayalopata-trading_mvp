@@ -1,0 +1,64 @@
+{
+  "schema": "trading_mvp_autopilot_research_catalog_v1",
+  "catalog_id": "trading_mvp_autopilot_research_catalog_eb980cca5282",
+  "project": "trading_mvp",
+  "mode": "bounded_offline_public_data_plane_readiness",
+  "parent_audit": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v8.json",
+    "file_sha256": "eb980cca5282d6b6b1001e1a4948bc253f45b140de4bc04058442b1e1ed00e25",
+    "deterministic_result_hash": "7af511ce06241565e34239e150e13594ff5b17d6f30efc4f8297dd0ee0ca6af5"
+  },
+  "constraints": {
+    "max_runtime_sec_per_task": 1800,
+    "one_task_at_a_time": true,
+    "network_access": false,
+    "market_data_writer": false,
+    "returns_or_pnl_read": false,
+    "new_hypothesis": false,
+    "grid_or_retune": false,
+    "paper_positions": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "leverage_or_margin": false
+  },
+  "tasks": [
+    {
+      "id": "paper_code_provenance_merkle_v6",
+      "max_runtime_sec": 1200,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-code-provenance-merkle-v6.json",
+      "objective": "Refresh the deterministic code-only Merkle baseline after the v3 public probe compatibility and v8 audit implementation. Do not stage, revert, commit or copy data artifacts.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "trading_mvp/run_mvp.ps1",
+        "tools",
+        "AGENTS.md"
+      ]
+    },
+    {
+      "id": "paper_public_probe_evidence_observer_binding_fixture_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-probe-evidence-observer-binding-fixture-v1.json",
+      "objective": "Bind accepted immutable public probe v3 evidence to one fail-closed observer input and prove no OMS mutation. Offline only; do not read returns, PnL or OOS.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_public_readonly_probe.py",
+        "trading_mvp/src/paper_observer_runtime.py",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-readonly-probe-evidence-v3.json",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-readonly-probe-plan-v3.json"
+      ]
+    },
+    {
+      "id": "paper_product_readiness_audit_v9",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v9.json",
+      "objective": "Re-audit public probe evidence binding after catalog v8 while preserving PIT, edge, paper-forward and live evidence blockers. No network, returns, PnL, OOS or hypothesis changes.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "docs/agent-log",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research"
+      ]
+    }
+  ]
+}

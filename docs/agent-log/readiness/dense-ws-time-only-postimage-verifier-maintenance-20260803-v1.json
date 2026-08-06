@@ -1,0 +1,50 @@
+{
+  "schema": "trading_mvp_dense_ws_patch_postimage_verifier_maintenance_audit_v1",
+  "status": "PASS_MAINTENANCE_V2_PREVIEW_HASH_MISMATCH_CONFIRMED",
+  "generated_at_utc": "2026-08-03T10:13:58.5988203Z",
+  "scope": {
+    "purpose": "Verify the actual byte SHA-256 after an isolated git apply rather than trusting manually recorded replacement output.",
+    "v2_proposal_hash": "b69c765dee7c030b50aaa282f80934995abbf23ee0b845cf868d86f042933e89",
+    "patch_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-time-only-reschedule-refreeze-implementation-preview-20260803-v2.patch",
+    "patch_sha256": "56e94998befa154b5260b77fd35966aa205c99c91280abb5f514dbba54833b3a"
+  },
+  "verifier": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\verify_patch_postimage.ps1",
+    "sha256": "84e3147dab4361b0397063a67ec3c329f5a733cbbbde04af7567abfa00cff076",
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\test_verify_patch_postimage.ps1",
+    "test_sha256": "28c2dfd7298571a089b11eb202d0430a492449390c6fdd1119a6b1783ab55976"
+  },
+  "verification": {
+    "powershell_parser": "PASS",
+    "fixture": "PASS",
+    "wrong_expected_postimage_rejected": true,
+    "v2_legacy_claim_sha256": "9aac8ceac80acff9971b3bf72acdcabfd3560d2f42fd5e8a14912d659c150aac",
+    "v2_legacy_claim_rejected": true,
+    "derived_v2_preimage_sha256": "9fc98dcbe25c5715b453bbc8409dc095d196ccb157278d9ab0381bb7b5024bec",
+    "observed_v2_postimage_sha256": "80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb",
+    "original_v2_preimage_sha256_not_reconstructed": true
+  },
+  "activation": {
+    "contract_or_policy_promoted": false,
+    "immutable_contract_created": false,
+    "immutable_planonly_created": false,
+    "runtime_manifest_created": false,
+    "collector_launch_allowed": false,
+    "campaign_launch_allowed": false,
+    "required_next_checkpoint": "SEPARATE_EXACT_V3_RECONCILIATION_APPROVAL"
+  },
+  "safety": {
+    "network_access": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "source_or_contract_mutated": false
+  }
+}

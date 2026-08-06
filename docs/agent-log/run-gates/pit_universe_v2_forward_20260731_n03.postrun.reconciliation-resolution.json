@@ -1,0 +1,16 @@
+{
+  "schema": "trading_mvp_pit_postrun_reconciliation_resolution_v1",
+  "project": "trading_mvp",
+  "run_id": "pit_universe_v2_forward_20260731_n03",
+  "status": "RESOLVED",
+  "decision": "PIT_POSTRUN_RECOVERED",
+  "resolved_at": "2026-07-31T07:56:04.0823805+03:00",
+  "failed_checkpoint_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\archived-critical-checkpoints\\pit_universe_v2_forward_20260731_n03.pit-postrun-failed.470955c62b84fafb.json",
+  "failed_checkpoint_sha256": "470955c62b84fafb07d20fe96be4cb43e0fd881f164a64c2d88d83844c821e9b",
+  "postrun_reconciliation_summary_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\pit_universe_v2_forward_20260731_n03.postrun.reconciliation.json",
+  "postrun_reconciliation_summary_sha256": "1c8ae28957f25df5a3811bdc8e8534f2817fdfd9f9d54d9cbb7d0c9427ce51ef",
+  "returns_read": false,
+  "pnl_read": false,
+  "oos_run": false,
+  "new_collector_started": false
+}

@@ -27,6 +27,7 @@ def _bbo(
     index_price: float | None = None,
     funding_rate: float | None = None,
     funding_interval_sec: int | None = None,
+    next_funding_ts: float | None = None,
 ) -> dict[str, object]:
     event: dict[str, object] = {
         "recv_ts": ts,
@@ -48,6 +49,8 @@ def _bbo(
         event["funding_rate"] = funding_rate
     if funding_interval_sec is not None:
         event["funding_interval_sec"] = funding_interval_sec
+    if next_funding_ts is not None:
+        event["next_funding_ts"] = next_funding_ts
     return event
 
 
@@ -115,6 +118,7 @@ class PerpReplayTests(unittest.TestCase):
                 index_price=100.0,
                 funding_rate=0.01,
                 funding_interval_sec=10,
+                next_funding_ts=5.0,
             ),
             _trade(1.1, "sell", 100.0, 10.0),
             _bbo(
@@ -125,6 +129,7 @@ class PerpReplayTests(unittest.TestCase):
                 index_price=100.0,
                 funding_rate=0.01,
                 funding_interval_sec=10,
+                next_funding_ts=5.0,
             ),
             _bbo(
                 7.0,
@@ -134,6 +139,7 @@ class PerpReplayTests(unittest.TestCase):
                 index_price=100.0,
                 funding_rate=0.01,
                 funding_interval_sec=10,
+                next_funding_ts=15.0,
             ),
             _bbo(
                 7.1,
@@ -143,6 +149,7 @@ class PerpReplayTests(unittest.TestCase):
                 index_price=100.0,
                 funding_rate=0.01,
                 funding_interval_sec=10,
+                next_funding_ts=15.0,
             ),
         ]
         result = run_perp_replay(
@@ -155,6 +162,41 @@ class PerpReplayTests(unittest.TestCase):
         self.assertGreater(result["metrics"]["funding_pnl_quote"], 0)
         self.assertGreater(trade["funding_pnl_quote"], 0)
         self.assertGreater(result["metrics"]["net_pnl_quote"], trade["funding_pnl_quote"] * 0.5)
+
+    def test_perp_replay_does_not_prorate_funding_before_settlement(self) -> None:
+        events = [
+            _bbo(
+                1.0,
+                100.0,
+                100.1,
+                mark_price=100.05,
+                funding_rate=0.01,
+                funding_interval_sec=10,
+                next_funding_ts=10.0,
+            ),
+            _trade(1.1, "sell", 100.0, 10.0),
+            _bbo(
+                1.2,
+                100.0,
+                100.1,
+                mark_price=100.05,
+                funding_rate=0.01,
+                funding_interval_sec=10,
+                next_funding_ts=10.0,
+            ),
+            _bbo(7.0, 100.0, 100.1, mark_price=100.05, funding_rate=0.01, funding_interval_sec=10, next_funding_ts=10.0),
+            _bbo(7.1, 100.0, 100.1, mark_price=100.05, funding_rate=0.01, funding_interval_sec=10, next_funding_ts=10.0),
+        ]
+
+        result = run_perp_replay(
+            events,
+            self._strategy(),
+            self._risk(),
+            ReplayConfig(notional_quote=25.0, taker_fee_bps=0.0, slippage_bps=0.0, latency_ms=0),
+        )
+
+        self.assertEqual(result["metrics"]["funding_pnl_quote"], 0.0)
+        self.assertEqual(result["trades"][0]["funding_pnl_quote"], 0.0)
 
     def test_perp_liquidity_sweep_reversal_can_open_short(self) -> None:
         events = [
@@ -224,6 +266,18 @@ class PerpReplayTests(unittest.TestCase):
         parser = build_parser()
         self.assertEqual(parser.parse_args(["perp-replay", "--signal-type", "fade_exhaustion"]).command, "perp-replay")
         self.assertEqual(parser.parse_args(["perp-grid-search", "--top-n", "3"]).command, "perp-grid-search")
+        venue_costs = '{"gateio":{"taker_fee_bps":10,"maker_fee_bps":2,"slippage_bps":1}}'
+        perp_args = parser.parse_args(
+            ["perp-replay", "--venue-costs-json", venue_costs, "--max-quote-age-sec", "2"]
+        )
+        ws_args = parser.parse_args(
+            ["ws-replay", "--venue-costs-json", venue_costs, "--max-quote-age-sec", "2"]
+        )
+        funding_args = parser.parse_args(["funding-backtest", "--venue-costs-json", venue_costs])
+        self.assertEqual(perp_args.venue_costs_json, venue_costs)
+        self.assertEqual(perp_args.max_quote_age_sec, 2.0)
+        self.assertEqual(ws_args.venue_costs_json, venue_costs)
+        self.assertEqual(funding_args.venue_costs_json, venue_costs)
 
 
 if __name__ == "__main__":

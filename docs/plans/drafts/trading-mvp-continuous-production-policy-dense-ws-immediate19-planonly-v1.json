@@ -1,0 +1,190 @@
+{
+  "schema": "trading_mvp_continuous_production_policy_v1",
+  "policy_id": "trading_mvp_continuous_production_20260803_dense_ws_immediate19_planonly_v1",
+  "effective_at": "2026-08-03T18:19:33.3519145+03:00",
+  "approved_by": "PLANONLY_ONLY_USER_REQUESTED_EARLY_START_NO_LAUNCH_APPROVAL",
+  "project": "trading_mvp",
+  "purpose": "Run Accelerated Evidence Factory v1 continuously while preserving one-writer, immutable-evidence, no-grid and research-only boundaries.",
+  "objective_document": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\2026-08-01-trading-mvp-accelerated-evidence-factory-v1.md",
+  "run_windows": {
+    "timezone": "Europe/Volgograd",
+    "utc_offset_minutes": 180,
+    "new_campaign_start_local": "19:00",
+    "weekday_hard_stop_local": "08:00",
+    "weekend": {
+      "opens": "FRIDAY 19:00",
+      "hard_stop": "MONDAY 08:00",
+      "fresh_start_allowed_inside_open_envelope": true,
+      "same_approved_campaign_may_continue_during_weekend_daytime": true
+    }
+  },
+  "approval": {
+    "request_lead_minutes": 30,
+    "required_before_every_long_campaign": true,
+    "one_approval_covers_only_one_immutable_campaign": true,
+    "repeat_approval_not_required_for_listed_phases_when_scope_and_hashes_match": true,
+    "new_approval_required_on": [
+      "campaign plan hash change",
+      "objective, venue, universe, signal, cost, risk or acceptance-contract change",
+      "maximum runtime, phase timing, hard deadline or disk-cap extension",
+      "new writer or output namespace",
+      "STOPPED_INCOMPLETE recovery"
+    ],
+    "required_packet_fields": [
+      "run_id and objective",
+      "immutable plan path and SHA-256",
+      "exact start, expected duration, maximum runtime and hard deadline",
+      "early quality gates and stop conditions",
+      "estimated network, disk, CPU and memory cost",
+      "visible command, output paths, status command and stop command",
+      "single-writer and forbidden-scope declarations"
+    ]
+  },
+  "runtime": {
+    "limit_mode": "EVIDENCE_VALUE_WITH_EXACT_HARD_DEADLINE",
+    "fixed_global_three_hour_ceiling": false,
+    "short_offline_task_max_runtime_sec": 1800,
+    "preapproved_short_segment_max_runtime_sec": 1800,
+    "weeknight_envelope_max_runtime_sec": 46800,
+    "weekend_envelope_max_runtime_sec": 259200,
+    "recommended_durable_phase_checkpoint_sec": 3600,
+    "target_writer_finish_local": "07:30",
+    "hard_stop_local": "08:00",
+    "shutdown_grace_sec": 1800,
+    "window_is_a_ceiling_not_a_utilization_target": true,
+    "meaningless_runtime_extension_for_occupancy_is_forbidden": true
+  },
+  "accelerated_evidence_factory": {
+    "factory_id": "accelerated_evidence_factory_v1_20260803_immediate19_planonly",
+    "status": "PLANONLY_IMMEDIATE19_RESCHEDULE_CANDIDATE_SEPARATE_EXACT_LAUNCH_APPROVAL_REQUIRED",
+    "stale_legacy_route": "TERMINALLY_DISABLED_DIAGNOSTIC_ONLY",
+    "superseded_split_schedule": "TERMINALLY_DISABLED_NOT_LAUNCHABLE",
+    "market_data_sequence": [
+      {
+        "sequence": 1,
+        "run_id": "pit_universe_v2_forward_20260802_n05",
+        "kind": "PREAPPROVED_SHORT_SEGMENT",
+        "start_local": "2026-08-02T01:00:00+03:00",
+        "end_local": "2026-08-02T01:20:00+03:00",
+        "duration_sec": 1200,
+        "status": "COMPLETED"
+      },
+      {
+        "sequence": 2,
+        "run_id": "pit_universe_v2_forward_20260803_n06",
+        "kind": "PREAPPROVED_SHORT_SEGMENT",
+        "start_local": "2026-08-03T01:00:00+03:00",
+        "end_local": "2026-08-03T01:20:00+03:00",
+        "duration_sec": 1200,
+        "status": "COMPLETED"
+      },
+      {
+        "sequence": 3,
+        "run_id": "pit_universe_v2_forward_20260804_n07",
+        "kind": "PREAPPROVED_SHORT_SEGMENT",
+        "start_local": "2026-08-04T01:00:00+03:00",
+        "end_local": "2026-08-04T01:20:00+03:00",
+        "duration_sec": 1200,
+        "status": "PROPOSED_SUPPRESSION_BY_IMMEDIATE19_DENSE_CAMPAIGN_NOT_ACTIVE",
+        "suppression_condition": "Only if the new campaign receives exact hash-bound launch approval."
+      },
+      {
+        "sequence": 4,
+        "run_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h_immediate19_phase_01",
+        "kind": "LONG_CAMPAIGN_PHASE",
+        "start_local": "2026-08-03T19:00:00+03:00",
+        "end_local": "2026-08-04T19:00:00+03:00",
+        "hard_end_local": "2026-08-04T19:30:00+03:00",
+        "writer_duration_sec": 86400,
+        "uninterrupted_required": true
+      }
+    ],
+    "continuous_evidence_exception": {
+      "enabled": true,
+      "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h_immediate19",
+      "window_id": "EVIDENCE_EXCEPTION_2026-08-03_24H_IMMEDIATE19",
+      "start_local": "2026-08-03T19:00:00+03:00",
+      "writer_duration_sec": 86400,
+      "writer_deadline_local": "2026-08-04T19:00:00+03:00",
+      "hard_deadline_local": "2026-08-04T19:30:00+03:00",
+      "uninterrupted_required": true,
+      "suppressed_pit_run_ids": [
+        "pit_universe_v2_forward_20260804_n07"
+      ],
+      "suppression_disposition": "PROPOSED_SUPPRESSION_ONLY_IF_NEW_IMMEDIATE19_DENSE_CAMPAIGN_IS_EXACTLY_APPROVED_AND_OWNS_THE_SINGLE_WRITER",
+      "reason": "User requested the earliest same-day start. One uninterrupted 24-hour dense evidence run has priority over the overlapping 20-minute PIT shadow segment only after separate exact approval."
+    },
+    "dense_writer_target_sec": 86400,
+    "dense_campaign_max_elapsed_sec": 88200,
+    "dense_campaign_hard_deadline_local": "2026-08-04T19:30:00+03:00",
+    "hard_campaign_output_cap_bytes": 25000000000,
+    "post_collection_pipeline": [
+      "campaign_data_quality",
+      "frozen_train",
+      "chronological_oos",
+      "walk_forward_5_fold",
+      "normal_and_stress_economics",
+      "drawdown_sample_liquidity_fill_capacity",
+      "public_readonly_paper_forward_7d_on_full_pass"
+    ],
+    "downstream_stops_on_first_failed_gate": true,
+    "terminal_accept_or_reject_notification_required": true
+  },
+  "campaign_orchestration": {
+    "classes": {
+      "OFFLINE_BOUNDED": "max_runtime_sec <= 1800 and no market-data writer",
+      "PREAPPROVED_SHORT_SEGMENT": "listed immutable PIT segment with max_runtime_sec <= 1800",
+      "LONG_CAMPAIGN": "market-data writer above 1800 seconds or multiple durable phases"
+    },
+    "preapproved_short_segments_do_not_require_repeat_approval": true,
+    "long_campaign_requires_exact_campaign_id_plan_hash_and_window_id": true,
+    "long_campaign_registry_is_separate_from_pit_schedule_pointer": true,
+    "one_global_visible_writer_lock_across_all_registries": true,
+    "global_writer_claim_create_mode": "ATOMIC_CREATE_NEW_FAIL_CLOSED",
+    "stale_global_writer_claim_requires_explicit_reconciliation": true,
+    "pit_blackout_must_be_reserved_in_overlapping_long_campaigns": true,
+    "phase_outputs_must_be_append_safe_and_independently_finalizable": true
+  },
+  "production_lanes": {
+    "offline_when_no_writer": {
+      "allowed": [
+        "code and tests on isolated namespaces",
+        "immutable plan and approval-packet preparation",
+        "data-quality, provenance and integrity checks",
+        "postprocess authorized by the active gate",
+        "deterministic evidence stages authorized by the frozen factory contract",
+        "paper-only infrastructure that does not submit orders"
+      ]
+    },
+    "market_data": {
+      "single_visible_writer": true,
+      "priority": [
+        "due evidence-critical PIT segment",
+        "approved dense campaign phase",
+        "no writer when marginal evidence value is not established"
+      ]
+    }
+  },
+  "scientific_scheduling": {
+    "continuous_production_does_not_mean_continuous_writer": true,
+    "no_idle_between_materially_useful_stages": true,
+    "current_pit_track_requires_distinct_calendar_dates": true,
+    "do_not_stretch_one_pit_date_only_to_fill_the_window": true,
+    "use_long_windows_for_pre_registered_tracks_that_gain_evidence_from_duration": true,
+    "busy_loop_and_cosmetic_work_are_forbidden": true
+  },
+  "invariants": {
+    "weekly_remaining_percent_must_be_greater_than": 15,
+    "telemetry_must_be_fresh": true,
+    "active_run_gate_must_not_be_running_for_a_new_writer": true,
+    "visible_terminal_required": true,
+    "single_market_data_writer": true,
+    "append_safe_durable_output_required": true,
+    "grid_and_retune_forbidden": true,
+    "live_orders": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage": false,
+    "margin": false
+  }
+}

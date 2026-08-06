@@ -72,6 +72,14 @@ from experiments import (
     summarize_experiment_ledger,
     write_setup_registry,
 )
+from funding_pressure_reversal import (
+    evaluate_plan as evaluate_funding_pressure_plan,
+    validate_evaluator_readiness as validate_funding_pressure_readiness,
+)
+from wick_rejection_reversal import (
+    evaluate_plan as evaluate_wick_rejection_plan,
+    validate_evaluator_readiness as validate_wick_rejection_readiness,
+)
 from event_labeler import (
     EventQualityConfig,
     default_event_quality_path,
@@ -81,6 +89,16 @@ from event_slicer import (
     EventSliceConfig,
     default_event_slice_path,
     run_event_slice_optimizer_file,
+)
+from event_validation import (
+    EventValidationConfig,
+    default_event_validation_path,
+    run_event_validation_file,
+)
+from cross_venue_dislocation import (
+    CrossVenueDislocationConfig,
+    default_cross_venue_dislocation_path,
+    run_cross_venue_dislocation_file,
 )
 from perp_replay import (
     default_perp_grid_path,
@@ -139,6 +157,17 @@ from ws_grid_search import (
 from ws_normalizer import (
     default_normalized_path,
     normalize_ws_files,
+)
+from ws_data_quality import (
+    WsDataQualityConfig,
+    default_ws_data_quality_path,
+    run_ws_data_quality_file,
+)
+from ws_postprocess import (
+    default_ws_postprocess_normalized_path,
+    default_ws_postprocess_quality_path,
+    default_ws_postprocess_report_path,
+    run_ws_postprocess_file,
 )
 from ws_replay import (
     EventDrivenReplayBacktester,
@@ -419,11 +448,37 @@ def cmd_ws_collect(
     )
 
 
-def _latest_ws_input(raw_dir: Path) -> Path:
+def _latest_ws_input(raw_dir: Path, freshness_slack_sec: float = 60.0) -> Path:
+    """Автовыбор последнего WS-входа с защитой от stale manifest.
+
+    Отказывается выбирать автоматически, если найден raw новее последнего
+    manifest (признак partial run без manifest) или последний manifest помечен
+    completed=false. В этих случаях вход нужно указать явно.
+    """
     manifests = list(raw_dir.glob("ws_collect_*.json"))
-    if manifests:
-        return max(manifests, key=lambda p: p.stat().st_mtime)
     raw_files = list(raw_dir.glob("ws_*.jsonl"))
+    if manifests:
+        chosen = max(manifests, key=lambda p: p.stat().st_mtime)
+        if raw_files:
+            newest_raw = max(raw_files, key=lambda p: p.stat().st_mtime)
+            if newest_raw.stat().st_mtime > chosen.stat().st_mtime + freshness_slack_sec:
+                raise RuntimeError(
+                    f"Автовыбор запрещен: raw {newest_raw.name} новее последнего manifest "
+                    f"{chosen.name}. Похоже, последний сбор завершился без manifest "
+                    "(partial run). Укажите вход явно или выполните finalize через "
+                    "ws_durable_collector."
+                )
+        try:
+            completed = json.loads(chosen.read_text(encoding="utf-8")).get("completed")
+        except (OSError, json.JSONDecodeError):
+            completed = None
+        if completed is False:
+            raise RuntimeError(
+                f"Автовыбор запрещен: последний manifest {chosen.name} помечен "
+                "completed=false (неполный dataset). Укажите вход явно, если это "
+                "осознанный QA-прогон по partial данным."
+            )
+        return chosen
     if raw_files:
         return max(raw_files, key=lambda p: p.stat().st_mtime)
     raise FileNotFoundError(f"В {raw_dir} нет ws_collect_*.json или ws_*.jsonl")
@@ -436,6 +491,125 @@ def cmd_ws_normalize(cfg: AppConfig, input_path: str | None, output_path: str | 
     out = Path(output_path) if output_path else default_normalized_path(normalized_dir)
     result = normalize_ws_files(src, out)
     print(json.dumps({"ok": True, **result}, ensure_ascii=False))
+
+
+def cmd_ws_data_quality(
+    cfg: AppConfig,
+    input_path: str | None,
+    manifest_path: str | None,
+    output_path: str | None,
+    min_rows: int,
+    min_exchanges: int,
+    min_markets: int,
+    min_span_hours: float,
+    min_duration_ratio: float,
+    max_parse_error_rate: float,
+    required_event_kinds: str,
+    min_markets_with_required_kinds: int,
+    max_market_event_share: float,
+    max_gap_sec: float,
+    max_manifest_error_count: int,
+) -> None:
+    normalized_dir = _ensure_dir(cfg.paths.normalized_dir)
+    backtest_dir = _ensure_dir(cfg.paths.backtest_dir)
+    src = Path(input_path) if input_path else _latest_normalized_jsonl(normalized_dir)
+    out = Path(output_path) if output_path else default_ws_data_quality_path(backtest_dir)
+    result = run_ws_data_quality_file(
+        src,
+        out,
+        manifest_path=manifest_path,
+        config=WsDataQualityConfig(
+            min_rows=min_rows,
+            min_exchanges=min_exchanges,
+            min_markets=min_markets,
+            min_span_hours=min_span_hours,
+            min_duration_ratio=min_duration_ratio,
+            max_parse_error_rate=max_parse_error_rate,
+            required_event_kinds=_parse_optional_csv(required_event_kinds) or ("bbo", "depth", "trade"),
+            min_markets_with_required_kinds=min_markets_with_required_kinds,
+            max_market_event_share=max_market_event_share,
+            max_gap_sec=max_gap_sec,
+            max_manifest_error_count=max_manifest_error_count,
+        ),
+    )
+    print(
+        json.dumps(
+            {
+                "ok": True,
+                "input": str(src),
+                "output": str(out),
+                "accepted": result["accepted"],
+                "reasons": result["reasons"],
+                "metrics": result["metrics"],
+            },
+            ensure_ascii=False,
+        )
+    )
+
+
+def cmd_ws_postprocess(
+    cfg: AppConfig,
+    input_path: str | None,
+    manifest_path: str | None,
+    normalized_output_path: str | None,
+    quality_output_path: str | None,
+    report_output_path: str | None,
+    min_rows: int,
+    min_exchanges: int,
+    min_markets: int,
+    min_span_hours: float,
+    min_duration_ratio: float,
+    max_parse_error_rate: float,
+    required_event_kinds: str,
+    min_markets_with_required_kinds: int,
+    max_market_event_share: float,
+    max_gap_sec: float,
+    max_manifest_error_count: int,
+) -> None:
+    raw_dir = _ensure_dir(cfg.paths.raw_dir)
+    normalized_dir = _ensure_dir(cfg.paths.normalized_dir)
+    backtest_dir = _ensure_dir(cfg.paths.backtest_dir)
+    src = Path(input_path) if input_path else _latest_ws_input(raw_dir)
+    normalized_out = Path(normalized_output_path) if normalized_output_path else default_ws_postprocess_normalized_path(normalized_dir)
+    quality_out = Path(quality_output_path) if quality_output_path else default_ws_postprocess_quality_path(backtest_dir)
+    report_out = Path(report_output_path) if report_output_path else default_ws_postprocess_report_path(backtest_dir)
+    result = run_ws_postprocess_file(
+        src,
+        normalized_output_path=normalized_out,
+        quality_output_path=quality_out,
+        report_output_path=report_out,
+        manifest_path=manifest_path,
+        quality_config=WsDataQualityConfig(
+            min_rows=min_rows,
+            min_exchanges=min_exchanges,
+            min_markets=min_markets,
+            min_span_hours=min_span_hours,
+            min_duration_ratio=min_duration_ratio,
+            max_parse_error_rate=max_parse_error_rate,
+            required_event_kinds=_parse_optional_csv(required_event_kinds) or ("bbo", "depth", "trade"),
+            min_markets_with_required_kinds=min_markets_with_required_kinds,
+            max_market_event_share=max_market_event_share,
+            max_gap_sec=max_gap_sec,
+            max_manifest_error_count=max_manifest_error_count,
+        ),
+    )
+    print(
+        json.dumps(
+            {
+                "ok": True,
+                "input": str(src),
+                "output": str(report_out),
+                "normalized_output": str(normalized_out),
+                "quality_output": str(quality_out),
+                "replay_allowed": result["replay_allowed"],
+                "data_quality_accepted": result["data_quality"]["accepted"],
+                "data_quality_reasons": result["data_quality"]["reasons"],
+                "normalization": result["normalization"],
+                "metrics": result["data_quality"]["metrics"],
+            },
+            ensure_ascii=False,
+        )
+    )
 
 
 def _latest_normalized_jsonl(normalized_dir: Path) -> Path:
@@ -457,6 +631,24 @@ def _latest_event_quality_report(backtest_dir: Path) -> Path:
     if not files:
         raise FileNotFoundError(f"В {backtest_dir} нет event_quality_*.json")
     return max(files, key=lambda p: p.stat().st_mtime)
+
+
+def _parse_venue_costs(raw: str) -> dict[str, dict[str, float]]:
+    if not raw.strip():
+        return {}
+    payload = json.loads(raw)
+    if not isinstance(payload, dict):
+        raise ValueError("venue_costs_json must be a JSON object keyed by exchange")
+    result: dict[str, dict[str, float]] = {}
+    for exchange, values in payload.items():
+        if not isinstance(values, dict):
+            raise ValueError(f"venue_costs_json[{exchange!r}] must be an object")
+        result[str(exchange).strip().lower()] = {str(name): float(value) for name, value in values.items()}
+    return result
+
+
+def _venue_cost_map(costs: dict[str, dict[str, float]], field_name: str) -> dict[str, float]:
+    return {exchange: values[field_name] for exchange, values in costs.items() if field_name in values}
 
 
 def cmd_ws_replay(
@@ -495,17 +687,24 @@ def cmd_ws_replay(
     breakout_lookback_sec: float,
     breakout_bps: float,
     breakout_min_samples: int,
+    venue_costs_json: str = "",
+    max_quote_age_sec: float = 2.0,
 ) -> None:
     normalized_dir = _ensure_dir(cfg.paths.normalized_dir)
     backtest_dir = _ensure_dir(cfg.paths.backtest_dir)
     src = Path(input_path) if input_path else _latest_normalized_jsonl(normalized_dir)
     out = Path(output_path) if output_path else default_replay_path(backtest_dir)
+    venue_costs = _parse_venue_costs(venue_costs_json)
     replay_cfg = ReplayConfig(
         notional_quote=notional_quote,
         execution_mode=execution_mode,
         taker_fee_bps=taker_fee_bps,
         maker_fee_bps=maker_fee_bps,
         slippage_bps=slippage_bps,
+        taker_fee_bps_by_exchange=_venue_cost_map(venue_costs, "taker_fee_bps"),
+        maker_fee_bps_by_exchange=_venue_cost_map(venue_costs, "maker_fee_bps"),
+        slippage_bps_by_exchange=_venue_cost_map(venue_costs, "slippage_bps"),
+        max_quote_age_sec=max_quote_age_sec,
         latency_ms=latency_ms,
         flow_window_sec=flow_window_sec,
         allow_short=allow_short,
@@ -607,17 +806,25 @@ def cmd_ws_grid_search(
     grid_breakout_lookback_sec: str | None,
     grid_breakout_min_samples: str | None,
     top_n: int,
+    max_grid_combinations: int = 10_000,
+    venue_costs_json: str = "",
+    max_quote_age_sec: float = 2.0,
 ) -> None:
     normalized_dir = _ensure_dir(cfg.paths.normalized_dir)
     backtest_dir = _ensure_dir(cfg.paths.backtest_dir)
     src = Path(input_path) if input_path else _latest_normalized_jsonl(normalized_dir)
     out = Path(output_path) if output_path else default_grid_path(backtest_dir)
+    venue_costs = _parse_venue_costs(venue_costs_json)
     replay_cfg = ReplayConfig(
         notional_quote=notional_quote,
         execution_mode=execution_mode,
         taker_fee_bps=taker_fee_bps,
         maker_fee_bps=maker_fee_bps,
         slippage_bps=slippage_bps,
+        taker_fee_bps_by_exchange=_venue_cost_map(venue_costs, "taker_fee_bps"),
+        maker_fee_bps_by_exchange=_venue_cost_map(venue_costs, "maker_fee_bps"),
+        slippage_bps_by_exchange=_venue_cost_map(venue_costs, "slippage_bps"),
+        max_quote_age_sec=max_quote_age_sec,
         latency_ms=latency_ms,
         flow_window_sec=flow_window_sec,
         allow_short=allow_short,
@@ -674,6 +881,7 @@ def cmd_ws_grid_search(
         min_net_pnl_quote=min_net_pnl_quote,
         min_profit_factor=min_profit_factor,
         max_drawdown_quote=max_drawdown_quote,
+        max_combinations=max_grid_combinations,
     )
     print(
         json.dumps(
@@ -733,17 +941,24 @@ def cmd_perp_replay(
     sweep_v2_max_pre_spread_bps: float,
     sweep_v2_max_reclaim_sec: float,
     sweep_v2_event_cooldown_sec: float,
+    venue_costs_json: str = "",
+    max_quote_age_sec: float = 2.0,
 ) -> None:
     normalized_dir = _ensure_dir(cfg.paths.normalized_dir)
     backtest_dir = _ensure_dir(cfg.paths.backtest_dir)
     src = Path(input_path) if input_path else _latest_perp_normalized_jsonl(normalized_dir)
     out = Path(output_path) if output_path else default_perp_replay_path(backtest_dir)
+    venue_costs = _parse_venue_costs(venue_costs_json)
     replay_cfg = ReplayConfig(
         notional_quote=notional_quote,
         execution_mode=execution_mode,
         taker_fee_bps=taker_fee_bps,
         maker_fee_bps=maker_fee_bps,
         slippage_bps=slippage_bps,
+        taker_fee_bps_by_exchange=_venue_cost_map(venue_costs, "taker_fee_bps"),
+        maker_fee_bps_by_exchange=_venue_cost_map(venue_costs, "maker_fee_bps"),
+        slippage_bps_by_exchange=_venue_cost_map(venue_costs, "slippage_bps"),
+        max_quote_age_sec=max_quote_age_sec,
         latency_ms=latency_ms,
         flow_window_sec=flow_window_sec,
         allow_short=True,
@@ -839,17 +1054,25 @@ def cmd_perp_grid_search(
     sweep_v2_max_reclaim_sec: float,
     sweep_v2_event_cooldown_sec: float,
     top_n: int,
+    max_grid_combinations: int = 10_000,
+    venue_costs_json: str = "",
+    max_quote_age_sec: float = 2.0,
 ) -> None:
     normalized_dir = _ensure_dir(cfg.paths.normalized_dir)
     backtest_dir = _ensure_dir(cfg.paths.backtest_dir)
     src = Path(input_path) if input_path else _latest_perp_normalized_jsonl(normalized_dir)
     out = Path(output_path) if output_path else default_perp_grid_path(backtest_dir)
+    venue_costs = _parse_venue_costs(venue_costs_json)
     replay_cfg = ReplayConfig(
         notional_quote=notional_quote,
         execution_mode=execution_mode,
         taker_fee_bps=taker_fee_bps,
         maker_fee_bps=maker_fee_bps,
         slippage_bps=slippage_bps,
+        taker_fee_bps_by_exchange=_venue_cost_map(venue_costs, "taker_fee_bps"),
+        maker_fee_bps_by_exchange=_venue_cost_map(venue_costs, "maker_fee_bps"),
+        slippage_bps_by_exchange=_venue_cost_map(venue_costs, "slippage_bps"),
+        max_quote_age_sec=max_quote_age_sec,
         latency_ms=latency_ms,
         flow_window_sec=flow_window_sec,
         allow_short=True,
@@ -899,6 +1122,7 @@ def cmd_perp_grid_search(
         min_net_pnl_quote=min_net_pnl_quote,
         min_profit_factor=min_profit_factor,
         max_drawdown_quote=max_drawdown_quote,
+        max_combinations=max_grid_combinations,
     )
     print(
         json.dumps(
@@ -1090,6 +1314,84 @@ def cmd_event_slice_optimizer(
                 "generated_slices": report["generated_slices"],
                 "eligible_slices": report["eligible_slices"],
                 "top_slices": report["top_slices"][: min(top_n, 10)],
+            },
+            ensure_ascii=False,
+        )
+    )
+
+
+def cmd_event_validation_report(
+    cfg: AppConfig,
+    input_path: str | None,
+    output_path: str | None,
+    train_fraction: float,
+    walk_forward_windows: int,
+    walk_forward_min_pass_ratio: float,
+    min_events: int,
+    min_reclaimed: int,
+    min_target_before_stop_rate: float,
+    min_target_rate_all: float,
+    max_false_sweep_rate: float,
+    max_avg_adverse_bps: float,
+    min_favorable_to_adverse: float,
+    min_sweep_intensity_bps: str,
+    max_time_to_reclaim_sec: str,
+    max_pre_spread_bps: str,
+    max_abs_basis_bps: str,
+    min_trade_notional_quote: str,
+    stress_favorable_haircut_bps: float,
+    stress_adverse_widen_bps: float,
+    stress_target_bps: float,
+    stress_stop_bps: float,
+    top_n: int,
+) -> None:
+    backtest_dir = _ensure_dir(cfg.paths.backtest_dir)
+    src = Path(input_path) if input_path else _latest_event_quality_report(backtest_dir)
+    out = Path(output_path) if output_path else default_event_validation_path(backtest_dir)
+    report = run_event_validation_file(
+        input_path=src,
+        output_path=out,
+        cfg=EventValidationConfig(
+            train_fraction=train_fraction,
+            walk_forward_windows=walk_forward_windows,
+            walk_forward_min_pass_ratio=walk_forward_min_pass_ratio,
+            min_events=min_events,
+            min_reclaimed=min_reclaimed,
+            min_target_before_stop_rate=min_target_before_stop_rate,
+            min_target_rate_all=min_target_rate_all,
+            max_false_sweep_rate=max_false_sweep_rate,
+            max_avg_adverse_bps=max_avg_adverse_bps,
+            min_favorable_to_adverse=min_favorable_to_adverse,
+            min_sweep_intensity_bps=tuple(parse_float_list(min_sweep_intensity_bps)),
+            max_time_to_reclaim_sec=tuple(parse_float_list(max_time_to_reclaim_sec)),
+            max_pre_spread_bps=tuple(parse_float_list(max_pre_spread_bps)),
+            max_abs_basis_bps=tuple(parse_float_list(max_abs_basis_bps)),
+            min_trade_notional_quote=tuple(parse_float_list(min_trade_notional_quote)),
+            stress_favorable_haircut_bps=stress_favorable_haircut_bps,
+            stress_adverse_widen_bps=stress_adverse_widen_bps,
+            stress_target_bps=stress_target_bps,
+            stress_stop_bps=stress_stop_bps,
+            top_n=top_n,
+        ),
+    )
+    print(
+        json.dumps(
+            {
+                "ok": True,
+                "input": str(src),
+                "output": str(out),
+                "accepted": report["accepted"],
+                "decision": report["decision"],
+                "rejection_reasons": report["rejection_reasons"],
+                "split": report["split"],
+                "selected_slice": report["selected_slice"],
+                "oos": report["oos"],
+                "walk_forward": {
+                    "accepted": report["walk_forward"]["accepted"],
+                    "accepted_windows": report["walk_forward"]["accepted_windows"],
+                    "accepted_ratio": report["walk_forward"]["accepted_ratio"],
+                },
+                "stress": report["stress"],
             },
             ensure_ascii=False,
         )
@@ -1865,16 +2167,21 @@ def cmd_funding_backtest(
     max_basis_std_bps: float,
     max_avg_spot_spread_bps: float,
     max_avg_perp_spread_bps: float,
+    venue_costs_json: str = "",
 ) -> None:
     funding_dir = _ensure_dir(cfg.paths.funding_dir)
     backtest_dir = _ensure_dir(cfg.paths.backtest_dir)
     src = Path(input_path) if input_path else _latest_funding_input(funding_dir)
     out = Path(output_path) if output_path else default_funding_backtest_path(backtest_dir)
+    venue_costs = _parse_venue_costs(venue_costs_json)
     bt_cfg = FundingBacktestConfig(
         notional_quote=notional_quote,
         spot_fee_bps=spot_fee_bps,
         perp_fee_bps=perp_fee_bps,
         slippage_bps=slippage_bps,
+        spot_fee_bps_by_exchange=_venue_cost_map(venue_costs, "spot_fee_bps"),
+        perp_fee_bps_by_exchange=_venue_cost_map(venue_costs, "perp_fee_bps"),
+        slippage_bps_by_exchange=_venue_cost_map(venue_costs, "slippage_bps"),
         min_funding_rate=min_funding_rate,
         min_total_score=min_total_score,
         max_spot_spread_bps=max_spot_spread_bps,
@@ -3219,6 +3526,7 @@ def cmd_experiment_record(
     cfg: AppConfig,
     source_video_id: str,
     source_url: str,
+    source_channel: str,
     participant: str,
     claim_family: str,
     hypothesis: str,
@@ -3231,6 +3539,9 @@ def cmd_experiment_record(
     verdict_reason: str,
     tags: str | None,
     notes: str,
+    fee_schedule_revision: str,
+    evaluation_scope: str,
+    oos_status: str,
     output_path: str | None,
 ) -> None:
     experiment_dir = _ensure_dir(cfg.paths.experiment_dir)
@@ -3242,6 +3553,7 @@ def cmd_experiment_record(
     record = make_experiment_record(
         source_video_id=source_video_id,
         source_url=source_url,
+        source_channel=source_channel,
         participant=participant,
         claim_family=claim_family,
         hypothesis=hypothesis,
@@ -3254,6 +3566,9 @@ def cmd_experiment_record(
         verdict_reason=verdict_reason,
         tags=[item.strip() for item in tags.split(",") if item.strip()] if tags else [],
         notes=notes,
+        fee_schedule_revision=fee_schedule_revision,
+        evaluation_scope=evaluation_scope,
+        oos_status=oos_status,
     )
     result = append_experiment_record(ledger, record)
     print(
@@ -3341,6 +3656,40 @@ def build_parser() -> argparse.ArgumentParser:
     ws_normalize.add_argument("--input", type=str, default=None)
     ws_normalize.add_argument("--output", type=str, default=None)
 
+    ws_quality = sub.add_parser("ws-data-quality", help="Проверить coverage/quality normalized WS JSONL перед replay/grid")
+    ws_quality.add_argument("--input", type=str, default=None)
+    ws_quality.add_argument("--manifest", type=str, default=None)
+    ws_quality.add_argument("--output", type=str, default=None)
+    ws_quality.add_argument("--min-rows", type=int, default=1)
+    ws_quality.add_argument("--min-exchanges", type=int, default=1)
+    ws_quality.add_argument("--min-markets", type=int, default=1)
+    ws_quality.add_argument("--min-span-hours", type=float, default=0.0)
+    ws_quality.add_argument("--min-duration-ratio", type=float, default=0.0)
+    ws_quality.add_argument("--max-parse-error-rate", type=float, default=1.0)
+    ws_quality.add_argument("--required-event-kinds", default="bbo,depth,trade")
+    ws_quality.add_argument("--min-markets-with-required-kinds", type=int, default=0)
+    ws_quality.add_argument("--max-market-event-share", type=float, default=1.0)
+    ws_quality.add_argument("--max-gap-sec", type=float, default=0.0)
+    ws_quality.add_argument("--max-manifest-error-count", type=int, default=1000000)
+
+    ws_postprocess = sub.add_parser("ws-postprocess", help="Guarded WS normalize + data-quality gate before replay/grid")
+    ws_postprocess.add_argument("--input", type=str, default=None)
+    ws_postprocess.add_argument("--manifest", type=str, default=None)
+    ws_postprocess.add_argument("--normalized-output", type=str, default=None)
+    ws_postprocess.add_argument("--quality-output", type=str, default=None)
+    ws_postprocess.add_argument("--output", type=str, default=None)
+    ws_postprocess.add_argument("--min-rows", type=int, default=1)
+    ws_postprocess.add_argument("--min-exchanges", type=int, default=1)
+    ws_postprocess.add_argument("--min-markets", type=int, default=1)
+    ws_postprocess.add_argument("--min-span-hours", type=float, default=0.0)
+    ws_postprocess.add_argument("--min-duration-ratio", type=float, default=0.0)
+    ws_postprocess.add_argument("--max-parse-error-rate", type=float, default=1.0)
+    ws_postprocess.add_argument("--required-event-kinds", default="bbo,depth,trade")
+    ws_postprocess.add_argument("--min-markets-with-required-kinds", type=int, default=0)
+    ws_postprocess.add_argument("--max-market-event-share", type=float, default=1.0)
+    ws_postprocess.add_argument("--max-gap-sec", type=float, default=0.0)
+    ws_postprocess.add_argument("--max-manifest-error-count", type=int, default=1000000)
+
     perp_collect = sub.add_parser("perp-collect", help="Собрать public REST perp depth/trades/mark/funding в normalized JSONL")
     perp_collect.add_argument("--exchanges", default="mexc,gateio")
     perp_collect.add_argument("--universe", type=str, default=None)
@@ -3388,6 +3737,49 @@ def build_parser() -> argparse.ArgumentParser:
     event_slice.add_argument("--min-trade-notional-quote", type=str, default="0,2500,5000,10000")
     event_slice.add_argument("--top-n", type=int, default=50)
 
+    event_validation = sub.add_parser("event-validation-report", help="Validate sweep/reclaim slices with train/OOS, walk-forward, and stress gates")
+    event_validation.add_argument("--input", type=str, default=None)
+    event_validation.add_argument("--output", type=str, default=None)
+    event_validation.add_argument("--train-fraction", type=float, default=0.70)
+    event_validation.add_argument("--walk-forward-windows", type=int, default=4)
+    event_validation.add_argument("--walk-forward-min-pass-ratio", type=float, default=0.75)
+    event_validation.add_argument("--min-events", type=int, default=20)
+    event_validation.add_argument("--min-reclaimed", type=int, default=10)
+    event_validation.add_argument("--min-target-before-stop-rate", type=float, default=0.60)
+    event_validation.add_argument("--min-target-rate-all", type=float, default=0.20)
+    event_validation.add_argument("--max-false-sweep-rate", type=float, default=0.50)
+    event_validation.add_argument("--max-avg-adverse-bps", type=float, default=0.0)
+    event_validation.add_argument("--min-favorable-to-adverse", type=float, default=1.0)
+    event_validation.add_argument("--min-sweep-intensity-bps", type=str, default="0,2,5,10")
+    event_validation.add_argument("--max-time-to-reclaim-sec", type=str, default="0,30,60,120,300")
+    event_validation.add_argument("--max-pre-spread-bps", type=str, default="0,1,3,6")
+    event_validation.add_argument("--max-abs-basis-bps", type=str, default="0,5,10,25,100")
+    event_validation.add_argument("--min-trade-notional-quote", type=str, default="0,2500,5000,10000")
+    event_validation.add_argument("--stress-favorable-haircut-bps", type=float, default=1.0)
+    event_validation.add_argument("--stress-adverse-widen-bps", type=float, default=1.0)
+    event_validation.add_argument("--stress-target-bps", type=float, default=6.0)
+    event_validation.add_argument("--stress-stop-bps", type=float, default=3.0)
+    event_validation.add_argument("--top-n", type=int, default=50)
+
+    cross_venue = sub.add_parser(
+        "cross-venue-dislocation",
+        help="Research-only PlanOnly detector for MEXC/Gate spot BBO dislocations after base-tier costs",
+    )
+    cross_venue.add_argument("--input", type=str, required=True)
+    cross_venue.add_argument("--output", type=str, default=None)
+    cross_venue.add_argument("--quote", type=str, default="USDT")
+    cross_venue.add_argument("--stale-quote-sec", type=float, default=2.0)
+    cross_venue.add_argument("--min-top-notional-quote", type=float, default=25.0)
+    cross_venue.add_argument("--round-trip-fee-bps", type=float, default=39.0)
+    cross_venue.add_argument("--slippage-bps", type=float, default=10.0)
+    cross_venue.add_argument("--inventory-rebalance-buffer-bps", type=float, default=20.0)
+    cross_venue.add_argument("--min-net-edge-bps", type=float, default=0.0)
+    cross_venue.add_argument("--cooldown-sec", type=float, default=60.0)
+    cross_venue.add_argument("--max-rows", type=int, default=0)
+    cross_venue.add_argument("--max-events", type=int, default=1000)
+    cross_venue.add_argument("--progress-every-rows", type=int, default=0)
+    cross_venue.add_argument("--include-bases", type=str, default="")
+
     perp_postprocess = sub.add_parser("perp-postprocess", help="QA report + strict perp grid-search after final collect")
     perp_postprocess.add_argument("--input", type=str, default=None)
     perp_postprocess.add_argument("--manifest", type=str, default=None)
@@ -3404,6 +3796,8 @@ def build_parser() -> argparse.ArgumentParser:
     ws_replay.add_argument("--taker-fee-bps", type=float, default=10.0)
     ws_replay.add_argument("--maker-fee-bps", type=float, default=0.0)
     ws_replay.add_argument("--slippage-bps", type=float, default=1.0)
+    ws_replay.add_argument("--venue-costs-json", type=str, default="")
+    ws_replay.add_argument("--max-quote-age-sec", type=float, default=2.0)
     ws_replay.add_argument("--latency-ms", type=int, default=250)
     ws_replay.add_argument("--flow-window-sec", type=float, default=5.0)
     ws_replay.add_argument("--allow-short", action="store_true")
@@ -3439,6 +3833,8 @@ def build_parser() -> argparse.ArgumentParser:
     ws_grid.add_argument("--taker-fee-bps", type=float, default=10.0)
     ws_grid.add_argument("--maker-fee-bps", type=float, default=0.0)
     ws_grid.add_argument("--slippage-bps", type=float, default=1.0)
+    ws_grid.add_argument("--venue-costs-json", type=str, default="")
+    ws_grid.add_argument("--max-quote-age-sec", type=float, default=2.0)
     ws_grid.add_argument("--latency-ms", type=int, default=250)
     ws_grid.add_argument("--flow-window-sec", type=float, default=5.0)
     ws_grid.add_argument("--allow-short", action="store_true")
@@ -3479,6 +3875,7 @@ def build_parser() -> argparse.ArgumentParser:
     ws_grid.add_argument("--grid-breakout-lookback-sec", type=str, default=None)
     ws_grid.add_argument("--grid-breakout-min-samples", type=str, default=None)
     ws_grid.add_argument("--top-n", type=int, default=20)
+    ws_grid.add_argument("--max-grid-combinations", type=int, default=10_000)
 
     perp_replay = sub.add_parser("perp-replay", help="Perp replay-backtest with funding/short support")
     perp_replay.add_argument("--input", type=str, default=None)
@@ -3489,6 +3886,8 @@ def build_parser() -> argparse.ArgumentParser:
     perp_replay.add_argument("--taker-fee-bps", type=float, default=10.0)
     perp_replay.add_argument("--maker-fee-bps", type=float, default=0.0)
     perp_replay.add_argument("--slippage-bps", type=float, default=1.0)
+    perp_replay.add_argument("--venue-costs-json", type=str, default="")
+    perp_replay.add_argument("--max-quote-age-sec", type=float, default=2.0)
     perp_replay.add_argument("--latency-ms", type=int, default=250)
     perp_replay.add_argument("--flow-window-sec", type=float, default=5.0)
     perp_replay.add_argument("--max-open-positions", type=int, default=1)
@@ -3520,6 +3919,8 @@ def build_parser() -> argparse.ArgumentParser:
     perp_grid.add_argument("--taker-fee-bps", type=float, default=10.0)
     perp_grid.add_argument("--maker-fee-bps", type=float, default=0.0)
     perp_grid.add_argument("--slippage-bps", type=float, default=1.0)
+    perp_grid.add_argument("--venue-costs-json", type=str, default="")
+    perp_grid.add_argument("--max-quote-age-sec", type=float, default=2.0)
     perp_grid.add_argument("--latency-ms", type=int, default=250)
     perp_grid.add_argument("--flow-window-sec", type=float, default=5.0)
     perp_grid.add_argument("--max-open-positions", type=int, default=1)
@@ -3556,6 +3957,7 @@ def build_parser() -> argparse.ArgumentParser:
     perp_grid.add_argument("--sweep-v2-max-reclaim-sec", type=float, default=0.0)
     perp_grid.add_argument("--sweep-v2-event-cooldown-sec", type=float, default=0.0)
     perp_grid.add_argument("--top-n", type=int, default=20)
+    perp_grid.add_argument("--max-grid-combinations", type=int, default=10_000)
 
     funding_scan = sub.add_parser("funding-scan", help="Сканировать spot/perp funding basis opportunities")
     funding_scan.add_argument("--exchanges", default="mexc,gateio")
@@ -3806,6 +4208,7 @@ def build_parser() -> argparse.ArgumentParser:
     funding_backtest.add_argument("--spot-fee-bps", type=float, default=10.0)
     funding_backtest.add_argument("--perp-fee-bps", type=float, default=7.5)
     funding_backtest.add_argument("--slippage-bps", type=float, default=1.0)
+    funding_backtest.add_argument("--venue-costs-json", type=str, default="")
     funding_backtest.add_argument("--min-funding-rate", type=float, default=0.0)
     funding_backtest.add_argument("--min-total-score", type=float, default=0.0)
     funding_backtest.add_argument("--max-spot-spread-bps", type=float, default=30.0)
@@ -4284,6 +4687,38 @@ def build_parser() -> argparse.ArgumentParser:
     funding_goal_audit_parser.add_argument("--quality-required-row-fields", type=str, default=None)
     funding_goal_audit_parser.add_argument("--quality-min-required-row-field-presence", type=float, default=None)
 
+    fast_edge_v4_validate = sub.add_parser(
+        "fast-edge-v4-validate",
+        help="Validate hash-bound funding-pressure evaluator without reading OOS",
+    )
+    fast_edge_v4_validate.add_argument("--plan", required=True)
+    fast_edge_v4_validate.add_argument("--expected-plan-hash", required=True)
+    fast_edge_v4_validate.add_argument("--output", type=str, default=None)
+
+    fast_edge_v4_evaluate = sub.add_parser(
+        "fast-edge-v4-evaluate",
+        help="Run one frozen no-grid funding-pressure evaluation",
+    )
+    fast_edge_v4_evaluate.add_argument("--plan", required=True)
+    fast_edge_v4_evaluate.add_argument("--expected-plan-hash", required=True)
+    fast_edge_v4_evaluate.add_argument("--output", required=True)
+
+    fast_edge_v5_validate = sub.add_parser(
+        "fast-edge-v5-validate",
+        help="Validate hash-bound wick-rejection evaluator without reading OOS",
+    )
+    fast_edge_v5_validate.add_argument("--plan", required=True)
+    fast_edge_v5_validate.add_argument("--expected-plan-hash", required=True)
+    fast_edge_v5_validate.add_argument("--output", type=str, default=None)
+
+    fast_edge_v5_evaluate = sub.add_parser(
+        "fast-edge-v5-evaluate",
+        help="Run one frozen no-grid wick-rejection evaluation",
+    )
+    fast_edge_v5_evaluate.add_argument("--plan", required=True)
+    fast_edge_v5_evaluate.add_argument("--expected-plan-hash", required=True)
+    fast_edge_v5_evaluate.add_argument("--output", required=True)
+
     setup_registry = sub.add_parser("setup-registry", help="Write the research-only setup registry")
     setup_registry.add_argument("--output", type=str, default=None)
 
@@ -4291,6 +4726,7 @@ def build_parser() -> argparse.ArgumentParser:
     experiment_record.add_argument("--output", type=str, default=None)
     experiment_record.add_argument("--source-video-id", required=True)
     experiment_record.add_argument("--source-url", required=True)
+    experiment_record.add_argument("--source-channel", default="https://www.youtube.com/@AnufrievNikita/")
     experiment_record.add_argument("--participant", default="")
     experiment_record.add_argument("--claim-family", required=True)
     experiment_record.add_argument("--hypothesis", required=True)
@@ -4303,6 +4739,9 @@ def build_parser() -> argparse.ArgumentParser:
     experiment_record.add_argument("--verdict-reason", default="")
     experiment_record.add_argument("--tags", default=None)
     experiment_record.add_argument("--notes", default="")
+    experiment_record.add_argument("--fee-schedule-revision", default="unspecified")
+    experiment_record.add_argument("--evaluation-scope", default="unspecified")
+    experiment_record.add_argument("--oos-status", default="not_evaluated")
 
     experiment_list = sub.add_parser("experiment-list", help="List experiment ledger records")
     experiment_list.add_argument("--input", type=str, default=None)
@@ -4360,6 +4799,46 @@ def main() -> None:
     if args.command == "ws-normalize":
         cmd_ws_normalize(cfg, input_path=args.input, output_path=args.output)
         return
+    if args.command == "ws-data-quality":
+        cmd_ws_data_quality(
+            cfg,
+            input_path=args.input,
+            manifest_path=args.manifest,
+            output_path=args.output,
+            min_rows=args.min_rows,
+            min_exchanges=args.min_exchanges,
+            min_markets=args.min_markets,
+            min_span_hours=args.min_span_hours,
+            min_duration_ratio=args.min_duration_ratio,
+            max_parse_error_rate=args.max_parse_error_rate,
+            required_event_kinds=args.required_event_kinds,
+            min_markets_with_required_kinds=args.min_markets_with_required_kinds,
+            max_market_event_share=args.max_market_event_share,
+            max_gap_sec=args.max_gap_sec,
+            max_manifest_error_count=args.max_manifest_error_count,
+        )
+        return
+    if args.command == "ws-postprocess":
+        cmd_ws_postprocess(
+            cfg,
+            input_path=args.input,
+            manifest_path=args.manifest,
+            normalized_output_path=args.normalized_output,
+            quality_output_path=args.quality_output,
+            report_output_path=args.output,
+            min_rows=args.min_rows,
+            min_exchanges=args.min_exchanges,
+            min_markets=args.min_markets,
+            min_span_hours=args.min_span_hours,
+            min_duration_ratio=args.min_duration_ratio,
+            max_parse_error_rate=args.max_parse_error_rate,
+            required_event_kinds=args.required_event_kinds,
+            min_markets_with_required_kinds=args.min_markets_with_required_kinds,
+            max_market_event_share=args.max_market_event_share,
+            max_gap_sec=args.max_gap_sec,
+            max_manifest_error_count=args.max_manifest_error_count,
+        )
+        return
     if args.command == "perp-collect":
         cmd_perp_collect(
             cfg,
@@ -4415,6 +4894,55 @@ def main() -> None:
             top_n=args.top_n,
         )
         return
+    if args.command == "event-validation-report":
+        cmd_event_validation_report(
+            cfg,
+            input_path=args.input,
+            output_path=args.output,
+            train_fraction=args.train_fraction,
+            walk_forward_windows=args.walk_forward_windows,
+            walk_forward_min_pass_ratio=args.walk_forward_min_pass_ratio,
+            min_events=args.min_events,
+            min_reclaimed=args.min_reclaimed,
+            min_target_before_stop_rate=args.min_target_before_stop_rate,
+            min_target_rate_all=args.min_target_rate_all,
+            max_false_sweep_rate=args.max_false_sweep_rate,
+            max_avg_adverse_bps=args.max_avg_adverse_bps,
+            min_favorable_to_adverse=args.min_favorable_to_adverse,
+            min_sweep_intensity_bps=args.min_sweep_intensity_bps,
+            max_time_to_reclaim_sec=args.max_time_to_reclaim_sec,
+            max_pre_spread_bps=args.max_pre_spread_bps,
+            max_abs_basis_bps=args.max_abs_basis_bps,
+            min_trade_notional_quote=args.min_trade_notional_quote,
+            stress_favorable_haircut_bps=args.stress_favorable_haircut_bps,
+            stress_adverse_widen_bps=args.stress_adverse_widen_bps,
+            stress_target_bps=args.stress_target_bps,
+            stress_stop_bps=args.stress_stop_bps,
+            top_n=args.top_n,
+        )
+        return
+    if args.command == "cross-venue-dislocation":
+        report_path = args.output or str(default_cross_venue_dislocation_path(cfg.paths.backtest_dir))
+        report = run_cross_venue_dislocation_file(
+            args.input,
+            output_path=report_path,
+            cfg=CrossVenueDislocationConfig(
+                quote=args.quote,
+                stale_quote_sec=args.stale_quote_sec,
+                min_top_notional_quote=args.min_top_notional_quote,
+                round_trip_fee_bps=args.round_trip_fee_bps,
+                slippage_bps=args.slippage_bps,
+                inventory_rebalance_buffer_bps=args.inventory_rebalance_buffer_bps,
+                min_net_edge_bps=args.min_net_edge_bps,
+                cooldown_sec=args.cooldown_sec,
+                max_rows=args.max_rows,
+                max_events=args.max_events,
+                progress_every_rows=args.progress_every_rows,
+                include_bases=_parse_optional_csv(args.include_bases),
+            ),
+        )
+        print(json.dumps({"ok": True, "output": report_path, "summary": report["summary"], "decision": report["decision"]}, ensure_ascii=False))
+        return
     if args.command == "perp-postprocess":
         cmd_perp_postprocess(
             cfg,
@@ -4462,6 +4990,8 @@ def main() -> None:
             breakout_lookback_sec=args.breakout_lookback_sec,
             breakout_bps=args.breakout_bps,
             breakout_min_samples=args.breakout_min_samples,
+            venue_costs_json=args.venue_costs_json,
+            max_quote_age_sec=args.max_quote_age_sec,
         )
         return
     if args.command == "ws-grid-search":
@@ -4514,6 +5044,9 @@ def main() -> None:
             grid_breakout_lookback_sec=args.grid_breakout_lookback_sec,
             grid_breakout_min_samples=args.grid_breakout_min_samples,
             top_n=args.top_n,
+            max_grid_combinations=args.max_grid_combinations,
+            venue_costs_json=args.venue_costs_json,
+            max_quote_age_sec=args.max_quote_age_sec,
         )
         return
     if args.command == "perp-replay":
@@ -4549,6 +5082,8 @@ def main() -> None:
             sweep_v2_max_pre_spread_bps=args.sweep_v2_max_pre_spread_bps,
             sweep_v2_max_reclaim_sec=args.sweep_v2_max_reclaim_sec,
             sweep_v2_event_cooldown_sec=args.sweep_v2_event_cooldown_sec,
+            venue_costs_json=args.venue_costs_json,
+            max_quote_age_sec=args.max_quote_age_sec,
         )
         return
     if args.command == "perp-grid-search":
@@ -4597,6 +5132,9 @@ def main() -> None:
             sweep_v2_max_reclaim_sec=args.sweep_v2_max_reclaim_sec,
             sweep_v2_event_cooldown_sec=args.sweep_v2_event_cooldown_sec,
             top_n=args.top_n,
+            max_grid_combinations=args.max_grid_combinations,
+            venue_costs_json=args.venue_costs_json,
+            max_quote_age_sec=args.max_quote_age_sec,
         )
         return
     if args.command == "funding-scan":
@@ -4907,6 +5445,7 @@ def main() -> None:
             max_basis_std_bps=args.max_basis_std_bps,
             max_avg_spot_spread_bps=args.max_avg_spot_spread_bps,
             max_avg_perp_spread_bps=args.max_avg_perp_spread_bps,
+            venue_costs_json=args.venue_costs_json,
         )
         return
     if args.command == "funding-sensitivity":
@@ -5306,6 +5845,78 @@ def main() -> None:
             quality_min_required_row_field_presence=args.quality_min_required_row_field_presence,
         )
         return
+    if args.command == "fast-edge-v4-validate":
+        result = validate_funding_pressure_readiness(
+            args.plan,
+            expected_plan_hash=args.expected_plan_hash,
+        )
+        if args.output:
+            target = Path(args.output).expanduser().resolve()
+            target.parent.mkdir(parents=True, exist_ok=True)
+            temporary = target.with_suffix(target.suffix + ".tmp")
+            temporary.write_text(
+                json.dumps(result, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            temporary.replace(target)
+        print(json.dumps(result, ensure_ascii=False))
+        return
+    if args.command == "fast-edge-v4-evaluate":
+        readiness = validate_funding_pressure_readiness(
+            args.plan,
+            expected_plan_hash=args.expected_plan_hash,
+        )
+        if readiness["status"] != "FAST_FIRST_V4_EVALUATOR_READY_OOS_NOT_RUN":
+            raise RuntimeError("Fast-First v4 evaluator readiness failed")
+        result = evaluate_funding_pressure_plan(args.plan, output_path=args.output)
+        print(
+            json.dumps(
+                {
+                    "artifact_path": result["artifact_path"],
+                    "plan_hash": result["plan_hash"],
+                    "verdict": result["verdict"],
+                    "deterministic_result_hash": result["deterministic_result_hash"],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return
+    if args.command == "fast-edge-v5-validate":
+        result = validate_wick_rejection_readiness(
+            args.plan,
+            expected_plan_hash=args.expected_plan_hash,
+        )
+        if args.output:
+            target = Path(args.output).expanduser().resolve()
+            target.parent.mkdir(parents=True, exist_ok=True)
+            temporary = target.with_suffix(target.suffix + ".tmp")
+            temporary.write_text(
+                json.dumps(result, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            temporary.replace(target)
+        print(json.dumps(result, ensure_ascii=False))
+        return
+    if args.command == "fast-edge-v5-evaluate":
+        readiness = validate_wick_rejection_readiness(
+            args.plan,
+            expected_plan_hash=args.expected_plan_hash,
+        )
+        if readiness["status"] != "FAST_FIRST_V5_EVALUATOR_READY_OOS_NOT_RUN":
+            raise RuntimeError("Fast-First v5 evaluator readiness failed")
+        result = evaluate_wick_rejection_plan(args.plan, output_path=args.output)
+        print(
+            json.dumps(
+                {
+                    "artifact_path": result["artifact_path"],
+                    "plan_hash": result["plan_hash"],
+                    "verdict": result["verdict"],
+                    "deterministic_result_hash": result["deterministic_result_hash"],
+                },
+                ensure_ascii=False,
+            )
+        )
+        return
     if args.command == "setup-registry":
         cmd_setup_registry(cfg, output_path=args.output)
         return
@@ -5314,6 +5925,7 @@ def main() -> None:
             cfg,
             source_video_id=args.source_video_id,
             source_url=args.source_url,
+            source_channel=args.source_channel,
             participant=args.participant,
             claim_family=args.claim_family,
             hypothesis=args.hypothesis,
@@ -5326,6 +5938,9 @@ def main() -> None:
             verdict_reason=args.verdict_reason,
             tags=args.tags,
             notes=args.notes,
+            fee_schedule_revision=args.fee_schedule_revision,
+            evaluation_scope=args.evaluation_scope,
+            oos_status=args.oos_status,
             output_path=args.output,
         )
         return

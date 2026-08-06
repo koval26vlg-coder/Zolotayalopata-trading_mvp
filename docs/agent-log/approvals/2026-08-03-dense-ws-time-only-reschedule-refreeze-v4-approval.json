@@ -1,0 +1,55 @@
+{
+  "schema": "trading_mvp_dense_ws_aef_time_only_reschedule_refreeze_approval_v4",
+  "approval_id": "dense_ws_aef_time_only_reschedule_refreeze_v4_20260803",
+  "approved_at_local": "2026-08-03T16:18:19.4917391+03:00",
+  "approved_at_utc": "2026-08-03T13:18:19.4917391Z",
+  "approved_by": "user",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-time-only-reschedule-refreeze-proposal-20260803-v4.json",
+    "file_sha256": "081afc8d68b07f921707c210dabebdf1721a689a5c8e39386f60208e9279a0bb",
+    "proposal_hash": "3f01c0724ca488bb6149d8b4690b225051a2f17d3664ca97a8bf93bcd6482c8e",
+    "canonical_hash_verified": true
+  },
+  "user_authorization_text": "Подтверждаю v4 reconciliation refreeze по proposal_hash=3f01c0724ca488bb6149d8b4690b225051a2f17d3664ca97a8bf93bcd6482c8e: current source sha256=80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb; policy aa6679f11725ef612c0d65713aa0c5d366e59ca36a49d903046d0d06164c00cb -> b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056; разрешаю только применить исправление, локальные тесты и собрать новый PlanOnly, без запуска collector.",
+  "authorized_scope": {
+    "runtime_quality_contract_files_listed_in_proposal_only": true,
+    "promote_candidate_policy_byte_exactly": true,
+    "offline_synthetic_static_tests": true,
+    "network_during_tests": false,
+    "new_versioned_immutable_contract": true,
+    "new_versioned_immutable_planonly": true,
+    "new_versioned_runtime_dependency_manifest": true,
+    "rebind_autopilot_and_heartbeat_only_after_immutable_artifact_validation": true
+  },
+  "frozen_invariants": {
+    "hypothesis_change_allowed": false,
+    "venue_change_allowed": false,
+    "universe_change_allowed": false,
+    "signal_change_allowed": false,
+    "cost_change_allowed": false,
+    "risk_change_allowed": false,
+    "duration_change_allowed": false,
+    "cap_change_allowed": false,
+    "collector_liveness_change_allowed": false,
+    "quality_or_materializer_change_allowed": false,
+    "evaluator_change_allowed": false
+  },
+  "prohibited_actions": {
+    "collector_launch": true,
+    "network_access": true,
+    "market_dataset_read": true,
+    "returns_read": true,
+    "pnl_computed": true,
+    "oos_run": true,
+    "evaluator_run": true,
+    "grid_or_retune": true,
+    "paper_or_live": true,
+    "private_api_or_real_capital": true,
+    "leverage_or_margin": true,
+    "stopped_incomplete_retry": true
+  },
+  "campaign_launch_authorized": false,
+  "new_exact_hash_bound_launch_approval_required": true,
+  "stopped_incomplete_retry_authorized": false,
+  "single_use": true
+}

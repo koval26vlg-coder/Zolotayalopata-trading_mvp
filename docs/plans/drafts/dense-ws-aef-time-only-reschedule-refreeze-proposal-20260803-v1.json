@@ -1,0 +1,211 @@
+{
+  "schema": "trading_mvp_dense_ws_aef_time_only_reschedule_refreeze_proposal_v1",
+  "mode": "PlanOnlyReviewProposal",
+  "status": "USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+  "generated_at_local": "2026-08-03T02:00:21.891891+03:00",
+  "generated_at_utc": "2026-08-02T23:00:21.891891Z",
+  "research_only": true,
+  "source_expired_campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260803-aef-24h-v2.json",
+    "contract_file_sha256": "cdfbee9ceaafcff3a170d81347b6822c612aaa401300ede676b1aa13fdefbdd8",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v2.json",
+    "plan_file_sha256": "9fe19c6e220897b80098fd6a3cd5eb767aa1a7eccb6bf54b59d7c8485e64731a",
+    "launch_window_status": "EXPIRED",
+    "may_launch_or_resume": false
+  },
+  "time_only_diff_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-time-only-reschedule-diff-audit-20260803-v1.json",
+    "file_sha256": "8d53d41f2baa412ef4d505474cd848cb84a7377910c6754108a21167c15617dd",
+    "audit_hash": "474a960e06874c4cb86ebad4f78c1eb5edb93ef41b24251c74f44c58fc22b487",
+    "status": "PASS_TIME_ONLY_RESCHEDULE_REQUIRES_EXACT_HASH_REFREEZE",
+    "difference_count": 13,
+    "semantic_fingerprint_equal": true,
+    "all_frozen_invariants_equal": true
+  },
+  "new_planonly_candidate": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260804_aef_24h",
+    "candidate_policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-reschedule-20260804-planonly-v2.json",
+    "candidate_policy_sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+    "feasibility_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-feasibility-20260803-aef-continuous24h-reschedule-20260804-v2.json",
+    "feasibility_file_sha256": "7277da7a79140ae134402a8759714ebe4f73e54ae89ebb5f439e0f6d3bb3a634",
+    "candidate_contract_hash": "a1d262d1cf5ef1c70771ab9005b12eb0d875ff5235492ffadf8e1af4790a8643",
+    "window_id": "EVIDENCE_EXCEPTION_2026-08-04_24H",
+    "writer_start_local": "2026-08-04T01:40:00+03:00",
+    "writer_deadline_local": "2026-08-05T01:40:00+03:00",
+    "hard_deadline_local": "2026-08-05T02:10:00+03:00",
+    "target_writer_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000,
+    "complete_durable_segments": 24,
+    "suppressed_pit_run_ids": [
+      "pit_universe_v2_forward_20260805_n08"
+    ],
+    "actual_collection_allowed": false
+  },
+  "frozen_invariants": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "data_type": "DENSE_WS_SEGMENTED",
+    "universe_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\universe\\no_binance_dense_ws_sweep_20260628.csv",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "universe_rows": 1388,
+    "target_writer_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000,
+    "segment_sec": 3600,
+    "minimum_valid_segments": 8,
+    "minimum_dual_venue_coverage": 0.8,
+    "minimum_execution_snapshots": 180,
+    "raw_schema_change_allowed": false,
+    "segment_validity_change_allowed": false,
+    "causal_regime_change_allowed": false,
+    "execution_sampling_change_allowed": false,
+    "cost_risk_no_grid_change_allowed": false,
+    "collector_liveness_semantics_change_allowed": false,
+    "quality_code_change_allowed": false,
+    "materializer_change_allowed": false,
+    "signal_or_evaluator_change_allowed": false,
+    "duration_or_cap_change_allowed": false
+  },
+  "proposed_time_only_refreeze": {
+    "contract_code": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+      "current_sha256": "5b405ac2e857065f2147e849f79439622b77aa1e94560088c67e403008fde117",
+      "logic_change_allowed": false,
+      "allowed_constant_changes_only": {
+        "AEF_CAMPAIGN_ID": {
+          "old": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+          "new": "dense_ws_microstructure_regime_filter_v1_20260804_aef_24h"
+        },
+        "AEF_EXPECTED_CANDIDATE_HASH": {
+          "old": "e0c080d7eb37deef31dc31724acaf8bc1b598038aa5165960050ca323f9e258f",
+          "new": "a1d262d1cf5ef1c70771ab9005b12eb0d875ff5235492ffadf8e1af4790a8643"
+        },
+        "AEF_EXPECTED_WINDOW_ID": {
+          "old": "EVIDENCE_EXCEPTION_2026-08-03_24H",
+          "new": "EVIDENCE_EXCEPTION_2026-08-04_24H"
+        },
+        "AEF_EXPECTED_START_LOCAL": {
+          "old": "2026-08-03T01:30:00+03:00",
+          "new": "2026-08-04T01:40:00+03:00"
+        },
+        "AEF_EXPECTED_WRITER_DEADLINE_LOCAL": {
+          "old": "2026-08-04T01:30:00+03:00",
+          "new": "2026-08-05T01:40:00+03:00"
+        },
+        "AEF_EXPECTED_HARD_DEADLINE_LOCAL": {
+          "old": "2026-08-04T02:00:00+03:00",
+          "new": "2026-08-05T02:10:00+03:00"
+        },
+        "AEF_SUPPRESSED_PIT_RUN_IDS": {
+          "old": [
+            "pit_universe_v2_forward_20260804_n07"
+          ],
+          "new": [
+            "pit_universe_v2_forward_20260805_n08"
+          ]
+        },
+        "AEF_EXPECTED_PHASES[0].start_local": {
+          "old": "2026-08-03T01:30:00+03:00",
+          "new": "2026-08-04T01:40:00+03:00"
+        },
+        "AEF_EXPECTED_PHASES[0].end_local": {
+          "old": "2026-08-04T01:30:00+03:00",
+          "new": "2026-08-05T01:40:00+03:00"
+        },
+        "AEF_EXPECTED_PHASES[0].hard_end_local": {
+          "old": "2026-08-04T02:00:00+03:00",
+          "new": "2026-08-05T02:10:00+03:00"
+        }
+      },
+      "constants_that_must_remain_exact": {
+        "AEF_EXPECTED_WRITER_SEC": 86400,
+        "AEF_EXPECTED_MAX_RUNTIME_SEC": 88200,
+        "AEF_HARD_OUTPUT_CAP_BYTES": 25000000000,
+        "AEF_EXPECTED_PHASES[0].writer_duration_sec": 86400,
+        "AEF_EXPECTED_PHASES[0].complete_durable_segments": 24
+      }
+    },
+    "continuous_policy_promotion": {
+      "source_candidate_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-reschedule-20260804-planonly-v2.json",
+      "source_candidate_sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+      "target_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-continuous-production-policy-v1.json",
+      "target_current_sha256": "aa6679f11725ef612c0d65713aa0c5d366e59ca36a49d903046d0d06164c00cb",
+      "required_target_sha256_after_promotion": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+      "byte_exact_copy_required": true
+    },
+    "contract_test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_campaign_contract.py",
+    "contract_test_current_sha256": "2e5319799d1393d9d9c3b76fa15bcf364b319de5d175caf7c414bca891af0e88",
+    "test_logic_change_required": false,
+    "new_runtime_dependency_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-runtime-dependencies-20260803-reschedule-v3.json",
+    "new_contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260804-aef-24h-v1.json",
+    "new_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-v1.json",
+    "new_campaign_output_root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\dense-ws-campaigns\\dense_ws_microstructure_regime_filter_v1_20260804_aef_24h"
+  },
+  "authorized_change_scope_after_exact_approval": {
+    "allowed_files": [
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-continuous-production-policy-v1.json",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+      "C:\\Users\\koval\\.codex\\automations\\trading-continuous-production\\automation.toml",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-runtime-dependencies-20260803-reschedule-v3.json",
+      "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260804-aef-24h-v1.json",
+      "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-v1.json",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-03-dense-ws-aef-time-only-reschedule-refreeze-approval.json",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-aef-time-only-reschedule-refreeze-implementation-audit-20260803-v1.json",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\regressions\\dense-ws-aef-time-only-reschedule-refreeze-20260803-v1.txt",
+      "new exact agent-log handoff"
+    ],
+    "contract_code_constant_only_change": true,
+    "continuous_policy_byte_exact_candidate_promotion": true,
+    "autopilot_and_heartbeat_binding_only": true,
+    "collector_or_quality_or_materializer_code_change_allowed": false,
+    "hypothesis_venue_universe_signal_cost_risk_change_allowed": false,
+    "duration_or_cap_change_allowed": false,
+    "collector_launch_allowed": false,
+    "stopped_incomplete_retry_allowed": false
+  },
+  "verification_requirements": {
+    "time_only_diff_audit_must_remain_pass": true,
+    "static_compile_contract_file": true,
+    "offline_regression_command": "python -m unittest test_ws_normalizer test_ws_collector test_ws_durable_collector test_dense_ws_campaign_runner_liveness test_dense_ws_campaign_quality test_dense_ws_campaign_contract",
+    "offline_regression_expected": "73/73 PASS",
+    "network_during_tests": false,
+    "new_contract_and_plan_validate_against_current_file_hashes": true,
+    "new_plan_actual_collection_allowed": false,
+    "new_plan_approval_state": "NOT_APPROVED",
+    "new_plan_launch_controls_status": "READY_FOR_SEPARATE_EXACT_APPROVAL",
+    "preflight_only_required": true,
+    "preflight_no_run_or_output_writes": true,
+    "old_plan_and_old_receipt_reuse_forbidden": true
+  },
+  "authorization": {
+    "authorized": false,
+    "executable": false,
+    "time_only_refreeze_allowed": false,
+    "collector_launch_allowed": false,
+    "exact_user_approval_required": true
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "stopped_incomplete_retry": false
+  },
+  "next_allowed_action": "REQUEST_EXACT_HASH_BOUND_AEF_TIME_ONLY_RESCHEDULE_REFREEZE_APPROVAL",
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "e7af0e69a8b66da5b009624e3ccb230a6ae7f169aed1f4352ad71049f9fa5435"
+}

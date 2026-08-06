@@ -1,0 +1,21 @@
+{
+  "schema": "active_run_launch_record_v1",
+  "project": "trading_mvp",
+  "run_id": "historical_basis_retention_closure_final_20260715_120300",
+  "run_type": "historical_basis_retention_closure",
+  "created_at": "2026-07-15T09:04:10.185451+00:00",
+  "command": "-",
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "output": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\reports\\basis_sprint_retention_closure_20260715_115819.json",
+    "kind": "file"
+  },
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\reports\\basis_sprint_retention_closure_20260715_115819.manifest.json",
+  "owner_output_prefix": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\reports",
+  "code_snapshot_hash": "58012cf2cc6bdbe0b25b41574ccd2406cb81ac231b26a32009645f52a67fa2ef",
+  "parallel_parent_run_id": null,
+  "research_only": true,
+  "live_orders": false,
+  "api_keys": false,
+  "leverage_or_margin": false
+}

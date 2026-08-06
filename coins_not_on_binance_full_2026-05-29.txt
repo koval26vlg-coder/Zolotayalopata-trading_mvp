@@ -1,0 +1,1541 @@
+9	HYPE	Hyperliquid	hype-hyperliquid
+10	STETH	Lido Staked Ether	steth-lido-staked-ether
+14	LEO	LEO Token	leo-leo-token
+16	WSTETH	Wrapped Liquid Staked Ether 2.0	wsteth-wrapped-liquid-staked-ether-20
+18	WBT	WhiteBIT Coin	wbt-whitebit
+19	WETH	WETH	weth-weth
+21	XMR	Monero	xmr-monero
+23	WEETH	Wrapped eETH	weeth-wrapped-eeth
+25	CC	Canton Network	cc-canton-network
+27	BTCB	Binance Bitcoin	btcb-binance-bitcoin
+28	OKB	OKB	okb-okb
+29	SUSDE	Ethena Staked USDe	susde-ethena-staked-usde
+30	RAIN	Rain Protocol	rain-rain-protocol
+32	M	MemeCore 	m-memecore
+37	CBBTC	Coinbase Wrapped BTC	cbbtc-coinbase-wrapped-btc
+38	DAI	Dai	dai-dai
+40	SUSDS	sUSDS	susds-susds
+45	MNT	Mantle	mnt-mantle
+47	CRO	Cronos	cro-cryptocom-chain
+49	PI	Pi Network	pi2-pi-network
+55	KHYPE	Kinetiq Staked HYPE	khype-kinetiq-staked-hype
+56	BGB	Bitget Token	bgb-bitget-token
+57	USDTB	USDtb	usdtb-usdtb
+58	JLP	Jupiter Perpetuals Liquidity Provider Token	jlp-jupiter-perpetuals-liquidity-provider-token
+61	WETH	Binance-Peg Ethereum Token	eth-ethereum-token
+62	USDF	Falcon USD	usdf-falcon-finance
+63	USDD	USDD	usdd-usdd
+67	KCS	KuCoin Token	kcs-kucoin-token
+69	JITOSOL	Jito Staked SOL	jitosol-jito-staked-sol
+72	RETH	Rocket Pool ETH	reth-rocket-pool-eth
+73	WBNB	Wrapped BNB	wbnb-wrapped-bnb
+76	RSETH	Kelp DAO Restaked ETH	rseth-rseth
+77	LBTC	Lombard Staked BTC	lbtc-lombard-staked-btc
+79	KAS	Kaspa	kas-kaspa
+80	METH	mETH	meth-meth
+81	GT	GateToken	gt-gatechain-token
+87	VVV	Venice Token	vvv-venice-token
+88	STABLE	Stable	stable-stable
+89	USDC.E	USD Coin.E	usdce-usd-coine
+90	FLR	Flare Network	flr-flare-network
+94	BDX	Beldex	bdx-beldex
+99	SATO	Atsuko Sato	sato-atsuko-sato
+100	USD0	Usual USD	usd0-usual-usd
+103	JUPSOL	Jupiter Staked SOL	jupsol-jupiter-staked-sol
+104	UB	Unibase	ub-unibase
+108	H	Humanity	h-humanity
+109	EDGE	edgeX	edge-edgex
+112	SOLVBTC	Solv Protocol solvBTC	solvbtc-solv-protocol-solvbtc
+113	WTRX	Wrapped TRX	wtrx-wrapped-trx
+115	TBTC	tBTC	tbtc-tbtc
+116	MSOL	Marinade Staked Sol	msol-marinade-staked-sol
+121	XDC	XDC Network	xdc-xdc-network
+122	AERO	Aerodrome Finance	aero-aerodrome-finance
+125	UMXM	Manadia	umxm-manadia
+128	SIREN	Siren	siren-siren1
+131	BTC.B	Bitcoin Avalanche Bridged (BTC.b)	btcb-bitcoin-avalanche-bridged-btcb
+133	BTT	BitTorrent	bttc-bittorrent-chain
+135	GHO	GHO	gho-gho
+137	PYUSD	PayPal USD	pyusd-paypal-usd
+139	SPX	SPX6900	spx-spx6900
+140	OHMV2	Olympus V2	ohmv2-olympus-v2
+141	CBETH	Coinbase Wrapped Staked ETH	cbeth-coinbase-wrapped-staked-eth
+142	LIT	Lighter	lit-lighter
+143	EURC	EURC	euroc-euro-coin
+145	BSV	Bitcoin SV	bsv-bitcoin-sv
+148	GRASS	GRASS	grass-grass
+150	NFT	APENFT	nft-apenft
+154	ISLM	Islamic Coin	islm-islamic-coin
+155	TEL	Telcoin	tel-telcoin
+157	FRXETH	Frax Ether	frxeth-frax-ether
+158	USDAI	USDAI	usdai-usdai
+160	MON	Monad	mon-monad
+164	ALUSD	Alchemix USD	alusd-alchemixusd
+165	B	BUILDon	b-buildon
+167	EBTC	Ether.fi Staked BTC	ebtc-etherfi-staked-btc
+168	USDG	Global Dollar	usdg-global-dollar
+169	STKAAVE	Staked Aave	stkaave-staked-aave
+171	AKT	Akash Network	akt-akash-network
+172	BETH	Binance Beacon ETH	beth-binance-beacon-eth
+173	ZBCN 	Zebec Network	zbcn-zebec-network
+175	NEX	Nexus	nex-nexus
+177	GWEI	ETHGas	gwei-ethgas-1
+179	SKYAI	SKYAI	skyai-skyai
+180	TRAC	OriginTrail	trac-origintrail
+187	TETH	Treehouse ETH	teth-treehouse-eth
+189	LAB	LAB	lab-lab
+191	BILL	Billions Network	bill-billions-network
+191	BTSE	BTSE Token	btse-btse-token
+192	MX	MX Token	mx-mx-token
+193	MATIC	Polygon	matic-polygon
+197	BORG	SwissBorg	chsb-swissborg
+200	FARTCOIN	Fartcoin	fartcoin-fartcoin
+203	ZANO	Zano	zano-zano
+204	IP	Story	ip-story
+206	SUSDAI	Staked USDai	susdai-staked-usdai
+208	EZETH	Renzo Restaked ETH	ezeth-renzo-restaked-eth
+210	XCN	Onyxcoin	xcn-chain
+212	MKR	Maker	mkr-maker
+214	DSOL	Drift Staked SOL	dsol-drift-staked-sol
+215	ETH+	Reserve Protocol ETH Plus	eth-reserve-protocol-eth-plus
+217	USDF	Astherus USDF	usdf-astherus-usdf
+218	TIBBIR	Ribbita by Virtuals	tibbir-ribbita-by-virtuals
+221	RIVER	River	river-river
+222	TAG	Tagger	tag-tagger
+224	SHFL	Shuffle	shfl-shuffle
+225	VSN	Vision	vsn-vision
+226	AB	AB (prev. Newton)	ab-ab
+229	PIEVERSE	Pieverse	pieverse-pieverse
+230	SYRUPUSDC	SyrupUSDC	syrupusdc-syrupusdc
+231	HNT	Helium	hnt-helium
+232	VSOL	The Vault Staked SOL	vsol-the-vault-staked-sol
+234	CHEEMS	Cheems	cheems-cheems-cheemspet
+235	CRVUSD	crvUSD	crvusd-curvefi-usd-stablecoin
+237	ASBNB	Astherus Staked BNB	asbnb-astherus-staked-bnb
+238	GOMINING	GoMining Token	gmt-gomining-token
+239	ATH	Aethir	ath14-aethir
+240	FTM	Fantom	ftm-fantom
+242	WEMIX	WEMIX Token	wemix-wemix-token
+243	KOGE	KOGE	koge-bnb48-club-token
+245	CASH	Cash	cash-cash
+246	ONYC	ONyc	onyc-onyc
+247	YZY	YZY	yzy-yzy
+248	SCNSOL	Sanctum Staked SOL	scnsol-socean-staked-sol
+249	PLSX	PulseX	plsx-pulsex
+250	OETH	Origin Ether	oeth-origin-ether
+250	ZBU	Zeebu	zbu-zeebu
+256	BMX	BitMart Token	bmx-bitmart-token
+260	PLS	Pulsechain	pls-pulsechain
+262	BBSOL	Bybit Staked SOL	bbsol-bybit-staked-sol
+264	UUSD	Unity USD	uusd-unity-usd
+265	MUSD	MetaMask USD	musd-metamask-usd
+266	SMILEK	Smilek to the Bank	smilek-smilek-to-the-bank
+267	RAVE	RaveDAO	rave-ravedao
+268	RLB	Rollbit Coin	rlb-rollbit-coin
+269	HEX	HEX (Pulsechain)	hex-hex-from-pulsechain
+271	VCNT	ViciCoin	vcnt-vicicoin
+272	ULTIMA	UltimaEcosystem	ultima-ultimaecosystem
+273	SAFE	Safe 	safe-safe
+276	BDCA	BitDCA	bdca-bitdca
+279	TAC	TAC Protocol	tac-tac-protocol
+280	MAG7.SSI	MAG7.ssi	mag7ssi-mag7ssi
+282	UDS	Undeads Games	uds-undeads-games
+283	BEAM	Beam Token	beam-beam-eth
+286	FRXUSD	Frax USD	frxusd-frax-usd
+287	AIOZ	AIOZ Network	aioz-aioz-network
+287	PROS	Pharos	pros-pharos
+290	TRIA	Tria	tria-tria
+291	PUFETH	pufETH 	pufeth-pufeth
+292	METAL	Metal Blockchain	metal-metal-blockchain
+293	SKR	Seeker	skr-seeker
+298	QRL	Quantum Resistant Ledger	qrl-quantum-resistant-ledger
+298	LISUSD	Lista USD	hay-hay
+299	BAS	BNB Attestation Service	bas-bnb-attestation-service
+300	BSB	Block Street	bsb-block-street
+302	B3	B3	b3-b3
+304	ZIG	ZIGChain	zig-zigcoin
+307	TROLL	Troll	troll-troll2
+309	SUPEROETH	Super OETH	superoeth-super-oeth
+310	ARC	AI Rig Complex	arcsol-ai-rig-complex
+312	KUB	Bitkub Coin	kub-bitkub-coin
+313	EOS	EOS	eos-eos
+315	VELO	Velo	velo-velo
+317	XPR	Proton	xpr-proton
+317	CYS	Cysic	cys-cysic
+318	DEEP	DeepBook Protocol	deep-deepbook-protocol
+320	BAN	Comedian	bansol-comedian
+321	CTC	Creditcoin	ctc-creditcoin
+325	AZTEC	AZTEC	aztec-aztec
+326	BUSD	BUSD	busd-binance-usd
+326	PEAQ	Peaq	peaq-peaq-network
+332	GUSD	Gemini Dollar	gusd-gemini-dollar
+334	FBTC	Ignition FBTC	fbtc-ignition-fbtc
+335	EURCV	EUR CoinVertible	eurcv-eur-coinvertible
+336	QUBIC	Qubic	qu-qubic
+338	USELESS	Useless Coin	useless-useless-coin
+339	WFI	WeFi	wfi-wefi
+340	BUCK	Bucket Protocol BUCK Stablecoin	buck-bucket-protocol-buck-stablecoin
+341	ARRR	Pirate	arrr-pirate
+342	BRETT	Brett (Base)	brett-brett-base
+343	PUFF	Puff Token	puff-puff-token
+344	KTA	Keeta	kta-keeta
+346	DOG	Dog (Bitcoin)	-doggotothemoon
+347	USDM	MegaUSD	usdm-megausd
+348	UAI	UnifAI Network	uai-unifai-network
+350	FIDD	Fidelity Digital Dollar	fidd-fidelity-digital-dollar
+351	BABYDOGE	Baby Doge Coin	babydoge-baby-doge-coin
+352	NILA	MindWaveDAO	nila-mindwavedao
+353	TOSHI	Toshi	toshi-toshi
+357	BTY	Bityuan	bty-bityuan
+362	DRV	Derive	drv7-derive
+364	ALCH	Alchemist AI	alch-alchemist-ai
+365	XAUM	Matrixdock Gold 	xaum-matrixdock-gold
+365	PSOL	Phantom Staked SOL	psol-phantom-staked-sol
+366	HSOL	Helius Staked SOL	hsol-helius-staked-sol
+367	REUSD	Resupply USD	reusd-resupply-usd
+368	RON	Ronin Token	ron-ronin-token
+369	XYO	XYO	xyo-xyo-network
+371	ELF	aelf	elf-aelf
+372	JELLYJELLY	Jelly-My-Jelly	jellyjelly-jelly-my-jelly
+373	FUN	terminal of fun	fun4-terminal-of-fun
+375	PURR	Hypurr	purr4-hypurr
+378	XP	Xphere	xp-xphere
+381	CCD	Concordium	ccd-concordium
+383	FLUID	Fluid	inst-instadapp
+384	SCRVUSD	Savings crvUSD	scrvusd-savings-crvusd
+387	COAI	ChainOpera AI	coai-chainopera-ai
+388	CET	CoinEx Token	cet-coinex-token
+389	BNKR	BankrCoin	bnkr-bankrcoin
+390	SLX	Solstice	slx-solstice
+391	FXUSD	f(x) Protocol fxUSD	fxusd-fx-protocol-fxusd
+393	VVS	VVS Finance	vvs-vvs-finance
+396	ELG	Escoin Token	elg-escoin-token
+400	WPLS	Wrapped Pulse	wpls-wrapped-pulse
+401	IRYS	Irys	irys-irys
+402	PCI	PayProtocol Paycoin	pci-payprotocol-paycoin
+403	POPCAT	Popcat	popcat-popcat
+404	WNXM	Wrapped NXM	wnxm-wrapped-nxm
+404	MOG	Mog Coin	mog-mog-coin
+408	MAGMA	Magma Finance	magma-magma-finance
+409	MOCA	Moca	moca-moca
+412	MOODENG	Moo Deng (moodengsol.com)	moodeng-moo-deng-moodengsolcom
+413	GEOD	Geodnet Token	geod-geodnet-token
+414	CSPR	Casper Network	cspr-casper-network
+416	WAVAX	Wrapped AVAX	wavax-wrapped-avax-wormhole
+418	USDX	Hex Trust USD	usdx-hex-trust-usd
+419	JCT	Janction	jct2-janction
+422	OMI	Ecomi	omi-ecomi
+425	ALEO	ALEO	aleo-aleo
+425	ERN	Ethernity Chain	ern-ethernity-chain
+428	REAL	RealFi	real-realfi
+431	NPC	Non-Playable Coin	npc-non-playable-coin
+432	UNP	Unipoly Coin	unp1-unipoly-coin
+433	MEW	cat in a dogs world	mew-cat-in-a-dogs-world
+439	GOHOME	GOHOME	gohome-gohome
+442	SOSO	SoSoValue	soso-sosovalue
+443	SFRXUSD	Staked Frax USD	sfrxusd-staked-frax-usd
+446	WAVES	Waves	waves-waves
+447	AUSD	AUSD	ausd-agora-dollar
+448	LUSD	Liquity USD	lusd-liquity-usd
+450	WMTX	World Mobile Token	wmt-world-mobile-token
+453	SERV	OpenServ	serv-openserv
+454	UP	Unitas	up-unitas
+461	ICNT	Impossible Cloud Network	icnt-impossible-cloud-network
+462	ORBS	Orbs	orbs-orbs
+466	SQD	SQD	sqd-sqd
+468	BORA	BORA	bora-bora
+471	XAUT0	Tether Gold Tokens	xaut0-tether-gold-tokens
+472	CUSD	Celo Dollar	cusd-celo-dollar
+473	PYTHIA	PYTHIA	pythia-pythia
+474	SNT	Status	snt-status
+475	MELANIA	Melania Meme	melania-melania-meme
+477	SWETH	Swell Ethereum	sweth-swell-ethereum
+479	NEET	Not in Employment, Education, or Training	neet1-not-in-employment-education-or-training
+480	GUA	Superfortune	gua-superfortune
+482	SNEK	SNEK	snek-snek-crd
+484	DESO	Decentralized Social	deso-decentralized-social
+485	CROSS	CROSS	cross-cross
+486	MOB	MobileCoin	mobilecoin
+488	TORN	Tornado Cash	torn-tornado-cash
+490	XCH	Chia	xch-chia-
+491	MNGO	Mango Markets	mngo-mango-markets
+492	KGEN	KGeN	kgen-kgen
+500	PRL	Perle	prl-perle
+501	XSGD	XSGD	xsgd-xsgd
+504	APR	aPriori	apr-apriori
+506	NOS	Nosana	nos-nosana
+507	PRO	Propy	pro-propy
+510	DAG	Constellation	dag-constellation
+513	WBTC.E	Wrapped BTC (Avalanche)	wbtce-wrapped-btc-avalanche
+515	MVL	MVL	mvl-mass-vehicle-ledger
+516	GIGA	Gigachad	giga-gigachad
+516	LCX	LCX	lcx-lcx
+519	SUSD	sUSD	susd-susd
+520	APEX	ApeX Token	apex-apex-token
+521	MDX	MDEX (HECO)	mdx-mdex-heco
+525	DEP	DEAPcoin	dep-deapcoin
+526	MERL	Merlin Chain	merl-merlin-chain
+528	CAW	A Hunters Dream	caw-a-hunters-dream
+529	NKYC	NKYC	nkyc-nkyc
+531	SHX	Stronghold Token	shx-stronghold-token
+531	MCOIN	mCoin	mcoin-mcoin
+534	BTW	Bitway	btw-bitway
+535	BOLD	Liquity BOLD	bold-liquity-bold
+536	COLLECT	Collect on Fanable	collect-collect-on-fanable
+539	AIC	AI Companions	aic1-ai-companions
+543	ETHW	Ethereum PoW	ethw-ethereum-pow
+543	BIRB	Moonbirds	birb-moonbirds
+544	UQC	Uquid Coin	uqc-uquid-coin
+545	PROS	Prosper	pros-prosper
+546	REI	Unit 00 - Rei	rei-unit-00-rei
+548	Q	Quack AI	q-quack-ai
+549	WTAO	Wrapped TAO	wtao-wrapped-tao
+551	EUSD	Electronic USD	eusd-electronic-usd
+551	WCFG	Wrapped Centrifuge	wcfg-wrapped-centrifuge
+560	$MBG	MBG By Multibank Group	mbg-mbg-by-multibank-group
+561	STAR	Starpower	star-starpower
+564	DKA	dKargo	dka-dkargo
+565	LON	Tokenlon	lon-tokenlon
+566	CORE	Core DAO	core-core-dao
+567	PRDT	Predictions	prdt-predictions
+568	MLK	MiL.k Alliance	mlk-milk-alliance
+569	LIT	Litentry	lit-litentry
+570	BLAST	Blast Token	blast-blast-token
+571	MYX	MYX Finance	myx-myx
+571	SRX	StorX	srx-storx
+573	IDOL	MEET48	idol-meet48
+574	WPOL	Wrapped Polygon Ecosystem Token	wmatic-wrapped-matic-wormhole
+576	ZEST	Zest Protocol	zest-zest-protocol
+577	AGIX	Singularity NET	agix-singularitynet
+578	XYM	Symbol	xym-symbol
+580	TPT	Token Pocket	tpt-token-pocket
+581	FB	Fractal Bitcoin	fb-fractal-bitcoin
+583	UP	Superform	up-superform
+586	ZEREBRO	Zerebro	zerebro-zerebro
+588	MANIFEST	Manifesting	manifest-manifesting
+588	CUSDO	Compounding OpenDollar	cusdo-compounding-opendollar
+590	IN	INFINIT	in-infinit
+591	OCEAN	Ocean Protocol	ocean-ocean-protocol
+592	CHEEL	Cheelee	cheelee-cheelee
+595	ZORA	Zora	zora-zora
+597	GAME	GameBuild	game-gamebuild
+598	MGO	Mango Network	mgo-mango-network
+603	USDB	USDB	usdb-usdb
+604	CBXRP	Coinbase Wrapped XRP	cbxrp-coinbase-wrapped-xrp
+607	HONEY	Honey	honey-honey1
+607	FOLKS	Folks Finance	folks-folks-finance
+609	BR	Bedrock DAO	br-bedrock-dao
+610	USR	Resolv USR	usr-resolv-usr
+612	PLAY	XCAD Network PLAY	play-play-bsc
+614	ISIKC	Isiklar Coin	isikc-isiklar-coin
+615	CORN	Corn	corn-corn2
+615	CPOOL	Clearpool	cpool-clearpool
+616	SATS	SATS (Ordinals)	sats-sats-ordinals
+619	HT	Huobi Token	ht-huobi-token
+621	TRUTH	Swarm Network	truth-swarm-network
+622	EURA	EURA	ageur-ageur
+623	AERGO	Aergo	aergo-aergo
+625	ABT	Arcblock	abt-arcblock
+626	DPI	DeFi Pulse Index	dpi-defi-pulse-index
+629	ROG	ROGin AI	rog-rogin-ai
+631	DOVU	DOVU	dovu-dovu
+632	AIO	OlaXBT	aio-olaxbt
+634	PTGC	The Grays Currency	ptgc-the-grays-currency
+636	DEGEN	Degen (Base)	degen-degen-base
+637	CHEX	CHEX Token	chex-chex-token
+639	ERG	Ergo	efyt-ergo
+643	CBK	Cobak Token	cbk-cobak-token
+644	ARW	Arowana Token	arw-arowana-token
+646	STRX	StrikeX	strx-strikex
+647	PRIME	Echelon Prime	prime-echelon-prime
+648	MED	MediBloc	med-medibloc-qrc20
+648	CTR	Citrea	ctr-citrea
+650	CGO	Comtech Gold	cgo-comtech-gold
+652	NAORIS	Naoris Protocol 	naoris-naoris-protocol
+654	ZBTC	Zeus Network zBTC	zbtc-zeus-network-zbtc
+654	FAI	Freysa	fai-freysa
+655	ZENT	Zentry	zent-zentry
+657	RTX	RateX	rtx-ratex
+660	B2	Bsquared Network	b2-bsquared-network
+661	AIN	AI Network	ain-ai-network
+662	AGT	Alaya Governance Token	agt-alaya-governance-token
+663	SGB	Songbird	sgb-songbird
+665	WXT	Wirex Token	wxt-wirex-token
+666	SOLO	Sologenic	solo-sologenic
+667	AURORA	Aurora	aurora-aurora
+668	ES	Eclipse	es-eclipse
+671	AGI	Delysium	agi-delysium
+675	QANX	QANX Token	qanx-qanx-token
+676	ELON	Dogelon Mars	elon-dogelon-mars
+678	TAIKO	Taiko	taiko-taiko
+680	XAN	Anoma	xan-anoma
+681	LRC	Loopring	lrc-loopring
+684	BTRST	Braintrust	btrst-braintrust
+688	PIPPIN	Pippin	pippin-pippin
+689	NYM	Nym	nym-nym
+693	SAUCE	SaucerSwap	sauce-saucerswap
+694	INX	Infinex	inx-infinex
+695	CLANKER	tokenbot	clanker-tokenbot
+696	POKT	Pocket Network	pokt-pocket-network
+697	ADCO	Advertise Coin	adco-advertise-coin
+700	ICE	 Ice Network	ice-ice-network
+701	ADS	Adshares	ads-adshares
+704	KISHU	Kishu Inu	kishu-kishu-inu
+705	EDGE	Definitive	edge-definitive
+706	DOOD	Doodles	dood-doodles2
+707	MPLX	Metaplex	mplx-metaplex
+708	WET	HumidiFi	wet-humidifi
+709	PLAY	HEROcoin	play-herocoin
+711	BITCOIN	HarryPotterObamaSonic10Inu (ETH)	bitcoin-harrypotterobamasonic10inu-eth
+713	DRIFT	Drift Protocol	drift-drift-protocol
+714	PONKE	PONKE	ponke-ponke
+715	BOB	BOB (Build on Bitcoin)	bob-bob-build-on-bitcoin
+716	CTXC	Cortex	ctxc-cortex
+717	HP	Hippo Protocol	hp-hippo-protocol-1
+720	POWER	Power Protocol	power-power-protocol
+722	ETN	Electroneum	etn-electroneum
+723	SOSANA	SOSANA	sosana-sosana
+724	READY	READY!	ready-ready
+725	VINE	Vine Coin	vine-vine-coin
+726	DORA	DORA	dora2-dora
+727	GEAR	Gearbox	gear-gearbox
+728	WELL	Moonwell	well-moonwell
+730	KDA	Kadena	kda-kadena
+731	GOAT	Goatseus Maximus	goat-goatseus-maximus
+732	META	Metadium	meta-metadium
+733	STBL	STBL	stbl-stbl
+733	DFG	Defigram	dfg-defigram
+735	HEZ	Hermez Network	hez-hermez-network
+738	LOCUS	Locus Chain	locus-locus-chain
+739	XNY	Codatta 	xny-codatta
+741	AVAIL	Avail	avail-avail
+743	ON	Orochi Network	on-orochi-network
+744	UFD	Unicorn Fart Dust	ufd-unicorn-fart-dust
+745	LBT	Law Blocks	lbt-law-blocks
+746	LCS	LocalCoinSwap	lcs-localcoinswap
+747	BFC	Bifrost	bfc-bifrost
+748	VENOM	Venom	wvenom-wrapped-venom
+751	AIN	Infinity Ground	ain-infinity-ground
+752	哈基米	哈基米 (Hajimi)	hakimi-hakimi
+753	BASED	Based	based-based
+753	ROLL	RollX	roll-rollx
+757	XRD	Radix	radix-dlt
+758	CONX	Connex	conx-connex
+759	PBTC	Purple Bitcoin	pbtc-purple-bitcoin
+759	AURA	Aura	aura-auraonsol
+761	BLUAI	Bluwhale	bluai-bluwhale
+762	AMIKO	Amiko	amiko-amiko
+764	ELSA	HeyElsa	elsa-heyelsa
+767	INC	Incentive	inc-incentive
+768	SPACE	Spacecoin	space-spacecoin2
+769	SEDA	SEDA	seda-seda
+770	FARTBOY	Fartboy	fartboy-fartboy
+771	L3	Layer3	l3-layer3
+773	ZCHF	Frankencoin	zchf-frankencoin
+774	ASTEROID	Asteroid The Space Shiba Inu	asteroid-asteroid-the-space-shiba-inu
+775	BBT	BabyBoomToken	bbt10-babyboomtoken
+778	SPYON	SPDR S&P 500 Tokenized ETF (Ondo)	spyon-spdr-sp-500-tokenized-etf-ondo
+778	BERT	Bertram The Pomeranian	bert-bertram-the-pomeranian
+779	PEP	Pepecoin	pepenet-pepecoin
+780	SWFTC	SwftCoin	swftc-swftcoin
+781	VADER	Vader	vader-vader
+782	NCT	PolySwarm	nct-polyswarm
+783	NMC	Namecoin	nmc-namecoin
+783	FIRO	Firo	firo-firo
+788	BONE	Bone ShibaSwap	bone-bone-shibaswap
+792	VELO	Velodrome Finance	velo-velodrome-finance
+794	RYZE	Ryze	ryze-ryze
+796	XCM	Coinmetro	xcm-coinmetro
+797	ALI	Alethea Artificial Liquid Intelligence Token	ali-artificial-liquid-intelligence-token
+798	VSTR1	Vestra DAO	vstr1-vestra-dao
+799	GFI	Goldfinch	gfch-goldfinch
+800	BROCCOLI	CZ'S Dog (broccoli.gg)	broccoli-cz39s-dog-broccoligg
+801	IXS	IX Swap	ixs-ix-swap
+804	SDL	stake.link	sdl-stakelink
+804	DEUS	XMAQUINA	deus-xmaquina
+805	GODS	Gods Unchained	gods-gods-unchained
+807	KEEP	Keep Network	keep-keep-network
+808	AQT	Alpha Quark Token	aqt-alpha-quark-token
+809	EURR	StablR Euro	eurr-stablr-euro
+810	CARV	CARV	carv-carv
+810	LOKA	League of Kingdoms	loka-league-of-kingdoms
+814	RSC	ResearchCoin	rsc-researchcoin
+814	AITECH	Solidus AI Tech	aitech-solidus-ai-tech
+815	SONIC	Sonic SVM	sonic-sonic-svm
+816	LMTS	Limitless	lmts-limitless
+817	SSOL	Solayer SOL	ssol-solayer-sol
+818	ORDER	Orderly Network	order-orderly-network
+819	HUNT	HUNT	hunt-hunt
+820	SDEX	SmarDex	sdex-smardex
+822	WAN	Wanchain	wan-wanchain
+824	TRUST	Intuition	trust-intuition
+825	SQGROW	SquidGrow	sqgrow-squidgrow
+826	KLED	KLEDAI	kled-kledai
+827	BABYSHARK	Baby Shark Meme	babyshark1-baby-shark-meme
+828	MIMATIC	MAI	mimatic-mimatic
+830	TA	Trusta.AI	ta-trustaai
+831	CAT	Simon's Cat	cat-simon39s-cat
+834	ZETA	ZetaChain	zeta-zetachain
+835	KYSOL	Kyros Restaked SOL	kysol-kyros-restaked-sol
+836	VR	Victoria VR	vr-victoria-vr
+837	CORGIAI	CorgiAI 	corgiai-corgiai
+838	MOOLAH	Moolah	moolah-moolah
+840	PDDON	PDD Holdings Tokenized Stock (Ondo)	pddon-pdd-holdings-tokenized-stock-ondo
+841	FUN	FUNToken	fun-funfair
+842	PMT	Public Meme Token	pmt-public-meme-token
+844	AQUA	Aquarius 	aqua-aquarius
+845	BXN	BXN	bxn-bxn
+847	HFUN	Hypurr Fun	hfun-hypurr-fun
+851	COL	Clash of Lilliput	col-clash-of-lilliput
+852	ABBC	ABBC Coin	abbc-alibabacoin
+853	HONEY	Hivemapper	honey-hivemapper
+855	STS	Beets Staked Sonic	sts-staked-sonic
+855	WALLET	Ambire Wallet	wallet-ambire-wallet
+857	FUN	Sport.Fun	fun-sportfun
+861	MNDE	Marinade	mnde-marinade
+861	REP	Augur	rep-augur
+862	STSOL	Lido Staked SOL	stsol-lido-staked-sol
+863	CPC	CPCoin	cpc-cpcoin
+864	PANDORA	Pandora	pandora-pandora
+865	VELVET	Velvet	velvet-velvet
+866	FIGHT	FIGHT	fight-fight2
+868	MOC	Moss Coin	moc-mossland
+870	IDLE	IdleMine	idle-idlemine
+871	RECALL	Recall Network	recall-recall-network
+871	CHILLGUY	Just a chill guy	chillguy-just-a-chill-guy
+872	FCT	Firmachain	fct-firmachain
+875	WOLF	Wolf (SOL)	wolf-wolf-sol
+876	USAT	USAT	usat
+877	SFI	saffron.finance	sfi-saffronfinance
+878	XPIN	XPIN Network	xpin-xpin-network
+879	SKR	Saakuru	skr-saakuru-labs
+880	LEVER	LeverFi	lever-leverfi
+881	DIAM	Diamante	diam-diamante
+882	GRIFFAIN	Griffain	griffain-test-griffaincom
+883	ELA	Elastos	ela-elastos
+885	XAVA	Avalaunch	xava-avalaunch
+886	RAIN	Rainmaker Games	rain-rainmaker-games
+887	TOKEN	TokenFi	token-tokenfi
+891	STIK	Staika	stik-staika
+892	ASM	Assemble Protocol	asm-assemble-protocol
+893	ANYONE	Anyone Protocol	anyone-anyone-protocol
+894	BOUNTY	ChainBounty	bounty-chainbounty
+895	XBT	XBIT Coin	xbt-xbit-coin
+896	PHNIX	PHNIX	phnix-phnix
+898	OXT	Orchid Protocol	oxt-orchid-protocol
+899	TT	ThunderCore	tt-thunder-token
+901	SUPRA 	Supra	supra-supra
+903	MAPO	MAP Protocol	map-map-protocol
+904	QQQON	Invesco QQQ Tokenized ETF (Ondo)	qqqon-invesco-qqq-tokenized-etf-ondo
+906	WQUIL	Wrapped QUIL	wquil-wrapped-quil
+907	MOBILE	Helium Mobile	mobile-helium-mobile
+907	TAI	TARS AI	tai-tars-protocol
+909	SD	Stader	sd-stader
+912	AUKI	AUKI	auki-auki
+912	ATS	Alltoscan	ats-alltoscan
+914	WISE	WISE	wise-wise
+916	LYN	Everlyn AI	lyn-everlyn-ai
+916	DEXT	DexTools	dext-dextools
+917	AVICI	Avici	avici-avici
+919	PNK	Kleros	pnk-kleros
+921	HDN	Hydranet	hdn-hydranet
+922	4	4	4-4
+923	UCHAT	Uchat	uchat-uchat
+924	EWT	Energy Web Token	ewt-energy-web-token
+925	BLESS	Bless	bless-bless
+927	CULT	Milady Cult Coin	cult-milady-cult-coin
+928	BAL	Balancer	bal-balancer
+929	PPC	Peercoin	ppc-peercoin
+930	CREPE	CREPE	crepe-crepe
+931	PCOCK	PulseChain Peacock	pcock-pulsechain-peacock
+932	BRISE	Bitrise Token	brise-bitrise-token
+933	MAT	My Master War	mat-my-master-war
+934	PEPECOIN	pepeCoin	pepecoin-pepecoin
+935	LFI	LienFi	lfi-lienfi
+935	ARTX	Ultiland	artx3-ultiland
+937	APU	Apu Apustaja	apu-apu39s-club
+938	TRAC	TRAC (Ordinals)	trac-trac-ordinals
+939	POLS	Polkastarter	pols-polkastarter
+941	OMG	OMG Network	omg-omg-network
+942	CWEB	Coinweb	cweb-coinweb
+943	USDQ	Quantoz USDQ	usdq-quantoz-usdq
+944	HANA	Hana Network	hana-hana-network
+945	AHT	AhaToken	aht-ahatoken
+946	ATS	Atlas DEX	ats-atlas-dex
+947	IAG	Iagon	iag-iagon
+948	RALLY	Rally	rally2-rally
+949	KLV	Klever	klv-klever
+950	EL	ELYSIA	el-elysia
+951	FOOM	FOOM	foom-foom
+953	AKE	Akedo	ake-akedo
+954	MBC	MonbaseCoin	mbc-monbasecoin
+955	KONET	KONET	konet-konet
+956	TOES	TOESCOIN	toes-toescoin
+956	GFT	Gifto	gto-gifto
+958	ANON	HeyAnon	anon-heyanon
+959	INV	INV	inv-inv
+960	GAME	GAME by Virtuals	game-game-by-virtuals
+961	DAO	DAO Maker Token	dao-dao-maker-token
+962	VITA	VitaDAO	vita-vitadao
+963	XPLA	XPLA	xpla-xpla
+964	BFG	Betfury	bfg-betfury
+965	USUALX	USUALx	usualx-usualx
+966	HAIR	HairDAO Token	hair-hairdao-token
+967	BLUE	Bluefin	blue-bluefin
+968	BTCP	Bitcoin Pro	btcp-bitcoin-pro
+970	PAIN	PAIN	pain-pain
+970	LADYS	Milady Meme Coin	ladys-milady-meme-coin
+971	AMO	AMO Coin	amo-amo-coin
+972	OFC	OneFootball Club 	ofc-onefootball-club
+973	DNT	district0x	dnt-district0x
+974	SWARMS	swarms	swarms-swarms
+975	COQ	Coq Inu	coq-coq-inu
+976	PROMPT	Wayfinder	prompt-wayfinder
+977	MIN	Minswap	min-minswap
+978	ELIZAOS	elizaOS	elizaos-elizaos
+980	WE	WeBuy	we-webuy
+981	FEI	Fei Protocol	fei-fei-protocol
+982	WILD	Wilder World	wild-wilder-world
+983	USD3	Web 3 Dollar	usd3-web-3-dollar
+985	WOLF	Landwolf	wolf-landwolf
+987	PAYAI	PayAI Network	payai-payai-network
+988	OVER	Overtime	over-overtime
+990	NEON	Neon EVM	neon-neon-evm
+990	BURNIE	Burnie Senders	burnie-burnie-senders
+993	DAR	Mines of Dalarnia	mines-of-dalarnia-dar
+994	REDO	Resistance Dog 	redo-resistance-dog
+995	RBNT	Redbelly Network	rbnt-redbelly-network
+995	MSETH	Metronome Synth ETH	mseth-metronome-synth-eth
+995	NIM	Nimiq	nim-nimiq
+996	ORAI	Oraichain Token	orai-oraichain-token
+999	USDZ	Anzen USDz	usdz-anzen-usdz
+1000	BTCV	Bitcoin Vault	btcv-bitcoin-vault
+1001	SIX	SIX	six-six
+1001	WBERA	Wrapped Bera	wbera-wrapped-bera
+1002	MCB	MCDEX	mcb-mcdex
+1004	FRONT	Frontier Token	front-frontier-token
+1006	TOS	TokenOS AI	tos-tokenos-ai
+1007	TDROP	ThetaDrop	tdrop-thetadrop
+1008	ARIA	Aria.AI	aria-ariaai
+1009	MDAO	MarsDAO	mdao-marsdao
+1011	RACA	Radio Caca	raca-radio-caca
+1013	MBX	Marblex	mbx-marblex
+1014	HOPR	HOPR	hopr-hopr
+1016	LYX	LUKSO	lyx-lukso
+1016	SWEAT	Sweat Economy	sweat-sweat-economy
+1017	AGRS	Agoras: Currency of Tau	agrs-agoras-currency-of-tau
+1018	ASP	Aspecta	asp-aspecta
+1019	DOG	The Doge NFT	dog-the-doge-nft
+1020	TRADOOR	Tradoor	tradoor-tradoor
+1021	ANDY 	ANDY ETH	andy-andy-eth
+1024	ACS	Access Protocol	acs-access-protocol
+1025	ESPORTS	Yooldo	esports-yooldo
+1026	GAL	Galatasaray Fan Token	gal-galatasaray-fan-token
+1028	OMNI	Omni Network	omni-omni-network
+1030	OUSD	Origin Dollar	ousd-origin-dollar
+1031	MPC	Partisia Blockchain	mpc-partisia-blockchain
+1031	DOLZ	DOLZ	dolz-dolz
+1033	LAT	PlatON Network	lat-platon-network
+1034	PIT	Pitbull	pit-pitbull
+1036	MNSRY	Mansory	mnsry-mansory
+1038	ALLINDOGE	ALLINDOGE	allindoge-allindoge
+1039	AVASOL	Ava AI	avasol-ava-ai
+1040	SUNDOG	Sundog	sundog-sundog
+1042	HEART	Humans.ai	heart-humans
+1045	PNG	Pangolin	png-pangolin
+1046	POWER	Powerloom	power-powerloom
+1048	TQQQON	ProShares UltraPro QQQ Tokenized Stock (Ondo)	tqqqon-proshares-ultrapro-qqq-tokenized-stock-ondo
+1049	AVL	Avalon	avl-avalon
+1050	FUEL	Fuel Network	fuel-fuel-network
+1050	UTK	xMoney	utk-utrust
+1051	GHX	GamerCoin	ghx-gamercoin
+1052	GOBLIN	GoblinCoin	goblin-goblincoin
+1054	RENBTC	renBTC	renbtc-renbtc
+1055	DOGINME	doginme	doginme-doginme
+1056	FWOG	Fwog	fwog-fwog
+1057	BOB	Build On BNB	bob12-build-on-bnb
+1058	ESIM	Depinsim	esim-depinsim
+1061	WHITEWHALE	The White Whale	whitewhale-the-white-whale
+1061	龙虾	龙虾 (Lobster)	lobster-lobster-2
+1062	SKI	Ski Mask Dog	ski-ski-mask-dog
+1063	NEURAL	NEURALAI	neural-neuralai
+1064	EVER	Everscale	ever-everscale
+1067	COOK	Cook	cook-cook
+1067	USDR	StablR USD	usdr-stablr-usd
+1068	FORT	Forta	fort-forta
+1071	RLS	Rayls	rls-rayls
+1071	SPS	Splintershards	sps-splintershards
+1074	NAVX	NAVI Protocol	navx-navi-protocol
+1075	BTG	Bitcoin Gold	btg-bitcoin-gold
+1076	BLD	Agoric	bld-agoric
+1077	KEKIUS	Kekius Maximus	kekius-kekius-maximus
+1078	DADDY	Daddy Tate	daddy-daddy-tate
+1079	CAW	crow with knife	caw1-crow-with-knife
+1080	OLAS	Autonolas	olas-autonolas
+1080	LIF3	LIF3	lif3-lif3
+1082	CEUR	Celo Euro	ceur-celo-euro
+1083	KRL	Kryll	krl-kryll
+1084	WFCA	World Friendship Cash Coin	wfca-world-friendship-cash-coin
+1085	IRON	Iron Fish	iron-iron-fish-coin
+1085	ALPH	Alephium	alph-alephium
+1087	SWAP	TrustSwap	swap-trustswap
+1088	FOREST	Forest Protocol	forest-forest-protocol
+1089	NKN	NKN	nkn-nkn
+1090	MANYU	Manyu	manyu-manyu2
+1091	HOODX	Robinhood tokenized stock (xStock)	hoodx-robinhood-tokenized-stock-xstock
+1092	BPT	Best Patent	bpt-best-patent
+1094	GBYTE	Obyte	gbyte-obyte
+1095	RSS3	RSS3	rss3-rss3
+1096	MONA	MonaCoin	mona-monacoin
+1098	REI	Zerogoki	rei-zerogoki
+1099	DMD	Diamond	dmd-diamond
+1100	VAI	Vai	vai-vai
+1102	YEE	Yee Token	yee1-yee-token
+1103	PAAL	PAAL AI	paal-paal-ai
+1105	RIO	Realio Network	rio-realio-network
+1105	XION	XION	xion-xion
+1106	FHE	Mind Network	fhe-mind-network
+1108	MCT	Metacraft	mct-metacraft
+1108	0X0	0x0.ai: AI Smart Contract	0x0-0x0ai-ai-smart-contract
+1109	CODEC	Codec Flow	codec-codec-flow
+1111	OMIKAMI	AMATERASU OMIKAMI	omikami-amaterasu-omikami
+1112	EMT	Earthmeta	emt-earthmeta
+1113	TLOS	Telos	tlos-telos
+1114	ASD	AscendEx Token	asd-ascendex-token
+1115	LIGHT	Bitlight	light-bitlight
+1116	M87	MESSIER	m87-messier
+1117	DOCK	Dock	dock-dock
+1118	AFR	Afreum	afr-afreum
+1119	BROCCOLI	Broccoli (FirstBroccoli)	broccoli-broccoli-firstbroccoli
+1119	SPA	Sperax	spa-sperax
+1120	RAIN	Rain Coin	rain-rain-coin
+1122	HARD	Kava Lend	hard-kava-lend
+1124	ARG	Argentine Football Association Fan Token	arg-argentine-football-association-fan-token
+1125	USDUC	Unstable Coin (usduc.xyz)	usduc-unstable-coin-usducxyz
+1126	XEM	NEM	xem-nem
+1127	LAVA	Vulcan Forged LAVA	lava-vulcan-forged-lava
+1127	GME	GME (Ethereum)	gme-gme-ethereum
+1128	KEYCAT	Keyboard Cat (Base)	keycat-keyboard-cat-base
+1130	SYND	Syndicate	synd-syndicate
+1130	NECT	Nectar	nect-nectar
+1133	JAGER	Jager Hunter	jager-jager-hunter
+1134	GNUS	GENIUS AI	gnus-genius-token-amp-nft-collections
+1135	MLN	Enzyme	mln-enzyme
+1137	DREAMS	Daydreams	dreams-daydreams
+1139	PURPE	Purple Pepe	purpe-purple-pepe
+1140	ARMY	XRP ARMY	army-xrp-army
+1141	CRE	Carry	cre-carry
+1143	NAKA	Nakamoto Games	naka-nakamoto-games
+1144	CESS	CESS Network	cess-cess-network
+1145	BGSC	BugsCoin	bgsc-bugscoin
+1145	YEC	Ycash	yec-ycash
+1146	BMC	BountyMarketCap	bmc-bountymarketcap
+1146	CRTS	Cratos	crts-cratos
+1147	MEY	Mey Network	mey-mey-network
+1152	OCTA	OctaSpace	octa-octaspace
+1153	DRB	DebtReliefBot	drb-debtreliefbot
+1154	MEV	MEVerse	mev-meverse
+1155	SNS	Solana Name Service	sns-solana-name-service
+1156	GROW	ValleyDAO	grow-valleydao
+1157	EVR	Evernode	evr-evernode
+1159	STNK	Stonks	stnk-stonks
+1159	BZZ	Swarm	bzz-bzz
+1160	MEA	MECCA	mea-mecca
+1162	MAJOR	Major	major1-major
+1163	SDOLA	sDOLA	sdola-sdola
+1164	GALEON	Galeon	galeon-galeon
+1166	BLZ	Bluzelle	blz-bluzelle
+1167	ALU	Altura	alu-altura
+1168	IBGT	Infrared BGT	ibgt-infrared-bgt
+1168	CHESS	ChessCoin 0.32%	chess-chesscoin
+1169	CXT	Covalent X Token	cxt-covalent-x-token
+1170	PKOIN	Pocketcoin	pkoin-pocketcoin
+1172	TOKE	Tokemak	toke-tokemak
+1173	BTCMT	Minto	btcmt-minto
+1174	BTX	BeatSwap	btx-beatswap
+1175	SEND	Suilend	send-suilend
+1176	AVT	Aventus	avt-aventus
+1177	USDL	USDL Stablecoin	usdl-usdl-stablecoin
+1179	CONAN	Conan Meme	conan-conan-meme
+1180	PUSS	PussFi	puss2-pussfi
+1181	OL	OPENLOOT	ol-openloot
+1182	SPARKLET	Upland	sparklet-upland
+1183	TONIC	Tectonic	tonic-tectonic
+1184	VITE	VITE	vite-vite
+1186	IMO	IMO	imo5-imo
+1187	TET	Tectum	tet-tectum
+1188	LOFI	LOFI	lofi-lofi1
+1188	TRUNK	Elephant Money Stable	trunk-elephant-money-stable
+1189	MVC	MileVerse	mvc-mileverse
+1189	SHDW	Shadow Token	shdw-genesysgo-shadow
+1191	SCS	Solcasino Token	scs-solcasino-token
+1193	AOT	Agent Zero Token	aot2-agent-zero-token
+1195	PORK	PepeFork	pork-pepefork
+1196	JOBCOIN	JOBCOIN	jobcoin-jobcoin
+1197	METFI	MetFi	metfi-metfi-bsc
+1198	FARM	Harvest Finance	farm-harvest-finance
+1200	MNTX	Minutes Network Token	mntx-minutes-network-token
+1201	GFI	Goldfinch	gfi-goldfinch
+1202	EURQ	Quantoz EURQ	eurq-quantoz-eurq
+1203	CA	CA-HTB	ca3-ca-htb
+1204	ZEX 	ZEX 	zex-zex
+1205	PUFFER 	Puffer	puffer-puffer
+1207	BSN	Boson Protocol	bsn-boson-protocol
+1209	IR	Infrared	ir-infrared
+1210	AXGT	AxonDAO Governance Token	axgt-axondao-governance-token
+1211	TROY	Troy	troy-troy
+1212	NEST	Nest Protocol	nest-nest-protocol
+1213	PIN	PinLink	pin-pinlink
+1215	GME	GME	gme-gme
+1216	BOX	DeBox	box-debox
+1217	XBG	XBorg	xbg-xborg
+1217	CLV	CLV Token	clv-clover-finance
+1221	EMP	Empyreal	emp-empyreal
+1222	MATH	MATH	math-math
+1223	WEN	Wen	wen4-wen
+1223	TRONBULL	Tron Bull	tronbull-tron-bull
+1224	PNDC	Pond Coin	pndc-pond-coin
+1225	XEP	Electra Protocol	xep-electra-protocol
+1228	SHARE	ShareX	share-sharex
+1229	OBSR	Observer	obsr-observer
+1230	SPECTRE	SPECTRE AI	spectre-spectre-ai
+1232	VTC	Vertcoin	vtc-vertcoin
+1234	MAMO	Mamo	mamo-mamo
+1235	USDCX	USDCx (Canton)	usdcx-usdcx-canton
+1235	PX	Not Pixel	px-not-pixel
+1237	CTA	Cross The Ages	cta5-cross-the-ages
+1238	CHRP	Chirpley	chrp-chirpley
+1239	GST	Green Satoshi Token	gst-gst
+1240	BADGER	Badger	badger-badger
+1241	REACT	Reactive Network	react-reactive-network
+1242	GAIB	GAIB	gaib-gaib
+1243	RARI	Rarible	rari-rarible
+1243	DMTR	Dimitra	dmtr-dimitra
+1244	DENT	Dent	dent-dent
+1246	BKN	Brickken	bkn-brickken
+1247	LMAO!	LMAO!	lmao-lmao-1
+1249	GHST	Aavegotchi	ghst-aavegotchi
+1250	NUM	Numbers Protocol	num-numbers-protocol
+1251	RION	Hyperion 	rion-hyperion
+1252	NRS 	Nereus	nrs-nereus
+1253	REN	Ren	ren-republic-protocol
+1254	NODL	Nodle Network	nodl-nodle-network
+1255	MUMU	MUMU THE BULL	mumu1-mumu-the-bull
+1256	QUQ	Quq	quq-quq
+1257	LANA	LanaCoin	lana-lanacoin
+1258	RKC	Red Kitten Crew	rkc-red-kitten-crew
+1259	MNFT	Mongol NFT	mnft-mongol-nft
+1260	HNS	Handshake	hns-handshake
+1260	PALM	PaLM AI	palm-palm-ai
+1261	TRUE	TRUE	true-true
+1264	BAY	Marina Protocol	bay-marina-protocol
+1265	VOLT	Volt Inu	volt-volt-inu
+1267	DERO	Dero	dero-dero
+1268	BIFI	Beefy	bifi-beefyfinance
+1269	PEIPEI	PeiPei	peipei1-peipei
+1270	BASEDAI	BasedAI	basedai-basedai
+1270	KET	Ket	ket-ket2
+1272	PUBLIC	PublicAI 	public-publicai
+1274	ZRC	Zircuit	zrc-zircuit
+1276	ATLAS	Star Atlas	atlas-star-atlas-wormhole
+1276	SKEY	Skey Network	skey-skey-network
+1277	VAL	Validity	val-validity
+1281	HERB	HERBCOIN	herb-herbcoin
+1281	CRETA	Creta World	creta-creta-world
+1281	SOIL	Soil	soil3-soil
+1282	XFC	Football Coin	xfc-football-coin
+1284	NS	SuiNS Token	ns-suins-token
+1285	ALEPH	aleph.im	aleph-alephim
+1286	MYRO	Myro	myro-myro
+1287	FTMX 	FTMTOKEN	ftmx-ftmtoken
+1287	BTS	BitShares	bts-bitshares
+1289	POLIS	Star Atlas DAO	polis-star-atlas-dao
+1290	JUNO	Juno Network	juno-juno-network
+1292	EXCC	ExchangeCoin	excc-exchangecoin
+1293	GMEE	GAMEE	gmee-gamee
+1294	APM	Apeium Token	apm-apeium-token
+1295	ZTC	ZenChain	ztc-zenchain
+1295	GAIA	Gaia Everworld	gaia1-gaia-everworld
+1296	LWA	LumiWave	lwa-lumiwave
+1297	PIB	PIBBLE	pib-pibble
+1299	DORA	Dora Factory	dora-dora-factory
+1300	KORI	Kori The Pom	kori-kori-the-pom
+1300	DJI6930	DOWGE	dji6930-dowge
+1301	ALD	Aladdin DAO	ald-aladdin-dao
+1302	AZERO	Aleph Zero	azero-aleph-zero
+1305	REI	REI Network	rei-rei-network
+1305	MAGA	Make Aliens Great Again	maga-make-aliens-great-again
+1305	PACK	HashPack	pack-hashpack
+1306	NAV	NavCoin	nav-navcoin
+1307	VFY	zkVerify 	vfy-zkverify
+1308	POLA	Polaris Share	pola-polaris-share
+1309	DAY	Dayhub	day-dayhyb
+1310	MIU	MIU	miu3-miu
+1311	BUY	Buying.com	buy-buyingcom
+1312	LTO	LTO Network	lto-lto-network
+1313	A47	AGENDA 47	a47-agenda-47
+1314	FORTH	Ampleforth Governance Token	forth-ampleforth-governance-token
+1315	MOBY 	Moby AI	moby-moby-ai
+1316	GRIN	Grin	grin-grin
+1318	MYST	Mysterium	myst-mysterium
+1319	B3TR	VeBetterDAO	b3tr-vebetterdao
+1319	HOOK	Hooked Protocol	hook-hooked-protocol
+1320	DIMO	DIMO	dimo-dimo
+1321	GRND	SuperWalk	grnd-superwalk
+1322	COOK	mETH Protocol	cook-meth-protocol
+1323	CLUDE	CLUDE	clude-clude
+1325	NACHO	Nacho the Kat	nacho-nacho-the-kat
+1325	401JK	401jK	401jk-401jk
+1326	SHIDO 	Shido Network	shido-shido-network
+1327	SHARP	Sharp	sharp-sharp
+1328	RWA	ALLO	rwa-allo
+1329	KIBSHI	KiboShib	kibshi-kiboshib
+1330	PXC	Phoenixcoin	pxc-phoenixcoin
+1331	CORAL	Coral Protocol	coral3-coral-protocol
+1332	ARX	ARCS	arx-arcs
+1335	GFAL	Games for a Living	gfal-games-for-a-living
+1335	SDT	Stake DAO	sdt-stake-dao
+1335	SYS	Syscoin	sys-syscoin
+1336	IVT	ivault	ivt-ivault
+1337	WXMR	Wrapped XMR by BTSE	wxmr-wrapped-xmr-by-btse
+1338	BRN	BRN Metaverse	brn-brn-metaverse
+1340	BEAM	Beam	beam-beam
+1340	MON	MON Protocol	mon-mon-protocol
+1341	CBDOGE	Coinbase Wrapped DOGE	cbdoge-coinbase-wrapped-doge
+1342	DEURO	Decentralized Euro	deuro-decentralized-euro
+1343	DAM	Reservoir	dam-reservoir
+1345	VERSE	Verse World	verse-verse-world
+1347	HERO	Metahero	hero-metahero
+1347	AIDOGE	ArbDoge AI	aidoge-arbdoge-ai
+1349	TAKE	OVERTAKE	take-overtake
+1350	MIGGLES	Mister Miggles	miggles-mister-miggles
+1352	VERTAI	Vertical AI	vertai-vertical-ai
+1353	HANDY	Handy	handy-handy
+1354	PIXL	PIXL	pixl-pixl
+1355	CTX	Cryptex	ctx-cryptex
+1356	ZYPTO	Zypto	zypto-zypto
+1357	EGG	Nestree	egg-nestree
+1359	NEXA	Nexa	nexa-nexa
+1359	TEMCO	TEMCO	temco-temco
+1360	HOUSE	Housecoin	house-housecoin
+1361	UOS	Ultra	uos-ultra
+1362	RYU	RyuJin	ryu-ryujin
+1364	GRAM	Gram	gram3-gram
+1364	COLS	Cointel	cols-cointel
+1365	EVAA	EVAA Protocol	evaa-evaa-protocol
+1366	SPURS	Tottenham Hotspur FC Fan Token	spurs-spurs
+1368	GOOGLX	Alphabet tokenized stock (xStock)	googlx-alphabet-tokenized-stock-xstock
+1369	WMON	Wrapped Monad	wmon-wrapped-monad
+1369	NTX	NuNet	ntx-nunet
+1370	HOSKY	Hosky	hosky-hosky
+1371	HLN	Ēnosys	hln-nosys
+1372	NATIX	NATIX Network	natix-natix-network
+1373	ETHY	Ethy AI	ethy1-ethy-ai
+1374	GROK	Grok (ETH)	grok-grok-eth
+1376	OOO	Flat Eric	ooo-flat-eric
+1376	STAT	STAT 	stat-stat
+1377	$BORGY	BORGY	borgy-borgy
+1378	AL	ArchLoot	al-archloot
+1379	CEEK	CEEK VR	ceek-ceek-vr
+1380	CHILLHOUSE	Chill House	chillhouse-chill-house
+1381	QQQX	Nasdaq tokenized ETF (xStock)	qqqx-nasdaq-tokenized-etf-xstock
+1381	FOX	FOX Token	fox-fox-token
+1382	MOODENG	MOO DENG (moodeng.vip)	moodeng-moo-deng-moodengvip
+1383	PEPEONTRON	PePeonTron 	pepeontron-pepeontron
+1384	GOCHU	Gochujang Coin	gochu-gochujang-coin
+1385	HAROLD3	Harold	harold3-harold
+1386	GXA	Galaxia	gxa-galaxia
+1387	POP	Zypher Network	pop-zypher-network
+1388	TMG	T-mac DAO	tmg-t-mac-dao
+1391	VADER	VaderAI by Virtuals	vader-vaderai-by-virtuals
+1392	TROLL	Troll	troll-troll
+1393	GOG	Guild of Guardians	gog-guild-of-guardians
+1394	FUL	Fulcrom	ful-ful
+1396	XTER	XTER	xter1-xter
+1396	JESUS	Jesus Coin	jesus-jesus-coin
+1397	BOTTO	Botto	botto-botto
+1398	WNCG	Wrapped NCG	wncg-wrapped-ncg
+1399	COSA	Cosanta	cosa-cosanta
+1399	CHUD	Chudjak	chud-chudjak
+1400	MLT	Media Licensing Token	mlt-media-licensing-token
+1402	SCA	Scallop	sca-scallop
+1404	VUSD	Vesper V-Dollar	vusd-vesper-v-dollar
+1405	LUCKY	B-Lucky	lucky-b-lucky
+1405	HIPPO	sudeng	hippo-sudeng
+1406	VON	Vameon	von-vameon
+1407	ADP	Adappter Token	adp-adappter-token
+1408	CLAWD	clawd.atg.eth	clawd-clawdatgeth
+1408	SHPING	SHPING	shping-shping
+1410	BID	CreatorBid	bid-creatorbid
+1411	WIKEN	Project WITH	wiken-project-with
+1412	SMT	Swarm Markets	smt-swarm-markets
+1413	CDX	Cod3x	cdx-cod3x
+1414	MDT	Measurable Data Token	mdt-measurable-data-token
+1414	DUCX	Ducatus	ducx-ducatus
+1416	YURU	YURU COIN	yuru-yuru-coin
+1417	NIKO	NikolAI	niko-nikolai
+1418	BEE	DAOBase	bee-daobase
+1419	FIAS	FIAS	fias-fias
+1420	SEED	Garden	seed-garden
+1421	BILLY	Billy (Bitcoin)	billy-billy-bitcoin
+1423	WAI	World3	wai-world3
+1423	HTR	Hathor Network	htr-hathor-network
+1424	CHAT	OpenChat	chat-openchat
+1425	BOOE	Book of Ethereum	booe-book-of-ethereum
+1425	TOKABU	The Spirit of Gambling	tokabu-the-spirit-of-gambling
+1427	AVO	avo	avo-avo
+1428	PART	Particl	part-particl
+1430	CUMMIES	CumRocket	cummies-cumrocket
+1430	SIGMA	Sigma	sigma3-sigma
+1431	LM	LeisureMeta	lm-leisuremeta
+1432	LIME	iMe Lab	lime-ime-lab
+1432	MAIGA	Maiga	maiga-maiga
+1433	ALTT	Altcoinist	altt-altcoinist
+1434	TAVA	ALTAVA	tava-altava
+1436	XDB	DigitalBits	xdb-digitalbits
+1437	SCUSD	Sonic USD	scusd-sonic-usd
+1438	DEXTF	Domani Protocol	dextf-dextf
+1439	HGPT	HyperGPT	hgpt-hypergpt
+1441	HELLO	HELLO Labs	hello-hello-labs
+1441	SPCM	SPACEM WORLD	spcm-spacem-world
+1442	PEPU	Pepe Unchained (New)	pepu-pepe-unchained-new
+1444	XNV	Nerva	xnv-nerva
+1445	ARENA	The Arena	arena-the-arena
+1446	AAPLX	Apple tokenized stock (xStock)	aaplx-apple-tokenized-stock-xstock
+1447	SAMO	Samoyedcoin	samo-samoyedcoin
+1448	RXD	Radiant	rxd-radiant
+1450	HOLD	Holdstation	hold-holdstation
+1452	OVR	Ovr	ovr-ovr
+1453	HACHIKŌ	Hachiko Inu	hachik-hachiko-inu
+1454	DBC	DeepBrain Chain	dbc-deepbrain-chain
+1455	HACD	Hacash Diamond	hacd-hacash-diamond
+1455	DINGO	Dingocoin	dingo-dingocoin
+1457	A8	Ancient8	a8-ancient8
+1458	RDNT	Radiant Capital	rdnt-radiant-capital
+1460	CUDIS	CUDIS	cudis-cudis
+1461	MONKY	Wise Monkey	monky-wise-monkey
+1462	EPT	Balance	ept-balance
+1465	IMPT	IMPT	impt-impt
+1465	KIN	Kin	kin-kin
+1467	DMT	Dream Machine Token (Ethereum)	dmt-dream-machine-token-ethereum
+1468	UXLINK	UXLINK	uxlink-uxlink
+1468	RAI	Rai Reflex Index	rai-rai-reflex-index
+1469	CRCLX	Circle tokenized stock (xStock)	crclx-circle-tokenized-stock-xstock
+1470	METAV	METAVERSE	metav-metaverse
+1471	POLY	Polymath	poly-polymath
+1472	HTX	HTX	htx-htx
+1474	HASHAI	HashAI	hashai-hashai
+1475	NUB	nubcat	nub-nubcat
+1476	INTER	Inter Milan Fan Token	inter-inter-milan-fan-token
+1476	NYA	Nya	nya-nya
+1476	LKY	Luckycoin	lky-luckycoin
+1477	VEIL	Veil Token	veil2-veil-token
+1479	BENJI	Basenji	benji-basenji
+1480	HAI	HackenAI	hai-hackenai
+1481	PSTAKE	pSTAKE Finance 	pstake-pstake-finance
+1482	ROAM	Roam	roam-roam
+1483	MERY	Mistery On Cro	mery-mistery-on-cro
+1484	FIS	Stafi	fis-stafi
+1485	COPPERINU	copper inu	copperinu-copper-inu
+1486	NVDAX	NVIDIA tokenized stock (xStock)	nvdax-nvidia-tokenized-stock-xstock
+1488	DMC	DeLorean	dmc-delorean
+1489	PLLD	Palladium	plld-palladium
+1490	GLDX	Gold tokenized ETF (xStock)	gldx-gold-tokenized-etf-xstock
+1491	LMEOW	LMEOW (ETH)	lmeow-lmeow-eth
+1492	OKLOON	Oklo Tokenized Stock (Ondo)	okloon-oklo-tokenized-stock-ondo
+1493	WOD	World of Dypians	wod-world-of-dypians
+1494	BTR	Bitrue Coin	btr-bitrue-coin
+1495	GOATED	GOAT Network	goated-goat-network
+1496	REEF	Reef	reef-reef
+1497	BEPRO	BEPRO Network	bepro-bet-protocol
+1498	AFC	Arsenal Fan Token	afc2-arsenal-fan-token
+1500	KAI	KardiaChain	kai-kardiachain
+1500	ML	Mintlayer	ml-mintlayer
+1503	CHEQ	CHEQD Network	cheq-cheqd-network
+1503	URANUS	Uranus	uranus-uranus
+1504	ZTX	ZTX Token	ztx3-ztx-token
+1506	VAI	VAIOT	vai-vaiot
+1506	FAYA	FAYA	faya-faya
+1508	ZEUS	Pepes Dog	zeus-pepes-dog
+1510	BRLA	BRLA Digital BRLA	brla-brla-digital-brla
+1511	ALPHA	Stella	alpha-alpha-finance
+1512	KELLYCLAUDE	KellyClaude	kellyclaude
+1513	LINGO	Lingo	lingo1-lingo
+1514	CTP	Ctomorrow Platform	ctp-ctomorrow-platform
+1515	WSTUSDT	Wrapped Staked Tether	wstusdt-wrapped-staked-tether
+1516	NXRA	AllianceBlock Nexera	nxra-allianceblock-nexera
+1517	VRA	Verasity	vra-verasity
+1517	FUSD	Freedom Dollar	fusd-freedom-dollar
+1519	LQR	Laqira Protocol	lqr-laqira-protocol
+1520	CUBE	Somnium Space CUBEs	cube-somnium-space-cubes
+1521	PTB	Portal To Bitcoin	ptb-portal-to-bitcoin
+1522	SWELL	Swell Network	swell-swell-network
+1523	NXS	Nexus	nxs-nexus
+1524	CRP	Crypton	crp-crypton
+1524	RVF	RocketX Exchange	rvf-rocket-vault-rocketx
+1526	TERMINUS	Terminus	terminus-terminus
+1527	DNX	Dynex	dnx-dynex
+1528	VNXAU	VNX Gold	vnxau-vnx-gold
+1529	GRAIL	Camelot Token	grail-camelot-token
+1530	IMU	Immunefi	imu-immunefi
+1531	MOLT	Moltbook	molt-moltbook
+1532	GORK	New XAI Gork	gork-new-xai-gork
+1534	TRA	Trabzonspor Fan Token	tra-trabzonspor-fan-token
+1535	GMCOIN	GMCoin	gmcoin-gmcoin
+1536	RAGEGUY	Rage Guy	rageguy-rage-guy
+1537	WGBERA	Wrapped gBera	wgbera-wrapped-gbera
+1539	NODE	NodeOps	node-nodeops
+1540	CLAWNCH	CLAWNCH	clawnch-clawnch
+1540	ZCL	ZClassic	zcl-zclassic
+1541	SLERF	Slerf	slerf-slerf
+1542	MEMEFI 	MemeFi	memefi-memefi
+1543	ZEUS	Zeus Network	zeus-zeus-network1
+1544	BULLA	Bulla	bulla-bulla2
+1545	XRPH	XRP Healthcare	xrph-xrp-healthcare
+1546	DCI	Dynamic Crypto Index	dci-dynamic-crypto-index
+1548	WAGMI	WAGMI	wagmi8-wagmi
+1548	TRADE	Polytrade	trade-polytrade
+1549	CYC	Cycle Network	cyc-cycle-network
+1550	PERP	Perpetual Protocol	perp-perpetual-protocol
+1552	PUP	PUP (pupxbnb.com)	pup-pup-pupxbnbcom
+1553	PREMIA	Premia	premia-premia
+1554	OBOL	Obol	obol-obol-technologies
+1554	SRM	Serum	srm-serum
+1555	BITBOARD	BitBoard	bitboard-bitboard
+1556	PLU	Pluton	plu-pluton
+1558	ZREAL	Z李REAL SUPER COIN	zreal-zreal-super-coin
+1558	UPT	UPROCK	upt-uprock
+1558	OGPU	OPEN GPU	ogpu-open-gpu
+1559	PROPS	PROPS	props-props
+1560	PIPE	Pipe Network	pipe-pipe-network
+1562	WAGMI	Wagmi	wagmi5-wagmi
+1563	CERE	Cere Network	ico-cere-network
+1565	KCT	Konnect	kct-konnect
+1565	IDEX	IDEX	idex-idex
+1566	XEL	XELIS	xel-xelis
+1568	MGP	Magpie	mgp-magpie
+1569	XDAG	Dagger by XDAG	xdag-dagger-by-xdag
+1569	MAY	Mayflower AI 	may-mayflower-ai
+1570	ARC	ARC	arc-arc
+1572	BTCB	Bitcoin on Base	btcb-bitcoin-on-base
+1573	DEL	Decimal	del-decimal
+1574	AMETA	Alpha City	ameta-alpha-city
+1574	SUKU	SUKU	suku-suku
+1575	HOPPY	Hoppy	hoppy2-hoppy
+1577	NFD	Feisty Doge NFT	nfd-feisty-doge-nft
+1578	GPU	Node AI	gpu-node-ai
+1579	NUTS	Thetanuts Finance	nuts-thetanuts-finance
+1580	WAR	WAR	war-war
+1580	SCP	ScPrime	scp-scprime
+1581	EXRD	E-RADIX	exrd-e-radix
+1582	SOUL	Phantasma	soul-phantasma
+1583	CPH	Cypherium	cph-cypherium
+1584	NOX	NONOS	nox-nonos
+1586	AZEN	aZen	azen-azen
+1587	GLQ	GraphLinq	glq-graphlinq
+1587	BTC2	Bitcoin 2	btc2-bitcoin-2
+1588	AURY	Aurory	aury-aurory
+1589	ADM	ADAMANT Messenger	adm-adamant-messenger
+1590	FANC	fanC	fanc-fanc
+1591	PROPC	Propchain	propc-propchain
+1592	VOOI	VOOI 	vooi-vooi
+1593	MNTC	Minati Coin	mntc-minati-coin
+1594	TSUKA	Dejitaru Tsuka	tsuka-dejitaru-tsuka
+1595	STARL	StarLink	starl-starlink
+1596	SUP	Superfluid 	sup-superfluid
+1598	UNCX	UniCrypt	uncx-unicrypt
+1598	MYRIA	Myria	myria-myria
+1599	CLORE	Clore.ai	clore-clore-blockchain
+1600	VOXEL	Voxies	voxel-voxies
+1601	MINI	mini	mini1-mini
+1601	BNC	Bitfrost	bnc-bitfrost
+1602	CROWN	Crown by Third Time Games	crown-crown-by-third-time-games
+1603	WMINIMA	Wrapped Minima	wminima-wrapped-minima
+1604	VINU	Vita Inu	vinu-vita-inu
+1605	$POM	POM	pom-pom
+1606	ATR	Artrade Token	atr-artrade-token
+1606	PWEASE	Pwease	pwease-pwease
+1608	LOULOU	loulou	loulou-loulou
+1609	VEX	Vexanium	vex-vexanium
+1610	KILO	KiloEx	kilo-kiloex
+1613	NRGE	Energi (ERC-20)	nrge-energi-erc-20
+1613	P	Pop Planet	p-pop-planet
+1614	ZULU	Zulu Network	zulu-zulu-network
+1615	GAIA	Gaia	gaia-gaia2
+1616	XRT	Robonomics Network	xrt-robonomics-network
+1617	STMX	StormX	stormx-stormx
+1618	BIOLLM	BioLLM	biollm-biollm
+1619	CYPR	Cypher	cypr-cypher
+1620	HAI	Let's Get HAI	hai-lets-get-hai
+1621	RICH	GPU ai Rich	rich-gpu-ai-rich
+1622	ZERØ	ZeroTrust	zer-zerotrust
+1624	PIRATE	Pirate Nation Token	pirate-pirate-nation-token
+1626	ALB	Alienbase	alb-alienbase
+1626	IZI	Izumi Finance	izi-izumi-finance
+1627	CHAIN	Chain Games	chain-chain-games
+1628	WEPE	Wall Street Pepe	wepe-wall-street-pepe
+1628	ALEX	ALEX Lab	alex-alex-lab
+1629	PINGO	PinGo	pingo-pingo
+1632	LOT	League of Traders	lot-league-of-traders
+1633	TRU	TrueFi	tru-truefi
+1633	POR	Portugal National Team Fan Token	por-portugal-national-team-fan-token
+1634	SAITO	Saito	sa-superalgos
+1635	LUCA	LUCA	luca-luca
+1635	XPRT	Persistence	xprt-persistence
+1637	ZUSDT	LayerZero Bridged USDT (Aptos)	zusdt-layerzero-bridged-usdt-aptos
+1637	CELL	Cellframe	cell-cellframe
+1639	COINX	Coinbase tokenized stock (xStock)	coinx-coinbase-tokenized-stock-xstock
+1640	MOTHER	Mother Iggy	mother-mother-iggy
+1641	$MICHI	MichiCoin	michi-michicoin
+1642	CAT	Catcoin	cat20-catcoin
+1643	HART	Hara Token	hart-hara-token
+1644	FITFI	Step App - FITFI	fitfi-stepapp-fitfi
+1645	FAIR	Faircaster	fair-faircaster
+1646	NOICE	noice	noice-noice
+1647	PEPE2.0	PEPE2.0	pepe20-pepe20-eth
+1648	AXM	Axiome	axm-axiome
+1649	SPEC	Spectral	spec-spectral
+1650	ZERC	zkRace	zerc-zkrace
+1651	LOBO	LOBO•THE•WOLF•PUP (Runes)	lobo-lobothewolfpup-runes
+1652	HARAMBE	Harambe on Solana	harambe-harambe-on-solana
+1653	YFII	DFI.Money	yfii-dfimoney
+1654	OAS	Oasys	oas-oasys
+1655	KM	Kekius Maximus (kekiusmaximus.army)	km-kekius-maximus-kekiusmaximusarmy
+1655	JMPT	JumpToken	jmpt-jumptoken
+1656	TRU	Truth	tru-truth
+1658	MLG	360noscope420blazeit	mlg-360noscope420blazeit
+1659	ALVA	Alvara	alva-alvara
+1660	DOGEGF	DogeGF	dogegf-dogegf
+1661	CRYPTO	Cryptocurrency Coin	crypto-cryptocurrency-coin
+1662	JAILSTOOL	Stool Prisondente	jailstool-stool-prisondente
+1663	AST	AirSwap	ast-airswap
+1664	SHI	Shina Inu	shi-shina-inu
+1666	OLJEFE20	OL Jefe 2.0	oljefe20-ol-jefe-20
+1667	ECHO	Echo Protocol	echo-echo-protocol
+1667	SURGE	Surge	surge1-surge
+1668	VRTON	Vertiv Tokenized Stock (Ondo)	vrton-vertiv-tokenized-stock-ondo
+1669	RBD	Rubidium	rbd-rubidium
+1670	SPARQ	TheContentForge	sparq-thecontentforge
+1671	GGUSD	Good Game US Dollar	ggusd-good-game-us-dollar
+1672	IMGN	IMGN Labs	imgn-imgn-labs
+1673	NAP	Napoli Fan Token	nap-napoli-fan-token
+1674	AZIT	Azit	azit-azit
+1675	NRG	Energi	nrg-energi
+1676	PHB	Phoenix Global	phb-phoenix-global
+1676	00	00 Token	00-00-token
+1678	$TREAT	Shiba Inu Treat	treat-shiba-inu-treat
+1679	CWIF	CATWIFHAT	cwif-catwifhat
+1680	TRCL	Treecle	trcl-treecle
+1681	NFLXX	Netflix tokenized stock (xStock)	nflxx-netflix-tokenized-stock-xstock
+1682	BONE	Bone	bone3-bone
+1683	SIS	Symbiosis Finance	sis-symbiosis-finance
+1684	ARTY	Artyfact	arty-artyfact
+1685	SBR	Saber	sbr-saber
+1686	SABAI	Sabai Ecoverse Token	sabai-sabai-ecoverse-token
+1686	X	TaleX	x-talex
+1688	HEU	Heurist	heu-heurist
+1689	LUCKYSLP	LuckysLeprecoin	luckyslp-luckysleprecoin
+1690	MRDN	Meridian	mrdn-meridian
+1691	PLI	Plugin	pli-plugin
+1693	UFO	UFO Gaming	ufo-ufo-gaming
+1693	MAS	Massa	mas-massa
+1694	LMWR	LimeWire Token	lmwr-limewire-token
+1697	1	just buy $1 worth of this coin	1-just-buy-1-worth-of-this-coin
+1697	FACY	ArAIstotle	facy-araistotle
+1698	WHY	WHY	why-why
+1699	MOCHI	Mochi	mochi3-mochi
+1700	STT	Statter Network	stt-statter-network
+1702	XAVIER	Xavier: Renegade Angel	xavier-xavier-renegade-angel
+1703	ROBOTMONEY	Robot Money	robotmoney-robot-money
+1704	IDX	ideax	idx-ideax
+1705	WOZX	Efforce	wozx-efforce
+1706	OWL	Owlto Finance	owl-owlto-finance
+1706	BUD	BOOKUSD	bud-bookusd
+1707	KEKEC	The Balkan Dwarf	kekec-the-balkan-dwarf
+1708	ACA	Acala Network	aca-acala-network
+1708	SHR	ShareToken	shr-sharetoken
+1709	MAD	MAD	mad6-mad
+1709	HEHE	hehe	hehe7-hehe
+1710	SBET	SBET	sbet-sbet
+1712	AURA	Aura Finance	aura-aura-finance
+1714	NOTHING	You’ll Own Nothing and Be Happy	nothing-youll-own-nothing-and-be-happy
+1715	KATA	Katana Inu	kata-katana-inu
+1716	CONVO	Prefrontal Cortex Convo Agent by Virtuals	convo-prefrontal-cortex-convo-agent-by-virtuals
+1717	STREAM	Streamflow	stream-streamflow
+1720	VIVI	VIVI COIN	vivi-vivi-coin
+1720	OMNOM	Doge Eat Doge	omnom-doge-eat-doge
+1721	REGENT	REGENT COIN	regent-regent-coin
+1722	SHOGGOTH	Shoggoth	shoggoth-shoggoth
+1724	GF	GuildFi	gf-guildfi
+1724	TCOM	TCOM Global	tcom-tcom-global
+1725	BRETT	Brett (ETH)	brett8-brett-eth
+1726	QOM	Shiba Predator	qom-shiba-predator
+1728	CAPTAINBNB	CaptainBNB	captainbnb-captainbnb
+1729	ROKO	ROKO	roko-roko
+1730	VSYS	V Systems	vsys-v-systems
+1731	VPAY	VPay	vpay1-vpay
+1732	KEY	Selfkey	key-selfkey
+1733	UNIBOT	Unibot	unibot-unibot
+1735	JYAI	Jerry The Turtle By Matt Furie	jyai-jerry-the-turtle-by-matt-furie
+1736	SOGNI	Sogni AI	sogni-sogni-ai
+1737	SKOP	Skull of Pepe Token	skop-skull-of-pepe-token
+1739	RDD	ReddCoin	rdd-reddcoin
+1740	RIC	Riecoin	ric-riecoin
+1742	BTX	Bitcore	btx-bitcore
+1744	FUSE	Fuse Network	fuse-fuse-network
+1745	AURA	Aura Network	aura-aura-network
+1746	$HEGE	Hege	hege-hege
+1747	TRVL	TRVL	trvl-trvl
+1748	SIXP	Sixpack Miner	sixp-sixpack-miner
+1748	UBC	Universe Boss Coin	ubc-universe-boss-coin
+1749	SPH	Spheroid Universe	sph-spheroid-universe
+1749	GUAC	Guacamole	guac-guacamole
+1750	SPYX	SP500 tokenized stock (xStock)	spyx-sp500-tokenized-stock-xstock
+1751	MEFAI	META FINANCIAL AI	mefai-meta-financial-ai
+1752	WPOKT	Wrapped Pocket	wpokt-wrapped-pocket
+1752	BERRY	Strawberry AI	berry-strawberry-ai
+1753	PCULE	Polycule	pcule-polycule
+1754	BFIC	Bficoin	bfic-bficoin
+1755	INSUR	InsurAce	insur-insurace
+1757	GHUB	GemHUB	ghub-gemhub
+1758	CIK	Christ Is King	cik-christ-is-king
+1758	OPTIMUS	Optimus	optimus-optimus
+1761	MOON	r/CryptoCurrency Moons	moon-rcryptocurrency-moons
+1762	XMONEY	X Money	xmoney-x-money
+1763	阴阳	YinYang	-yinyang
+1763	SAUBER	Alfa Romeo Racing ORLEN Fan Token	sauber-alfa-romeo-racing-orlen-fan-token
+1764	MAN	Matrix AI Network	man-matrix-ai-network
+1765	LOBSTAR	Lobstar	lobstar-lobstar
+1766	BXX	Baanx	bxx-baanx
+1767	LUX	Lux	lux-lux
+1768	LRN	Loopring [NEO]	lrn-loopring-neo
+1770	GZONE	GameZone	gzone-gamezone
+1771	ABYSS	Abyss Token	abyss-the-abyss
+1772	LABUBU	LABUBU SOL	labubu-labubu-sol
+1773	NCX	NovaChargeX	ncx-novachargex
+1774	FIO	FIO Protocol	fio-fio-protocol
+1775	WMC	Wrapped MistCoin	wmc-wrapped-mistcoin
+1776	XNET	XNET Mobile	xnet-xnet-mobile
+1778	SHRAP	Shrapnel	shrap-shrapnel
+1779	ELFI	ELYFI	elfi-elyfi
+1779	ANOME	Anome	anome-anome
+1779	$QNTM	Quan2um	qntm-quan2um
+1780	MTV	MultiVAC	mtv-multivac
+1782	GMM	Gamium	gmm-gamium
+1784	LORDS	LORDS	lords-lords
+1784	LOA	League of Ancients	loa-league-of-ancients
+1785	SQT	SubQuery	sqt-subquery
+1786	GOATS	GOATS	goats-goats1
+1787	SWPX	SwapX 	swpx-swapx
+1788	DUCKY	Ducky	ducky4-ducky
+1788	U2U	U2U Network	u2u-u2u-network
+1789	QORPO	QORPO WORLD	qorpo-qorpo-world
+1790	AI16Z	ai16z	ai16z-ai16z
+1790	USOL	Wrapped Solana (Universal)	usol-wrapped-solana-universal
+1793	VANKEDISI	vankedisi	vankedisi-vankedisi
+1794	GTA6	GTA 6	gta6-gta-6
+1795	CRWNY	Crowny Token	crwny-crowny-token
+1795	RFC	Retard Finder Coin	rfc-retard-finder-coin
+1796	FOXY	Foxy	foxy-foxy
+1797	SMURFCAT	Real Smurf Cat	election-real-smurf-cat
+1799	KIN	Kindred Labs	kin-kindred-labs
+1800	NUT	Nutcoin	nut6-nutcoin
+1800	SMURFCAT	SMURFCAT	smurfcat-smurfcat
+1801	NOCHILL	AVAX HAS NO CHILL	nochill-avax-has-no-chill
+1801	$CDPANDA	CDPANDA	cdpanda-cdpanda
+1802	RC	Rebel Cars	rc-rebel-cars
+1803	OPUS	Opus	opus-opus
+1803	LO0P	LO0P	lo0p-lo0p
+1804	CARR	Carnomaly	carr-carnomaly
+1806	ROAR	Roaring Kitty	roar8-roaring-kitty
+1807	MRC	Moon Roll Coin	mrc-moon-roll-coin
+1808	LUFFY	Luffy [NEW]	luffy-luffy-new
+1808	VSG	Vector Smart Gas	vsg-vector-smart-gas
+1809	FARTCOIN	Based Fartcoin	fartcoin-based-fartcoin
+1810	STRM	StreamCoin	strm-streamcoin
+1811	EEFI	Elastic Finance	eefi-elastic-finance
+1812	MTRG	Meter Governance	mtrg-meter-governance
+1813	TRENCHER	trencher	trencher-trencher
+1813	DC	Dollar Coin	dc-dollar-coin
+1814	BIFI	BiFi	bifi-bifi
+1815	FXN	FXN	fxn-fxn
+1815	EDX	edeXa	edx-edexa
+1816	SPAIN	Spain National Fan Token	spain-spain-national-fan-token
+1818	ZOON	CryptoZoon	zoon-cryptozoon
+1819	KIZUNA	KIZUNA	kizuna-kizuna
+1821	XWC	WhiteCoin	xwc-whitecoin
+1822	MUBI	Multibit	mubi-multibit
+1823	PXP	PointPay	pxp-pointpay
+1824	CANTO	CANTO	canto-canto
+1826	RACCOONDOG	Raccoon Dog	raccoondog-raccoon-dog
+1826	BFT	Brazil National Football Team Fan Token	bft4-brazil-national-football-team-fan-token
+1828	RIZZMAS	Rizzmas	rizzmas-rizzmas
+1829	SEKA	SEKA	seka-seka
+1829	SNSY	Sensay	snsy-sensay
+1830	MM	Million	mm-million
+1831	X33	Shadow Liquid Staking Token	x33-shadow-liquid-staking-token
+1831	$IMPERIUM	Emperor Coin	imperium-emperor-coin
+1832	MOCKJUP	mockJUP	mockjup-mockjup
+1833	BGG1	Blinks.gg	bgg1-blinksgg
+1835	A2Z	Arena-Z	a2z-arena-z
+1836	ZKJ	Polyhedra Network	zk-polyhedra-network
+1837	HYDRA	HYDRA	hydra-hydra
+1838	MOMO	Momo (momocoin.space)	momo-momo-momocoinspace
+1839	TEDDY	Teddy - The Tile Doge	teddy-teddy-the-tile-doge
+1839	SHM	Shardeum	shm-shardeum
+1841	IMG	Infinite Money Glitch	img-infinite-money-glitch
+1842	IMT	Immortal Token	imt-immortal-token
+1843	WAGMIGAMES	WAGMI GAMES	wagmigames-wagmi-games
+1844	GRASSITO	Grassito	grassito-grassito
+1845	INFRA	Infraxa	infra-infraxa
+1845	ZCX	Unizen	zcx-unizen
+1845	NITRO	Nitro	nitro3-nitro
+1847	PIRATE	PirateCash	pirate-piratecash
+1847	BUZZ	Hive AI	buzz-hive-ai
+1849	EXM	EXMO Coin	exm-exmo-coin
+1850	ANI	Ani Grok Companion	ani-ani-grok-companion
+1852	HOPPY	HOPPY (hoppysol.com)	hoppy-hoppy-hoppysolcom
+1853	SOLAMA	Solama	solama-solama
+1854	BOSS	Boss	boss-boss
+1855	MAGA	MAGA Hat	maga-maga-hat
+1856	WCO	W Coin	wco-w-coin
+1856	SIN	Sinverse	sin-sin-city
+1857	NAVI	Atlas Navi	navi-atlas-navi
+1858	SIPHER	Sipher	sipher-sipher
+1859	ATA	Automata	ata-automata
+1859	CIRCLE	Burning Circle	circle-burning-circle
+1860	BEER	Beercoin	beer-beercoin
+1861	WEFI	Wefi Finance	wefi-wefi-finance
+1861	NIRE	NotInRetardEducation	nire-notinretardeducation
+1862	STUPID	StupidCoin	stupid-stupidcoin
+1863	FOUR	FourCoin	four-fourcoin
+1865	TITN	THORWallet	titn-thorwallet
+1865	XNA	Neurai	xna-neurai
+1867	PATRIOT	Patriot	patriot-patriot
+1868	LIKE	Like	like-only1
+1869	DEAI	Zero1 Token	deai-zero1-token
+1869	CHIRP	Chirp	chirp-chirp
+1870	TYV	TYVCOIN	tyv-tyvcoin
+1872	MFER	mfercoin	mfercoin-mfercoin
+1873	BED	Bankless BED Index	bed-bankless-bed-index
+1875	LUM	Luminous	lum-luminous
+1876	VAL	Store of Value	val-store-of-value
+1877	SAL	Salvium	sal-salvium
+1878	XCL	Xcellar	xcl1-xcellar
+1879	ZEAL	ZEAL	zeal-zeal
+1879	VXV	Vectorspace AI	vxv-vectorspace-ai
+1880	COCO	COCO COIN	coco-coco-coin
+1881	SOEX	SOEX	soex-soex
+1882	DOR	Dor	dor-dor
+1882	PUSH	Push Protocol	push-ethereum-push-notification-service-epns
+1883	BAAS	BaaSid	baas-baasid
+1885	KMD	Komodo	kmd-komodo
+1886	COMMON	Common	common-common
+1887	CODED	soft shill	coded1-soft-shill
+1888	ZFI	ZyFAI	zfi-zyfai
+1890	COCORO	Cocoro	cocoro-cocoro
+1893	TREMP	doland tremp	tremp-doland-tremp
+1894	DOCKERZXBT	Docker	dockerzxbt-docker
+1895	RDT	Ridotto	rdt-ridotto
+1895	BIT	Biconomy Exchange Token	bit-biconomy-exchange-token
+1896	ABNBON	Airbnb Tokenized Stock (Ondo)	abnbon-airbnb-tokenized-stock-ondo
+1899	SHEKEL	Rabbi Schlomo by Virtuals	shekel-rabbi-schlomo-by-virtuals
+1901	FARM2	FARM2	farm21-farm2
+1901	LUCE 	Luce	luce-luce
+1902	WAM	Wam	wam-wam
+1903	3ULL	Playa3ull Games	3ull-playa3ull-games
+1903	DOG	Dog Emoji On Solana	-dog-emoji-on-solana
+1905	PACE	3SPACE ART	pace-3space-art
+1906	COCK	Krypto Cock	cock-krypto-cock
+1906	STOS	Stratos	stos-stratos
+1908	R1	Ratio1	r1-ratio1
+1909	BCCOIN	BlackCardCoin	bccoin-blackcardcoin
+1910	CREDI	Credefi	credi-credefi
+1911	BAKE	BakerySwap	bake-bakeryswap
+1912	SLAY	SatLayer	slay-satlayer
+1914	FLORK	FLORK CTO	flork-flork-cto
+1915	BONKAI	Let's Bonk AI	bonkai1-let39s-bonk-ai
+1916	EVR	Evrmore	evr-evrmore
+1917	RJV	Rejuve.AI	rjv-rejuveai
+1918	SOMETHING	believe in somETHing	something-believe-in-something
+1919	H2O	H2O Dao	h2o3-h2o-dao
+1920	GMMT	Giant Mammoth	gmmt-giant-mammoth
+1920	TOWER	Tower	tower-tower
+1921	DIONE	Dione	dione-dione
+1922	TEVA	Tevaera	teva-tevaera
+1922	A1C	Sally A1C	a1c-sally-a1c
+1923	RBC	Rubic	rbc-rubic
+1924	J	Jambo	j-jambo
+1925	BAD	Bad Idea AI	bad-bad-idea-ai
+1927	PAI	ParallelAI	pai7-parallelai
+1930	EAI	EternalAI	eai-eai
+1931	BSW	Biswap	bsw-biswap
+1933	MUBARAKAH	Mubarakah	mubarakah-mubarakah
+1934	DTEC	Dtec token	dtec-dtec-token
+1934	HANTA	Hantavirus	hanta-hantavirus
+1935	RKSOL	Starke Staked SOL 	rksol-starke-staked-sol
+1936	FACT	FACT0RN	fact-fact0rn
+1937	DORKY	Dork Lord	dorky-dork-lord
+1938	ELX	Elixir	elx-elixir
+1940	SEN	Sentre	sen-sentre
+1940	FLM	Flamingo Finance	flm-flamingo-finance
+1943	REVO	Revomon	revo-revomon
+1944	POLYFACTS	Polyfactual	polyfacts-polyfactual
+1945	JDON	JD.com Tokenized Stock (Ondo)	jdon-jdcom-tokenized-stock-ondo
+1946	NBLU	NuriTopia	nblu-nuritopia
+1947	NFTD	NFTrade	nftd-nftrade
+1948	MILLI	MILLI	milli-milli
+1949	BCAT	BananaCat	bcat-bananacat
+1950	RAI	Reploy	rai-reploy
+1951	REVU	Revuto	revu-revuto
+1953	GHIBLI	Ghiblification	ghibli-ghiblification
+1953	BALDOR	Baldor	baldor-baldor
+1954	1	Ucan fix life in1day	1-ucan-fix-life-in1day
+1955	SUNCAT	Suncat	suncat-suncat
+1957	MCRT	MagicCraft	mcrt-magiccraft
+1957	WMM	Weird Medieval Memes	wmm-weird-medieval-memes
+1958	PALLA	Pallapay	palla-pallapay
+1959	MIR	Mirror Protocol	mir-mirror-protocol
+1960	HIFI	Hifi Finance	hifi-hifi-finance
+1960	YNE	yesnoerror	yne-yesnoerror
+1962	BST	Blocksquare	bst-blocksquare
+1963	DEFI 	DeFi	defi-defi-eth
+1965	ASTRO	Astroport.fi	astro-astroportfi
+1966	BABYPEPE	Baby Pepe	babypepe8-baby-pepe
+1968	DUCK	DuckChain Token	duck-duckchain-token
+1969	CONE	BitCone	cone-bitcone
+1969	STH	Smartholdem	sth-smartholdem
+1970	ABI	Abi	abi-abi
+1971	UNFI	Unifi Protocol	unfi-unifi-protocol
+1972	MINDSHARE	mindshare	mindshare-mindshare
+1972	TIMI	MetaArena	timi-metaarena
+1973	LOOKS	LooksRare Token	looks-looksrare-token
+1974	MLC	My Lovely Coin	mlc-my-lovely-coin
+1976	MYSTERY	Mystery	mystery-mystery
+1977	NTRN	Neutron	ntrn1-neutron
+1977	ESX 	EstateX	esx-estatex1
+1978	AVB	Autonomous Virtual Beings	avb1-autonomous-virtual-beings
+1979	H1DR4	H1DR4 by Virtuals	h1dr4-h1dr4-by-virtuals
+1980	TOPIA	Hytopia	topia-hytopia
+1981	FDRY	Foundry	fdry-foundry
+1982	EMYC	E Money	emyc-e-money
+1984	PAINSTR	PainStrategy	painstr-painstrategy
+1986	AART	ALL.ART	aart-allart
+1987	RBN	Ribbon Finance	rbn-ribbon-finance
+1987	NPT	Neptune Cash	npt-neptune-cash
+1988	BIOFI	BioFi	biofi-biofi
+1988	EMR	Emorya Finance	emr-emorya-finance
+1989	FERMA	Ferma	ferma-ferma
+1990	ROOBEE	ROOBEE	roobee-roobee
+1991	LLD	Liberland Dollar	lld-liberland-dollar
+1992	BTCZ	BitcoinZ	btcz-bitcoinz
+1992	NATO	The Nation Token	nato-the-nation-token
+1993	NUX	Peanut	nux-peanut-bep-20
+1994	LTX	Lattice Token	ltx-lattice-token
+1995	MCDON	McDonald's Tokenized Stock (Ondo)	mcdon-mcdonalds-tokenized-stock-ondo
+1996	DONKEY	Donkey (DONKEY_BSC_MEME)	donkey-donkey-donkeybscmeme
+1997	ZF	zkSwap Finance	zf-zkswap-finance
+1998	PENG	Peng	peng-peng
+1999	STAN	Stanley Cup Coin	stan-stanley-cup-coin
+2000	IBS	IBS	ibs-ibs
+2000	XCX	Xeleb Protocol 	xcx-xeleb-protocol

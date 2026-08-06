@@ -1,0 +1,77 @@
+{
+  "schema": "active_run_gate_v1",
+  "project": "trading_mvp",
+  "run_id": "ws_collect_72h_sweep_visible_20260801_215320",
+  "status": "RUNNING",
+  "created_at": "2026-08-01T21:53:48+03:00",
+  "purpose": "Visible research-only WS collect for spot maker liquidity sweep/reversal branch; blocks next goal step until collector exits.",
+  "blocking_rule": "While status is RUNNING, do not run postprocess, grid/search, code changes, broad analysis, or new collectors. Only status/ETA checks are allowed.",
+  "monitor_pid": 14512,
+  "process_ids": [
+    14512
+  ],
+  "monitor_script": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_ws_collect_visible.ps1",
+  "output_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\raw",
+  "manifest_glob": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\raw\\ws_collect_*.json",
+  "duration_sec": 259200,
+  "exchanges": "mexc,gateio",
+  "max_symbols": 300,
+  "max_pairs_per_exchange": 16,
+  "universe_path": ".\\exports\\trading-mvp\\universe\\no_binance_dense_ws_sweep_20260628.csv",
+  "update_interval": "100ms",
+  "self_preflight_guard": {
+    "enabled": true,
+    "script": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\trading_edge_preflight.ps1",
+    "required_status": "READY_FOR_EDGE_PROOF_STEP",
+    "required_check": "current_scorecard_freshness",
+    "action": "refuse_confirmed_long_run_before_start"
+  },
+  "early_density_guard": {
+    "enabled": true,
+    "check_after_minutes": 60,
+    "min_lines_per_minute": 10.0,
+    "min_raw_lines": 600,
+    "min_raw_files": 1,
+    "action": "stop_child_collector_and_mark_stopped_incomplete"
+  },
+  "zero_line_guard": {
+    "enabled": true,
+    "abort_after_minutes": 10,
+    "min_raw_lines": 1,
+    "action": "stop_child_collector_and_mark_stopped_incomplete"
+  },
+  "schema_probe": {
+    "enabled": true,
+    "check_after_minutes": 1,
+    "max_lines": 20,
+    "required_fields": [
+      "recv_ts",
+      "exchange",
+      "event_type",
+      "channel",
+      "symbol",
+      "payload"
+    ],
+    "action": "stop_child_collector_and_mark_stopped_incomplete_on_invalid_raw_jsonl"
+  },
+  "next_goal_decision": "STATUS_ONLY",
+  "next_goal_reason": "Active run gate is RUNNING. Do not postprocess, grid, code-edit for the goal, analyze broadly, or start new runs.",
+  "branch_decision": "RESUME_OR_REJECT_INCOMPLETE_DATASET",
+  "selected_branch": null,
+  "branch_source": "trading_branch_selector",
+  "resume_incomplete": true,
+  "resumed_from_run_id": "ws_collect_72h_sweep_visible_20260801_213344",
+  "resumed_from_status": "STOPPED_INCOMPLETE",
+  "readiness_guard": {
+    "enabled": true,
+    "script": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\trading_ws_collect_readiness.ps1",
+    "required_status": "READY_FOR_VISIBLE_72H_WS_COLLECT_CONFIRMATION",
+    "required_ok": true,
+    "action": "refuse_confirmed_long_run_before_start"
+  },
+  "status_check_command": "pwsh -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_active_run_gate.ps1",
+  "postprocess_command_after_ready": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_ws_postprocess_visible.ps1\" -ManifestPath <manifest_path_from_completed_ws_collect>",
+  "replay_validation_plan_after_postprocess": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_ws_replay_validation_visible.ps1\" -PostprocessPath <exports\\trading-mvp\\backtests\\ws_postprocess_*.json> -ExpectedManifestPath <manifest_path_from_completed_ws_collect> -PlanOnly",
+  "replay_validation_after_review": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_ws_replay_validation_visible.ps1\" -PostprocessPath <exports\\trading-mvp\\backtests\\ws_postprocess_*.json> -ExpectedManifestPath <manifest_path_from_completed_ws_collect> -ConfirmedResearchRun",
+  "next_step_after_ready": "Run guarded ws-postprocess with the completed manifest: pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_ws_postprocess_visible.ps1\" -ManifestPath <manifest_path_from_completed_ws_collect>. Then run replay validation PlanOnly with the same manifest: pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_ws_replay_validation_visible.ps1\" -PostprocessPath <exports\\trading-mvp\\backtests\\ws_postprocess_*.json> -ExpectedManifestPath <manifest_path_from_completed_ws_collect> -PlanOnly. Only after data-quality/replay_allowed=true and explicit review, run: pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_ws_replay_validation_visible.ps1\" -PostprocessPath <exports\\trading-mvp\\backtests\\ws_postprocess_*.json> -ExpectedManifestPath <manifest_path_from_completed_ws_collect> -ConfirmedResearchRun. Do not treat as investment advice or accepted strategy."
+}

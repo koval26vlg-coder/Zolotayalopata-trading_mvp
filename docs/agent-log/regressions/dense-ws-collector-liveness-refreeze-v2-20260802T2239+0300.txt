@@ -1,0 +1,22 @@
+dense-ws collector-liveness refreeze v2 regression
+started_at_local=
+2026-08-02T22:39:08.3753093+03:00
+network_access=false
+collector_launch=false
+command=python -m unittest test_ws_normalizer test_ws_collector test_ws_durable_collector test_dense_ws_campaign_runner_liveness test_dense_ws_campaign_quality test_dense_ws_campaign_contract
+
+[segment 1/2] DISK GUARD: free=79.2GB < 1000000000GB, stop
+[segment 1/2] start duration=10s
+[segment 1/2] done events=10 duration_completed=True quality_eligible=False
+[segment 2/2] start duration=10s
+[segment 2/2] done events=10 duration_completed=True quality_eligible=True
+.........................................................................
+----------------------------------------------------------------------
+Ran 73 tests in 4.525s
+
+OK
+
+finished_at_local=
+2026-08-02T22:39:13.1722941+03:00
+exit_code=
+0

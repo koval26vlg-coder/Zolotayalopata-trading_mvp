@@ -1,0 +1,22 @@
+# PIT prelaunch sealed-runtime integrity
+
+- Observed at: `2026-07-30T22:31:41+03:00`
+- Scope: unsealed countdown control plane and offline policy tests only; no collector, market replay, returns, PnL, OOS rows, grid, retune, paper, or live execution.
+- Change:
+  - added an independent fail-closed SHA-256 audit of every entry in `sealed_schedule.runtime_tools`;
+  - bound the countdown's executed schedule planner and visible writer wrapper to the exact sealed paths;
+  - run the audit before initial Python authorization, during read-only runtime preflight, and again at the launch boundary;
+  - expose the verified tool count and names in `PreflightOnly` evidence.
+- Contract boundary:
+  - no sealed runtime tool was modified;
+  - the schedule plan, hypothesis, venue, universe, signal, costs, risk, quality policy, duration, and evidence contract are unchanged;
+  - any missing file, invalid SHA metadata, path drift, or hash mismatch now stops before writer handoff.
+- Verification:
+  - PowerShell parser passed;
+  - focused visible-pipeline tests: `7/7`;
+  - linked schedule, pointer, guard, postrun, train-target, and completion-audit tests: `129/129`;
+  - exact `pit_universe_v2_forward_20260731_n03` `PreflightOnly`: `READY_NOT_DUE`, `NO_RUN_OR_OUTPUT_WRITES`, `sealed_runtime_tools_verified=12`;
+  - exact `PlanOnly`: `PLAN_VALIDATED`, `sealed_runtime_tools_verified=12`;
+  - all `12/12` current sealed SHA-256 values match;
+  - matching countdown/writer processes before and after validation: `0`.
+- Next: retain the exact approved `n03` schedule and let the existing automation launch it visibly only when `DUE` or within five minutes of `2026-07-31T01:00:00+03:00`.

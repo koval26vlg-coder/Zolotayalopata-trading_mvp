@@ -1,0 +1,23 @@
+{
+  "schema": "active_run_launch_record_v1",
+  "project": "trading_mvp",
+  "run_id": "pit_linear_perp_forward_oos_20260711_211953",
+  "run_type": "pit_linear_perp_cross_venue_forward_oos_collect",
+  "created_at": "2026-07-11T21:20:00+03:00",
+  "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_cross_venue_forward_oos_visible.ps1\" -PlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\analysis\\pit_linear_perp_forward_oos_planonly_20260711_204057.json\" -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\forward-oos\" -RunId \"pit_linear_perp_forward_oos_20260711_211953\" -ConfirmedForwardOosCollect",
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\analysis\\pit_linear_perp_forward_oos_planonly_20260711_204057.json",
+  "plan_sha256": "290e97f5f98156df97fd75d45cea160050b8f065ac3f89fd97f692263e2ed6f4",
+  "output_root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\forward-oos",
+  "run_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\forward-oos\\pit_linear_perp_forward_oos_20260711_211953",
+  "segments_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\forward-oos\\pit_linear_perp_forward_oos_20260711_211953\\segments",
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\forward-oos\\pit_linear_perp_forward_oos_20260711_211953\\manifest.json",
+  "target_valid_cycles": 800,
+  "min_valid_pairs_per_cycle": 14,
+  "min_active_span_sec": 259200,
+  "max_active_duration_sec": 345600,
+  "research_only": true,
+  "live_orders": false,
+  "api_keys": false,
+  "leverage_or_margin": false
+}

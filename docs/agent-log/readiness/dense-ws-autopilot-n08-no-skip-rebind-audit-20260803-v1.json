@@ -1,0 +1,67 @@
+{
+  "schema": "trading_mvp_dense_ws_aef_n08_no_skip_autopilot_rebind_audit_v1",
+  "status": "PASS_REBOUND_TO_NEW_PLANONLY_SEPARATE_LAUNCH_APPROVAL_REQUIRED",
+  "generated_at_utc": "2026-08-03T17:20:46.9010634+00:00",
+  "approval_proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-n08-no-skip-refreeze-proposal-20260803-v2.json",
+    "sha256": "d72e464598f9a36aa6730ad67d8854215b0a5891e67cdcea38c468d26d9efba9",
+    "proposal_hash": "026fde587365aa6daf0d5f2f99f23c5df380c11b82f77346c033063f32d31e39"
+  },
+  "active_policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "sha256_before": "0f16c4c03cdffd92e3e72022032a3e887b3cfdcb6925fe498cea99b4d1510e5b",
+    "sha256_after": "0b04a00e840b6aaf4b530f64ead0041d7e888577ea98345983e22b98427059f0",
+    "backup_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\recovery\\2026-08-03-trading-mvp-autopilot-policy-before-n08-no-skip-rebind-v1.json",
+    "backup_sha256": "0f16c4c03cdffd92e3e72022032a3e887b3cfdcb6925fe498cea99b4d1510e5b"
+  },
+  "candidate_policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-autopilot-dense-ws-n08-no-skip-rebind-candidate-20260803-v1.json",
+    "sha256": "0b04a00e840b6aaf4b530f64ead0041d7e888577ea98345983e22b98427059f0"
+  },
+  "contract": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260804-aef-24h-n08-no-skip-v1.json",
+    "file_sha256": "7c80896145d15d9680cd5e5dac44a1892f45927522c47b47560cd285a03ba6ef",
+    "contract_hash": "639f898a3fc154f1f6935d1de3dff315a333a9a8a55598c7fa282741a1233c2f"
+  },
+  "plan": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-n08-no-skip-v1.json",
+    "file_sha256": "37bfcb7eda1924d4d7310d941c744c2a1bebe3ee544759a016349bdce1dda44f",
+    "plan_hash": "629680e8ec4a1879dcd596a540c90c92b600ab465bd94bdd0d29b79ea972c141",
+    "actual_collection_allowed": false,
+    "launch_control_status": "READY_FOR_SEPARATE_EXACT_APPROVAL"
+  },
+  "n08": {
+    "run_id": "pit_universe_v2_forward_20260805_n08",
+    "disposition": "PRESERVED_NOT_SKIPPED",
+    "deferred_start_local": "2026-08-05T02:15:00+03:00",
+    "pointer_changed": false,
+    "pointer_sha256_before": "75e8e337dd8ffa00da4254939b7a0e0ca7305c6da0386a3eca9c60924db792ba",
+    "pointer_sha256_after": "75e8e337dd8ffa00da4254939b7a0e0ca7305c6da0386a3eca9c60924db792ba"
+  },
+  "old_plan": {
+    "plan_hash": "709bdf57446de9d12447d11e0bb7836e29dac0ce0fd5d43b3247f621384d70bf",
+    "disposition": "SUPERSEDED_NOT_LAUNCHABLE"
+  },
+  "validation_output": [
+    "{",
+    "  \"schema\": \"trading_mvp_dense_ws_campaign_validation_v1\",",
+    "  \"status\": \"VALID\",",
+    "  \"contract_path\": \"E:\\\\ZolotyayLopata-data\\\\exports\\\\trading-mvp\\\\autopilot\\\\campaigns\\\\dense-ws-microstructure-regime-filter-contract-20260804-aef-24h-n08-no-skip-v1.json\",",
+    "  \"contract_file_sha256\": \"7c80896145d15d9680cd5e5dac44a1892f45927522c47b47560cd285a03ba6ef\",",
+    "  \"contract_hash\": \"639f898a3fc154f1f6935d1de3dff315a333a9a8a55598c7fa282741a1233c2f\",",
+    "  \"plan_path\": \"E:\\\\ZolotyayLopata-data\\\\exports\\\\trading-mvp\\\\autopilot\\\\campaigns\\\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-n08-no-skip-v1.json\",",
+    "  \"plan_file_sha256\": \"37bfcb7eda1924d4d7310d941c744c2a1bebe3ee544759a016349bdce1dda44f\",",
+    "  \"plan_hash\": \"629680e8ec4a1879dcd596a540c90c92b600ab465bd94bdd0d29b79ea972c141\",",
+    "  \"launch_control_status\": \"READY_FOR_SEPARATE_EXACT_APPROVAL\",",
+    "  \"actual_collection_allowed\": false,",
+    "  \"policy_binding\": \"VALID\"",
+    "}"
+  ],
+  "collector_started": false,
+  "network_access": false,
+  "returns_read": false,
+  "pnl_computed": false,
+  "oos_run": false,
+  "grid_or_retune": false,
+  "paper_live_private_api_real_capital_leverage_margin": false
+}

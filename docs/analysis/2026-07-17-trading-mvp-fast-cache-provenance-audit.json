@@ -1,0 +1,95 @@
+{
+  "schema": "trading_mvp_fast_cache_provenance_audit_v1",
+  "generated_at": "2026-07-17T01:18:00+03:00",
+  "decision": "NO_INDEPENDENT_FAST_CACHE_AVAILABLE",
+  "new_hypothesis_opened": false,
+  "reason": "All completed local return windows have already been inspected by one or more frozen hypotheses; remaining candidate runs are incomplete, overlapping, diagnostic-only, or below the independent PIT date gate.",
+  "gate_at_audit": {
+    "status": "READY_FOR_POSTPROCESS",
+    "run_id": "pit_universe_v2_forward_20260716_n01",
+    "final": true,
+    "rows": 6864,
+    "errors": 0,
+    "replay_allowed": false
+  },
+  "datasets": [
+    {
+      "id": "daily_collect_20260702_top200",
+      "independent_for_new_oos": false,
+      "reason": "Already used by momentum and funding branches; terminal reconciliation rejected acceptance under survivorship and base-fee constraints."
+    },
+    {
+      "id": "daily_forward_20260706",
+      "independent_for_new_oos": false,
+      "start_utc": "2025-12-18T06:05:01Z",
+      "end_utc": "2026-07-06T06:05:01Z",
+      "reason": "Already used by funding-forward ranking/execution analysis and overlaps daily_forward_20260713 by 192.99995 days."
+    },
+    {
+      "id": "daily_forward_20260713",
+      "independent_for_new_oos": false,
+      "input_merkle_sha256": "1bab335f1de674b9ce074c803fa1ac937e38356cf87852e5e04455bd1f266ab1",
+      "hypotheses_read": 5,
+      "reason": "Residual dispersion, lottery MAX, funding-pressure reversal, wick rejection and weekend-liquidity already consumed the sealed window."
+    },
+    {
+      "id": "ws_durable_72h_2exchange_pregap",
+      "independent_for_new_oos": false,
+      "terminal_artifact_sha256": "b1182f82592eb5fc05d29e4b450adb9d9b1a3129c92cb894a85dba8475150169",
+      "reason": "Cross-venue dislocation and liquidity-sweep validations already inspected this market path."
+    },
+    {
+      "id": "listing_history",
+      "independent_for_new_oos": false,
+      "terminal_artifact_sha256": "c52ea4f6f8c13b49e2266ceaf7785f7139a3700c57d0a795366ce512390a1fe5",
+      "decision": "LISTING_EVENT_REPLAY_PLANONLY_REJECTED_NO_ROBUST_EDGE"
+    },
+    {
+      "id": "slow_liquidity_history",
+      "independent_for_new_oos": false,
+      "terminal_artifact_sha256": "62226963ff1b3720d905960b0378d9430aec72f90b151dc51bb188c27cfe1800",
+      "decision": "SLOW_LIQUIDITY_FIXED_V1_REPLAY_PLANONLY_REJECTED_NO_ROBUST_EDGE"
+    },
+    {
+      "id": "historical_basis_1h_v2",
+      "independent_for_new_oos": false,
+      "input_merkle_sha256": "b69ac913b13dcfb44d9a9d57776944bc66faf75607444e31acfefbce84a7d702",
+      "basis_closure_sha256": "24e68e5a5e5db31d8a658968324b17f6c88c926074fd2ce8a4757d86a9670fcd",
+      "funding_regime_closure_sha256": "a821a012c83f9d5b38a76680187f4b38e50f6bf8a6a4b08e5bbd4673b55203cc",
+      "reason": "Train liquidity was insufficient for basis v2 and the funding-regime branch subsequently consumed the OOS."
+    },
+    {
+      "id": "pit_linear_perp_forward_oos_20260711_211953",
+      "independent_for_new_oos": false,
+      "final": false,
+      "attempt_cycles": 264,
+      "valid_cycles": 195,
+      "failed_cycles": 69,
+      "attempt_error_ratio": 0.261363636363636,
+      "reason": "Incomplete diagnostic-only run already inspected for economic density."
+    },
+    {
+      "id": "spot_pit_event_forward_20260712_225519",
+      "independent_for_new_oos": false,
+      "status": "REJECTED_INCOMPLETE",
+      "rows": 719168,
+      "signals": 2,
+      "trades": 0
+    },
+    {
+      "id": "PIT_UNIVERSE_V2_FORWARD",
+      "independent_for_new_oos": true,
+      "accepted_dates": 2,
+      "required_train_dates": 20,
+      "currently_sufficient": false
+    }
+  ],
+  "next_schedule": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_ratefix_primary_immutable_sources_planonly_20260716_234212.json",
+    "plan_hash": "b33e6989d9248f92be3f31ab306848f3f1bf562fc7facc66e000caaf493cf2a1",
+    "approved": false,
+    "first_segment_start": "2026-07-17T23:00:00+03:00",
+    "first_segment_end": "2026-07-17T23:20:00+03:00"
+  },
+  "next_allowed_action": "APPROVE_RATE_FIXED_PIT_SCHEDULE_OR_CONTINUE_OFFLINE_PAPER_PRODUCT_WORK"
+}

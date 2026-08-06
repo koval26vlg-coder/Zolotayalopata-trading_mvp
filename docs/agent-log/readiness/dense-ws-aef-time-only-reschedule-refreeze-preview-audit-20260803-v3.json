@@ -1,0 +1,47 @@
+{
+  "schema": "trading_mvp_dense_ws_aef_time_only_refreeze_reconciliation_audit_v3",
+  "mode": "OfflinePartialRefreezeAudit",
+  "status": "PASS_SEMANTIC_PATCH_APPLIED_V2_POSTIMAGE_HASH_REJECTED",
+  "generated_at_local": "2026-08-03T10:24:08.8146175+03:00",
+  "scope": "No collector, network, market data, returns, PnL, OOS, evaluator, grid, retune, paper, live, private API, real capital, leverage, or margin.",
+  "checks": {
+    "v2_patch_sha256": {
+      "expected": "56e94998befa154b5260b77fd35966aa205c99c91280abb5f514dbba54833b3a",
+      "observed": "56e94998befa154b5260b77fd35966aa205c99c91280abb5f514dbba54833b3a",
+      "passed": true
+    },
+    "v2_preimage_sha256": {
+      "expected": "5b405ac2e857065f2147e849f79439622b77aa1e94560088c67e403008fde117",
+      "observed_before_apply": "5b405ac2e857065f2147e849f79439622b77aa1e94560088c67e403008fde117",
+      "passed": true
+    },
+    "semantic_patch_hunks": {
+      "reverse_check_passed": true,
+      "changes_confined_to_time_only_constants": true,
+      "passed": true
+    },
+    "v2_postimage_sha256": {
+      "preview_expected": "9aac8ceac80acff9971b3bf72acdcabfd3560d2f42fd5e8a14912d659c150aac",
+      "observed_after_apply": "80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb",
+      "passed": false,
+      "disposition": "V2_PREVIEW_CONTRADICTION_REQUIRES_NEW_PROPOSAL"
+    },
+    "continuous_policy_promotion": {
+      "expected": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+      "observed": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+      "passed": true
+    },
+    "guard_fail_closed": {
+      "observed_status": "CRITICAL_STOP_INVALID_SCHEDULE",
+      "passed": true,
+      "reason": "The active autopilot binding intentionally still names the previous policy SHA-256."
+    }
+  },
+  "conclusion": {
+    "v2_must_not_be_used_for_contract_or_planonly_generation": true,
+    "v3_may_bind_only_the_verified_current_state_after_exact_user_approval": true,
+    "collector_launch_allowed": false
+  },
+  "audit_hash_method": "sha256_canonical_json_excluding_audit_hash",
+  "audit_hash": "cd3a38d5e5557f07bdcd0f363eab8ca657be59e6b47ed257a0dd965d5344ea40"
+}

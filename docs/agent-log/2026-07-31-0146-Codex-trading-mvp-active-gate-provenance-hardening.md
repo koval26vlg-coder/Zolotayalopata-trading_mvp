@@ -1,0 +1,27 @@
+# Active gate provenance hardening
+
+- Observed at: `2026-07-31T01:46:38+03:00`
+- Agent: Codex
+- Request: continue the active one-week edge sprint without bypassing the n03 postrun reconciliation checkpoint.
+- Plan: inspect authoritative pointer/launch provenance, close stale output inheritance, run linked regressions, and produce a read-only exact reconciliation preflight.
+- Scope: bounded offline control-plane code and tests. No sealed writer, frozen schedule, market output, quality ledger, hypothesis, venue, universe, signal, cost, risk, or evidence contract was modified.
+- Implemented:
+  - `tools\check_active_run_gate.ps1` validates the current launch record against project, run, manifest, and run type;
+  - when a shared gate object retains a different run type, run-scoped `expected_outputs` and operational hints are ignored;
+  - a missing or invalid launch record cannot open an unfinished run through old completed artifacts;
+  - checker output now exposes effective `run_type`, launch-record errors, expected-output applicability, and ignored stale fields.
+- Tests:
+  - added same-run pointer/launch-type mismatch coverage;
+  - added invalid launch-record fail-closed coverage;
+  - active-run gate module passed `21/21`;
+  - linked continuous-production, active-run, visible-pipeline, autopilot, postrun, schedule, quality, and approval suite passed `133/133`;
+  - PowerShell parser passed.
+- Current evidence:
+  - exact n03 remains `READY_FOR_POSTPROCESS`, final and primary-output complete;
+  - effective run type is `pit_universe_snapshot_collect`;
+  - stale public-probe expected outputs are explicitly not applicable;
+  - rows 7,124, errors 0, launch-record error null;
+  - reconciliation output does not exist.
+- Read-only reconciliation preflight: `READY_FOR_EXACT_USER_APPROVAL`; canonical summary SHA-256 `b3f5fa8501f708b124321dbaf9e9998714364dc4a0afcf5e8dc3dad3f769d745`; postrun script SHA-256 `0995cc1aba317954ae63016eb12c5df9479f3db31b81108384473b97ddb5297d`.
+- Safety: collector false, network false, market rows not read, returns/PnL/OOS false, grid/retune false, paper/live/private API/leverage/margin false.
+- Next: after the exact user phrase, run one local immutable n03 postrun reconciliation with `MaxRuntimeSec=1800`; otherwise leave the goal ACTIVE and the branch fail-closed.

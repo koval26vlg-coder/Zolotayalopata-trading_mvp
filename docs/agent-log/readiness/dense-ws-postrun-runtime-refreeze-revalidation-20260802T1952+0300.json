@@ -1,0 +1,78 @@
+{
+  "schema": "trading_mvp_dense_ws_postrun_runtime_refreeze_revalidation_v1",
+  "status": "ALREADY_APPLIED_SINGLE_USE_NO_MUTATION",
+  "generated_at_utc": "2026-08-02T16:52:48.4991602Z",
+  "generated_at_local": "2026-08-02T19:52:48.4991602+03:00",
+  "thread_id": "019e738a-b37c-7a33-ae04-6cc80739f184",
+  "proposal_hash": "0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf40662",
+  "duplicate_approval_disposition": {
+    "same_exact_approval_observed": true,
+    "approval_consumed_again": false,
+    "new_receipt_created": false,
+    "policy_or_code_mutated": false,
+    "reason": "The exact single-use runtime refreeze was already applied and audited. Reapplying it would create conflicting authorization state."
+  },
+  "bindings": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "policy_sha256": "13c2b98d76a6486eee43b60cf37c07fa2aa2dfbad3479f6c6c5285aff57ba842",
+    "proposal_file_sha256": "eef9fdee67a9dbcd23c9c66c62869ef2a041b43525306cb70c0f94fbaf88e380",
+    "approval_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-postrun-runtime-refreeze-approval.json",
+    "approval_receipt_sha256": "b6b739c466ac7c21abc9fed32752011304075f4aad269a30ff095be45a52e3b0",
+    "orchestrator_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_dense_ws_postrun_visible.ps1",
+    "orchestrator_sha256": "4781219d0c06af686508cb0c8a76424be22825e657a1b80f43c1799df43398ed",
+    "quality_tool_sha256": "6796f534ab5018ad54ea3f453c7cf522fe21e8f1d70844cd552ed2cc7c8059b3",
+    "materializer_tool_sha256": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c",
+    "automation_sha256": "c76dc2598f2e2c265378f12caf152a516d9587b90aaadd3f05f7b33102cf8c6c",
+    "automation_postrun_binding_verified": true
+  },
+  "runtime_contract": {
+    "postrun_not_before_local": "2026-08-04T01:30:00+03:00",
+    "postrun_hard_deadline_local": "2026-08-04T02:30:00+03:00",
+    "quality_max_runtime_sec": 1800,
+    "materialization_max_runtime_sec": 1800,
+    "total_max_runtime_sec": 3600,
+    "stages_are_sequential": true,
+    "one_visible_terminal": true,
+    "one_postrun_owner": true,
+    "stop_incomplete_recovery_authorized": false
+  },
+  "verification": {
+    "powershell_parse_errors": 0,
+    "targeted_orchestration_tests": {
+      "tests_run": 5,
+      "failures": 0,
+      "errors": 0
+    },
+    "preflight_only": {
+      "status": "BLOCKED_EXPECTED_BEFORE_WINDOW",
+      "guard_decision": "WAIT_APPROVED_LONG_CAMPAIGN_WINDOW",
+      "postrun_window_not_open": true,
+      "no_run_or_output_writes": true,
+      "all_declared_postrun_outputs_absent": true
+    },
+    "guard": {
+      "status": "ACTIVE",
+      "decision": "WAIT_APPROVED_LONG_CAMPAIGN_WINDOW",
+      "weekly_remaining_percent": 58.0,
+      "long_campaign_approval_status": "APPROVED",
+      "launch_window_status": "WAITING"
+    }
+  },
+  "safety": {
+    "collector_started": false,
+    "postrun_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "FOLLOW_ACTIVE_GUARD; DO_NOT START POSTRUN BEFORE THE EXACT COMPLETED CAMPAIGN AND THE 2026-08-04 01:30 +03 WINDOW"
+}

@@ -1,0 +1,85 @@
+{
+  "schema": "trading_mvp_dense_ws_runtime_dependency_readiness_audit_v1",
+  "generated_at_local": "2026-08-02T20:12:00+03:00",
+  "campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "plan_file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21"
+  },
+  "finding": {
+    "status": "CLOSED",
+    "summary": "Launch-time symbol discovery had transitive Python and package dependencies that were not independently hash-bound by the frozen PlanOnly.",
+    "impact_before_fix": "A changed local dependency could alter symbol discovery before the immutable collector received its explicit symbol list.",
+    "resolution": "An immutable dependency manifest and a read-only fail-closed checker are now required by the exact approval gateway before preflight or actual launch.",
+    "frozen_scope_changed": false
+  },
+  "bindings": {
+    "dependency_manifest": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\dense-ws-runtime-dependency-manifest-20260803-aef-24h-v1.json",
+      "sha256": "b53cfb88c2b5d33245c817a8faa099ab04639118a9fef0e11fdb6fd714a1eede"
+    },
+    "dependency_checker": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_dense_ws_runtime_dependencies.ps1",
+      "sha256": "b0380b1a4806619290d9c7001cefa86994824a57fd8320daac7cbf8eb3f6ab51"
+    },
+    "dependency_checker_test": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\test_dense_ws_runtime_dependency_checker.ps1",
+      "sha256": "06320456c30bb98c3720148c951ce04cd785b124661ef6af8243a8cce29dfa64"
+    },
+    "exact_approval_gateway": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_dense_ws_campaign_visible.ps1",
+      "sha256": "56933c8a18edc75b8ee89c7da238e84df9c3c44145ed522f1d24b7266c9de6da"
+    },
+    "exact_approval_gateway_test": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\test_dense_ws_launch_approval_gateway.ps1",
+      "sha256": "3b5517ba716ed1d9efa28eb3907e91b361742ac2184f3dbd1b5f910ce123b0d3"
+    }
+  },
+  "verification": {
+    "dependency_checker_tests": {
+      "passed": true,
+      "passed_count": 11,
+      "failed_count": 0
+    },
+    "approval_gateway_tests": {
+      "passed": true,
+      "passed_count": 11,
+      "failed_count": 0
+    },
+    "frozen_campaign_contract_tests": {
+      "passed": true,
+      "passed_count": 24,
+      "failed_count": 0,
+      "runtime_sec": 1.439,
+      "note": "The first sandboxed attempt was invalid because Windows ACL denied Python writes inside tempfile-created directories. The same local test passed outside that sandbox restriction."
+    },
+    "exact_gateway_preflight": {
+      "status": "EXACT_APPROVAL_VALIDATED_PREFLIGHT_ONLY",
+      "authorization_verified": true,
+      "no_run_or_output_writes": true,
+      "runtime_dependency_status": "READY",
+      "dependency_blockers": [],
+      "dependency_warnings": [],
+      "underlying_status": "STRUCTURALLY_VALID_NOT_DUE",
+      "can_launch_now": false
+    }
+  },
+  "safety": {
+    "network_request_performed": false,
+    "collector_started": false,
+    "writer_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live_started": false,
+    "private_api_or_real_capital_used": false,
+    "leverage_or_margin_used": false
+  },
+  "disposition": {
+    "status": "READY_FOR_DUE_WINDOW_NO_LAUNCH_PERFORMED",
+    "next_action": "At the approved window, re-run the exact gateway preflight and launch only if the authoritative guard and every runtime dependency remain exact and READY."
+  }
+}

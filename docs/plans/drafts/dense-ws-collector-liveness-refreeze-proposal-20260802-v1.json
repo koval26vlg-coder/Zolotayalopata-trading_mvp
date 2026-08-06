@@ -1,0 +1,140 @@
+{
+  "schema": "trading_mvp_dense_ws_collector_liveness_refreeze_proposal_v1",
+  "mode": "PlanOnlyReviewProposal",
+  "status": "USER_REVIEW_REQUIRED_NOT_FROZEN_NOT_AUTHORIZED",
+  "generated_at_local": "2026-08-02T21:12:00+03:00",
+  "research_only": true,
+  "source_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-market-liveness-integrity-audit-20260802T2110+0300.json",
+    "file_sha256": "79d8a65d64a4ac4feb52065a8010adfcf39464f921f028b1969bc2360eb6e2a2",
+    "verdict": "FAIL_LAUNCH_BLOCKING_REFREEZE_REQUIRED"
+  },
+  "source_campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+    "plan_file_sha256": "2f627df3cb71f069acecd8e7591f6ecf554fa75af2389c9fd3c914ab33f4cb21",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260803-aef-24h-v1.json",
+    "contract_file_sha256": "e2411cc57fb8827f1d527393e5b4bdb31ca85e9f0ea60e46b3b915531c66a9cc",
+    "contract_hash": "8f2021053b83551edb9bfb57847810caccdef30fd3368349ff98aedfe1cf9485",
+    "launch_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-aef-24h-launch-approval.json",
+    "launch_receipt_sha256": "5c18fbcbc3646aa5456c917dc0084c5ef141615dc00a8bd952378042b31b8b2e",
+    "launch_disposition": "SUSPEND_SUPERSEDE_NO_LAUNCH"
+  },
+  "current_runtime_bindings": {
+    "raw_writer_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_collector.py",
+    "raw_writer_sha256": "c9137841d56059b8ae00ace3c4875564afc4891945b20be251ebabb65534d86a",
+    "durable_collector_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_durable_collector.py",
+    "durable_collector_sha256": "ba1975d3a5e9b5b6519224cb64f1ffdf27d51ec8c1eab550e78b5b640abbf8cc",
+    "campaign_runner_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_runner.py",
+    "campaign_runner_sha256": "ed804ff811c321e4d9a5a8f56593f24ca320c635088fe7b271eec0bdacb4a977",
+    "quality_tool_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_quality.py",
+    "quality_tool_sha256": "6796f534ab5018ad54ea3f453c7cf522fe21e8f1d70844cd552ed2cc7c8059b3"
+  },
+  "frozen_invariants": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "data_type": "DENSE_WS_SEGMENTED",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "universe_rows": 1388,
+    "writer_start_local": "2026-08-03T01:30:00+03:00",
+    "writer_deadline_local": "2026-08-04T01:30:00+03:00",
+    "hard_deadline_local": "2026-08-04T02:00:00+03:00",
+    "target_writer_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000,
+    "market_max_gap_sec": 300,
+    "unplanned_gap_sec_max_per_valid_segment": 300,
+    "result_errors_max": 0,
+    "hypothesis_venue_universe_signal_cost_risk_duration_cap_change_allowed": false,
+    "grid_or_retune_allowed": false
+  },
+  "proposed_runtime_refreeze": {
+    "market_silence_reconnect_sec": 120,
+    "market_silence_timer_starts_after_subscriptions_are_sent": true,
+    "only_real_market_messages_refresh_liveness": true,
+    "control_subscription_ack_pong_and_heartbeat_do_not_refresh_liveness": true,
+    "gate_market_message_definition": "JSON event=update on spot.trades, spot.book_ticker, or spot.order_book_update",
+    "mexc_market_message_definition": "protobuf wrapper with a subscribed spot public market channel; undecodable payload does not refresh liveness",
+    "silence_action": "write market_silence_detected control, close socket, record bounded attempt error, reconnect and resubscribe within the original wall-clock duration",
+    "silence_never_reports_clean_segment": true,
+    "quality_boundary_enforcement": {
+      "segment_start_to_first_market_event_checked": true,
+      "last_market_event_to_segment_finish_checked": true,
+      "applies_per_observed_exchange_symbol_market": true,
+      "threshold_source": "existing segment_validity_contract.valid_segment_rules.market_max_gap_sec",
+      "threshold_sec": 300,
+      "new_threshold_or_strategy_tuning": false
+    },
+    "durable_collector_change_required": false,
+    "campaign_runner_change_required": false
+  },
+  "authorized_change_scope_after_exact_approval": {
+    "allowed_files": [
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_collector.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_quality.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_ws_collector.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_campaign_quality.py",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+      "C:\\Users\\koval\\.codex\\automations\\trading-continuous-production\\automation.toml",
+      "new versioned immutable dense-ws campaign contract and PlanOnly",
+      "new versioned runtime dependency manifest if its bound tree hash changes",
+      "new exact approval, audit, regression and agent-log artifacts"
+    ],
+    "durable_collector_change_allowed": false,
+    "campaign_runner_change_allowed": false,
+    "postrun_quality_or_materializer_change_allowed": false,
+    "signal_or_evaluator_change_allowed": false,
+    "venue_universe_cost_risk_duration_cap_change_allowed": false
+  },
+  "verification_requirements": {
+    "silent_socket_regression": "must reconnect and leave a non-clean result instead of completed clean success",
+    "control_only_socket_regression": "must not refresh market liveness",
+    "healthy_market_feed_regression": "must remain completed clean success",
+    "transient_explicit_reset_regression": "must reconnect within original deadline",
+    "trailing_boundary_gap_regression": "tail silence greater than 300 seconds must reject the segment",
+    "leading_boundary_gap_regression": "initial silence greater than 300 seconds must reject the segment",
+    "existing_writer_and_quality_suites": "all pass",
+    "launcher_preflight": "old plan must fail closed; new plan must remain non-executable until a new exact hash-bound launch receipt exists",
+    "pit_priority": "pit_universe_v2_forward_20260803_n06 remains preapproved and launchable when due",
+    "network_during_tests": false
+  },
+  "refreeze_outputs": {
+    "production_code_changes_before_approval": false,
+    "old_contract_and_plan_are_never_overwritten": true,
+    "new_contract_and_plan_use_new_versioned_paths": true,
+    "new_contract_hash_required": true,
+    "new_plan_hash_required": true,
+    "new_policy_hash_required": true,
+    "new_exact_hash_bound_launch_approval_required_after_hashes_exist": true,
+    "automatic_launch_before_new_exact_receipt": false,
+    "stopped_incomplete_retry_requires_new_exact_approval": true
+  },
+  "authorization": {
+    "authorized": false,
+    "executable": false,
+    "runtime_refreeze_allowed": false,
+    "collector_launch_allowed": false,
+    "exact_user_approval_required": true
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "market_dataset_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "REQUEST_EXACT_HASH_BOUND_COLLECTOR_LIVENESS_REFREEZE_APPROVAL",
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "cb070b3d88b23ff4a1cc46dbd68407d467f4c8ed110ee870d0fd72a5e4e5be3a"
+}

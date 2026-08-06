@@ -1,0 +1,120 @@
+{
+  "schema": "trading_mvp_autopilot_research_catalog_v1",
+  "catalog_id": "trading_mvp_autopilot_research_catalog_20260728_v2",
+  "project": "trading_mvp",
+  "mode": "bounded_offline_forward_readiness",
+  "parent_audit": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v2.json",
+    "file_sha256": "62020c5efe9004f0c91ece552041813703ae4db19787fc674f34e87963109479"
+  },
+  "constraints": {
+    "max_runtime_sec_per_task": 1800,
+    "one_task_at_a_time": true,
+    "network_access": false,
+    "market_data_writer": false,
+    "returns_or_pnl_read": false,
+    "new_hypothesis": false,
+    "grid_or_retune": false,
+    "paper_positions": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "leverage_or_margin": false
+  },
+  "tasks": [
+    {
+      "id": "fast_regression_lane_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\fast-regression-lane-v1.json",
+      "objective": "Create and verify a deterministic fast regression lane for routine autopilot checkpoints while retaining the full 1235-test suite for release audits. No tests may be weakened or deleted.",
+      "allowed_inputs": [
+        "trading_mvp/tests",
+        "tools",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-full-suite-20260728_2143.log"
+      ]
+    },
+    {
+      "id": "paper_public_reader_contract_v1",
+      "max_runtime_sec": 1200,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-contract-v1.json",
+      "objective": "Freeze a public GET-only MEXC/Gate market-reader contract with endpoint allowlists, timeouts, rate limits, schema hashes and no-private/no-order boundaries. Design only, no network requests.",
+      "allowed_inputs": [
+        "trading_mvp/src/funding.py",
+        "trading_mvp/src/paper_observer_runtime.py",
+        "docs/plans",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\venue-api-reliability-evidence-v1.json"
+      ]
+    },
+    {
+      "id": "paper_public_reader_fixture_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-fixture-v1.json",
+      "objective": "Implement the frozen public-reader interface against deterministic MEXC/Gate fixtures only, including timeout, HTTP, schema and stale-quote failures. Do not issue network requests.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-contract-v1.json"
+      ]
+    },
+    {
+      "id": "paper_public_cache_idempotency_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-cache-idempotency-v1.json",
+      "objective": "Implement a fixture-tested content-addressed public snapshot cache with TTL, atomic writes, schema validation and no cache reuse after hash drift. No network requests.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-contract-v1.json"
+      ]
+    },
+    {
+      "id": "pit_train_progress_monitor_v1",
+      "max_runtime_sec": 1200,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\pit-train-progress-monitor-v1.json",
+      "objective": "Implement a read-only technical PIT progress monitor for accepted dates, due segment, gate status and ETA to the 20-date train checkpoint. It must not read returns, PnL or signals.",
+      "allowed_inputs": [
+        "docs/agent-log",
+        "tools",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\quality-certifications.jsonl",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules"
+      ]
+    },
+    {
+      "id": "paper_code_provenance_merkle_v1",
+      "max_runtime_sec": 1200,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-code-provenance-merkle-v1.json",
+      "objective": "Create a deterministic code-only Merkle manifest for the paper observer, OMS, monitor, security and reconciliation modules without staging, reverting or copying user data artifacts.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "trading_mvp/run_mvp.ps1",
+        "tools",
+        "AGENTS.md"
+      ]
+    },
+    {
+      "id": "paper_forward_failure_runbook_v1",
+      "max_runtime_sec": 1200,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-forward-failure-runbook-v1.json",
+      "objective": "Generate a machine-readable runbook mapping stale data, schema drift, disk pressure, reconciliation mismatch, lock contention and quota stop to deterministic fail-closed actions. No process launch.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_observer_runtime.py",
+        "trading_mvp/src/paper_observer_monitor.py",
+        "trading_mvp/src/paper_reconciliation_adapter.py",
+        "docs/agent-log",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-runtime-fault-injection-v1.json"
+      ]
+    },
+    {
+      "id": "paper_product_readiness_audit_v3",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v3.json",
+      "objective": "Re-audit forward-readiness after catalog v2, preserve evidence-gate blockers and produce the next bounded catalog requirement if the approved PIT segment is still not due. Do not change the hypothesis.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "docs/agent-log",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research"
+      ]
+    }
+  ]
+}

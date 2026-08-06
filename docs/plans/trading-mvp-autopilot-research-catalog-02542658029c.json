@@ -1,0 +1,88 @@
+{
+  "schema": "trading_mvp_autopilot_research_catalog_v1",
+  "catalog_id": "trading_mvp_autopilot_research_catalog_02542658029c",
+  "project": "trading_mvp",
+  "mode": "bounded_offline_public_data_plane_readiness",
+  "parent_audit": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v4.json",
+    "file_sha256": "02542658029c5fb025c94f6eb5d10e2cbeb2c9d5f6e35feaa8ae11395c0bdca1",
+    "deterministic_result_hash": "c1006ea8cb9747ac7233a39db87b680371086b0bffd00b13a82048c5007897bb"
+  },
+  "constraints": {
+    "max_runtime_sec_per_task": 1800,
+    "one_task_at_a_time": true,
+    "network_access": false,
+    "market_data_writer": false,
+    "returns_or_pnl_read": false,
+    "new_hypothesis": false,
+    "grid_or_retune": false,
+    "paper_positions": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "leverage_or_margin": false
+  },
+  "tasks": [
+    {
+      "id": "paper_code_provenance_merkle_v3",
+      "max_runtime_sec": 1200,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-code-provenance-merkle-v3.json",
+      "objective": "Refresh the deterministic code-only Merkle baseline after retry, bridge, transport and v4 audit implementation. Do not stage, revert, commit or copy data artifacts.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "trading_mvp/run_mvp.ps1",
+        "tools",
+        "AGENTS.md"
+      ]
+    },
+    {
+      "id": "paper_public_reader_transport_wiring_fixture_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-transport-wiring-fixture-v1.json",
+      "objective": "Wire the requests transport through the normalized public reader and prove the full path with a fake session only. No network requests.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_public_reader_contract.py",
+        "trading_mvp/src/paper_public_reader.py",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-reader-contract-v1.json",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-transport-adapter-v1.json"
+      ]
+    },
+    {
+      "id": "paper_public_streaming_byte_limit_fixture_v1",
+      "max_runtime_sec": 1200,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-streaming-byte-limit-fixture-v1.json",
+      "objective": "Prove the streamed response byte limit without Content-Length, including response close and fail-closed classification. No network.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_public_reader.py",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-transport-adapter-v1.json"
+      ]
+    },
+    {
+      "id": "paper_public_health_contract_binding_fixture_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-health-contract-binding-fixture-v1.json",
+      "objective": "Bind the hash-bound public snapshot bridge sample to the frozen venue-health contract and prove that no OMS transition occurs without a healthy decision. No network or OMS mutation.",
+      "allowed_inputs": [
+        "trading_mvp/src/paper_observer_runtime.py",
+        "trading_mvp/src/paper_contract_validator.py",
+        "trading_mvp/tests",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-public-snapshot-observer-bridge-v1.json",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-venue-health-gate-contract-v1.json"
+      ]
+    },
+    {
+      "id": "paper_product_readiness_audit_v5",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v5.json",
+      "objective": "Re-audit public reader runtime wiring and health binding after catalog v4 while preserving PIT, paper and live evidence blockers. No network, returns, PnL or hypothesis changes.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "docs/agent-log",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research"
+      ]
+    }
+  ]
+}

@@ -405,12 +405,14 @@ class WsReplayTests(unittest.TestCase):
             _bbo(1.2, 100.0, 100.01, bid_qty=2.0, ask_qty=0.5),
             _bbo(1.3, 100.0, 100.01, bid_qty=2.0, ask_qty=0.5),
             _trade(1.4, "sell", 100.0, 1.0),  # queue still ahead
-            _trade(1.5, "sell", 100.0, 1.0),  # queue consumed, entry fills
+            _trade(1.5, "sell", 100.0, 1.0),  # queue consumed, own order is still unfilled
+            _trade(1.6, "sell", 100.0, 0.25),  # own entry quantity fills
             _bbo(2.0, 100.10, 100.11, bid_qty=2.0, ask_qty=0.5),
             _bbo(2.1, 100.10, 100.11, bid_qty=2.0, ask_qty=0.5),
             _trade(2.2, "buy", 100.11, 0.25),  # entry is checked for exit after this
             _bbo(2.3, 100.10, 100.11, bid_qty=2.0, ask_qty=0.5),
-            _trade(2.4, "buy", 100.11, 0.25),  # exit fills
+            _trade(2.4, "buy", 100.11, 0.25),  # exit queue consumed, still no fill
+            _trade(2.5, "buy", 100.11, 0.25),  # own exit quantity fills
         ]
         bt = EventDrivenReplayBacktester(
             self._strategy(),
@@ -429,8 +431,113 @@ class WsReplayTests(unittest.TestCase):
         )
         result = bt.run(events)
         self.assertEqual(result["metrics"]["total_trades"], 1)
-        self.assertAlmostEqual(result["trades"][0]["entry_ts"], 1.5)
-        self.assertAlmostEqual(result["trades"][0]["exit_ts"], 2.4)
+        self.assertAlmostEqual(result["trades"][0]["entry_ts"], 1.6)
+        self.assertAlmostEqual(result["trades"][0]["exit_ts"], 2.5)
+
+    def test_replay_risk_resets_daily_limits_on_utc_day_boundary(self) -> None:
+        risk = ReplayRisk(
+            RiskConfig(
+                max_notional_per_trade=100.0,
+                max_position_qty=10.0,
+                max_trades_per_day=1,
+                daily_loss_limit_quote=5.0,
+            )
+        )
+        risk.register_open(ts=1.0)
+        risk.register_close(-6.0, ts=2.0)
+        blocked, reason = risk.can_open(
+            qty=0.1,
+            price=10.0,
+            open_positions=0,
+            max_open_positions=5,
+            ts=3.0,
+        )
+        self.assertFalse(blocked)
+        self.assertEqual(reason, "kill_switch_active")
+
+        risk.advance_time(86_401.0)
+        allowed, reason = risk.can_open(
+            qty=0.1,
+            price=10.0,
+            open_positions=0,
+            max_open_positions=5,
+            ts=86_401.0,
+        )
+
+        self.assertTrue(allowed)
+        self.assertEqual(reason, "ok")
+        self.assertEqual(risk.trades_opened, 0)
+        self.assertEqual(risk.daily_realized_pnl, 0.0)
+        self.assertEqual(risk.total_realized_pnl, -6.0)
+        self.assertFalse(risk.kill_switch)
+
+    def test_stale_quote_blocks_signal_and_is_reported(self) -> None:
+        events = [
+            _bbo(1.0, 100.0, 100.01),
+            _trade(10.0, "buy", 100.01, 10.0),
+        ]
+        bt = EventDrivenReplayBacktester(
+            self._strategy(),
+            self._risk(),
+            ReplayConfig(
+                notional_quote=25.0,
+                taker_fee_bps=0.0,
+                slippage_bps=0.0,
+                latency_ms=0,
+                max_quote_age_sec=1.0,
+            ),
+        )
+
+        result = bt.run(events)
+
+        self.assertEqual(result["metrics"]["total_trades"], 0)
+        self.assertGreater(result["skipped_signals"].get("stale_quote", 0), 0)
+
+    def test_max_drawdown_includes_intratrade_mark_to_market_loss(self) -> None:
+        strategy = StrategyConfig(
+            entry_imbalance_abs=0.2,
+            entry_signed_flow_notional=500.0,
+            max_spread_bps=5.0,
+            take_profit_bps=2000.0,
+            stop_loss_bps=2000.0,
+            max_hold_sec=100.0,
+        )
+        events = [
+            _bbo(1.0, 100.0, 100.01),
+            _trade(1.1, "buy", 100.01, 10.0),
+            _bbo(1.2, 100.0, 100.01),
+            _bbo(2.0, 90.0, 90.01),
+            _bbo(3.0, 100.01, 100.02),
+        ]
+        bt = EventDrivenReplayBacktester(
+            strategy,
+            self._risk(),
+            ReplayConfig(notional_quote=25.0, taker_fee_bps=0.0, slippage_bps=0.0, latency_ms=0),
+        )
+
+        result = bt.run(events)
+
+        self.assertAlmostEqual(result["metrics"]["net_pnl_quote"], 0.0, places=8)
+        self.assertLess(result["metrics"]["max_drawdown_quote"], -2.0)
+        self.assertTrue(any(point.get("unrealized_pnl_quote", 0.0) < -2.0 for point in result["equity_curve"]))
+
+    def test_replay_costs_resolve_by_exchange_with_global_fallback(self) -> None:
+        bt = EventDrivenReplayBacktester(
+            self._strategy(),
+            self._risk(),
+            ReplayConfig(
+                execution_mode="taker",
+                taker_fee_bps=10.0,
+                taker_fee_bps_by_exchange={"gateio": 6.0, "mexc": 8.0},
+                slippage_bps_by_exchange={"gateio": 2.0},
+            ),
+        )
+
+        self.assertEqual(bt._round_trip_fee_bps("gateio"), 12.0)
+        self.assertEqual(bt._round_trip_fee_bps("mexc"), 16.0)
+        self.assertEqual(bt._round_trip_fee_bps("unknown"), 20.0)
+        self.assertEqual(bt._slippage_bps("gateio"), 2.0)
+        self.assertEqual(bt._slippage_bps("mexc"), 1.0)
 
     def test_risk_cost_gate_from_config_blocks_fee_dominated_taker(self) -> None:
         events = [

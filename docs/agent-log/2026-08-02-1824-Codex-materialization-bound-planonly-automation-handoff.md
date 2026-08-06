@@ -1,0 +1,21 @@
+# Materialization-bound PlanOnly automation handoff
+
+- Observed at: 2026-08-02 18:24 +03:00.
+- Agent: Codex.
+- User request: preserve continuous execution after dense_ws postrun while keeping evaluator, returns/PnL/OOS, grid/retune, paper/live, private API, capital, leverage, and margin unauthorized.
+- Plan: inspect the frozen builder and visible wrapper, prove the dry preflight is write-free, bind the exact command to the existing heartbeat automation, and verify the authoritative guard.
+- Policy: `docs/plans/trading-mvp-autopilot-policy-v1.json`.
+- Policy SHA-256: `13c2b98d76a6486eee43b60cf37c07fa2aa2dfbad3479f6c6c5285aff57ba842`.
+- Builder: `trading_mvp/src/dense_ws_materialization_bound_plan.py`.
+- Builder SHA-256: `0f4adf30b531090c65d54a910ecfd4cb6ef14a1ff417e54258ae26f730f180a8`.
+- Visible wrapper: `tools/build_dense_ws_materialization_bound_planonly_visible.ps1`.
+- Wrapper SHA-256: `4c25abdb9c741a80c541da357f403f850326eeea6bacb036e8d645d4207c9c7a`.
+- The wrapper builds only an immutable, non-executable PlanOnly after exact materialization acceptance; it cannot invoke the evaluator.
+- Real `-PreflightOnly -Json` result: `NOT_READY`, as expected before campaign quality/materialization artifacts exist.
+- Dry preflight reported `no_run_or_output_writes=true`; campaign root, output, owner, and reservation were absent before and after the check.
+- Updated the existing `trading-continuous-production` heartbeat; no duplicate automation was created.
+- Automation now performs an exact dry preflight, launches the same wrapper visibly only on `READY`, requires terminal ownership and exact run identity, and never retries `STOPPED_INCOMPLETE`, integrity conflict, or ambiguous timeout.
+- Automation TOML SHA-256: `b80ab389a6584fa7e313be3e5af637a53b60dc4c277ba7daefe6ababbc0b09aa`.
+- Current guard: `ACTIVE`, decision `WAIT_APPROVED_LONG_CAMPAIGN_WINDOW`, weekly remaining `64%`, no critical checkpoint.
+- No collector, writer, market-data consumer, evaluator, returns/PnL/OOS, grid/retune, paper/live, private API, capital, leverage, or margin action was started.
+- Next agent: follow the authoritative guard. After exact materialization acceptance, allow only the hash-bound PlanOnly build above. Request separate exact user approval before any evaluator execution.

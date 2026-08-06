@@ -1,0 +1,81 @@
+{
+  "schema": "trading_mvp_night_launch_readiness_v1",
+  "status": "READY_NOT_DUE",
+  "observed_at_local": "2026-08-02T12:12:26.1448198+03:00",
+  "project": "trading_mvp",
+  "policy_hash": "f79f0e029fc4861249a11929545186127223a743411cc9fc8c229511d60da3cc",
+  "weekly_remaining_percent": 74.0,
+  "pit": {
+    "run_id": "pit_universe_v2_forward_20260803_n06",
+    "schedule_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+    "start_local": "2026-08-03T01:00:00+03:00",
+    "end_local": "2026-08-03T01:20:00+03:00",
+    "preflight_status": "READY_NOT_DUE",
+    "checks_passed": true,
+    "sealed_runtime_tools_verified": 12,
+    "other_countdown_owners": 0,
+    "global_writer_claim": null,
+    "minimum_free_disk_gib": 5.0
+  },
+  "dense_ws_campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "writer_start_local": "2026-08-03T01:30:00+03:00",
+    "writer_deadline_local": "2026-08-04T01:30:00+03:00",
+    "hard_deadline_local": "2026-08-04T02:00:00+03:00",
+    "preflight_status": "STRUCTURALLY_VALID_NOT_DUE",
+    "structurally_valid": true,
+    "preflight_reasons": [],
+    "existing_campaign_output_bytes": 0,
+    "hard_output_cap_bytes": 25000000000,
+    "required_free_bytes": 53687091200,
+    "global_writer_claim": null,
+    "owner_exists": false,
+    "reservation_exists": false,
+    "state_exists": false,
+    "manifest_exists": false
+  },
+  "storage": {
+    "drive": "E:",
+    "volume_name": "3.Внешний 1Tb",
+    "filesystem": "NTFS",
+    "device_model": "StoreJet Transcend USB Device",
+    "device_type": "External hard disk media",
+    "device_status": "OK",
+    "free_gib": 768.406
+  },
+  "power": {
+    "battery_present": true,
+    "battery_charge_percent": 99,
+    "battery_status": 2,
+    "ups_present": false,
+    "sleep_after_seconds_ac": 0,
+    "sleep_after_seconds_dc": 180,
+    "lid_action_ac": "DO_NOTHING",
+    "lid_action_dc": "SLEEP",
+    "operational_requirement": "KEEP_AC_POWER_AND_EXTERNAL_USB_DRIVE_CONNECTED"
+  },
+  "process_audit": {
+    "next_pit_or_dense_ws_live_owner_found": false,
+    "completed_pit_n05_terminal_pid": 20840,
+    "completed_pit_n05_terminal_status": "POSTRUN_FINISHED",
+    "completed_pit_n05_terminal_is_writer": false
+  },
+  "safety": {
+    "preflight_only": true,
+    "market_data_writer_started": false,
+    "run_or_output_files_created": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false
+  },
+  "blocking_reasons": [],
+  "warnings": [
+    "AC_POWER_AND_EXTERNAL_USB_DRIVE_MUST_REMAIN_CONNECTED"
+  ],
+  "next_allowed_action": "WAIT_FOR_HASH_BOUND_VISIBLE_LAUNCH_WINDOWS"
+}

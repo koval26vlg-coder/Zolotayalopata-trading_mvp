@@ -1,0 +1,114 @@
+{
+  "schema": "trading_mvp_dense_ws_aef_time_only_reschedule_refreeze_reconciliation_proposal_v4",
+  "mode": "PlanOnlyCorrectionProposal",
+  "status": "USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+  "generated_at_utc": "2026-08-03T10:26:33.686369Z",
+  "research_only": true,
+  "purpose": "Prepare one exact approval for the already-applied time-only source change and the policy promotion that was reverted solely to keep the independent PIT schedule valid. This proposal does not launch a collector.",
+  "supersedes": {
+    "proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-time-only-reschedule-refreeze-proposal-20260803-v3.json",
+    "proposal_file_sha256": "72e3e33b5f9e2fd5d299e89d7ca80404b7d4eb4e0492b28f8ad227b384fbfeb6",
+    "proposal_hash": "18b8f0687737ffaadd9f020ae9fd8778e0fa21657d2156f52787cbe38259cd8a",
+    "disposition": "SUPERSEDED_STALE_POLICY_PREIMAGE_AFTER_PIT_UNBLOCK",
+    "may_be_reused_for_implementation": false
+  },
+  "current_verified_state": {
+    "contract_code": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+      "current_sha256": "80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb",
+      "partial_v2_state": true,
+      "source_mutation_required_after_v4_approval": false,
+      "v2_patch_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-time-only-reschedule-refreeze-implementation-preview-20260803-v2.patch",
+      "v2_patch_sha256": "56e94998befa154b5260b77fd35966aa205c99c91280abb5f514dbba54833b3a",
+      "legacy_v2_claimed_postimage_sha256": "9aac8ceac80acff9971b3bf72acdcabfd3560d2f42fd5e8a14912d659c150aac",
+      "verified_observed_postimage_sha256": "80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb"
+    },
+    "continuous_policy": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-continuous-production-policy-v1.json",
+      "current_sha256": "aa6679f11725ef612c0d65713aa0c5d366e59ca36a49d903046d0d06164c00cb",
+      "candidate_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-reschedule-20260804-planonly-v2.json",
+      "candidate_sha256": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+      "byte_exact_promotion_required_after_v4_approval": true,
+      "promotion_not_applied_before_approval": true
+    },
+    "guard_binding": {
+      "current_continuous_policy_sha256": "aa6679f11725ef612c0d65713aa0c5d366e59ca36a49d903046d0d06164c00cb",
+      "required_continuous_policy_sha256_after_v4_approval": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+      "rebind_required_only_after_contract_and_planonly_validation": true
+    }
+  },
+  "time_only_candidate": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260804_aef_24h",
+    "candidate_contract_hash": "a1d262d1cf5ef1c70771ab9005b12eb0d875ff5235492ffadf8e1af4790a8643",
+    "window_id": "EVIDENCE_EXCEPTION_2026-08-04_24H",
+    "writer_start_local": "2026-08-04T01:40:00+03:00",
+    "writer_deadline_local": "2026-08-05T01:40:00+03:00",
+    "hard_deadline_local": "2026-08-05T02:10:00+03:00",
+    "target_writer_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000,
+    "suppressed_pit_run_ids": [
+      "pit_universe_v2_forward_20260805_n08"
+    ],
+    "actual_collection_allowed": false
+  },
+  "frozen_invariants": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "data_type": "DENSE_WS_SEGMENTED",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "universe_rows": 1388,
+    "raw_schema_change_allowed": false,
+    "segment_validity_change_allowed": false,
+    "causal_regime_change_allowed": false,
+    "execution_sampling_change_allowed": false,
+    "cost_risk_no_grid_change_allowed": false,
+    "collector_liveness_change_allowed": false,
+    "quality_or_materializer_change_allowed": false,
+    "signal_or_evaluator_change_allowed": false,
+    "duration_or_cap_change_allowed": false
+  },
+  "proposed_actions_after_exact_v4_approval": {
+    "create_approval_receipt": true,
+    "promote_candidate_policy_byte_exactly": true,
+    "run_offline_regression": true,
+    "build_runtime_dependency_manifest": true,
+    "build_immutable_contract_and_planonly": true,
+    "rebind_autopilot_and_heartbeat_only_after_immutable_artifact_validation": true,
+    "new_contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260804-aef-24h-v1.json",
+    "new_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260804-aef-24h-v1.json",
+    "new_runtime_dependency_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-runtime-dependencies-20260803-reschedule-v4.json"
+  },
+  "required_verification": {
+    "contract_source_sha256": "80e7416c78ba97be8bb5fdb05c8160677c17cf4c4fabc1ac1a512c9a032160fb",
+    "policy_source_sha256_before_promotion": "aa6679f11725ef612c0d65713aa0c5d366e59ca36a49d903046d0d06164c00cb",
+    "continuous_policy_sha256_after_promotion": "b9be74cbef1d50522ca43c5f76e2128d15be84ae9b744afc30ac1bd2deab2056",
+    "time_only_diff_audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-time-only-reschedule-diff-audit-20260803-v1.json",
+    "time_only_diff_audit_sha256": "8d53d41f2baa412ef4d505474cd848cb84a7377910c6754108a21167c15617dd",
+    "postimage_verifier_audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-time-only-postimage-verifier-maintenance-20260803-v1.json",
+    "postimage_verifier_audit_sha256": "8d38131c96874661a4592125c1fc2daa18372762ba984bc381e2be36fe3e8820",
+    "offline_regression_command": "python -m unittest test_ws_normalizer test_ws_collector test_ws_durable_collector test_dense_ws_campaign_runner_liveness test_dense_ws_campaign_quality test_dense_ws_campaign_contract",
+    "network_during_tests": false,
+    "new_plan_actual_collection_allowed": false,
+    "new_plan_approval_state": "NOT_APPROVED",
+    "new_plan_launch_controls_status": "READY_FOR_SEPARATE_EXACT_APPROVAL"
+  },
+  "safety": {
+    "collector_launch_allowed": false,
+    "network_access_allowed": false,
+    "market_rows_read": false,
+    "returns_or_pnl_allowed": false,
+    "oos_or_evaluator_allowed": false,
+    "grid_or_retune_allowed": false,
+    "paper_or_live_allowed": false,
+    "private_api_or_real_capital_allowed": false,
+    "leverage_or_margin_allowed": false,
+    "stopped_incomplete_retry_allowed": false
+  },
+  "next_allowed_action": "REQUEST_EXACT_HASH_BOUND_V4_RECONCILIATION_APPROVAL",
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "3f01c0724ca488bb6149d8b4690b225051a2f17d3664ca97a8bf93bcd6482c8e"
+}

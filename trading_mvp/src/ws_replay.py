@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from collections import Counter, defaultdict, deque
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -50,6 +50,9 @@ class ReplayConfig:
     taker_fee_bps: float = 10.0
     maker_fee_bps: float = 0.0
     slippage_bps: float = 1.0
+    taker_fee_bps_by_exchange: dict[str, float] = field(default_factory=dict)
+    maker_fee_bps_by_exchange: dict[str, float] = field(default_factory=dict)
+    slippage_bps_by_exchange: dict[str, float] = field(default_factory=dict)
     latency_ms: int = 250
     flow_window_sec: float = 5.0
     allow_short: bool = False
@@ -66,6 +69,7 @@ class ReplayConfig:
     quality_min_quote_updates: int = 0
     quality_min_top_qty: float = 0.0
     min_net_take_profit_bps: float = -1e9
+    max_quote_age_sec: float = 0.0
 
 
 @dataclass
@@ -92,6 +96,9 @@ class PendingOrder:
     qty: float | None = None
     placed_ts: float | None = None
     queue_remaining_qty: float = 0.0
+    remaining_qty: float | None = None
+    filled_qty: float = 0.0
+    rejected: bool = False
 
 
 @dataclass
@@ -122,6 +129,7 @@ class MarketState:
         self.bid_qty: float | None = None
         self.ask_qty: float | None = None
         self.last_ts: float | None = None
+        self.last_quote_ts: float | None = None
         self.bids: dict[float, float] = {}
         self.asks: dict[float, float] = {}
         self.signed_flow: deque[tuple[float, float]] = deque()
@@ -142,11 +150,15 @@ class MarketState:
             self.ask = _as_float(event.get("ask_price"))
             self.bid_qty = _as_float(event.get("bid_qty"))
             self.ask_qty = _as_float(event.get("ask_qty"))
+            if self.bid is not None and self.ask is not None:
+                self.last_quote_ts = ts
             self._record_bbo_sample(ts)
             self._record_spread_sample(ts)
             return
         if kind == "depth":
             self._apply_depth(event)
+            if self.bid is not None and self.ask is not None:
+                self.last_quote_ts = ts
             self._record_bbo_sample(ts)
             self._record_spread_sample(ts)
             return
@@ -163,8 +175,7 @@ class MarketState:
         else:
             self._apply_delta(self.bids, bids)
             self._apply_delta(self.asks, asks)
-        if self.bid is None or self.ask is None:
-            self._infer_bbo_from_book()
+        self._infer_bbo_from_book(clear_missing=depth_type == "snapshot")
 
     def _apply_delta(self, book: dict[float, float], levels: list[list[float | None]]) -> None:
         for price, qty in levels:
@@ -175,15 +186,21 @@ class MarketState:
             else:
                 book[price] = qty
 
-    def _infer_bbo_from_book(self) -> None:
+    def _infer_bbo_from_book(self, clear_missing: bool = False) -> None:
         if self.bids:
             bid = max(self.bids)
             self.bid = bid
             self.bid_qty = self.bids[bid]
+        elif clear_missing:
+            self.bid = None
+            self.bid_qty = None
         if self.asks:
             ask = min(self.asks)
             self.ask = ask
             self.ask_qty = self.asks[ask]
+        elif clear_missing:
+            self.ask = None
+            self.ask_qty = None
 
     def _apply_trade(self, event: dict[str, Any], ts: float) -> None:
         price = _as_float(event.get("price"))
@@ -361,6 +378,29 @@ class ReplayRisk:
         self.trades_opened = 0
         self.daily_realized_pnl = 0.0
         self.unrealized_pnl = 0.0
+        self.daily_unrealized_pnl = 0.0
+        self.total_realized_pnl = 0.0
+        self._day_unrealized_baseline = 0.0
+        self.current_utc_day: str | None = None
+        self.kill_switch = False
+        self.kill_switch_ever_triggered = False
+        self.equity_peak = 0.0
+        self.max_drawdown_quote = 0.0
+
+    @staticmethod
+    def _utc_day(ts: float) -> str:
+        return datetime.fromtimestamp(ts, timezone.utc).date().isoformat()
+
+    def advance_time(self, ts: float) -> None:
+        day = self._utc_day(ts)
+        if self.current_utc_day == day:
+            return
+        if self.current_utc_day is not None:
+            self._day_unrealized_baseline = self.unrealized_pnl
+        self.current_utc_day = day
+        self.trades_opened = 0
+        self.daily_realized_pnl = 0.0
+        self.daily_unrealized_pnl = 0.0
         self.kill_switch = False
 
     def can_open(
@@ -371,7 +411,10 @@ class ReplayRisk:
         max_open_positions: int,
         market_open_positions: int = 0,
         max_open_positions_per_market: int = 1,
+        ts: float | None = None,
     ) -> tuple[bool, str]:
+        if ts is not None:
+            self.advance_time(ts)
         if self.kill_switch:
             return False, "kill_switch_active"
         if open_positions >= max_open_positions:
@@ -386,26 +429,48 @@ class ReplayRisk:
             return False, "max_notional_per_trade"
         return True, "ok"
 
-    def register_open(self) -> None:
+    def register_open(self, ts: float | None = None) -> None:
+        if ts is not None:
+            self.advance_time(ts)
         self.trades_opened += 1
 
-    def register_close(self, net_pnl_quote: float) -> None:
+    def register_close(self, net_pnl_quote: float, ts: float | None = None) -> None:
+        if ts is not None:
+            self.advance_time(ts)
         self.daily_realized_pnl += net_pnl_quote
+        self.total_realized_pnl += net_pnl_quote
         self._check_equity_kill_switch()
 
-    def mark_unrealized(self, unrealized_quote: float) -> None:
+    def mark_unrealized(self, unrealized_quote: float, ts: float | None = None) -> bool:
         """Учет нереализованного PnL открытых позиций для kill-switch.
 
         Без этого дневной лимит убытка проверяется только при закрытии, и
         позиция может уйти глубоко в минус внутри сделки, не остановив торговлю.
         """
+        if ts is not None:
+            self.advance_time(ts)
         self.unrealized_pnl = unrealized_quote
+        self.daily_unrealized_pnl = unrealized_quote - self._day_unrealized_baseline
         self._check_equity_kill_switch()
+        return self._observe_equity()
 
     def _check_equity_kill_switch(self) -> None:
-        equity = self.daily_realized_pnl + self.unrealized_pnl
+        equity = self.daily_realized_pnl + self.daily_unrealized_pnl
         if equity <= -abs(self.cfg.daily_loss_limit_quote):
             self.kill_switch = True
+            self.kill_switch_ever_triggered = True
+
+    def _observe_equity(self) -> bool:
+        equity = self.total_realized_pnl + self.unrealized_pnl
+        old_peak = self.equity_peak
+        old_drawdown = self.max_drawdown_quote
+        self.equity_peak = max(self.equity_peak, equity)
+        self.max_drawdown_quote = min(self.max_drawdown_quote, equity - self.equity_peak)
+        return self.equity_peak != old_peak or self.max_drawdown_quote != old_drawdown
+
+    @property
+    def total_equity(self) -> float:
+        return self.total_realized_pnl + self.unrealized_pnl
 
 
 class EventDrivenReplayBacktester:
@@ -429,8 +494,8 @@ class EventDrivenReplayBacktester:
         self.consumed_sweeps: set[str] = set()
         self.last_sweep_v2_signal_ts: dict[str, float] = {}
 
-    def run(self, events: list[dict[str, Any]]) -> dict[str, Any]:
-        ordered = sorted(events, key=_event_ts)
+    def run(self, events: list[dict[str, Any]], *, assume_sorted: bool = False) -> dict[str, Any]:
+        ordered = events if assume_sorted else sorted(events, key=_event_ts)
         for event in ordered:
             self._on_event(event)
         if ordered:
@@ -451,11 +516,12 @@ class EventDrivenReplayBacktester:
         self.events_by_kind[kind] += 1
         self.events_by_exchange[str(event.get("exchange"))] += 1
         state = self._state_for(event)
-        state.update(event)
         ts = _event_ts(event)
+        self.risk.advance_time(ts)
+        state.update(event)
         self._try_execute_pending(key, state, ts, event)
-        if self.positions:
-            self.risk.mark_unrealized(self._unrealized_pnl_quote())
+        if self.risk.mark_unrealized(self._unrealized_pnl_quote(), ts=ts):
+            self._record_equity(ts)
         if not state.ready():
             return
         if key in self.positions and key not in self.pending:
@@ -466,6 +532,9 @@ class EventDrivenReplayBacktester:
     def _try_execute_pending(self, key: str, state: MarketState, ts: float, event: dict[str, Any]) -> None:
         order = self.pending.get(key)
         if order is None or ts < order.execute_after_ts or not state.ready():
+            return
+        if not self._quote_is_fresh(state, ts):
+            self.skipped_signals["stale_quote"] += 1
             return
         if self.replay_cfg.execution_mode == "maker" and order.reason != "force_end":
             if order.limit_price is None:
@@ -503,6 +572,7 @@ class EventDrivenReplayBacktester:
             max_open_positions=self.replay_cfg.max_open_positions,
             market_open_positions=1 if key in self.positions else 0,
             max_open_positions_per_market=self.risk.cfg.max_open_positions_per_market,
+            ts=ts,
         )
         if not ok:
             self.skipped_signals[reason] += 1
@@ -546,6 +616,9 @@ class EventDrivenReplayBacktester:
             self._place_maker_order(self.pending[key], state, ts)
 
     def _signal(self, state: MarketState, ts: float) -> int:
+        if not self._quote_is_fresh(state, ts):
+            self.skipped_signals["stale_quote"] += 1
+            return 0
         spread = state.spread_bps()
         if spread is None or spread > self.strategy_cfg.max_spread_bps:
             return 0
@@ -570,7 +643,7 @@ class EventDrivenReplayBacktester:
         if not passed:
             self.skipped_signals[reason] += 1
             return 0
-        if not self._passes_entry_edge_filter():
+        if not self._passes_entry_edge_filter(state):
             self.skipped_signals["min_net_take_profit_bps"] += 1
             return 0
         return side
@@ -743,22 +816,60 @@ class EventDrivenReplayBacktester:
         symbol = str(state.symbol).lower()
         return market in allowed or symbol in allowed
 
-    def _passes_entry_edge_filter(self) -> bool:
+    def _passes_entry_edge_filter(self, state: MarketState) -> bool:
         # Эффективный порог = строжайший из replay-флага и risk-уровня (config.json).
         # CLI может только ужесточить cost-gate, но не отключить заданный в risk.
         risk_floor = getattr(self.risk.cfg, "min_net_take_profit_bps", -1e9)
         min_edge = max(self.replay_cfg.min_net_take_profit_bps, risk_floor)
         if min_edge <= -1e8:
             return True
-        return self._net_take_profit_bps() >= min_edge
+        return self._net_take_profit_bps(state.exchange) >= min_edge
 
-    def _net_take_profit_bps(self) -> float:
-        return float(self.strategy_cfg.take_profit_bps) - self._round_trip_fee_bps()
+    def _net_take_profit_bps(self, exchange: str | None = None) -> float:
+        return float(self.strategy_cfg.take_profit_bps) - self._round_trip_fee_bps(exchange)
 
-    def _round_trip_fee_bps(self) -> float:
+    def _round_trip_fee_bps(self, exchange: str | None = None) -> float:
         if self.replay_cfg.execution_mode == "maker":
-            return 2.0 * self.replay_cfg.maker_fee_bps
-        return 2.0 * self.replay_cfg.taker_fee_bps
+            return 2.0 * self._maker_fee_bps(exchange)
+        return 2.0 * self._taker_fee_bps(exchange)
+
+    @staticmethod
+    def _venue_value(values: dict[str, float], exchange: str | None, fallback: float) -> float:
+        if not exchange:
+            return float(fallback)
+        normalized = exchange.strip().lower()
+        if normalized in values:
+            return float(values[normalized])
+        aliases = {"gate": "gateio", "gate.io": "gateio"}
+        canonical = aliases.get(normalized, normalized)
+        return float(values.get(canonical, fallback))
+
+    def _taker_fee_bps(self, exchange: str | None = None) -> float:
+        return self._venue_value(
+            self.replay_cfg.taker_fee_bps_by_exchange,
+            exchange,
+            self.replay_cfg.taker_fee_bps,
+        )
+
+    def _maker_fee_bps(self, exchange: str | None = None) -> float:
+        return self._venue_value(
+            self.replay_cfg.maker_fee_bps_by_exchange,
+            exchange,
+            self.replay_cfg.maker_fee_bps,
+        )
+
+    def _slippage_bps(self, exchange: str | None = None) -> float:
+        return self._venue_value(
+            self.replay_cfg.slippage_bps_by_exchange,
+            exchange,
+            self.replay_cfg.slippage_bps,
+        )
+
+    def _quote_is_fresh(self, state: MarketState, ts: float) -> bool:
+        max_age = float(self.replay_cfg.max_quote_age_sec)
+        if max_age <= 0:
+            return True
+        return state.last_quote_ts is not None and 0.0 <= ts - state.last_quote_ts <= max_age
 
     def _passes_quality_filter(self, state: MarketState, ts: float) -> tuple[bool, str]:
         cfg = self.replay_cfg
@@ -786,17 +897,19 @@ class EventDrivenReplayBacktester:
         return True, "ok"
 
     def _entry_price(self, state: MarketState, side: int) -> float | None:
+        slippage_bps = self._slippage_bps(state.exchange)
         if side > 0 and state.ask is not None:
-            return state.ask * (1.0 + self.replay_cfg.slippage_bps / 1e4)
+            return state.ask * (1.0 + slippage_bps / 1e4)
         if side < 0 and state.bid is not None:
-            return state.bid * (1.0 - self.replay_cfg.slippage_bps / 1e4)
+            return state.bid * (1.0 - slippage_bps / 1e4)
         return None
 
     def _exit_price(self, state: MarketState, side: int) -> float | None:
+        slippage_bps = self._slippage_bps(state.exchange)
         if side > 0 and state.bid is not None:
-            return state.bid * (1.0 - self.replay_cfg.slippage_bps / 1e4)
+            return state.bid * (1.0 - slippage_bps / 1e4)
         if side < 0 and state.ask is not None:
-            return state.ask * (1.0 + self.replay_cfg.slippage_bps / 1e4)
+            return state.ask * (1.0 + slippage_bps / 1e4)
         return None
 
     def _passive_price(self, state: MarketState, order_direction: int) -> float | None:
@@ -812,11 +925,11 @@ class EventDrivenReplayBacktester:
     def _fee(self, notional: float, fee_bps: float) -> float:
         return abs(notional) * fee_bps / 1e4
 
-    def _taker_fee(self, notional: float) -> float:
-        return self._fee(notional, self.replay_cfg.taker_fee_bps)
+    def _taker_fee(self, notional: float, exchange: str | None = None) -> float:
+        return self._fee(notional, self._taker_fee_bps(exchange))
 
-    def _maker_fee(self, notional: float) -> float:
-        return self._fee(notional, self.replay_cfg.maker_fee_bps)
+    def _maker_fee(self, notional: float, exchange: str | None = None) -> float:
+        return self._fee(notional, self._maker_fee_bps(exchange))
 
     def _execute_taker_entry(self, order: PendingOrder, state: MarketState, ts: float) -> None:
         price = self._entry_price(state, order.side)
@@ -830,6 +943,7 @@ class EventDrivenReplayBacktester:
             max_open_positions=self.replay_cfg.max_open_positions,
             market_open_positions=1 if order.market in self.positions else 0,
             max_open_positions_per_market=self.risk.cfg.max_open_positions_per_market,
+            ts=ts,
         )
         if not ok:
             self.skipped_signals[reason] += 1
@@ -842,10 +956,10 @@ class EventDrivenReplayBacktester:
             qty=qty,
             entry_price=price,
             entry_ts=ts,
-            entry_fee_quote=self._taker_fee(notional),
+            entry_fee_quote=self._taker_fee(notional, state.exchange),
             entry_notional_quote=notional,
         )
-        self.risk.register_open()
+        self.risk.register_open(ts=ts)
 
     def _execute_taker_exit(self, order: PendingOrder, state: MarketState, ts: float) -> None:
         position = self.positions.get(order.market)
@@ -856,7 +970,7 @@ class EventDrivenReplayBacktester:
             return
         gross = (price - position.entry_price) * position.qty * position.side
         exit_notional = position.qty * price
-        exit_fee = self._taker_fee(exit_notional)
+        exit_fee = self._taker_fee(exit_notional, state.exchange)
         self._record_close(order, position, ts, price, gross, exit_fee)
 
     def _place_maker_order(self, order: PendingOrder, state: MarketState, ts: float) -> None:
@@ -872,6 +986,8 @@ class EventDrivenReplayBacktester:
             qty = position.qty
         order.limit_price = price
         order.qty = qty
+        order.remaining_qty = qty
+        order.filled_qty = 0.0
         order.placed_ts = ts
         order.queue_remaining_qty = self._maker_queue_ahead_qty(state, direction)
 
@@ -915,51 +1031,74 @@ class EventDrivenReplayBacktester:
         if not qualifies:
             return False
 
-        order.queue_remaining_qty -= trade_qty
-        if order.queue_remaining_qty > 0:
+        available_qty = trade_qty
+        queue_consumed = min(max(0.0, order.queue_remaining_qty), available_qty)
+        order.queue_remaining_qty -= queue_consumed
+        available_qty -= queue_consumed
+        if available_qty <= 0:
             return False
 
+        remaining_qty = order.remaining_qty if order.remaining_qty is not None else order.qty
+        fill_qty = min(max(0.0, remaining_qty), available_qty)
+        if fill_qty <= 0:
+            return False
         if order.action == "entry":
-            self._fill_maker_entry(order, state, ts)
+            accepted = self._fill_maker_entry(order, state, ts, fill_qty)
         else:
-            self._fill_maker_exit(order, state, ts)
+            accepted = self._fill_maker_exit(order, state, ts, fill_qty)
+        if not accepted:
+            order.rejected = True
+            return True
+        order.filled_qty += fill_qty
+        order.remaining_qty = max(0.0, remaining_qty - fill_qty)
+        return order.remaining_qty <= 1e-12
+
+    def _fill_maker_entry(self, order: PendingOrder, state: MarketState, ts: float, fill_qty: float) -> bool:
+        if order.limit_price is None or order.qty is None:
+            return False
+        position = self.positions.get(order.market)
+        if position is None:
+            ok, reason = self.risk.can_open(
+                qty=order.qty,
+                price=order.limit_price,
+                open_positions=len(self.positions),
+                max_open_positions=self.replay_cfg.max_open_positions,
+                market_open_positions=0,
+                max_open_positions_per_market=self.risk.cfg.max_open_positions_per_market,
+                ts=ts,
+            )
+            if not ok:
+                self.skipped_signals[reason] += 1
+                return False
+            notional = fill_qty * order.limit_price
+            self.positions[order.market] = ReplayPosition(
+                exchange=state.exchange,
+                symbol=state.symbol,
+                side=order.side,
+                qty=fill_qty,
+                entry_price=order.limit_price,
+                entry_ts=ts,
+                entry_fee_quote=self._maker_fee(notional, state.exchange),
+                entry_notional_quote=notional,
+            )
+            self.risk.register_open(ts=ts)
+            return True
+        notional = fill_qty * order.limit_price
+        position.qty += fill_qty
+        position.entry_notional_quote += notional
+        position.entry_fee_quote += self._maker_fee(notional, state.exchange)
         return True
 
-    def _fill_maker_entry(self, order: PendingOrder, state: MarketState, ts: float) -> None:
-        if order.limit_price is None or order.qty is None:
-            return
-        ok, reason = self.risk.can_open(
-            qty=order.qty,
-            price=order.limit_price,
-            open_positions=len(self.positions),
-            max_open_positions=self.replay_cfg.max_open_positions,
-            market_open_positions=1 if order.market in self.positions else 0,
-            max_open_positions_per_market=self.risk.cfg.max_open_positions_per_market,
-        )
-        if not ok:
-            self.skipped_signals[reason] += 1
-            return
-        notional = order.qty * order.limit_price
-        self.positions[order.market] = ReplayPosition(
-            exchange=state.exchange,
-            symbol=state.symbol,
-            side=order.side,
-            qty=order.qty,
-            entry_price=order.limit_price,
-            entry_ts=ts,
-            entry_fee_quote=self._maker_fee(notional),
-            entry_notional_quote=notional,
-        )
-        self.risk.register_open()
-
-    def _fill_maker_exit(self, order: PendingOrder, state: MarketState, ts: float) -> None:
+    def _fill_maker_exit(self, order: PendingOrder, state: MarketState, ts: float, fill_qty: float) -> bool:
         position = self.positions.get(order.market)
         if position is None or order.limit_price is None:
-            return
-        gross = (order.limit_price - position.entry_price) * position.qty * position.side
-        exit_notional = position.qty * order.limit_price
-        exit_fee = self._maker_fee(exit_notional)
-        self._record_close(order, position, ts, order.limit_price, gross, exit_fee)
+            return False
+        close_qty = min(position.qty, fill_qty)
+        gross = (order.limit_price - position.entry_price) * close_qty * position.side
+        exit_notional = close_qty * order.limit_price
+        exit_fee = self._maker_fee(exit_notional, state.exchange)
+        self._record_close(order, position, ts, order.limit_price, gross, exit_fee, close_qty=close_qty)
+        return True
 
     def _record_close(
         self,
@@ -969,8 +1108,16 @@ class EventDrivenReplayBacktester:
         price: float,
         gross: float,
         exit_fee: float,
+        close_qty: float | None = None,
     ) -> None:
-        net = gross - position.entry_fee_quote - exit_fee
+        position_qty_before = position.qty
+        qty = position_qty_before if close_qty is None else min(position_qty_before, max(0.0, close_qty))
+        if qty <= 0:
+            return
+        allocation = qty / position_qty_before
+        entry_fee = position.entry_fee_quote * allocation
+        entry_notional = position.entry_notional_quote * allocation
+        net = gross - entry_fee - exit_fee
         trade = ReplayTrade(
             exchange=position.exchange,
             symbol=position.symbol,
@@ -978,10 +1125,10 @@ class EventDrivenReplayBacktester:
             entry_ts=position.entry_ts,
             exit_ts=ts,
             hold_sec=ts - position.entry_ts,
-            qty=position.qty,
+            qty=qty,
             entry_price=position.entry_price,
             exit_price=price,
-            entry_fee_quote=position.entry_fee_quote,
+            entry_fee_quote=entry_fee,
             exit_fee_quote=exit_fee,
             gross_pnl_quote=gross,
             net_pnl_quote=net,
@@ -989,8 +1136,13 @@ class EventDrivenReplayBacktester:
             exit_reason=order.reason,
         )
         self.trades.append(trade)
-        self.risk.register_close(net)
-        self.positions.pop(order.market, None)
+        self.risk.register_close(net, ts=ts)
+        position.qty -= qty
+        position.entry_fee_quote -= entry_fee
+        position.entry_notional_quote -= entry_notional
+        if position.qty <= 1e-12:
+            self.positions.pop(order.market, None)
+        self.risk.mark_unrealized(self._unrealized_pnl_quote(), ts=ts)
         self._record_equity(ts)
 
     def _pnl_bps(self, position: ReplayPosition, exit_price: float) -> float:
@@ -1011,8 +1163,13 @@ class EventDrivenReplayBacktester:
                 continue
             gross = (exit_price - position.entry_price) * position.qty * position.side
             exit_notional = position.qty * exit_price
-            exit_fee = self._maker_fee(exit_notional) if maker else self._taker_fee(exit_notional)
-            total += gross - position.entry_fee_quote - exit_fee
+            exit_fee = (
+                self._maker_fee(exit_notional, position.exchange)
+                if maker
+                else self._taker_fee(exit_notional, position.exchange)
+            )
+            settled_funding = float(getattr(position, "funding_pnl_quote", 0.0) or 0.0)
+            total += gross + settled_funding - position.entry_fee_quote - exit_fee
         return total
 
     def _force_close_all(self, ts: float) -> None:
@@ -1032,7 +1189,15 @@ class EventDrivenReplayBacktester:
         self.pending.clear()
 
     def _record_equity(self, ts: float) -> None:
-        self.equity_curve.append({"ts": ts, "equity_quote": self.risk.daily_realized_pnl})
+        point = {
+            "ts": ts,
+            "equity_quote": self.risk.total_equity,
+            "realized_pnl_quote": self.risk.total_realized_pnl,
+            "unrealized_pnl_quote": self.risk.unrealized_pnl,
+        }
+        if self.equity_curve and self.equity_curve[-1] == point:
+            return
+        self.equity_curve.append(point)
 
     def _result(self, event_count: int) -> dict[str, Any]:
         total = len(self.trades)
@@ -1044,11 +1209,16 @@ class EventDrivenReplayBacktester:
         gross_wins = sum(trade.net_pnl_quote for trade in self.trades if trade.net_pnl_quote > 0)
         gross_losses = abs(sum(trade.net_pnl_quote for trade in self.trades if trade.net_pnl_quote < 0))
         max_drawdown = self._max_drawdown()
+        exchanges = sorted(self.events_by_exchange)
+        round_trip_by_exchange = {exchange: self._round_trip_fee_bps(exchange) for exchange in exchanges}
+        net_take_profit_by_exchange = {exchange: self._net_take_profit_bps(exchange) for exchange in exchanges}
         metrics = {
             "events": event_count,
             "markets": len(self.states),
             "round_trip_fee_bps": self._round_trip_fee_bps(),
+            "round_trip_fee_bps_by_exchange": round_trip_by_exchange,
             "net_take_profit_bps": self._net_take_profit_bps(),
+            "net_take_profit_bps_by_exchange": net_take_profit_by_exchange,
             "total_trades": total,
             "wins": wins,
             "losses": losses,
@@ -1060,7 +1230,10 @@ class EventDrivenReplayBacktester:
             "profit_factor": (gross_wins / gross_losses) if gross_losses else None,
             "max_drawdown_quote": max_drawdown,
             "daily_realized_pnl_quote": self.risk.daily_realized_pnl,
-            "kill_switch_triggered": self.risk.kill_switch,
+            "realized_pnl_quote": self.risk.total_realized_pnl,
+            "current_day_utc": self.risk.current_utc_day,
+            "kill_switch_triggered": self.risk.kill_switch_ever_triggered,
+            "current_day_kill_switch_active": self.risk.kill_switch,
         }
         return {
             "mode": "event_driven_replay",
@@ -1094,13 +1267,7 @@ class EventDrivenReplayBacktester:
         return out
 
     def _max_drawdown(self) -> float:
-        peak = 0.0
-        max_dd = 0.0
-        for point in self.equity_curve:
-            equity = point["equity_quote"]
-            peak = max(peak, equity)
-            max_dd = min(max_dd, equity - peak)
-        return max_dd
+        return self.risk.max_drawdown_quote
 
 
 def load_normalized_events(path: str | Path) -> list[dict[str, Any]]:

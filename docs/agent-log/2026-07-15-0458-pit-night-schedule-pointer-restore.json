@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_night_schedule_pointer_restore_v1",
+  "decision": "NIGHT_SCHEDULE_POINTER_RESTORED",
+  "restored_at": "2026-07-15T04:58:38.5449941+03:00",
+  "gate_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\active-run-gate.json",
+  "previous_plan_hash": "155d211ccf002cd607f0644e98f9a417de45e0644122b54b2dcbe6b4e1d81d92",
+  "restored_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_planonly_20260714_220219.json",
+  "restored_plan_hash": "34363aefacf4e2ad3c35053f267145841aa6faca69c154e70c3758e659dc6362",
+  "plan_file_sha256": "b1d4264fc577dd84464389b151361bcdfd42a13d56bb67390fc75b516b0071f2",
+  "approval_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\night-schedule-approvals\\34363aefacf4e2ad3c35053f267145841aa6faca69c154e70c3758e659dc6362.approval.json",
+  "approval_record_sha256": "e0d8fffa881056927209ebba904387215e4d315bcf6d7a929860019d804676a4",
+  "approval_record_unchanged": true,
+  "run_id": "pit_universe_v2_forward_20260716_n03",
+  "collection_stage": "train_accrual",
+  "accepted_distinct_dates_before_run": 2,
+  "remaining_stage_dates_before_run": 18,
+  "collection_started": false,
+  "network_access": false,
+  "returns_read": false,
+  "pnl_read": false,
+  "next_allowed_action": "wait_for_approved_visible_segment_window"
+}

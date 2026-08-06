@@ -1,0 +1,205 @@
+{
+  "schema": "trading_mvp_stale_ws_partial_reconciliation_v1",
+  "project": "trading_mvp",
+  "created_at_utc": "2026-08-01T19:01:52.1439641+00:00",
+  "decision": "PRESERVE_IN_PLACE_AS_DIAGNOSTIC_ONLY",
+  "reason": "Terminally rejected legacy spot-maker liquidity sweep/reversal route was auto-resumed by Antigravity after user-directed shutdown.",
+  "active_run_gate_before": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\visible-runs\\stale-ws-sweep-reconciliation-20260801_220151206\\active-run-gate.before-reconciliation.json",
+    "sha256": "860fff99bfee756184a57e79fd0744f31bab8a203c98762423fbc197e1ba069c"
+  },
+  "user_authorization": "Close Antigravity.exe and language_server.exe despite unsaved-task risk; restore guard/gate and continue Accelerated Evidence Factory v1.",
+  "stopped_owner_processes": [
+    {
+      "pid": 14084,
+      "name": "Antigravity.exe"
+    },
+    {
+      "pid": 1300,
+      "name": "language_server.exe"
+    }
+  ],
+  "legacy_branch": {
+    "branch_id": "spot_maker_liquidity_sweep_reversal_event_quality",
+    "status": "TERMINALLY_REJECTED_STALE",
+    "universe": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\universe\\no_binance_dense_ws_sweep_20260628.csv",
+      "rows": 1389,
+      "bytes": 98164,
+      "sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3"
+    }
+  },
+  "partial_runs": [
+    {
+      "run_id": "ws_collect_72h_sweep_visible_20260801_210238",
+      "status": "REJECTED_INCOMPLETE_DIAGNOSTIC_ONLY",
+      "raw_suffix": "20260801_180326",
+      "raw_files": [
+        {
+          "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw\\ws_gateio_20260801_180326.jsonl",
+          "bytes": 56666746,
+          "created_at_utc": "2026-08-01T18:03:26.1547399Z",
+          "last_write_at_utc": "2026-08-01T18:32:37.6135966Z",
+          "sha256": "fe13883d3f00c46289a6aece4aba39d70498b2a29c0690646a55171d3a752bcd",
+          "final": false
+        },
+        {
+          "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw\\ws_mexc_01of02_20260801_180326.jsonl",
+          "bytes": 103244337,
+          "created_at_utc": "2026-08-01T18:03:26.1542337Z",
+          "last_write_at_utc": "2026-08-01T18:32:37.8552902Z",
+          "sha256": "88761f8418192f5c1179129dd781a34da4c9ad1e1308c7f1ca985472e9ff4422",
+          "final": false
+        },
+        {
+          "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw\\ws_mexc_02of02_20260801_180326.jsonl",
+          "bytes": 62247076,
+          "created_at_utc": "2026-08-01T18:03:26.1547399Z",
+          "last_write_at_utc": "2026-08-01T18:32:37.7815525Z",
+          "sha256": "695181ee8c868c159509edfcae3f4a4ed6d665a65db35c60795bf6cc17108b53",
+          "final": false
+        }
+      ],
+      "logs": [
+        {
+          "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\ws_collect_72h_sweep_visible_20260801_210238.out.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\ws_collect_72h_sweep_visible_20260801_210238.err.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "acceptance_evidence_allowed": false,
+      "replay_allowed": false,
+      "backtest_allowed": false,
+      "returns_read": false,
+      "pnl_read": false,
+      "oos_run": false
+    },
+    {
+      "run_id": "ws_collect_72h_sweep_visible_20260801_213317",
+      "status": "REJECTED_INCOMPLETE_DIAGNOSTIC_ONLY",
+      "raw_suffix": "20260801_183400",
+      "raw_files": [
+        {
+          "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw\\ws_gateio_20260801_183400.jsonl",
+          "bytes": 38080360,
+          "created_at_utc": "2026-08-01T18:34:00.0592365Z",
+          "last_write_at_utc": "2026-08-01T18:52:06.9530047Z",
+          "sha256": "df049ffe85e19b07599f1394e9644c373dd781bb7e7a685e53621f50ddbcb62d",
+          "final": false
+        },
+        {
+          "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw\\ws_mexc_01of02_20260801_183400.jsonl",
+          "bytes": 64002063,
+          "created_at_utc": "2026-08-01T18:34:00.0555684Z",
+          "last_write_at_utc": "2026-08-01T18:52:07.1644431Z",
+          "sha256": "235b56a14a0c22938cba34f017370545b90fd0a13acfd58505bb7e6a6a122464",
+          "final": false
+        },
+        {
+          "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw\\ws_mexc_02of02_20260801_183400.jsonl",
+          "bytes": 38605719,
+          "created_at_utc": "2026-08-01T18:34:00.0570794Z",
+          "last_write_at_utc": "2026-08-01T18:52:07.1554583Z",
+          "sha256": "6a0696c46bd76b05c707d3a75f4a82b9f723cd1b137e7f50157b4b6ebcd813b0",
+          "final": false
+        }
+      ],
+      "logs": [
+        {
+          "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\ws_collect_72h_sweep_visible_20260801_213317.out.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\ws_collect_72h_sweep_visible_20260801_213317.err.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "acceptance_evidence_allowed": false,
+      "replay_allowed": false,
+      "backtest_allowed": false,
+      "returns_read": false,
+      "pnl_read": false,
+      "oos_run": false
+    },
+    {
+      "run_id": "ws_collect_72h_sweep_visible_20260801_213344",
+      "status": "REJECTED_INCOMPLETE_DIAGNOSTIC_ONLY",
+      "raw_suffix": "20260801_183424",
+      "raw_files": [
+        {
+          "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw\\ws_gateio_20260801_183424.jsonl",
+          "bytes": 37283935,
+          "created_at_utc": "2026-08-01T18:34:24.0546357Z",
+          "last_write_at_utc": "2026-08-01T18:52:06.9540769Z",
+          "sha256": "6d91d25ee20496c51db67fcd4ba153e94d89a6286197bbb02cce667d531c8191",
+          "final": false
+        },
+        {
+          "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw\\ws_mexc_01of02_20260801_183424.jsonl",
+          "bytes": 62593337,
+          "created_at_utc": "2026-08-01T18:34:24.0546357Z",
+          "last_write_at_utc": "2026-08-01T18:52:07.1549116Z",
+          "sha256": "8a6e12ad6afc4e5319512105db874563763db2d115062c29623ad6339338a53a",
+          "final": false
+        },
+        {
+          "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw\\ws_mexc_02of02_20260801_183424.jsonl",
+          "bytes": 37755097,
+          "created_at_utc": "2026-08-01T18:34:24.0546357Z",
+          "last_write_at_utc": "2026-08-01T18:52:07.1554583Z",
+          "sha256": "ede5577ecda8accbab62726c6851d79d54e204c56474d1605b21c6eb13e83955",
+          "final": false
+        }
+      ],
+      "logs": [
+        {
+          "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\ws_collect_72h_sweep_visible_20260801_213344.out.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\ws_collect_72h_sweep_visible_20260801_213344.err.log",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "acceptance_evidence_allowed": false,
+      "replay_allowed": false,
+      "backtest_allowed": false,
+      "returns_read": false,
+      "pnl_read": false,
+      "oos_run": false
+    }
+  ],
+  "total_partial_raw_bytes": 500478670,
+  "preservation": {
+    "files_moved": false,
+    "files_deleted": false,
+    "diagnostic_only": true,
+    "immutable_hashes_recorded": true
+  },
+  "hard_prohibitions": {
+    "collector_resume": false,
+    "acceptance_evidence": false,
+    "replay": false,
+    "backtest": false,
+    "oos": false,
+    "returns": false,
+    "pnl": false,
+    "grid": false,
+    "retune": false,
+    "paper": false,
+    "live": false,
+    "private_api": false,
+    "leverage": false,
+    "margin": false
+  },
+  "next_allowed_action": "ACCELERATED_EVIDENCE_FACTORY_V1_RECONCILE_POLICY_AND_PIT_N05"
+}

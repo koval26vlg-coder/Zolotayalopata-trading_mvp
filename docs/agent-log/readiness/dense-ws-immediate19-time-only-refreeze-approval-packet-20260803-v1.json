@@ -1,0 +1,68 @@
+{
+  "schema": "trading_mvp_dense_ws_immediate19_refreeze_approval_packet_v1",
+  "status": "READY_FOR_EXACT_USER_APPROVAL_NOT_APPROVED",
+  "generated_at_utc": "2026-08-03T15:24:51.0441182Z",
+  "plain_summary": "Allow a new PlanOnly for a 19:00 start. This does not start the collector.",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-immediate19-time-only-reschedule-proposal-20260803-v1.json",
+    "file_sha256": "7d8a93a6105383563c5095cdeef269b9e68e1da9cf0a2d4a79207051b37d70a3",
+    "proposal_hash": "961e2303a7047627a9bce14963f177a3cb2173d45c4ee0bb2c04d0fa1ddc4848"
+  },
+  "evidence": {
+    "candidate_policy": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-immediate19-planonly-v1.json",
+      "sha256": "71fb6f18f419a585851e8b8426a9928a8e728ffeeef1e109414090b967b218d4"
+    },
+    "feasibility": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-feasibility-20260803-aef-immediate19-reschedule-v1.json",
+      "sha256": "f405040de251a99c024930016befcf0fdfd696b5a0345c8b8c57f15f0adac347",
+      "verdict": "FEASIBILITY_CONFIRMED_CONTRACT_FREEZE_REQUIRED"
+    },
+    "regression": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\regressions\\dense-ws-immediate19-time-only-planonly-20260803-elevated.txt",
+      "sha256": "04e542ee2c26a1d92a79d8fb069720db2d7950defe3537c0d4fa28e5590d513f",
+      "result": "75/75 PASS",
+      "sandbox_attempt": "environment temp permission denied; elevated local retry passed"
+    }
+  },
+  "proposed_schedule": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h_immediate19",
+    "writer_start_local": "2026-08-03T19:00:00+03:00",
+    "target_writer_sec": 86400,
+    "writer_finish_local": "2026-08-04T19:00:00+03:00",
+    "max_runtime_sec": 88200,
+    "hard_deadline_local": "2026-08-04T19:30:00+03:00",
+    "hard_output_cap_bytes": 25000000000,
+    "suppressed_pit_run_id": "pit_universe_v2_forward_20260804_n07"
+  },
+  "permitted_scope": [
+    "promote the listed candidate continuous-production policy byte-exactly",
+    "offline regression",
+    "new runtime dependency manifest",
+    "new immutable contract and PlanOnly",
+    "autopilot and heartbeat rebind after validation"
+  ],
+  "forbidden_scope": [
+    "collector launch",
+    "network writer",
+    "hypothesis change",
+    "venue change",
+    "universe change",
+    "signal change",
+    "cost or risk change",
+    "returns",
+    "PnL",
+    "OOS",
+    "evaluator",
+    "grid",
+    "retune",
+    "paper",
+    "live",
+    "private API",
+    "real capital",
+    "leverage",
+    "margin"
+  ],
+  "required_follow_up": "After refreeze, a second exact approval will be required for the new PlanOnly before opening the visible collector terminal.",
+  "exact_approval_text": "Разрешаю time-only refreeze only по proposal_hash=961e2303a7047627a9bce14963f177a3cb2173d45c4ee0bb2c04d0fa1ddc4848: применить candidate policy sha256=71fb6f18f419a585851e8b8426a9928a8e728ffeeef1e109414090b967b218d4, выполнить локальные тесты и построить новый immutable contract/PlanOnly/runtime manifest для writer 03.08.2026 19:00–04.08.2026 19:00 +03, hard stop 04.08.2026 19:30 +03, cap 25GB, с пропуском PIT n07; без запуска collector и без изменения hypothesis/venue/universe/signal/cost/risk/returns/PnL/OOS/evaluator/grid/retune/paper/live/private API/real capital/leverage/margin."
+}

@@ -1,0 +1,23 @@
+{
+  "schema": "fast_first_v4_planonly_record_v1",
+  "mode": "VISIBLE_BOUNDED_PLANONLY",
+  "run_id": "fast_first_v4_funding_pressure_reversal_planonly_20260714_121648",
+  "process_started": true,
+  "visible_terminal_required": true,
+  "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-v4\\plans\\fast_first_funding_pressure_reversal_planonly_night_policy_20260714_121647.json",
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-v4\\manifests\\fast_first_v4_funding_pressure_reversal_planonly_20260714_121648.manifest.json",
+  "plan_hash": "5396885aa9abf77a461f20aa190c843b86be098b76abd6f3a5655a8f725eee60",
+  "plan_file_sha256": "6da5792f6ff75cfef49bd3ad9ff97acc7ebac7eaafece081ba3f5799d18cc490",
+  "input_merkle_sha256": "1bab335f1de674b9ce074c803fa1ac937e38356cf87852e5e04455bd1f266ab1",
+  "started_at": "2026-07-14T12:16:49.9740274+03:00",
+  "finished_at": "2026-07-14T12:16:52.4250327+03:00",
+  "actual_duration_sec": 2.408,
+  "max_runtime_sec": 1200,
+  "grid_search": false,
+  "evaluation": false,
+  "execution_probe": false,
+  "paper_forward": false,
+  "live_orders": false,
+  "api_keys": false,
+  "status_command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_active_run_gate.ps1\" -Json"
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "trading_mvp_basis_v2_runtime_provenance_handoff_v1",
+  "generated_at": "2026-07-16T13:25:12.6527870+03:00",
+  "decision": "BASIS_V2_RUNTIME_GUARDED_AWAIT_EXPLICIT_COLLECT_APPROVAL",
+  "plan_hash": "354422b317d3112b3da73ff3f8126e2bf09948795f2781e64acb47f611060665",
+  "run_id": "basis_v2_history_20260716_132600_runtime_guard",
+  "preview_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\basis_v2_history_20260716_132600_runtime_guard.planonly-preview.json",
+  "superseded_previews": [
+    "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\basis_v2_history_20260716_125552.planonly-preview.json",
+    "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\basis_v2_history_20260716_131700_guarded.planonly-preview.json"
+  ],
+  "runtime_provenance": {
+    "selected_python": "C:\\Program Files\\Python313\\python.exe",
+    "dependency_probe": "import requests",
+    "invalid_bundled_runtime_rejected": true,
+    "collect_wrapper_sha256": "c671ee12fa0ae9584bd1fb95cb65e2fdf5f9db6976181eb965d01be8f84fcbb1",
+    "train_wrapper_sha256": "2ef8f0c458bf3b271edab8ed3058add1dd0168ef0c2e21d8a9650b97cf6b9255"
+  },
+  "verification": {
+    "targeted_tests": "7 OK",
+    "full_v2_tests": "96 OK",
+    "powershell_parse": true,
+    "git_diff_check": true,
+    "network_access": false,
+    "collector_started": false,
+    "oos_read": false,
+    "launch_record_exists": false,
+    "run_directory_exists": false,
+    "matching_processes": 0
+  },
+  "approval_phrase": "Подтверждаю visible basis-v2 history collect plan_hash=354422b317d3112b3da73ff3f8126e2bf09948795f2781e64acb47f611060665, run_id=basis_v2_history_20260716_132600_runtime_guard, MaxRuntimeSec=1200, collect hard deadline=2026-07-16T22:00:00.0000000+03:00, затем visible train-only postprocess MaxRuntimeSec=1800 без automatic OOS, end-to-end runtime cap=3075 sec, public API only, без grid/OOS/live/private API keys.",
+  "next_allowed_action": "exact hash-bound approval, then one visible collect and sealed train-only postprocess; no automatic OOS"
+}

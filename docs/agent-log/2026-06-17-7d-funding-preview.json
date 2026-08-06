@@ -1,0 +1,154 @@
+{
+  "mode": "funding_collect_visible_plan",
+  "would_start": false,
+  "requires_confirmed_long_run": true,
+  "confirmed_long_run": false,
+  "days": 7,
+  "poll_interval_sec": 300,
+  "cycles": 2016,
+  "exchanges": "mexc,gateio",
+  "max_symbols": 300,
+  "max_pairs_per_exchange": 15,
+  "notional_quote": 100.0,
+  "output_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\funding\\funding_collect_7d_spotliq_visible_20260617_185328.jsonl",
+  "manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\funding\\funding_collect_7d_spotliq_visible_20260617_185328.manifest.json",
+  "stdout_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\funding_collect_7d_spotliq_visible_20260617_185328.out.log",
+  "stderr_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\run\\funding_collect_7d_spotliq_visible_20260617_185328.err.log",
+  "gate_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\active-run-gate.json",
+  "runner": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\run_mvp.ps1",
+  "watchlist_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\funding_candidate_watchlist_20260617.json",
+  "watchlist_decision": "WATCHLIST_READY_NOT_TRADEABLE",
+  "watchlist_warning": "This is a 7d research focus list, not a trade signal. Current 24h cost model still has zero accepted strategies.",
+  "watchlist_summary": {
+    "input_rows": 30,
+    "primary_7d_watch": 3,
+    "secondary_7d_watch": 8,
+    "diagnostic_coverage": 16,
+    "drop_from_primary_watchlist": 3,
+    "rank_eligible": 0,
+    "unique_recommended_bases": [
+      "HYPE",
+      "PI",
+      "KAS",
+      "M",
+      "LAB",
+      "CRO",
+      "XMR",
+      "UB"
+    ]
+  },
+  "watchlist_recommended": [
+    {
+      "priority": "primary_7d_watch",
+      "exchange": "mexc",
+      "base": "HYPE",
+      "spot_symbol": "HYPEUSDT",
+      "perp_symbol": "HYPE_USDT",
+      "funding_avg_bps": 0.491469,
+      "risk_adjusted_edge_bps": -46.025986,
+      "watch_score": 21.219964
+    },
+    {
+      "priority": "primary_7d_watch",
+      "exchange": "mexc",
+      "base": "PI",
+      "spot_symbol": "PIUSDT",
+      "perp_symbol": "PI_USDT",
+      "funding_avg_bps": 0.5,
+      "risk_adjusted_edge_bps": -49.57618,
+      "watch_score": 15.628117
+    },
+    {
+      "priority": "primary_7d_watch",
+      "exchange": "mexc",
+      "base": "KAS",
+      "spot_symbol": "KASUSDT",
+      "perp_symbol": "KAS_USDT",
+      "funding_avg_bps": 0.5,
+      "risk_adjusted_edge_bps": -52.970794,
+      "watch_score": 15.323804
+    },
+    {
+      "priority": "secondary_7d_watch",
+      "exchange": "gateio",
+      "base": "HYPE",
+      "spot_symbol": "HYPE_USDT",
+      "perp_symbol": "HYPE_USDT",
+      "funding_avg_bps": 0.360072,
+      "risk_adjusted_edge_bps": -42.85446,
+      "watch_score": 12.872508
+    },
+    {
+      "priority": "secondary_7d_watch",
+      "exchange": "mexc",
+      "base": "M",
+      "spot_symbol": "MUSDT",
+      "perp_symbol": "M_USDT",
+      "funding_avg_bps": 2.012238,
+      "risk_adjusted_edge_bps": -52.878785,
+      "watch_score": 11.859382
+    },
+    {
+      "priority": "secondary_7d_watch",
+      "exchange": "gateio",
+      "base": "PI",
+      "spot_symbol": "PI_USDT",
+      "perp_symbol": "PI_USDT",
+      "funding_avg_bps": 0.37362,
+      "risk_adjusted_edge_bps": -48.881228,
+      "watch_score": 8.520775
+    },
+    {
+      "priority": "secondary_7d_watch",
+      "exchange": "gateio",
+      "base": "LAB",
+      "spot_symbol": "LAB_USDT",
+      "perp_symbol": "LAB_USDT",
+      "funding_avg_bps": 0.243262,
+      "risk_adjusted_edge_bps": -57.189482,
+      "watch_score": 7.895128
+    },
+    {
+      "priority": "secondary_7d_watch",
+      "exchange": "mexc",
+      "base": "CRO",
+      "spot_symbol": "CROUSDT",
+      "perp_symbol": "CRO_USDT",
+      "funding_avg_bps": 0.674895,
+      "risk_adjusted_edge_bps": -52.823211,
+      "watch_score": 7.288746
+    },
+    {
+      "priority": "secondary_7d_watch",
+      "exchange": "mexc",
+      "base": "XMR",
+      "spot_symbol": "XMRUSDT",
+      "perp_symbol": "XMR_USDT",
+      "funding_avg_bps": 0.586503,
+      "risk_adjusted_edge_bps": -69.652473,
+      "watch_score": 5.292921
+    },
+    {
+      "priority": "secondary_7d_watch",
+      "exchange": "gateio",
+      "base": "KAS",
+      "spot_symbol": "KAS_USDT",
+      "perp_symbol": "KAS_USDT",
+      "funding_avg_bps": 0.033226,
+      "risk_adjusted_edge_bps": -51.79824,
+      "watch_score": 5.248897
+    },
+    {
+      "priority": "secondary_7d_watch",
+      "exchange": "gateio",
+      "base": "UB",
+      "spot_symbol": "UB_USDT",
+      "perp_symbol": "UB_USDT",
+      "funding_avg_bps": 0.054895,
+      "risk_adjusted_edge_bps": -64.703325,
+      "watch_score": 0.685996
+    }
+  ],
+  "acceptance_warning": "Watchlist is predeclared research focus only. It cannot accept a strategy; final-review/OOS/walk-forward/stress under current costs remain required.",
+  "command_after_explicit_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_funding_collect_visible.ps1 -Days 7 -ConfirmedLongRun"
+}

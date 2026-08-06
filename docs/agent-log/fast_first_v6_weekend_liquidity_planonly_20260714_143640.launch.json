@@ -1,0 +1,22 @@
+{
+  "schema": "fast_first_v6_planonly_record_v1",
+  "mode": "VISIBLE_BOUNDED_PLANONLY",
+  "run_id": "fast_first_v6_weekend_liquidity_planonly_20260714_143640",
+  "visible_terminal_required": true,
+  "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-v6\\plans\\fast_first_weekend_liquidity_window_planonly_20260714_143640.json",
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-v6\\manifests\\fast_first_v6_weekend_liquidity_planonly_20260714_143640.manifest.json",
+  "plan_hash": "18af65fc211d31a8a0f38bc6d9161b4adf7a92404aba788dfb66c45d2af850a9",
+  "plan_file_sha256": "89e6c3f448fdfaec719a593717e4c1fedf4f94d7b0d8f63e0c2bc0d658ef6d75",
+  "input_merkle_sha256": "1bab335f1de674b9ce074c803fa1ac937e38356cf87852e5e04455bd1f266ab1",
+  "started_at": "2026-07-14T14:36:41.9361803+03:00",
+  "finished_at": "2026-07-14T14:36:47.8854628+03:00",
+  "actual_duration_sec": 5.89,
+  "max_runtime_sec": 1200,
+  "grid_search": false,
+  "evaluation": false,
+  "execution_probe": false,
+  "paper_forward": false,
+  "live_orders": false,
+  "api_keys": false,
+  "status_command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_active_run_gate.ps1\" -Json"
+}

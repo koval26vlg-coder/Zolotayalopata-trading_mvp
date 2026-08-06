@@ -1,0 +1,24 @@
+# trading_mvp read-only active-run monitor
+
+- time: 2026-06-30 17:22:13 +03:00
+- agent: Codex
+- user_request: continue active trading_mvp goal
+- goal_context: current rejected WS postprocess has replay_allowed=false; next proof step requires visible 72h dense WS collect after exact START72H.
+- verified_current_status: AWAITING_START72H_APPROVAL
+- gate_status: READY_FOR_POSTPROCESS
+- replay_allowed: false
+- swarm_status: SWARM_LIMITED
+- changes:
+  - added C:\Users\koval\Documents\ZolotyayLopata\tools\trading_active_run_monitor.ps1
+  - added C:\Users\koval\Documents\ZolotyayLopata\TRADING_ACTIVE_RUN_MONITOR.cmd
+  - added active-run monitor unit coverage in C:\Users\koval\Documents\ZolotyayLopata\trading_mvp\tests\test_active_run_gate.py
+- purpose: provide a visible read-only monitor for long runs and gate state, so status checks do not trigger postprocess/replay/grid/new collectors or hidden background starts.
+- verification:
+  - trading_active_run_monitor.ps1 -Once -Json => read_only=true, would_start=false, status=READY_FOR_POSTPROCESS, next_action=do_not_replay_rejected_artifact_start_new_visible_collect_after_explicit_approval
+  - targeted active-run gate tests: 7 OK
+  - full tests: 225 OK, skipped=1
+- not_done: no collector, replay, grid, postprocess, live orders, API keys, leverage or margin started.
+- next_required_action: exact START72H is still required before visible 72h dense WS collect can start.
+- operational_shortcuts:
+  - C:\Users\koval\Documents\ZolotyayLopata\TRADING_QUICK_STATUS.cmd for one-shot no-start status
+  - C:\Users\koval\Documents\ZolotyayLopata\TRADING_ACTIVE_RUN_MONITOR.cmd for visible read-only gate monitor

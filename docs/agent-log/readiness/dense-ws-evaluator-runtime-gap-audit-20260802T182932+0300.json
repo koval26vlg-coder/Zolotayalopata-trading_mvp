@@ -1,0 +1,66 @@
+{
+  "schema": "trading_mvp_dense_ws_evaluator_runtime_gap_audit_v1",
+  "observed_at_utc": "2026-08-02T15:29:32.3207409Z",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+  "campaign_plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+  "frozen_contract": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\frozen\\dense-ws-signal-evaluator-contract-20260802-v1.json",
+    "file_sha256": "a9ef768d6f61297d01d8fe37a9d4e00b27cf5b2d52f122ab8ca9a0c3fae5a81d",
+    "contract_hash": "b70975468fbd67acf550dea39aac21c116fb3a86a57ed56d400f40f0fa287954"
+  },
+  "frozen_planonly": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\frozen\\dense-ws-signal-evaluator-planonly-20260802-v1.json",
+    "file_sha256": "2ae9f20892eeb65772aa40c8bee0c905935dd50af2c57e29232ecc9418168fdb",
+    "plan_hash": "620b1711a5436c722acea99d41c4b81ba57bd317069456282814939b3eefeea2",
+    "executable": false,
+    "evaluation_authorized": false
+  },
+  "materialization_bound_plan_builder": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_materialization_bound_plan.py",
+    "file_sha256": "0f4adf30b531090c65d54a910ecfd4cb6ef14a1ff417e54258ae26f730f180a8",
+    "output_status": "MATERIALIZATION_BOUND_PLANONLY_CREATED_NOT_AUTHORIZED",
+    "output_executable": false
+  },
+  "existing_fixture_only_component": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_execution_realization.py",
+    "file_sha256": "9641e87932d0d14af533f6913a841e62993b78c0a6d7ad2d2f6b527a3973b608",
+    "status": "IMPLEMENTATION_ONLY_EVALUATOR_NOT_AUTHORIZED",
+    "scope": "synthetic_fixture_execution_realization_only"
+  },
+  "static_scan": {
+    "read_scopes": [
+      "trading_mvp/src/**/*.py",
+      "tools/**/*.ps1",
+      "docs/plans/frozen/dense-ws-signal-evaluator-*.json"
+    ],
+    "materialization_bound_plan_consumers_found": 0,
+    "dense_ws_evaluator_visible_wrappers_found": 0,
+    "real_data_evaluator_entrypoints_found": 0
+  },
+  "missing_runtime_components": [
+    "materialization_bound_plan_consumer",
+    "causal_event_extraction_and_cooldown",
+    "chronological_train_oos_split_with_embargo",
+    "five_fold_walk_forward",
+    "normal_and_stress_economics",
+    "cluster_block_bootstrap",
+    "drawdown_concentration_capacity_and_fill_gates",
+    "deterministic_repeat_hash_check",
+    "terminal_historical_verdict_report",
+    "visible_bounded_runner_and_owner_metadata"
+  ],
+  "decision": "EVALUATOR_RUNTIME_NOT_IMPLEMENTED_NOT_LAUNCHABLE",
+  "launch_approval_request_safe": false,
+  "next_allowed_action": "REQUEST_EVALUATOR_RUNTIME_IMPLEMENTATION_AND_FREEZE_ONLY",
+  "requested_scope_constraints": {
+    "real_market_data_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "network": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false
+  }
+}

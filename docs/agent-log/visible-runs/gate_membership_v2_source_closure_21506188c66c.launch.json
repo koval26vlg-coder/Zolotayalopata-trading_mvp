@@ -1,0 +1,18 @@
+{
+  "schema": "visible_short_postprocess_launch_v1",
+  "project": "trading_mvp",
+  "run_id": "gate_membership_v2_source_closure_21506188c66c",
+  "pid": 6676,
+  "visible": true,
+  "started_at": "2026-07-17T08:35:20.6627585+03:00",
+  "wrapper": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_gate_historical_membership_v2_closure_visible.ps1",
+  "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\plans\\gate_historical_membership_v2_20260717_055756.json",
+  "probe_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\probes\\gate_historical_membership_v2_20260717_055756.json",
+  "output_directory": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\closures",
+  "closure_manifest": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\closures\\gate_membership_v2_source_closure_21506188c66c.closure.manifest.json",
+  "max_runtime_sec": 300,
+  "network_calls": false,
+  "returns_read": false,
+  "oos_read": false,
+  "live_orders": false
+}

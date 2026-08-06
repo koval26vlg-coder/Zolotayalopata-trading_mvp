@@ -1,0 +1,21 @@
+{
+  "schema": "active_run_launch_record_v1",
+  "project": "trading_mvp",
+  "run_id": "gate_spot_perp_train_closure_20260717_fast_faa446e2e44d",
+  "run_type": "gate_spot_perp_train_closure",
+  "created_at": "2026-07-17T01:19:29.745936+00:00",
+  "command": "-c",
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "output": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\gate-spot-perp-v2\\reports\\gate_spot_perp_train_closure_20260717_fast_faa446e2e44d.closure.json",
+    "kind": "file"
+  },
+  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\gate-spot-perp-v2\\reports\\gate_spot_perp_train_closure_20260717_fast_faa446e2e44d.closure.manifest.json",
+  "owner_output_prefix": null,
+  "code_snapshot_hash": null,
+  "parallel_parent_run_id": null,
+  "research_only": true,
+  "live_orders": false,
+  "api_keys": false,
+  "leverage_or_margin": false
+}
