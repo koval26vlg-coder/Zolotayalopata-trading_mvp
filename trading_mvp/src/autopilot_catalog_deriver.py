@@ -17,6 +17,7 @@ AUDIT_SCHEMA_V4 = "trading_mvp_paper_product_readiness_audit_v4"
 AUDIT_SCHEMA_V5 = "trading_mvp_paper_product_readiness_audit_v5"
 AUDIT_SCHEMA_V6 = "trading_mvp_paper_product_readiness_audit_v6"
 AUDIT_SCHEMA_V8 = "trading_mvp_paper_product_readiness_audit_v8"
+AUDIT_SCHEMA_V10 = "trading_mvp_paper_product_readiness_audit_v10"
 POLICY_SCHEMA = "trading_mvp_autopilot_policy_v1"
 BACKLOG_SCHEMA = "trading_mvp_autopilot_research_backlog_v1"
 RESEARCH_ROOT = (
@@ -378,6 +379,50 @@ TASK_TEMPLATES_V8: dict[str, dict[str, Any]] = {
         ],
     },
 }
+TASK_TEMPLATES_V10: dict[str, dict[str, Any]] = {
+    "same_scope_strategy_census_v2": {
+        "output_path": rf"{RESEARCH_ROOT}\same-scope-strategy-census-v2.json",
+        "objective": (
+            "Recheck whether any materially distinct strategy can be honestly "
+            "tested on current immutable metadata. Do not read market rows, "
+            "returns, PnL or OOS and do not create a new hypothesis."
+        ),
+        "allowed_inputs": [
+            rf"{RESEARCH_ROOT}\same-scope-hypothesis-census-v1.json",
+            "docs/agent-log/readiness/cross-venue-basis-terminal-currentness-recheck-20260803-v1.json",
+            "docs/agent-log/trading-mvp-autopilot-state.json",
+        ],
+    },
+    "paper_code_provenance_merkle_v8": {
+        "output_path": rf"{RESEARCH_ROOT}\paper-code-provenance-merkle-v8.json",
+        "objective": (
+            "Freeze the corrected dynamic readiness and same-scope census code "
+            "in a deterministic code-only Merkle baseline. No data artifacts "
+            "or network access."
+        ),
+        "allowed_inputs": [
+            "trading_mvp/src",
+            "trading_mvp/tests",
+            "trading_mvp/run_mvp.ps1",
+            "tools",
+            "AGENTS.md",
+        ],
+    },
+    "paper_product_readiness_audit_v11": {
+        "output_path": rf"{RESEARCH_ROOT}\paper-product-readiness-audit-v11.json",
+        "objective": (
+            "Bind the corrected dynamic PIT counters, current code provenance "
+            "and same-scope strategy census into one immutable readiness audit. "
+            "No collector, returns, PnL, OOS, grid or hypothesis change."
+        ),
+        "allowed_inputs": [
+            "trading_mvp/src",
+            "trading_mvp/tests",
+            "docs/agent-log",
+            RESEARCH_ROOT,
+        ],
+    },
+}
 
 
 def _utc_now() -> str:
@@ -432,6 +477,11 @@ def derive_catalog(
         templates = TASK_TEMPLATES_V8
         expected_action = (
             "derive_and_install_catalog_v8_then_continue_bounded_offline_work"
+        )
+    elif audit_schema == AUDIT_SCHEMA_V10:
+        templates = TASK_TEMPLATES_V10
+        expected_action = (
+            "derive_and_install_catalog_v10_then_continue_bounded_offline_work"
         )
     else:
         raise ValueError("unsupported readiness audit schema")

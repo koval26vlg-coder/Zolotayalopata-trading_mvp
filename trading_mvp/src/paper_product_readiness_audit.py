@@ -24,6 +24,7 @@ AUDIT_SCHEMA_V7 = "trading_mvp_paper_product_readiness_audit_v7"
 AUDIT_SCHEMA_V8 = "trading_mvp_paper_product_readiness_audit_v8"
 AUDIT_SCHEMA_V9 = "trading_mvp_paper_product_readiness_audit_v9"
 AUDIT_SCHEMA_V10 = "trading_mvp_paper_product_readiness_audit_v10"
+AUDIT_SCHEMA_V11 = "trading_mvp_paper_product_readiness_audit_v11"
 COMPONENT_REQUIREMENTS: dict[str, tuple[str, str, Any]] = {
     "fast-regression-lane-v1.json": (
         "schema",
@@ -281,6 +282,28 @@ COMPONENT_REQUIREMENTS_V10: dict[str, tuple[str, str, Any]] = {
     "paper-product-readiness-audit-v9.json": (
         "schema",
         AUDIT_SCHEMA_V9,
+        None,
+    ),
+}
+COMPONENT_REQUIREMENTS_V11: dict[str, tuple[str, str, Any]] = {
+    **{
+        name: requirement
+        for name, requirement in COMPONENT_REQUIREMENTS_V10.items()
+        if name != "paper-code-provenance-merkle-v7.json"
+    },
+    "paper-code-provenance-merkle-v8.json": (
+        "verdict",
+        "CODE_ONLY_MERKLE_BASELINE_FROZEN",
+        None,
+    ),
+    "same-scope-strategy-census-v2.json": (
+        "verdict",
+        "NO_ALTERNATIVE_STRATEGY_CAN_BE_HONESTLY_TESTED_ON_CURRENT_IMMUTABLE_DATA",
+        None,
+    ),
+    "paper-product-readiness-audit-v10-reconciled-v1.json": (
+        "schema",
+        AUDIT_SCHEMA_V10,
         None,
     ),
 }
@@ -1668,6 +1691,9 @@ def build_readiness_assessment_v10(
     guard = _validate_current_guard_snapshot(guard_snapshot)
     schedule = guard["schedule_window"]
     action_due = bool(guard.get("action_due"))
+    accepted_dates = int(schedule["accepted_distinct_dates"])
+    target_dates = int(schedule["stage_target_distinct_dates"])
+    provenance_refresh_required = not code_provenance_current
     current_schedule = {
         "decision": guard["decision"],
         "guard_status": guard["status"],
@@ -1681,12 +1707,8 @@ def build_readiness_assessment_v10(
             "hard_deadline_local": schedule["hard_deadline_local"],
             "seconds_to_start": int(schedule.get("eta_sec") or 0),
         },
-        "accepted_distinct_dates": int(
-            schedule["accepted_distinct_dates"]
-        ),
-        "stage_target_distinct_dates": int(
-            schedule["stage_target_distinct_dates"]
-        ),
+        "accepted_distinct_dates": accepted_dates,
+        "stage_target_distinct_dates": target_dates,
         "schedule_waiting": not action_due,
         "offline_work_must_yield_when_due": True,
         "offline_work_allowed_now": not action_due,
@@ -1701,6 +1723,12 @@ def build_readiness_assessment_v10(
                 else "STALE_AFTER_NEW_CODE"
             ),
         },
+        "evidence_gates": {
+            **base["evidence_gates"],
+            "pit_technical_quality_accepted_dates": accepted_dates,
+            "pit_train_dates_required": target_dates,
+            "pit_dates_remaining": target_dates - accepted_dates,
+        },
         "schedule": current_schedule,
         "long_campaign_branch": {
             "decision": guard["decision"],
@@ -1709,15 +1737,52 @@ def build_readiness_assessment_v10(
             "pit_shadow_track_continues": True,
         },
         "offline_gap_assessment": {
-            "materially_useful_same_contract_tasks_remaining": False,
+            "materially_useful_same_contract_tasks_remaining": (
+                provenance_refresh_required
+            ),
             "reason": (
-                "current code provenance and dynamic PIT readiness are "
-                "refreshed; evidence gates still require scheduled PIT data"
+                "corrected dynamic readiness must be frozen and reconciled"
+                if provenance_refresh_required
+                else (
+                    "current code provenance and dynamic PIT readiness are "
+                    "refreshed; evidence gates still require scheduled PIT data"
+                )
             ),
             "new_hypothesis_requires_user_review": True,
             "approved_pit_shadow_schedule_continues": True,
         },
-        "next_bounded_catalog_requirement": [],
+        "next_bounded_catalog_requirement": (
+            [
+                {
+                    "id": "same_scope_strategy_census_v2",
+                    "priority": 1,
+                    "reason": (
+                        "Recheck alternatives on current metadata without "
+                        "creating a new hypothesis."
+                    ),
+                    "maximum_runtime_sec": 300,
+                    "network": False,
+                },
+                {
+                    "id": "paper_code_provenance_merkle_v8",
+                    "priority": 2,
+                    "reason": "Freeze the corrected readiness implementation.",
+                    "maximum_runtime_sec": 300,
+                    "network": False,
+                },
+                {
+                    "id": "paper_product_readiness_audit_v11",
+                    "priority": 3,
+                    "reason": (
+                        "Bind current code, strategy census and PIT counters."
+                    ),
+                    "maximum_runtime_sec": 900,
+                    "network": False,
+                },
+            ]
+            if provenance_refresh_required
+            else []
+        ),
         "critical_checkpoint": None,
         "verdict": (
             "CURRENT_CODE_PROVENANCE_AND_DYNAMIC_PIT_READINESS_REFRESHED_"
@@ -1726,7 +1791,70 @@ def build_readiness_assessment_v10(
         "next_allowed_action": (
             "follow_authoritative_guard_due_action"
             if action_due
-            else "continue_bounded_offline_work_then_follow_authoritative_guard"
+            else (
+                "derive_and_install_catalog_v10_then_continue_bounded_offline_work"
+                if provenance_refresh_required
+                else "WAITING_SCHEDULE_WINDOW_NO_FALLBACK"
+            )
+        ),
+    }
+
+
+def build_readiness_assessment_v11(
+    *,
+    components: Mapping[str, Mapping[str, Any]],
+    code_provenance_current: bool,
+    targeted_tests: Mapping[str, Any],
+    guard_snapshot: Mapping[str, Any],
+) -> dict[str, Any]:
+    base = build_readiness_assessment_v10(
+        components=components,
+        code_provenance_current=code_provenance_current,
+        targeted_tests=targeted_tests,
+        guard_snapshot=guard_snapshot,
+    )
+    census = components["same-scope-strategy-census-v2.json"]
+    census_safety = census.get("safety")
+    if (
+        census.get("selected_candidate") is not None
+        or not isinstance(census_safety, Mapping)
+        or census_safety.get("market_rows_read") is not False
+        or census_safety.get("returns_read") is not False
+        or census_safety.get("pnl_read") is not False
+        or census_safety.get("oos_run") is not False
+        or census_safety.get("hypothesis_changed") is not False
+    ):
+        raise ValueError("v11 strategy census crossed a safety boundary")
+    return {
+        **base,
+        "alternative_strategy_review": {
+            "verdict": census["verdict"],
+            "selected_candidate": None,
+            "testable_alternative_now": False,
+            "closed_family_count": int(census["closed_family_count"]),
+            "reviewed_alternative_count": len(
+                census.get("reviewed_alternatives") or []
+            ),
+        },
+        "offline_gap_assessment": {
+            "materially_useful_same_contract_tasks_remaining": False,
+            "reason": (
+                "current code, dynamic PIT counters and alternative-strategy "
+                "census are reconciled; new edge evidence requires scheduled "
+                "PIT dates or an explicitly approved new data contract"
+            ),
+            "new_hypothesis_requires_user_review": True,
+            "approved_pit_shadow_schedule_continues": True,
+        },
+        "next_bounded_catalog_requirement": [],
+        "verdict": (
+            "CURRENT_READINESS_RECONCILED_NO_HONEST_ALTERNATIVE_ON_CURRENT_"
+            "IMMUTABLE_DATA"
+        ),
+        "next_allowed_action": (
+            "follow_authoritative_guard_due_action"
+            if bool(guard_snapshot.get("action_due"))
+            else "WAITING_SCHEDULE_WINDOW_NO_FALLBACK"
         ),
     }
 
@@ -2126,6 +2254,98 @@ def build_readiness_audit_v10(
     return audit
 
 
+def build_readiness_audit_v11(
+    *,
+    research_root: str | Path,
+    repo_root: str | Path,
+    targeted_test_log_path: str | Path,
+    guard_snapshot_path: str | Path,
+    output_path: str | Path | None = None,
+    generated_at_utc: str | None = None,
+) -> dict[str, Any]:
+    research = Path(research_root).expanduser().resolve()
+    repo = Path(repo_root).expanduser().resolve()
+    test_log = Path(targeted_test_log_path).expanduser().resolve()
+    guard_path = Path(guard_snapshot_path).expanduser().resolve()
+    components, descriptors = _load_components(
+        research, COMPONENT_REQUIREMENTS_V11
+    )
+    targeted_tests = _parse_test_log(test_log)
+
+    provenance = components["paper-code-provenance-merkle-v8.json"]
+    try:
+        validate_code_manifest(provenance, repo_root=repo)
+        provenance_current = True
+        provenance_drift_reason = None
+    except ValueError as exc:
+        provenance_current = False
+        provenance_drift_reason = str(exc)
+    _validate_deterministic_result_hash(
+        components["paper-product-readiness-audit-v10-reconciled-v1.json"],
+        label="v10 reconciled readiness audit",
+    )
+    _validate_deterministic_result_hash(
+        components["same-scope-strategy-census-v2.json"],
+        label="same-scope strategy census v2",
+    )
+
+    guard_snapshot = _validate_current_guard_snapshot(
+        _read_json(guard_path)
+    )
+    assessment = build_readiness_assessment_v11(
+        components=components,
+        code_provenance_current=provenance_current,
+        targeted_tests=targeted_tests,
+        guard_snapshot=guard_snapshot,
+    )
+    deterministic = {
+        "schema": AUDIT_SCHEMA_V11,
+        **assessment,
+        "targeted_regression": targeted_tests,
+        "code_provenance_validation": {
+            "manifest_version": "v8",
+            "current": provenance_current,
+            "drift_reason": provenance_drift_reason,
+            "refresh_required_before_next_authority_increase": True,
+            "refresh_not_required_for_schedule_wait": True,
+        },
+        "guard_snapshot": {
+            "path": str(guard_path),
+            "file_sha256": sha256_file(guard_path),
+            "schema": guard_snapshot["schema"],
+            "policy_id": guard_snapshot["policy_id"],
+            "policy_hash": guard_snapshot["policy_hash"],
+            "observed_at_utc": guard_snapshot["observed_at_utc"],
+        },
+        "components": descriptors,
+        "safety": {
+            "returns_or_pnl_read": False,
+            "oos_read": False,
+            "signals_read": False,
+            "hypothesis_changed": False,
+            "network_collection": False,
+            "public_network_evidence_consumed": True,
+            "process_launches_other_than_tests": 0,
+            "grid_or_retune": False,
+            "oms_mutations": 0,
+            "paper_forward_started": False,
+            "live_orders": False,
+            "private_api_keys": False,
+            "leverage": False,
+            "margin": False,
+        },
+    }
+    audit = {
+        **deterministic,
+        "deterministic_result_hash": sha256_json(deterministic),
+        "generated_at_utc": generated_at_utc
+        or datetime.now(timezone.utc).isoformat(),
+    }
+    if output_path is not None:
+        _write_json_immutable(output_path, audit)
+    return audit
+
+
 def _write_json_immutable(path: str | Path, payload: Mapping[str, Any]) -> None:
     target = Path(path).expanduser().resolve()
     if target.exists():
@@ -2150,7 +2370,17 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output", required=True)
     parser.add_argument(
         "--audit-version",
-        choices=("v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10"),
+        choices=(
+            "v3",
+            "v4",
+            "v5",
+            "v6",
+            "v7",
+            "v8",
+            "v9",
+            "v10",
+            "v11",
+        ),
         default="v3",
     )
     return parser
@@ -2167,10 +2397,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         "v8": build_readiness_audit_v8,
         "v9": build_readiness_audit_v9,
     }
-    if args.audit_version == "v10":
+    if args.audit_version in {"v10", "v11"}:
         if not args.guard_snapshot:
-            raise ValueError("v10 requires --guard-snapshot")
-        audit = build_readiness_audit_v10(
+            raise ValueError(
+                f"{args.audit_version} requires --guard-snapshot"
+            )
+        builder = (
+            build_readiness_audit_v10
+            if args.audit_version == "v10"
+            else build_readiness_audit_v11
+        )
+        audit = builder(
             research_root=args.research_root,
             repo_root=args.repo_root,
             targeted_test_log_path=args.targeted_test_log,

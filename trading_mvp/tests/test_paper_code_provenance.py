@@ -197,6 +197,27 @@ class PaperCodeProvenanceTests(unittest.TestCase):
             "paper_product_readiness_audit_v10",
         )
 
+    def test_v8_binds_strategy_census_and_corrected_readiness(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = _repo(Path(tmp))
+            manifest = provenance.build_code_manifest(
+                repo_root=root,
+                manifest_version="v8",
+                generated_at_utc="2026-08-09T17:00:00+00:00",
+            )
+            provenance.validate_code_manifest(manifest, repo_root=root)
+        self.assertEqual(manifest["schema"], provenance.MANIFEST_SCHEMA_V8)
+        self.assertEqual(
+            manifest["task_id"], "paper_code_provenance_merkle_v8"
+        )
+        self.assertEqual(
+            manifest["selection_contract"]["selection_contract_version"], 8
+        )
+        self.assertEqual(
+            manifest["next_allowed_action"],
+            "paper_product_readiness_audit_v11",
+        )
+
     def test_manifest_is_deterministic(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = _repo(Path(tmp))

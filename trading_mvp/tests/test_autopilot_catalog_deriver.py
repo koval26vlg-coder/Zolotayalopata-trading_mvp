@@ -157,6 +157,35 @@ def _audit_v8(path: Path) -> Path:
     return path
 
 
+def _audit_v10(path: Path) -> Path:
+    requirements = [
+        {
+            "id": task_id,
+            "priority": index,
+            "reason": "fixture",
+            "maximum_runtime_sec": 1200,
+            "network": False,
+        }
+        for index, task_id in enumerate(
+            deriver.TASK_TEMPLATES_V10, start=1
+        )
+    ]
+    path.write_text(
+        json.dumps(
+            {
+                "schema": deriver.AUDIT_SCHEMA_V10,
+                "next_allowed_action": (
+                    "derive_and_install_catalog_v10_then_continue_bounded_offline_work"
+                ),
+                "next_bounded_catalog_requirement": requirements,
+                "deterministic_result_hash": "f" * 64,
+            }
+        ),
+        encoding="utf-8",
+    )
+    return path
+
+
 class AutopilotCatalogDeriverTests(unittest.TestCase):
     def test_derives_exact_bounded_task_set(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -247,6 +276,19 @@ class AutopilotCatalogDeriverTests(unittest.TestCase):
         self.assertTrue(
             all(task["max_runtime_sec"] <= 1800 for task in catalog["tasks"])
         )
+
+    def test_derives_v10_reconciliation_catalog(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            audit = _audit_v10(Path(tmp) / "audit-v10.json")
+            catalog = deriver.derive_catalog(
+                audit_path=audit, catalog_id="catalog-v10"
+            )
+        self.assertEqual(
+            [task["id"] for task in catalog["tasks"]],
+            list(deriver.TASK_TEMPLATES_V10),
+        )
+        self.assertFalse(catalog["constraints"]["network_access"])
+        self.assertFalse(catalog["constraints"]["returns_or_pnl_read"])
 
     def test_activation_updates_pointers_and_refills_once(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

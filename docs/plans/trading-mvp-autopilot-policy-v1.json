@@ -448,8 +448,8 @@
   "bounded_research_backlog": {
     "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\trading-mvp-autopilot-research-backlog.json",
     "auto_refill": true,
-    "catalog_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-research-catalog-eb980cca5282.json",
-    "catalog_file_sha256": "a8e0c08f05a1053be20dfbec341bb7fd05694a067c30c290edb1790fc22ffbdf",
+    "catalog_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-research-catalog-v10-reconciliation-20260809.json",
+    "catalog_file_sha256": "9cacc19bc21be1b20f3c6dc350d19f3f61e31ba3630fb48ab7f0a6bc9bd43ead",
     "run_when": "the approved schedule is waiting and the productive fallback queue is exhausted",
     "max_runtime_sec_per_task": 1800,
     "one_task_at_a_time": true,

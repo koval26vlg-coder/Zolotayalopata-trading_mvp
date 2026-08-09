@@ -3,9 +3,9 @@
   "project": "trading_mvp",
   "mode": "sequential_bounded_research",
   "auto_refill": true,
-  "catalog_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-research-catalog-eb980cca5282.json",
-  "catalog_file_sha256": "a8e0c08f05a1053be20dfbec341bb7fd05694a067c30c290edb1790fc22ffbdf",
-  "refill_count": 7,
+  "catalog_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-research-catalog-v10-reconciliation-20260809.json",
+  "catalog_file_sha256": "9cacc19bc21be1b20f3c6dc350d19f3f61e31ba3630fb48ab7f0a6bc9bd43ead",
+  "refill_count": 8,
   "created_at_utc": "2026-07-28T17:30:00Z",
   "constraints": {
     "max_runtime_sec_per_task": 1800,
@@ -927,8 +927,62 @@
       "finished_at_utc": "2026-07-30T16:09:51.147602Z",
       "artifact_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v9.json",
       "artifact_sha256": "e2a6a256d4b41493b56b58c08ed8c47a6260189406f511570e71e0a2888ab471"
+    },
+    {
+      "id": "same_scope_strategy_census_v2",
+      "max_runtime_sec": 300,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\same-scope-strategy-census-v2.json",
+      "objective": "Recheck whether any materially distinct strategy can be honestly tested on current immutable metadata. Do not read market rows, returns, PnL or OOS and do not create a new hypothesis.",
+      "allowed_inputs": [
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\same-scope-hypothesis-census-v1.json",
+        "docs/agent-log/readiness/cross-venue-basis-terminal-currentness-recheck-20260803-v1.json",
+        "docs/agent-log/trading-mvp-autopilot-state.json"
+      ],
+      "status": "COMPLETED",
+      "owner": "Codex",
+      "started_at_utc": "2026-08-09T17:23:35.944628Z",
+      "finished_at_utc": "2026-08-09T17:23:47.451597Z",
+      "artifact_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\same-scope-strategy-census-v2.json",
+      "artifact_sha256": "aca1db84fcdd1941e7d953d670970872b4f7bbb562bac5586df6abdd3f10314e"
+    },
+    {
+      "id": "paper_code_provenance_merkle_v8",
+      "max_runtime_sec": 300,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-code-provenance-merkle-v8.json",
+      "objective": "Freeze the corrected dynamic readiness and same-scope census code in a deterministic code-only Merkle baseline. No data artifacts or network access.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "trading_mvp/run_mvp.ps1",
+        "tools",
+        "AGENTS.md"
+      ],
+      "status": "COMPLETED",
+      "owner": "Codex",
+      "started_at_utc": "2026-08-09T17:24:08.559723Z",
+      "finished_at_utc": "2026-08-09T17:24:08.964387Z",
+      "artifact_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-code-provenance-merkle-v8.json",
+      "artifact_sha256": "2e33ba7ff9abd4c0aa1d3263015340a115892b4007092246b451dbcdc0d96f38"
+    },
+    {
+      "id": "paper_product_readiness_audit_v11",
+      "max_runtime_sec": 900,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v11.json",
+      "objective": "Bind the corrected dynamic PIT counters, current code provenance and same-scope strategy census into one immutable readiness audit. No collector, returns, PnL, OOS, grid or hypothesis change.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "docs/agent-log",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research"
+      ],
+      "status": "COMPLETED",
+      "owner": "Codex",
+      "started_at_utc": "2026-08-09T17:24:27.947792Z",
+      "finished_at_utc": "2026-08-09T17:24:28.396305Z",
+      "artifact_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v11.json",
+      "artifact_sha256": "cec69bdff00f4ac96135eff9bac297f2602885f701930e442c9ce47d5ab50f78"
     }
   ],
-  "updated_at_utc": "2026-07-30T16:09:51.148630Z",
-  "last_refill_at_utc": "2026-07-30T15:54:37.175081Z"
+  "updated_at_utc": "2026-08-09T17:24:28.411077Z",
+  "last_refill_at_utc": "2026-08-09T17:23:23.339180Z"
 }

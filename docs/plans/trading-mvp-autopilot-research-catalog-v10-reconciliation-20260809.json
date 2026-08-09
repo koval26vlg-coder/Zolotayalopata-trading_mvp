@@ -1,0 +1,62 @@
+{
+  "schema": "trading_mvp_autopilot_research_catalog_v1",
+  "catalog_id": "trading_mvp_autopilot_research_catalog_v10_reconciliation_20260809",
+  "project": "trading_mvp",
+  "mode": "bounded_offline_public_data_plane_readiness",
+  "parent_audit": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v10-reconciled-v1.json",
+    "file_sha256": "ef9c138c768766ab4814f3a26da7741c7a516a7468b69df4f4854eb3cc629e50",
+    "deterministic_result_hash": "55584acd48319b0197547b5c3017b6446de08fb49d4f3b2da31ab1a4564466da"
+  },
+  "constraints": {
+    "max_runtime_sec_per_task": 1800,
+    "one_task_at_a_time": true,
+    "network_access": false,
+    "market_data_writer": false,
+    "returns_or_pnl_read": false,
+    "new_hypothesis": false,
+    "grid_or_retune": false,
+    "paper_positions": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "leverage_or_margin": false
+  },
+  "tasks": [
+    {
+      "id": "same_scope_strategy_census_v2",
+      "max_runtime_sec": 300,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\same-scope-strategy-census-v2.json",
+      "objective": "Recheck whether any materially distinct strategy can be honestly tested on current immutable metadata. Do not read market rows, returns, PnL or OOS and do not create a new hypothesis.",
+      "allowed_inputs": [
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\same-scope-hypothesis-census-v1.json",
+        "docs/agent-log/readiness/cross-venue-basis-terminal-currentness-recheck-20260803-v1.json",
+        "docs/agent-log/trading-mvp-autopilot-state.json"
+      ]
+    },
+    {
+      "id": "paper_code_provenance_merkle_v8",
+      "max_runtime_sec": 300,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-code-provenance-merkle-v8.json",
+      "objective": "Freeze the corrected dynamic readiness and same-scope census code in a deterministic code-only Merkle baseline. No data artifacts or network access.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "trading_mvp/run_mvp.ps1",
+        "tools",
+        "AGENTS.md"
+      ]
+    },
+    {
+      "id": "paper_product_readiness_audit_v11",
+      "max_runtime_sec": 900,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v11.json",
+      "objective": "Bind the corrected dynamic PIT counters, current code provenance and same-scope strategy census into one immutable readiness audit. No collector, returns, PnL, OOS, grid or hypothesis change.",
+      "allowed_inputs": [
+        "trading_mvp/src",
+        "trading_mvp/tests",
+        "docs/agent-log",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research"
+      ]
+    }
+  ]
+}

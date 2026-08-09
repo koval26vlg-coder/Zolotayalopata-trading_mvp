@@ -337,6 +337,27 @@ def _guard_snapshot() -> dict:
     }
 
 
+def _components_v11() -> dict:
+    components = _components_v9()
+    components["same-scope-strategy-census-v2.json"] = {
+        "verdict": (
+            "NO_ALTERNATIVE_STRATEGY_CAN_BE_HONESTLY_TESTED_ON_CURRENT_"
+            "IMMUTABLE_DATA"
+        ),
+        "closed_family_count": 15,
+        "reviewed_alternatives": [{"candidate": "candidate-a"}],
+        "selected_candidate": None,
+        "safety": {
+            "market_rows_read": False,
+            "returns_read": False,
+            "pnl_read": False,
+            "oos_run": False,
+            "hypothesis_changed": False,
+        },
+    }
+    return components
+
+
 class PaperProductReadinessAuditTests(unittest.TestCase):
     def test_evidence_gates_remain_blocked(self) -> None:
         result = audit_module.build_readiness_assessment(
@@ -650,12 +671,76 @@ class PaperProductReadinessAuditTests(unittest.TestCase):
             "pit_universe_v2_forward_20260810_n13",
         )
         self.assertEqual(result["schedule"]["accepted_distinct_dates"], 8)
+        self.assertEqual(
+            result["evidence_gates"][
+                "pit_technical_quality_accepted_dates"
+            ],
+            8,
+        )
+        self.assertEqual(result["evidence_gates"]["pit_dates_remaining"], 12)
         self.assertTrue(result["schedule"]["offline_work_allowed_now"])
         self.assertFalse(result["evidence_gates"]["edge_proven"])
         self.assertFalse(result["evidence_gates"]["paper_forward_ready"])
         self.assertFalse(result["evidence_gates"]["live_review_eligible"])
         self.assertFalse(
             result["long_campaign_branch"]["collector_launch_allowed"]
+        )
+        self.assertEqual(result["next_bounded_catalog_requirement"], [])
+        self.assertEqual(
+            result["next_allowed_action"],
+            "WAITING_SCHEDULE_WINDOW_NO_FALLBACK",
+        )
+
+    def test_v10_stale_code_requests_exact_reconciliation_catalog(
+        self,
+    ) -> None:
+        result = audit_module.build_readiness_assessment_v10(
+            components=_components_v9(),
+            code_provenance_current=False,
+            targeted_tests={"tests_run": 102, "status": "PASS"},
+            guard_snapshot=_guard_snapshot(),
+        )
+        self.assertEqual(
+            [
+                item["id"]
+                for item in result["next_bounded_catalog_requirement"]
+            ],
+            [
+                "same_scope_strategy_census_v2",
+                "paper_code_provenance_merkle_v8",
+                "paper_product_readiness_audit_v11",
+            ],
+        )
+        self.assertEqual(
+            result["next_allowed_action"],
+            "derive_and_install_catalog_v10_then_continue_bounded_offline_work",
+        )
+
+    def test_v11_binds_no_alternative_strategy_census(self) -> None:
+        result = audit_module.build_readiness_assessment_v11(
+            components=_components_v11(),
+            code_provenance_current=True,
+            targeted_tests={"tests_run": 110, "status": "PASS"},
+            guard_snapshot=_guard_snapshot(),
+        )
+        self.assertEqual(
+            result["alternative_strategy_review"]["closed_family_count"],
+            15,
+        )
+        self.assertFalse(
+            result["alternative_strategy_review"][
+                "testable_alternative_now"
+            ]
+        )
+        self.assertEqual(
+            result["evidence_gates"][
+                "pit_technical_quality_accepted_dates"
+            ],
+            8,
+        )
+        self.assertEqual(
+            result["next_allowed_action"],
+            "WAITING_SCHEDULE_WINDOW_NO_FALLBACK",
         )
 
     def test_v10_rejects_low_weekly_quota(self) -> None:

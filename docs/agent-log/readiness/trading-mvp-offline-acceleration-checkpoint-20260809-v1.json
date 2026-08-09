@@ -1,0 +1,70 @@
+{
+  "schema": "trading_mvp_offline_acceleration_checkpoint_v1",
+  "generated_at_utc": "2026-08-09T17:25:34.1571172+00:00",
+  "source_commit": "1732b6497b6ee1afaf4ab7334bf64665aca56292",
+  "problem_fixed": "readiness_v10_schedule_counter_was_8_of_20_while_inherited_evidence_counter_remained_4_of_20",
+  "result": {
+    "schedule_accepted_distinct_dates": 8,
+    "evidence_accepted_distinct_dates": 8,
+    "stage_target_distinct_dates": 20,
+    "dates_remaining": 12,
+    "code_provenance": "CURRENT",
+    "alternative_strategy_testable_now": false,
+    "closed_family_count": 15,
+    "research_fallback_audit": "paper-product-readiness-audit-v11.json"
+  },
+  "artifacts": {
+    "reconciled_v10": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v10-reconciled-v1.json",
+      "file_sha256": "ef9c138c768766ab4814f3a26da7741c7a516a7468b69df4f4854eb3cc629e50"
+    },
+    "strategy_census_v2": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\same-scope-strategy-census-v2.json",
+      "file_sha256": "aca1db84fcdd1941e7d953d670970872b4f7bbb562bac5586df6abdd3f10314e"
+    },
+    "code_provenance_v8": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-code-provenance-merkle-v8.json",
+      "file_sha256": "2e33ba7ff9abd4c0aa1d3263015340a115892b4007092246b451dbcdc0d96f38"
+    },
+    "readiness_v11": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v11.json",
+      "file_sha256": "cec69bdff00f4ac96135eff9bac297f2602885f701930e442c9ce47d5ab50f78"
+    },
+    "catalog": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-research-catalog-v10-reconciliation-20260809.json",
+      "file_sha256": "9cacc19bc21be1b20f3c6dc350d19f3f61e31ba3630fb48ab7f0a6bc9bd43ead"
+    },
+    "focused_test_log": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-readiness-v10-reconciliation-tests-20260809-v1.log",
+      "file_sha256": "b9bc0ed1a87ac16eceef7499336395e59b873a243304652ee6876e00247f4443"
+    },
+    "extended_test_log": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-readiness-v11-regression-tests-20260809-v1.log",
+      "file_sha256": "399ded5355d75daecb954ba6acce2410960e175598c073d53c1985cf76d90069"
+    }
+  },
+  "verification": {
+    "focused_tests": 44,
+    "extended_tests": 92,
+    "status": "PASS",
+    "provenance_validation": "CURRENT",
+    "audit_deterministic_hash_validation": "PASS",
+    "guard_status": "ACTIVE",
+    "weekly_remaining_percent": 82.0,
+    "next_pit_run_id": "pit_universe_v2_forward_20260810_n13",
+    "next_pit_start_local": "2026-08-10T01:00:00+03:00",
+    "action_due": false
+  },
+  "safety": {
+    "network_collection": false,
+    "market_rows_read": false,
+    "returns_or_pnl_read": false,
+    "oos_read": false,
+    "grid_or_retune": false,
+    "hypothesis_changed": false,
+    "paper_forward_started": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "leverage_or_margin": false
+  }
+}
