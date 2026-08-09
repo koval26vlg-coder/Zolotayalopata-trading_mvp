@@ -296,6 +296,47 @@ def _components_v9() -> dict:
     return components
 
 
+def _guard_snapshot() -> dict:
+    return {
+        "schema": "trading_mvp_autopilot_state_v1",
+        "policy_id": "test-policy",
+        "policy_hash": "a" * 64,
+        "status": "ACTIVE",
+        "decision": "USER_REVIEW_REQUIRED_LONG_CAMPAIGN_WINDOW_EXPIRED",
+        "observed_at_utc": "2026-08-09T16:00:00Z",
+        "stop_new_actions": False,
+        "action_due": False,
+        "next_action": "prepare_new_exact_long_campaign_window_without_resume",
+        "usage": {
+            "status": "AVAILABLE",
+            "decision": "CONTINUE",
+            "remaining_percent": 87.0,
+        },
+        "gate": {
+            "status": "READY_FOR_POSTPROCESS",
+            "run_id": "pit_universe_v2_forward_20260804_n07",
+        },
+        "pit_postrun_disposition": {
+            "status": "COMPLETE",
+            "new_collector_allowed": False,
+        },
+        "schedule_window": {
+            "classification": "PREAPPROVED_SHORT_SEGMENT",
+            "data_type": "PIT_UNIVERSE_V2_FORWARD",
+            "status": "WAITING",
+            "run_id": "pit_universe_v2_forward_20260810_n13",
+            "plan_hash": "b" * 64,
+            "start_local": "2026-08-10T01:00:00+03:00",
+            "end_local": "2026-08-10T01:20:00+03:00",
+            "duration_sec": 1200,
+            "hard_deadline_local": "2026-08-10T07:00:00+03:00",
+            "eta_sec": 21000,
+            "accepted_distinct_dates": 8,
+            "stage_target_distinct_dates": 20,
+        },
+    }
+
+
 class PaperProductReadinessAuditTests(unittest.TestCase):
     def test_evidence_gates_remain_blocked(self) -> None:
         result = audit_module.build_readiness_assessment(
@@ -592,6 +633,40 @@ class PaperProductReadinessAuditTests(unittest.TestCase):
                 components=components,
                 code_provenance_current=False,
                 targeted_tests={"tests_run": 100, "status": "PASS"},
+            )
+
+    def test_v10_uses_current_guard_without_opening_evidence_gates(
+        self,
+    ) -> None:
+        result = audit_module.build_readiness_assessment_v10(
+            components=_components_v9(),
+            code_provenance_current=True,
+            targeted_tests={"tests_run": 102, "status": "PASS"},
+            guard_snapshot=_guard_snapshot(),
+        )
+        self.assertEqual(result["readiness"]["code_provenance"], "CURRENT")
+        self.assertEqual(
+            result["schedule"]["next_segment"]["run_id"],
+            "pit_universe_v2_forward_20260810_n13",
+        )
+        self.assertEqual(result["schedule"]["accepted_distinct_dates"], 8)
+        self.assertTrue(result["schedule"]["offline_work_allowed_now"])
+        self.assertFalse(result["evidence_gates"]["edge_proven"])
+        self.assertFalse(result["evidence_gates"]["paper_forward_ready"])
+        self.assertFalse(result["evidence_gates"]["live_review_eligible"])
+        self.assertFalse(
+            result["long_campaign_branch"]["collector_launch_allowed"]
+        )
+
+    def test_v10_rejects_low_weekly_quota(self) -> None:
+        guard = _guard_snapshot()
+        guard["usage"]["remaining_percent"] = 15.0
+        with self.assertRaisesRegex(ValueError, "weekly quota"):
+            audit_module.build_readiness_assessment_v10(
+                components=_components_v9(),
+                code_provenance_current=True,
+                targeted_tests={"tests_run": 102, "status": "PASS"},
+                guard_snapshot=guard,
             )
 
 

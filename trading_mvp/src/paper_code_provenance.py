@@ -15,6 +15,7 @@ MANIFEST_SCHEMA_V3 = "trading_mvp_paper_code_provenance_merkle_v3"
 MANIFEST_SCHEMA_V4 = "trading_mvp_paper_code_provenance_merkle_v4"
 MANIFEST_SCHEMA_V5 = "trading_mvp_paper_code_provenance_merkle_v5"
 MANIFEST_SCHEMA_V6 = "trading_mvp_paper_code_provenance_merkle_v6"
+MANIFEST_SCHEMA_V7 = "trading_mvp_paper_code_provenance_merkle_v7"
 DEFAULT_MANIFEST_VERSION = "v1"
 ALLOWED_SUFFIXES = {".md", ".ps1", ".py"}
 ROOT_FILES = ("AGENTS.md", "trading_mvp/run_mvp.ps1")
@@ -101,6 +102,15 @@ PROVENANCE_CONTRACTS: dict[str, dict[str, Any]] = {
             "paper_public_probe_evidence_observer_binding_fixture_v1"
         ),
     },
+    "v7": {
+        "schema": MANIFEST_SCHEMA_V7,
+        "task_id": "paper_code_provenance_merkle_v7",
+        "src_prefixes": ("paper_", "autopilot_"),
+        "test_prefixes": ("test_paper_", "test_autopilot_"),
+        "tool_prefixes": ("paper_",),
+        "tool_explicit": EXPLICIT_TOOL_FILES_V2,
+        "next_allowed_action": "paper_product_readiness_audit_v10",
+    },
 }
 
 
@@ -147,7 +157,7 @@ def _selection_contract_payload(manifest_version: str) -> dict[str, Any]:
         "allowed_suffixes": sorted(ALLOWED_SUFFIXES),
         "symlinks_forbidden": True,
     }
-    if manifest_version in {"v2", "v3", "v4", "v5", "v6"}:
+    if manifest_version != "v1":
         payload.update(
             {
                 "src_prefixes": list(contract["src_prefixes"]),

@@ -23,6 +23,7 @@ AUDIT_SCHEMA_V6 = "trading_mvp_paper_product_readiness_audit_v6"
 AUDIT_SCHEMA_V7 = "trading_mvp_paper_product_readiness_audit_v7"
 AUDIT_SCHEMA_V8 = "trading_mvp_paper_product_readiness_audit_v8"
 AUDIT_SCHEMA_V9 = "trading_mvp_paper_product_readiness_audit_v9"
+AUDIT_SCHEMA_V10 = "trading_mvp_paper_product_readiness_audit_v10"
 COMPONENT_REQUIREMENTS: dict[str, tuple[str, str, Any]] = {
     "fast-regression-lane-v1.json": (
         "schema",
@@ -266,6 +267,23 @@ COMPONENT_REQUIREMENTS_V9: dict[str, tuple[str, str, Any]] = {
         None,
     ),
 }
+COMPONENT_REQUIREMENTS_V10: dict[str, tuple[str, str, Any]] = {
+    **{
+        name: requirement
+        for name, requirement in COMPONENT_REQUIREMENTS_V9.items()
+        if name != "paper-code-provenance-merkle-v6.json"
+    },
+    "paper-code-provenance-merkle-v7.json": (
+        "verdict",
+        "CODE_ONLY_MERKLE_BASELINE_FROZEN",
+        None,
+    ),
+    "paper-product-readiness-audit-v9.json": (
+        "schema",
+        AUDIT_SCHEMA_V9,
+        None,
+    ),
+}
 
 
 def _canonical_json(value: Any) -> bytes:
@@ -352,6 +370,54 @@ def _validate_deterministic_result_hash(
     actual = sha256_json(deterministic)
     if len(expected) != 64 or expected != actual:
         raise ValueError(f"{label} deterministic result hash mismatch")
+
+
+def _validate_current_guard_snapshot(
+    payload: Mapping[str, Any],
+) -> dict[str, Any]:
+    if payload.get("schema") != "trading_mvp_autopilot_state_v1":
+        raise ValueError("v10 guard snapshot schema mismatch")
+    if payload.get("status") != "ACTIVE":
+        raise ValueError("v10 guard snapshot is not ACTIVE")
+    if payload.get("stop_new_actions") is not False:
+        raise ValueError("v10 guard snapshot stops new actions")
+
+    usage = payload.get("usage")
+    gate = payload.get("gate")
+    schedule = payload.get("schedule_window")
+    postrun = payload.get("pit_postrun_disposition")
+    if not all(
+        isinstance(value, Mapping)
+        for value in (usage, gate, schedule, postrun)
+    ):
+        raise ValueError("v10 guard snapshot is incomplete")
+    if (
+        usage.get("status") != "AVAILABLE"
+        or usage.get("decision") != "CONTINUE"
+        or float(usage.get("remaining_percent") or 0.0) <= 15.0
+    ):
+        raise ValueError("v10 guard snapshot weekly quota is not available")
+    if gate.get("status") != "READY_FOR_POSTPROCESS":
+        raise ValueError("v10 guard snapshot active-run gate is not ready")
+    if postrun.get("status") != "COMPLETE":
+        raise ValueError("v10 guard snapshot PIT postrun is not complete")
+    if postrun.get("new_collector_allowed") is not False:
+        raise ValueError("v10 guard snapshot unexpectedly permits a collector")
+    if (
+        schedule.get("classification") != "PREAPPROVED_SHORT_SEGMENT"
+        or schedule.get("data_type") != "PIT_UNIVERSE_V2_FORWARD"
+        or schedule.get("status") not in {"WAITING", "DUE"}
+        or not str(schedule.get("run_id") or "")
+        or not re.fullmatch(
+            r"[0-9a-f]{64}", str(schedule.get("plan_hash") or "").lower()
+        )
+    ):
+        raise ValueError("v10 guard snapshot PIT pointer is invalid")
+    accepted_dates = int(schedule.get("accepted_distinct_dates") or 0)
+    target_dates = int(schedule.get("stage_target_distinct_dates") or 0)
+    if accepted_dates < 0 or target_dates <= 0 or accepted_dates >= target_dates:
+        raise ValueError("v10 guard snapshot train checkpoint requires review")
+    return dict(payload)
 
 
 def build_readiness_assessment(
@@ -1587,6 +1653,84 @@ def build_readiness_assessment_v9(
     }
 
 
+def build_readiness_assessment_v10(
+    *,
+    components: Mapping[str, Mapping[str, Any]],
+    code_provenance_current: bool,
+    targeted_tests: Mapping[str, Any],
+    guard_snapshot: Mapping[str, Any],
+) -> dict[str, Any]:
+    base = build_readiness_assessment_v9(
+        components=components,
+        code_provenance_current=code_provenance_current,
+        targeted_tests=targeted_tests,
+    )
+    guard = _validate_current_guard_snapshot(guard_snapshot)
+    schedule = guard["schedule_window"]
+    action_due = bool(guard.get("action_due"))
+    current_schedule = {
+        "decision": guard["decision"],
+        "guard_status": guard["status"],
+        "guard_observed_at_utc": guard["observed_at_utc"],
+        "next_segment": {
+            "run_id": schedule["run_id"],
+            "plan_hash": schedule["plan_hash"],
+            "start_local": schedule["start_local"],
+            "end_local": schedule["end_local"],
+            "duration_sec": int(schedule["duration_sec"]),
+            "hard_deadline_local": schedule["hard_deadline_local"],
+            "seconds_to_start": int(schedule.get("eta_sec") or 0),
+        },
+        "accepted_distinct_dates": int(
+            schedule["accepted_distinct_dates"]
+        ),
+        "stage_target_distinct_dates": int(
+            schedule["stage_target_distinct_dates"]
+        ),
+        "schedule_waiting": not action_due,
+        "offline_work_must_yield_when_due": True,
+        "offline_work_allowed_now": not action_due,
+    }
+    return {
+        **base,
+        "readiness": {
+            **base["readiness"],
+            "code_provenance": (
+                "CURRENT"
+                if code_provenance_current
+                else "STALE_AFTER_NEW_CODE"
+            ),
+        },
+        "schedule": current_schedule,
+        "long_campaign_branch": {
+            "decision": guard["decision"],
+            "next_action": guard["next_action"],
+            "collector_launch_allowed": False,
+            "pit_shadow_track_continues": True,
+        },
+        "offline_gap_assessment": {
+            "materially_useful_same_contract_tasks_remaining": False,
+            "reason": (
+                "current code provenance and dynamic PIT readiness are "
+                "refreshed; evidence gates still require scheduled PIT data"
+            ),
+            "new_hypothesis_requires_user_review": True,
+            "approved_pit_shadow_schedule_continues": True,
+        },
+        "next_bounded_catalog_requirement": [],
+        "critical_checkpoint": None,
+        "verdict": (
+            "CURRENT_CODE_PROVENANCE_AND_DYNAMIC_PIT_READINESS_REFRESHED_"
+            "EDGE_AND_FORWARD_GATES_REMAIN_BLOCKED"
+        ),
+        "next_allowed_action": (
+            "follow_authoritative_guard_due_action"
+            if action_due
+            else "continue_bounded_offline_work_then_follow_authoritative_guard"
+        ),
+    }
+
+
 def build_readiness_audit_v7(
     *,
     research_root: str | Path,
@@ -1894,6 +2038,94 @@ def build_readiness_audit_v9(
     return audit
 
 
+def build_readiness_audit_v10(
+    *,
+    research_root: str | Path,
+    repo_root: str | Path,
+    targeted_test_log_path: str | Path,
+    guard_snapshot_path: str | Path,
+    output_path: str | Path | None = None,
+    generated_at_utc: str | None = None,
+) -> dict[str, Any]:
+    research = Path(research_root).expanduser().resolve()
+    repo = Path(repo_root).expanduser().resolve()
+    test_log = Path(targeted_test_log_path).expanduser().resolve()
+    guard_path = Path(guard_snapshot_path).expanduser().resolve()
+    components, descriptors = _load_components(
+        research, COMPONENT_REQUIREMENTS_V10
+    )
+    targeted_tests = _parse_test_log(test_log)
+
+    provenance = components["paper-code-provenance-merkle-v7.json"]
+    try:
+        validate_code_manifest(provenance, repo_root=repo)
+        provenance_current = True
+        provenance_drift_reason = None
+    except ValueError as exc:
+        provenance_current = False
+        provenance_drift_reason = str(exc)
+    _validate_deterministic_result_hash(
+        components["paper-product-readiness-audit-v9.json"],
+        label="v9 readiness audit",
+    )
+
+    guard_snapshot = _validate_current_guard_snapshot(
+        _read_json(guard_path)
+    )
+    assessment = build_readiness_assessment_v10(
+        components=components,
+        code_provenance_current=provenance_current,
+        targeted_tests=targeted_tests,
+        guard_snapshot=guard_snapshot,
+    )
+    deterministic = {
+        "schema": AUDIT_SCHEMA_V10,
+        **assessment,
+        "targeted_regression": targeted_tests,
+        "code_provenance_validation": {
+            "manifest_version": "v7",
+            "current": provenance_current,
+            "drift_reason": provenance_drift_reason,
+            "refresh_required_before_next_authority_increase": True,
+            "refresh_not_required_for_schedule_wait": True,
+        },
+        "guard_snapshot": {
+            "path": str(guard_path),
+            "file_sha256": sha256_file(guard_path),
+            "schema": guard_snapshot["schema"],
+            "policy_id": guard_snapshot["policy_id"],
+            "policy_hash": guard_snapshot["policy_hash"],
+            "observed_at_utc": guard_snapshot["observed_at_utc"],
+        },
+        "components": descriptors,
+        "safety": {
+            "returns_or_pnl_read": False,
+            "oos_read": False,
+            "signals_read": False,
+            "hypothesis_changed": False,
+            "network_collection": False,
+            "public_network_evidence_consumed": True,
+            "process_launches_other_than_tests": 0,
+            "grid_or_retune": False,
+            "oms_mutations": 0,
+            "paper_forward_started": False,
+            "live_orders": False,
+            "private_api_keys": False,
+            "leverage": False,
+            "margin": False,
+        },
+    }
+    audit = {
+        **deterministic,
+        "deterministic_result_hash": sha256_json(deterministic),
+        "generated_at_utc": generated_at_utc
+        or datetime.now(timezone.utc).isoformat(),
+    }
+    if output_path is not None:
+        _write_json_immutable(output_path, audit)
+    return audit
+
+
 def _write_json_immutable(path: str | Path, payload: Mapping[str, Any]) -> None:
     target = Path(path).expanduser().resolve()
     if target.exists():
@@ -1914,10 +2146,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--research-root", required=True)
     parser.add_argument("--repo-root", required=True)
     parser.add_argument("--targeted-test-log", required=True)
+    parser.add_argument("--guard-snapshot")
     parser.add_argument("--output", required=True)
     parser.add_argument(
         "--audit-version",
-        choices=("v3", "v4", "v5", "v6", "v7", "v8", "v9"),
+        choices=("v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10"),
         default="v3",
     )
     return parser
@@ -1934,13 +2167,24 @@ def main(argv: Sequence[str] | None = None) -> int:
         "v8": build_readiness_audit_v8,
         "v9": build_readiness_audit_v9,
     }
-    builder = builders[args.audit_version]
-    audit = builder(
-        research_root=args.research_root,
-        repo_root=args.repo_root,
-        targeted_test_log_path=args.targeted_test_log,
-        output_path=args.output,
-    )
+    if args.audit_version == "v10":
+        if not args.guard_snapshot:
+            raise ValueError("v10 requires --guard-snapshot")
+        audit = build_readiness_audit_v10(
+            research_root=args.research_root,
+            repo_root=args.repo_root,
+            targeted_test_log_path=args.targeted_test_log,
+            guard_snapshot_path=args.guard_snapshot,
+            output_path=args.output,
+        )
+    else:
+        builder = builders[args.audit_version]
+        audit = builder(
+            research_root=args.research_root,
+            repo_root=args.repo_root,
+            targeted_test_log_path=args.targeted_test_log,
+            output_path=args.output,
+        )
     print(json.dumps(audit, ensure_ascii=False, indent=2))
     return 0
 
