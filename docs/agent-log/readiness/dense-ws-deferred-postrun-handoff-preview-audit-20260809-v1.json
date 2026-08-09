@@ -1,0 +1,135 @@
+{
+  "schema": "trading_mvp_dense_ws_deferred_postrun_handoff_preview_audit_v1",
+  "status": "PASS_CONFLICT_CONFIRMED_USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+  "generated_at_local": "2026-08-09T23:11:14.042662+03:00",
+  "generated_at_utc": "2026-08-09T20:11:14.042662Z",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-deferred-postrun-handoff-freeze-proposal-20260809-v1.json",
+    "file_sha256": "a36bada0c2ce9ae0e54bda2a8d9c824efc50a0bf0aa2f03110eb31d558d56e24",
+    "proposal_hash": "2d4765d115ceee5a1f4e0e74841830d8aa2e2c26bfd761bdabd5b8e8b335439f",
+    "canonical_hash_verified": true,
+    "handoff_profile_hash": "10addf47520a8a2e697e786214e45295cd301756206297ee9018b8f8c85f16e6",
+    "handoff_profile_hash_verified": true
+  },
+  "source_verification": [
+    {
+      "label": "policy",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+      "expected_sha256": "cd581c0eb7e1cc24357dce1bc0db037b2e616911451bab2554d5f5da76a07f22",
+      "actual_sha256": "cd581c0eb7e1cc24357dce1bc0db037b2e616911451bab2554d5f5da76a07f22",
+      "match": true
+    },
+    {
+      "label": "autopilot_guard",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\autopilot_guard.py",
+      "expected_sha256": "e13c30ba21b64fd4907d8cef37d36ce4cd710871b43a7a2057b74c3b12ee5e0d",
+      "actual_sha256": "e13c30ba21b64fd4907d8cef37d36ce4cd710871b43a7a2057b74c3b12ee5e0d",
+      "match": true
+    },
+    {
+      "label": "autopilot_guard_test",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_autopilot_guard.py",
+      "expected_sha256": "e3b49889e02b394b9b6d6a659378f69b1fedc10ea2776f96c153246217b20888",
+      "actual_sha256": "e3b49889e02b394b9b6d6a659378f69b1fedc10ea2776f96c153246217b20888",
+      "match": true
+    },
+    {
+      "label": "postrun_orchestrator",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_dense_ws_postrun_visible.ps1",
+      "expected_sha256": "4781219d0c06af686508cb0c8a76424be22825e657a1b80f43c1799df43398ed",
+      "actual_sha256": "4781219d0c06af686508cb0c8a76424be22825e657a1b80f43c1799df43398ed",
+      "match": true
+    },
+    {
+      "label": "postrun_orchestration_test",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_postrun_orchestration.py",
+      "expected_sha256": "b0b84b30567cee2410bb09cf06414f4e59ec1c197bd3fdb90bebe9c2edccf301",
+      "actual_sha256": "b0b84b30567cee2410bb09cf06414f4e59ec1c197bd3fdb90bebe9c2edccf301",
+      "match": true
+    },
+    {
+      "label": "active_gate_checker",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_active_run_gate.ps1",
+      "expected_sha256": "688afb7212de750c97fbcd5926f58c1e187782755d1a989de8ef0caf16d5ac0e",
+      "actual_sha256": "688afb7212de750c97fbcd5926f58c1e187782755d1a989de8ef0caf16d5ac0e",
+      "match": true
+    },
+    {
+      "label": "quality_tool",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_quality.py",
+      "expected_sha256": "966aa25cc5198995adf7bd8cd46499b87a3e771505568d5f41072b493e2f7ef0",
+      "actual_sha256": "966aa25cc5198995adf7bd8cd46499b87a3e771505568d5f41072b493e2f7ef0",
+      "match": true
+    },
+    {
+      "label": "quality_test",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_campaign_quality.py",
+      "expected_sha256": "8d1c5eb3eda36d00330c614dac1f2ea17f473da5ad6592e9086f9946275ef6d5",
+      "actual_sha256": "8d1c5eb3eda36d00330c614dac1f2ea17f473da5ad6592e9086f9946275ef6d5",
+      "match": true
+    },
+    {
+      "label": "materializer_tool",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_causal_materializer.py",
+      "expected_sha256": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c",
+      "actual_sha256": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c",
+      "match": true
+    },
+    {
+      "label": "materializer_test",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_causal_materializer.py",
+      "expected_sha256": "a17239f84849a54efee5e7fca8061af28b21eab4140fb1e31b53b8ac35456652",
+      "actual_sha256": "a17239f84849a54efee5e7fca8061af28b21eab4140fb1e31b53b8ac35456652",
+      "match": true
+    },
+    {
+      "label": "automation",
+      "path": "C:\\Users\\koval\\.codex\\automations\\trading-continuous-production\\automation.toml",
+      "expected_sha256": "6029f2c1812d935354f04036a22fefaa47745d32f258482b56bdc49f84ea5b7c",
+      "actual_sha256": "6029f2c1812d935354f04036a22fefaa47745d32f258482b56bdc49f84ea5b7c",
+      "match": true
+    }
+  ],
+  "timing_and_conflict_verification": {
+    "dense_to_n14_gap_sec": 300,
+    "n14_to_postrun_gap_sec": 300,
+    "postrun_window_sec": 5400,
+    "postrun_total_max_runtime_sec": 3600,
+    "postrun_scheduling_headroom_sec": 1800,
+    "latest_start_matches_deadline_minus_total_runtime": true,
+    "dense_hard_deadline_precedes_n14": true,
+    "postrun_starts_after_n14": true,
+    "runtime_fits_with_headroom": true,
+    "current_guard_hard_depends_on_active_dense_gate": true,
+    "current_orchestrator_hard_depends_on_active_dense_gate": true,
+    "conflict_confirmed": true
+  },
+  "compatibility_tests": {
+    "status": "PASS",
+    "tests_run": 22,
+    "tests_passed": 22,
+    "log_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\regressions\\dense-ws-postrun-runtime-rebind-v3-compatibility-20260809.txt",
+    "log_sha256": "61004caa87794e0f143e07610411c27e7e170c9ac4baa8ebb67a9a115988f7fd"
+  },
+  "decision": {
+    "simple_postrun_rebind_is_safe": false,
+    "deferred_manifest_handoff_proposal_is_coherent": true,
+    "implementation_authorized": false,
+    "postrun_execution_authorized": false,
+    "exact_user_approval_required": true
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  }
+}

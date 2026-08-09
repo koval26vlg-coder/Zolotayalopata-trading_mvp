@@ -1,0 +1,6 @@
+Dense WS current-plan postrun runtime rebind v3 compatibility
+Mode: offline tests only; no network, collector, market rows, returns, PnL, OOS, evaluator, grid, paper or live
+Command: C:\Program Files\Python313\python.exe -m pytest -q trading_mvp/tests/test_dense_ws_postrun_orchestration.py trading_mvp/tests/test_dense_ws_campaign_quality.py trading_mvp/tests/test_dense_ws_causal_materializer.py
+
+......................                                                   [100%]
+22 passed in 0.67s
