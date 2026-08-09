@@ -1,0 +1,896 @@
+{
+  "schema": "fast_first_night_schedule_plan_v2",
+  "created_at_utc": "2026-08-09T11:14:05.420511Z",
+  "mode": "PlanOnly",
+  "research_only": true,
+  "plan_artifact_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json",
+  "plan_hash": "2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca",
+  "sealed_schedule_hash": "2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca",
+  "sealed_schedule": {
+    "schema": "fast_first_night_schedule_plan_v2",
+    "hypothesis_id": "pit_universe_membership_drift_reversion_v1",
+    "data_type": "PIT_UNIVERSE_V2_FORWARD",
+    "hypothesis_contract": {
+      "schema": "trading_mvp_frozen_hypothesis_contract_v1",
+      "contract_version": "pit_universe_membership_drift_reversion_v1.3.0",
+      "mode": "PlanOnly",
+      "research_only": true,
+      "frozen_at_utc": "2026-07-14T18:16:00+00:00",
+      "id": "pit_universe_membership_drift_reversion_v1",
+      "status": "BANKED_NEEDS_NEW_DATA",
+      "required_data_type": "PIT_UNIVERSE_V2_FORWARD",
+      "thesis": "A newly reactivated venue-local linear perpetual that remains continuously tradable on the other venue can show a temporary cross-venue mid-price dislocation that mean-reverts after delayed entry.",
+      "frozen_parameters_no_grid": true,
+      "grid_search": false,
+      "retune": false,
+      "universe": {
+        "venues": [
+          "mexc",
+          "gateio"
+        ],
+        "market_type": "linear_perp",
+        "quote": "USDT",
+        "binance_role": "reference_exclusion_only",
+        "require_non_binance_spot_at_event": true,
+        "require_matching_base_quote": true
+      },
+      "observation_model": {
+        "unit": "quality_certified_local_date",
+        "source": "last_two_consistent_cycles_of_each_visible_night_segment",
+        "daily_state_confirmation_cycles": 2,
+        "require_consecutive_calendar_dates": true,
+        "unobserved_date_gap": "break_event_and_position_sequence",
+        "event_and_position_may_span_consecutive_quality_dates": true
+      },
+      "event_definition": {
+        "transition": "missing_to_observed_on_one_venue_while_other_remains_observed",
+        "activation_confirmation_cycles": 2,
+        "reference_continuity_prior_cycles": 2,
+        "event_unit": "base_activation_venue_local_date",
+        "dedup_cooldown_calendar_days": 30,
+        "require_both_venues_successful_in_event_cycles": true,
+        "tombstone_on_failed_exchange_is_not_an_event": true,
+        "cycle_unit": "quality_certified_local_date"
+      },
+      "signal": {
+        "route": "cross_venue_perp_perp",
+        "side": "long_cheaper_perp_short_expensive_perp",
+        "entry_delay_cycles": 1,
+        "minimum_gross_dislocation_bps": 130.0,
+        "max_leg_spread_bps": 20.0,
+        "minimum_volume_24h_quote_per_leg": 100000.0,
+        "price_source": "next_cycle_executable_bbo",
+        "one_position_per_event": true
+      },
+      "position": {
+        "notional_quote_per_leg": 500.0,
+        "gross_leverage": 1.0,
+        "margin_mode": "fully_collateralized_research_simulation",
+        "simultaneous_entry_required": true,
+        "partial_leg_entry": "reject_event",
+        "capacity_model": {
+          "source": "entry_and_exit_top_of_book_quantity",
+          "required_on_entry_and_exit": true,
+          "minimum_quote_per_leg": 500.0,
+          "missing_or_insufficient_quantity": "reject_event",
+          "volume_24h_proxy_allowed": false
+        }
+      },
+      "exit": {
+        "convergence_threshold_bps": 20.0,
+        "maximum_holding_calendar_days": 3,
+        "exit_price_source": "first_available_executable_bbo",
+        "force_end": true,
+        "take_profit_search": false,
+        "stop_loss_search": false
+      },
+      "robustness": {
+        "scenario": "one_additional_entry_cycle_same_exit_rule",
+        "entry_delay_cycles": 2,
+        "cycle_cost_source": "economics.normal_cycle_cost",
+        "parameter_refit": false
+      },
+      "stress": {
+        "scenario": "one_additional_entry_cycle_and_stress_cycle_cost",
+        "entry_delay_cycles": 2,
+        "cycle_cost_source": "economics.stress_cycle_cost",
+        "favorable_funding": "zero",
+        "adverse_funding": "retain",
+        "parameter_refit": false
+      },
+      "economics": {
+        "cost_profile_name": "base_api",
+        "cost_profile": {
+          "name": "base_api",
+          "maker_fill_probability": 0.5,
+          "slippage_bps_per_order": 1.0,
+          "rebalance_buffer_bps": 10.0,
+          "default_spread_bps": 10.0,
+          "default_impact_bps": 2.0,
+          "funding_haircut": 1.0,
+          "schedules": {
+            "gateio": {
+              "exchange": "gateio",
+              "spot_maker_bps": 10.0,
+              "spot_taker_bps": 10.0,
+              "perp_maker_bps": 10.0,
+              "perp_taker_bps": 10.0,
+              "source": "https://www.gate.com/docs/developers/apiv4/en/futures/",
+              "effective_at": null,
+              "account_verified": false,
+              "conservative_floor_bps": 10.0
+            },
+            "mexc": {
+              "exchange": "mexc",
+              "spot_maker_bps": 10.0,
+              "spot_taker_bps": 10.0,
+              "perp_maker_bps": 6.0,
+              "perp_taker_bps": 8.0,
+              "source": "https://www.mexc.com/en-GB/announcements/article/updates-to-api-futures-trading-fees-jun-1-2026-17827791535742",
+              "effective_at": "2026-06-01T08:00:00Z",
+              "account_verified": true,
+              "conservative_floor_bps": 0.0
+            }
+          }
+        },
+        "cost_profile_sha256": "dfdf738d156f519681e17b73f6b9d051dd0f5c2edfc1fa3cc354bdba70631a15",
+        "entry_order_type": "taker",
+        "exit_order_type": "taker",
+        "normal_cycle_cost": {
+          "profile": "base_api",
+          "stress": false,
+          "maker_fill_probability": 0.0,
+          "fees_bps": 36.0,
+          "spread_bps": 0.0,
+          "impact_bps": 8.0,
+          "slippage_bps": 4.0,
+          "rebalance_buffer_bps": 10.0,
+          "total_bps": 58.0,
+          "legs": [
+            {
+              "exchange": "mexc",
+              "market_type": "perp",
+              "spread_bps": 0.0,
+              "impact_bps": 2.0,
+              "entry_fee_bps": 8.0,
+              "exit_fee_bps": 8.0,
+              "entry_spread_bps": 0.0,
+              "exit_spread_bps": 0.0,
+              "entry_impact_bps": 2.0,
+              "exit_impact_bps": 2.0
+            },
+            {
+              "exchange": "gateio",
+              "market_type": "perp",
+              "spread_bps": 0.0,
+              "impact_bps": 2.0,
+              "entry_fee_bps": 10.0,
+              "exit_fee_bps": 10.0,
+              "entry_spread_bps": 0.0,
+              "exit_spread_bps": 0.0,
+              "entry_impact_bps": 2.0,
+              "exit_impact_bps": 2.0
+            }
+          ]
+        },
+        "stress_cycle_cost": {
+          "profile": "base_api_stress",
+          "stress": false,
+          "maker_fill_probability": 0.0,
+          "fees_bps": 36.0,
+          "spread_bps": 20.0,
+          "impact_bps": 40.0,
+          "slippage_bps": 4.0,
+          "rebalance_buffer_bps": 20.0,
+          "total_bps": 120.0,
+          "legs": [
+            {
+              "exchange": "mexc",
+              "market_type": "perp",
+              "spread_bps": 10.0,
+              "impact_bps": 10.0,
+              "entry_fee_bps": 8.0,
+              "exit_fee_bps": 8.0,
+              "entry_spread_bps": 5.0,
+              "exit_spread_bps": 5.0,
+              "entry_impact_bps": 10.0,
+              "exit_impact_bps": 10.0
+            },
+            {
+              "exchange": "gateio",
+              "market_type": "perp",
+              "spread_bps": 10.0,
+              "impact_bps": 10.0,
+              "entry_fee_bps": 10.0,
+              "exit_fee_bps": 10.0,
+              "entry_spread_bps": 5.0,
+              "exit_spread_bps": 5.0,
+              "entry_impact_bps": 10.0,
+              "exit_impact_bps": 10.0
+            }
+          ]
+        },
+        "spread_accounting": "embedded_in_executable_bbo",
+        "normal_bbo_spread_cap_bps_per_leg": 20.0,
+        "stress_bbo_spread_target_bps_per_leg": 30.0,
+        "normal_max_all_in_cycle_cost_bps": 98.0,
+        "stress_max_all_in_cycle_cost_bps": 160.0,
+        "funding_treatment": "reported_separately_and_cannot_rescue_negative_price_only_pnl",
+        "vip_or_rebate_assumption": false
+      },
+      "sample_plan": {
+        "train_eligibility_days": 20,
+        "train_usage": "event_frequency_and_fill_rate_only_no_return_or_threshold_optimization",
+        "oos_closed_days": 100,
+        "required_quality_dates": 120,
+        "oos_order": "chronological_after_train_eligibility_window",
+        "forward_rows_embargoed_until_contract_and_quality_seals": true
+      },
+      "feasibility": {
+        "must_run_before_oos": true,
+        "estimator_version": "feasibility_gate_v1_wilson_lower_bound",
+        "estimator_version_hash": "086232c4371580576b793336d5a6f2d58296936587e13ff4ad578f3bc443976f",
+        "maximum_non_burning_infeasible_hypotheses_per_track": 2
+      },
+      "validation_protocol": {
+        "minimum_oos_closed_days": 60,
+        "minimum_oos_portfolio_events_total": 20,
+        "minimum_oos_portfolio_events_per_venue": 10,
+        "minimum_unique_oos_signal_dates": 10,
+        "minimum_dual_venue_coverage": 0.8,
+        "price_only_expectancy_positive_each_venue": true,
+        "minimum_combined_profit_factor": 1.2,
+        "minimum_positive_event_rate": 0.6,
+        "walk_forward": {
+          "folds": 5,
+          "test_days_per_fold": 20,
+          "non_overlapping": true,
+          "refit": false,
+          "minimum_positive_combined_folds": 4,
+          "minimum_positive_folds_per_venue": 3
+        },
+        "normal_price_only_pnl_positive": true,
+        "robustness_price_only_pnl_positive": true,
+        "stress_price_only_pnl_nonnegative": true,
+        "maximum_drawdown_fraction_allocated_collateral": 0.1,
+        "maximum_single_event_positive_pnl_share": 0.25,
+        "maximum_single_base_positive_pnl_share": 0.25,
+        "maximum_single_venue_positive_pnl_share": 0.75,
+        "maximum_break_even_holding_days": 3,
+        "minimum_capacity_quote_per_leg": 500.0,
+        "maximum_historical_verdict": "ACCEPT_FOR_SHORT_EXECUTION_PROBE",
+        "deterministic_repeats": 2,
+        "matching_result_hash_required": true
+      },
+      "multiplicity": {
+        "track_id": "pit_universe_v2_forward_track_v1",
+        "hypothesis_slot": 1,
+        "maximum_hypotheses_per_input_merkle": 3,
+        "same_input_oos_evaluations_used_before_track": 0
+      },
+      "data_access_audit": {
+        "forward_market_rows_read": false,
+        "returns_read": false,
+        "pnl_computed": false,
+        "signal_scores_computed": false,
+        "network_access": false,
+        "collector_started": false
+      },
+      "execution_probe_allowed": false,
+      "paper_forward_allowed": false,
+      "live_orders": false,
+      "api_keys": false,
+      "leverage_or_margin": false,
+      "next_allowed_action": "collect_quality_certified_pit_universe_v2_forward_under_explicit_schedule",
+      "contract_hash": "b5e3abd4942fc117b92c324e931d8d91671df3de99b403875bcf38983c26d857"
+    },
+    "hypothesis_contract_sha256": "b5e3abd4942fc117b92c324e931d8d91671df3de99b403875bcf38983c26d857",
+    "hypothesis_bank_sha256": "85ee37afc7e2ba3855084ab9f961cd71677df35894d95263cccd5652a7c317a9",
+    "goal_sha256": "aeba1732e66eb990ac44e88381a826fc464b6e5454e22eea11b2b63069371f1c",
+    "timezone": "Europe/Volgograd",
+    "window_local": "23:00-07:00",
+    "schedule_start_date": "2026-07-29",
+    "nights": 14,
+    "segment_start_local": "01:00",
+    "segment_duration_sec": 1200,
+    "interval_sec": 300,
+    "output_root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2",
+    "runtime_tools": {
+      "schedule_planner": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\night_schedule_plan.py",
+        "sha256": "86dbd15a2d1daede4f0a98188ea8a3acc2e39a5f0a591410364b0364291ffcfa"
+      },
+      "visible_wrapper": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1",
+        "sha256": "79cabe555ee7931294d570a453da03063db9fa0728297547124d5e75c8dec371"
+      },
+      "collector": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\pit_universe_snapshot_collector.py",
+        "sha256": "442c65ee0ba5aa924e7fc7ea77d94b4067e3d3d9169a16a193af0cbd933c1b93"
+      },
+      "public_probe_client": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\pit_universe_public_probe.py",
+        "sha256": "8924d31a80de6633ecf3dde5ae5bad8d8c53766db7eab1c5c55a53be062c340f"
+      },
+      "approval_script": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\approve_trading_night_schedule.ps1",
+        "sha256": "ca059e28c5404aafeeaad0eb4c94a63f5490bb8676d8fd1be7a88b04b99c8ae6"
+      },
+      "status_tool": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\night_schedule_status.py",
+        "sha256": "0ff7ef8e38eba5651c151455e76ab6c37b2c924c0ce02c3ce63535160f2fc417"
+      },
+      "quality_certifier": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\night_schedule_quality.py",
+        "sha256": "dbb1c3fe25d6ee5196cb01d05311c270a5fb7b377e0f67d22de390e3d139d5b8"
+      },
+      "segment_quality_evaluator": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\pit_universe_snapshot_quality.py",
+        "sha256": "a71ced3352a881c63364b45cec3c36d0762714c4719fd44a7d708c1f6d86d4c6"
+      },
+      "hypothesis_contract_validator": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\hypothesis_contract.py",
+        "sha256": "58b9d5012ce7f9848032e218ee286ef33037f6ad489350bdd551ebe68a4bb210"
+      },
+      "costs_module": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\costs.py",
+        "sha256": "b433212fd1303c4ab2e20f6c916037632d917e12b2e595f4815178b6d31c393e"
+      },
+      "feasibility_estimator": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\feasibility_gate.py",
+        "sha256": "9ac47b0fa2abc206ed645c9936ba0f4a222cca2a5946da8f8a9318f6b81fde05"
+      },
+      "membership_drift_evaluator": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\pit_membership_drift_evaluator.py",
+        "sha256": "d5c521547f9fccb3d6654c66d5639f2725fc87989fce4151b39fcdb32956a256"
+      }
+    },
+    "execution_config": {
+      "timeout_sec": 10,
+      "min_contracts_per_exchange": 50,
+      "min_free_disk_gib": 5.0
+    },
+    "quality_policy": {
+      "policy_version": "pit_universe_v2_segment_quality_v3",
+      "min_exchanges_per_cycle": 2,
+      "max_error_cycle_ratio": 0.05,
+      "max_duplicate_snapshot_keys": 0,
+      "minimum_dual_venue_bbo_size_coverage": 0.95,
+      "require_final": true,
+      "require_positive_rows": true,
+      "reject_any_thin_exchange_cycle": true,
+      "max_clock_skew_sec": 60,
+      "required_distinct_days": 120,
+      "train_feasibility_distinct_days": 20,
+      "oos_accrual_requires_feasibility_pass": true
+    },
+    "collection_stage": {
+      "name": "train_accrual",
+      "quality_ledger": {
+        "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\quality-certifications.jsonl",
+        "existed_at_plan": true,
+        "file_sha256_at_plan": "24f1b79f3b61c09b9532c70a023f256f3fbec3e5bfac3e21a3a01fc2692d5b4a",
+        "initial_certification_ids": [
+          "13bb63cb6f0169fcfffa94b5650ef7ea95db3931d098662fb873e1a478e3ed91",
+          "a2edc63bca8ee8efab732be8c2c54ce01384aafdc415fb77d00ac373c4b3ae42",
+          "19654364f66c8e3d5cd66c36c0570ab35ef3db78985a2f40c6a48bc233c54e44",
+          "b352e99fac36a4830af28c480d187ac03d301eb09be1e0eabd6fb102e7a87c69",
+          "ff7e7735f2f4f553380b3e3c43e5c856e811fa3292cb6ea78d558dfea855322b"
+        ],
+        "initial_accepted_certifications": [
+          {
+            "certification_id": "13bb63cb6f0169fcfffa94b5650ef7ea95db3931d098662fb873e1a478e3ed91",
+            "scheduled_date": "2026-07-14",
+            "segment_run_id": "pit_universe_v2_forward_20260714_n01"
+          },
+          {
+            "certification_id": "a2edc63bca8ee8efab732be8c2c54ce01384aafdc415fb77d00ac373c4b3ae42",
+            "scheduled_date": "2026-07-15",
+            "segment_run_id": "pit_universe_v2_forward_20260715_n01"
+          },
+          {
+            "certification_id": "b352e99fac36a4830af28c480d187ac03d301eb09be1e0eabd6fb102e7a87c69",
+            "scheduled_date": "2026-07-23",
+            "segment_run_id": "pit_universe_v2_forward_20260723_n04"
+          },
+          {
+            "certification_id": "ff7e7735f2f4f553380b3e3c43e5c856e811fa3292cb6ea78d558dfea855322b",
+            "scheduled_date": "2026-07-28",
+            "segment_run_id": "pit_universe_v2_forward_20260728_n01"
+          }
+        ]
+      },
+      "initial_accepted_distinct_dates": 4,
+      "train_feasibility_distinct_days": 20,
+      "required_distinct_days": 120,
+      "stage_target_distinct_dates": 20,
+      "maximum_new_accepted_dates": 16,
+      "upstream_train_feasibility": null,
+      "more_collection_requires_stage_authorization": true
+    },
+    "segments": [
+      {
+        "sequence": 1,
+        "run_id": "pit_universe_v2_forward_20260729_n01",
+        "start_local": "2026-07-29T01:00:00+03:00",
+        "end_local": "2026-07-29T01:20:00+03:00",
+        "hard_deadline_local": "2026-07-29T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260729_n01",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 2,
+        "run_id": "pit_universe_v2_forward_20260730_n02",
+        "start_local": "2026-07-30T01:00:00+03:00",
+        "end_local": "2026-07-30T01:20:00+03:00",
+        "hard_deadline_local": "2026-07-30T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260730_n02",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 3,
+        "run_id": "pit_universe_v2_forward_20260731_n03",
+        "start_local": "2026-07-31T01:00:00+03:00",
+        "end_local": "2026-07-31T01:20:00+03:00",
+        "hard_deadline_local": "2026-07-31T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260731_n03",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 4,
+        "run_id": "pit_universe_v2_forward_20260801_n04",
+        "start_local": "2026-08-01T01:00:00+03:00",
+        "end_local": "2026-08-01T01:20:00+03:00",
+        "hard_deadline_local": "2026-08-01T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260801_n04",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 5,
+        "run_id": "pit_universe_v2_forward_20260802_n05",
+        "start_local": "2026-08-02T01:00:00+03:00",
+        "end_local": "2026-08-02T01:20:00+03:00",
+        "hard_deadline_local": "2026-08-02T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260802_n05",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 6,
+        "run_id": "pit_universe_v2_forward_20260803_n06",
+        "start_local": "2026-08-03T01:00:00+03:00",
+        "end_local": "2026-08-03T01:20:00+03:00",
+        "hard_deadline_local": "2026-08-03T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260803_n06",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 7,
+        "run_id": "pit_universe_v2_forward_20260804_n07",
+        "start_local": "2026-08-04T01:00:00+03:00",
+        "end_local": "2026-08-04T01:20:00+03:00",
+        "hard_deadline_local": "2026-08-04T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260804_n07",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 8,
+        "run_id": "pit_universe_v2_forward_20260805_n08",
+        "start_local": "2026-08-05T01:00:00+03:00",
+        "end_local": "2026-08-05T01:20:00+03:00",
+        "hard_deadline_local": "2026-08-05T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260805_n08",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 9,
+        "run_id": "pit_universe_v2_forward_20260806_n09",
+        "start_local": "2026-08-06T01:00:00+03:00",
+        "end_local": "2026-08-06T01:20:00+03:00",
+        "hard_deadline_local": "2026-08-06T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260806_n09",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 10,
+        "run_id": "pit_universe_v2_forward_20260807_n10",
+        "start_local": "2026-08-07T01:00:00+03:00",
+        "end_local": "2026-08-07T01:20:00+03:00",
+        "hard_deadline_local": "2026-08-07T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260807_n10",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 11,
+        "run_id": "pit_universe_v2_forward_20260808_n11",
+        "start_local": "2026-08-08T01:00:00+03:00",
+        "end_local": "2026-08-08T01:20:00+03:00",
+        "hard_deadline_local": "2026-08-08T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260808_n11",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 12,
+        "run_id": "pit_universe_v2_forward_20260809_n12",
+        "start_local": "2026-08-09T01:00:00+03:00",
+        "end_local": "2026-08-09T01:20:00+03:00",
+        "hard_deadline_local": "2026-08-09T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260809_n12",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 13,
+        "run_id": "pit_universe_v2_forward_20260810_n13",
+        "start_local": "2026-08-10T01:00:00+03:00",
+        "end_local": "2026-08-10T01:20:00+03:00",
+        "hard_deadline_local": "2026-08-10T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260810_n13",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      },
+      {
+        "sequence": 14,
+        "run_id": "pit_universe_v2_forward_20260811_n14",
+        "start_local": "2026-08-11T02:15:00+03:00",
+        "end_local": "2026-08-11T02:35:00+03:00",
+        "hard_deadline_local": "2026-08-11T07:00:00+03:00",
+        "duration_sec": 1200,
+        "interval_sec": 300,
+        "expected_cycles_floor": 4,
+        "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260811_n14",
+        "visible_terminal_required": true,
+        "end_before_night_deadline": true
+      }
+    ],
+    "coverage_projection": {
+      "collection_stage": "train_accrual",
+      "existing_qualified_days_assumed": 4,
+      "scheduled_unique_dates": 14,
+      "required_days": 120,
+      "train_feasibility_required_days": 20,
+      "train_feasibility_reached_by_this_schedule": false,
+      "minimum_data_reached_by_this_schedule": false,
+      "note": "Existing PIT runs are not counted until data-quality certification binds their hashes. Collection must pause at the train-feasibility gate before any OOS accrual."
+    },
+    "schedule_amendment": {
+      "schema": "fast_first_night_schedule_time_amendment_v1",
+      "kind": "DEFER_ONE_PIT_SEGMENT_WITHIN_SAME_NIGHT",
+      "base_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_planonly_20260729_20260728_102711.json",
+      "base_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+      "run_id": "pit_universe_v2_forward_20260811_n14",
+      "original_start_local": "2026-08-11T01:00:00+03:00",
+      "original_end_local": "2026-08-11T01:20:00+03:00",
+      "new_start_local": "2026-08-11T02:15:00+03:00",
+      "new_end_local": "2026-08-11T02:35:00+03:00",
+      "hard_deadline_local": "2026-08-11T07:00:00+03:00",
+      "reason": "PRESERVE_GLOBAL_SINGLE_WRITER_WITHOUT_SKIPPING_PIT_DATE",
+      "trade_contract_changed": false
+    }
+  },
+  "schedule_approved": false,
+  "collection_started": false,
+  "network_access": false,
+  "oos_returns_read": false,
+  "pnl_or_returns_read": false,
+  "grid_search": false,
+  "retune": false,
+  "paper_forward": false,
+  "live_orders": false,
+  "api_keys": false,
+  "leverage_or_margin": false,
+  "collection_stage": "train_accrual",
+  "hypothesis": {
+    "id": "pit_universe_membership_drift_reversion_v1",
+    "status": "BANKED_NEEDS_NEW_DATA",
+    "required_data_type": "PIT_UNIVERSE_V2_FORWARD",
+    "minimum_data": {
+      "days": 120,
+      "train_eligibility_days": 20,
+      "oos_closed_days": 100,
+      "portfolio_events": 20,
+      "per_venue_events": 10,
+      "unique_dates": 10
+    },
+    "contract_hash": "b5e3abd4942fc117b92c324e931d8d91671df3de99b403875bcf38983c26d857"
+  },
+  "hypothesis_bank": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\research\\trading_mvp_hypothesis_bank_v1.json",
+    "version": "1.4",
+    "sha256": "85ee37afc7e2ba3855084ab9f961cd71677df35894d95263cccd5652a7c317a9"
+  },
+  "goal_document": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\2026-07-14-trading-mvp-canonical-goal-v3.md",
+    "sha256": "aeba1732e66eb990ac44e88381a826fc464b6e5454e22eea11b2b63069371f1c"
+  },
+  "timezone": "Europe/Volgograd",
+  "night_window_local": "23:00-07:00",
+  "approval_horizon_nights": 14,
+  "output_root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2",
+  "segments": [
+    {
+      "sequence": 1,
+      "run_id": "pit_universe_v2_forward_20260729_n01",
+      "start_local": "2026-07-29T01:00:00+03:00",
+      "end_local": "2026-07-29T01:20:00+03:00",
+      "hard_deadline_local": "2026-07-29T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260729_n01",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260729_n01 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-07-29T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-07-29T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 2,
+      "run_id": "pit_universe_v2_forward_20260730_n02",
+      "start_local": "2026-07-30T01:00:00+03:00",
+      "end_local": "2026-07-30T01:20:00+03:00",
+      "hard_deadline_local": "2026-07-30T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260730_n02",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260730_n02 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-07-30T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-07-30T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 3,
+      "run_id": "pit_universe_v2_forward_20260731_n03",
+      "start_local": "2026-07-31T01:00:00+03:00",
+      "end_local": "2026-07-31T01:20:00+03:00",
+      "hard_deadline_local": "2026-07-31T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260731_n03",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260731_n03 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-07-31T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-07-31T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 4,
+      "run_id": "pit_universe_v2_forward_20260801_n04",
+      "start_local": "2026-08-01T01:00:00+03:00",
+      "end_local": "2026-08-01T01:20:00+03:00",
+      "hard_deadline_local": "2026-08-01T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260801_n04",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260801_n04 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-08-01T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-08-01T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 5,
+      "run_id": "pit_universe_v2_forward_20260802_n05",
+      "start_local": "2026-08-02T01:00:00+03:00",
+      "end_local": "2026-08-02T01:20:00+03:00",
+      "hard_deadline_local": "2026-08-02T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260802_n05",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260802_n05 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-08-02T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-08-02T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 6,
+      "run_id": "pit_universe_v2_forward_20260803_n06",
+      "start_local": "2026-08-03T01:00:00+03:00",
+      "end_local": "2026-08-03T01:20:00+03:00",
+      "hard_deadline_local": "2026-08-03T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260803_n06",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260803_n06 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-08-03T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-08-03T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 7,
+      "run_id": "pit_universe_v2_forward_20260804_n07",
+      "start_local": "2026-08-04T01:00:00+03:00",
+      "end_local": "2026-08-04T01:20:00+03:00",
+      "hard_deadline_local": "2026-08-04T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260804_n07",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260804_n07 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-08-04T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-08-04T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 8,
+      "run_id": "pit_universe_v2_forward_20260805_n08",
+      "start_local": "2026-08-05T01:00:00+03:00",
+      "end_local": "2026-08-05T01:20:00+03:00",
+      "hard_deadline_local": "2026-08-05T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260805_n08",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260805_n08 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-08-05T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-08-05T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 9,
+      "run_id": "pit_universe_v2_forward_20260806_n09",
+      "start_local": "2026-08-06T01:00:00+03:00",
+      "end_local": "2026-08-06T01:20:00+03:00",
+      "hard_deadline_local": "2026-08-06T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260806_n09",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260806_n09 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-08-06T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-08-06T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 10,
+      "run_id": "pit_universe_v2_forward_20260807_n10",
+      "start_local": "2026-08-07T01:00:00+03:00",
+      "end_local": "2026-08-07T01:20:00+03:00",
+      "hard_deadline_local": "2026-08-07T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260807_n10",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260807_n10 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-08-07T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-08-07T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 11,
+      "run_id": "pit_universe_v2_forward_20260808_n11",
+      "start_local": "2026-08-08T01:00:00+03:00",
+      "end_local": "2026-08-08T01:20:00+03:00",
+      "hard_deadline_local": "2026-08-08T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260808_n11",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260808_n11 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-08-08T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-08-08T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 12,
+      "run_id": "pit_universe_v2_forward_20260809_n12",
+      "start_local": "2026-08-09T01:00:00+03:00",
+      "end_local": "2026-08-09T01:20:00+03:00",
+      "hard_deadline_local": "2026-08-09T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260809_n12",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260809_n12 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-08-09T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-08-09T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 13,
+      "run_id": "pit_universe_v2_forward_20260810_n13",
+      "start_local": "2026-08-10T01:00:00+03:00",
+      "end_local": "2026-08-10T01:20:00+03:00",
+      "hard_deadline_local": "2026-08-10T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260810_n13",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260810_n13 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-08-10T01:00:00+03:00\" -ApprovedNotLaterThan \"2026-08-10T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    },
+    {
+      "sequence": 14,
+      "run_id": "pit_universe_v2_forward_20260811_n14",
+      "start_local": "2026-08-11T02:15:00+03:00",
+      "end_local": "2026-08-11T02:35:00+03:00",
+      "hard_deadline_local": "2026-08-11T07:00:00+03:00",
+      "duration_sec": 1200,
+      "interval_sec": 300,
+      "expected_cycles_floor": 4,
+      "output_dir": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260811_n14",
+      "visible_terminal_required": true,
+      "end_before_night_deadline": true,
+      "command_after_approval": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_pit_universe_snapshot_collect_visible.ps1\" -DurationSec 1200 -IntervalSec 300 -TimeoutSec 10 -MinContractsPerExchange 50 -OutputRoot \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\" -RunId pit_universe_v2_forward_20260811_n14 -MinFreeDiskGiB 5 -ApprovedNotBefore \"2026-08-11T02:15:00+03:00\" -ApprovedNotLaterThan \"2026-08-11T07:00:00+03:00\" -SchedulePlanPath \"E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json\" -ExpectedSchedulePlanHash 2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca -ConfirmedPitUniverseSnapshotCollect"
+    }
+  ],
+  "coverage_projection": {
+    "collection_stage": "train_accrual",
+    "existing_qualified_days_assumed": 4,
+    "scheduled_unique_dates": 14,
+    "required_days": 120,
+    "train_feasibility_required_days": 20,
+    "train_feasibility_reached_by_this_schedule": false,
+    "minimum_data_reached_by_this_schedule": false,
+    "note": "Existing PIT runs are not counted until data-quality certification binds their hashes. Collection must pause at the train-feasibility gate before any OOS accrual."
+  },
+  "guards": {
+    "active_run_gate_before_each_segment": true,
+    "visible_terminal_only": true,
+    "hard_deadline_0700_local": true,
+    "max_segment_runtime_sec": 10800,
+    "timeout_or_network_failure": "STOPPED_INCOMPLETE",
+    "resume_requires_same_run_id_and_matching_hashes": true,
+    "forward_returns_embargoed": true,
+    "partial_output_is_not_accepted_evidence": true,
+    "single_schedule_approval_bound_to_plan_hash": true,
+    "collection_stage_authorization_before_each_segment": true
+  },
+  "explicit_approval_required": true,
+  "approval_phrase": "Подтверждаю ночное расписание trading_mvp plan_hash=31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7 на 2026-07-29T01:00:00+03:00..2026-08-11T01:20:00+03:00, data_type=PIT_UNIVERSE_V2_FORWARD, stage=train_accrual, visible terminal, без grid/live/API keys.",
+  "next_allowed_action": "await_explicit_night_schedule_approval",
+  "time_only_amendment": {
+    "schema": "fast_first_night_schedule_time_amendment_v1",
+    "kind": "DEFER_ONE_PIT_SEGMENT_WITHIN_SAME_NIGHT",
+    "base_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_planonly_20260729_20260728_102711.json",
+    "base_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+    "run_id": "pit_universe_v2_forward_20260811_n14",
+    "original_start_local": "2026-08-11T01:00:00+03:00",
+    "original_end_local": "2026-08-11T01:20:00+03:00",
+    "new_start_local": "2026-08-11T02:15:00+03:00",
+    "new_end_local": "2026-08-11T02:35:00+03:00",
+    "hard_deadline_local": "2026-08-11T07:00:00+03:00",
+    "reason": "PRESERVE_GLOBAL_SINGLE_WRITER_WITHOUT_SKIPPING_PIT_DATE",
+    "trade_contract_changed": false
+  }
+}
