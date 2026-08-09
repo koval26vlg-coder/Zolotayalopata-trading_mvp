@@ -1,0 +1,76 @@
+{
+  "schema": "trading_mvp_dense_ws_runtime_dependency_gateway_refreeze_approval_v1",
+  "approval_id": "dense_ws_runtime_dependency_gateway_refreeze_v1_20260809",
+  "approved_at_local": "2026-08-09T22:18:18.4620955+03:00",
+  "approved_at_utc": "2026-08-09T19:18:18.4620955+00:00",
+  "approved_by": "user",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-runtime-dependency-gateway-refreeze-proposal-20260809-v1.json",
+    "file_sha256": "8d3bf6affd0f8e457f076a961d8c78392dad0d2282ac26908dcd38fc919e86e0",
+    "proposal_hash": "ecda2218dfcd2d169823fb08c915e281343d38c98122c2201c4256d02dacbc46",
+    "canonical_hash_verified": true
+  },
+  "implementation": {
+    "patch_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-runtime-dependency-gateway-refreeze-implementation-preview-20260809-v1.patch",
+    "patch_sha256": "f090c3b0799d416133bc6ed2b46c713d92ef7263083e5fdbb20b8440f1646712",
+    "source_bindings": [
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_dense_ws_runtime_dependencies.ps1",
+        "preimage_sha256": "b0380b1a4806619290d9c7001cefa86994824a57fd8320daac7cbf8eb3f6ab51",
+        "postimage_sha256": "cba3dfa74f6980426f381513a5ff3339a1edd733776de2cfda41693ad4f539e4",
+        "expected_postimage_sha256": "cba3dfa74f6980426f381513a5ff3339a1edd733776de2cfda41693ad4f539e4",
+        "verified": true
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_dense_ws_campaign_visible.ps1",
+        "preimage_sha256": "56933c8a18edc75b8ee89c7da238e84df9c3c44145ed522f1d24b7266c9de6da",
+        "postimage_sha256": "1f28041f110de22f3824b65a58894a803d4ae58aa104d33cca82b9b3e6a1f78c",
+        "expected_postimage_sha256": "1f28041f110de22f3824b65a58894a803d4ae58aa104d33cca82b9b3e6a1f78c",
+        "verified": true
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\test_dense_ws_runtime_dependency_checker.ps1",
+        "preimage_sha256": "06320456c30bb98c3720148c951ce04cd785b124661ef6af8243a8cce29dfa64",
+        "postimage_sha256": "8c5760401a7a3a5c93ac06fee233f6528462ba788637984b4587a621b61ec87d",
+        "expected_postimage_sha256": "8c5760401a7a3a5c93ac06fee233f6528462ba788637984b4587a621b61ec87d",
+        "verified": true
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\test_dense_ws_launch_approval_gateway.ps1",
+        "preimage_sha256": "3b5517ba716ed1d9efa28eb3907e91b361742ac2184f3dbd1b5f910ce123b0d3",
+        "postimage_sha256": "c3be4cb61121220054335cfddc2e5710a04b59910afa23998187f40d2a78ac96",
+        "expected_postimage_sha256": "c3be4cb61121220054335cfddc2e5710a04b59910afa23998187f40d2a78ac96",
+        "verified": true
+      }
+    ]
+  },
+  "user_authorization_text": "Разрешаю Dense runtime-dependency gateway refreeze v1 по proposal_hash=ecda2218dfcd2d169823fb08c915e281343d38c98122c2201c4256d02dacbc46: применить exact patch sha256=f090c3b0799d416133bc6ed2b46c713d92ef7263083e5fdbb20b8440f1646712, проверить pre/postimage hashes, выполнить offline tests и создать новые versioned immutable contract/PlanOnly/canonical runtime manifest с policy rebind; без collector launch, network market data, evaluator, returns/PnL/OOS, grid/retune, paper/live, private API, реальных денег, плеча или маржи. STOPPED_INCOMPLETE не возобновлять. Это не разрешение на запуск кампании.",
+  "authorized_scope": {
+    "runtime_quality_contract_files_listed_in_proposal_only": true,
+    "apply_exact_patch": true,
+    "verify_preimage_and_postimage_hashes": true,
+    "offline_synthetic_static_tests": true,
+    "build_new_versioned_runtime_refreeze_evidence_manifest": true,
+    "build_new_versioned_immutable_contract": true,
+    "build_new_versioned_immutable_planonly": true,
+    "build_new_versioned_canonical_runtime_readiness_manifest": true,
+    "rebind_active_policy_after_validation": true,
+    "preserve_fail_closed_until_new_exact_launch_approval": true
+  },
+  "prohibited_actions": {
+    "collector_launch": true,
+    "network_market_data": true,
+    "evaluator": true,
+    "returns_or_pnl": true,
+    "oos": true,
+    "grid_or_retune": true,
+    "paper_or_live": true,
+    "private_api_or_real_capital": true,
+    "leverage_or_margin": true,
+    "stopped_incomplete_retry": true
+  },
+  "campaign_launch_authorized": false,
+  "new_exact_hash_bound_launch_approval_required": true,
+  "stopped_incomplete_retry_authorized": false,
+  "single_use": true
+}

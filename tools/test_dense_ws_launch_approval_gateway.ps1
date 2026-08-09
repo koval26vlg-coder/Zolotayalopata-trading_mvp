@@ -141,16 +141,39 @@ $tampered = Copy-JsonObject $plan
 $tampered.launch_controls.tools.launcher.sha256 = "0" * 64
 Expect-Rejection "reject_plan_launcher_hash" $policy $guard $tampered $receipt
 
+try {
+    Get-RuntimeDependencyManifestBinding -Policy $policy | Out-Null
+    Record-Pass -Name "accept_exact_runtime_manifest_binding"
+} catch {
+    Record-Fail `
+        -Name "accept_exact_runtime_manifest_binding" `
+        -Reason $_.Exception.Message
+}
+
+$tampered = Copy-JsonObject $policy
+$tampered.next_long_campaign.runtime_dependency_readiness_manifest.sha256 = "0" * 64
+try {
+    Get-RuntimeDependencyManifestBinding -Policy $tampered | Out-Null
+    Record-Fail `
+        -Name "reject_runtime_manifest_hash" `
+        -Reason "binding validator accepted a tampered manifest hash"
+} catch {
+    Record-Pass -Name "reject_runtime_manifest_hash"
+}
+
 Expect-Rejection `
     -Name "reject_current_launcher_hash" `
     -Policy $policy -Guard $guard -Plan $plan -Receipt $receipt `
     -Overrides @{ FrozenLauncherSha256 = "0" * 64 }
 
 try {
+    $runtimeDependencyManifest = Get-RuntimeDependencyManifestBinding -Policy $policy
     $dependencyRaw = & pwsh -NoProfile -ExecutionPolicy Bypass `
         -File $dependencyChecker `
         -PlanPath $PlanPath `
         -ExpectedPlanHash $ExpectedPlanHash `
+        -ManifestPath $runtimeDependencyManifest.path `
+        -ExpectedManifestSha256 $runtimeDependencyManifest.sha256 `
         -Json 2>&1
     if ($LASTEXITCODE -ne 0) {
         throw "dependency checker failed: $($dependencyRaw | Out-String)"
@@ -206,7 +229,7 @@ try {
 }
 
 $result = [ordered]@{
-    schema = "trading_mvp_dense_ws_launch_approval_gateway_test_v1"
+    schema = "trading_mvp_dense_ws_launch_approval_gateway_test_v2"
     passed = $failed -eq 0
     passed_count = $passed
     failed_count = $failed

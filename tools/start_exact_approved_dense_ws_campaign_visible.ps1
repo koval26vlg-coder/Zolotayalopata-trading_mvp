@@ -16,7 +16,7 @@ $guardScript = Join-Path $projectRoot "tools\check_trading_mvp_autopilot.ps1"
 $runtimeDependencyChecker = Join-Path $projectRoot `
     "tools\check_dense_ws_runtime_dependencies.ps1"
 $expectedRuntimeDependencyCheckerSha256 = `
-    "b0380b1a4806619290d9c7001cefa86994824a57fd8320daac7cbf8eb3f6ab51"
+    "cba3dfa74f6980426f381513a5ff3339a1edd733776de2cfda41693ad4f539e4"
 
 function Get-Sha256 {
     param([Parameter(Mandatory = $true)][string]$Path)
@@ -26,6 +26,51 @@ function Get-Sha256 {
 function Get-NormalizedPath {
     param([Parameter(Mandatory = $true)][string]$Path)
     return [System.IO.Path]::GetFullPath($Path)
+}
+
+function Get-RuntimeDependencyManifestBinding {
+    param([Parameter(Mandatory = $true)]$Policy)
+
+    $campaignProperty = $Policy.PSObject.Properties["next_long_campaign"]
+    if ($null -eq $campaignProperty -or $null -eq $campaignProperty.Value) {
+        throw "Policy next_long_campaign binding is missing."
+    }
+    $bindingProperty = $campaignProperty.Value.PSObject.Properties[
+        "runtime_dependency_readiness_manifest"
+    ]
+    if ($null -eq $bindingProperty -or $null -eq $bindingProperty.Value) {
+        throw "Policy runtime dependency manifest binding is missing."
+    }
+    $binding = $bindingProperty.Value
+    $pathProperty = $binding.PSObject.Properties["path"]
+    $shaProperty = $binding.PSObject.Properties["sha256"]
+    if (
+        $null -eq $pathProperty -or
+        [string]::IsNullOrWhiteSpace([string]$pathProperty.Value)
+    ) {
+        throw "Policy runtime dependency manifest path is missing."
+    }
+    if (
+        $null -eq $shaProperty -or
+        [string]$shaProperty.Value -notmatch "^[0-9a-fA-F]{64}$"
+    ) {
+        throw "Policy runtime dependency manifest SHA-256 is invalid."
+    }
+
+    $manifestPath = Get-NormalizedPath -Path ([string]$pathProperty.Value)
+    $manifestSha256 = ([string]$shaProperty.Value).ToLowerInvariant()
+    if (-not (Test-Path -LiteralPath $manifestPath -PathType Leaf)) {
+        throw "Runtime dependency manifest is missing: $manifestPath"
+    }
+    Assert-ExactHash `
+        (Get-Sha256 -Path $manifestPath) `
+        $manifestSha256 `
+        "runtime_dependency_manifest.sha256"
+
+    return [ordered]@{
+        path = $manifestPath
+        sha256 = $manifestSha256
+    }
 }
 
 function Assert-ExactString {
@@ -311,6 +356,7 @@ function Invoke-DenseWsApprovalGatewayMain {
         ConvertFrom-Json -DateKind String
     $plan = Get-Content -Raw -LiteralPath $resolvedPlanPath |
         ConvertFrom-Json -DateKind String
+    $runtimeDependencyManifest = Get-RuntimeDependencyManifestBinding -Policy $policy
     $guard = Invoke-JsonPowerShellFile -ScriptPath $resolvedGuardScript -Arguments @("-Json")
     $receiptPath = Get-NormalizedPath -Path ([string]$policy.next_long_campaign.user_launch_approval.receipt_path)
     if (-not (Test-Path -LiteralPath $receiptPath -PathType Leaf)) {
@@ -342,6 +388,8 @@ function Invoke-DenseWsApprovalGatewayMain {
         -Arguments @(
             "-PlanPath", $resolvedPlanPath,
             "-ExpectedPlanHash", $normalizedPlanHash,
+            "-ManifestPath", $runtimeDependencyManifest.path,
+            "-ExpectedManifestSha256", $runtimeDependencyManifest.sha256,
             "-Json"
         )
     Assert-ExactString $runtimeReadiness.status "READY" `
@@ -382,6 +430,8 @@ function Invoke-DenseWsApprovalGatewayMain {
             runtime_dependency_checker_path = $resolvedRuntimeDependencyChecker
             runtime_dependency_checker_sha256 = `
                 $expectedRuntimeDependencyCheckerSha256
+            runtime_dependency_manifest_path = $runtimeDependencyManifest.path
+            runtime_dependency_manifest_sha256 = $runtimeDependencyManifest.sha256
             runtime_dependency_readiness = $runtimeReadiness
             can_launch_now = [bool]$inner.can_launch_now
             underlying_status = [string]$inner.status
@@ -410,6 +460,8 @@ function Invoke-DenseWsApprovalGatewayMain {
             runtime_dependency_checker_path = $resolvedRuntimeDependencyChecker
             runtime_dependency_checker_sha256 = `
                 $expectedRuntimeDependencyCheckerSha256
+            runtime_dependency_manifest_path = $runtimeDependencyManifest.path
+            runtime_dependency_manifest_sha256 = $runtimeDependencyManifest.sha256
             runtime_dependency_readiness = $runtimeReadiness
             terminal_pid = [int]$inner.terminal_pid
             terminal_ownership_verified = $true

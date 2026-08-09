@@ -1,0 +1,110 @@
+{
+  "schema": "trading_mvp_dense_ws_runtime_dependency_gateway_refreeze_regression_v1",
+  "mode": "OFFLINE_NO_LAUNCH",
+  "observed_at_utc": "2026-08-09T19:27:00Z",
+  "proposal_hash": "ecda2218dfcd2d169823fb08c915e281343d38c98122c2201c4256d02dacbc46",
+  "exact_patch_sha256": "f090c3b0799d416133bc6ed2b46c713d92ef7263083e5fdbb20b8440f1646712",
+  "source_postimages": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_dense_ws_runtime_dependencies.ps1",
+      "sha256": "cba3dfa74f6980426f381513a5ff3339a1edd733776de2cfda41693ad4f539e4"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_dense_ws_campaign_visible.ps1",
+      "sha256": "1f28041f110de22f3824b65a58894a803d4ae58aa104d33cca82b9b3e6a1f78c"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\test_dense_ws_runtime_dependency_checker.ps1",
+      "sha256": "8c5760401a7a3a5c93ac06fee233f6528462ba788637984b4587a621b61ec87d"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\test_dense_ws_launch_approval_gateway.ps1",
+      "sha256": "c3be4cb61121220054335cfddc2e5710a04b59910afa23998187f40d2a78ac96"
+    }
+  ],
+  "immutable_outputs": {
+    "contract": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway.json",
+      "file_sha256": "fd26b0a16cfef1952477965323e51f0f2ac8123ab38c0d6cd7982bc139562f65",
+      "contract_hash": "d61eff6c00a69fb4340ae84e6663af9b64c412f9ad0a55f833dc575096ec28c5"
+    },
+    "planonly": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway.json",
+      "file_sha256": "5712d0c71147c8a3005afe7bcc0584ee624f4aebcf82fa96940bc8f1227ca860",
+      "plan_hash": "a5fdae4b9f22c21b5164c6c703d0be9f3b25155edd4bf2acab5f504063fef591",
+      "actual_collection_allowed": false
+    },
+    "canonical_runtime_manifest": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\dense-ws-runtime-dependency-manifest-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway.json",
+      "sha256": "c1b615f39db0400345e046a8f765d74ecf1e2a8478c6580305b2512254405025"
+    },
+    "runtime_refreeze_evidence": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-runtime-dependencies-20260809-n13-n14-no-skip-v4-runtime-gateway-r1.json",
+      "sha256": "ca8b4e46649b3d368a89c98da3834e1e15a900f33a16f412f64209e51eadbe91"
+    }
+  },
+  "tests": {
+    "powershell_parse": {
+      "passed": true,
+      "files_checked": 4,
+      "parse_errors": 0
+    },
+    "python_regression": {
+      "passed": true,
+      "passed_count": 36,
+      "failed_count": 0
+    },
+    "runtime_dependency_checker": {
+      "passed": true,
+      "passed_count": 13,
+      "failed_count": 0
+    },
+    "runtime_manifest_policy_binding_synthetic": {
+      "passed": true,
+      "passed_count": 3,
+      "failed_count": 0,
+      "accepted_exact_binding": true,
+      "rejected_tampered_hash": true,
+      "rejected_missing_binding": true
+    }
+  },
+  "contract_diff_audit": {
+    "passed": true,
+    "contract_differences": 9,
+    "plan_differences": 15,
+    "differences_limited_to_versioned_paths_hashes_generation_time_and_runtime_refreeze_provenance": true,
+    "hypothesis_changed": false,
+    "venue_changed": false,
+    "universe_changed": false,
+    "signal_changed": false,
+    "cost_changed": false,
+    "risk_changed": false,
+    "campaign_start_changed": false,
+    "duration_changed": false,
+    "output_cap_changed": false,
+    "pit_pointer_changed": false,
+    "n13_or_n14_no_skip_contract_changed": false
+  },
+  "safety": {
+    "campaign_output_root_exists": false,
+    "global_writer_claim_exists": false,
+    "collector_started": false,
+    "network_market_data_accessed": false,
+    "evaluator_started": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "stopped_incomplete_retry_authorized": false,
+    "new_exact_launch_approval_required": true
+  },
+  "diagnostic_only_artifact": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-runtime-dependencies-20260809-n13-n14-no-skip-v4-runtime-gateway.json",
+    "disposition": "UNBOUND_DIAGNOSTIC_ONLY_SUPERSEDED_BY_R1"
+  },
+  "result": "PASS_REFREEZE_COMPLETE_NO_LAUNCH_POLICY_REBIND_ALLOWED"
+}

@@ -1,0 +1,76 @@
+{
+  "schema": "trading_mvp_dense_ws_runtime_dependency_gateway_refreeze_completion_v1",
+  "status": "PASS_REFREEZE_COMPLETE_SEPARATE_LAUNCH_APPROVAL_REQUIRED",
+  "observed_at_utc": "2026-08-09T19:29:00Z",
+  "proposal_hash": "ecda2218dfcd2d169823fb08c915e281343d38c98122c2201c4256d02dacbc46",
+  "exact_patch_sha256": "f090c3b0799d416133bc6ed2b46c713d92ef7263083e5fdbb20b8440f1646712",
+  "approval_receipt": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-09-dense-ws-runtime-dependency-gateway-refreeze-v1-approval.json",
+    "sha256": "ce3455fd151a24354aa64f200b000fa47340464013bfd0d243cd611f7d9d40cb"
+  },
+  "source_hashes": {
+    "preimages_verified": 4,
+    "postimages_verified": 4,
+    "mismatches": 0
+  },
+  "active_artifacts": {
+    "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway.json",
+    "contract_file_sha256": "fd26b0a16cfef1952477965323e51f0f2ac8123ab38c0d6cd7982bc139562f65",
+    "contract_hash": "d61eff6c00a69fb4340ae84e6663af9b64c412f9ad0a55f833dc575096ec28c5",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway.json",
+    "plan_file_sha256": "5712d0c71147c8a3005afe7bcc0584ee624f4aebcf82fa96940bc8f1227ca860",
+    "plan_hash": "a5fdae4b9f22c21b5164c6c703d0be9f3b25155edd4bf2acab5f504063fef591",
+    "canonical_runtime_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\dense-ws-runtime-dependency-manifest-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway.json",
+    "canonical_runtime_manifest_sha256": "c1b615f39db0400345e046a8f765d74ecf1e2a8478c6580305b2512254405025"
+  },
+  "policy_rebind": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "preimage_sha256": "359fb8e6c1c3f4a25b2b4a0bc0d1d5084dc2bd3a494ff4227286c3eb92fcb812",
+    "postimage_sha256": "cd581c0eb7e1cc24357dce1bc0db037b2e616911451bab2554d5f5da76a07f22",
+    "backup_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\recovery\\2026-08-09-trading-mvp-autopilot-policy-before-runtime-gateway-refreeze-rebind-v1.json",
+    "backup_sha256": "359fb8e6c1c3f4a25b2b4a0bc0d1d5084dc2bd3a494ff4227286c3eb92fcb812",
+    "actual_collection_allowed": false,
+    "launch_approval_status": "NOT_APPROVED_NEW_PLAN_SEPARATE_EXACT_LAUNCH_REQUIRED"
+  },
+  "tests": {
+    "powershell_parse": "PASS_4_FILES_0_ERRORS",
+    "python_contract_and_schedule_regression": "PASS_36_OF_36",
+    "autopilot_guard_regression": "PASS_43_OF_43",
+    "runtime_dependency_checker": "PASS_13_OF_13",
+    "runtime_manifest_binding_synthetic": "PASS_3_OF_3",
+    "contract_policy_validation": "VALID",
+    "git_diff_check": "PASS"
+  },
+  "guard": {
+    "status": "ACTIVE",
+    "decision": "AWAIT_EXPLICIT_LONG_CAMPAIGN_APPROVAL",
+    "candidate_status": "READY_FOR_APPROVAL",
+    "run_approval_notification_required": true,
+    "weekly_remaining_percent": 74.0,
+    "active_writer": false
+  },
+  "pit": {
+    "n13_run_id": "pit_universe_v2_forward_20260810_n13",
+    "n13_start_local": "2026-08-10T01:00:00+03:00",
+    "n13_end_local": "2026-08-10T01:20:00+03:00",
+    "n13_affected": false,
+    "n14_run_id": "pit_universe_v2_forward_20260811_n14",
+    "n14_start_local": "2026-08-11T02:15:00+03:00",
+    "n14_end_local": "2026-08-11T02:35:00+03:00",
+    "pit_pointer_changed": false
+  },
+  "safety": {
+    "collector_started": false,
+    "campaign_output_created": false,
+    "network_market_data_accessed": false,
+    "evaluator_started": false,
+    "returns_or_pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "next_action": "REQUEST_ONE_EXACT_HASH_BOUND_DENSE_LAUNCH_AND_N14_NO_SKIP_ACTIVATION_APPROVAL"
+}

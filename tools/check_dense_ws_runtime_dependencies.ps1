@@ -4,6 +4,11 @@ param(
     [Parameter(Mandatory = $true)]
     [ValidatePattern("^[0-9a-fA-F]{64}$")]
     [string]$ExpectedPlanHash,
+    [Parameter(Mandatory = $true)]
+    [string]$ManifestPath,
+    [Parameter(Mandatory = $true)]
+    [ValidatePattern("^[0-9a-fA-F]{64}$")]
+    [string]$ExpectedManifestSha256,
     [switch]$Json
 )
 
@@ -11,10 +16,6 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$manifestPath = Join-Path $projectRoot `
-    "docs\plans\dense-ws-runtime-dependency-manifest-20260803-aef-24h-v1.json"
-$expectedManifestSha256 = `
-    "b53cfb88c2b5d33245c817a8faa099ab04639118a9fef0e11fdb6fd714a1eede"
 
 function Get-Sha256 {
     param([Parameter(Mandatory = $true)][string]$Path)
@@ -48,13 +49,15 @@ function Test-ExactHash {
 
 $PlanPath = Get-NormalizedPath -Path $PlanPath
 $ExpectedPlanHash = $ExpectedPlanHash.ToLowerInvariant()
-if (-not (Test-Path -LiteralPath $manifestPath -PathType Leaf)) {
-    throw "Runtime dependency manifest is missing: $manifestPath"
+$ManifestPath = Get-NormalizedPath -Path $ManifestPath
+$ExpectedManifestSha256 = $ExpectedManifestSha256.ToLowerInvariant()
+if (-not (Test-Path -LiteralPath $ManifestPath -PathType Leaf)) {
+    throw "Runtime dependency manifest is missing: $ManifestPath"
 }
-if ((Get-Sha256 -Path $manifestPath) -ne $expectedManifestSha256) {
+if ((Get-Sha256 -Path $ManifestPath) -ne $ExpectedManifestSha256) {
     throw "Runtime dependency manifest hash mismatch."
 }
-$manifest = Get-Content -Raw -LiteralPath $manifestPath |
+$manifest = Get-Content -Raw -LiteralPath $ManifestPath |
     ConvertFrom-Json -Depth 100 -DateKind String
 if (
     [string]$manifest.schema -ne
@@ -427,7 +430,7 @@ print(json.dumps({
     $previousBytecodeSetting = $env:PYTHONDONTWRITEBYTECODE
     $env:PYTHONDONTWRITEBYTECODE = "1"
     try {
-        $probeRaw = & $pythonPath -c $pythonProbeSource $manifestPath $projectRoot 2>&1
+        $probeRaw = & $pythonPath -c $pythonProbeSource $ManifestPath $projectRoot 2>&1
         $probeExitCode = $LASTEXITCODE
     } finally {
         $env:PYTHONDONTWRITEBYTECODE = $previousBytecodeSetting
@@ -473,8 +476,8 @@ $result = [ordered]@{
     plan_path = $PlanPath
     plan_hash = $ExpectedPlanHash
     plan_file_sha256 = $planFileSha256
-    manifest_path = $manifestPath
-    manifest_sha256 = $expectedManifestSha256
+    manifest_path = $ManifestPath
+    manifest_sha256 = $ExpectedManifestSha256
     campaign_root = $campaignRoot
     campaign_root_existed_before = $campaignRootExistedBefore
     campaign_root_existed_after = $campaignRootExistedAfter
