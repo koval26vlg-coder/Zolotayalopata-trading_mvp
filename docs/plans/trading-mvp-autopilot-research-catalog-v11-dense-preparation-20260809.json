@@ -1,0 +1,54 @@
+{
+  "schema": "trading_mvp_autopilot_research_catalog_v1",
+  "catalog_id": "trading_mvp_autopilot_research_catalog_v11_dense_preparation_20260809",
+  "project": "trading_mvp",
+  "mode": "bounded_offline_dense_planonly_preparation",
+  "parent_audit": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v11.json",
+    "file_sha256": "cec69bdff00f4ac96135eff9bac297f2602885f701930e442c9ce47d5ab50f78"
+  },
+  "constraints": {
+    "max_runtime_sec_per_task": 1800,
+    "one_task_at_a_time": true,
+    "network_access": false,
+    "market_data_writer": false,
+    "returns_or_pnl_read": false,
+    "new_hypothesis": false,
+    "trade_contract_change": false,
+    "grid_or_retune": false,
+    "paper_positions": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "leverage_or_margin": false
+  },
+  "tasks": [
+    {
+      "id": "dense_ws_next_weekend_reservation_v1",
+      "max_runtime_sec": 600,
+      "output_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-next-weekend-reservation-completion-20260809-v1.json",
+      "objective": "Reserve the earliest feasible 24-hour no-skip Dense window from the existing PIT horizon without approving the horizon, changing trading contracts or starting a collector.",
+      "allowed_inputs": [
+        "trading_mvp/src/dense_ws_next_window_reservation.py",
+        "trading_mvp/src/dense_ws_no_skip_policy_candidate.py",
+        "docs/plans/trading-mvp-continuous-production-policy-v1.json",
+        "docs/plans/trading-mvp-autopilot-policy-v1.json",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules"
+      ]
+    },
+    {
+      "id": "dense_ws_refreeze_preview_automation_v1",
+      "max_runtime_sec": 900,
+      "output_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-refreeze-preview-completion-20260809-v2.json",
+      "objective": "Build and independently verify an exact time-only source patch and hash-bound contingent proposal. Keep the packet non-authorizing until a fresh PIT extension is approved.",
+      "allowed_inputs": [
+        "trading_mvp/src/dense_ws_refreeze_preview.py",
+        "trading_mvp/src/dense_ws_campaign_contract.py",
+        "trading_mvp/tests/test_dense_ws_refreeze_preview.py",
+        "docs/plans/drafts/trading-mvp-continuous-production-policy-dense-ws-20260815-n04-n05-no-skip-reservation-planonly-v2.json",
+        "docs/plans/drafts/pit_universe_v2_train_schedule_time_amendment_n05_20260816_0215_reservation_planonly_v1.json",
+        "docs/plans/drafts/dense-ws-feasibility-20260815-aef-24h-n04-n05-no-skip-reservation-planonly-v2.json",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\dense-ws-next-no-skip-window-reservation-20260815-v1.json"
+      ]
+    }
+  ]
+}

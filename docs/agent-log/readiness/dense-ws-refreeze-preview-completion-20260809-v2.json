@@ -1,0 +1,38 @@
+{
+  "schema": "trading_mvp_dense_ws_planonly_task_completion_v1",
+  "task_id": "dense_ws_refreeze_preview_automation_v1",
+  "status": "COMPLETED",
+  "result": {
+    "proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-next-weekend-n04-n05-no-skip-refreeze-proposal-20260809-v2.json",
+    "proposal_file_sha256": "3620a8ccaec4da419f9f0a37653d0f9f8b313c028831f943f7d9c45adb86e59e",
+    "proposal_hash": "5ca91365db4d6ef2a21efefd536f788edbc942b538e0a17e203d63615bd8c770",
+    "patch_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-next-weekend-n04-n05-no-skip-refreeze-preview-20260809-v2.patch",
+    "patch_file_sha256": "3bafadc1fcd40bc399b56f85b39d942ee09e08809e78b9b6f3da60defc2e5d49",
+    "isolated_git_apply_check": "PASS",
+    "approval_request_allowed": false,
+    "collector_launch_allowed": false
+  },
+  "offline_gap_assessment": {
+    "materially_useful_same_contract_tasks_remaining": false,
+    "reason": "Current immutable data cannot honestly test another distinct strategy; the next material dependency is the scheduled PIT segment or a fresh PIT horizon."
+  },
+  "next_bounded_catalog_requirement": [],
+  "safety": {
+    "network_access": false,
+    "collector_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "hypothesis_changed": false,
+    "trading_contract_changed": false,
+    "paper_forward_started": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "WAITING_SCHEDULE_WINDOW_NO_FALLBACK",
+  "deterministic_result_hash": "c9574215899c29694c814bae296e1623affb0b23043b43c9fefaae85d373647c",
+  "generated_at_utc": "2026-08-09T18:17:25.368689+00:00"
+}

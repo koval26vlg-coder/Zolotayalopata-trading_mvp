@@ -3,9 +3,9 @@
   "project": "trading_mvp",
   "mode": "sequential_bounded_research",
   "auto_refill": true,
-  "catalog_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-research-catalog-v10-reconciliation-20260809.json",
-  "catalog_file_sha256": "9cacc19bc21be1b20f3c6dc350d19f3f61e31ba3630fb48ab7f0a6bc9bd43ead",
-  "refill_count": 8,
+  "catalog_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-research-catalog-v11-dense-preparation-20260809.json",
+  "catalog_file_sha256": "d40d3e7a58371f5ee7cac64277335e3db5f0adfb802cfdd99d53e19eb4151869",
+  "refill_count": 9,
   "created_at_utc": "2026-07-28T17:30:00Z",
   "constraints": {
     "max_runtime_sec_per_task": 1800,
@@ -981,8 +981,48 @@
       "finished_at_utc": "2026-08-09T17:24:28.396305Z",
       "artifact_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\paper-product-readiness-audit-v11.json",
       "artifact_sha256": "cec69bdff00f4ac96135eff9bac297f2602885f701930e442c9ce47d5ab50f78"
+    },
+    {
+      "id": "dense_ws_next_weekend_reservation_v1",
+      "max_runtime_sec": 600,
+      "output_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-next-weekend-reservation-completion-20260809-v1.json",
+      "objective": "Reserve the earliest feasible 24-hour no-skip Dense window from the existing PIT horizon without approving the horizon, changing trading contracts or starting a collector.",
+      "allowed_inputs": [
+        "trading_mvp/src/dense_ws_next_window_reservation.py",
+        "trading_mvp/src/dense_ws_no_skip_policy_candidate.py",
+        "docs/plans/trading-mvp-continuous-production-policy-v1.json",
+        "docs/plans/trading-mvp-autopilot-policy-v1.json",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules"
+      ],
+      "status": "COMPLETED",
+      "owner": "Codex",
+      "started_at_utc": "2026-08-09T17:35:30Z",
+      "finished_at_utc": "2026-08-09T17:36:27.255249Z",
+      "artifact_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-next-weekend-reservation-completion-20260809-v1.json",
+      "artifact_sha256": "9990595320eca880136f8065cc7f6dc877dc5a1e6619a7424ef8c0a841d363df"
+    },
+    {
+      "id": "dense_ws_refreeze_preview_automation_v1",
+      "max_runtime_sec": 900,
+      "output_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-refreeze-preview-completion-20260809-v2.json",
+      "objective": "Build and independently verify an exact time-only source patch and hash-bound contingent proposal. Keep the packet non-authorizing until a fresh PIT extension is approved.",
+      "allowed_inputs": [
+        "trading_mvp/src/dense_ws_refreeze_preview.py",
+        "trading_mvp/src/dense_ws_campaign_contract.py",
+        "trading_mvp/tests/test_dense_ws_refreeze_preview.py",
+        "docs/plans/drafts/trading-mvp-continuous-production-policy-dense-ws-20260815-n04-n05-no-skip-reservation-planonly-v2.json",
+        "docs/plans/drafts/pit_universe_v2_train_schedule_time_amendment_n05_20260816_0215_reservation_planonly_v1.json",
+        "docs/plans/drafts/dense-ws-feasibility-20260815-aef-24h-n04-n05-no-skip-reservation-planonly-v2.json",
+        "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\dense-ws-next-no-skip-window-reservation-20260815-v1.json"
+      ],
+      "status": "COMPLETED",
+      "owner": "Codex",
+      "started_at_utc": "2026-08-09T17:47:00Z",
+      "finished_at_utc": "2026-08-09T18:17:25.368689Z",
+      "artifact_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-refreeze-preview-completion-20260809-v2.json",
+      "artifact_sha256": "b10776703fe795b798c307be00f5dad97dc6f349c845068b323ad41e6bea2e67"
     }
   ],
-  "updated_at_utc": "2026-08-09T17:24:28.411077Z",
-  "last_refill_at_utc": "2026-08-09T17:23:23.339180Z"
+  "updated_at_utc": "2026-08-09T18:17:25.368689Z",
+  "last_refill_at_utc": "2026-08-09T18:17:25.368689Z"
 }

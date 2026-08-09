@@ -1,0 +1,34 @@
+{
+  "schema": "trading_mvp_dense_ws_planonly_task_completion_v1",
+  "task_id": "dense_ws_next_weekend_reservation_v1",
+  "status": "COMPLETED",
+  "result": {
+    "reservation_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\dense-ws-next-no-skip-window-reservation-20260815-v1.json",
+    "reservation_file_sha256": "9d7374d50984ce43ba6af28dee996a5b314e644fbf83cd22a78289d140785b59",
+    "candidate_policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-20260815-n04-n05-no-skip-reservation-planonly-v2.json",
+    "candidate_policy_file_sha256": "dc5f66f743ebc7408580ed90f7c98681314fb5ec7588abb2e2cc29b51d504ee7",
+    "pit_amendment_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\pit_universe_v2_train_schedule_time_amendment_n05_20260816_0215_reservation_planonly_v1.json",
+    "pit_amendment_file_sha256": "02050925af3a7834606e398d17604862be7a2dbfb1626e4ea26ed80235ab29cc",
+    "feasibility_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-feasibility-20260815-aef-24h-n04-n05-no-skip-reservation-planonly-v2.json",
+    "feasibility_file_sha256": "0c34ac7cd933d23960b9a707fa0c2e3b52e446cb1437c7aa33a15e6d8b3031e3",
+    "status": "CONTINGENT_ON_FRESH_PIT_EXTENSION_APPROVAL"
+  },
+  "safety": {
+    "network_access": false,
+    "collector_started": false,
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "hypothesis_changed": false,
+    "trading_contract_changed": false,
+    "paper_forward_started": false,
+    "live_orders": false,
+    "private_api_keys": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "BUILD_CONTINGENT_REFREEZE_PREVIEW_WITHOUT_APPROVAL_OR_LAUNCH",
+  "deterministic_result_hash": "9b621abde41915e01af26f59cdaf3309aab0c2230446ff4bc7c3f3193464c30a",
+  "generated_at_utc": "2026-08-09T18:09:03.658996+00:00"
+}
