@@ -26,8 +26,9 @@ import gate_membership_momentum_v2_paper_plan as paper_plan  # noqa: E402
 import gate_historical_membership_v3_history_plan as v3_history_plan  # noqa: E402
 from gate_membership_momentum import DAY_SEC  # noqa: E402
 from test_gate_membership_momentum_v2_execution_selection import _snapshot  # noqa: E402
-from test_gate_membership_momentum_v2_paper_plan import (  # noqa: E402
-    _accepted_execution_report,
+from test_gate_membership_momentum_v2_execution_probe_runtime import (  # noqa: E402
+    _selection as _execution_selection,
+    _window_plan as _execution_window_plan,
 )
 
 
@@ -39,6 +40,82 @@ paper_state = (
     if STATE_MODULE_AVAILABLE
     else None
 )
+
+
+TEST_WINDOW_DURATION_SEC = 15
+TEST_MINIMUM_VALID_SNAPSHOTS = 3
+
+
+def _write_execution_probe_samples(plan: dict) -> None:
+    window = plan["window_contract"]
+    expected_cycles = int(window["expected_cycles"])
+    interval_sec = int(window["interval_sec"])
+    start_ts = int(window["start_ts"])
+    samples_path = Path(plan["output_contract"]["samples_path"])
+    with samples_path.open("x", encoding="utf-8") as handle:
+        for cycle in range(1, expected_cycles + 1):
+            timestamp = start_ts + (cycle - 1) * interval_sec
+            for position in plan["selected_positions"]:
+                handle.write(
+                    json.dumps(
+                        {
+                            "schema": probe_runtime.SAMPLE_SCHEMA,
+                            "window_plan_hash": plan["plan_hash"],
+                            "selection_hash": plan["selection_authorization"][
+                                "artifact_hash"
+                            ],
+                            "window_index": int(window["index"]),
+                            "cycle": cycle,
+                            "scheduled_ts": timestamp,
+                            **position,
+                            "request_started_ts": timestamp,
+                            "received_ts": timestamp + 0.1,
+                            "exchange_ts": timestamp,
+                            "timestamp_skew_ms": 0.0,
+                            "bids": [[100.0, 100_000.0]],
+                            "asks": [[100.0, 100_000.0]],
+                            "collection_error": None,
+                        },
+                        sort_keys=True,
+                        separators=(",", ":"),
+                    )
+                    + "\n"
+                )
+
+
+def _accepted_execution_report(root: Path) -> tuple[Path, dict]:
+    probe_path, probe_plan, selection_path, selection_result = _execution_selection(root)
+    manifests: list[Path] = []
+    for window_index in range(probe.WINDOW_COUNT):
+        plan_path, window_plan = _execution_window_plan(
+            root,
+            probe_path=probe_path,
+            probe_plan=probe_plan,
+            selection_path=selection_path,
+            selection_result=selection_result,
+            window_index=window_index,
+        )
+        _write_execution_probe_samples(window_plan)
+        expected_cycles = int(window_plan["window_contract"]["expected_cycles"])
+        probe_runtime.finalize_execution_probe_window(
+            plan_path=plan_path,
+            expected_plan_hash=window_plan["plan_hash"],
+            completed_cycles=expected_cycles,
+            errors=[],
+            critical_errors=[],
+            runtime_sec=float(window_plan["window_contract"]["duration_sec"]),
+        )
+        manifests.append(Path(window_plan["output_contract"]["manifest_path"]))
+    report_path = root / "execution-report.json"
+    report = probe_runtime.evaluate_execution_probe_windows(
+        probe_plan_path=probe_path,
+        expected_probe_plan_hash=probe_plan["plan_hash"],
+        selection_path=selection_path,
+        expected_selection_hash=selection_result["artifact_hash"],
+        manifest_paths=manifests,
+        output_path=report_path,
+    )
+    return report_path, report
 
 
 def _iso(timestamp: int) -> str:
@@ -509,6 +586,44 @@ class GateMembershipMomentumV2PaperStateModuleTests(unittest.TestCase):
 
 @unittest.skipUnless(STATE_MODULE_AVAILABLE, "paper state module is not implemented yet")
 class GateMembershipMomentumV2PaperStateTests(unittest.TestCase):
+    def setUp(self) -> None:
+        # Exact production-contract values are covered by execution-probe tests.
+        # Paper-state tests keep the same three-window shape with a small fixture.
+        for patcher in (
+            mock.patch.object(probe, "WINDOW_DURATION_SEC", TEST_WINDOW_DURATION_SEC),
+            mock.patch.object(
+                probe,
+                "MINIMUM_VALID_SNAPSHOTS_PER_ASSET_PER_WINDOW",
+                TEST_MINIMUM_VALID_SNAPSHOTS,
+            ),
+        ):
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
+        # The accepted report is immutable within a test. Raw and sample files
+        # remain uncached so the provenance-tampering assertions still run live.
+        original_report_validator = paper_plan._validate_execution_report
+        report_cache: dict[tuple[str, str], tuple[str, tuple]] = {}
+
+        def cached_report_validator(path: str | Path, expected_hash: str) -> tuple:
+            resolved = Path(path).expanduser().resolve()
+            key = (str(resolved), str(expected_hash))
+            file_hash = v3_history_plan.sha256_file(resolved)
+            cached = report_cache.get(key)
+            if cached is not None and cached[0] == file_hash:
+                return cached[1]
+            validated = original_report_validator(resolved, expected_hash)
+            report_cache[key] = (file_hash, validated)
+            return validated
+
+        report_patcher = mock.patch.object(
+            paper_plan,
+            "_validate_execution_report",
+            side_effect=cached_report_validator,
+        )
+        report_patcher.start()
+        self.addCleanup(report_patcher.stop)
+
     def test_approval_requires_exact_hash_and_explicit_flag(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
