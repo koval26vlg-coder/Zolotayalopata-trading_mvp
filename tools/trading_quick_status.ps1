@@ -122,11 +122,12 @@ $maxApprovedWindowRuntimeSec = if ($continuousPolicy) {
     0
 }
 $previewRuntimeSec = if ($preview) { [int64][Math]::Ceiling([double]$preview.hours * 3600.0) } else { 0 }
-$previewFitsApprovedWindow = (
+$previewRuntimeFitsApprovedWindow = (
     $previewRuntimeSec -gt 0 -and
     $maxApprovedWindowRuntimeSec -gt 0 -and
     $previewRuntimeSec -le $maxApprovedWindowRuntimeSec
 )
+$previewFitsApprovedWindow = ($previewHypothesisEligible -and $previewRuntimeFitsApprovedWindow)
 
 $swarmStatus = $null
 if (-not $SkipSwarm -and (Test-Path -LiteralPath $swarmStatusScript)) {
@@ -227,6 +228,7 @@ $result = [ordered]@{
             selected_hypothesis_id = $previewHypothesisId
             frozen_hypothesis_eligible = $previewHypothesisEligible
             fits_any_approved_window = $previewFitsApprovedWindow
+            runtime_fits_any_approved_window = $previewRuntimeFitsApprovedWindow
             max_approved_window_runtime_sec = $maxApprovedWindowRuntimeSec
             preview_command = $previewCommand
             command_after_explicit_approval = if ($previewHypothesisEligible -and $previewFitsApprovedWindow) { $startCommand } else { $null }

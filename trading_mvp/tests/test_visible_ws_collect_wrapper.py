@@ -1315,7 +1315,16 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
         self.assertIn("run_trading_tests.ps1", payload["trading_test_runner_command"])
         self.assertIn("-PlanOnly", payload["trading_test_runner_command"])
         self.assertIn("run_trading_tests.ps1", payload["trading_test_full_command"])
-        self.assertIn(payload["swarm_status"], {"SWARM_LIMITED", "SWARM_REVIEW_INCOMPLETE", "SWARM_APPROVED", "SWARM_CANCELLED_BY_USER"})
+        self.assertIn(
+            payload["swarm_status"],
+            {
+                "SWARM_LIMITED",
+                "SWARM_REVIEW_INCOMPLETE",
+                "SWARM_APPROVED",
+                "SWARM_BLOCKED",
+                "SWARM_CANCELLED_BY_USER",
+            },
+        )
         self.assertEqual(payload["swarm_limited"], payload["swarm_status"] == "SWARM_LIMITED")
         self.assertIsInstance(payload["swarm_independent_review_available"], bool)
         self.assertEqual(checks["final_review_blocked_dataset_self_refuse"]["status"], "pass")
@@ -1435,10 +1444,9 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
         self.assertEqual(payload["hours"], 72)
         self.assertEqual(payload["max_pairs_per_exchange"], 16)
         self.assertIn("no_binance_dense_ws_sweep_20260628.csv", payload["universe_path"])
-        self.assertIn("-ConfirmedLongRun", payload["command_after_explicit_approval"])
-        self.assertNotIn("-Hours 6 -ConfirmedLongRun", payload["command_after_explicit_approval"])
+        self.assertIsNone(payload["command_after_explicit_approval"])
         self.assertEqual(checks["frozen_hypothesis_binding"]["status"], "fail")
-        self.assertEqual(checks["campaign_window_capacity"]["status"], "fail")
+        self.assertEqual(checks["campaign_window_capacity"]["status"], "pass")
 
         for name in (
             "active_run_gate",

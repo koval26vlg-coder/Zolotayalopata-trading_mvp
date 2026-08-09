@@ -205,7 +205,7 @@ if ($null -ne $plan) {
 
     if (
         -not [string]::IsNullOrWhiteSpace($selectedHypothesisId) -and
-        ($eligibleDenseHypothesisIds -contains $selectedHypothesisId -or $selectedHypothesisId -eq "spot_maker_liquidity_sweep_reversal_event_quality")
+        $eligibleDenseHypothesisIds -contains $selectedHypothesisId
     ) {
         Add-Check $checks "frozen_hypothesis_binding" "pass" "Plan is bound to eligible frozen hypothesis $selectedHypothesisId."
     } else {
@@ -339,7 +339,7 @@ $result = [ordered]@{
     max_approved_window_runtime_sec = $maxApprovedWindowRuntimeSec
     plan_preview_latest = $planPreviewLatest
     confirmed_shortcut = $confirmedShortcut
-    command_after_explicit_approval = if ($plan -and $plan.command_after_explicit_approval) { [string]$plan.command_after_explicit_approval } else { $null }
+    command_after_explicit_approval = if ($failCount -eq 0 -and $plan -and $plan.command_after_explicit_approval) { [string]$plan.command_after_explicit_approval } else { $null }
     checks = @($checks)
 }
 
