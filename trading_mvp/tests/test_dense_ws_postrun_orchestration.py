@@ -27,7 +27,7 @@ PROPOSAL_HASH = "0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf4066
 
 
 class DenseWsPostrunOrchestrationTests(unittest.TestCase):
-    def test_policy_binds_exact_visible_orchestrator(self) -> None:
+    def test_policy_preserves_dormant_visible_orchestrator_binding(self) -> None:
         policy = json.loads(POLICY.read_text(encoding="utf-8"))
         config = policy["dense_ws_postrun"]
 
@@ -38,7 +38,14 @@ class DenseWsPostrunOrchestrationTests(unittest.TestCase):
         )
         self.assertTrue(config["automatic_same_hash_through_materialization"])
         self.assertTrue(config["visible_terminal_required"])
-        self.assertEqual(config["status"], "READY_AUTOMATIC_SAME_HASH_RUNTIME_REFROZEN")
+        self.assertEqual(
+            config["status"], "PRESERVED_DORMANT_V1_BINDING_NOT_EXECUTABLE_FOR_V2"
+        )
+
+        rebind = config["runtime_rebind_candidate"]
+        self.assertEqual(rebind["status"], "USER_REVIEW_REQUIRED_NOT_AUTHORIZED")
+        self.assertFalse(rebind["postrun_execution_allowed_now"])
+        self.assertTrue(rebind["exact_user_approval_required"])
 
         runtime = config["runtime_contract"]
         self.assertEqual(runtime["status"], "APPROVED")

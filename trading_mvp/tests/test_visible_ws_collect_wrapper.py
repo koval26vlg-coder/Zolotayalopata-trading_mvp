@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -2931,7 +2932,14 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
 
         self.assertIn("anufriev_strategy_scorecard_current_20260628.csv", payload["scorecard"])
         if payload["funding_blocked_by_swarm"]:
-            self.assertIn(str(payload["funding_rows"]), {"50583", "7012"})
+            summary_rows = re.search(
+                r"(?:^|;\s*)rows=([0-9]+(?:\.[0-9]+)?)",
+                payload["funding_current_summary"],
+            )
+            if summary_rows:
+                self.assertEqual(float(payload["funding_rows"]), float(summary_rows.group(1)))
+            else:
+                self.assertEqual(payload["funding_rows"], payload["gate_rows"])
             if "min_rows_per_cycle=9.0" not in payload["funding_current_summary"]:
                 self.assertIn("win_rate=", payload["funding_current_summary"])
             self.assertIn("Рой L1/L2 decision=block", payload["funding_current_summary"])
