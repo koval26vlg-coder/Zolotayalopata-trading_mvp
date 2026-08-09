@@ -1,0 +1,99 @@
+{
+  "schema": "trading_mvp_dense_ws_next_weekend_preparation_checkpoint_v2",
+  "mode": "PLANONLY_OFFLINE",
+  "status": "PREPARED_CONTINGENT_ON_FRESH_PIT_EXTENSION_APPROVAL",
+  "generated_at_utc": "2026-08-09T17:45:27.2241841Z",
+  "purpose": "Prepare the earliest honest 24-hour Dense evidence window without skipping PIT or authorizing a collector.",
+  "supersedes_local_uncommitted_diagnostic": "v1 candidate and feasibility removed before commit because inherited stale N08 top-level binding",
+  "strategy_alternatives": {
+    "census_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\same-scope-strategy-census-v2.json",
+    "census_file_sha256": "aca1db84fcdd1941e7d953d670970872b4f7bbb562bac5586df6abdd3f10314e",
+    "closed_family_count": 15,
+    "selected_candidate": null,
+    "verdict": "NO_ALTERNATIVE_STRATEGY_CAN_BE_HONESTLY_TESTED_ON_CURRENT_IMMUTABLE_DATA",
+    "disposition": "NO_OTHER_STRATEGY_CAN_BE_HONESTLY_EVALUATED_FROM_CURRENT_IMMUTABLE_DATA_WITHOUT_A_NEW_HYPOTHESIS_OR_NEW_DATA"
+  },
+  "reservation": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\dense-ws-next-no-skip-window-reservation-20260815-v1.json",
+    "file_sha256": "9d7374d50984ce43ba6af28dee996a5b314e644fbf83cd22a78289d140785b59",
+    "reservation_hash": "979d25353d5cb1646ecf5dee30f7f358876839c4b0fbb3cda980acfa742e24a5",
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260815_aef_24h",
+    "window_id": "WEEKEND_2026-08-14_2026-08-17",
+    "start_local": "2026-08-15T01:40:00+03:00",
+    "writer_deadline_local": "2026-08-16T01:40:00+03:00",
+    "hard_deadline_local": "2026-08-16T02:10:00+03:00",
+    "writer_duration_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000,
+    "preceding_pit": {
+      "run_id": "pit_universe_v2_forward_20260815_n04",
+      "end_local": "2026-08-15T01:20:00+03:00",
+      "disposition": "PRESERVED_NOT_SKIPPED_BEFORE_DENSE"
+    },
+    "deferred_pit": {
+      "run_id": "pit_universe_v2_forward_20260816_n05",
+      "original_start_local": "2026-08-16T01:00:00+03:00",
+      "original_end_local": "2026-08-16T01:20:00+03:00",
+      "new_start_local": "2026-08-16T02:15:00+03:00",
+      "new_end_local": "2026-08-16T02:35:00+03:00",
+      "hard_deadline_local": "2026-08-16T07:00:00+03:00",
+      "global_writer_gap_sec": 300,
+      "disposition": "PRESERVED_NOT_SKIPPED_AFTER_DENSE_FINALIZATION"
+    }
+  },
+  "pit_amendment_preview": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\pit_universe_v2_train_schedule_time_amendment_n05_20260816_0215_reservation_planonly_v1.json",
+    "file_sha256": "02050925af3a7834606e398d17604862be7a2dbfb1626e4ea26ed80235ab29cc",
+    "plan_hash": "bde1135b533adad19753166dd5f7fabc2f4b52b53f4576aaf46020a0b650ca87",
+    "verdict": "TIME_ONLY_AMENDMENT_VALID",
+    "active_pointer_changed": false,
+    "schedule_approved": false
+  },
+  "candidate_policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-20260815-n04-n05-no-skip-reservation-planonly-v2.json",
+    "file_sha256": "dc5f66f743ebc7408580ed90f7c98681314fb5ec7588abb2e2cc29b51d504ee7",
+    "stale_time_specific_top_level_bindings": [],
+    "stale_binding_audit": "PASS_NONE_PRESENT",
+    "active_policy_changed": false,
+    "collector_launch_allowed": false,
+    "trade_contract_changed": false
+  },
+  "feasibility": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-feasibility-20260815-aef-24h-n04-n05-no-skip-reservation-planonly-v2.json",
+    "file_sha256": "0c34ac7cd933d23960b9a707fa0c2e3b52e446cb1437c7aa33a15e6d8b3031e3",
+    "candidate_contract_hash": "4ecf29c6dbd763a7a8fe062c8e4ecba0685474c2239ff6e6830302e3d8ae4015",
+    "verdict": "FEASIBILITY_CONFIRMED_CONTRACT_FREEZE_REQUIRED",
+    "planned_writer_sec": 86400,
+    "complete_durable_segments": 24,
+    "estimated_disk_bytes": 12278246229,
+    "disk_free_bytes_at_plan_time": 83603783680,
+    "disk_headroom_multiplier": 6.809,
+    "hard_output_cap_bytes": 25000000000
+  },
+  "implementation": {
+    "reservation_builder_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_next_window_reservation.py",
+    "reservation_builder_sha256": "351c0b6b248c3d77b5ea780b8c51bd0db4904f6ee0f09e7498d4741524cc0f70",
+    "policy_candidate_builder_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_no_skip_policy_candidate.py",
+    "policy_candidate_builder_sha256": "32b06f52784c8d8e115a6885ae370a24d9071287efbdbc3abeebff9e46b49a09"
+  },
+  "verification": {
+    "result": "PASS",
+    "tests_run": 48,
+    "command": "C:\\Users\\koval\\.venv\\Scripts\\python.exe -m unittest trading_mvp.tests.test_dense_ws_next_window_reservation trading_mvp.tests.test_dense_ws_no_skip_policy_candidate trading_mvp.tests.test_continuous_production trading_mvp.tests.test_pit_schedule_time_amendment trading_mvp.tests.test_dense_ws_campaign_feasibility trading_mvp.tests.test_dense_ws_campaign_contract -v",
+    "network_access": false,
+    "market_rows_read": false,
+    "returns_or_pnl": false,
+    "oos": false,
+    "grid_or_retune": false
+  },
+  "authorization_boundary": {
+    "this_is_not_schedule_approval": true,
+    "this_is_not_contract_refreeze_approval": true,
+    "this_is_not_launch_approval": true,
+    "collector_launch_allowed": false,
+    "active_policy_mutation_allowed": false,
+    "active_pit_pointer_mutation_allowed": false,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "next_allowed_action": "AT_OR_AFTER_2026-08-10T19:00:00+03:00_REFRESH_PIT_EXTENSION_THEN_REBUILD_EXACT_HASH_BOUND_REFREEZE_PACKET"
+}
