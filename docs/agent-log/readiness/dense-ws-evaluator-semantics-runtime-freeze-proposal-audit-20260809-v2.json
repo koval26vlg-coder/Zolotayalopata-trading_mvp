@@ -1,0 +1,95 @@
+{
+  "schema": "trading_mvp_dense_ws_evaluator_semantics_runtime_freeze_proposal_audit_v2",
+  "observed_at_local": "2026-08-09T19:59:00+03:00",
+  "status": "PASS_READY_FOR_EXACT_SEMANTICS_RUNTIME_FREEZE_APPROVAL",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-evaluator-semantics-runtime-freeze-proposal-20260809-v2.json",
+    "file_sha256": "7a7cc231c097f4b112a761b21cb09f8fb6507707e0641541f99ef39d6150ca75",
+    "proposal_hash": "7180ba5998452f46138017bc4abca32d3a685b770fcd1c4dc69bdd38feef887c",
+    "semantic_profile_hash": "23ca39df72c16f53edc16a41ab37ae160943d916b39db93157563e3efba1abbe",
+    "canonical_proposal_hash_recomputed": true,
+    "executable": false,
+    "authorized": false
+  },
+  "source_hash_checks": {
+    "base_semantics_proposal": true,
+    "frozen_signal_evaluator_contract": true,
+    "frozen_signal_evaluator_planonly": true,
+    "source_review_draft": true,
+    "semantics_gap_audit": true,
+    "current_time_only_candidate_v3": true
+  },
+  "semantic_continuity": {
+    "base_semantics_proposal_hash": "2c17be85d008d57b008136d0bb0bdcbef3f7bc7168620ba0aacd4e5f08645724",
+    "base_semantics_file_sha256": "3663a2109670ff67cb20a69ae8862c9374504700eac76000f0ea9a2393261bbd",
+    "semantic_profile_hash_matches_base_v1": true,
+    "hypothesis_changed": false,
+    "venue_changed": false,
+    "universe_changed": false,
+    "signal_threshold_changed": false,
+    "cost_changed": false,
+    "acceptance_thresholds_changed": false,
+    "grid_or_retune_added": false
+  },
+  "stale_binding_resolution": {
+    "old_campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+    "old_campaign_plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+    "old_campaign_binding_reused": false,
+    "new_profile_campaign_agnostic": true,
+    "real_runtime_binding": "FUTURE_IMMUTABLE_MATERIALIZATION_BOUND_PLAN_REQUIRED",
+    "current_time_only_candidate_proposal_hash": "52ee59fb6f1111e186d895694dc88ce3cab73c171392a156cfc38a85cf2b952e",
+    "current_time_only_candidate_status": "USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+    "current_time_only_candidate_dependency": "INFORMATIONAL_ONLY"
+  },
+  "gap_coverage": {
+    "blocking_gaps_total": 10,
+    "blocking_gaps_resolved": 10,
+    "ids": [
+      "EVENT_ORDER_AND_RAW_QUOTE_TIES",
+      "RISK_ADMISSION_PRECEDENCE",
+      "UNFILLED_ECONOMICS",
+      "TRADE_NOTIONAL_AND_PNL_FORMULA",
+      "PRIMARY_SPLIT_BOUNDARY",
+      "WALK_FORWARD_CONSTRUCTION",
+      "BOOTSTRAP_METHOD",
+      "METRIC_EDGE_CASES",
+      "SAMPLE_GATE_SCOPE",
+      "RESULT_CANONICALIZATION"
+    ],
+    "missing_ids": [],
+    "unknown_ids": [],
+    "unresolved_section_references": [],
+    "contract_conflicts_total": 2,
+    "contract_conflicts_resolved": 2
+  },
+  "tests": {
+    "modules": [
+      "trading_mvp.tests.test_dense_ws_signal_evaluator_contract",
+      "trading_mvp.tests.test_dense_ws_signal_evaluator_freeze",
+      "trading_mvp.tests.test_dense_ws_materialization_bound_plan",
+      "trading_mvp.tests.test_dense_ws_execution_realization",
+      "trading_mvp.tests.test_autopilot_guard"
+    ],
+    "tests_run": 69,
+    "result": "PASS",
+    "log_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\dense-ws-evaluator-semantics-runtime-freeze-v2-tests-20260809.log",
+    "log_sha256": "d4e315c588be940cd3a1c0a12c3943f089807408c265cc81a618e07ad1a8f605"
+  },
+  "authorization_checks": {
+    "proposal_only": true,
+    "active_contract_changed": false,
+    "active_policy_changed": false,
+    "runtime_implementation_authorized": false,
+    "evaluator_run_authorized": false,
+    "real_market_data_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "network_access": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "WAIT_FOR_EXACT_USER_APPROVAL_BEFORE_SEMANTICS_FREEZE_OR_FIXTURE_RUNTIME_IMPLEMENTATION"
+}

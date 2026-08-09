@@ -1,0 +1,310 @@
+{
+  "schema": "trading_mvp_dense_ws_evaluator_semantics_runtime_freeze_proposal_v2",
+  "mode": "PlanOnlyReviewProposal",
+  "status": "USER_REVIEW_REQUIRED_NOT_FROZEN_NOT_AUTHORIZED",
+  "generated_at_local": "2026-08-09T19:55:00+03:00",
+  "research_only": true,
+  "purpose": "Freeze campaign-agnostic deterministic dense_ws evaluator semantics and authorize fixture-only runtime implementation before any real evaluator run.",
+  "source_bindings": {
+    "base_semantics_proposal": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-evaluator-implementation-semantics-amendment-20260802-v1.json",
+      "file_sha256": "3663a2109670ff67cb20a69ae8862c9374504700eac76000f0ea9a2393261bbd",
+      "proposal_hash": "2c17be85d008d57b008136d0bb0bdcbef3f7bc7168620ba0aacd4e5f08645724",
+      "disposition": "SEMANTIC_CONTENT_PRESERVED_OLD_CAMPAIGN_BINDING_NOT_REUSED"
+    },
+    "campaign_binding": {
+      "status": "FUTURE_MATERIALIZATION_BOUND_PLAN_REQUIRED",
+      "old_campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+      "old_campaign_plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+      "old_campaign_binding_promoted": false,
+      "current_time_only_candidate_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-next-window-n13-n14-no-skip-refreeze-proposal-20260809-v3.json",
+      "current_time_only_candidate_file_sha256": "a551e92994c2525ec6dd5791fbae271321e9213350af720b2cae4be7b073415f",
+      "current_time_only_candidate_proposal_hash": "52ee59fb6f1111e186d895694dc88ce3cab73c171392a156cfc38a85cf2b952e",
+      "current_time_only_candidate_campaign_id": "dense_ws_microstructure_regime_filter_v1_20260810_aef_24h",
+      "current_time_only_candidate_contract_hash": "c6c2240d81cfbbdb532c2532801e43663d05e4678f367c807ae2cc59e8835f70",
+      "current_time_only_candidate_status": "USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+      "candidate_dependency": "INFORMATIONAL_ONLY_NOT_REQUIRED_TO_FREEZE_OR_IMPLEMENT_CAMPAIGN_AGNOSTIC_SEMANTICS"
+    },
+    "evaluator_proposal_hash": "a9ec751329e436c1ea30b63433c57cf0e9ffd35370a097735c9ce91f71bb40d7",
+    "frozen_contract": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\frozen\\dense-ws-signal-evaluator-contract-20260802-v1.json",
+      "file_sha256": "a9ef768d6f61297d01d8fe37a9d4e00b27cf5b2d52f122ab8ca9a0c3fae5a81d",
+      "contract_hash": "b70975468fbd67acf550dea39aac21c116fb3a86a57ed56d400f40f0fa287954"
+    },
+    "frozen_planonly": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\frozen\\dense-ws-signal-evaluator-planonly-20260802-v1.json",
+      "file_sha256": "2ae9f20892eeb65772aa40c8bee0c905935dd50af2c57e29232ecc9418168fdb",
+      "plan_hash": "620b1711a5436c722acea99d41c4b81ba57bd317069456282814939b3eefeea2"
+    },
+    "source_review_draft": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-signal-evaluator-review-draft-20260802-v1.json",
+      "file_sha256": "c3f7e1e95721adeb004a9c0ace83c94f1e756fe737a4aa31e6c77171c00526e3",
+      "draft_hash": "9325445a68aea9f8224658690367862662c342fc8f624a824f4c805d9c293573"
+    },
+    "gap_audit": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-evaluator-semantics-gap-audit-20260802T1854+0300.json",
+      "file_sha256": "bc5b607df71e13fef64904f4197fdafec066882ee89919e9e9402744078595f9"
+    }
+  },
+  "scope_preservation": {
+    "hypothesis_changed": false,
+    "venue_changed": false,
+    "universe_changed": false,
+    "signal_threshold_changed": false,
+    "cost_changed": false,
+    "acceptance_thresholds_changed": false,
+    "quality_or_materializer_code_changed": false,
+    "grid_or_retune_added": false,
+    "clarification_only": true
+  },
+  "campaign_binding_model": {
+    "semantic_profile_campaign_agnostic": true,
+    "required_real_runtime_input": "one future immutable materialization-bound evaluator PlanOnly generated only after accepted quality and causal materialization",
+    "binding_fields_required_at_real_run": [
+      "campaign_id",
+      "campaign_plan_hash",
+      "campaign_contract_hash",
+      "quality_report_sha256",
+      "materialization_manifest_sha256",
+      "materialization_deterministic_result_hash",
+      "materialization_bound_plan_hash",
+      "evaluator_code_manifest_sha256"
+    ],
+    "future_real_evaluator_plan_must_bind_semantic_profile_hash": true,
+    "future_real_evaluator_run_requires_separate_exact_hash_bound_approval": true
+  },
+  "resolved_blocking_gaps": [
+    {"id": "EVENT_ORDER_AND_RAW_QUOTE_TIES", "sections": ["input_identity_and_ordering"]},
+    {"id": "RISK_ADMISSION_PRECEDENCE", "sections": ["candidate_and_risk_admission"]},
+    {"id": "UNFILLED_ECONOMICS", "sections": ["scenario_realization_and_economics"]},
+    {"id": "TRADE_NOTIONAL_AND_PNL_FORMULA", "sections": ["candidate_and_risk_admission", "scenario_realization_and_economics"]},
+    {"id": "PRIMARY_SPLIT_BOUNDARY", "sections": ["primary_train_oos_split"]},
+    {"id": "WALK_FORWARD_CONSTRUCTION", "sections": ["five_fold_walk_forward"]},
+    {"id": "BOOTSTRAP_METHOD", "sections": ["cluster_block_bootstrap"]},
+    {"id": "METRIC_EDGE_CASES", "sections": ["metric_edge_cases", "numeric_and_hash_determinism"]},
+    {"id": "SAMPLE_GATE_SCOPE", "sections": ["sample_gate_scope"]},
+    {"id": "RESULT_CANONICALIZATION", "sections": ["numeric_and_hash_determinism", "future_runtime_outputs"]}
+  ],
+  "resolved_contract_conflicts": [
+    {
+      "id": "COOLDOWN_SCOPE",
+      "resolution": "60-second per-base cooldown is the conservative controlling rule and also satisfies per-base-and-direction cooldown"
+    },
+    {
+      "id": "POSITION_MODEL",
+      "resolution": "capital is reserved for the half-open one-second maximum-latency interval; events exceeding the frozen 25-second ceiling are integrity failures"
+    }
+  ],
+  "proposed_semantics": {
+    "input_identity_and_ordering": {
+      "required_input": "one future immutable materialization-bound evaluator PlanOnly whose hashes match the frozen campaign, quality report and causal materialization",
+      "event_sort_key": [
+        "signal_sample_ts ascending",
+        "campaign universe row index ascending",
+        "direction rank ascending"
+      ],
+      "direction_rank": {
+        "buy_mexc_sell_gateio": 0,
+        "buy_gateio_sell_mexc": 1
+      },
+      "unknown_or_duplicate_universe_base_action": "INTEGRITY_CONFLICT_NO_VERDICT",
+      "raw_bbo_source_ordinal": "valid segment chain order, then normalized relative file path ascending, then one-based JSONL line number ascending",
+      "latest_quote_tie_break": "maximum recv_ts not after execution_ts, then maximum raw_bbo_source_ordinal",
+      "nonfinite_or_malformed_numeric_action": "REJECT_DATA_QUALITY_BEFORE_ECONOMICS"
+    },
+    "candidate_and_risk_admission": {
+      "candidate_trigger": "the exact frozen displayed normal net edge, capacity, regime and causal snapshot rules",
+      "candidate_order_with_equal_sample_ts": "campaign universe row index, then fixed direction rank",
+      "cooldown_resolution": "the hash-bound 60-second per-base risk cooldown is stricter and takes precedence; it also satisfies the frozen per-base-and-direction cooldown",
+      "cooldown_boundary": "a new candidate is eligible when signal_sample_ts - prior_admitted_base_sample_ts >= 60 seconds",
+      "cooldown_starts_on": "admitted signal before outcome lookup, regardless of later fillability",
+      "notional_quote_per_selected_event": 50.0,
+      "maximum_concurrent_selected_events": 3,
+      "maximum_gross_reserved_quote": 150.0,
+      "one_active_event_per_base": true,
+      "capital_reservation_interval": "half-open [signal_sample_ts, signal_sample_ts + 1.0 second), using the frozen maximum execution latency",
+      "release_before_admission_at_equal_endpoint": true,
+      "maximum_holding_sec": 25,
+      "holding_interpretation": "a paired taker event resolves within the one-second reservation interval; any event exceeding 25 seconds is an integrity failure, never an extended-hold PnL observation",
+      "suppressed_candidate_treatment": "not a selected event and not included in fill, expectancy, PnL or bootstrap denominators; report a reason counter",
+      "selection_uses_outcome_quotes": false
+    },
+    "scenario_realization_and_economics": {
+      "selected_event_set_shared_by_normal_and_stress": true,
+      "normal_latency_ms": 250,
+      "stress_latency_ms": 1000,
+      "normal_cost_bps": 69.0,
+      "stress_cost_bps": 89.0,
+      "paired_fill_event_net_edge_bps": "(execution_sell_bid / execution_buy_ask - 1) * 10000 - scenario_cost_bps",
+      "paired_fill_event_net_pnl_quote": "50.0 * event_net_edge_bps / 10000",
+      "unfillable_effective_net_edge_bps": 0.0,
+      "unfillable_net_pnl_quote": 0.0,
+      "unfillable_in_selected_event_denominator": true,
+      "unfillable_in_profit_factor": "zero observation; contributes to neither gross profit nor gross loss",
+      "expectancy_bps": "sum effective event net edge bps divided by all selected events in the metric window",
+      "fill_rate": "paired fills divided by all selected events in the same scenario and metric window",
+      "one_leg_credit": false,
+      "normal_and_stress_missing_event_alignment_action": "INTEGRITY_CONFLICT_NO_VERDICT"
+    },
+    "primary_train_oos_split": {
+      "population": "all admitted selected events before any outcome-based filtering",
+      "timestamp_group": "all selected events sharing exactly the same signal_sample_ts",
+      "target_train_count": "floor(0.70 * total selected event count)",
+      "train_boundary": "the last complete timestamp group whose cumulative event count is not greater than target_train_count",
+      "same_timestamp_split_allowed": false,
+      "train_membership": "all complete groups through the train boundary",
+      "embargo_sec": 300,
+      "embargo_membership": "events after the train boundary with signal_sample_ts < last_train_sample_ts + 300 seconds",
+      "oos_membership": "events with signal_sample_ts >= last_train_sample_ts + 300 seconds",
+      "exact_300_second_boundary_in_oos": true,
+      "embargo_events_used_in_metrics": false,
+      "empty_or_unresolvable_boundary_action": "INSUFFICIENT_DATA_NOT_REJECTED"
+    },
+    "sample_gate_scope": {
+      "minimum_total_independent_events": "all admitted selected events before split",
+      "minimum_train_events": "primary train selected events",
+      "minimum_oos_events": "primary OOS selected events after embargo",
+      "minimum_distinct_utc_hours": "primary OOS signal UTC-hour buckets",
+      "minimum_distinct_bases": "primary OOS bases",
+      "minimum_events_per_direction": "primary OOS selected events separately for each frozen direction",
+      "minimum_events_per_walk_forward_fold": "selected events in each primary-OOS test fold",
+      "normal_and_stress_fill_rates": "primary OOS selected events",
+      "any_sample_shortfall_action": "INSUFFICIENT_DATA_NOT_REJECTED_BEFORE_ECONOMICS"
+    },
+    "five_fold_walk_forward": {
+      "test_horizon": "the complete primary OOS timestamp-group sequence after embargo",
+      "fold_count": 5,
+      "boundary_targets": "ceil(k * primary_oos_selected_event_count / 5) for k=1,2,3,4",
+      "boundary_selection": "for each target choose the first complete timestamp group whose cumulative event count reaches or exceeds the target",
+      "same_timestamp_split_allowed": false,
+      "folds": "five contiguous, non-overlapping test slices covering every primary OOS selected event exactly once",
+      "train_prefix_for_fold": "primary train plus all earlier OOS folds; recorded for audit but never used to refit formulas, regimes, thresholds or directions",
+      "per_fold_embargo": "none, because nothing is refit or learned between folds",
+      "positive_fold_definition": "normal scenario fold net PnL quote greater than zero",
+      "empty_duplicate_boundary_or_fold_below_eight_action": "INSUFFICIENT_DATA_NOT_REJECTED"
+    },
+    "cluster_block_bootstrap": {
+      "metric": "primary OOS normal effective net edge bps including zero for unfillable selected events",
+      "cluster_key": "floor(signal_sample_ts / 3600), an absolute UTC-hour bucket",
+      "minimum_clusters": 8,
+      "replicates": 10000,
+      "resampling_unit": "entire UTC-hour clusters sampled with replacement; retain all events and their order inside each drawn cluster",
+      "draws_per_replicate": "the original number of distinct OOS UTC-hour clusters",
+      "seed_material": "materialization_bound_plan_hash + ':' + semantics_amendment_hash + ':oos-hour-cluster-bootstrap-v1'",
+      "seed_hash": "SHA-256 of UTF-8 seed_material",
+      "counter_rng": "for zero-based replicate r and draw j, SHA-256(seed_hash_bytes || r as unsigned 8-byte big-endian || j as unsigned 8-byte big-endian); use the first unsigned 8-byte big-endian word modulo cluster_count",
+      "replicate_statistic": "arithmetic mean of all effective net edge bps observations in the drawn clusters",
+      "lower_bound": "one-sided 95 percent nearest-rank lower bound: sorted_estimates[ceil(0.05 * replicates) - 1]",
+      "insufficient_cluster_action": "INSUFFICIENT_DATA_NOT_REJECTED"
+    },
+    "metric_edge_cases": {
+      "profit_factor_gross_profit": "sum of strictly positive event net PnL quote",
+      "profit_factor_gross_loss": "absolute sum of strictly negative event net PnL quote",
+      "profit_factor_when_loss_positive": "gross_profit / gross_loss",
+      "profit_factor_when_no_loss_and_positive_gain": "numeric value null plus profit_factor_infinite=true; passes any finite minimum",
+      "profit_factor_when_no_gain_and_no_loss": "0.0 plus profit_factor_infinite=false; fails positive economics gates",
+      "drawdown_population": "primary OOS normal event PnL including zero for unfillable events",
+      "drawdown_order": "execution_ts, signal_sample_ts, campaign universe row index, direction rank",
+      "drawdown_formula": "maximum peak minus cumulative equity, with cumulative equity and initial peak both starting at zero",
+      "concentration_population": "strictly positive primary OOS normal event PnL only; negative events never offset a positive group",
+      "event_concentration": "largest positive event PnL divided by total positive event PnL",
+      "base_hour_direction_concentration": "sum positive event PnL by base, signal UTC-hour bucket or direction divided by total positive event PnL",
+      "concentration_when_no_positive_pnl": "all concentration shares equal 1.0 and fail the gate",
+      "direction_expectancy_denominator": "all selected primary OOS events in that direction, including unfillable zero observations",
+      "empty_direction_action": "INSUFFICIENT_DATA_NOT_REJECTED"
+    },
+    "numeric_and_hash_determinism": {
+      "arithmetic": "finite IEEE-754 binary64 with no intermediate metric rounding",
+      "threshold_comparison": "unrounded finite values and the exact frozen strict or inclusive operator",
+      "serialized_metric_decimals": 12,
+      "rounding": "round half to even",
+      "negative_zero_normalized": true,
+      "nan_or_infinity_serialization_allowed": false,
+      "canonical_json": "UTF-8, sorted object keys, compact separators, arrays retained in contract order",
+      "event_id": "SHA-256 canonical JSON of campaign plan hash, materialization-bound plan hash, signal_sample_ts, base and direction",
+      "repeat_count": 2,
+      "volatile_result_fields_excluded": [
+        "observed_at_utc",
+        "runtime_elapsed_sec",
+        "pid",
+        "terminal_owner",
+        "absolute_output_path",
+        "deterministic_result_hash"
+      ],
+      "repeat_hash_payload": "source and code hashes, exact event-file SHA-256, deterministic metrics, gate results and historical verdict",
+      "repeat_hash_mismatch_action": "INTEGRITY_CONFLICT_NO_VERDICT"
+    },
+    "gate_order_and_ceiling": {
+      "runtime_or_hash_integrity_failure": "INTEGRITY_CONFLICT_NO_VERDICT and stop",
+      "data_quality_failure": "REJECT_DATA_QUALITY and stop",
+      "sample_failure": "INSUFFICIENT_DATA_NOT_REJECTED and stop before economics verdict",
+      "historical_gate_failure": "REJECT_HISTORICAL_ECONOMICS_OR_EXECUTION and stop",
+      "all_historical_gates_pass": "ACCEPT_FOR_PUBLIC_READONLY_PAPER_FORWARD",
+      "terminal_result_requires_user_review": true,
+      "historical_result_accepts_strategy": false,
+      "paper_forward_started_automatically": false,
+      "grid_or_retune_after_failure": false
+    },
+    "future_runtime_outputs": {
+      "atomic_write": "write each artifact to a same-directory temporary file, fsync, then replace once complete",
+      "required_artifacts": [
+        "evaluator-owner.json",
+        "selected-events.jsonl",
+        "metrics.json",
+        "gate-results.json",
+        "historical-verdict.json",
+        "evaluator-manifest.json"
+      ],
+      "owner_is_not_deterministic_evidence": true,
+      "selected_events_and_result_artifacts_not_created_during_implementation_only": true
+    }
+  },
+  "semantic_profile_hash_method": "sha256_canonical_json_of_proposed_semantics",
+  "semantic_profile_hash": "23ca39df72c16f53edc16a41ab37ae160943d916b39db93157563e3efba1abbe",
+  "single_minimal_future_approval_scope": {
+    "approval_type": "EXACT_HASH_BOUND_CAMPAIGN_AGNOSTIC_EVALUATOR_SEMANTICS_AND_FIXTURE_RUNTIME_IMPLEMENTATION_FREEZE_ONLY",
+    "allowed_after_exact_approval": [
+      "freeze this exact campaign-agnostic semantic profile",
+      "implement a campaign-agnostic materialization-bound evaluator consumer",
+      "implement one visible bounded evaluator wrapper",
+      "run synthetic fixture and static contract tests only",
+      "create an immutable code and wrapper hash manifest"
+    ],
+    "implementation_max_runtime_sec": 1800,
+    "real_market_data_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "network_access": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "future_real_evaluator_run_requires_separate_exact_hash_bound_approval": true
+  },
+  "authorization": {
+    "proposal_creation_authorized": true,
+    "semantics_freeze_authorized": false,
+    "runtime_implementation_authorized": false,
+    "real_evaluation_authorized": false,
+    "executable": false
+  },
+  "safety": {
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "network_access": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "REQUEST_EXACT_HASH_BOUND_CAMPAIGN_AGNOSTIC_EVALUATOR_SEMANTICS_AND_FIXTURE_RUNTIME_IMPLEMENTATION_FREEZE_ONLY",
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "7180ba5998452f46138017bc4abca32d3a685b770fcd1c4dc69bdd38feef887c"
+}
