@@ -1,0 +1,220 @@
+{
+  "schema": "trading_mvp_dense_ws_next_window_n13_n14_no_skip_refreeze_proposal_v2",
+  "mode": "PLANONLY_CORRECTED_PROPOSAL",
+  "status": "USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+  "generated_at_utc": "2026-08-09T11:24:02.639094Z",
+  "purpose": "Correct v1 by binding the mandatory time-only dense_ws_campaign_contract.py constant patch. Preserve PIT n13 before Dense and defer only PIT n14 after Dense finalization.",
+  "supersedes": {
+    "proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-next-window-n13-n14-no-skip-refreeze-proposal-20260809-v1.json",
+    "proposal_file_sha256": "bb2ce10a8a2202fde7618587d3e5677614c52b091774d23a9144b95448cec0cc",
+    "proposal_hash": "835a4404eafe8a4183ccc5ed63ca79afebde79cc35eb60d5d6f8a67561af1632",
+    "preview_audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-aef-next-window-n13-n14-no-skip-preview-audit-20260809-v1.json",
+    "preview_audit_sha256": "f2cc2da12b69c217dad380c51801b6e336d8d2acd851b59e9bce6392dfda173a",
+    "disposition": "SUPERSEDED_INCOMPLETE_MISSING_CONTRACT_SOURCE_TIME_BINDINGS_NOT_AUTHORIZABLE",
+    "may_be_used_for_approval": false,
+    "may_be_reused_for_implementation": false
+  },
+  "source_expired_campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260804_aef_24h",
+    "plan_hash": "629680e8ec4a1879dcd596a540c90c92b600ab465bd94bdd0d29b79ea972c141",
+    "disposition": "EXPIRED_FAIL_CLOSED_NO_LAUNCH_OR_RESUME"
+  },
+  "candidate": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260810_aef_24h",
+    "candidate_policy": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-20260810-n13-n14-no-skip-planonly-v1.json",
+      "sha256": "c3bee1485326e25fa7be89d3bbfb69075eaa68c354e7ead3169ebd103daee559"
+    },
+    "n14_time_only_plan": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json",
+      "file_sha256": "06b0a3b22f0563b6baf26bd192ceb30f7b8e46ffd16ab17331141c99d97f34f3",
+      "plan_hash": "2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca",
+      "amendment": {
+        "schema": "fast_first_night_schedule_time_amendment_v1",
+        "kind": "DEFER_ONE_PIT_SEGMENT_WITHIN_SAME_NIGHT",
+        "base_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_planonly_20260729_20260728_102711.json",
+        "base_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+        "run_id": "pit_universe_v2_forward_20260811_n14",
+        "original_start_local": "2026-08-11T01:00:00+03:00",
+        "original_end_local": "2026-08-11T01:20:00+03:00",
+        "new_start_local": "2026-08-11T02:15:00+03:00",
+        "new_end_local": "2026-08-11T02:35:00+03:00",
+        "hard_deadline_local": "2026-08-11T07:00:00+03:00",
+        "reason": "PRESERVE_GLOBAL_SINGLE_WRITER_WITHOUT_SKIPPING_PIT_DATE",
+        "trade_contract_changed": false
+      }
+    },
+    "dense_feasibility": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-feasibility-20260810-aef-24h-n13-n14-no-skip-planonly-v1.json",
+      "file_sha256": "df0698a1a78f05abc0794fb194cf478663d079dade8d225bfc67a23ed6c49947",
+      "candidate_contract_hash": "6ccdb2c18c3db25d80e0af3237ff680fa198b0fefc2d3e1d51c4d55195a681c7",
+      "verdict": "FEASIBILITY_CONFIRMED_CONTRACT_FREEZE_REQUIRED",
+      "window": {
+        "window_id": "EVIDENCE_EXCEPTION_2026-08-10_24H",
+        "window_type": "EVIDENCE_VALUE_EXCEPTION",
+        "campaign_start_local": "2026-08-10T01:40:00+03:00",
+        "campaign_end_local": "2026-08-11T01:40:00+03:00",
+        "writer_deadline_local": "2026-08-11T01:40:00+03:00",
+        "hard_deadline_local": "2026-08-11T02:10:00+03:00",
+        "target_writer_sec": 86400,
+        "minimum_writer_sec": 86400,
+        "planned_writer_sec": 86400,
+        "unallocated_writer_sec": 0,
+        "complete_durable_segments": 24,
+        "phases": [
+          {
+            "phase_id": "phase_01",
+            "start_local": "2026-08-10T01:40:00+03:00",
+            "end_local": "2026-08-11T01:40:00+03:00",
+            "hard_end_local": "2026-08-11T02:10:00+03:00",
+            "writer_duration_sec": 86400,
+            "complete_durable_segments": 24
+          }
+        ],
+        "pit_blackouts": [],
+        "collection_windows": [
+          {
+            "sequence": 1,
+            "window_id": "EVIDENCE_EXCEPTION_2026-08-10_24H",
+            "window_type": "EVIDENCE_VALUE_EXCEPTION",
+            "writer_start_local": "2026-08-10T01:40:00+03:00",
+            "writer_deadline_local": "2026-08-11T01:40:00+03:00",
+            "hard_deadline_local": "2026-08-11T02:10:00+03:00"
+          }
+        ],
+        "uninterrupted_required": true,
+        "suppressed_pit_run_ids": []
+      },
+      "estimated_disk_bytes": 12278246229,
+      "hard_output_cap_bytes": 25000000000
+    },
+    "timeline": {
+      "pit_n13": {
+        "start_local": "2026-08-10T01:00:00+03:00",
+        "end_local": "2026-08-10T01:20:00+03:00",
+        "disposition": "PRESERVED_NOT_SKIPPED"
+      },
+      "dense": {
+        "start_local": "2026-08-10T01:40:00+03:00",
+        "writer_duration_sec": 86400,
+        "writer_deadline_local": "2026-08-11T01:40:00+03:00",
+        "hard_deadline_local": "2026-08-11T02:10:00+03:00",
+        "hard_output_cap_bytes": 25000000000,
+        "uninterrupted_required": true
+      },
+      "pit_n14": {
+        "start_local": "2026-08-11T02:15:00+03:00",
+        "end_local": "2026-08-11T02:35:00+03:00",
+        "disposition": "PRESERVED_NOT_SKIPPED",
+        "requires_dense_finalization": true,
+        "requires_global_writer_claim_absent": true
+      }
+    }
+  },
+  "frozen_invariants": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "data_type": "DENSE_WS_SEGMENTED",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "universe_rows": 1388,
+    "raw_schema_change_allowed": false,
+    "segment_validity_change_allowed": false,
+    "causal_regime_change_allowed": false,
+    "execution_sampling_change_allowed": false,
+    "cost_risk_no_grid_change_allowed": false,
+    "duration_sec": 86400,
+    "max_runtime_sec": 88200,
+    "hard_output_cap_bytes": 25000000000
+  },
+  "exact_implementation_after_v2_approval": {
+    "contract_code": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+      "current_sha256": "3dfc2346a1694bf756674c3817495a776facfb35d42f11a19799a62a2d7ca177",
+      "patch_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-aef-next-window-n13-n14-no-skip-refreeze-implementation-preview-20260809-v2.patch",
+      "patch_sha256": "3ff688f5b428db82341a0c5398cd32420e6f7504ae2d04f83e246f5d6c16f0f8",
+      "expected_sha256_after_exact_apply": "14d2968dc9073fc9bcb89236cadd8736550c55da793a32d1dce41b9ffb4ee516",
+      "git_apply_check": "PASS",
+      "changed_scope_only": [
+        "AEF_CAMPAIGN_ID",
+        "AEF_EXPECTED_CANDIDATE_HASH",
+        "AEF_EXPECTED_WINDOW_ID",
+        "AEF_EXPECTED_START_LOCAL",
+        "AEF_EXPECTED_WRITER_DEADLINE_LOCAL",
+        "AEF_EXPECTED_HARD_DEADLINE_LOCAL",
+        "AEF_EXPECTED_PHASES timestamps"
+      ],
+      "trade_logic_changed": false,
+      "temp_git_apply_postimage_hash_verified": true,
+      "temp_git_apply_actual_postimage_sha256": "14d2968dc9073fc9bcb89236cadd8736550c55da793a32d1dce41b9ffb4ee516"
+    },
+    "source_policy_preimage": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-continuous-production-policy-v1.json",
+      "sha256": "077db2c25c799ea1fd848bc2d569c4a40e417bba1c7f5eb8873958758d492153"
+    },
+    "candidate_policy_postimage": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\trading-mvp-continuous-production-policy-dense-ws-20260810-n13-n14-no-skip-planonly-v1.json",
+      "sha256": "c3bee1485326e25fa7be89d3bbfb69075eaa68c354e7ead3169ebd103daee559",
+      "promotion": "byte_exact"
+    },
+    "planned_outputs": {
+      "immutable_feasibility_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-feasibility-20260810-aef-continuous24h-n13-n14-no-skip-v1.json",
+      "immutable_n14_amendment_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json",
+      "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260810-aef-24h-n13-n14-no-skip-v1.json",
+      "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260810-aef-24h-n13-n14-no-skip-v1.json",
+      "campaign_output_root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-v1-20260810-aef-24h-n13-n14-no-skip-v1",
+      "runtime_dependency_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-runtime-dependencies-20260809-n13-n14-no-skip-v1.json"
+    },
+    "allowed": [
+      "create exact user approval receipt bound to this v2 proposal",
+      "apply the exact contract source patch after preimage verification",
+      "promote the candidate continuous policy byte-exactly after preimage verification",
+      "copy the N14 time amendment and feasibility to new immutable versioned output paths",
+      "build a new runtime dependency manifest, immutable contract and immutable PlanOnly",
+      "run local offline regression and postimage audit",
+      "rebind autopilot only after every immutable artifact validates"
+    ],
+    "forbidden": [
+      "collector launch",
+      "network access",
+      "market dataset read",
+      "evaluator",
+      "returns",
+      "PnL",
+      "OOS",
+      "grid",
+      "retune",
+      "paper",
+      "live",
+      "private API",
+      "real capital",
+      "leverage",
+      "margin",
+      "STOPPED_INCOMPLETE retry"
+    ]
+  },
+  "verification": {
+    "preview_audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-aef-next-window-n13-n14-no-skip-preview-audit-20260809-v2.json",
+    "preview_audit_sha256": "90a3b8ae719421e876571675a39d84597bbc520016f77da5970c1bc37cd1e75c",
+    "git_apply_check": "PASS",
+    "postimage_contract_compatibility_probe": "PASS",
+    "offline_tests": {
+      "command": "C:\\Program Files\\Python313\\python.exe -m unittest trading_mvp.tests.test_pit_schedule_time_amendment trading_mvp.tests.test_dense_ws_campaign_feasibility trading_mvp.tests.test_dense_ws_campaign_contract",
+      "result": "PASS",
+      "tests_run": 33,
+      "network_access": false
+    },
+    "temp_git_apply_postimage_hash_verified": true
+  },
+  "approval_boundary": {
+    "this_is_not_launch_approval": true,
+    "collector_launch_allowed": false,
+    "stopped_incomplete_retry_authorized": false,
+    "new_exact_launch_approval_required_after_refreeze": true
+  },
+  "next_allowed_action": "REQUEST_EXACT_HASH_BOUND_NEXT_WINDOW_N13_N14_NO_SKIP_REFREEZE_V2_APPROVAL",
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "c6254d942020b77b0d14d7853bf86adef420de83024610957c8d2a38e7c39cc6"
+}
