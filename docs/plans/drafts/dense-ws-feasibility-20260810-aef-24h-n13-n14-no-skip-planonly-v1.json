@@ -1,0 +1,218 @@
+{
+  "schema": "trading_mvp_dense_ws_campaign_feasibility_v1",
+  "mode": "PlanOnly",
+  "research_only": true,
+  "would_start": false,
+  "network_access": false,
+  "returns_read": false,
+  "pnl_computed": false,
+  "oos_read": false,
+  "grid_or_retune": false,
+  "live_orders": false,
+  "private_api_keys": false,
+  "leverage_or_margin": false,
+  "hypothesis": {
+    "id": "dense_ws_microstructure_regime_filter_v1",
+    "status": "BANKED_NEEDS_NEW_DATA",
+    "required_data_type": "DENSE_WS_SEGMENTED",
+    "thesis": "Only specific dense-liquidity regimes may be executable after base API costs; regime detection must be frozen before OOS.",
+    "minimum_data": {
+      "hours": 24,
+      "valid_segments": 8,
+      "dual_venue_coverage": 0.8,
+      "execution_snapshots": 180
+    },
+    "forbidden": [
+      "HFT latency claim",
+      "orderbook grid",
+      "post-hoc regime labels"
+    ]
+  },
+  "window_feasibility": {
+    "window_id": "EVIDENCE_EXCEPTION_2026-08-10_24H",
+    "window_type": "EVIDENCE_VALUE_EXCEPTION",
+    "campaign_start_local": "2026-08-10T01:40:00+03:00",
+    "campaign_end_local": "2026-08-11T01:40:00+03:00",
+    "writer_deadline_local": "2026-08-11T01:40:00+03:00",
+    "hard_deadline_local": "2026-08-11T02:10:00+03:00",
+    "target_writer_sec": 86400,
+    "minimum_writer_sec": 86400,
+    "planned_writer_sec": 86400,
+    "unallocated_writer_sec": 0,
+    "complete_durable_segments": 24,
+    "phases": [
+      {
+        "phase_id": "phase_01",
+        "start_local": "2026-08-10T01:40:00+03:00",
+        "end_local": "2026-08-11T01:40:00+03:00",
+        "hard_end_local": "2026-08-11T02:10:00+03:00",
+        "writer_duration_sec": 86400,
+        "complete_durable_segments": 24
+      }
+    ],
+    "pit_blackouts": [],
+    "collection_windows": [
+      {
+        "sequence": 1,
+        "window_id": "EVIDENCE_EXCEPTION_2026-08-10_24H",
+        "window_type": "EVIDENCE_VALUE_EXCEPTION",
+        "writer_start_local": "2026-08-10T01:40:00+03:00",
+        "writer_deadline_local": "2026-08-11T01:40:00+03:00",
+        "hard_deadline_local": "2026-08-11T02:10:00+03:00"
+      }
+    ],
+    "uninterrupted_required": true,
+    "suppressed_pit_run_ids": []
+  },
+  "operational_baseline": {
+    "source_root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw-durable\\ws_durable_72h_20260704_000015",
+    "manifests_seen": 25,
+    "valid_dual_venue_segments": 21,
+    "rejected_segments": 4,
+    "median_events_per_sec": 289.5619345411094,
+    "median_bytes_per_sec": 142109.33135979643,
+    "sample_segments": [
+      {
+        "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw-durable\\ws_durable_72h_20260704_000015\\seg_001\\manifest.json",
+        "duration_sec": 10800.401044845581,
+        "total_events": 2929052,
+        "events_per_sec": 271.19844789447615,
+        "bytes_per_sec": 132272.93848331587,
+        "existing_output_files": 3,
+        "exchanges": [
+          "gateio",
+          "mexc"
+        ]
+      },
+      {
+        "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw-durable\\ws_durable_72h_20260704_000015\\seg_002\\manifest.json",
+        "duration_sec": 10800.406883239746,
+        "total_events": 3055324,
+        "events_per_sec": 282.8897126775199,
+        "bytes_per_sec": 137825.99230682675,
+        "existing_output_files": 3,
+        "exchanges": [
+          "gateio",
+          "mexc"
+        ]
+      },
+      {
+        "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw-durable\\ws_durable_72h_20260704_000015\\seg_005\\manifest.json",
+        "duration_sec": 10800.421515464783,
+        "total_events": 3297134,
+        "events_per_sec": 305.2782704155516,
+        "bytes_per_sec": 150511.65268618174,
+        "existing_output_files": 3,
+        "exchanges": [
+          "gateio",
+          "mexc"
+        ]
+      },
+      {
+        "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw-durable\\ws_durable_72h_20260704_000015\\seg_006\\manifest.json",
+        "duration_sec": 10800.449531316757,
+        "total_events": 3541050,
+        "events_per_sec": 327.86135333834443,
+        "bytes_per_sec": 162108.41779532324,
+        "existing_output_files": 3,
+        "exchanges": [
+          "gateio",
+          "mexc"
+        ]
+      }
+    ],
+    "rejection_sample": [
+      {
+        "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw-durable\\ws_durable_72h_20260704_000015\\seg_003\\manifest.json",
+        "reason": "manifest_errors,dual_venue_missing"
+      },
+      {
+        "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw-durable\\ws_durable_72h_20260704_000015\\seg_004\\manifest.json",
+        "reason": "manifest_errors,dual_venue_missing"
+      },
+      {
+        "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw-durable\\ws_durable_72h_20260704_000015\\seg_019\\manifest.json",
+        "reason": "manifest_errors,dual_venue_missing"
+      },
+      {
+        "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw-durable\\ws_durable_72h_20260704_000015\\seg_020_incomplete_20260706_135500\\manifest.json",
+        "reason": "not_completed,not_final,manifest_errors,dual_venue_missing"
+      }
+    ],
+    "admissible_for_hypothesis_evidence": false,
+    "use": "throughput_and_operational_feasibility_only"
+  },
+  "resource_estimate": {
+    "estimated_events": 25018151,
+    "estimated_disk_bytes": 12278246229,
+    "disk_free_bytes_at_plan_time": 83266834432,
+    "disk_headroom_multiplier": 6.782,
+    "hard_output_cap_bytes": 25000000000,
+    "cpu_estimate": "requires_bounded_visible_calibration",
+    "memory_estimate": "requires_bounded_visible_calibration"
+  },
+  "candidate_universe": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\universe\\no_binance_dense_ws_sweep_20260628.csv",
+    "sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "rows": 1388,
+    "frozen_for_launch": false
+  },
+  "feasibility_reasons": [],
+  "contract_gaps_before_approval": [
+    "freeze exact MEXC/Gate universe and its inclusion/exclusion rules",
+    "freeze raw schema and segment-validity rules before collection",
+    "freeze regime labels and feature timestamps before OOS",
+    "freeze execution-snapshot sampling and stale-quote rules",
+    "freeze acceptance, cost, risk and no-grid evaluation contract",
+    "measure CPU and memory envelope in a bounded visible calibration",
+    "create immutable multi-phase campaign plan and approval registry entry"
+  ],
+  "verdict": "FEASIBILITY_CONFIRMED_CONTRACT_FREEZE_REQUIRED",
+  "actual_collection_allowed": false,
+  "next_allowed_action": "freeze_dense_ws_data_contract_and_build_immutable_campaign_planonly",
+  "frozen_candidate": {
+    "hypothesis_id": "dense_ws_microstructure_regime_filter_v1",
+    "data_type": "DENSE_WS_SEGMENTED",
+    "requested_start_local": "2026-08-10T01:40:00+03:00",
+    "window_id": "EVIDENCE_EXCEPTION_2026-08-10_24H",
+    "window_type": "EVIDENCE_VALUE_EXCEPTION",
+    "hard_deadline_local": "2026-08-11T02:10:00+03:00",
+    "writer_deadline_local": "2026-08-11T01:40:00+03:00",
+    "target_writer_sec": 86400,
+    "minimum_writer_sec": 86400,
+    "segment_sec": 3600,
+    "minimum_valid_segments": 8,
+    "minimum_dual_venue_coverage": 0.8,
+    "minimum_execution_snapshots": 180,
+    "pit_blackouts": [],
+    "phases": [
+      {
+        "phase_id": "phase_01",
+        "start_local": "2026-08-10T01:40:00+03:00",
+        "end_local": "2026-08-11T01:40:00+03:00",
+        "hard_end_local": "2026-08-11T02:10:00+03:00",
+        "writer_duration_sec": 86400,
+        "complete_durable_segments": 24
+      }
+    ],
+    "universe_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\universe\\no_binance_dense_ws_sweep_20260628.csv",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "universe_rows": 1388,
+    "hypothesis_bank_sha256": "85ee37afc7e2ba3855084ab9f961cd71677df35894d95263cccd5652a7c317a9",
+    "continuous_policy_sha256": "c3bee1485326e25fa7be89d3bbfb69075eaa68c354e7ead3169ebd103daee559",
+    "pit_schedule_sha256": "06b0a3b22f0563b6baf26bd192ceb30f7b8e46ffd16ab17331141c99d97f34f3",
+    "collection_windows": [
+      {
+        "sequence": 1,
+        "window_id": "EVIDENCE_EXCEPTION_2026-08-10_24H",
+        "window_type": "EVIDENCE_VALUE_EXCEPTION",
+        "writer_start_local": "2026-08-10T01:40:00+03:00",
+        "writer_deadline_local": "2026-08-11T01:40:00+03:00",
+        "hard_deadline_local": "2026-08-11T02:10:00+03:00"
+      }
+    ],
+    "uninterrupted_required": true,
+    "suppressed_pit_run_ids": []
+  },
+  "candidate_contract_hash": "6ccdb2c18c3db25d80e0af3237ff680fa198b0fefc2d3e1d51c4d55195a681c7"
+}
