@@ -1,0 +1,199 @@
+{
+  "schema": "trading_mvp_pit_full_proof_pipeline_readiness_v1",
+  "created_at_utc": "2026-08-09T17:06:44.1829866Z",
+  "status": "PASS_READY_NOT_DUE_8_OF_20_NO_REAL_OOS_READ",
+  "objective": "Verify the complete frozen PIT proof pipeline before the train gate without consuming real OOS returns.",
+  "hypothesis_id": "pit_universe_membership_drift_reversion_v1",
+  "hypothesis_contract_version": "pit_universe_membership_drift_reversion_v1.3.0",
+  "hypothesis_contract_sha256": "b5e3abd4942fc117b92c324e931d8d91671df3de99b403875bcf38983c26d857",
+  "git_head_at_audit": "152a9e2ee364e6c666d30c8f47513aab9004beba",
+  "current_checkpoint": {
+    "autopilot_status": "ACTIVE",
+    "gate_status": "READY_FOR_POSTPROCESS",
+    "accepted_distinct_dates": 8,
+    "train_target_distinct_dates": 20,
+    "next_run_id": "pit_universe_v2_forward_20260810_n13",
+    "next_start_local": "2026-08-10T01:00:00+03:00",
+    "next_end_local": "2026-08-10T01:20:00+03:00",
+    "action_due": false,
+    "weekly_remaining_percent": 84.0
+  },
+  "verified_pipeline": [
+    {
+      "stage": 1,
+      "name": "train_accrual",
+      "required_evidence": "20 accepted distinct quality-certified dates",
+      "current_progress": "8/20",
+      "next_transition": "visible train-only feasibility",
+      "real_returns_allowed": false
+    },
+    {
+      "stage": 2,
+      "name": "train_feasibility",
+      "required_evidence": "event frequency and fill-rate feasibility only",
+      "output_gate": "FEASIBLE_FOR_OOS",
+      "max_runtime_sec": 1800,
+      "oos_dates_read": 0,
+      "returns_read": false
+    },
+    {
+      "stage": 3,
+      "name": "chronological_oos_accrual",
+      "required_evidence": "100 accepted dates strictly after the frozen 20-date train window",
+      "split": "20 train + 100 OOS",
+      "grid_search": false,
+      "retune": false
+    },
+    {
+      "stage": 4,
+      "name": "full_historical_evaluation",
+      "walk_forward": "5 non-overlapping chronological folds x 20 OOS dates, refit=false",
+      "deterministic_repeats": 2,
+      "visible_wrapper_external_repeats": 2,
+      "maximum_verdict": "ACCEPT_FOR_SHORT_EXECUTION_PROBE",
+      "max_runtime_sec": 1800
+    },
+    {
+      "stage": 5,
+      "name": "short_execution_probe",
+      "precondition": "historical verdict ACCEPT_FOR_SHORT_EXECUTION_PROBE plus exact hash-bound user approval",
+      "duration_sec": 1200,
+      "target_notional_quote_per_leg": 500.0,
+      "minimum_valid_snapshots": 180,
+      "minimum_coverage_ratio": 0.8,
+      "maximum_p95_impact_bps_per_leg": 10.0,
+      "maximum_verdict": "PAPER_READY",
+      "network": "public read-only"
+    },
+    {
+      "stage": 6,
+      "name": "paper_forward",
+      "precondition": "PAPER_READY plus separate exact hash-bound user approval",
+      "segment_max_runtime_sec": 1200,
+      "minimum_completed_portfolio_observations": 15,
+      "minimum_profit_factor": 1.2,
+      "minimum_stress_net_quote": 0.0,
+      "maximum_incidents": 1,
+      "maximum_verdict": "LIVE_REVIEW_ELIGIBLE"
+    },
+    {
+      "stage": 7,
+      "name": "live_review",
+      "automatic_live_launch": false,
+      "requires_explicit_user_review": true,
+      "live_orders": false,
+      "private_api": false,
+      "real_capital": false,
+      "leverage_or_margin": false
+    }
+  ],
+  "historical_acceptance_gates": {
+    "minimum_oos_closed_days": 60,
+    "visible_wrapper_requires_oos_closed_days": 100,
+    "minimum_events_total": 20,
+    "minimum_events_per_venue": 10,
+    "minimum_unique_signal_dates": 10,
+    "minimum_dual_venue_coverage": 0.8,
+    "minimum_profit_factor": 1.2,
+    "minimum_positive_event_rate": 0.6,
+    "positive_combined_folds": 4,
+    "positive_folds_per_venue": 3,
+    "normal_net_pnl_positive": true,
+    "robustness_net_pnl_positive": true,
+    "stress_net_pnl_nonnegative": true,
+    "maximum_drawdown_fraction": 0.1,
+    "minimum_capacity_quote_per_leg": 500.0
+  },
+  "fail_closed_checks": [
+    "immutable input and output paths reject overwrite",
+    "contract, cost profile, input Merkle root, source code and upstream feasibility are hash-bound",
+    "train feasibility rejects any OOS-date or return access",
+    "OOS dates are chronological and walk-forward folds are ordered and non-overlapping",
+    "deterministic mismatch closes the run as STOPPED_INCOMPLETE",
+    "historical ACCEPT creates PlanOnly only and cannot auto-start execution probe",
+    "execution probe requires exact plan hash, explicit confirmation and visible terminal",
+    "probe failure cannot reduce capacity or retune",
+    "PAPER_READY creates PlanOnly only and cannot auto-start paper-forward",
+    "paper state cannot open live trading and ends at explicit LIVE_REVIEW_ELIGIBLE"
+  ],
+  "tests": {
+    "framework": "python unittest",
+    "python": "C:\\Users\\koval\\.venv\\Scripts\\python.exe",
+    "python_version": "3.13.7",
+    "test_count": 142,
+    "result": "PASS",
+    "elapsed_sec": 83.407,
+    "log_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\pit-full-proof-pipeline-readiness-tests-20260809-v1.log",
+    "log_sha256": "48cf65b3ae8b20ada63a4b6384da8ef3fe1179fad851e384fc86c17481c091b6",
+    "modules": [
+      { "name": "test_pit_membership_drift_evaluator", "count": 10 },
+      { "name": "test_pit_membership_drift_pipeline", "count": 8 },
+      { "name": "test_pit_train_feasibility_visible", "count": 7 },
+      { "name": "test_pit_full_evaluation_visible", "count": 5 },
+      { "name": "test_pit_membership_drift_execution_probe", "count": 11 },
+      { "name": "test_pit_membership_drift_execution_probe_visible", "count": 2 },
+      { "name": "test_pit_membership_drift_paper_forward", "count": 11 },
+      { "name": "test_pit_membership_drift_futility", "count": 5 },
+      { "name": "test_pit_postrun_policy", "count": 9 },
+      { "name": "test_pit_postrun_summary_checker", "count": 10 },
+      { "name": "test_active_run_gate", "count": 21 },
+      { "name": "test_autopilot_guard", "count": 43 }
+    ]
+  },
+  "source_files": [
+    {
+      "path": "docs/research/trading_mvp_hypothesis_bank_v1.json",
+      "sha256": "85ee37afc7e2ba3855084ab9f961cd71677df35894d95263cccd5652a7c317a9"
+    },
+    {
+      "path": "trading_mvp/src/pit_membership_drift_evaluator.py",
+      "sha256": "d5c521547f9fccb3d6654c66d5639f2725fc87989fce4151b39fcdb32956a256"
+    },
+    {
+      "path": "tools/run_pit_train_feasibility_visible.ps1",
+      "sha256": "3d7636089cc95befda23f2a04deb936b7c5cfd7b43f2cbe1375397b7f63b33a4"
+    },
+    {
+      "path": "tools/run_pit_full_evaluation_visible.ps1",
+      "sha256": "caa4c59a814b4922025f253fe2f6de59ea5b533c82c817011d74a46cdf507e48"
+    },
+    {
+      "path": "trading_mvp/src/pit_membership_drift_execution_probe.py",
+      "sha256": "2a145615f7f51fad5a0b821e4a96b82cc7d531d60fbd0e687d172ca7143f58d8"
+    },
+    {
+      "path": "trading_mvp/src/pit_membership_drift_execution_probe_collector.py",
+      "sha256": "40961e4ec650291b9187b2d720bba83867dcf686ffd713e0008d5eeccc4c208b"
+    },
+    {
+      "path": "tools/start_pit_membership_drift_execution_probe_visible.ps1",
+      "sha256": "c3b520d2427ef71ca98442f03790e66b425b30c8e8abccfa56ed17372491f5eb"
+    },
+    {
+      "path": "trading_mvp/src/pit_membership_drift_paper_forward.py",
+      "sha256": "6f739b33100aefd6860f6eff41f4f6b33eb2f80f6c93899cedd8792d7e392102"
+    },
+    {
+      "path": "trading_mvp/run_mvp.ps1",
+      "sha256": "b67a9ee285bc286ade35d4b91707b5b5906a9e615b375bb2841f705a0fe6bed0"
+    }
+  ],
+  "audit_findings": [],
+  "blocking_implementation_gaps": 0,
+  "real_data_access": {
+    "market_rows_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_evaluation_run": false,
+    "collector_started": false,
+    "network_access": false
+  },
+  "next_allowed_actions": [
+    "Run only the preapproved visible N13 segment when DUE or within five minutes.",
+    "Continue train accrual to 20 accepted distinct dates.",
+    "At 20/20 run the existing visible train-feasibility wrapper only; do not read OOS.",
+    "Only after FEASIBLE_FOR_OOS create a separately controlled chronological OOS collection schedule.",
+    "At 120/120 run the existing visible full-evaluation wrapper; request a new exact approval only if the immutable downstream plan requires it."
+  ],
+  "conclusion": "The proof machinery is ready before the train gate. Waiting for the next scheduled data segment is evidence accrual, not an engineering blocker."
+}
