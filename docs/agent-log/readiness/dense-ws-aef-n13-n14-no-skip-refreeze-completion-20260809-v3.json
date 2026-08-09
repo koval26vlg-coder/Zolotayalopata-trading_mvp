@@ -1,0 +1,66 @@
+{
+  "schema": "trading_mvp_dense_ws_n13_n14_no_skip_refreeze_completion_v3",
+  "status": "COMPLETE_PLANONLY_NO_LAUNCH",
+  "completed_at_utc": "2026-08-09T18:40:31.4270190Z",
+  "proposal_hash": "52ee59fb6f1111e186d895694dc88ce3cab73c171392a156cfc38a85cf2b952e",
+  "approval_receipt": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-09-dense-ws-n13-n14-no-skip-refreeze-v3-approval.json",
+    "sha256": "319ee17892e825a36def06cca8ce1844879e5ffa76a05ced3727c682ba8dfc30"
+  },
+  "implementation": {
+    "source_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+    "source_sha256": "a77113635a8503f1b9e1bd3d7de596a35d08ab54029f51a37e14aa724fe8db3f",
+    "exact_patch_sha256": "addf7fd11b7291260650f69d0219b4cc6dfa3ccb40b804014c5c5058e4ec6046",
+    "continuous_policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-continuous-production-policy-v1.json",
+    "continuous_policy_sha256": "ebd302f2f915cbd32c292a043939ca2a393f0ba5e15b5fd74653d93960839aa9",
+    "autopilot_policy_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "autopilot_policy_sha256": "3825601855d9faa2a389552ecc04a088a7266a5b7b80697a178defb081b89b31"
+  },
+  "immutable_outputs": {
+    "feasibility_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-feasibility-20260810-aef-continuous24h-n13-n14-no-skip-v3.json",
+    "feasibility_sha256": "6ffd227fcb042b103fa9f1df9b439ef96ed83381afde5f36ed8834aef76a5e20",
+    "candidate_contract_hash": "c6c2240d81cfbbdb532c2532801e43663d05e4678f367c807ae2cc59e8835f70",
+    "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260810-aef-24h-n13-n14-no-skip-v3.json",
+    "contract_file_sha256": "4dfd18f555f981f982b2eb1f43e08bec8a8f542c8dd49db3be63b46c24854f3d",
+    "contract_hash": "9f1df7ab37f7c3eeb82028686961cb7cfbd37e55e14bedeec610b16de3be4254",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260810-aef-24h-n13-n14-no-skip-v3.json",
+    "plan_file_sha256": "02fdbc93565636e441350006fedb6ac0cdae5ea4ace8271055b79a37d5446ccd",
+    "plan_hash": "8c7952438730c0de48fc9d9c7b13a73a1fc696629fe4d35191a4538d8db68b2d",
+    "runtime_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-runtime-dependencies-20260809-n13-n14-no-skip-v3.json",
+    "runtime_manifest_sha256": "12e5b791b273455e2d5520ba285b1927e0c51aee90d60bd70e8f5b3ee0cc33a4",
+    "n14_amendment_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json",
+    "n14_amendment_file_sha256": "4d6bf02316c37c972f0dc9aea8838d4a0e3501c838fb6db478ccdf961d0597e3",
+    "n14_amendment_plan_hash": "2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca"
+  },
+  "validation": {
+    "contract_plan_policy_binding": "VALID",
+    "launch_control_status": "READY_FOR_SEPARATE_EXACT_APPROVAL",
+    "actual_collection_allowed": false,
+    "offline_tests_passed": 79,
+    "offline_tests_failed": 0,
+    "contract_and_schedule_tests_passed": 36,
+    "autopilot_guard_tests_passed": 43,
+    "authoritative_guard_status": "ACTIVE",
+    "authoritative_guard_decision": "AWAIT_EXPLICIT_LONG_CAMPAIGN_APPROVAL",
+    "weekly_remaining_percent": 77.0,
+    "next_pit_run_id": "pit_universe_v2_forward_20260810_n13",
+    "next_pit_start_local": "2026-08-10T01:00:00+03:00",
+    "pit_pointer_changed": false,
+    "campaign_output_root_created": false
+  },
+  "safety": {
+    "collector_started": false,
+    "network_access": false,
+    "market_dataset_read": false,
+    "evaluator_run": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false,
+    "stopped_incomplete_retry": false
+  },
+  "next_allowed_action": "REQUEST_SEPARATE_EXACT_HASH_BOUND_DENSE_AND_N14_NO_SKIP_LAUNCH_APPROVAL"
+}
