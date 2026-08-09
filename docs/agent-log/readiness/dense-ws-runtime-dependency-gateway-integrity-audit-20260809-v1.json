@@ -1,0 +1,64 @@
+{
+  "schema": "trading_mvp_dense_ws_runtime_dependency_gateway_integrity_audit_v1",
+  "status": "FAIL_CLOSED_RUNTIME_DEPENDENCY_GATEWAY_STALE",
+  "observed_at_utc": "2026-08-09T18:48:23.5869273Z",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260810_aef_24h",
+  "active_plan": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260810-aef-24h-n13-n14-no-skip-v3.json",
+    "file_sha256": "02fdbc93565636e441350006fedb6ac0cdae5ea4ace8271055b79a37d5446ccd",
+    "plan_hash": "8c7952438730c0de48fc9d9c7b13a73a1fc696629fe4d35191a4538d8db68b2d"
+  },
+  "active_contract": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260810-aef-24h-n13-n14-no-skip-v3.json",
+    "file_sha256": "4dfd18f555f981f982b2eb1f43e08bec8a8f542c8dd49db3be63b46c24854f3d",
+    "contract_hash": "9f1df7ab37f7c3eeb82028686961cb7cfbd37e55e14bedeec610b16de3be4254"
+  },
+  "runtime_checker": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_dense_ws_runtime_dependencies.ps1",
+    "sha256": "b0380b1a4806619290d9c7001cefa86994824a57fd8320daac7cbf8eb3f6ab51",
+    "hardcoded_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\dense-ws-runtime-dependency-manifest-20260803-aef-24h-v1.json",
+    "hardcoded_manifest_sha256": "b53cfb88c2b5d33245c817a8faa099ab04639118a9fef0e11fdb6fd714a1eede",
+    "hardcoded_plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b"
+  },
+  "exact_gateway": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_dense_ws_campaign_visible.ps1",
+    "sha256": "56933c8a18edc75b8ee89c7da238e84df9c3c44145ed522f1d24b7266c9de6da",
+    "bound_checker_sha256": "b0380b1a4806619290d9c7001cefa86994824a57fd8320daac7cbf8eb3f6ab51"
+  },
+  "reproduction": {
+    "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools\\check_dense_ws_runtime_dependencies.ps1 -PlanPath <active_plan_path> -ExpectedPlanHash 8c7952438730c0de48fc9d9c7b13a73a1fc696629fe4d35191a4538d8db68b2d -Json",
+    "exit_code": 1,
+    "error": "ExpectedPlanHash does not match the frozen dependency manifest.",
+    "failure_before_network_or_writer": true
+  },
+  "impact": {
+    "current_plan_launch_ready": false,
+    "previous_launch_approval_packet_valid": false,
+    "pit_n13_affected": false,
+    "pit_pointer_change_required": false,
+    "trading_contract_change_required": false,
+    "dense_runtime_gateway_refreeze_required": true
+  },
+  "required_fix_scope": {
+    "make_runtime_checker_accept_an_exact_manifest_path_and_sha256": true,
+    "bind_gateway_to_the_checker_postimage_sha256": true,
+    "bind_policy_to_a_new_plan_specific_runtime_readiness_manifest": true,
+    "build_new_versioned_refreeze_manifest_contract_and_planonly": true,
+    "run_offline_positive_and_tamper_rejection_tests": true
+  },
+  "safety": {
+    "collector_started": false,
+    "network_request_performed": false,
+    "market_rows_read": false,
+    "evaluator_started": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false,
+    "stopped_incomplete_retry": false
+  },
+  "next_allowed_action": "PREPARE_EXACT_RUNTIME_DEPENDENCY_GATEWAY_REFREEZE_PROPOSAL_NO_LAUNCH"
+}

@@ -1,0 +1,318 @@
+--- a/tools/check_dense_ws_runtime_dependencies.ps1
++++ b/tools/check_dense_ws_runtime_dependencies.ps1
+@@ -4,6 +4,11 @@
+     [Parameter(Mandatory = $true)]
+     [ValidatePattern("^[0-9a-fA-F]{64}$")]
+     [string]$ExpectedPlanHash,
++    [Parameter(Mandatory = $true)]
++    [string]$ManifestPath,
++    [Parameter(Mandatory = $true)]
++    [ValidatePattern("^[0-9a-fA-F]{64}$")]
++    [string]$ExpectedManifestSha256,
+     [switch]$Json
+ )
+ 
+@@ -11,10 +16,6 @@
+ Set-StrictMode -Version Latest
+ 
+ $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+-$manifestPath = Join-Path $projectRoot `
+-    "docs\plans\dense-ws-runtime-dependency-manifest-20260803-aef-24h-v1.json"
+-$expectedManifestSha256 = `
+-    "b53cfb88c2b5d33245c817a8faa099ab04639118a9fef0e11fdb6fd714a1eede"
+ 
+ function Get-Sha256 {
+     param([Parameter(Mandatory = $true)][string]$Path)
+@@ -48,13 +49,15 @@
+ 
+ $PlanPath = Get-NormalizedPath -Path $PlanPath
+ $ExpectedPlanHash = $ExpectedPlanHash.ToLowerInvariant()
+-if (-not (Test-Path -LiteralPath $manifestPath -PathType Leaf)) {
+-    throw "Runtime dependency manifest is missing: $manifestPath"
+-}
+-if ((Get-Sha256 -Path $manifestPath) -ne $expectedManifestSha256) {
++$ManifestPath = Get-NormalizedPath -Path $ManifestPath
++$ExpectedManifestSha256 = $ExpectedManifestSha256.ToLowerInvariant()
++if (-not (Test-Path -LiteralPath $ManifestPath -PathType Leaf)) {
++    throw "Runtime dependency manifest is missing: $ManifestPath"
++}
++if ((Get-Sha256 -Path $ManifestPath) -ne $ExpectedManifestSha256) {
+     throw "Runtime dependency manifest hash mismatch."
+ }
+-$manifest = Get-Content -Raw -LiteralPath $manifestPath |
++$manifest = Get-Content -Raw -LiteralPath $ManifestPath |
+     ConvertFrom-Json -Depth 100 -DateKind String
+ if (
+     [string]$manifest.schema -ne
+@@ -427,7 +430,7 @@
+     $previousBytecodeSetting = $env:PYTHONDONTWRITEBYTECODE
+     $env:PYTHONDONTWRITEBYTECODE = "1"
+     try {
+-        $probeRaw = & $pythonPath -c $pythonProbeSource $manifestPath $projectRoot 2>&1
++        $probeRaw = & $pythonPath -c $pythonProbeSource $ManifestPath $projectRoot 2>&1
+         $probeExitCode = $LASTEXITCODE
+     } finally {
+         $env:PYTHONDONTWRITEBYTECODE = $previousBytecodeSetting
+@@ -473,8 +476,8 @@
+     plan_path = $PlanPath
+     plan_hash = $ExpectedPlanHash
+     plan_file_sha256 = $planFileSha256
+-    manifest_path = $manifestPath
+-    manifest_sha256 = $expectedManifestSha256
++    manifest_path = $ManifestPath
++    manifest_sha256 = $ExpectedManifestSha256
+     campaign_root = $campaignRoot
+     campaign_root_existed_before = $campaignRootExistedBefore
+     campaign_root_existed_after = $campaignRootExistedAfter
+--- a/tools/start_exact_approved_dense_ws_campaign_visible.ps1
++++ b/tools/start_exact_approved_dense_ws_campaign_visible.ps1
+@@ -16,7 +16,7 @@
+ $runtimeDependencyChecker = Join-Path $projectRoot `
+     "tools\check_dense_ws_runtime_dependencies.ps1"
+ $expectedRuntimeDependencyCheckerSha256 = `
+-    "b0380b1a4806619290d9c7001cefa86994824a57fd8320daac7cbf8eb3f6ab51"
++    "cba3dfa74f6980426f381513a5ff3339a1edd733776de2cfda41693ad4f539e4"
+ 
+ function Get-Sha256 {
+     param([Parameter(Mandatory = $true)][string]$Path)
+@@ -26,6 +26,51 @@
+ function Get-NormalizedPath {
+     param([Parameter(Mandatory = $true)][string]$Path)
+     return [System.IO.Path]::GetFullPath($Path)
++}
++
++function Get-RuntimeDependencyManifestBinding {
++    param([Parameter(Mandatory = $true)]$Policy)
++
++    $campaignProperty = $Policy.PSObject.Properties["next_long_campaign"]
++    if ($null -eq $campaignProperty -or $null -eq $campaignProperty.Value) {
++        throw "Policy next_long_campaign binding is missing."
++    }
++    $bindingProperty = $campaignProperty.Value.PSObject.Properties[
++        "runtime_dependency_readiness_manifest"
++    ]
++    if ($null -eq $bindingProperty -or $null -eq $bindingProperty.Value) {
++        throw "Policy runtime dependency manifest binding is missing."
++    }
++    $binding = $bindingProperty.Value
++    $pathProperty = $binding.PSObject.Properties["path"]
++    $shaProperty = $binding.PSObject.Properties["sha256"]
++    if (
++        $null -eq $pathProperty -or
++        [string]::IsNullOrWhiteSpace([string]$pathProperty.Value)
++    ) {
++        throw "Policy runtime dependency manifest path is missing."
++    }
++    if (
++        $null -eq $shaProperty -or
++        [string]$shaProperty.Value -notmatch "^[0-9a-fA-F]{64}$"
++    ) {
++        throw "Policy runtime dependency manifest SHA-256 is invalid."
++    }
++
++    $manifestPath = Get-NormalizedPath -Path ([string]$pathProperty.Value)
++    $manifestSha256 = ([string]$shaProperty.Value).ToLowerInvariant()
++    if (-not (Test-Path -LiteralPath $manifestPath -PathType Leaf)) {
++        throw "Runtime dependency manifest is missing: $manifestPath"
++    }
++    Assert-ExactHash `
++        (Get-Sha256 -Path $manifestPath) `
++        $manifestSha256 `
++        "runtime_dependency_manifest.sha256"
++
++    return [ordered]@{
++        path = $manifestPath
++        sha256 = $manifestSha256
++    }
+ }
+ 
+ function Assert-ExactString {
+@@ -311,6 +356,7 @@
+         ConvertFrom-Json -DateKind String
+     $plan = Get-Content -Raw -LiteralPath $resolvedPlanPath |
+         ConvertFrom-Json -DateKind String
++    $runtimeDependencyManifest = Get-RuntimeDependencyManifestBinding -Policy $policy
+     $guard = Invoke-JsonPowerShellFile -ScriptPath $resolvedGuardScript -Arguments @("-Json")
+     $receiptPath = Get-NormalizedPath -Path ([string]$policy.next_long_campaign.user_launch_approval.receipt_path)
+     if (-not (Test-Path -LiteralPath $receiptPath -PathType Leaf)) {
+@@ -342,6 +388,8 @@
+         -Arguments @(
+             "-PlanPath", $resolvedPlanPath,
+             "-ExpectedPlanHash", $normalizedPlanHash,
++            "-ManifestPath", $runtimeDependencyManifest.path,
++            "-ExpectedManifestSha256", $runtimeDependencyManifest.sha256,
+             "-Json"
+         )
+     Assert-ExactString $runtimeReadiness.status "READY" `
+@@ -382,6 +430,8 @@
+             runtime_dependency_checker_path = $resolvedRuntimeDependencyChecker
+             runtime_dependency_checker_sha256 = `
+                 $expectedRuntimeDependencyCheckerSha256
++            runtime_dependency_manifest_path = $runtimeDependencyManifest.path
++            runtime_dependency_manifest_sha256 = $runtimeDependencyManifest.sha256
+             runtime_dependency_readiness = $runtimeReadiness
+             can_launch_now = [bool]$inner.can_launch_now
+             underlying_status = [string]$inner.status
+@@ -410,6 +460,8 @@
+             runtime_dependency_checker_path = $resolvedRuntimeDependencyChecker
+             runtime_dependency_checker_sha256 = `
+                 $expectedRuntimeDependencyCheckerSha256
++            runtime_dependency_manifest_path = $runtimeDependencyManifest.path
++            runtime_dependency_manifest_sha256 = $runtimeDependencyManifest.sha256
+             runtime_dependency_readiness = $runtimeReadiness
+             terminal_pid = [int]$inner.terminal_pid
+             terminal_ownership_verified = $true
+--- a/tools/test_dense_ws_runtime_dependency_checker.ps1
++++ b/tools/test_dense_ws_runtime_dependency_checker.ps1
+@@ -1,14 +1,35 @@
+ param(
+-    [string]$PlanPath = "E:\ZolotyayLopata-data\exports\trading-mvp\autopilot\campaigns\dense-ws-microstructure-regime-filter-planonly-20260803-aef-24h-v1.json",
+-    [string]$ExpectedPlanHash = "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b"
++    [Parameter(Mandatory = $true)]
++    [string]$PlanPath,
++    [Parameter(Mandatory = $true)]
++    [ValidatePattern("^[0-9a-fA-F]{64}$")]
++    [string]$ExpectedPlanHash,
++    [Parameter(Mandatory = $true)]
++    [string]$ManifestPath,
++    [Parameter(Mandatory = $true)]
++    [ValidatePattern("^[0-9a-fA-F]{64}$")]
++    [string]$ExpectedManifestSha256,
++    [string]$CheckerPath = ""
+ )
+ 
+ $ErrorActionPreference = "Stop"
+ Set-StrictMode -Version Latest
+ 
+-$checker = Join-Path $PSScriptRoot "check_dense_ws_runtime_dependencies.ps1"
+-$manifest = Join-Path (Resolve-Path (Join-Path $PSScriptRoot "..")) `
+-    "docs\plans\dense-ws-runtime-dependency-manifest-20260803-aef-24h-v1.json"
++if ([string]::IsNullOrWhiteSpace($CheckerPath)) {
++    $CheckerPath = Join-Path $PSScriptRoot "check_dense_ws_runtime_dependencies.ps1"
++}
++$checker = [System.IO.Path]::GetFullPath($CheckerPath)
++$manifest = [System.IO.Path]::GetFullPath($ManifestPath)
++$ExpectedManifestSha256 = $ExpectedManifestSha256.ToLowerInvariant()
++if (-not (Test-Path -LiteralPath $manifest -PathType Leaf)) {
++    throw "Runtime dependency manifest is missing: $manifest"
++}
++if (
++    (Get-FileHash -Algorithm SHA256 -LiteralPath $manifest).Hash.ToLowerInvariant() -ne
++        $ExpectedManifestSha256
++) {
++    throw "Runtime dependency manifest hash mismatch."
++}
+ $passed = 0
+ $failed = 0
+ $cases = [System.Collections.Generic.List[object]]::new()
+@@ -44,7 +65,11 @@
+     Record-Case "checker_exists" $true
+     try {
+         $raw = & pwsh -NoProfile -ExecutionPolicy Bypass -File $checker `
+-            -PlanPath $PlanPath -ExpectedPlanHash $ExpectedPlanHash -Json 2>&1
++            -PlanPath $PlanPath `
++            -ExpectedPlanHash $ExpectedPlanHash `
++            -ManifestPath $manifest `
++            -ExpectedManifestSha256 $ExpectedManifestSha256 `
++            -Json 2>&1
+         if ($LASTEXITCODE -ne 0) {
+             throw "checker exit $LASTEXITCODE`: $($raw | Out-String)"
+         }
+@@ -73,15 +98,44 @@
+ 
+     try {
+         $bad = & pwsh -NoProfile -ExecutionPolicy Bypass -File $checker `
+-            -PlanPath $PlanPath -ExpectedPlanHash ("0" * 64) -Json 2>&1
++            -PlanPath $PlanPath `
++            -ExpectedPlanHash ("0" * 64) `
++            -ManifestPath $manifest `
++            -ExpectedManifestSha256 $ExpectedManifestSha256 `
++            -Json 2>&1
+         Record-Case "reject_wrong_plan_hash" ($LASTEXITCODE -ne 0)
+     } catch {
+         Record-Case "reject_wrong_plan_hash" $true
+     }
++
++    try {
++        $bad = & pwsh -NoProfile -ExecutionPolicy Bypass -File $checker `
++            -PlanPath $PlanPath `
++            -ExpectedPlanHash $ExpectedPlanHash `
++            -ManifestPath $manifest `
++            -ExpectedManifestSha256 ("0" * 64) `
++            -Json 2>&1
++        Record-Case "reject_wrong_manifest_hash" ($LASTEXITCODE -ne 0)
++    } catch {
++        Record-Case "reject_wrong_manifest_hash" $true
++    }
++
++    try {
++        $missingManifest = Join-Path $env:TEMP "dense-ws-runtime-manifest-does-not-exist.json"
++        $bad = & pwsh -NoProfile -ExecutionPolicy Bypass -File $checker `
++            -PlanPath $PlanPath `
++            -ExpectedPlanHash $ExpectedPlanHash `
++            -ManifestPath $missingManifest `
++            -ExpectedManifestSha256 $ExpectedManifestSha256 `
++            -Json 2>&1
++        Record-Case "reject_missing_manifest" ($LASTEXITCODE -ne 0)
++    } catch {
++        Record-Case "reject_missing_manifest" $true
++    }
+ }
+ 
+ $result = [ordered]@{
+-    schema = "trading_mvp_dense_ws_runtime_dependency_checker_test_v1"
++    schema = "trading_mvp_dense_ws_runtime_dependency_checker_test_v2"
+     passed = $failed -eq 0
+     passed_count = $passed
+     failed_count = $failed
+--- a/tools/test_dense_ws_launch_approval_gateway.ps1
++++ b/tools/test_dense_ws_launch_approval_gateway.ps1
+@@ -141,16 +141,39 @@
+ $tampered.launch_controls.tools.launcher.sha256 = "0" * 64
+ Expect-Rejection "reject_plan_launcher_hash" $policy $guard $tampered $receipt
+ 
++try {
++    Get-RuntimeDependencyManifestBinding -Policy $policy | Out-Null
++    Record-Pass -Name "accept_exact_runtime_manifest_binding"
++} catch {
++    Record-Fail `
++        -Name "accept_exact_runtime_manifest_binding" `
++        -Reason $_.Exception.Message
++}
++
++$tampered = Copy-JsonObject $policy
++$tampered.next_long_campaign.runtime_dependency_readiness_manifest.sha256 = "0" * 64
++try {
++    Get-RuntimeDependencyManifestBinding -Policy $tampered | Out-Null
++    Record-Fail `
++        -Name "reject_runtime_manifest_hash" `
++        -Reason "binding validator accepted a tampered manifest hash"
++} catch {
++    Record-Pass -Name "reject_runtime_manifest_hash"
++}
++
+ Expect-Rejection `
+     -Name "reject_current_launcher_hash" `
+     -Policy $policy -Guard $guard -Plan $plan -Receipt $receipt `
+     -Overrides @{ FrozenLauncherSha256 = "0" * 64 }
+ 
+ try {
++    $runtimeDependencyManifest = Get-RuntimeDependencyManifestBinding -Policy $policy
+     $dependencyRaw = & pwsh -NoProfile -ExecutionPolicy Bypass `
+         -File $dependencyChecker `
+         -PlanPath $PlanPath `
+         -ExpectedPlanHash $ExpectedPlanHash `
++        -ManifestPath $runtimeDependencyManifest.path `
++        -ExpectedManifestSha256 $runtimeDependencyManifest.sha256 `
+         -Json 2>&1
+     if ($LASTEXITCODE -ne 0) {
+         throw "dependency checker failed: $($dependencyRaw | Out-String)"
+@@ -206,7 +229,7 @@
+ }
+ 
+ $result = [ordered]@{
+-    schema = "trading_mvp_dense_ws_launch_approval_gateway_test_v1"
++    schema = "trading_mvp_dense_ws_launch_approval_gateway_test_v2"
+     passed = $failed -eq 0
+     passed_count = $passed
+     failed_count = $failed

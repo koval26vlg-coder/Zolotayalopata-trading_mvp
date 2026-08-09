@@ -1,0 +1,181 @@
+{
+  "schema": "trading_mvp_dense_ws_runtime_dependency_manifest_v1",
+  "mode": "IMMUTABLE_READ_ONLY_PRELAUNCH_BINDING",
+  "generated_at_local": "2026-08-09T21:52:00+03:00",
+  "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260810_aef_24h",
+  "plan": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260810-aef-24h-n13-n14-no-skip-v3.json",
+    "file_sha256": "02fdbc93565636e441350006fedb6ac0cdae5ea4ace8271055b79a37d5446ccd",
+    "plan_hash": "8c7952438730c0de48fc9d9c7b13a73a1fc696629fe4d35191a4538d8db68b2d"
+  },
+  "contract": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260810-aef-24h-n13-n14-no-skip-v3.json",
+    "file_sha256": "4dfd18f555f981f982b2eb1f43e08bec8a8f542c8dd49db3be63b46c24854f3d",
+    "contract_hash": "9f1df7ab37f7c3eeb82028686961cb7cfbd37e55e14bedeec610b16de3be4254"
+  },
+  "universe": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\universe\\no_binance_dense_ws_sweep_20260628.csv",
+    "sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "rows": 1388
+  },
+  "python_runtime": {
+    "path": "C:\\Program Files\\Python313\\python.exe",
+    "executable_sha256": "d932e5e2f324d57f392e8fd063dcf6d0185be8a664c57c6d24e7762ed02c28ca",
+    "version_info": [
+      3,
+      13,
+      7
+    ],
+    "openssl_version": "OpenSSL 3.0.16 11 Feb 2025",
+    "user_site_root": "C:\\Users\\koval\\AppData\\Roaming\\Python\\Python313\\site-packages"
+  },
+  "required_local_files": [
+    {
+      "role": "config_json_used_for_public_discovery_timeout",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\config.json",
+      "sha256": "2b7fb6aeda418bae801f0752d12ef1cb76c8e241e68f9b15cd433ec7c7f3f9c8",
+      "module": null,
+      "already_plan_bound": false
+    },
+    {
+      "role": "config_module",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\config.py",
+      "sha256": "95b3e141ae028a6dbf26f24239e3c70ff65081e7a14dc2deeed06ce2e9218104",
+      "module": "config",
+      "already_plan_bound": false
+    },
+    {
+      "role": "symbol_selection_module",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\multi_bot.py",
+      "sha256": "778d3d0735f266c050e8a97c7b44113f521c49ada013f7245fd961b7136af6f2",
+      "module": "multi_bot",
+      "already_plan_bound": false
+    },
+    {
+      "role": "public_market_discovery_clients",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\exchanges.py",
+      "sha256": "aba8cfd34ca5058bb7189fc3e46b6b38df0630f6237f6ba54c79a1220963da14",
+      "module": "exchanges",
+      "already_plan_bound": false
+    },
+    {
+      "role": "transitive_multi_bot_import",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\trading.py",
+      "sha256": "2979a5e2102ea2134a1b64a156d79a09d715ef2ea2b8d25a4a2505b9f76ade7c",
+      "module": "trading",
+      "already_plan_bound": false
+    },
+    {
+      "role": "raw_websocket_writer",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_collector.py",
+      "sha256": "e8d79ef4685bd743a7e436847944330f27d6be590cc524c4703697328a563ec0",
+      "module": "ws_collector",
+      "already_plan_bound": true
+    },
+    {
+      "role": "durable_segment_writer",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\ws_durable_collector.py",
+      "sha256": "05c6343590c0f1b30f22810fddc70c848844a6338606de8837a4cd42f35f8cca",
+      "module": "ws_durable_collector",
+      "already_plan_bound": true
+    },
+    {
+      "role": "campaign_contract_validator",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_contract.py",
+      "sha256": "a77113635a8503f1b9e1bd3d7de596a35d08ab54029f51a37e14aa724fe8db3f",
+      "module": "dense_ws_campaign_contract",
+      "already_plan_bound": false
+    },
+    {
+      "role": "global_writer_claim",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\global_market_writer_claim.py",
+      "sha256": "6c57b5612d8dc972ebb94941c514bae7333c1cb21b13dd4487e2fe6a2569ea2e",
+      "module": "global_market_writer_claim",
+      "already_plan_bound": true
+    },
+    {
+      "role": "campaign_runner",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_runner.py",
+      "sha256": "b3c4183df3d0aaeabdcc8849cf67110be01c62eaf700349f88c58af6ec2425c3",
+      "module": "dense_ws_campaign_runner",
+      "already_plan_bound": true
+    },
+    {
+      "role": "frozen_visible_launcher",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_dense_ws_campaign_visible.ps1",
+      "sha256": "6f35fbfe46c12b2cfb566a809de21ba84847ec42b2a6b5a33f3dce143b288321",
+      "module": null,
+      "already_plan_bound": true
+    }
+  ],
+  "required_python_distributions": [
+    {
+      "name": "psutil",
+      "version": "6.1.0",
+      "tree_sha256": "7fe4a08c0e926e23abcc59fa6cd2b19207cdd8bf030c99b945c48780a6a9130f",
+      "files_hashed": 36
+    },
+    {
+      "name": "requests",
+      "version": "2.34.2",
+      "tree_sha256": "637e9a81dccc2619bbe8b8b8d0337ea253d0791a072a41ac6481f48aeae5f41e",
+      "files_hashed": 27
+    },
+    {
+      "name": "urllib3",
+      "version": "2.6.3",
+      "tree_sha256": "a7efb5f463ed67622687b4e33f6e781b16aa8bb98dc50cc0a4cd6b5f049a5fcd",
+      "files_hashed": 43
+    },
+    {
+      "name": "certifi",
+      "version": "2026.4.22",
+      "tree_sha256": "1bcd364ba3fb871ad7ff34d92e7114e48fd0c762c54efa286f0d89178220d71d",
+      "files_hashed": 11
+    },
+    {
+      "name": "websocket-client",
+      "version": "1.8.0",
+      "tree_sha256": "28f558e0f7ea80065247202bdb05dbd6d13a54c6e3124aca5cd0292eeb6d4fc4",
+      "files_hashed": 35
+    },
+    {
+      "name": "charset-normalizer",
+      "version": "3.4.4",
+      "tree_sha256": "b5c82ceeeafc1dc81d69d58e9c873b1f1dc2ec89030eefa7c5b7f99a608afa40",
+      "files_hashed": 23
+    },
+    {
+      "name": "idna",
+      "version": "3.11",
+      "tree_sha256": "cf64aa7c99123adb8b7301f922d15e353cfa013572536ccaea01875bd4f341fc",
+      "files_hashed": 14
+    }
+  ],
+  "tls": {
+    "certifi_ca_path": "C:\\Users\\koval\\AppData\\Roaming\\Python\\Python313\\site-packages\\certifi\\cacert.pem",
+    "certifi_ca_sha256": "16be3f6feb15408195dcfe3aa1a75ef9db72f646b96ebbefdc68f56255f799f8"
+  },
+  "semantic_probe": {
+    "exchanges": [
+      "mexc",
+      "gateio"
+    ],
+    "config_timeout_sec": 30,
+    "required_callables": [
+      "ws_durable_collector.resolve_symbols_for_universe",
+      "multi_bot.build_pairs_for_universe"
+    ],
+    "outbound_socket_events_allowed": false,
+    "network_request_allowed": false
+  },
+  "scope": {
+    "changes_frozen_collector": false,
+    "changes_plan_or_contract": false,
+    "changes_venue_universe_signal_cost_or_risk": false,
+    "starts_writer": false,
+    "reads_returns_pnl_or_oos": false,
+    "grid_or_retune": false,
+    "paper_live_private_api_capital_leverage_margin": false
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "schema": "trading_mvp_dense_ws_runtime_dependency_gateway_refreeze_preview_audit_v1",
+  "status": "PASS_EXACT_PATCH_PREVIEW_NO_LAUNCH",
+  "generated_at_local": "2026-08-09T22:02:49.4301307+03:00",
+  "purpose": "Prove an exact hash-bound runtime dependency gateway refreeze preview without modifying active launch tools or starting any collector.",
+  "active_inputs": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260810_aef_24h",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260810-aef-24h-n13-n14-no-skip-v3.json",
+    "plan_file_sha256": "02fdbc93565636e441350006fedb6ac0cdae5ea4ace8271055b79a37d5446ccd",
+    "plan_hash": "8c7952438730c0de48fc9d9c7b13a73a1fc696629fe4d35191a4538d8db68b2d",
+    "preview_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-runtime-dependency-manifest-20260810-aef-24h-runtime-gateway-preview-v1.json",
+    "preview_manifest_sha256": "b564c507fd2445b0989e375678802e26473d30ad8d991060f8fcebd9b73c5603"
+  },
+  "exact_patch": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-runtime-dependency-gateway-refreeze-implementation-preview-20260809-v1.patch",
+    "sha256": "f090c3b0799d416133bc6ed2b46c713d92ef7263083e5fdbb20b8440f1646712",
+    "git_apply_check": "PASS",
+    "isolated_roundtrip": "PASS",
+    "core_autocrlf": true
+  },
+  "source_bindings": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_dense_ws_runtime_dependencies.ps1",
+      "preimage_sha256": "b0380b1a4806619290d9c7001cefa86994824a57fd8320daac7cbf8eb3f6ab51",
+      "expected_postimage_sha256": "cba3dfa74f6980426f381513a5ff3339a1edd733776de2cfda41693ad4f539e4"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_dense_ws_campaign_visible.ps1",
+      "preimage_sha256": "56933c8a18edc75b8ee89c7da238e84df9c3c44145ed522f1d24b7266c9de6da",
+      "expected_postimage_sha256": "1f28041f110de22f3824b65a58894a803d4ae58aa104d33cca82b9b3e6a1f78c"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\test_dense_ws_runtime_dependency_checker.ps1",
+      "preimage_sha256": "06320456c30bb98c3720148c951ce04cd785b124661ef6af8243a8cce29dfa64",
+      "expected_postimage_sha256": "8c5760401a7a3a5c93ac06fee233f6528462ba788637984b4587a621b61ec87d"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\test_dense_ws_launch_approval_gateway.ps1",
+      "preimage_sha256": "3b5517ba716ed1d9efa28eb3907e91b361742ac2184f3dbd1b5f910ce123b0d3",
+      "expected_postimage_sha256": "c3be4cb61121220054335cfddc2e5710a04b59910afa23998187f40d2a78ac96"
+    }
+  ],
+  "preview_tests": {
+    "powershell_parse_files": 4,
+    "powershell_parse_errors": 0,
+    "runtime_status": "READY",
+    "runtime_blockers": [],
+    "checker_tests_passed": 13,
+    "checker_tests_failed": 0,
+    "wrong_plan_hash_rejected": true,
+    "wrong_manifest_hash_rejected": true,
+    "missing_manifest_rejected": true,
+    "gateway_exact_binding_accepted": true,
+    "gateway_tampered_hash_rejected": true,
+    "gateway_missing_binding_rejected": true,
+    "no_run_or_output_writes": true,
+    "network_request_performed": false,
+    "writer_started": false,
+    "collector_started": false
+  },
+  "scope": {
+    "trading_contract_changed": false,
+    "campaign_window_changed": false,
+    "duration_changed": false,
+    "output_cap_changed": false,
+    "pit_pointer_changed": false,
+    "collector_launch_allowed": false,
+    "evaluator_allowed": false,
+    "returns_or_pnl": false,
+    "oos": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "next_action": "REQUEST_EXACT_RUNTIME_DEPENDENCY_GATEWAY_REFREEZE_APPROVAL"
+}
