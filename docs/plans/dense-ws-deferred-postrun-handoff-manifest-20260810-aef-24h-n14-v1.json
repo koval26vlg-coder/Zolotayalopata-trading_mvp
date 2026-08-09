@@ -1,0 +1,109 @@
+{
+  "schema": "trading_mvp_dense_ws_deferred_postrun_handoff_manifest_v1",
+  "mode": "IMMUTABLE_PLANONLY_RUNTIME_BINDING",
+  "status": "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL",
+  "generated_at_local": "2026-08-09T23:38:42.9671756+03:00",
+  "generated_at_utc": "2026-08-09T20:38:42.9671756Z",
+  "research_only": true,
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-deferred-postrun-handoff-freeze-proposal-20260809-v1.json",
+    "file_sha256": "a36bada0c2ce9ae0e54bda2a8d9c824efc50a0bf0aa2f03110eb31d558d56e24",
+    "proposal_hash": "2d4765d115ceee5a1f4e0e74841830d8aa2e2c26bfd761bdabd5b8e8b335439f"
+  },
+  "handoff_profile_hash": "10addf47520a8a2e697e786214e45295cd301756206297ee9018b8f8c85f16e6",
+  "approval_receipt": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-09-dense-ws-deferred-postrun-handoff-freeze-v1-approval.json",
+    "file_sha256": "d7acb8dda71f030da7cc38da560cf1bdaf87b163ba3fed81db9f9f3df815be11"
+  },
+  "campaign": {
+    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260810_aef_24h",
+    "candidate_contract_hash": "c6c2240d81cfbbdb532c2532801e43663d05e4678f367c807ae2cc59e8835f70",
+    "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway.json",
+    "contract_file_sha256": "fd26b0a16cfef1952477965323e51f0f2ac8123ab38c0d6cd7982bc139562f65",
+    "contract_hash": "d61eff6c00a69fb4340ae84e6663af9b64c412f9ad0a55f833dc575096ec28c5",
+    "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway.json",
+    "plan_file_sha256": "5712d0c71147c8a3005afe7bcc0584ee624f4aebcf82fa96940bc8f1227ca860",
+    "plan_hash": "a5fdae4b9f22c21b5164c6c703d0be9f3b25155edd4bf2acab5f504063fef591",
+    "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
+    "universe_rows": 1388,
+    "campaign_root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-v1-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway",
+    "campaign_manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-v1-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway\\campaign-manifest.json"
+  },
+  "required_pit_completion": {
+    "schedule_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json",
+    "schedule_file_sha256": "4d6bf02316c37c972f0dc9aea8838d4a0e3501c838fb6db478ccdf961d0597e3",
+    "schedule_plan_hash": "2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca",
+    "run_id": "pit_universe_v2_forward_20260811_n14",
+    "start_local": "2026-08-11T02:15:00+03:00",
+    "end_local": "2026-08-11T02:35:00+03:00",
+    "duration_sec": 1200,
+    "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260811_n14\\manifest.json",
+    "quality_ledger_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\quality-certifications.jsonl",
+    "postrun_summary_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\pit_universe_v2_forward_20260811_n14.postrun.json",
+    "postrun_reconciliation_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\pit_universe_v2_forward_20260811_n14.postrun.reconciliation.json",
+    "preserved_not_moved": true,
+    "preserved_not_skipped": true
+  },
+  "runtime_window": {
+    "postrun_not_before_local": "2026-08-11T02:40:00+03:00",
+    "latest_full_runtime_start_local": "2026-08-11T03:10:00+03:00",
+    "postrun_hard_deadline_local": "2026-08-11T04:10:00+03:00",
+    "quality_max_runtime_sec": 1800,
+    "materialization_max_runtime_sec": 1800,
+    "total_max_runtime_sec": 3600,
+    "stages_are_sequential": true,
+    "one_visible_terminal": true,
+    "one_postrun_owner": true,
+    "quality_tool_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_campaign_quality.py",
+    "quality_tool_sha256": "966aa25cc5198995adf7bd8cd46499b87a3e771505568d5f41072b493e2f7ef0",
+    "materializer_tool_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\dense_ws_causal_materializer.py",
+    "materializer_tool_sha256": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c"
+  },
+  "source_postimages": {
+    "autopilot_guard": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\autopilot_guard.py",
+      "sha256": "0303238a77c429db8b885d743b1c32d672b59349070e3378b9d0b00b671ab9b1"
+    },
+    "autopilot_guard_test": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_autopilot_guard.py",
+      "sha256": "88e71578128b189404388c94baa852573e16e7b8dec77d291137be0b39ba438f"
+    },
+    "postrun_orchestrator": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_dense_ws_postrun_visible.ps1",
+      "sha256": "e9abf5708891a0f2c13173efdc97af50b54b1f87d7dd787583b7904b3ba4ddcb"
+    },
+    "postrun_orchestration_test": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_dense_ws_postrun_orchestration.py",
+      "sha256": "fda647c834b97cfd75a643f9aad911427535ca01ed73662390b6c7fd14d1dda7"
+    }
+  },
+  "authorization": {
+    "implementation_or_policy_rebind_authorized": true,
+    "offline_synthetic_static_tests_authorized": true,
+    "postrun_execution_authorized": false,
+    "future_execution_requires_exact_manifest_bound_approval": true,
+    "collector_launch_authorized": false,
+    "network_market_data_authorized": false,
+    "evaluator_authorized": false,
+    "returns_pnl_oos_authorized": false,
+    "grid_or_retune_authorized": false,
+    "paper_live_private_api_real_capital_leverage_margin_authorized": false,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "safety": {
+    "collector_started": false,
+    "network_market_data_read": false,
+    "market_rows_read": false,
+    "postrun_executed": false,
+    "evaluator_run": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "WAIT_FOR_EXACT_N14_AND_DENSE_MANIFEST_THEN_REQUEST_SEPARATE_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL"
+}

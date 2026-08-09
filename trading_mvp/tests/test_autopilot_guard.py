@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -55,6 +56,252 @@ def _usage(decision: str, remaining: float = 85.0) -> dict:
         "remaining_percent": remaining,
         "window_minutes": 10_080,
     }
+
+
+def _write_json(path: Path, payload: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+
+def _file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _deferred_dense_handoff_fixture(root: Path) -> tuple[dict, dict, dict]:
+    campaign_id = "dense_ws_deferred_test"
+    plan_hash = "a" * 64
+    contract_hash = "b" * 64
+    candidate_contract_hash = "c" * 64
+    proposal_hash = "d" * 64
+    profile_hash = "e" * 64
+    schedule_plan_hash = "f" * 64
+    universe_sha256 = "1" * 64
+    n14_run_id = "pit_universe_v2_forward_20260811_n14"
+
+    campaign_root = root / "campaign"
+    campaign_root.mkdir(parents=True)
+    plan_path = root / "plan.json"
+    plan = {
+        "campaign_id": campaign_id,
+        "plan_hash": plan_hash,
+        "phases": [{"phase_id": "phase-01"}],
+        "outputs": {"campaign_root": str(campaign_root.resolve())},
+    }
+    _write_json(plan_path, plan)
+
+    proposal_path = root / "proposal.json"
+    _write_json(
+        proposal_path,
+        {
+            "proposal_hash": proposal_hash,
+            "handoff_profile_hash": profile_hash,
+        },
+    )
+    approval_path = root / "freeze-approval.json"
+    _write_json(
+        approval_path,
+        {
+            "schema": (
+                "trading_mvp_dense_ws_deferred_postrun_handoff_freeze_approval_v1"
+            ),
+            "status": "APPROVED_IMPLEMENTATION_FREEZE_ONLY",
+            "proposal_hash": proposal_hash,
+            "handoff_profile_hash": profile_hash,
+            "implementation_or_policy_rebind_authorized": True,
+            "postrun_execution_authorized": False,
+            "future_postrun_execution_requires_separate_exact_manifest_bound_approval": True,
+            "stopped_incomplete_retry_authorized": False,
+        },
+    )
+
+    handoff_manifest_path = root / "handoff-manifest.json"
+    _write_json(
+        handoff_manifest_path,
+        {
+            "schema": "trading_mvp_dense_ws_deferred_postrun_handoff_manifest_v1",
+            "mode": "IMMUTABLE_PLANONLY_RUNTIME_BINDING",
+            "campaign": {"campaign_id": campaign_id, "plan_hash": plan_hash},
+            "proposal": {"proposal_hash": proposal_hash},
+            "handoff_profile_hash": profile_hash,
+            "approval_receipt": {
+                "path": str(approval_path.resolve()),
+                "file_sha256": _file_sha256(approval_path),
+            },
+            "authorization": {
+                "postrun_execution_authorized": False,
+                "future_execution_requires_exact_manifest_bound_approval": True,
+            },
+        },
+    )
+
+    pit_output = root / "pit-n14"
+    pit_output.mkdir()
+    pit_manifest_path = pit_output / "manifest.json"
+    _write_json(
+        pit_manifest_path,
+        {
+            "schema": "pit_universe_snapshot_manifest_v2",
+            "run_id": n14_run_id,
+            "status": "COMPLETED",
+            "final": True,
+            "incomplete": False,
+        },
+    )
+    schedule_path = root / "n14-schedule.json"
+    _write_json(
+        schedule_path,
+        {
+            "plan_hash": schedule_plan_hash,
+            "segments": [
+                {
+                    "run_id": n14_run_id,
+                    "start_local": "2026-08-11T02:15:00+03:00",
+                    "end_local": "2026-08-11T02:35:00+03:00",
+                    "duration_sec": 1_200,
+                    "output_dir": str(pit_output.resolve()),
+                }
+            ],
+        },
+    )
+    quality_ledger_path = root / "quality-certifications.jsonl"
+    quality_ledger_path.write_text("{}\n", encoding="utf-8")
+    pit_summary_path = root / "n14.postrun.json"
+    _write_json(
+        pit_summary_path,
+        {
+            "schema": "trading_mvp_pit_postrun_v1",
+            "project": "trading_mvp",
+            "run_id": n14_run_id,
+            "schedule_plan_hash": schedule_plan_hash,
+            "schedule_plan_path": str(schedule_path.resolve()),
+            "quality_ledger_path": str(quality_ledger_path.resolve()),
+            "decision": "PIT_POSTRUN_COMPLETE",
+            "next_allowed_action": "continue_frozen_pipeline",
+            "returns_read": False,
+            "pnl_read": False,
+            "oos_run": False,
+            "grid_search": False,
+            "live_orders": False,
+            "private_api_keys": False,
+        },
+    )
+
+    campaign_manifest_path = campaign_root / "campaign-manifest.json"
+    _write_json(
+        campaign_manifest_path,
+        {
+            "schema": "trading_mvp_dense_ws_campaign_manifest_v1",
+            "campaign_id": campaign_id,
+            "plan_path": str(plan_path.resolve()),
+            "plan_hash": plan_hash,
+            "contract_hash": contract_hash,
+            "candidate_contract_hash": candidate_contract_hash,
+            "universe_sha256": universe_sha256,
+            "runtime_completed": True,
+            "liveness_clean": True,
+            "quality_eligible": True,
+            "completed": True,
+            "final": True,
+            "dirty_segment_ids": [],
+            "phases_completed": 1,
+            "phase_results": [
+                {
+                    "runtime_completed": True,
+                    "liveness_clean": True,
+                    "quality_eligible": True,
+                }
+            ],
+        },
+    )
+
+    writer_claim_path = root / "active-market-data-writer-claim.json"
+    reconciliation_path = root / "n14.postrun.reconciliation.json"
+    candidate = {
+        "campaign_id": campaign_id,
+        "plan_path": str(plan_path.resolve()),
+        "plan_file_sha256": _file_sha256(plan_path),
+        "plan_hash": plan_hash,
+        "contract_hash": contract_hash,
+        "candidate_contract_hash": candidate_contract_hash,
+    }
+    handoff = {
+        "status": "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL",
+        "implementation_authorized": True,
+        "postrun_execution_authorized": False,
+        "future_execution_requires_exact_manifest_bound_approval": True,
+        "stopped_incomplete_retry_authorized": False,
+        "handoff_profile_hash": profile_hash,
+        "proposal": {
+            "path": str(proposal_path.resolve()),
+            "file_sha256": _file_sha256(proposal_path),
+            "proposal_hash": proposal_hash,
+        },
+        "approval_receipt": {
+            "path": str(approval_path.resolve()),
+            "file_sha256": _file_sha256(approval_path),
+        },
+        "canonical_manifest": {
+            "path": str(handoff_manifest_path.resolve()),
+            "file_sha256": _file_sha256(handoff_manifest_path),
+        },
+        "campaign": {
+            **candidate,
+            "universe_sha256": universe_sha256,
+            "campaign_manifest_path": str(campaign_manifest_path.resolve()),
+        },
+        "required_pit_completion": {
+            "schedule_path": str(schedule_path.resolve()),
+            "schedule_file_sha256": _file_sha256(schedule_path),
+            "schedule_plan_hash": schedule_plan_hash,
+            "run_id": n14_run_id,
+            "start_local": "2026-08-11T02:15:00+03:00",
+            "end_local": "2026-08-11T02:35:00+03:00",
+            "quality_ledger_path": str(quality_ledger_path.resolve()),
+            "postrun_summary_path": str(pit_summary_path.resolve()),
+            "postrun_reconciliation_path": str(reconciliation_path.resolve()),
+        },
+        "global_writer_claim_path": str(writer_claim_path.resolve()),
+        "runtime_window": {
+            "postrun_not_before_local": "2026-08-11T02:40:00+03:00",
+            "latest_full_runtime_start_local": "2026-08-11T03:10:00+03:00",
+            "postrun_hard_deadline_local": "2026-08-11T04:10:00+03:00",
+            "quality_max_runtime_sec": 1_800,
+            "materialization_max_runtime_sec": 1_800,
+            "total_max_runtime_sec": 3_600,
+        },
+        "execution_approval": {"status": "NOT_APPROVED"},
+    }
+    policy = {
+        "next_long_campaign": candidate,
+        "dense_ws_postrun": {
+            "automatic_same_hash_through_materialization": True,
+            "deferred_handoff": handoff,
+            "output_names": {
+                "quality_report": "campaign-quality.json",
+                "regime_labels": "causal-regime-labels.jsonl",
+                "execution_snapshots": "execution-snapshots.jsonl",
+                "materialization_manifest": "causal-materialization-manifest.json",
+                "owner": "owner.json",
+            },
+        },
+    }
+    gate = {
+        "status": "READY_FOR_POSTPROCESS",
+        "run_id": n14_run_id,
+        "run_type": "pit_universe_v2_forward",
+        "manifest_path": str(pit_manifest_path.resolve()),
+        "final": True,
+        "primary_output_complete": True,
+        "expected_outputs_complete": True,
+        "stop_reason": "completed",
+    }
+    artifacts = {
+        "campaign_manifest_path": campaign_manifest_path,
+        "writer_claim_path": writer_claim_path,
+        "execution_approval_path": root / "execution-approval.json",
+        "handoff_manifest_path": handoff_manifest_path,
+    }
+    return policy, gate, artifacts
 
 
 def _extension_policy_fixture(
@@ -973,6 +1220,7 @@ class AutopilotGuardTests(unittest.TestCase):
 
             missing = resolve_dense_ws_postrun(policy, gate)
             self.assertEqual(missing["status"], "QUALITY_MISSING")
+            self.assertEqual(missing["completion_evidence_mode"], "ACTIVE_DENSE_GATE")
             postrun_root = campaign_root / "_postrun"
             postrun_root.mkdir()
             quality_path = postrun_root / "campaign-quality.json"
@@ -1132,6 +1380,203 @@ class AutopilotGuardTests(unittest.TestCase):
                 bound_ready["next_allowed_action"],
                 "REQUEST_EXACT_HASH_BOUND_EVALUATOR_APPROVAL",
             )
+
+    def test_deferred_dense_handoff_requires_manifest_bound_execution_approval(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
+            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
+            usage = {"status": "AVAILABLE", "remaining_percent": 70.0}
+
+            frozen = resolve_dense_ws_postrun(policy, gate, usage=usage)
+            self.assertEqual(
+                frozen["status"],
+                "AWAITING_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL",
+            )
+            self.assertEqual(
+                frozen["completion_evidence_mode"],
+                "IMMUTABLE_COMPLETED_CAMPAIGN_MANIFEST_AFTER_PIT",
+            )
+            self.assertFalse(frozen["execution_authorized"])
+
+            handoff = policy["dense_ws_postrun"]["deferred_handoff"]
+            campaign_manifest_sha = _file_sha256(
+                artifacts["campaign_manifest_path"]
+            )
+            execution_approval = {
+                "schema": (
+                    "trading_mvp_dense_ws_manifest_bound_postrun_execution_approval_v1"
+                ),
+                "status": "APPROVED_SINGLE_USE",
+                "campaign_id": policy["next_long_campaign"]["campaign_id"],
+                "campaign_plan_hash": policy["next_long_campaign"]["plan_hash"],
+                "campaign_manifest_path": str(
+                    artifacts["campaign_manifest_path"].resolve()
+                ),
+                "campaign_manifest_sha256": campaign_manifest_sha,
+                "handoff_manifest_path": str(
+                    artifacts["handoff_manifest_path"].resolve()
+                ),
+                "handoff_manifest_sha256": handoff["canonical_manifest"][
+                    "file_sha256"
+                ],
+                "postrun_not_before_local": "2026-08-11T02:40:00+03:00",
+                "postrun_latest_full_runtime_start_local": (
+                    "2026-08-11T03:10:00+03:00"
+                ),
+                "postrun_hard_deadline_local": "2026-08-11T04:10:00+03:00",
+                "total_max_runtime_sec": 3_600,
+                "postrun_execution_authorized": True,
+                "collector_launch_authorized": False,
+                "network_market_data_authorized": False,
+                "evaluator_authorized": False,
+                "returns_pnl_oos_authorized": False,
+                "grid_or_retune_authorized": False,
+                "paper_live_private_api_real_capital_leverage_margin_authorized": False,
+                "stopped_incomplete_retry_authorized": False,
+            }
+            _write_json(artifacts["execution_approval_path"], execution_approval)
+            handoff["status"] = "FROZEN_WITH_EXACT_MANIFEST_BOUND_EXECUTION_APPROVAL"
+            handoff["postrun_execution_authorized"] = True
+            handoff["execution_approval"] = {
+                "status": "APPROVED",
+                "receipt_path": str(artifacts["execution_approval_path"].resolve()),
+                "receipt_file_sha256": _file_sha256(
+                    artifacts["execution_approval_path"]
+                ),
+            }
+
+            before_window = resolve_dense_ws_postrun(
+                policy,
+                gate,
+                usage=usage,
+                observed_at_utc="2026-08-10T23:30:00Z",
+            )
+            self.assertEqual(before_window["status"], "POSTRUN_WINDOW_NOT_OPEN")
+
+            ready = resolve_dense_ws_postrun(
+                policy,
+                gate,
+                usage=usage,
+                observed_at_utc="2026-08-11T00:00:00Z",
+            )
+            self.assertEqual(ready["status"], "QUALITY_MISSING")
+            self.assertTrue(ready["execution_authorized"])
+
+            expired = resolve_dense_ws_postrun(
+                policy,
+                gate,
+                usage=usage,
+                observed_at_utc="2026-08-11T00:11:00Z",
+            )
+            self.assertEqual(expired["status"], "POSTRUN_WINDOW_EXPIRED")
+
+    def test_deferred_dense_handoff_fail_closed_conditions(self) -> None:
+        usage = {"status": "AVAILABLE", "remaining_percent": 70.0}
+        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
+            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
+            gate["status"] = "RUNNING"
+            running = resolve_dense_ws_postrun(policy, gate, usage=usage)
+            self.assertEqual(running["reason"], "required_pit_run_still_running")
+
+        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
+            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
+            gate["status"] = "STOPPED_INCOMPLETE"
+            with self.assertRaisesRegex(ValueError, "STOPPED_INCOMPLETE"):
+                resolve_dense_ws_postrun(policy, gate, usage=usage)
+
+        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
+            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
+            paused = resolve_dense_ws_postrun(
+                policy,
+                gate,
+                usage={"status": "AVAILABLE", "remaining_percent": 15.0},
+            )
+            self.assertEqual(paused["reason"], "weekly_quota_or_telemetry_block")
+
+        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
+            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
+            _write_json(
+                artifacts["writer_claim_path"],
+                {"owner_pid": os.getpid()},
+            )
+            claimed = resolve_dense_ws_postrun(policy, gate, usage=usage)
+            self.assertEqual(claimed["reason"], "live_global_writer_claim")
+
+        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
+            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
+            campaign_manifest = json.loads(
+                artifacts["campaign_manifest_path"].read_text(encoding="utf-8")
+            )
+            campaign_manifest["quality_eligible"] = False
+            _write_json(artifacts["campaign_manifest_path"], campaign_manifest)
+            with self.assertRaisesRegex(ValueError, "not clean and complete"):
+                resolve_dense_ws_postrun(policy, gate, usage=usage)
+
+        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
+            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
+            campaign_root = artifacts["campaign_manifest_path"].parent
+            unauthorized_owner = campaign_root / "_postrun" / "owner.json"
+            _write_json(unauthorized_owner, {"status": "RUNNING"})
+            with self.assertRaisesRegex(
+                ValueError,
+                "artifacts exist without manifest-bound execution approval",
+            ):
+                resolve_dense_ws_postrun(policy, gate, usage=usage)
+
+        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
+            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
+            Path(policy["next_long_campaign"]["plan_path"]).write_text(
+                "{}\n", encoding="utf-8"
+            )
+            with self.assertRaisesRegex(ValueError, "PlanOnly file hash mismatch"):
+                resolve_dense_ws_postrun(policy, gate, usage=usage)
+
+    def test_deferred_dense_handoff_emits_exact_approval_checkpoint(self) -> None:
+        campaign_id = "dense_ws_deferred_test"
+        plan_hash = "a" * 64
+        result = evaluate_autopilot_state(
+            policy={
+                **POLICY,
+                "run_policy": {
+                    "long_run_requires_explicit_per_campaign_approval": True,
+                },
+                "next_long_campaign": {
+                    "status": "READY_FOR_APPROVAL",
+                    "campaign_id": campaign_id,
+                    "plan_path": "sealed-plan.json",
+                    "plan_hash": plan_hash,
+                    "max_runtime_sec": 86_400,
+                },
+            },
+            policy_hash="1" * 64,
+            gate={"status": "READY_FOR_POSTPROCESS", "run_id": "pit_n14"},
+            usage=_usage("CONTINUE"),
+            prior_state=None,
+            observed_at_utc="2026-08-11T00:00:00Z",
+            schedule_window={"status": "WAITING", "run_id": "pit_next"},
+            campaign_window={"status": "OPEN"},
+            dense_ws_postrun={
+                "schema": "trading_mvp_dense_ws_postrun_disposition_v1",
+                "status": "AWAITING_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL",
+                "campaign_id": campaign_id,
+                "plan_hash": plan_hash,
+                "completion_evidence_mode": (
+                    "IMMUTABLE_COMPLETED_CAMPAIGN_MANIFEST_AFTER_PIT"
+                ),
+                "campaign_manifest_sha256": "9" * 64,
+            },
+        )
+        self.assertEqual(
+            result["decision"],
+            "AWAIT_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL",
+        )
+        self.assertEqual(
+            result["next_action"],
+            "request_exact_manifest_bound_dense_ws_postrun_approval",
+        )
+        self.assertTrue(result["critical_checkpoint_notification_required"])
+        self.assertFalse(result["stop_new_actions"])
 
     def test_long_campaign_contract_review_does_not_block_short_track(
         self,

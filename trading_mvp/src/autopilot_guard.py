@@ -272,6 +272,33 @@ def _pid_alive(pid: Any) -> bool:
         return False
     if value <= 0:
         return False
+    if os.name == "nt":
+        import ctypes
+        from ctypes import wintypes
+
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        kernel32.OpenProcess.restype = wintypes.HANDLE
+        kernel32.GetExitCodeProcess.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
+        kernel32.GetExitCodeProcess.restype = wintypes.BOOL
+        kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+        kernel32.CloseHandle.restype = wintypes.BOOL
+        process_query_limited_information = 0x1000
+        still_active = 259
+        handle = kernel32.OpenProcess(
+            process_query_limited_information,
+            False,
+            value,
+        )
+        if not handle:
+            return ctypes.get_last_error() == 5
+        try:
+            exit_code = wintypes.DWORD()
+            if not kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
+                return True
+            return exit_code.value == still_active
+        finally:
+            kernel32.CloseHandle(handle)
     try:
         os.kill(value, 0)
     except ProcessLookupError:
@@ -556,6 +583,404 @@ def _resolve_dense_ws_output_path(
     return target
 
 
+def _load_sha256_bound_json(
+    binding: dict[str, Any],
+    *,
+    label: str,
+    path_key: str = "path",
+    sha_key: str = "file_sha256",
+) -> tuple[Path, dict[str, Any]]:
+    path = Path(str(binding.get(path_key) or "")).expanduser().resolve()
+    expected_sha = str(binding.get(sha_key) or "").lower()
+    if not path.is_file() or len(expected_sha) != 64:
+        raise ValueError(f"{label} is missing or not SHA-256 bound")
+    if _sha256(path) != expected_sha:
+        raise ValueError(f"{label} file hash mismatch")
+    return path, _load_json(path)
+
+
+def _validate_dense_ws_deferred_handoff_freeze(
+    handoff: dict[str, Any],
+    *,
+    candidate: dict[str, Any],
+) -> tuple[Path, dict[str, Any]]:
+    handoff_status = handoff.get("status")
+    if (
+        handoff_status
+        not in {
+            "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL",
+            "FROZEN_WITH_EXACT_MANIFEST_BOUND_EXECUTION_APPROVAL",
+        }
+        or handoff.get("implementation_authorized") is not True
+        or handoff.get("future_execution_requires_exact_manifest_bound_approval")
+        is not True
+        or handoff.get("stopped_incomplete_retry_authorized") is not False
+    ):
+        raise ValueError("dense WS deferred handoff freeze safety state mismatch")
+
+    execution_approval = handoff.get("execution_approval")
+    if (
+        not isinstance(execution_approval, dict)
+        or (
+            handoff_status
+            == "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL"
+            and (
+                handoff.get("postrun_execution_authorized") is not False
+                or execution_approval.get("status") != "NOT_APPROVED"
+            )
+        )
+        or (
+            handoff_status
+            == "FROZEN_WITH_EXACT_MANIFEST_BOUND_EXECUTION_APPROVAL"
+            and (
+                handoff.get("postrun_execution_authorized") is not True
+                or execution_approval.get("status") != "APPROVED"
+            )
+        )
+    ):
+        raise ValueError("dense WS deferred handoff execution state mismatch")
+
+    proposal_binding = handoff.get("proposal")
+    approval_binding = handoff.get("approval_receipt")
+    manifest_binding = handoff.get("canonical_manifest")
+    if not all(
+        isinstance(value, dict)
+        for value in (proposal_binding, approval_binding, manifest_binding)
+    ):
+        raise ValueError("dense WS deferred handoff freeze bindings are missing")
+
+    _, proposal = _load_sha256_bound_json(
+        proposal_binding,
+        label="dense WS deferred handoff proposal",
+    )
+    approval_path, approval = _load_sha256_bound_json(
+        approval_binding,
+        label="dense WS deferred handoff approval receipt",
+    )
+    manifest_path, manifest = _load_sha256_bound_json(
+        manifest_binding,
+        label="dense WS deferred handoff canonical manifest",
+    )
+
+    proposal_hash = str(proposal_binding.get("proposal_hash") or "")
+    profile_hash = str(handoff.get("handoff_profile_hash") or "")
+    if (
+        len(proposal_hash) != 64
+        or proposal.get("proposal_hash") != proposal_hash
+        or proposal.get("handoff_profile_hash") != profile_hash
+        or approval.get("schema")
+        != "trading_mvp_dense_ws_deferred_postrun_handoff_freeze_approval_v1"
+        or approval.get("status") != "APPROVED_IMPLEMENTATION_FREEZE_ONLY"
+        or approval.get("proposal_hash") != proposal_hash
+        or approval.get("handoff_profile_hash") != profile_hash
+        or approval.get("implementation_or_policy_rebind_authorized") is not True
+        or approval.get("postrun_execution_authorized") is not False
+        or approval.get("future_postrun_execution_requires_separate_exact_manifest_bound_approval")
+        is not True
+        or approval.get("stopped_incomplete_retry_authorized") is not False
+    ):
+        raise ValueError("dense WS deferred handoff approval semantic mismatch")
+
+    campaign_id = str(candidate.get("campaign_id") or "")
+    plan_hash = str(candidate.get("plan_hash") or "")
+    if (
+        manifest.get("schema")
+        != "trading_mvp_dense_ws_deferred_postrun_handoff_manifest_v1"
+        or manifest.get("mode") != "IMMUTABLE_PLANONLY_RUNTIME_BINDING"
+        or manifest.get("campaign", {}).get("campaign_id") != campaign_id
+        or manifest.get("campaign", {}).get("plan_hash") != plan_hash
+        or manifest.get("proposal", {}).get("proposal_hash") != proposal_hash
+        or manifest.get("handoff_profile_hash") != profile_hash
+        or Path(
+            str(manifest.get("approval_receipt", {}).get("path") or "")
+        ).expanduser().resolve()
+        != approval_path
+        or manifest.get("approval_receipt", {}).get("file_sha256")
+        != str(approval_binding.get("file_sha256") or "")
+        or manifest.get("authorization", {}).get("postrun_execution_authorized")
+        is not False
+        or manifest.get("authorization", {}).get(
+            "future_execution_requires_exact_manifest_bound_approval"
+        )
+        is not True
+    ):
+        raise ValueError("dense WS deferred handoff canonical manifest mismatch")
+    return manifest_path, manifest
+
+
+def _resolve_dense_ws_deferred_completion_evidence(
+    handoff: dict[str, Any],
+    *,
+    candidate: dict[str, Any],
+    plan: dict[str, Any],
+    plan_path: Path,
+    campaign_root: Path,
+    gate: dict[str, Any],
+    usage: dict[str, Any] | None,
+) -> dict[str, Any]:
+    handoff_manifest_path, _ = _validate_dense_ws_deferred_handoff_freeze(
+        handoff,
+        candidate=candidate,
+    )
+    n14 = handoff.get("required_pit_completion")
+    campaign_binding = handoff.get("campaign")
+    if not isinstance(n14, dict) or not isinstance(campaign_binding, dict):
+        raise ValueError("dense WS deferred handoff identity bindings are missing")
+
+    campaign_id = str(candidate.get("campaign_id") or "")
+    plan_hash = str(candidate.get("plan_hash") or "")
+    expected_campaign_manifest = (campaign_root / "campaign-manifest.json").resolve()
+    if (
+        campaign_binding.get("campaign_id") != campaign_id
+        or Path(str(campaign_binding.get("plan_path") or "")).expanduser().resolve()
+        != plan_path
+        or campaign_binding.get("plan_file_sha256")
+        != str(candidate.get("plan_file_sha256") or "")
+        or campaign_binding.get("plan_hash") != plan_hash
+        or campaign_binding.get("contract_hash")
+        != str(candidate.get("contract_hash") or "")
+        or campaign_binding.get("candidate_contract_hash")
+        != str(candidate.get("candidate_contract_hash") or "")
+        or Path(
+            str(campaign_binding.get("campaign_manifest_path") or "")
+        ).expanduser().resolve()
+        != expected_campaign_manifest
+    ):
+        raise ValueError("dense WS deferred handoff campaign binding mismatch")
+
+    gate_status = str(gate.get("gate_status") or gate.get("status") or "")
+    if gate_status == "RUNNING":
+        return {"ready": False, "reason": "required_pit_run_still_running"}
+    if gate_status == "STOPPED_INCOMPLETE":
+        raise ValueError("required PIT run is STOPPED_INCOMPLETE")
+    if str(gate.get("run_id") or "") != str(n14.get("run_id") or ""):
+        return {"ready": False, "reason": "required_pit_run_not_current_gate"}
+    if gate_status != "READY_FOR_POSTPROCESS":
+        return {"ready": False, "reason": "required_pit_run_not_ready"}
+    if (
+        gate.get("final") is not True
+        or gate.get("primary_output_complete") is not True
+        or gate.get("expected_outputs_complete") is not True
+        or str(gate.get("stop_reason") or "") != "completed"
+    ):
+        raise ValueError("required PIT gate is not final and complete")
+
+    schedule_path, schedule = _load_sha256_bound_json(
+        n14,
+        label="dense WS deferred handoff PIT schedule",
+        path_key="schedule_path",
+        sha_key="schedule_file_sha256",
+    )
+    schedule_plan_hash = str(n14.get("schedule_plan_hash") or "")
+    segments = schedule.get("segments")
+    if (
+        schedule.get("plan_hash") != schedule_plan_hash
+        or not isinstance(segments, list)
+    ):
+        raise ValueError("dense WS deferred handoff PIT schedule binding mismatch")
+    exact_segments = [
+        item
+        for item in segments
+        if isinstance(item, dict) and item.get("run_id") == n14.get("run_id")
+    ]
+    if len(exact_segments) != 1:
+        raise ValueError("dense WS deferred handoff PIT segment is not unique")
+    segment = exact_segments[0]
+    if (
+        segment.get("start_local") != n14.get("start_local")
+        or segment.get("end_local") != n14.get("end_local")
+        or int(segment.get("duration_sec") or 0) != 1_200
+    ):
+        raise ValueError("dense WS deferred handoff PIT timing changed")
+
+    pit_manifest_path = (
+        Path(str(segment.get("output_dir") or "")).expanduser().resolve()
+        / "manifest.json"
+    ).resolve()
+    if (
+        Path(str(gate.get("manifest_path") or "")).expanduser().resolve()
+        != pit_manifest_path
+        or not pit_manifest_path.is_file()
+    ):
+        raise ValueError("required PIT gate manifest binding mismatch")
+    pit_manifest = _load_json(pit_manifest_path)
+    if (
+        pit_manifest.get("schema") != "pit_universe_snapshot_manifest_v2"
+        or pit_manifest.get("run_id") != n14.get("run_id")
+        or pit_manifest.get("final") is not True
+        or pit_manifest.get("incomplete") is not False
+        or pit_manifest.get("status") != "COMPLETED"
+    ):
+        raise ValueError("required PIT manifest is not clean and complete")
+
+    claim_path = Path(
+        str(handoff.get("global_writer_claim_path") or "")
+    ).expanduser().resolve()
+    if claim_path.exists():
+        claim = _load_json(claim_path)
+        if _pid_alive(claim.get("owner_pid")):
+            return {"ready": False, "reason": "live_global_writer_claim"}
+        raise ValueError("stale global market-data writer claim")
+
+    if (
+        not isinstance(usage, dict)
+        or usage.get("status") != "AVAILABLE"
+        or float(usage.get("remaining_percent") or 0.0) <= 15.0
+    ):
+        return {"ready": False, "reason": "weekly_quota_or_telemetry_block"}
+
+    summary_path = Path(
+        str(n14.get("postrun_summary_path") or "")
+    ).expanduser().resolve()
+    reconciliation_path = Path(
+        str(n14.get("postrun_reconciliation_path") or "")
+    ).expanduser().resolve()
+    if not summary_path.is_file():
+        return {"ready": False, "reason": "required_pit_postrun_summary_missing"}
+    if reconciliation_path.exists():
+        raise ValueError("required PIT postrun uses an unapproved reconciliation")
+    summary = _load_json(summary_path)
+    deferred_actions = {
+        "wait_for_fresh_weekly_quota_above_15_percent_then_retry_postrun",
+        "run_train_feasibility_after_weekly_quota_reset",
+        "refresh_horizon_after_weekly_quota_reset_then_request_exact_schedule_approval",
+    }
+    if (
+        summary.get("schema") != "trading_mvp_pit_postrun_v1"
+        or summary.get("project") != "trading_mvp"
+        or summary.get("run_id") != n14.get("run_id")
+        or summary.get("schedule_plan_hash") != schedule_plan_hash
+        or Path(str(summary.get("schedule_plan_path") or "")).expanduser().resolve()
+        != schedule_path
+        or Path(str(summary.get("quality_ledger_path") or "")).expanduser().resolve()
+        != Path(str(n14.get("quality_ledger_path") or "")).expanduser().resolve()
+        or not str(summary.get("decision") or "")
+        or summary.get("decision") == "PIT_POSTRUN_FAILED"
+        or str(summary.get("decision") or "").startswith("PAUSED")
+        or not str(summary.get("next_allowed_action") or "")
+        or summary.get("next_allowed_action") in deferred_actions
+        or summary.get("returns_read") is not False
+        or summary.get("pnl_read") is not False
+        or summary.get("oos_run") is not False
+        or summary.get("grid_search") is not False
+        or summary.get("live_orders") is not False
+        or summary.get("private_api_keys") is not False
+    ):
+        raise ValueError("required PIT postrun summary is not COMPLETE")
+
+    if not expected_campaign_manifest.is_file():
+        return {"ready": False, "reason": "dense_campaign_manifest_missing"}
+    campaign_manifest = _load_json(expected_campaign_manifest)
+    phase_results = campaign_manifest.get("phase_results")
+    phases = plan.get("phases")
+    if (
+        campaign_manifest.get("schema") != "trading_mvp_dense_ws_campaign_manifest_v1"
+        or campaign_manifest.get("campaign_id") != campaign_id
+        or Path(str(campaign_manifest.get("plan_path") or "")).expanduser().resolve()
+        != plan_path
+        or campaign_manifest.get("plan_hash") != plan_hash
+        or campaign_manifest.get("contract_hash")
+        != campaign_binding.get("contract_hash")
+        or campaign_manifest.get("candidate_contract_hash")
+        != campaign_binding.get("candidate_contract_hash")
+        or campaign_manifest.get("universe_sha256")
+        != campaign_binding.get("universe_sha256")
+        or campaign_manifest.get("runtime_completed") is not True
+        or campaign_manifest.get("liveness_clean") is not True
+        or campaign_manifest.get("quality_eligible") is not True
+        or campaign_manifest.get("completed") is not True
+        or campaign_manifest.get("final") is not True
+        or campaign_manifest.get("dirty_segment_ids") != []
+        or not isinstance(phases, list)
+        or not isinstance(phase_results, list)
+        or len(phase_results) != len(phases)
+        or int(campaign_manifest.get("phases_completed") or 0) != len(phases)
+        or any(
+            item.get("runtime_completed") is not True
+            or item.get("liveness_clean") is not True
+            or item.get("quality_eligible") is not True
+            for item in phase_results
+            if isinstance(item, dict)
+        )
+        or any(not isinstance(item, dict) for item in phase_results)
+    ):
+        raise ValueError("dense WS deferred campaign manifest is not clean and complete")
+
+    return {
+        "ready": True,
+        "completion_evidence_mode": "IMMUTABLE_COMPLETED_CAMPAIGN_MANIFEST_AFTER_PIT",
+        "campaign_manifest_path": str(expected_campaign_manifest),
+        "campaign_manifest_sha256": _sha256(expected_campaign_manifest),
+        "required_prior_pit_run_id": str(n14.get("run_id") or ""),
+        "required_prior_pit_plan_hash": schedule_plan_hash,
+        "required_prior_pit_manifest_path": str(pit_manifest_path),
+        "required_prior_pit_manifest_sha256": _sha256(pit_manifest_path),
+        "required_prior_pit_postrun_summary_path": str(summary_path),
+        "required_prior_pit_postrun_summary_sha256": _sha256(summary_path),
+        "handoff_manifest_path": str(handoff_manifest_path),
+        "handoff_manifest_sha256": _sha256(handoff_manifest_path),
+    }
+
+
+def _dense_ws_postrun_execution_is_authorized(
+    handoff: dict[str, Any],
+    *,
+    candidate: dict[str, Any],
+    completion_evidence: dict[str, Any],
+) -> bool:
+    if handoff.get("postrun_execution_authorized") is not True:
+        return False
+    approval_binding = handoff.get("execution_approval")
+    if not isinstance(approval_binding, dict) or approval_binding.get("status") != "APPROVED":
+        raise ValueError("dense WS postrun execution flag lacks an approved receipt")
+    approval_path, approval = _load_sha256_bound_json(
+        approval_binding,
+        label="dense WS manifest-bound postrun execution approval",
+        path_key="receipt_path",
+        sha_key="receipt_file_sha256",
+    )
+    runtime = handoff.get("runtime_window")
+    canonical_manifest = handoff.get("canonical_manifest")
+    if not isinstance(runtime, dict) or not isinstance(canonical_manifest, dict):
+        raise ValueError("dense WS postrun execution runtime binding is missing")
+    if (
+        approval.get("schema")
+        != "trading_mvp_dense_ws_manifest_bound_postrun_execution_approval_v1"
+        or approval.get("status") != "APPROVED_SINGLE_USE"
+        or approval.get("campaign_id") != candidate.get("campaign_id")
+        or approval.get("campaign_plan_hash") != candidate.get("plan_hash")
+        or approval.get("campaign_manifest_path")
+        != completion_evidence.get("campaign_manifest_path")
+        or approval.get("campaign_manifest_sha256")
+        != completion_evidence.get("campaign_manifest_sha256")
+        or approval.get("handoff_manifest_path")
+        != str(Path(str(canonical_manifest.get("path") or "")).expanduser().resolve())
+        or approval.get("handoff_manifest_sha256")
+        != canonical_manifest.get("file_sha256")
+        or approval.get("postrun_not_before_local")
+        != runtime.get("postrun_not_before_local")
+        or approval.get("postrun_latest_full_runtime_start_local")
+        != runtime.get("latest_full_runtime_start_local")
+        or approval.get("postrun_hard_deadline_local")
+        != runtime.get("postrun_hard_deadline_local")
+        or int(approval.get("total_max_runtime_sec") or 0)
+        != int(runtime.get("total_max_runtime_sec") or 0)
+        or approval.get("postrun_execution_authorized") is not True
+        or approval.get("collector_launch_authorized") is not False
+        or approval.get("network_market_data_authorized") is not False
+        or approval.get("evaluator_authorized") is not False
+        or approval.get("returns_pnl_oos_authorized") is not False
+        or approval.get("grid_or_retune_authorized") is not False
+        or approval.get("paper_live_private_api_real_capital_leverage_margin_authorized")
+        is not False
+        or approval.get("stopped_incomplete_retry_authorized") is not False
+    ):
+        raise ValueError(
+            f"dense WS manifest-bound execution approval mismatch: {approval_path}"
+        )
+    return True
+
+
 def _resolve_dense_ws_materialization_bound_planonly(
     policy: dict[str, Any],
     *,
@@ -700,6 +1125,9 @@ def _resolve_dense_ws_materialization_bound_planonly(
 def resolve_dense_ws_postrun(
     policy: dict[str, Any],
     gate: dict[str, Any],
+    *,
+    usage: dict[str, Any] | None = None,
+    observed_at_utc: str | None = None,
 ) -> dict[str, Any]:
     candidate = policy.get("next_long_campaign")
     if not isinstance(candidate, dict):
@@ -716,11 +1144,11 @@ def resolve_dense_ws_postrun(
         and gate.get("completed") is True
         and gate.get("final") is True
     )
-    if not exact_completed_campaign:
-        return _dense_ws_postrun_base(status="NOT_APPLICABLE")
 
     config = policy.get("dense_ws_postrun")
     if not isinstance(config, dict):
+        if not exact_completed_campaign:
+            return _dense_ws_postrun_base(status="NOT_APPLICABLE")
         return _dense_ws_postrun_base(
             status="QUALITY_MISSING",
             campaign_id=campaign_id,
@@ -744,9 +1172,49 @@ def resolve_dense_ws_postrun(
         raise ValueError("dense WS postrun PlanOnly outputs are missing")
     campaign_root = Path(str(outputs.get("campaign_root") or "")).expanduser().resolve()
     expected_campaign_manifest = (campaign_root / "campaign-manifest.json").resolve()
-    gate_manifest = Path(str(gate.get("manifest_path") or "")).expanduser().resolve()
-    if gate_manifest != expected_campaign_manifest or not gate_manifest.is_file():
-        raise ValueError("dense WS completed gate manifest binding mismatch")
+    handoff = config.get("deferred_handoff")
+    completion_evidence: dict[str, Any]
+    if exact_completed_campaign:
+        gate_manifest = Path(str(gate.get("manifest_path") or "")).expanduser().resolve()
+        if gate_manifest != expected_campaign_manifest or not gate_manifest.is_file():
+            raise ValueError("dense WS completed gate manifest binding mismatch")
+        completion_evidence = {
+            "ready": True,
+            "completion_evidence_mode": "ACTIVE_DENSE_GATE",
+            "campaign_manifest_path": str(gate_manifest),
+            "campaign_manifest_sha256": _sha256(gate_manifest),
+        }
+        if isinstance(handoff, dict):
+            _validate_dense_ws_deferred_handoff_freeze(
+                handoff,
+                candidate=candidate,
+            )
+    elif isinstance(handoff, dict):
+        completion_evidence = _resolve_dense_ws_deferred_completion_evidence(
+            handoff,
+            candidate=candidate,
+            plan=plan,
+            plan_path=plan_path,
+            campaign_root=campaign_root,
+            gate=gate,
+            usage=usage,
+        )
+        if completion_evidence.get("ready") is not True:
+            result = _dense_ws_postrun_base(
+                status="NOT_APPLICABLE",
+                campaign_id=campaign_id,
+                plan_hash=plan_hash,
+            )
+            result.update(
+                {
+                    "reason": completion_evidence.get("reason"),
+                    "deferred_handoff_configured": True,
+                    "execution_authorized": False,
+                }
+            )
+            return result
+    else:
+        return _dense_ws_postrun_base(status="NOT_APPLICABLE")
 
     output_names = config.get("output_names")
     if not isinstance(output_names, dict):
@@ -770,7 +1238,15 @@ def resolve_dense_ws_postrun(
     base.update(
         {
             "plan_path": str(plan_path),
-            "campaign_manifest_path": str(gate_manifest),
+            "campaign_manifest_path": completion_evidence[
+                "campaign_manifest_path"
+            ],
+            "campaign_manifest_sha256": completion_evidence[
+                "campaign_manifest_sha256"
+            ],
+            "completion_evidence_mode": completion_evidence[
+                "completion_evidence_mode"
+            ],
             "campaign_root": str(campaign_root),
             "quality_report_path": str(paths["quality_report"]),
             "materialization_manifest_path": str(paths["materialization_manifest"]),
@@ -779,6 +1255,80 @@ def resolve_dense_ws_postrun(
             "owner_path": str(paths["owner"]),
         }
     )
+    base.update(
+        {
+            key: value
+            for key, value in completion_evidence.items()
+            if key not in {"ready", "campaign_manifest_path", "campaign_manifest_sha256"}
+        }
+    )
+
+    if isinstance(handoff, dict):
+        runtime = handoff.get("runtime_window")
+        if not isinstance(runtime, dict):
+            raise ValueError("dense WS deferred handoff runtime window is missing")
+        execution_authorized = _dense_ws_postrun_execution_is_authorized(
+            handoff,
+            candidate=candidate,
+            completion_evidence=completion_evidence,
+        )
+        base.update(
+            {
+                "execution_authorized": execution_authorized,
+                "future_execution_requires_exact_manifest_bound_approval": True,
+                "postrun_not_before_local": runtime.get("postrun_not_before_local"),
+                "latest_full_runtime_start_local": runtime.get(
+                    "latest_full_runtime_start_local"
+                ),
+                "postrun_hard_deadline_local": runtime.get(
+                    "postrun_hard_deadline_local"
+                ),
+                "total_max_runtime_sec": runtime.get("total_max_runtime_sec"),
+            }
+        )
+        if not execution_authorized:
+            unauthorized_outputs = [
+                str(path)
+                for path in paths.values()
+                if path.exists()
+            ]
+            if unauthorized_outputs:
+                raise ValueError(
+                    "dense WS postrun artifacts exist without manifest-bound "
+                    f"execution approval: {unauthorized_outputs}"
+                )
+            base["status"] = "AWAITING_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL"
+            return base
+
+        observed = _parse_timestamp(
+            observed_at_utc or _iso_now(),
+            label="dense_ws_postrun.observed_at_utc",
+        )
+        not_before = _parse_timestamp(
+            runtime.get("postrun_not_before_local"),
+            label="dense_ws_postrun.postrun_not_before_local",
+        )
+        latest_start = _parse_timestamp(
+            runtime.get("latest_full_runtime_start_local"),
+            label="dense_ws_postrun.latest_full_runtime_start_local",
+        )
+        hard_deadline = _parse_timestamp(
+            runtime.get("postrun_hard_deadline_local"),
+            label="dense_ws_postrun.postrun_hard_deadline_local",
+        )
+        if not (
+            not_before < latest_start < hard_deadline
+            and int(runtime.get("total_max_runtime_sec") or 0) == 3_600
+            and int(runtime.get("quality_max_runtime_sec") or 0) == 1_800
+            and int(runtime.get("materialization_max_runtime_sec") or 0) == 1_800
+        ):
+            raise ValueError("dense WS deferred handoff runtime contract mismatch")
+        if observed < not_before:
+            base["status"] = "POSTRUN_WINDOW_NOT_OPEN"
+            return base
+        if observed > latest_start:
+            base["status"] = "POSTRUN_WINDOW_EXPIRED"
+            return base
 
     if paths["owner"].is_file():
         owner = _load_json(paths["owner"])
@@ -1484,7 +2034,7 @@ def evaluate_autopilot_state(
         long_approval_window_status = str(
             (long_campaign_approval or {}).get("launch_window_status") or ""
         )
-        long_campaign_data_quality_ready = bool(
+        active_dense_gate_data_quality_ready = bool(
             str(gate.get("run_id") or "")
             == str(long_campaign_candidate.get("campaign_id") or "")
             and str(gate.get("run_type") or "") == "dense_ws_campaign"
@@ -1496,7 +2046,7 @@ def evaluate_autopilot_state(
         )
         if isinstance(dense_ws_postrun, dict):
             dense_ws_postrun_state = dense_ws_postrun
-        elif long_campaign_data_quality_ready:
+        elif active_dense_gate_data_quality_ready:
             dense_ws_postrun_state = _dense_ws_postrun_base(
                 status="QUALITY_MISSING",
                 campaign_id=str(long_campaign_candidate.get("campaign_id") or ""),
@@ -1506,6 +2056,21 @@ def evaluate_autopilot_state(
             dense_ws_postrun_state = _dense_ws_postrun_base(
                 status="NOT_APPLICABLE"
             )
+        deferred_dense_manifest_ready = bool(
+            dense_ws_postrun_state.get("completion_evidence_mode")
+            == "IMMUTABLE_COMPLETED_CAMPAIGN_MANIFEST_AFTER_PIT"
+            and dense_ws_postrun_state.get("campaign_id")
+            == long_campaign_candidate.get("campaign_id")
+            and dense_ws_postrun_state.get("plan_hash")
+            == long_campaign_candidate.get("plan_hash")
+            and len(
+                str(dense_ws_postrun_state.get("campaign_manifest_sha256") or "")
+            )
+            == 64
+        )
+        long_campaign_data_quality_ready = bool(
+            active_dense_gate_data_quality_ready or deferred_dense_manifest_ready
+        )
         dense_ws_postrun_status = str(
             dense_ws_postrun_state.get("status") or "NOT_APPLICABLE"
         )
@@ -1521,6 +2086,10 @@ def evaluate_autopilot_state(
             != str(dense_ws_postrun_state.get("deterministic_result_hash") or "")
             or str(prior_dense_ws_postrun.get("reason") or "")
             != str(dense_ws_postrun_state.get("reason") or "")
+            or str(prior_dense_ws_postrun.get("completion_evidence_mode") or "")
+            != str(dense_ws_postrun_state.get("completion_evidence_mode") or "")
+            or str(prior_dense_ws_postrun.get("campaign_manifest_sha256") or "")
+            != str(dense_ws_postrun_state.get("campaign_manifest_sha256") or "")
         )
         if schedule_status == "INVALID" or campaign_status == "INVALID":
             status = "CRITICAL_STOP"
@@ -1606,6 +2175,36 @@ def evaluate_autopilot_state(
                 "prepare_and_request_exact_approval_for_"
                 f"{str((schedule_window or {}).get('run_id') or 'due_run')}"
             )
+        elif (
+            deferred_dense_manifest_ready
+            and dense_ws_postrun_status
+            == "AWAITING_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL"
+        ):
+            status = "ACTIVE"
+            decision = "AWAIT_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL"
+            stop_new_actions = False
+            critical_checkpoint_notification_required = dense_ws_postrun_changed
+            action_due = critical_checkpoint_notification_required
+            next_action = "request_exact_manifest_bound_dense_ws_postrun_approval"
+        elif (
+            deferred_dense_manifest_ready
+            and dense_ws_postrun_status == "POSTRUN_WINDOW_NOT_OPEN"
+        ):
+            status = "ACTIVE"
+            decision = "WAIT_FOR_DENSE_WS_POSTRUN_WINDOW"
+            stop_new_actions = False
+            action_due = False
+            next_action = "wait_for_frozen_dense_ws_postrun_not_before"
+        elif (
+            deferred_dense_manifest_ready
+            and dense_ws_postrun_status == "POSTRUN_WINDOW_EXPIRED"
+        ):
+            status = "ACTIVE"
+            decision = "USER_REVIEW_REQUIRED_DENSE_WS_POSTRUN_WINDOW_EXPIRED"
+            stop_new_actions = False
+            critical_checkpoint_notification_required = dense_ws_postrun_changed
+            action_due = critical_checkpoint_notification_required
+            next_action = "request_new_exact_dense_ws_postrun_window_refreeze"
         elif long_campaign_data_quality_ready and dense_ws_postrun_status in {
             "RUNNING",
             "MATERIALIZATION_BOUND_PLAN_RUNNING",
@@ -2081,7 +2680,12 @@ def main(argv: Iterable[str] | None = None) -> int:
             "error": f"{type(exc).__name__}: {exc}",
         }
     try:
-        dense_ws_postrun = resolve_dense_ws_postrun(policy, gate)
+        dense_ws_postrun = resolve_dense_ws_postrun(
+            policy,
+            gate,
+            usage=usage,
+            observed_at_utc=observed_at,
+        )
     except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
         candidate = policy.get("next_long_campaign")
         if not isinstance(candidate, dict):

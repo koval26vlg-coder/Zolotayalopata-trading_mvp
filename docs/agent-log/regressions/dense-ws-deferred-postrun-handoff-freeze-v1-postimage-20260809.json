@@ -1,0 +1,84 @@
+{
+  "schema": "trading_mvp_dense_ws_deferred_postrun_handoff_freeze_regression_v1",
+  "status": "PASS_IMPLEMENTATION_FREEZE_ONLY",
+  "observed_at_utc": "2026-08-09T20:53:52.275153Z",
+  "proposal_hash": "2d4765d115ceee5a1f4e0e74841830d8aa2e2c26bfd761bdabd5b8e8b335439f",
+  "handoff_profile_hash": "10addf47520a8a2e697e786214e45295cd301756206297ee9018b8f8c85f16e6",
+  "policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "sha256": "e54e30c4f4ae388dfe6485b639d1e44af2d2bda541d850e4854861db6107e8f5"
+  },
+  "canonical_manifest": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\dense-ws-deferred-postrun-handoff-manifest-20260810-aef-24h-n14-v1.json",
+    "sha256": "f64546e7896dd2d9249a9179543f14e22f7d27f75f0408f454bed08022811411"
+  },
+  "automation": {
+    "path": "C:\\Users\\koval\\.codex\\automations\\trading-continuous-production\\automation.toml",
+    "sha256": "caccb4f1aaa7077830ab10a758580b8feb32ac5fe15bedd72cfc7b1b58e8d249",
+    "status": "ACTIVE"
+  },
+  "source_postimages": {
+    "autopilot_guard_sha256": "0303238a77c429db8b885d743b1c32d672b59349070e3378b9d0b00b671ab9b1",
+    "autopilot_guard_test_sha256": "88e71578128b189404388c94baa852573e16e7b8dec77d291137be0b39ba438f",
+    "postrun_orchestrator_sha256": "e9abf5708891a0f2c13173efdc97af50b54b1f87d7dd787583b7904b3ba4ddcb",
+    "postrun_orchestration_test_sha256": "fda647c834b97cfd75a643f9aad911427535ca01ed73662390b6c7fd14d1dda7",
+    "quality_tool_sha256_unchanged": "966aa25cc5198995adf7bd8cd46499b87a3e771505568d5f41072b493e2f7ef0",
+    "materializer_tool_sha256_unchanged": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c"
+  },
+  "tests": {
+    "command": "C:\\Program Files\\Python313\\python.exe -m unittest -v trading_mvp.tests.test_autopilot_guard trading_mvp.tests.test_dense_ws_postrun_orchestration trading_mvp.tests.test_dense_ws_campaign_quality trading_mvp.tests.test_dense_ws_causal_materializer",
+    "tests_run": 69,
+    "failures": 0,
+    "errors": 0,
+    "result": "PASS",
+    "log_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\regressions\\dense-ws-deferred-postrun-handoff-freeze-v1-tests-20260809.txt",
+    "log_sha256": "880bc7361d714675b8550bed48ca06057ab05cac9445663a3af92f04dc8c1b1e"
+  },
+  "static_checks": {
+    "policy_json_parse": "PASS",
+    "manifest_json_parse": "PASS",
+    "approval_json_parse": "PASS",
+    "python_compile": "PASS",
+    "powershell_parser": "PASS",
+    "proposal_hash_recomputed": "PASS",
+    "handoff_profile_hash_recomputed": "PASS",
+    "policy_hash_bindings": "9/9 PASS",
+    "reverse_patch_apply_check": "PASS"
+  },
+  "preflight_only": {
+    "status": "BLOCKED",
+    "execution_approval_authorized": false,
+    "no_run_or_output_writes": true,
+    "postrun_root_existed_before": false,
+    "postrun_root_exists_after": false,
+    "required_reason_present": "manifest_bound_execution_not_authorized"
+  },
+  "guard": {
+    "status": "ACTIVE",
+    "decision": "AWAIT_EXPLICIT_LONG_CAMPAIGN_APPROVAL",
+    "policy_hash": "e54e30c4f4ae388dfe6485b639d1e44af2d2bda541d850e4854861db6107e8f5",
+    "weekly_remaining_percent": 68.0,
+    "dense_ws_postrun_status": "NOT_APPLICABLE",
+    "dense_ws_postrun_reason": "required_pit_run_not_current_gate",
+    "dense_ws_postrun_execution_authorized": false
+  },
+  "n14_invariants": {
+    "run_id": "pit_universe_v2_forward_20260811_n14",
+    "plan_hash": "2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca",
+    "start_local": "2026-08-11T02:15:00+03:00",
+    "end_local": "2026-08-11T02:35:00+03:00",
+    "moved": false,
+    "skipped": false
+  },
+  "authorization": {
+    "collector_launch": false,
+    "network_market_data": false,
+    "postrun_execution": false,
+    "evaluator": false,
+    "returns_pnl_oos": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_real_capital_leverage_margin": false,
+    "stopped_incomplete_retry": false
+  }
+}

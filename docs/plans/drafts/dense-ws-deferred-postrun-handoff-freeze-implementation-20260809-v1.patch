@@ -1,0 +1,2094 @@
+diff --git a/docs/plans/trading-mvp-autopilot-policy-v1.json b/docs/plans/trading-mvp-autopilot-policy-v1.json
+index 97cb693..d2ee7d2 100644
+--- a/docs/plans/trading-mvp-autopilot-policy-v1.json
++++ b/docs/plans/trading-mvp-autopilot-policy-v1.json
+@@ -1,8 +1,8 @@
+ {
+   "schema": "trading_mvp_autopilot_policy_v1",
+-  "policy_id": "trading_mvp_autopilot_20260809_dense_runtime_gateway_refreeze_complete_v1",
+-  "effective_at": "2026-08-09T19:28:35.016965Z",
+-  "approved_by": "USER_EXACT_RUNTIME_GATEWAY_REFREEZE_APPROVAL_NO_LAUNCH",
++  "policy_id": "trading_mvp_autopilot_20260809_dense_deferred_postrun_handoff_freeze_v1",
++  "effective_at": "2026-08-09T20:38:42.9671756Z",
++  "approved_by": "USER_EXACT_DENSE_DEFERRED_POSTRUN_HANDOFF_FREEZE_NO_EXECUTION",
+   "thread_id": "019e738a-b37c-7a33-ae04-6cc80739f184",
+   "project": "trading_mvp",
+   "mode": "research_and_paper_only",
+@@ -233,50 +233,74 @@
+     }
+   },
+   "dense_ws_postrun": {
+-    "status": "PRESERVED_DORMANT_V1_BINDING_NOT_EXECUTABLE_FOR_V2",
+-    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260803_aef_24h",
+-    "plan_hash": "57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b",
+-    "runtime_rebind_candidate": {
+-      "status": "USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+-      "proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-postrun-runtime-rebind-proposal-20260802-v2.json",
+-      "proposal_file_sha256": "1b023a6b33f0419e384784643efbe6d0a563413b80d8e2fcc8a435d43e05f25e",
+-      "proposal_hash": "3d327a5069212df8fab2ddb0d612a9e452d57b8b29a5d573465c7b7b42d221fb",
+-      "audit_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-postrun-v2-runtime-rebind-proposal-audit-20260802T2303+0300.json",
+-      "audit_sha256": "a93ac7ae085e085dc24d90ba68ae4d957dbbf3f29c144241fc732f3f40b0e5d2",
+-      "target_plan_hash": "651502c3104ffea904f0520afc7ffbde7e9ab993213d5d74962c00ef91f4916e",
+-      "target_quality_tool_sha256": "966aa25cc5198995adf7bd8cd46499b87a3e771505568d5f41072b493e2f7ef0",
+-      "materializer_tool_sha256": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c",
+-      "orchestrator_code_change_required": false,
+-      "quality_code_change_required": false,
+-      "materializer_code_change_required": false,
+-      "postrun_execution_allowed_now": false,
+-      "exact_user_approval_required": true,
+-      "requested_action": "REQUEST_EXACT_HASH_BOUND_POSTRUN_V2_RUNTIME_REBIND_APPROVAL"
+-    },
++    "status": "DEFERRED_HANDOFF_FROZEN_AWAITING_MANIFEST_BOUND_EXECUTION_APPROVAL",
++    "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260810_aef_24h",
++    "plan_hash": "a5fdae4b9f22c21b5164c6c703d0be9f3b25155edd4bf2acab5f504063fef591",
+     "automatic_same_hash_through_materialization": true,
+     "orchestrator_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_dense_ws_postrun_visible.ps1",
+-    "orchestrator_sha256": "4781219d0c06af686508cb0c8a76424be22825e657a1b80f43c1799df43398ed",
+-    "runtime_contract": {
+-      "status": "APPROVED",
+-      "proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-postrun-runtime-refreeze-proposal-20260802-v1.json",
+-      "proposal_file_sha256": "eef9fdee67a9dbcd23c9c66c62869ef2a041b43525306cb70c0f94fbaf88e380",
+-      "proposal_hash": "0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf40662",
+-      "approval_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-02-dense-ws-postrun-runtime-refreeze-approval.json",
+-      "approval_receipt_sha256": "b6b739c466ac7c21abc9fed32752011304075f4aad269a30ff095be45a52e3b0",
+-      "calibration_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\dense-ws-aef-24h-postrun-runtime-calibration-20260802T1307+0300.json",
+-      "calibration_sha256": "0807cbe05706b6aa51d644d92e3d69ae4153641b0e96497d68cc01d0342fd30e",
+-      "quality_tool_sha256": "6796f534ab5018ad54ea3f453c7cf522fe21e8f1d70844cd552ed2cc7c8059b3",
+-      "materializer_tool_sha256": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c",
+-      "postrun_not_before_local": "2026-08-04T01:30:00+03:00",
+-      "postrun_hard_deadline_local": "2026-08-04T02:30:00+03:00",
+-      "quality_max_runtime_sec": 1800,
+-      "materialization_max_runtime_sec": 1800,
+-      "total_max_runtime_sec": 3600,
+-      "stages_are_sequential": true,
+-      "one_visible_terminal": true,
+-      "one_postrun_owner": true,
+-      "no_intentional_timeout_or_retry": true,
+-      "stopped_incomplete_recovery_requires_new_exact_approval": true
++    "orchestrator_sha256": "e9abf5708891a0f2c13173efdc97af50b54b1f87d7dd787583b7904b3ba4ddcb",
++    "deferred_handoff": {
++      "status": "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL",
++      "implementation_authorized": true,
++      "postrun_execution_authorized": false,
++      "future_execution_requires_exact_manifest_bound_approval": true,
++      "stopped_incomplete_retry_authorized": false,
++      "handoff_profile_hash": "10addf47520a8a2e697e786214e45295cd301756206297ee9018b8f8c85f16e6",
++      "proposal": {
++        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-deferred-postrun-handoff-freeze-proposal-20260809-v1.json",
++        "file_sha256": "a36bada0c2ce9ae0e54bda2a8d9c824efc50a0bf0aa2f03110eb31d558d56e24",
++        "proposal_hash": "2d4765d115ceee5a1f4e0e74841830d8aa2e2c26bfd761bdabd5b8e8b335439f"
++      },
++      "approval_receipt": {
++        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-09-dense-ws-deferred-postrun-handoff-freeze-v1-approval.json",
++        "file_sha256": "d7acb8dda71f030da7cc38da560cf1bdaf87b163ba3fed81db9f9f3df815be11"
++      },
++      "canonical_manifest": {
++        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\dense-ws-deferred-postrun-handoff-manifest-20260810-aef-24h-n14-v1.json",
++        "file_sha256": "f64546e7896dd2d9249a9179543f14e22f7d27f75f0408f454bed08022811411"
++      },
++      "campaign": {
++        "campaign_id": "dense_ws_microstructure_regime_filter_v1_20260810_aef_24h",
++        "candidate_contract_hash": "c6c2240d81cfbbdb532c2532801e43663d05e4678f367c807ae2cc59e8835f70",
++        "contract_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-contract-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway.json",
++        "contract_file_sha256": "fd26b0a16cfef1952477965323e51f0f2ac8123ab38c0d6cd7982bc139562f65",
++        "contract_hash": "d61eff6c00a69fb4340ae84e6663af9b64c412f9ad0a55f833dc575096ec28c5",
++        "plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-planonly-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway.json",
++        "plan_file_sha256": "5712d0c71147c8a3005afe7bcc0584ee624f4aebcf82fa96940bc8f1227ca860",
++        "plan_hash": "a5fdae4b9f22c21b5164c6c703d0be9f3b25155edd4bf2acab5f504063fef591",
++        "universe_sha256": "ce3d78cac3aa084a23376ee26a39c8fc98655a262a701c0d4d5f00469f2bafe3",
++        "campaign_manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\campaigns\\dense-ws-microstructure-regime-filter-v1-20260810-aef-24h-n13-n14-no-skip-v4-runtime-gateway\\campaign-manifest.json"
++      },
++      "required_pit_completion": {
++        "schedule_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_schedule_time_amendment_n14_20260811_0215_planonly_v1.json",
++        "schedule_file_sha256": "4d6bf02316c37c972f0dc9aea8838d4a0e3501c838fb6db478ccdf961d0597e3",
++        "schedule_plan_hash": "2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca",
++        "run_id": "pit_universe_v2_forward_20260811_n14",
++        "start_local": "2026-08-11T02:15:00+03:00",
++        "end_local": "2026-08-11T02:35:00+03:00",
++        "quality_ledger_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\quality-certifications.jsonl",
++        "postrun_summary_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\pit_universe_v2_forward_20260811_n14.postrun.json",
++        "postrun_reconciliation_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\pit_universe_v2_forward_20260811_n14.postrun.reconciliation.json"
++      },
++      "global_writer_claim_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\active-market-data-writer-claim.json",
++      "runtime_window": {
++        "postrun_not_before_local": "2026-08-11T02:40:00+03:00",
++        "latest_full_runtime_start_local": "2026-08-11T03:10:00+03:00",
++        "postrun_hard_deadline_local": "2026-08-11T04:10:00+03:00",
++        "quality_max_runtime_sec": 1800,
++        "materialization_max_runtime_sec": 1800,
++        "total_max_runtime_sec": 3600,
++        "stages_are_sequential": true,
++        "one_visible_terminal": true,
++        "one_postrun_owner": true,
++        "quality_tool_sha256": "966aa25cc5198995adf7bd8cd46499b87a3e771505568d5f41072b493e2f7ef0",
++        "materializer_tool_sha256": "db9dfc04306ab9d4814ce2f5af6957267c34e497c87398a2ef7be00b7bd3065c"
++      },
++      "execution_approval": {
++        "status": "NOT_APPROVED",
++        "receipt_path": null,
++        "receipt_file_sha256": null
++      }
+     },
+     "visible_terminal_required": true,
+     "output_names": {
+@@ -293,7 +317,8 @@
+     "network_collector_allowed": false,
+     "grid_or_retune_allowed": false,
+     "paper_live_private_api_real_capital_leverage_margin_allowed": false,
+-    "next_after_success": "BUILD_EXACT_MATERIALIZATION_BOUND_EVALUATOR_PLANONLY"
++    "next_after_success": "BUILD_EXACT_MATERIALIZATION_BOUND_EVALUATOR_PLANONLY",
++    "next_allowed_action": "WAIT_FOR_EXACT_N14_AND_DENSE_MANIFEST_THEN_REQUEST_SEPARATE_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL"
+   },
+   "dense_ws_materialization_bound_planonly": {
+     "status": "READY_CONTRACT_FREEZE_ONLY",
+diff --git a/tools/run_dense_ws_postrun_visible.ps1 b/tools/run_dense_ws_postrun_visible.ps1
+index 2056492..b67de64 100644
+--- a/tools/run_dense_ws_postrun_visible.ps1
++++ b/tools/run_dense_ws_postrun_visible.ps1
+@@ -150,6 +150,70 @@ function Get-OutputPath {
+     return [System.IO.Path]::GetFullPath((Join-Path $PostrunRoot $name))
+ }
+ 
++function Assert-DenseCampaignManifestBinding {
++    param(
++        [Parameter(Mandatory = $true)]$Manifest,
++        [Parameter(Mandatory = $true)]$Plan,
++        [Parameter(Mandatory = $true)][string]$PlanPath,
++        [Parameter(Mandatory = $true)]$Candidate,
++        [Parameter(Mandatory = $true)]$Handoff
++    )
++    $campaign = $Handoff.campaign
++    $phaseResults = @($Manifest.phase_results)
++    $phases = @($Plan.phases)
++    $phaseFailure = @(
++        $phaseResults | Where-Object {
++            $_.runtime_completed -ne $true -or
++            $_.liveness_clean -ne $true -or
++            $_.quality_eligible -ne $true
++        }
++    ).Count -gt 0
++    if (
++        [string]$Manifest.schema -ne
++            "trading_mvp_dense_ws_campaign_manifest_v1" -or
++        [string]$Manifest.campaign_id -ne [string]$Candidate.campaign_id -or
++        [System.IO.Path]::GetFullPath([string]$Manifest.plan_path) -ne $PlanPath -or
++        [string]$Manifest.plan_hash -ne [string]$Candidate.plan_hash -or
++        [string]$Manifest.contract_hash -ne [string]$campaign.contract_hash -or
++        [string]$Manifest.candidate_contract_hash -ne
++            [string]$campaign.candidate_contract_hash -or
++        [string]$Manifest.universe_sha256 -ne [string]$campaign.universe_sha256 -or
++        $Manifest.runtime_completed -ne $true -or
++        $Manifest.liveness_clean -ne $true -or
++        $Manifest.quality_eligible -ne $true -or
++        $Manifest.completed -ne $true -or
++        $Manifest.final -ne $true -or
++        @($Manifest.dirty_segment_ids).Count -ne 0 -or
++        $phaseResults.Count -ne $phases.Count -or
++        [int]$Manifest.phases_completed -ne $phases.Count -or
++        $phaseFailure
++    ) {
++        throw "Dense WS campaign manifest is not exact, clean, and complete."
++    }
++}
++
++function Test-LiveGlobalWriterClaim {
++    param([Parameter(Mandatory = $true)][string]$Path)
++    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
++        return $false
++    }
++    try {
++        $claim = Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json -DateKind String
++        $ownerPid = [int]$claim.owner_pid
++    } catch {
++        throw "Global market-data writer claim is invalid: $Path"
++    }
++    if ($ownerPid -le 0) {
++        throw "Global market-data writer claim has no valid owner PID: $Path"
++    }
++    try {
++        Get-Process -Id $ownerPid -ErrorAction Stop | Out-Null
++        return $true
++    } catch {
++        throw "Stale global market-data writer claim requires review: $Path"
++    }
++}
++
+ function Invoke-BoundedPython {
+     param(
+         [Parameter(Mandatory = $true)][string]$Stage,
+@@ -269,37 +333,105 @@ if (
+ ) {
+     throw "Dense WS postrun orchestrator policy binding mismatch."
+ }
+-$RuntimeContract = $PostrunConfig.runtime_contract
+-if (-not $RuntimeContract -or [string]$RuntimeContract.status -ne "APPROVED") {
+-    throw "Dense WS postrun runtime contract is not approved."
++$Handoff = $PostrunConfig.deferred_handoff
++$HandoffStatus = [string]$Handoff.status
++if (
++    -not $Handoff -or
++    $HandoffStatus -notin @(
++        "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL",
++        "FROZEN_WITH_EXACT_MANIFEST_BOUND_EXECUTION_APPROVAL"
++    ) -or
++    $Handoff.implementation_authorized -ne $true -or
++    $Handoff.future_execution_requires_exact_manifest_bound_approval -ne $true -or
++    $Handoff.stopped_incomplete_retry_authorized -ne $false
++) {
++    throw "Dense WS deferred postrun handoff freeze is missing or unsafe."
++}
++if (
++    (
++        $HandoffStatus -eq "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL" -and
++        (
++            $Handoff.postrun_execution_authorized -ne $false -or
++            [string]$Handoff.execution_approval.status -ne "NOT_APPROVED"
++        )
++    ) -or
++    (
++        $HandoffStatus -eq "FROZEN_WITH_EXACT_MANIFEST_BOUND_EXECUTION_APPROVAL" -and
++        (
++            $Handoff.postrun_execution_authorized -ne $true -or
++            [string]$Handoff.execution_approval.status -ne "APPROVED"
++        )
++    )
++) {
++    throw "Dense WS deferred postrun execution state is inconsistent."
+ }
++$RuntimeContract = $Handoff.runtime_window
+ if (
++    -not $RuntimeContract -or
+     [int]$RuntimeContract.total_max_runtime_sec -ne $TotalMaxRuntimeSec -or
+     [int]$RuntimeContract.quality_max_runtime_sec -ne $QualityMaxRuntimeSec -or
+     [int]$RuntimeContract.materialization_max_runtime_sec -ne
+         $MaterializationMaxRuntimeSec -or
+-    $TotalMaxRuntimeSec -ne ($QualityMaxRuntimeSec + $MaterializationMaxRuntimeSec)
++    $TotalMaxRuntimeSec -ne ($QualityMaxRuntimeSec + $MaterializationMaxRuntimeSec) -or
++    $RuntimeContract.stages_are_sequential -ne $true -or
++    $RuntimeContract.one_visible_terminal -ne $true -or
++    $RuntimeContract.one_postrun_owner -ne $true
+ ) {
+     throw "Dense WS postrun runtime parameter/policy mismatch."
+ }
+-$RuntimeProposalPath = [System.IO.Path]::GetFullPath(
+-    [string]$RuntimeContract.proposal_path
++$ProposalPath = [System.IO.Path]::GetFullPath([string]$Handoff.proposal.path)
++$FreezeApprovalPath = [System.IO.Path]::GetFullPath(
++    [string]$Handoff.approval_receipt.path
+ )
+-$RuntimeApprovalPath = [System.IO.Path]::GetFullPath(
+-    [string]$RuntimeContract.approval_receipt_path
++$HandoffManifestPath = [System.IO.Path]::GetFullPath(
++    [string]$Handoff.canonical_manifest.path
+ )
+-foreach ($runtimeBindingPath in @($RuntimeProposalPath, $RuntimeApprovalPath)) {
+-    if (-not (Test-Path -LiteralPath $runtimeBindingPath -PathType Leaf)) {
+-        throw "Dense WS runtime binding file is missing: $runtimeBindingPath"
++foreach ($bindingPath in @($ProposalPath, $FreezeApprovalPath, $HandoffManifestPath)) {
++    if (-not (Test-Path -LiteralPath $bindingPath -PathType Leaf)) {
++        throw "Dense WS deferred handoff binding file is missing: $bindingPath"
+     }
+ }
+ if (
+-    [string]$RuntimeContract.proposal_file_sha256 -ne
+-        (Get-Sha256 -Path $RuntimeProposalPath) -or
+-    [string]$RuntimeContract.approval_receipt_sha256 -ne
+-        (Get-Sha256 -Path $RuntimeApprovalPath)
++    [string]$Handoff.proposal.file_sha256 -ne (Get-Sha256 -Path $ProposalPath) -or
++    [string]$Handoff.approval_receipt.file_sha256 -ne
++        (Get-Sha256 -Path $FreezeApprovalPath) -or
++    [string]$Handoff.canonical_manifest.file_sha256 -ne
++        (Get-Sha256 -Path $HandoffManifestPath)
+ ) {
+-    throw "Dense WS runtime proposal/approval file hash mismatch."
++    throw "Dense WS deferred handoff file hash mismatch."
++}
++$Proposal = Get-Content -LiteralPath $ProposalPath -Raw |
++    ConvertFrom-Json -DateKind String
++$FreezeApproval = Get-Content -LiteralPath $FreezeApprovalPath -Raw |
++    ConvertFrom-Json -DateKind String
++$HandoffManifest = Get-Content -LiteralPath $HandoffManifestPath -Raw |
++    ConvertFrom-Json -DateKind String
++if (
++    [string]$Proposal.proposal_hash -ne [string]$Handoff.proposal.proposal_hash -or
++    [string]$Proposal.handoff_profile_hash -ne [string]$Handoff.handoff_profile_hash -or
++    [string]$FreezeApproval.schema -ne
++        "trading_mvp_dense_ws_deferred_postrun_handoff_freeze_approval_v1" -or
++    [string]$FreezeApproval.status -ne "APPROVED_IMPLEMENTATION_FREEZE_ONLY" -or
++    [string]$FreezeApproval.proposal_hash -ne [string]$Handoff.proposal.proposal_hash -or
++    [string]$FreezeApproval.handoff_profile_hash -ne
++        [string]$Handoff.handoff_profile_hash -or
++    $FreezeApproval.implementation_or_policy_rebind_authorized -ne $true -or
++    $FreezeApproval.postrun_execution_authorized -ne $false -or
++    $FreezeApproval.stopped_incomplete_retry_authorized -ne $false -or
++    [string]$HandoffManifest.schema -ne
++        "trading_mvp_dense_ws_deferred_postrun_handoff_manifest_v1" -or
++    [string]$HandoffManifest.mode -ne "IMMUTABLE_PLANONLY_RUNTIME_BINDING" -or
++    [string]$HandoffManifest.campaign.campaign_id -ne [string]$Plan.campaign_id -or
++    [string]$HandoffManifest.campaign.plan_hash -ne $ExpectedPlanHash -or
++    [string]$HandoffManifest.proposal.proposal_hash -ne
++        [string]$Handoff.proposal.proposal_hash -or
++    [string]$HandoffManifest.handoff_profile_hash -ne
++        [string]$Handoff.handoff_profile_hash -or
++    $HandoffManifest.authorization.postrun_execution_authorized -ne $false -or
++    $HandoffManifest.authorization.future_execution_requires_exact_manifest_bound_approval -ne
++        $true
++) {
++    throw "Dense WS deferred handoff semantic binding mismatch."
+ }
+ if (
+     [string]$RuntimeContract.quality_tool_sha256 -ne
+@@ -309,46 +441,84 @@ if (
+ ) {
+     throw "Dense WS quality/materializer code hash mismatch."
+ }
+-$RuntimeProposal = Get-Content -LiteralPath $RuntimeProposalPath -Raw |
+-    ConvertFrom-Json -DateKind String
+-$RuntimeApproval = Get-Content -LiteralPath $RuntimeApprovalPath -Raw |
+-    ConvertFrom-Json -DateKind String
+-if (
+-    [string]$RuntimeProposal.proposal_hash -ne [string]$RuntimeContract.proposal_hash -or
+-    [string]$RuntimeApproval.proposal_hash -ne [string]$RuntimeContract.proposal_hash -or
+-    [string]$RuntimeApproval.status -ne "APPROVED" -or
+-    $RuntimeApproval.runtime_contract_refreeze_authorized -ne $true -or
+-    $RuntimeApproval.evaluation_authorized -ne $false -or
+-    $RuntimeApproval.collector_plan_or_duration_change_authorized -ne $false -or
+-    $RuntimeApproval.venue_universe_signal_cost_risk_change_authorized -ne $false -or
+-    $RuntimeApproval.quality_or_materializer_code_change_authorized -ne $false -or
+-    [string]$RuntimeApproval.campaign_id -ne [string]$Plan.campaign_id -or
+-    [string]$RuntimeApproval.plan_hash -ne $ExpectedPlanHash -or
+-    [int]$RuntimeApproval.total_max_runtime_sec -ne $TotalMaxRuntimeSec -or
+-    [int]$RuntimeApproval.quality_max_runtime_sec -ne $QualityMaxRuntimeSec -or
+-    [int]$RuntimeApproval.materialization_max_runtime_sec -ne
+-        $MaterializationMaxRuntimeSec -or
+-    [string]$RuntimeApproval.postrun_not_before_local -ne
+-        [string]$RuntimeContract.postrun_not_before_local -or
+-    [string]$RuntimeApproval.postrun_hard_deadline_local -ne
+-        [string]$RuntimeContract.postrun_hard_deadline_local -or
+-    [string]$RuntimeApproval.quality_tool_sha256 -ne
+-        [string]$RuntimeContract.quality_tool_sha256 -or
+-    [string]$RuntimeApproval.materializer_tool_sha256 -ne
+-        [string]$RuntimeContract.materializer_tool_sha256
+-) {
+-    throw "Dense WS runtime proposal/approval semantic binding mismatch."
+-}
+ $PostrunNotBefore = ConvertFrom-IsoDateTimeOffset -Value (
+     [string]$RuntimeContract.postrun_not_before_local
+ )
++$PostrunLatestFullStart = ConvertFrom-IsoDateTimeOffset -Value (
++    [string]$RuntimeContract.latest_full_runtime_start_local
++)
+ $PostrunHardDeadline = ConvertFrom-IsoDateTimeOffset -Value (
+     [string]$RuntimeContract.postrun_hard_deadline_local
+ )
+-if ($PostrunNotBefore -ge $PostrunHardDeadline) {
++if (
++    $PostrunNotBefore -ge $PostrunLatestFullStart -or
++    $PostrunLatestFullStart -ge $PostrunHardDeadline -or
++    [math]::Round(
++        ($PostrunHardDeadline - $PostrunLatestFullStart).TotalSeconds
++    ) -ne $TotalMaxRuntimeSec
++) {
+     throw "Dense WS postrun runtime window is invalid."
+ }
+ 
++$ExecutionApprovalAuthorized = $false
++$ExecutionApprovalReceipt = $null
++if ($Handoff.postrun_execution_authorized -eq $true) {
++    $executionBinding = $Handoff.execution_approval
++    if (-not $executionBinding -or [string]$executionBinding.status -ne "APPROVED") {
++        throw "Dense WS postrun execution flag lacks an approved receipt."
++    }
++    $executionReceiptPath = [System.IO.Path]::GetFullPath(
++        [string]$executionBinding.receipt_path
++    )
++    if ($executionReceiptPath -eq $FreezeApprovalPath) {
++        throw "Implementation-freeze approval cannot authorize postrun execution."
++    }
++    if (
++        -not (Test-Path -LiteralPath $executionReceiptPath -PathType Leaf) -or
++        [string]$executionBinding.receipt_file_sha256 -ne
++            (Get-Sha256 -Path $executionReceiptPath)
++    ) {
++        throw "Dense WS manifest-bound execution approval file mismatch."
++    }
++    $ExecutionApprovalReceipt = Get-Content -LiteralPath $executionReceiptPath -Raw |
++        ConvertFrom-Json -DateKind String
++    if (
++        [string]$ExecutionApprovalReceipt.schema -ne
++            "trading_mvp_dense_ws_manifest_bound_postrun_execution_approval_v1" -or
++        [string]$ExecutionApprovalReceipt.status -ne "APPROVED_SINGLE_USE" -or
++        [string]$ExecutionApprovalReceipt.campaign_id -ne [string]$Plan.campaign_id -or
++        [string]$ExecutionApprovalReceipt.campaign_plan_hash -ne $ExpectedPlanHash -or
++        [string]$ExecutionApprovalReceipt.handoff_manifest_path -ne
++            $HandoffManifestPath -or
++        [string]$ExecutionApprovalReceipt.handoff_manifest_sha256 -ne
++            [string]$Handoff.canonical_manifest.file_sha256 -or
++        [string]$ExecutionApprovalReceipt.postrun_not_before_local -ne
++            [string]$RuntimeContract.postrun_not_before_local -or
++        [string]$ExecutionApprovalReceipt.postrun_latest_full_runtime_start_local -ne
++            [string]$RuntimeContract.latest_full_runtime_start_local -or
++        [string]$ExecutionApprovalReceipt.postrun_hard_deadline_local -ne
++            [string]$RuntimeContract.postrun_hard_deadline_local -or
++        [int]$ExecutionApprovalReceipt.total_max_runtime_sec -ne $TotalMaxRuntimeSec -or
++        $ExecutionApprovalReceipt.postrun_execution_authorized -ne $true -or
++        $ExecutionApprovalReceipt.collector_launch_authorized -ne $false -or
++        $ExecutionApprovalReceipt.network_market_data_authorized -ne $false -or
++        $ExecutionApprovalReceipt.evaluator_authorized -ne $false -or
++        $ExecutionApprovalReceipt.returns_pnl_oos_authorized -ne $false -or
++        $ExecutionApprovalReceipt.grid_or_retune_authorized -ne $false -or
++        $ExecutionApprovalReceipt.paper_live_private_api_real_capital_leverage_margin_authorized -ne
++            $false -or
++        $ExecutionApprovalReceipt.stopped_incomplete_retry_authorized -ne $false
++    ) {
++        throw "Dense WS manifest-bound execution approval semantic mismatch."
++    }
++    $ExecutionApprovalAuthorized = $true
++} elseif (
++    $Handoff.postrun_execution_authorized -ne $false -or
++    [string]$Handoff.execution_approval.status -ne "NOT_APPROVED"
++) {
++    throw "Dense WS postrun execution authorization state is ambiguous."
++}
++
+ $CampaignRoot = [System.IO.Path]::GetFullPath([string]$Plan.outputs.campaign_root)
+ $PostrunRoot = [System.IO.Path]::GetFullPath((Join-Path $CampaignRoot "_postrun"))
+ $Names = $PostrunConfig.output_names
+@@ -364,6 +534,13 @@ $Python = Resolve-TradingMvpPython
+ 
+ $Guard = Get-Guard
+ $Disposition = $Guard.dense_ws_postrun_disposition
++$EvidenceMode = if (
++    $Disposition.PSObject.Properties.Name -contains "completion_evidence_mode"
++) {
++    [string]$Disposition.completion_evidence_mode
++} else {
++    ""
++}
+ $allowedDecisions = @(
+     "RUN_DENSE_WS_CAMPAIGN_DATA_QUALITY",
+     "RUN_DENSE_WS_CAUSAL_MATERIALIZATION"
+@@ -374,21 +551,128 @@ $PreflightObservedAt = [DateTimeOffset]::Now
+ if ($PreflightObservedAt -lt $PostrunNotBefore) {
+     $preflightReasons.Add("postrun_window_not_open")
+ }
++if ($PreflightObservedAt -gt $PostrunLatestFullStart) {
++    $preflightReasons.Add("postrun_latest_full_runtime_start_passed")
++}
+ if ($PreflightObservedAt -ge $PostrunHardDeadline) {
+     $preflightReasons.Add("postrun_hard_deadline_passed")
+ }
+ if ([string]$Guard.usage.status -ne "AVAILABLE" -or [double]$Guard.usage.remaining_percent -le 15.0) {
+     $preflightReasons.Add("weekly_quota_or_telemetry_block")
+ }
+-if ([string]$Guard.gate.run_id -ne [string]$Plan.campaign_id) {
+-    $preflightReasons.Add("active_gate_campaign_mismatch")
++if (-not $ExecutionApprovalAuthorized) {
++    $preflightReasons.Add("manifest_bound_execution_not_authorized")
+ }
+-if ([string]$Guard.gate.status -ne "READY_FOR_POSTPROCESS") {
+-    $preflightReasons.Add("active_gate_not_ready_for_postprocess")
++if ([string]$Guard.gate.status -eq "RUNNING") {
++    $preflightReasons.Add("active_gate_running")
+ }
+ if ([string]$Disposition.campaign_id -ne [string]$Plan.campaign_id) {
+     $preflightReasons.Add("postrun_disposition_campaign_mismatch")
+ }
++if ([string]$Disposition.plan_hash -ne $ExpectedPlanHash) {
++    $preflightReasons.Add("postrun_disposition_plan_mismatch")
++}
++
++$ObservedCampaignManifestSha256 = $null
++if ($EvidenceMode -eq "ACTIVE_DENSE_GATE") {
++    if ([string]$Guard.gate.run_id -ne [string]$Plan.campaign_id) {
++        $preflightReasons.Add("active_gate_campaign_mismatch")
++    }
++    if ([string]$Guard.gate.status -ne "READY_FOR_POSTPROCESS") {
++        $preflightReasons.Add("active_gate_not_ready_for_postprocess")
++    }
++    if (
++        [System.IO.Path]::GetFullPath([string]$Disposition.campaign_manifest_path) -ne
++            [System.IO.Path]::GetFullPath($CampaignManifestPath) -or
++        -not (Test-Path -LiteralPath $CampaignManifestPath -PathType Leaf)
++    ) {
++        $preflightReasons.Add("active_dense_campaign_manifest_mismatch")
++    } else {
++        $ObservedCampaignManifestSha256 = Get-Sha256 -Path $CampaignManifestPath
++        if (
++            [string]$Disposition.campaign_manifest_sha256 -ne
++                $ObservedCampaignManifestSha256
++        ) {
++            $preflightReasons.Add("active_dense_campaign_manifest_hash_mismatch")
++        }
++    }
++} elseif ($EvidenceMode -eq "IMMUTABLE_COMPLETED_CAMPAIGN_MANIFEST_AFTER_PIT") {
++    $requiredPit = $Handoff.required_pit_completion
++    if (
++        [string]$Disposition.required_prior_pit_run_id -ne [string]$requiredPit.run_id -or
++        [string]$Disposition.required_prior_pit_plan_hash -ne
++            [string]$requiredPit.schedule_plan_hash
++    ) {
++        $preflightReasons.Add("deferred_pit_binding_mismatch")
++    }
++    if (
++        [string]$Guard.gate.run_id -ne [string]$requiredPit.run_id -or
++        [string]$Guard.gate.status -ne "READY_FOR_POSTPROCESS"
++    ) {
++        $preflightReasons.Add("deferred_pit_gate_not_ready")
++    }
++    $pitDisposition = $Guard.pit_postrun_disposition
++    if (
++        [string]$pitDisposition.status -ne "COMPLETE" -or
++        [string]$pitDisposition.run_id -ne [string]$requiredPit.run_id -or
++        [string]$pitDisposition.schedule_plan_hash -ne
++            [string]$requiredPit.schedule_plan_hash
++    ) {
++        $preflightReasons.Add("deferred_pit_postrun_not_complete")
++    }
++    $writerClaimPath = [System.IO.Path]::GetFullPath(
++        [string]$Handoff.global_writer_claim_path
++    )
++    if (Test-LiveGlobalWriterClaim -Path $writerClaimPath) {
++        $preflightReasons.Add("live_global_writer_claim")
++    }
++    if (
++        [System.IO.Path]::GetFullPath([string]$Disposition.campaign_manifest_path) -ne
++            [System.IO.Path]::GetFullPath($CampaignManifestPath) -or
++        -not (Test-Path -LiteralPath $CampaignManifestPath -PathType Leaf)
++    ) {
++        $preflightReasons.Add("deferred_campaign_manifest_mismatch")
++    } else {
++        $ObservedCampaignManifestSha256 = Get-Sha256 -Path $CampaignManifestPath
++        if (
++            [string]$Disposition.campaign_manifest_sha256 -ne
++                $ObservedCampaignManifestSha256
++        ) {
++            $preflightReasons.Add("deferred_campaign_manifest_hash_mismatch")
++        } else {
++            $CampaignManifest = Get-Content -LiteralPath $CampaignManifestPath -Raw |
++                ConvertFrom-Json -DateKind String
++            Assert-DenseCampaignManifestBinding `
++                -Manifest $CampaignManifest `
++                -Plan $Plan `
++                -PlanPath $PlanPath `
++                -Candidate $Candidate `
++                -Handoff $Handoff
++        }
++    }
++    if (
++        [System.IO.Path]::GetFullPath([string]$Disposition.handoff_manifest_path) -ne
++            $HandoffManifestPath -or
++        [string]$Disposition.handoff_manifest_sha256 -ne
++            [string]$Handoff.canonical_manifest.file_sha256
++    ) {
++        $preflightReasons.Add("deferred_handoff_manifest_mismatch")
++    }
++    if ($ExecutionApprovalAuthorized -and $ExecutionApprovalReceipt) {
++        if (
++            [System.IO.Path]::GetFullPath(
++                [string]$ExecutionApprovalReceipt.campaign_manifest_path
++            ) -ne [System.IO.Path]::GetFullPath($CampaignManifestPath) -or
++            [string]$ExecutionApprovalReceipt.campaign_manifest_sha256 -ne
++                $ObservedCampaignManifestSha256
++        ) {
++            $preflightReasons.Add("execution_approval_campaign_manifest_mismatch")
++        }
++    }
++} else {
++    $preflightReasons.Add("unsupported_completion_evidence_mode")
++}
++
+ if ([string]$Disposition.status -eq "RUNNING") {
+     $preflightStatus = "ALREADY_RUNNING"
+ } elseif ([string]$Disposition.status -eq "MATERIALIZATION_ACCEPTED") {
+@@ -422,12 +706,19 @@ $preflight = [ordered]@{
+     plan_hash = $ExpectedPlanHash
+     guard_decision = [string]$Guard.decision
+     disposition_status = [string]$Disposition.status
++    completion_evidence_mode = $EvidenceMode
++    execution_approval_authorized = $ExecutionApprovalAuthorized
++    campaign_manifest_path = $CampaignManifestPath
++    campaign_manifest_sha256 = $ObservedCampaignManifestSha256
++    handoff_manifest_path = $HandoffManifestPath
++    handoff_manifest_sha256 = [string]$Handoff.canonical_manifest.file_sha256
+     reasons = @($preflightReasons)
+     runtime_contract = [ordered]@{
+         total_max_runtime_sec = $TotalMaxRuntimeSec
+         quality_max_runtime_sec = $QualityMaxRuntimeSec
+         materialization_max_runtime_sec = $MaterializationMaxRuntimeSec
+         postrun_not_before_local = $PostrunNotBefore.ToString("o")
++        latest_full_runtime_start_local = $PostrunLatestFullStart.ToString("o")
+         postrun_hard_deadline_local = $PostrunHardDeadline.ToString("o")
+     }
+     output_paths = [ordered]@{
+@@ -477,6 +768,14 @@ if ($VisibleChild) {
+                         $QualityMaxRuntimeSec -and
+                     [int]$candidateReservation.materialization_max_runtime_sec -eq
+                         $MaterializationMaxRuntimeSec -and
++                    [string]$candidateReservation.completion_evidence_mode -eq
++                        $EvidenceMode -and
++                    [string]$candidateReservation.campaign_manifest_sha256 -eq
++                        $ObservedCampaignManifestSha256 -and
++                    [string]$candidateReservation.handoff_manifest_sha256 -eq
++                        [string]$Handoff.canonical_manifest.file_sha256 -and
++                    [string]$candidateReservation.postrun_latest_full_runtime_start_local -eq
++                        $PostrunLatestFullStart.ToString("o") -and
+                     [string]$candidateReservation.postrun_hard_deadline_local -eq
+                         $PostrunHardDeadline.ToString("o")
+                 ) {
+@@ -502,6 +801,10 @@ if ($VisibleChild) {
+         total_max_runtime_sec = $TotalMaxRuntimeSec
+         quality_max_runtime_sec = $QualityMaxRuntimeSec
+         materialization_max_runtime_sec = $MaterializationMaxRuntimeSec
++        completion_evidence_mode = $EvidenceMode
++        campaign_manifest_sha256 = $ObservedCampaignManifestSha256
++        handoff_manifest_sha256 = [string]$Handoff.canonical_manifest.file_sha256
++        postrun_latest_full_runtime_start_local = $PostrunLatestFullStart.ToString("o")
+         postrun_hard_deadline_local = $PostrunHardDeadline.ToString("o")
+     }
+     Write-JsonCreateNew -Path $OwnerPath -Payload $owner
+@@ -526,6 +829,17 @@ if ($VisibleChild) {
+         if (-not (Test-Path -LiteralPath $CampaignManifestPath -PathType Leaf)) {
+             throw "Campaign manifest is missing: $CampaignManifestPath"
+         }
++        if ((Get-Sha256 -Path $CampaignManifestPath) -ne $ObservedCampaignManifestSha256) {
++            throw "Campaign manifest changed after preflight."
++        }
++        $RuntimeCampaignManifest = Get-Content -LiteralPath $CampaignManifestPath -Raw |
++            ConvertFrom-Json -DateKind String
++        Assert-DenseCampaignManifestBinding `
++            -Manifest $RuntimeCampaignManifest `
++            -Plan $Plan `
++            -PlanPath $PlanPath `
++            -Candidate $Candidate `
++            -Handoff $Handoff
+         if (-not (Test-Path -LiteralPath $QualityReportPath -PathType Leaf)) {
+             $owner.stage = "CAMPAIGN_DATA_QUALITY"
+             Write-JsonAtomic -Path $OwnerPath -Payload $owner
+@@ -632,6 +946,10 @@ $reservation = [ordered]@{
+     total_max_runtime_sec = $TotalMaxRuntimeSec
+     quality_max_runtime_sec = $QualityMaxRuntimeSec
+     materialization_max_runtime_sec = $MaterializationMaxRuntimeSec
++    completion_evidence_mode = $EvidenceMode
++    campaign_manifest_sha256 = $ObservedCampaignManifestSha256
++    handoff_manifest_sha256 = [string]$Handoff.canonical_manifest.file_sha256
++    postrun_latest_full_runtime_start_local = $PostrunLatestFullStart.ToString("o")
+     postrun_hard_deadline_local = $PostrunHardDeadline.ToString("o")
+     final = $false
+ }
+@@ -705,6 +1023,10 @@ $result = [ordered]@{
+     total_max_runtime_sec = $TotalMaxRuntimeSec
+     quality_max_runtime_sec = $QualityMaxRuntimeSec
+     materialization_max_runtime_sec = $MaterializationMaxRuntimeSec
++    completion_evidence_mode = $EvidenceMode
++    campaign_manifest_sha256 = $ObservedCampaignManifestSha256
++    handoff_manifest_sha256 = [string]$Handoff.canonical_manifest.file_sha256
++    postrun_latest_full_runtime_start_local = $PostrunLatestFullStart.ToString("o")
+     postrun_hard_deadline_local = $PostrunHardDeadline.ToString("o")
+ }
+ if ($Json) {
+diff --git a/trading_mvp/src/autopilot_guard.py b/trading_mvp/src/autopilot_guard.py
+index b30e9fc..7dc9378 100644
+--- a/trading_mvp/src/autopilot_guard.py
++++ b/trading_mvp/src/autopilot_guard.py
+@@ -272,6 +272,33 @@ def _pid_alive(pid: Any) -> bool:
+         return False
+     if value <= 0:
+         return False
++    if os.name == "nt":
++        import ctypes
++        from ctypes import wintypes
++
++        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
++        kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
++        kernel32.OpenProcess.restype = wintypes.HANDLE
++        kernel32.GetExitCodeProcess.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
++        kernel32.GetExitCodeProcess.restype = wintypes.BOOL
++        kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
++        kernel32.CloseHandle.restype = wintypes.BOOL
++        process_query_limited_information = 0x1000
++        still_active = 259
++        handle = kernel32.OpenProcess(
++            process_query_limited_information,
++            False,
++            value,
++        )
++        if not handle:
++            return ctypes.get_last_error() == 5
++        try:
++            exit_code = wintypes.DWORD()
++            if not kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
++                return True
++            return exit_code.value == still_active
++        finally:
++            kernel32.CloseHandle(handle)
+     try:
+         os.kill(value, 0)
+     except ProcessLookupError:
+@@ -556,6 +583,404 @@ def _resolve_dense_ws_output_path(
+     return target
+ 
+ 
++def _load_sha256_bound_json(
++    binding: dict[str, Any],
++    *,
++    label: str,
++    path_key: str = "path",
++    sha_key: str = "file_sha256",
++) -> tuple[Path, dict[str, Any]]:
++    path = Path(str(binding.get(path_key) or "")).expanduser().resolve()
++    expected_sha = str(binding.get(sha_key) or "").lower()
++    if not path.is_file() or len(expected_sha) != 64:
++        raise ValueError(f"{label} is missing or not SHA-256 bound")
++    if _sha256(path) != expected_sha:
++        raise ValueError(f"{label} file hash mismatch")
++    return path, _load_json(path)
++
++
++def _validate_dense_ws_deferred_handoff_freeze(
++    handoff: dict[str, Any],
++    *,
++    candidate: dict[str, Any],
++) -> tuple[Path, dict[str, Any]]:
++    handoff_status = handoff.get("status")
++    if (
++        handoff_status
++        not in {
++            "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL",
++            "FROZEN_WITH_EXACT_MANIFEST_BOUND_EXECUTION_APPROVAL",
++        }
++        or handoff.get("implementation_authorized") is not True
++        or handoff.get("future_execution_requires_exact_manifest_bound_approval")
++        is not True
++        or handoff.get("stopped_incomplete_retry_authorized") is not False
++    ):
++        raise ValueError("dense WS deferred handoff freeze safety state mismatch")
++
++    execution_approval = handoff.get("execution_approval")
++    if (
++        not isinstance(execution_approval, dict)
++        or (
++            handoff_status
++            == "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL"
++            and (
++                handoff.get("postrun_execution_authorized") is not False
++                or execution_approval.get("status") != "NOT_APPROVED"
++            )
++        )
++        or (
++            handoff_status
++            == "FROZEN_WITH_EXACT_MANIFEST_BOUND_EXECUTION_APPROVAL"
++            and (
++                handoff.get("postrun_execution_authorized") is not True
++                or execution_approval.get("status") != "APPROVED"
++            )
++        )
++    ):
++        raise ValueError("dense WS deferred handoff execution state mismatch")
++
++    proposal_binding = handoff.get("proposal")
++    approval_binding = handoff.get("approval_receipt")
++    manifest_binding = handoff.get("canonical_manifest")
++    if not all(
++        isinstance(value, dict)
++        for value in (proposal_binding, approval_binding, manifest_binding)
++    ):
++        raise ValueError("dense WS deferred handoff freeze bindings are missing")
++
++    _, proposal = _load_sha256_bound_json(
++        proposal_binding,
++        label="dense WS deferred handoff proposal",
++    )
++    approval_path, approval = _load_sha256_bound_json(
++        approval_binding,
++        label="dense WS deferred handoff approval receipt",
++    )
++    manifest_path, manifest = _load_sha256_bound_json(
++        manifest_binding,
++        label="dense WS deferred handoff canonical manifest",
++    )
++
++    proposal_hash = str(proposal_binding.get("proposal_hash") or "")
++    profile_hash = str(handoff.get("handoff_profile_hash") or "")
++    if (
++        len(proposal_hash) != 64
++        or proposal.get("proposal_hash") != proposal_hash
++        or proposal.get("handoff_profile_hash") != profile_hash
++        or approval.get("schema")
++        != "trading_mvp_dense_ws_deferred_postrun_handoff_freeze_approval_v1"
++        or approval.get("status") != "APPROVED_IMPLEMENTATION_FREEZE_ONLY"
++        or approval.get("proposal_hash") != proposal_hash
++        or approval.get("handoff_profile_hash") != profile_hash
++        or approval.get("implementation_or_policy_rebind_authorized") is not True
++        or approval.get("postrun_execution_authorized") is not False
++        or approval.get("future_postrun_execution_requires_separate_exact_manifest_bound_approval")
++        is not True
++        or approval.get("stopped_incomplete_retry_authorized") is not False
++    ):
++        raise ValueError("dense WS deferred handoff approval semantic mismatch")
++
++    campaign_id = str(candidate.get("campaign_id") or "")
++    plan_hash = str(candidate.get("plan_hash") or "")
++    if (
++        manifest.get("schema")
++        != "trading_mvp_dense_ws_deferred_postrun_handoff_manifest_v1"
++        or manifest.get("mode") != "IMMUTABLE_PLANONLY_RUNTIME_BINDING"
++        or manifest.get("campaign", {}).get("campaign_id") != campaign_id
++        or manifest.get("campaign", {}).get("plan_hash") != plan_hash
++        or manifest.get("proposal", {}).get("proposal_hash") != proposal_hash
++        or manifest.get("handoff_profile_hash") != profile_hash
++        or Path(
++            str(manifest.get("approval_receipt", {}).get("path") or "")
++        ).expanduser().resolve()
++        != approval_path
++        or manifest.get("approval_receipt", {}).get("file_sha256")
++        != str(approval_binding.get("file_sha256") or "")
++        or manifest.get("authorization", {}).get("postrun_execution_authorized")
++        is not False
++        or manifest.get("authorization", {}).get(
++            "future_execution_requires_exact_manifest_bound_approval"
++        )
++        is not True
++    ):
++        raise ValueError("dense WS deferred handoff canonical manifest mismatch")
++    return manifest_path, manifest
++
++
++def _resolve_dense_ws_deferred_completion_evidence(
++    handoff: dict[str, Any],
++    *,
++    candidate: dict[str, Any],
++    plan: dict[str, Any],
++    plan_path: Path,
++    campaign_root: Path,
++    gate: dict[str, Any],
++    usage: dict[str, Any] | None,
++) -> dict[str, Any]:
++    handoff_manifest_path, _ = _validate_dense_ws_deferred_handoff_freeze(
++        handoff,
++        candidate=candidate,
++    )
++    n14 = handoff.get("required_pit_completion")
++    campaign_binding = handoff.get("campaign")
++    if not isinstance(n14, dict) or not isinstance(campaign_binding, dict):
++        raise ValueError("dense WS deferred handoff identity bindings are missing")
++
++    campaign_id = str(candidate.get("campaign_id") or "")
++    plan_hash = str(candidate.get("plan_hash") or "")
++    expected_campaign_manifest = (campaign_root / "campaign-manifest.json").resolve()
++    if (
++        campaign_binding.get("campaign_id") != campaign_id
++        or Path(str(campaign_binding.get("plan_path") or "")).expanduser().resolve()
++        != plan_path
++        or campaign_binding.get("plan_file_sha256")
++        != str(candidate.get("plan_file_sha256") or "")
++        or campaign_binding.get("plan_hash") != plan_hash
++        or campaign_binding.get("contract_hash")
++        != str(candidate.get("contract_hash") or "")
++        or campaign_binding.get("candidate_contract_hash")
++        != str(candidate.get("candidate_contract_hash") or "")
++        or Path(
++            str(campaign_binding.get("campaign_manifest_path") or "")
++        ).expanduser().resolve()
++        != expected_campaign_manifest
++    ):
++        raise ValueError("dense WS deferred handoff campaign binding mismatch")
++
++    gate_status = str(gate.get("gate_status") or gate.get("status") or "")
++    if gate_status == "RUNNING":
++        return {"ready": False, "reason": "required_pit_run_still_running"}
++    if gate_status == "STOPPED_INCOMPLETE":
++        raise ValueError("required PIT run is STOPPED_INCOMPLETE")
++    if str(gate.get("run_id") or "") != str(n14.get("run_id") or ""):
++        return {"ready": False, "reason": "required_pit_run_not_current_gate"}
++    if gate_status != "READY_FOR_POSTPROCESS":
++        return {"ready": False, "reason": "required_pit_run_not_ready"}
++    if (
++        gate.get("final") is not True
++        or gate.get("primary_output_complete") is not True
++        or gate.get("expected_outputs_complete") is not True
++        or str(gate.get("stop_reason") or "") != "completed"
++    ):
++        raise ValueError("required PIT gate is not final and complete")
++
++    schedule_path, schedule = _load_sha256_bound_json(
++        n14,
++        label="dense WS deferred handoff PIT schedule",
++        path_key="schedule_path",
++        sha_key="schedule_file_sha256",
++    )
++    schedule_plan_hash = str(n14.get("schedule_plan_hash") or "")
++    segments = schedule.get("segments")
++    if (
++        schedule.get("plan_hash") != schedule_plan_hash
++        or not isinstance(segments, list)
++    ):
++        raise ValueError("dense WS deferred handoff PIT schedule binding mismatch")
++    exact_segments = [
++        item
++        for item in segments
++        if isinstance(item, dict) and item.get("run_id") == n14.get("run_id")
++    ]
++    if len(exact_segments) != 1:
++        raise ValueError("dense WS deferred handoff PIT segment is not unique")
++    segment = exact_segments[0]
++    if (
++        segment.get("start_local") != n14.get("start_local")
++        or segment.get("end_local") != n14.get("end_local")
++        or int(segment.get("duration_sec") or 0) != 1_200
++    ):
++        raise ValueError("dense WS deferred handoff PIT timing changed")
++
++    pit_manifest_path = (
++        Path(str(segment.get("output_dir") or "")).expanduser().resolve()
++        / "manifest.json"
++    ).resolve()
++    if (
++        Path(str(gate.get("manifest_path") or "")).expanduser().resolve()
++        != pit_manifest_path
++        or not pit_manifest_path.is_file()
++    ):
++        raise ValueError("required PIT gate manifest binding mismatch")
++    pit_manifest = _load_json(pit_manifest_path)
++    if (
++        pit_manifest.get("schema") != "pit_universe_snapshot_manifest_v2"
++        or pit_manifest.get("run_id") != n14.get("run_id")
++        or pit_manifest.get("final") is not True
++        or pit_manifest.get("incomplete") is not False
++        or pit_manifest.get("status") != "COMPLETED"
++    ):
++        raise ValueError("required PIT manifest is not clean and complete")
++
++    claim_path = Path(
++        str(handoff.get("global_writer_claim_path") or "")
++    ).expanduser().resolve()
++    if claim_path.exists():
++        claim = _load_json(claim_path)
++        if _pid_alive(claim.get("owner_pid")):
++            return {"ready": False, "reason": "live_global_writer_claim"}
++        raise ValueError("stale global market-data writer claim")
++
++    if (
++        not isinstance(usage, dict)
++        or usage.get("status") != "AVAILABLE"
++        or float(usage.get("remaining_percent") or 0.0) <= 15.0
++    ):
++        return {"ready": False, "reason": "weekly_quota_or_telemetry_block"}
++
++    summary_path = Path(
++        str(n14.get("postrun_summary_path") or "")
++    ).expanduser().resolve()
++    reconciliation_path = Path(
++        str(n14.get("postrun_reconciliation_path") or "")
++    ).expanduser().resolve()
++    if not summary_path.is_file():
++        return {"ready": False, "reason": "required_pit_postrun_summary_missing"}
++    if reconciliation_path.exists():
++        raise ValueError("required PIT postrun uses an unapproved reconciliation")
++    summary = _load_json(summary_path)
++    deferred_actions = {
++        "wait_for_fresh_weekly_quota_above_15_percent_then_retry_postrun",
++        "run_train_feasibility_after_weekly_quota_reset",
++        "refresh_horizon_after_weekly_quota_reset_then_request_exact_schedule_approval",
++    }
++    if (
++        summary.get("schema") != "trading_mvp_pit_postrun_v1"
++        or summary.get("project") != "trading_mvp"
++        or summary.get("run_id") != n14.get("run_id")
++        or summary.get("schedule_plan_hash") != schedule_plan_hash
++        or Path(str(summary.get("schedule_plan_path") or "")).expanduser().resolve()
++        != schedule_path
++        or Path(str(summary.get("quality_ledger_path") or "")).expanduser().resolve()
++        != Path(str(n14.get("quality_ledger_path") or "")).expanduser().resolve()
++        or not str(summary.get("decision") or "")
++        or summary.get("decision") == "PIT_POSTRUN_FAILED"
++        or str(summary.get("decision") or "").startswith("PAUSED")
++        or not str(summary.get("next_allowed_action") or "")
++        or summary.get("next_allowed_action") in deferred_actions
++        or summary.get("returns_read") is not False
++        or summary.get("pnl_read") is not False
++        or summary.get("oos_run") is not False
++        or summary.get("grid_search") is not False
++        or summary.get("live_orders") is not False
++        or summary.get("private_api_keys") is not False
++    ):
++        raise ValueError("required PIT postrun summary is not COMPLETE")
++
++    if not expected_campaign_manifest.is_file():
++        return {"ready": False, "reason": "dense_campaign_manifest_missing"}
++    campaign_manifest = _load_json(expected_campaign_manifest)
++    phase_results = campaign_manifest.get("phase_results")
++    phases = plan.get("phases")
++    if (
++        campaign_manifest.get("schema") != "trading_mvp_dense_ws_campaign_manifest_v1"
++        or campaign_manifest.get("campaign_id") != campaign_id
++        or Path(str(campaign_manifest.get("plan_path") or "")).expanduser().resolve()
++        != plan_path
++        or campaign_manifest.get("plan_hash") != plan_hash
++        or campaign_manifest.get("contract_hash")
++        != campaign_binding.get("contract_hash")
++        or campaign_manifest.get("candidate_contract_hash")
++        != campaign_binding.get("candidate_contract_hash")
++        or campaign_manifest.get("universe_sha256")
++        != campaign_binding.get("universe_sha256")
++        or campaign_manifest.get("runtime_completed") is not True
++        or campaign_manifest.get("liveness_clean") is not True
++        or campaign_manifest.get("quality_eligible") is not True
++        or campaign_manifest.get("completed") is not True
++        or campaign_manifest.get("final") is not True
++        or campaign_manifest.get("dirty_segment_ids") != []
++        or not isinstance(phases, list)
++        or not isinstance(phase_results, list)
++        or len(phase_results) != len(phases)
++        or int(campaign_manifest.get("phases_completed") or 0) != len(phases)
++        or any(
++            item.get("runtime_completed") is not True
++            or item.get("liveness_clean") is not True
++            or item.get("quality_eligible") is not True
++            for item in phase_results
++            if isinstance(item, dict)
++        )
++        or any(not isinstance(item, dict) for item in phase_results)
++    ):
++        raise ValueError("dense WS deferred campaign manifest is not clean and complete")
++
++    return {
++        "ready": True,
++        "completion_evidence_mode": "IMMUTABLE_COMPLETED_CAMPAIGN_MANIFEST_AFTER_PIT",
++        "campaign_manifest_path": str(expected_campaign_manifest),
++        "campaign_manifest_sha256": _sha256(expected_campaign_manifest),
++        "required_prior_pit_run_id": str(n14.get("run_id") or ""),
++        "required_prior_pit_plan_hash": schedule_plan_hash,
++        "required_prior_pit_manifest_path": str(pit_manifest_path),
++        "required_prior_pit_manifest_sha256": _sha256(pit_manifest_path),
++        "required_prior_pit_postrun_summary_path": str(summary_path),
++        "required_prior_pit_postrun_summary_sha256": _sha256(summary_path),
++        "handoff_manifest_path": str(handoff_manifest_path),
++        "handoff_manifest_sha256": _sha256(handoff_manifest_path),
++    }
++
++
++def _dense_ws_postrun_execution_is_authorized(
++    handoff: dict[str, Any],
++    *,
++    candidate: dict[str, Any],
++    completion_evidence: dict[str, Any],
++) -> bool:
++    if handoff.get("postrun_execution_authorized") is not True:
++        return False
++    approval_binding = handoff.get("execution_approval")
++    if not isinstance(approval_binding, dict) or approval_binding.get("status") != "APPROVED":
++        raise ValueError("dense WS postrun execution flag lacks an approved receipt")
++    approval_path, approval = _load_sha256_bound_json(
++        approval_binding,
++        label="dense WS manifest-bound postrun execution approval",
++        path_key="receipt_path",
++        sha_key="receipt_file_sha256",
++    )
++    runtime = handoff.get("runtime_window")
++    canonical_manifest = handoff.get("canonical_manifest")
++    if not isinstance(runtime, dict) or not isinstance(canonical_manifest, dict):
++        raise ValueError("dense WS postrun execution runtime binding is missing")
++    if (
++        approval.get("schema")
++        != "trading_mvp_dense_ws_manifest_bound_postrun_execution_approval_v1"
++        or approval.get("status") != "APPROVED_SINGLE_USE"
++        or approval.get("campaign_id") != candidate.get("campaign_id")
++        or approval.get("campaign_plan_hash") != candidate.get("plan_hash")
++        or approval.get("campaign_manifest_path")
++        != completion_evidence.get("campaign_manifest_path")
++        or approval.get("campaign_manifest_sha256")
++        != completion_evidence.get("campaign_manifest_sha256")
++        or approval.get("handoff_manifest_path")
++        != str(Path(str(canonical_manifest.get("path") or "")).expanduser().resolve())
++        or approval.get("handoff_manifest_sha256")
++        != canonical_manifest.get("file_sha256")
++        or approval.get("postrun_not_before_local")
++        != runtime.get("postrun_not_before_local")
++        or approval.get("postrun_latest_full_runtime_start_local")
++        != runtime.get("latest_full_runtime_start_local")
++        or approval.get("postrun_hard_deadline_local")
++        != runtime.get("postrun_hard_deadline_local")
++        or int(approval.get("total_max_runtime_sec") or 0)
++        != int(runtime.get("total_max_runtime_sec") or 0)
++        or approval.get("postrun_execution_authorized") is not True
++        or approval.get("collector_launch_authorized") is not False
++        or approval.get("network_market_data_authorized") is not False
++        or approval.get("evaluator_authorized") is not False
++        or approval.get("returns_pnl_oos_authorized") is not False
++        or approval.get("grid_or_retune_authorized") is not False
++        or approval.get("paper_live_private_api_real_capital_leverage_margin_authorized")
++        is not False
++        or approval.get("stopped_incomplete_retry_authorized") is not False
++    ):
++        raise ValueError(
++            f"dense WS manifest-bound execution approval mismatch: {approval_path}"
++        )
++    return True
++
++
+ def _resolve_dense_ws_materialization_bound_planonly(
+     policy: dict[str, Any],
+     *,
+@@ -700,6 +1125,9 @@ def _resolve_dense_ws_materialization_bound_planonly(
+ def resolve_dense_ws_postrun(
+     policy: dict[str, Any],
+     gate: dict[str, Any],
++    *,
++    usage: dict[str, Any] | None = None,
++    observed_at_utc: str | None = None,
+ ) -> dict[str, Any]:
+     candidate = policy.get("next_long_campaign")
+     if not isinstance(candidate, dict):
+@@ -716,11 +1144,11 @@ def resolve_dense_ws_postrun(
+         and gate.get("completed") is True
+         and gate.get("final") is True
+     )
+-    if not exact_completed_campaign:
+-        return _dense_ws_postrun_base(status="NOT_APPLICABLE")
+ 
+     config = policy.get("dense_ws_postrun")
+     if not isinstance(config, dict):
++        if not exact_completed_campaign:
++            return _dense_ws_postrun_base(status="NOT_APPLICABLE")
+         return _dense_ws_postrun_base(
+             status="QUALITY_MISSING",
+             campaign_id=campaign_id,
+@@ -744,9 +1172,49 @@ def resolve_dense_ws_postrun(
+         raise ValueError("dense WS postrun PlanOnly outputs are missing")
+     campaign_root = Path(str(outputs.get("campaign_root") or "")).expanduser().resolve()
+     expected_campaign_manifest = (campaign_root / "campaign-manifest.json").resolve()
+-    gate_manifest = Path(str(gate.get("manifest_path") or "")).expanduser().resolve()
+-    if gate_manifest != expected_campaign_manifest or not gate_manifest.is_file():
+-        raise ValueError("dense WS completed gate manifest binding mismatch")
++    handoff = config.get("deferred_handoff")
++    completion_evidence: dict[str, Any]
++    if exact_completed_campaign:
++        gate_manifest = Path(str(gate.get("manifest_path") or "")).expanduser().resolve()
++        if gate_manifest != expected_campaign_manifest or not gate_manifest.is_file():
++            raise ValueError("dense WS completed gate manifest binding mismatch")
++        completion_evidence = {
++            "ready": True,
++            "completion_evidence_mode": "ACTIVE_DENSE_GATE",
++            "campaign_manifest_path": str(gate_manifest),
++            "campaign_manifest_sha256": _sha256(gate_manifest),
++        }
++        if isinstance(handoff, dict):
++            _validate_dense_ws_deferred_handoff_freeze(
++                handoff,
++                candidate=candidate,
++            )
++    elif isinstance(handoff, dict):
++        completion_evidence = _resolve_dense_ws_deferred_completion_evidence(
++            handoff,
++            candidate=candidate,
++            plan=plan,
++            plan_path=plan_path,
++            campaign_root=campaign_root,
++            gate=gate,
++            usage=usage,
++        )
++        if completion_evidence.get("ready") is not True:
++            result = _dense_ws_postrun_base(
++                status="NOT_APPLICABLE",
++                campaign_id=campaign_id,
++                plan_hash=plan_hash,
++            )
++            result.update(
++                {
++                    "reason": completion_evidence.get("reason"),
++                    "deferred_handoff_configured": True,
++                    "execution_authorized": False,
++                }
++            )
++            return result
++    else:
++        return _dense_ws_postrun_base(status="NOT_APPLICABLE")
+ 
+     output_names = config.get("output_names")
+     if not isinstance(output_names, dict):
+@@ -770,7 +1238,15 @@ def resolve_dense_ws_postrun(
+     base.update(
+         {
+             "plan_path": str(plan_path),
+-            "campaign_manifest_path": str(gate_manifest),
++            "campaign_manifest_path": completion_evidence[
++                "campaign_manifest_path"
++            ],
++            "campaign_manifest_sha256": completion_evidence[
++                "campaign_manifest_sha256"
++            ],
++            "completion_evidence_mode": completion_evidence[
++                "completion_evidence_mode"
++            ],
+             "campaign_root": str(campaign_root),
+             "quality_report_path": str(paths["quality_report"]),
+             "materialization_manifest_path": str(paths["materialization_manifest"]),
+@@ -779,6 +1255,80 @@ def resolve_dense_ws_postrun(
+             "owner_path": str(paths["owner"]),
+         }
+     )
++    base.update(
++        {
++            key: value
++            for key, value in completion_evidence.items()
++            if key not in {"ready", "campaign_manifest_path", "campaign_manifest_sha256"}
++        }
++    )
++
++    if isinstance(handoff, dict):
++        runtime = handoff.get("runtime_window")
++        if not isinstance(runtime, dict):
++            raise ValueError("dense WS deferred handoff runtime window is missing")
++        execution_authorized = _dense_ws_postrun_execution_is_authorized(
++            handoff,
++            candidate=candidate,
++            completion_evidence=completion_evidence,
++        )
++        base.update(
++            {
++                "execution_authorized": execution_authorized,
++                "future_execution_requires_exact_manifest_bound_approval": True,
++                "postrun_not_before_local": runtime.get("postrun_not_before_local"),
++                "latest_full_runtime_start_local": runtime.get(
++                    "latest_full_runtime_start_local"
++                ),
++                "postrun_hard_deadline_local": runtime.get(
++                    "postrun_hard_deadline_local"
++                ),
++                "total_max_runtime_sec": runtime.get("total_max_runtime_sec"),
++            }
++        )
++        if not execution_authorized:
++            unauthorized_outputs = [
++                str(path)
++                for path in paths.values()
++                if path.exists()
++            ]
++            if unauthorized_outputs:
++                raise ValueError(
++                    "dense WS postrun artifacts exist without manifest-bound "
++                    f"execution approval: {unauthorized_outputs}"
++                )
++            base["status"] = "AWAITING_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL"
++            return base
++
++        observed = _parse_timestamp(
++            observed_at_utc or _iso_now(),
++            label="dense_ws_postrun.observed_at_utc",
++        )
++        not_before = _parse_timestamp(
++            runtime.get("postrun_not_before_local"),
++            label="dense_ws_postrun.postrun_not_before_local",
++        )
++        latest_start = _parse_timestamp(
++            runtime.get("latest_full_runtime_start_local"),
++            label="dense_ws_postrun.latest_full_runtime_start_local",
++        )
++        hard_deadline = _parse_timestamp(
++            runtime.get("postrun_hard_deadline_local"),
++            label="dense_ws_postrun.postrun_hard_deadline_local",
++        )
++        if not (
++            not_before < latest_start < hard_deadline
++            and int(runtime.get("total_max_runtime_sec") or 0) == 3_600
++            and int(runtime.get("quality_max_runtime_sec") or 0) == 1_800
++            and int(runtime.get("materialization_max_runtime_sec") or 0) == 1_800
++        ):
++            raise ValueError("dense WS deferred handoff runtime contract mismatch")
++        if observed < not_before:
++            base["status"] = "POSTRUN_WINDOW_NOT_OPEN"
++            return base
++        if observed > latest_start:
++            base["status"] = "POSTRUN_WINDOW_EXPIRED"
++            return base
+ 
+     if paths["owner"].is_file():
+         owner = _load_json(paths["owner"])
+@@ -1484,7 +2034,7 @@ def evaluate_autopilot_state(
+         long_approval_window_status = str(
+             (long_campaign_approval or {}).get("launch_window_status") or ""
+         )
+-        long_campaign_data_quality_ready = bool(
++        active_dense_gate_data_quality_ready = bool(
+             str(gate.get("run_id") or "")
+             == str(long_campaign_candidate.get("campaign_id") or "")
+             and str(gate.get("run_type") or "") == "dense_ws_campaign"
+@@ -1496,7 +2046,7 @@ def evaluate_autopilot_state(
+         )
+         if isinstance(dense_ws_postrun, dict):
+             dense_ws_postrun_state = dense_ws_postrun
+-        elif long_campaign_data_quality_ready:
++        elif active_dense_gate_data_quality_ready:
+             dense_ws_postrun_state = _dense_ws_postrun_base(
+                 status="QUALITY_MISSING",
+                 campaign_id=str(long_campaign_candidate.get("campaign_id") or ""),
+@@ -1506,6 +2056,21 @@ def evaluate_autopilot_state(
+             dense_ws_postrun_state = _dense_ws_postrun_base(
+                 status="NOT_APPLICABLE"
+             )
++        deferred_dense_manifest_ready = bool(
++            dense_ws_postrun_state.get("completion_evidence_mode")
++            == "IMMUTABLE_COMPLETED_CAMPAIGN_MANIFEST_AFTER_PIT"
++            and dense_ws_postrun_state.get("campaign_id")
++            == long_campaign_candidate.get("campaign_id")
++            and dense_ws_postrun_state.get("plan_hash")
++            == long_campaign_candidate.get("plan_hash")
++            and len(
++                str(dense_ws_postrun_state.get("campaign_manifest_sha256") or "")
++            )
++            == 64
++        )
++        long_campaign_data_quality_ready = bool(
++            active_dense_gate_data_quality_ready or deferred_dense_manifest_ready
++        )
+         dense_ws_postrun_status = str(
+             dense_ws_postrun_state.get("status") or "NOT_APPLICABLE"
+         )
+@@ -1521,6 +2086,10 @@ def evaluate_autopilot_state(
+             != str(dense_ws_postrun_state.get("deterministic_result_hash") or "")
+             or str(prior_dense_ws_postrun.get("reason") or "")
+             != str(dense_ws_postrun_state.get("reason") or "")
++            or str(prior_dense_ws_postrun.get("completion_evidence_mode") or "")
++            != str(dense_ws_postrun_state.get("completion_evidence_mode") or "")
++            or str(prior_dense_ws_postrun.get("campaign_manifest_sha256") or "")
++            != str(dense_ws_postrun_state.get("campaign_manifest_sha256") or "")
+         )
+         if schedule_status == "INVALID" or campaign_status == "INVALID":
+             status = "CRITICAL_STOP"
+@@ -1606,6 +2175,36 @@ def evaluate_autopilot_state(
+                 "prepare_and_request_exact_approval_for_"
+                 f"{str((schedule_window or {}).get('run_id') or 'due_run')}"
+             )
++        elif (
++            deferred_dense_manifest_ready
++            and dense_ws_postrun_status
++            == "AWAITING_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL"
++        ):
++            status = "ACTIVE"
++            decision = "AWAIT_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL"
++            stop_new_actions = False
++            critical_checkpoint_notification_required = dense_ws_postrun_changed
++            action_due = critical_checkpoint_notification_required
++            next_action = "request_exact_manifest_bound_dense_ws_postrun_approval"
++        elif (
++            deferred_dense_manifest_ready
++            and dense_ws_postrun_status == "POSTRUN_WINDOW_NOT_OPEN"
++        ):
++            status = "ACTIVE"
++            decision = "WAIT_FOR_DENSE_WS_POSTRUN_WINDOW"
++            stop_new_actions = False
++            action_due = False
++            next_action = "wait_for_frozen_dense_ws_postrun_not_before"
++        elif (
++            deferred_dense_manifest_ready
++            and dense_ws_postrun_status == "POSTRUN_WINDOW_EXPIRED"
++        ):
++            status = "ACTIVE"
++            decision = "USER_REVIEW_REQUIRED_DENSE_WS_POSTRUN_WINDOW_EXPIRED"
++            stop_new_actions = False
++            critical_checkpoint_notification_required = dense_ws_postrun_changed
++            action_due = critical_checkpoint_notification_required
++            next_action = "request_new_exact_dense_ws_postrun_window_refreeze"
+         elif long_campaign_data_quality_ready and dense_ws_postrun_status in {
+             "RUNNING",
+             "MATERIALIZATION_BOUND_PLAN_RUNNING",
+@@ -2081,7 +2680,12 @@ def main(argv: Iterable[str] | None = None) -> int:
+             "error": f"{type(exc).__name__}: {exc}",
+         }
+     try:
+-        dense_ws_postrun = resolve_dense_ws_postrun(policy, gate)
++        dense_ws_postrun = resolve_dense_ws_postrun(
++            policy,
++            gate,
++            usage=usage,
++            observed_at_utc=observed_at,
++        )
+     except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+         candidate = policy.get("next_long_campaign")
+         if not isinstance(candidate, dict):
+diff --git a/trading_mvp/tests/test_autopilot_guard.py b/trading_mvp/tests/test_autopilot_guard.py
+index 05a1861..bbcd5c5 100644
+--- a/trading_mvp/tests/test_autopilot_guard.py
++++ b/trading_mvp/tests/test_autopilot_guard.py
+@@ -2,6 +2,7 @@ from __future__ import annotations
+ 
+ import hashlib
+ import json
++import os
+ import sys
+ import tempfile
+ import unittest
+@@ -57,6 +58,252 @@ def _usage(decision: str, remaining: float = 85.0) -> dict:
+     }
+ 
+ 
++def _write_json(path: Path, payload: dict) -> None:
++    path.parent.mkdir(parents=True, exist_ok=True)
++    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
++
++
++def _file_sha256(path: Path) -> str:
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def _deferred_dense_handoff_fixture(root: Path) -> tuple[dict, dict, dict]:
++    campaign_id = "dense_ws_deferred_test"
++    plan_hash = "a" * 64
++    contract_hash = "b" * 64
++    candidate_contract_hash = "c" * 64
++    proposal_hash = "d" * 64
++    profile_hash = "e" * 64
++    schedule_plan_hash = "f" * 64
++    universe_sha256 = "1" * 64
++    n14_run_id = "pit_universe_v2_forward_20260811_n14"
++
++    campaign_root = root / "campaign"
++    campaign_root.mkdir(parents=True)
++    plan_path = root / "plan.json"
++    plan = {
++        "campaign_id": campaign_id,
++        "plan_hash": plan_hash,
++        "phases": [{"phase_id": "phase-01"}],
++        "outputs": {"campaign_root": str(campaign_root.resolve())},
++    }
++    _write_json(plan_path, plan)
++
++    proposal_path = root / "proposal.json"
++    _write_json(
++        proposal_path,
++        {
++            "proposal_hash": proposal_hash,
++            "handoff_profile_hash": profile_hash,
++        },
++    )
++    approval_path = root / "freeze-approval.json"
++    _write_json(
++        approval_path,
++        {
++            "schema": (
++                "trading_mvp_dense_ws_deferred_postrun_handoff_freeze_approval_v1"
++            ),
++            "status": "APPROVED_IMPLEMENTATION_FREEZE_ONLY",
++            "proposal_hash": proposal_hash,
++            "handoff_profile_hash": profile_hash,
++            "implementation_or_policy_rebind_authorized": True,
++            "postrun_execution_authorized": False,
++            "future_postrun_execution_requires_separate_exact_manifest_bound_approval": True,
++            "stopped_incomplete_retry_authorized": False,
++        },
++    )
++
++    handoff_manifest_path = root / "handoff-manifest.json"
++    _write_json(
++        handoff_manifest_path,
++        {
++            "schema": "trading_mvp_dense_ws_deferred_postrun_handoff_manifest_v1",
++            "mode": "IMMUTABLE_PLANONLY_RUNTIME_BINDING",
++            "campaign": {"campaign_id": campaign_id, "plan_hash": plan_hash},
++            "proposal": {"proposal_hash": proposal_hash},
++            "handoff_profile_hash": profile_hash,
++            "approval_receipt": {
++                "path": str(approval_path.resolve()),
++                "file_sha256": _file_sha256(approval_path),
++            },
++            "authorization": {
++                "postrun_execution_authorized": False,
++                "future_execution_requires_exact_manifest_bound_approval": True,
++            },
++        },
++    )
++
++    pit_output = root / "pit-n14"
++    pit_output.mkdir()
++    pit_manifest_path = pit_output / "manifest.json"
++    _write_json(
++        pit_manifest_path,
++        {
++            "schema": "pit_universe_snapshot_manifest_v2",
++            "run_id": n14_run_id,
++            "status": "COMPLETED",
++            "final": True,
++            "incomplete": False,
++        },
++    )
++    schedule_path = root / "n14-schedule.json"
++    _write_json(
++        schedule_path,
++        {
++            "plan_hash": schedule_plan_hash,
++            "segments": [
++                {
++                    "run_id": n14_run_id,
++                    "start_local": "2026-08-11T02:15:00+03:00",
++                    "end_local": "2026-08-11T02:35:00+03:00",
++                    "duration_sec": 1_200,
++                    "output_dir": str(pit_output.resolve()),
++                }
++            ],
++        },
++    )
++    quality_ledger_path = root / "quality-certifications.jsonl"
++    quality_ledger_path.write_text("{}\n", encoding="utf-8")
++    pit_summary_path = root / "n14.postrun.json"
++    _write_json(
++        pit_summary_path,
++        {
++            "schema": "trading_mvp_pit_postrun_v1",
++            "project": "trading_mvp",
++            "run_id": n14_run_id,
++            "schedule_plan_hash": schedule_plan_hash,
++            "schedule_plan_path": str(schedule_path.resolve()),
++            "quality_ledger_path": str(quality_ledger_path.resolve()),
++            "decision": "PIT_POSTRUN_COMPLETE",
++            "next_allowed_action": "continue_frozen_pipeline",
++            "returns_read": False,
++            "pnl_read": False,
++            "oos_run": False,
++            "grid_search": False,
++            "live_orders": False,
++            "private_api_keys": False,
++        },
++    )
++
++    campaign_manifest_path = campaign_root / "campaign-manifest.json"
++    _write_json(
++        campaign_manifest_path,
++        {
++            "schema": "trading_mvp_dense_ws_campaign_manifest_v1",
++            "campaign_id": campaign_id,
++            "plan_path": str(plan_path.resolve()),
++            "plan_hash": plan_hash,
++            "contract_hash": contract_hash,
++            "candidate_contract_hash": candidate_contract_hash,
++            "universe_sha256": universe_sha256,
++            "runtime_completed": True,
++            "liveness_clean": True,
++            "quality_eligible": True,
++            "completed": True,
++            "final": True,
++            "dirty_segment_ids": [],
++            "phases_completed": 1,
++            "phase_results": [
++                {
++                    "runtime_completed": True,
++                    "liveness_clean": True,
++                    "quality_eligible": True,
++                }
++            ],
++        },
++    )
++
++    writer_claim_path = root / "active-market-data-writer-claim.json"
++    reconciliation_path = root / "n14.postrun.reconciliation.json"
++    candidate = {
++        "campaign_id": campaign_id,
++        "plan_path": str(plan_path.resolve()),
++        "plan_file_sha256": _file_sha256(plan_path),
++        "plan_hash": plan_hash,
++        "contract_hash": contract_hash,
++        "candidate_contract_hash": candidate_contract_hash,
++    }
++    handoff = {
++        "status": "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL",
++        "implementation_authorized": True,
++        "postrun_execution_authorized": False,
++        "future_execution_requires_exact_manifest_bound_approval": True,
++        "stopped_incomplete_retry_authorized": False,
++        "handoff_profile_hash": profile_hash,
++        "proposal": {
++            "path": str(proposal_path.resolve()),
++            "file_sha256": _file_sha256(proposal_path),
++            "proposal_hash": proposal_hash,
++        },
++        "approval_receipt": {
++            "path": str(approval_path.resolve()),
++            "file_sha256": _file_sha256(approval_path),
++        },
++        "canonical_manifest": {
++            "path": str(handoff_manifest_path.resolve()),
++            "file_sha256": _file_sha256(handoff_manifest_path),
++        },
++        "campaign": {
++            **candidate,
++            "universe_sha256": universe_sha256,
++            "campaign_manifest_path": str(campaign_manifest_path.resolve()),
++        },
++        "required_pit_completion": {
++            "schedule_path": str(schedule_path.resolve()),
++            "schedule_file_sha256": _file_sha256(schedule_path),
++            "schedule_plan_hash": schedule_plan_hash,
++            "run_id": n14_run_id,
++            "start_local": "2026-08-11T02:15:00+03:00",
++            "end_local": "2026-08-11T02:35:00+03:00",
++            "quality_ledger_path": str(quality_ledger_path.resolve()),
++            "postrun_summary_path": str(pit_summary_path.resolve()),
++            "postrun_reconciliation_path": str(reconciliation_path.resolve()),
++        },
++        "global_writer_claim_path": str(writer_claim_path.resolve()),
++        "runtime_window": {
++            "postrun_not_before_local": "2026-08-11T02:40:00+03:00",
++            "latest_full_runtime_start_local": "2026-08-11T03:10:00+03:00",
++            "postrun_hard_deadline_local": "2026-08-11T04:10:00+03:00",
++            "quality_max_runtime_sec": 1_800,
++            "materialization_max_runtime_sec": 1_800,
++            "total_max_runtime_sec": 3_600,
++        },
++        "execution_approval": {"status": "NOT_APPROVED"},
++    }
++    policy = {
++        "next_long_campaign": candidate,
++        "dense_ws_postrun": {
++            "automatic_same_hash_through_materialization": True,
++            "deferred_handoff": handoff,
++            "output_names": {
++                "quality_report": "campaign-quality.json",
++                "regime_labels": "causal-regime-labels.jsonl",
++                "execution_snapshots": "execution-snapshots.jsonl",
++                "materialization_manifest": "causal-materialization-manifest.json",
++                "owner": "owner.json",
++            },
++        },
++    }
++    gate = {
++        "status": "READY_FOR_POSTPROCESS",
++        "run_id": n14_run_id,
++        "run_type": "pit_universe_v2_forward",
++        "manifest_path": str(pit_manifest_path.resolve()),
++        "final": True,
++        "primary_output_complete": True,
++        "expected_outputs_complete": True,
++        "stop_reason": "completed",
++    }
++    artifacts = {
++        "campaign_manifest_path": campaign_manifest_path,
++        "writer_claim_path": writer_claim_path,
++        "execution_approval_path": root / "execution-approval.json",
++        "handoff_manifest_path": handoff_manifest_path,
++    }
++    return policy, gate, artifacts
++
++
+ def _extension_policy_fixture(
+     root: Path,
+     *,
+@@ -973,6 +1220,7 @@ class AutopilotGuardTests(unittest.TestCase):
+ 
+             missing = resolve_dense_ws_postrun(policy, gate)
+             self.assertEqual(missing["status"], "QUALITY_MISSING")
++            self.assertEqual(missing["completion_evidence_mode"], "ACTIVE_DENSE_GATE")
+             postrun_root = campaign_root / "_postrun"
+             postrun_root.mkdir()
+             quality_path = postrun_root / "campaign-quality.json"
+@@ -1133,6 +1381,203 @@ class AutopilotGuardTests(unittest.TestCase):
+                 "REQUEST_EXACT_HASH_BOUND_EVALUATOR_APPROVAL",
+             )
+ 
++    def test_deferred_dense_handoff_requires_manifest_bound_execution_approval(
++        self,
++    ) -> None:
++        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
++            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
++            usage = {"status": "AVAILABLE", "remaining_percent": 70.0}
++
++            frozen = resolve_dense_ws_postrun(policy, gate, usage=usage)
++            self.assertEqual(
++                frozen["status"],
++                "AWAITING_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL",
++            )
++            self.assertEqual(
++                frozen["completion_evidence_mode"],
++                "IMMUTABLE_COMPLETED_CAMPAIGN_MANIFEST_AFTER_PIT",
++            )
++            self.assertFalse(frozen["execution_authorized"])
++
++            handoff = policy["dense_ws_postrun"]["deferred_handoff"]
++            campaign_manifest_sha = _file_sha256(
++                artifacts["campaign_manifest_path"]
++            )
++            execution_approval = {
++                "schema": (
++                    "trading_mvp_dense_ws_manifest_bound_postrun_execution_approval_v1"
++                ),
++                "status": "APPROVED_SINGLE_USE",
++                "campaign_id": policy["next_long_campaign"]["campaign_id"],
++                "campaign_plan_hash": policy["next_long_campaign"]["plan_hash"],
++                "campaign_manifest_path": str(
++                    artifacts["campaign_manifest_path"].resolve()
++                ),
++                "campaign_manifest_sha256": campaign_manifest_sha,
++                "handoff_manifest_path": str(
++                    artifacts["handoff_manifest_path"].resolve()
++                ),
++                "handoff_manifest_sha256": handoff["canonical_manifest"][
++                    "file_sha256"
++                ],
++                "postrun_not_before_local": "2026-08-11T02:40:00+03:00",
++                "postrun_latest_full_runtime_start_local": (
++                    "2026-08-11T03:10:00+03:00"
++                ),
++                "postrun_hard_deadline_local": "2026-08-11T04:10:00+03:00",
++                "total_max_runtime_sec": 3_600,
++                "postrun_execution_authorized": True,
++                "collector_launch_authorized": False,
++                "network_market_data_authorized": False,
++                "evaluator_authorized": False,
++                "returns_pnl_oos_authorized": False,
++                "grid_or_retune_authorized": False,
++                "paper_live_private_api_real_capital_leverage_margin_authorized": False,
++                "stopped_incomplete_retry_authorized": False,
++            }
++            _write_json(artifacts["execution_approval_path"], execution_approval)
++            handoff["status"] = "FROZEN_WITH_EXACT_MANIFEST_BOUND_EXECUTION_APPROVAL"
++            handoff["postrun_execution_authorized"] = True
++            handoff["execution_approval"] = {
++                "status": "APPROVED",
++                "receipt_path": str(artifacts["execution_approval_path"].resolve()),
++                "receipt_file_sha256": _file_sha256(
++                    artifacts["execution_approval_path"]
++                ),
++            }
++
++            before_window = resolve_dense_ws_postrun(
++                policy,
++                gate,
++                usage=usage,
++                observed_at_utc="2026-08-10T23:30:00Z",
++            )
++            self.assertEqual(before_window["status"], "POSTRUN_WINDOW_NOT_OPEN")
++
++            ready = resolve_dense_ws_postrun(
++                policy,
++                gate,
++                usage=usage,
++                observed_at_utc="2026-08-11T00:00:00Z",
++            )
++            self.assertEqual(ready["status"], "QUALITY_MISSING")
++            self.assertTrue(ready["execution_authorized"])
++
++            expired = resolve_dense_ws_postrun(
++                policy,
++                gate,
++                usage=usage,
++                observed_at_utc="2026-08-11T00:11:00Z",
++            )
++            self.assertEqual(expired["status"], "POSTRUN_WINDOW_EXPIRED")
++
++    def test_deferred_dense_handoff_fail_closed_conditions(self) -> None:
++        usage = {"status": "AVAILABLE", "remaining_percent": 70.0}
++        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
++            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
++            gate["status"] = "RUNNING"
++            running = resolve_dense_ws_postrun(policy, gate, usage=usage)
++            self.assertEqual(running["reason"], "required_pit_run_still_running")
++
++        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
++            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
++            gate["status"] = "STOPPED_INCOMPLETE"
++            with self.assertRaisesRegex(ValueError, "STOPPED_INCOMPLETE"):
++                resolve_dense_ws_postrun(policy, gate, usage=usage)
++
++        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
++            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
++            paused = resolve_dense_ws_postrun(
++                policy,
++                gate,
++                usage={"status": "AVAILABLE", "remaining_percent": 15.0},
++            )
++            self.assertEqual(paused["reason"], "weekly_quota_or_telemetry_block")
++
++        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
++            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
++            _write_json(
++                artifacts["writer_claim_path"],
++                {"owner_pid": os.getpid()},
++            )
++            claimed = resolve_dense_ws_postrun(policy, gate, usage=usage)
++            self.assertEqual(claimed["reason"], "live_global_writer_claim")
++
++        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
++            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
++            campaign_manifest = json.loads(
++                artifacts["campaign_manifest_path"].read_text(encoding="utf-8")
++            )
++            campaign_manifest["quality_eligible"] = False
++            _write_json(artifacts["campaign_manifest_path"], campaign_manifest)
++            with self.assertRaisesRegex(ValueError, "not clean and complete"):
++                resolve_dense_ws_postrun(policy, gate, usage=usage)
++
++        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
++            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
++            campaign_root = artifacts["campaign_manifest_path"].parent
++            unauthorized_owner = campaign_root / "_postrun" / "owner.json"
++            _write_json(unauthorized_owner, {"status": "RUNNING"})
++            with self.assertRaisesRegex(
++                ValueError,
++                "artifacts exist without manifest-bound execution approval",
++            ):
++                resolve_dense_ws_postrun(policy, gate, usage=usage)
++
++        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temp_dir:
++            policy, gate, artifacts = _deferred_dense_handoff_fixture(Path(temp_dir))
++            Path(policy["next_long_campaign"]["plan_path"]).write_text(
++                "{}\n", encoding="utf-8"
++            )
++            with self.assertRaisesRegex(ValueError, "PlanOnly file hash mismatch"):
++                resolve_dense_ws_postrun(policy, gate, usage=usage)
++
++    def test_deferred_dense_handoff_emits_exact_approval_checkpoint(self) -> None:
++        campaign_id = "dense_ws_deferred_test"
++        plan_hash = "a" * 64
++        result = evaluate_autopilot_state(
++            policy={
++                **POLICY,
++                "run_policy": {
++                    "long_run_requires_explicit_per_campaign_approval": True,
++                },
++                "next_long_campaign": {
++                    "status": "READY_FOR_APPROVAL",
++                    "campaign_id": campaign_id,
++                    "plan_path": "sealed-plan.json",
++                    "plan_hash": plan_hash,
++                    "max_runtime_sec": 86_400,
++                },
++            },
++            policy_hash="1" * 64,
++            gate={"status": "READY_FOR_POSTPROCESS", "run_id": "pit_n14"},
++            usage=_usage("CONTINUE"),
++            prior_state=None,
++            observed_at_utc="2026-08-11T00:00:00Z",
++            schedule_window={"status": "WAITING", "run_id": "pit_next"},
++            campaign_window={"status": "OPEN"},
++            dense_ws_postrun={
++                "schema": "trading_mvp_dense_ws_postrun_disposition_v1",
++                "status": "AWAITING_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL",
++                "campaign_id": campaign_id,
++                "plan_hash": plan_hash,
++                "completion_evidence_mode": (
++                    "IMMUTABLE_COMPLETED_CAMPAIGN_MANIFEST_AFTER_PIT"
++                ),
++                "campaign_manifest_sha256": "9" * 64,
++            },
++        )
++        self.assertEqual(
++            result["decision"],
++            "AWAIT_EXACT_MANIFEST_BOUND_POSTRUN_APPROVAL",
++        )
++        self.assertEqual(
++            result["next_action"],
++            "request_exact_manifest_bound_dense_ws_postrun_approval",
++        )
++        self.assertTrue(result["critical_checkpoint_notification_required"])
++        self.assertFalse(result["stop_new_actions"])
++
+     def test_long_campaign_contract_review_does_not_block_short_track(
+         self,
+     ) -> None:
+diff --git a/trading_mvp/tests/test_dense_ws_postrun_orchestration.py b/trading_mvp/tests/test_dense_ws_postrun_orchestration.py
+index 45d5418..1a680b9 100644
+--- a/trading_mvp/tests/test_dense_ws_postrun_orchestration.py
++++ b/trading_mvp/tests/test_dense_ws_postrun_orchestration.py
+@@ -14,47 +14,125 @@ PROPOSAL = (
+     / "docs"
+     / "plans"
+     / "drafts"
+-    / "dense-ws-postrun-runtime-refreeze-proposal-20260802-v1.json"
++    / "dense-ws-deferred-postrun-handoff-freeze-proposal-20260809-v1.json"
+ )
+-APPROVAL = (
++FREEZE_APPROVAL = (
+     ROOT
+     / "docs"
+     / "agent-log"
+     / "approvals"
+-    / "2026-08-02-dense-ws-postrun-runtime-refreeze-approval.json"
++    / "2026-08-09-dense-ws-deferred-postrun-handoff-freeze-v1-approval.json"
+ )
+-PROPOSAL_HASH = "0a5884a3599a52e39b6fce438e945743f5bf6bfa2a7cbea779dd0ca54cf40662"
++HANDOFF_MANIFEST = (
++    ROOT
++    / "docs"
++    / "plans"
++    / "dense-ws-deferred-postrun-handoff-manifest-20260810-aef-24h-n14-v1.json"
++)
++PROPOSAL_HASH = "2d4765d115ceee5a1f4e0e74841830d8aa2e2c26bfd761bdabd5b8e8b335439f"
++PROFILE_HASH = "10addf47520a8a2e697e786214e45295cd301756206297ee9018b8f8c85f16e6"
++N14_PLAN_HASH = "2db541dcdec6f2462d0798807b107784baf385689255af27f14036c2421c83ca"
++
++
++def _sha256(path: Path) -> str:
++    return hashlib.sha256(path.read_bytes()).hexdigest()
+ 
+ 
+ class DenseWsPostrunOrchestrationTests(unittest.TestCase):
+-    def test_policy_preserves_dormant_visible_orchestrator_binding(self) -> None:
++    def test_policy_freezes_deferred_handoff_without_execution_approval(self) -> None:
+         policy = json.loads(POLICY.read_text(encoding="utf-8"))
+         config = policy["dense_ws_postrun"]
++        handoff = config["deferred_handoff"]
++        candidate = policy["next_long_campaign"]
+ 
+         self.assertEqual(Path(config["orchestrator_path"]).resolve(), SCRIPT.resolve())
+-        self.assertEqual(
+-            config["orchestrator_sha256"],
+-            hashlib.sha256(SCRIPT.read_bytes()).hexdigest(),
+-        )
++        self.assertEqual(config["orchestrator_sha256"], _sha256(SCRIPT))
+         self.assertTrue(config["automatic_same_hash_through_materialization"])
+         self.assertTrue(config["visible_terminal_required"])
+         self.assertEqual(
+-            config["status"], "PRESERVED_DORMANT_V1_BINDING_NOT_EXECUTABLE_FOR_V2"
++            config["status"],
++            "DEFERRED_HANDOFF_FROZEN_AWAITING_MANIFEST_BOUND_EXECUTION_APPROVAL",
++        )
++        self.assertEqual(
++            handoff["status"],
++            "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL",
++        )
++        self.assertTrue(handoff["implementation_authorized"])
++        self.assertFalse(handoff["postrun_execution_authorized"])
++        self.assertEqual(handoff["execution_approval"]["status"], "NOT_APPROVED")
++        self.assertTrue(
++            handoff["future_execution_requires_exact_manifest_bound_approval"]
+         )
++        self.assertFalse(handoff["stopped_incomplete_retry_authorized"])
++        self.assertEqual(handoff["handoff_profile_hash"], PROFILE_HASH)
+ 
+-        rebind = config["runtime_rebind_candidate"]
+-        self.assertEqual(rebind["status"], "USER_REVIEW_REQUIRED_NOT_AUTHORIZED")
+-        self.assertFalse(rebind["postrun_execution_allowed_now"])
+-        self.assertTrue(rebind["exact_user_approval_required"])
++        self.assertEqual(handoff["proposal"]["proposal_hash"], PROPOSAL_HASH)
++        self.assertEqual(Path(handoff["proposal"]["path"]).resolve(), PROPOSAL.resolve())
++        self.assertEqual(handoff["proposal"]["file_sha256"], _sha256(PROPOSAL))
++        self.assertEqual(
++            Path(handoff["approval_receipt"]["path"]).resolve(),
++            FREEZE_APPROVAL.resolve(),
++        )
++        self.assertEqual(
++            handoff["approval_receipt"]["file_sha256"], _sha256(FREEZE_APPROVAL)
++        )
++        self.assertEqual(
++            Path(handoff["canonical_manifest"]["path"]).resolve(),
++            HANDOFF_MANIFEST.resolve(),
++        )
++        self.assertEqual(
++            handoff["canonical_manifest"]["file_sha256"], _sha256(HANDOFF_MANIFEST)
++        )
+ 
+-        runtime = config["runtime_contract"]
+-        self.assertEqual(runtime["status"], "APPROVED")
+-        self.assertEqual(runtime["proposal_hash"], PROPOSAL_HASH)
+-        self.assertEqual(Path(runtime["proposal_path"]).resolve(), PROPOSAL.resolve())
+-        self.assertEqual(Path(runtime["approval_receipt_path"]).resolve(), APPROVAL.resolve())
++        manifest = json.loads(HANDOFF_MANIFEST.read_text(encoding="utf-8"))
+         self.assertEqual(
+-            runtime["approval_receipt_sha256"],
+-            hashlib.sha256(APPROVAL.read_bytes()).hexdigest(),
++            manifest["schema"],
++            "trading_mvp_dense_ws_deferred_postrun_handoff_manifest_v1",
++        )
++        self.assertEqual(manifest["mode"], "IMMUTABLE_PLANONLY_RUNTIME_BINDING")
++        self.assertEqual(manifest["proposal"]["proposal_hash"], PROPOSAL_HASH)
++        self.assertEqual(manifest["handoff_profile_hash"], PROFILE_HASH)
++        self.assertEqual(manifest["campaign"]["campaign_id"], candidate["campaign_id"])
++        self.assertEqual(manifest["campaign"]["plan_hash"], candidate["plan_hash"])
++        self.assertFalse(manifest["authorization"]["postrun_execution_authorized"])
++        self.assertTrue(
++            manifest["authorization"][
++                "future_execution_requires_exact_manifest_bound_approval"
++            ]
++        )
++
++        for key in (
++            "evaluator_authorized",
++            "returns_pnl_oos_allowed",
++            "network_collector_allowed",
++            "grid_or_retune_allowed",
++            "paper_live_private_api_real_capital_leverage_margin_allowed",
++        ):
++            self.assertFalse(config[key])
++
++    def test_n14_and_runtime_window_are_exact_and_not_moved(self) -> None:
++        policy = json.loads(POLICY.read_text(encoding="utf-8"))
++        handoff = policy["dense_ws_postrun"]["deferred_handoff"]
++        n14 = handoff["required_pit_completion"]
++        runtime = handoff["runtime_window"]
++
++        self.assertEqual(n14["run_id"], "pit_universe_v2_forward_20260811_n14")
++        self.assertEqual(n14["schedule_plan_hash"], N14_PLAN_HASH)
++        self.assertEqual(n14["start_local"], "2026-08-11T02:15:00+03:00")
++        self.assertEqual(n14["end_local"], "2026-08-11T02:35:00+03:00")
++        schedule_path = Path(n14["schedule_path"])
++        self.assertTrue(schedule_path.is_file())
++        self.assertEqual(n14["schedule_file_sha256"], _sha256(schedule_path))
++
++        self.assertEqual(
++            runtime["postrun_not_before_local"], "2026-08-11T02:40:00+03:00"
++        )
++        self.assertEqual(
++            runtime["latest_full_runtime_start_local"],
++            "2026-08-11T03:10:00+03:00",
++        )
++        self.assertEqual(
++            runtime["postrun_hard_deadline_local"], "2026-08-11T04:10:00+03:00"
+         )
+         self.assertEqual(runtime["quality_max_runtime_sec"], 1_800)
+         self.assertEqual(runtime["materialization_max_runtime_sec"], 1_800)
+@@ -64,19 +142,9 @@ class DenseWsPostrunOrchestrationTests(unittest.TestCase):
+             runtime["quality_max_runtime_sec"]
+             + runtime["materialization_max_runtime_sec"],
+         )
+-        self.assertEqual(
+-            runtime["postrun_not_before_local"], "2026-08-04T01:30:00+03:00"
+-        )
+-        self.assertEqual(
+-            runtime["postrun_hard_deadline_local"], "2026-08-04T02:30:00+03:00"
+-        )
+         self.assertTrue(runtime["stages_are_sequential"])
+         self.assertTrue(runtime["one_visible_terminal"])
+-        self.assertTrue(runtime["stopped_incomplete_recovery_requires_new_exact_approval"])
+-        self.assertFalse(config["evaluator_authorized"])
+-        self.assertFalse(config["returns_pnl_oos_allowed"])
+-        self.assertFalse(config["network_collector_allowed"])
+-        self.assertFalse(config["grid_or_retune_allowed"])
++        self.assertTrue(runtime["one_postrun_owner"])
+ 
+     def test_top_level_launch_is_visible_and_preflight_is_write_free(self) -> None:
+         source = SCRIPT.read_text(encoding="utf-8")
+@@ -90,8 +158,15 @@ class DenseWsPostrunOrchestrationTests(unittest.TestCase):
+             source.index("if ($PreflightOnly)"),
+             source.index("[System.IO.Directory]::CreateDirectory($PostrunRoot)"),
+         )
+-        self.assertIn('if (-not $ReservationPath)', source)
+-        self.assertIn('throw "VisibleChild requires ReservationPath."', source)
++        self.assertIn("manifest_bound_execution_not_authorized", source)
++        self.assertIn("postrun_latest_full_runtime_start_passed", source)
++        self.assertIn(
++            "IMMUTABLE_COMPLETED_CAMPAIGN_MANIFEST_AFTER_PIT",
++            source,
++        )
++        self.assertIn("Assert-DenseCampaignManifestBinding", source)
++        self.assertIn("Test-LiveGlobalWriterClaim", source)
++        self.assertIn("execution_approval_campaign_manifest_mismatch", source)
+ 
+     def test_runtime_contract_has_independent_stage_and_total_deadlines(self) -> None:
+         source = SCRIPT.read_text(encoding="utf-8")
+@@ -102,15 +177,12 @@ class DenseWsPostrunOrchestrationTests(unittest.TestCase):
+         self.assertIn("$TotalDeadline", source)
+         self.assertIn("$QualityDeadline", source)
+         self.assertIn("$MaterializationDeadline", source)
++        self.assertIn("$PostrunLatestFullStart", source)
+         self.assertIn("$PostrunHardDeadline", source)
+         self.assertIn("[DateTimeOffset]::ParseExact", source)
+         self.assertIn("[Globalization.CultureInfo]::InvariantCulture", source)
+         self.assertIn("ConvertFrom-Json -DateKind String", source)
+-        self.assertIn("postrun_window_not_open", source)
+-        self.assertIn("postrun_hard_deadline_passed", source)
+-        self.assertIn("candidateReservation.total_max_runtime_sec", source)
+-        self.assertIn("candidateReservation.quality_max_runtime_sec", source)
+-        self.assertIn("candidateReservation.materialization_max_runtime_sec", source)
++        self.assertIn("candidateReservation.campaign_manifest_sha256", source)
+         self.assertIn("completed after its bounded stage or total deadline", source)
+ 
+     def test_pipeline_stops_before_evaluator(self) -> None:

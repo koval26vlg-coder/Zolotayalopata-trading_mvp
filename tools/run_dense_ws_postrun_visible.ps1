@@ -150,6 +150,70 @@ function Get-OutputPath {
     return [System.IO.Path]::GetFullPath((Join-Path $PostrunRoot $name))
 }
 
+function Assert-DenseCampaignManifestBinding {
+    param(
+        [Parameter(Mandatory = $true)]$Manifest,
+        [Parameter(Mandatory = $true)]$Plan,
+        [Parameter(Mandatory = $true)][string]$PlanPath,
+        [Parameter(Mandatory = $true)]$Candidate,
+        [Parameter(Mandatory = $true)]$Handoff
+    )
+    $campaign = $Handoff.campaign
+    $phaseResults = @($Manifest.phase_results)
+    $phases = @($Plan.phases)
+    $phaseFailure = @(
+        $phaseResults | Where-Object {
+            $_.runtime_completed -ne $true -or
+            $_.liveness_clean -ne $true -or
+            $_.quality_eligible -ne $true
+        }
+    ).Count -gt 0
+    if (
+        [string]$Manifest.schema -ne
+            "trading_mvp_dense_ws_campaign_manifest_v1" -or
+        [string]$Manifest.campaign_id -ne [string]$Candidate.campaign_id -or
+        [System.IO.Path]::GetFullPath([string]$Manifest.plan_path) -ne $PlanPath -or
+        [string]$Manifest.plan_hash -ne [string]$Candidate.plan_hash -or
+        [string]$Manifest.contract_hash -ne [string]$campaign.contract_hash -or
+        [string]$Manifest.candidate_contract_hash -ne
+            [string]$campaign.candidate_contract_hash -or
+        [string]$Manifest.universe_sha256 -ne [string]$campaign.universe_sha256 -or
+        $Manifest.runtime_completed -ne $true -or
+        $Manifest.liveness_clean -ne $true -or
+        $Manifest.quality_eligible -ne $true -or
+        $Manifest.completed -ne $true -or
+        $Manifest.final -ne $true -or
+        @($Manifest.dirty_segment_ids).Count -ne 0 -or
+        $phaseResults.Count -ne $phases.Count -or
+        [int]$Manifest.phases_completed -ne $phases.Count -or
+        $phaseFailure
+    ) {
+        throw "Dense WS campaign manifest is not exact, clean, and complete."
+    }
+}
+
+function Test-LiveGlobalWriterClaim {
+    param([Parameter(Mandatory = $true)][string]$Path)
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+        return $false
+    }
+    try {
+        $claim = Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json -DateKind String
+        $ownerPid = [int]$claim.owner_pid
+    } catch {
+        throw "Global market-data writer claim is invalid: $Path"
+    }
+    if ($ownerPid -le 0) {
+        throw "Global market-data writer claim has no valid owner PID: $Path"
+    }
+    try {
+        Get-Process -Id $ownerPid -ErrorAction Stop | Out-Null
+        return $true
+    } catch {
+        throw "Stale global market-data writer claim requires review: $Path"
+    }
+}
+
 function Invoke-BoundedPython {
     param(
         [Parameter(Mandatory = $true)][string]$Stage,
@@ -269,37 +333,105 @@ if (
 ) {
     throw "Dense WS postrun orchestrator policy binding mismatch."
 }
-$RuntimeContract = $PostrunConfig.runtime_contract
-if (-not $RuntimeContract -or [string]$RuntimeContract.status -ne "APPROVED") {
-    throw "Dense WS postrun runtime contract is not approved."
+$Handoff = $PostrunConfig.deferred_handoff
+$HandoffStatus = [string]$Handoff.status
+if (
+    -not $Handoff -or
+    $HandoffStatus -notin @(
+        "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL",
+        "FROZEN_WITH_EXACT_MANIFEST_BOUND_EXECUTION_APPROVAL"
+    ) -or
+    $Handoff.implementation_authorized -ne $true -or
+    $Handoff.future_execution_requires_exact_manifest_bound_approval -ne $true -or
+    $Handoff.stopped_incomplete_retry_authorized -ne $false
+) {
+    throw "Dense WS deferred postrun handoff freeze is missing or unsafe."
 }
 if (
+    (
+        $HandoffStatus -eq "FROZEN_IMPLEMENTATION_ONLY_AWAITING_EXECUTION_APPROVAL" -and
+        (
+            $Handoff.postrun_execution_authorized -ne $false -or
+            [string]$Handoff.execution_approval.status -ne "NOT_APPROVED"
+        )
+    ) -or
+    (
+        $HandoffStatus -eq "FROZEN_WITH_EXACT_MANIFEST_BOUND_EXECUTION_APPROVAL" -and
+        (
+            $Handoff.postrun_execution_authorized -ne $true -or
+            [string]$Handoff.execution_approval.status -ne "APPROVED"
+        )
+    )
+) {
+    throw "Dense WS deferred postrun execution state is inconsistent."
+}
+$RuntimeContract = $Handoff.runtime_window
+if (
+    -not $RuntimeContract -or
     [int]$RuntimeContract.total_max_runtime_sec -ne $TotalMaxRuntimeSec -or
     [int]$RuntimeContract.quality_max_runtime_sec -ne $QualityMaxRuntimeSec -or
     [int]$RuntimeContract.materialization_max_runtime_sec -ne
         $MaterializationMaxRuntimeSec -or
-    $TotalMaxRuntimeSec -ne ($QualityMaxRuntimeSec + $MaterializationMaxRuntimeSec)
+    $TotalMaxRuntimeSec -ne ($QualityMaxRuntimeSec + $MaterializationMaxRuntimeSec) -or
+    $RuntimeContract.stages_are_sequential -ne $true -or
+    $RuntimeContract.one_visible_terminal -ne $true -or
+    $RuntimeContract.one_postrun_owner -ne $true
 ) {
     throw "Dense WS postrun runtime parameter/policy mismatch."
 }
-$RuntimeProposalPath = [System.IO.Path]::GetFullPath(
-    [string]$RuntimeContract.proposal_path
+$ProposalPath = [System.IO.Path]::GetFullPath([string]$Handoff.proposal.path)
+$FreezeApprovalPath = [System.IO.Path]::GetFullPath(
+    [string]$Handoff.approval_receipt.path
 )
-$RuntimeApprovalPath = [System.IO.Path]::GetFullPath(
-    [string]$RuntimeContract.approval_receipt_path
+$HandoffManifestPath = [System.IO.Path]::GetFullPath(
+    [string]$Handoff.canonical_manifest.path
 )
-foreach ($runtimeBindingPath in @($RuntimeProposalPath, $RuntimeApprovalPath)) {
-    if (-not (Test-Path -LiteralPath $runtimeBindingPath -PathType Leaf)) {
-        throw "Dense WS runtime binding file is missing: $runtimeBindingPath"
+foreach ($bindingPath in @($ProposalPath, $FreezeApprovalPath, $HandoffManifestPath)) {
+    if (-not (Test-Path -LiteralPath $bindingPath -PathType Leaf)) {
+        throw "Dense WS deferred handoff binding file is missing: $bindingPath"
     }
 }
 if (
-    [string]$RuntimeContract.proposal_file_sha256 -ne
-        (Get-Sha256 -Path $RuntimeProposalPath) -or
-    [string]$RuntimeContract.approval_receipt_sha256 -ne
-        (Get-Sha256 -Path $RuntimeApprovalPath)
+    [string]$Handoff.proposal.file_sha256 -ne (Get-Sha256 -Path $ProposalPath) -or
+    [string]$Handoff.approval_receipt.file_sha256 -ne
+        (Get-Sha256 -Path $FreezeApprovalPath) -or
+    [string]$Handoff.canonical_manifest.file_sha256 -ne
+        (Get-Sha256 -Path $HandoffManifestPath)
 ) {
-    throw "Dense WS runtime proposal/approval file hash mismatch."
+    throw "Dense WS deferred handoff file hash mismatch."
+}
+$Proposal = Get-Content -LiteralPath $ProposalPath -Raw |
+    ConvertFrom-Json -DateKind String
+$FreezeApproval = Get-Content -LiteralPath $FreezeApprovalPath -Raw |
+    ConvertFrom-Json -DateKind String
+$HandoffManifest = Get-Content -LiteralPath $HandoffManifestPath -Raw |
+    ConvertFrom-Json -DateKind String
+if (
+    [string]$Proposal.proposal_hash -ne [string]$Handoff.proposal.proposal_hash -or
+    [string]$Proposal.handoff_profile_hash -ne [string]$Handoff.handoff_profile_hash -or
+    [string]$FreezeApproval.schema -ne
+        "trading_mvp_dense_ws_deferred_postrun_handoff_freeze_approval_v1" -or
+    [string]$FreezeApproval.status -ne "APPROVED_IMPLEMENTATION_FREEZE_ONLY" -or
+    [string]$FreezeApproval.proposal_hash -ne [string]$Handoff.proposal.proposal_hash -or
+    [string]$FreezeApproval.handoff_profile_hash -ne
+        [string]$Handoff.handoff_profile_hash -or
+    $FreezeApproval.implementation_or_policy_rebind_authorized -ne $true -or
+    $FreezeApproval.postrun_execution_authorized -ne $false -or
+    $FreezeApproval.stopped_incomplete_retry_authorized -ne $false -or
+    [string]$HandoffManifest.schema -ne
+        "trading_mvp_dense_ws_deferred_postrun_handoff_manifest_v1" -or
+    [string]$HandoffManifest.mode -ne "IMMUTABLE_PLANONLY_RUNTIME_BINDING" -or
+    [string]$HandoffManifest.campaign.campaign_id -ne [string]$Plan.campaign_id -or
+    [string]$HandoffManifest.campaign.plan_hash -ne $ExpectedPlanHash -or
+    [string]$HandoffManifest.proposal.proposal_hash -ne
+        [string]$Handoff.proposal.proposal_hash -or
+    [string]$HandoffManifest.handoff_profile_hash -ne
+        [string]$Handoff.handoff_profile_hash -or
+    $HandoffManifest.authorization.postrun_execution_authorized -ne $false -or
+    $HandoffManifest.authorization.future_execution_requires_exact_manifest_bound_approval -ne
+        $true
+) {
+    throw "Dense WS deferred handoff semantic binding mismatch."
 }
 if (
     [string]$RuntimeContract.quality_tool_sha256 -ne
@@ -309,44 +441,82 @@ if (
 ) {
     throw "Dense WS quality/materializer code hash mismatch."
 }
-$RuntimeProposal = Get-Content -LiteralPath $RuntimeProposalPath -Raw |
-    ConvertFrom-Json -DateKind String
-$RuntimeApproval = Get-Content -LiteralPath $RuntimeApprovalPath -Raw |
-    ConvertFrom-Json -DateKind String
-if (
-    [string]$RuntimeProposal.proposal_hash -ne [string]$RuntimeContract.proposal_hash -or
-    [string]$RuntimeApproval.proposal_hash -ne [string]$RuntimeContract.proposal_hash -or
-    [string]$RuntimeApproval.status -ne "APPROVED" -or
-    $RuntimeApproval.runtime_contract_refreeze_authorized -ne $true -or
-    $RuntimeApproval.evaluation_authorized -ne $false -or
-    $RuntimeApproval.collector_plan_or_duration_change_authorized -ne $false -or
-    $RuntimeApproval.venue_universe_signal_cost_risk_change_authorized -ne $false -or
-    $RuntimeApproval.quality_or_materializer_code_change_authorized -ne $false -or
-    [string]$RuntimeApproval.campaign_id -ne [string]$Plan.campaign_id -or
-    [string]$RuntimeApproval.plan_hash -ne $ExpectedPlanHash -or
-    [int]$RuntimeApproval.total_max_runtime_sec -ne $TotalMaxRuntimeSec -or
-    [int]$RuntimeApproval.quality_max_runtime_sec -ne $QualityMaxRuntimeSec -or
-    [int]$RuntimeApproval.materialization_max_runtime_sec -ne
-        $MaterializationMaxRuntimeSec -or
-    [string]$RuntimeApproval.postrun_not_before_local -ne
-        [string]$RuntimeContract.postrun_not_before_local -or
-    [string]$RuntimeApproval.postrun_hard_deadline_local -ne
-        [string]$RuntimeContract.postrun_hard_deadline_local -or
-    [string]$RuntimeApproval.quality_tool_sha256 -ne
-        [string]$RuntimeContract.quality_tool_sha256 -or
-    [string]$RuntimeApproval.materializer_tool_sha256 -ne
-        [string]$RuntimeContract.materializer_tool_sha256
-) {
-    throw "Dense WS runtime proposal/approval semantic binding mismatch."
-}
 $PostrunNotBefore = ConvertFrom-IsoDateTimeOffset -Value (
     [string]$RuntimeContract.postrun_not_before_local
+)
+$PostrunLatestFullStart = ConvertFrom-IsoDateTimeOffset -Value (
+    [string]$RuntimeContract.latest_full_runtime_start_local
 )
 $PostrunHardDeadline = ConvertFrom-IsoDateTimeOffset -Value (
     [string]$RuntimeContract.postrun_hard_deadline_local
 )
-if ($PostrunNotBefore -ge $PostrunHardDeadline) {
+if (
+    $PostrunNotBefore -ge $PostrunLatestFullStart -or
+    $PostrunLatestFullStart -ge $PostrunHardDeadline -or
+    [math]::Round(
+        ($PostrunHardDeadline - $PostrunLatestFullStart).TotalSeconds
+    ) -ne $TotalMaxRuntimeSec
+) {
     throw "Dense WS postrun runtime window is invalid."
+}
+
+$ExecutionApprovalAuthorized = $false
+$ExecutionApprovalReceipt = $null
+if ($Handoff.postrun_execution_authorized -eq $true) {
+    $executionBinding = $Handoff.execution_approval
+    if (-not $executionBinding -or [string]$executionBinding.status -ne "APPROVED") {
+        throw "Dense WS postrun execution flag lacks an approved receipt."
+    }
+    $executionReceiptPath = [System.IO.Path]::GetFullPath(
+        [string]$executionBinding.receipt_path
+    )
+    if ($executionReceiptPath -eq $FreezeApprovalPath) {
+        throw "Implementation-freeze approval cannot authorize postrun execution."
+    }
+    if (
+        -not (Test-Path -LiteralPath $executionReceiptPath -PathType Leaf) -or
+        [string]$executionBinding.receipt_file_sha256 -ne
+            (Get-Sha256 -Path $executionReceiptPath)
+    ) {
+        throw "Dense WS manifest-bound execution approval file mismatch."
+    }
+    $ExecutionApprovalReceipt = Get-Content -LiteralPath $executionReceiptPath -Raw |
+        ConvertFrom-Json -DateKind String
+    if (
+        [string]$ExecutionApprovalReceipt.schema -ne
+            "trading_mvp_dense_ws_manifest_bound_postrun_execution_approval_v1" -or
+        [string]$ExecutionApprovalReceipt.status -ne "APPROVED_SINGLE_USE" -or
+        [string]$ExecutionApprovalReceipt.campaign_id -ne [string]$Plan.campaign_id -or
+        [string]$ExecutionApprovalReceipt.campaign_plan_hash -ne $ExpectedPlanHash -or
+        [string]$ExecutionApprovalReceipt.handoff_manifest_path -ne
+            $HandoffManifestPath -or
+        [string]$ExecutionApprovalReceipt.handoff_manifest_sha256 -ne
+            [string]$Handoff.canonical_manifest.file_sha256 -or
+        [string]$ExecutionApprovalReceipt.postrun_not_before_local -ne
+            [string]$RuntimeContract.postrun_not_before_local -or
+        [string]$ExecutionApprovalReceipt.postrun_latest_full_runtime_start_local -ne
+            [string]$RuntimeContract.latest_full_runtime_start_local -or
+        [string]$ExecutionApprovalReceipt.postrun_hard_deadline_local -ne
+            [string]$RuntimeContract.postrun_hard_deadline_local -or
+        [int]$ExecutionApprovalReceipt.total_max_runtime_sec -ne $TotalMaxRuntimeSec -or
+        $ExecutionApprovalReceipt.postrun_execution_authorized -ne $true -or
+        $ExecutionApprovalReceipt.collector_launch_authorized -ne $false -or
+        $ExecutionApprovalReceipt.network_market_data_authorized -ne $false -or
+        $ExecutionApprovalReceipt.evaluator_authorized -ne $false -or
+        $ExecutionApprovalReceipt.returns_pnl_oos_authorized -ne $false -or
+        $ExecutionApprovalReceipt.grid_or_retune_authorized -ne $false -or
+        $ExecutionApprovalReceipt.paper_live_private_api_real_capital_leverage_margin_authorized -ne
+            $false -or
+        $ExecutionApprovalReceipt.stopped_incomplete_retry_authorized -ne $false
+    ) {
+        throw "Dense WS manifest-bound execution approval semantic mismatch."
+    }
+    $ExecutionApprovalAuthorized = $true
+} elseif (
+    $Handoff.postrun_execution_authorized -ne $false -or
+    [string]$Handoff.execution_approval.status -ne "NOT_APPROVED"
+) {
+    throw "Dense WS postrun execution authorization state is ambiguous."
 }
 
 $CampaignRoot = [System.IO.Path]::GetFullPath([string]$Plan.outputs.campaign_root)
@@ -364,6 +534,13 @@ $Python = Resolve-TradingMvpPython
 
 $Guard = Get-Guard
 $Disposition = $Guard.dense_ws_postrun_disposition
+$EvidenceMode = if (
+    $Disposition.PSObject.Properties.Name -contains "completion_evidence_mode"
+) {
+    [string]$Disposition.completion_evidence_mode
+} else {
+    ""
+}
 $allowedDecisions = @(
     "RUN_DENSE_WS_CAMPAIGN_DATA_QUALITY",
     "RUN_DENSE_WS_CAUSAL_MATERIALIZATION"
@@ -374,21 +551,128 @@ $PreflightObservedAt = [DateTimeOffset]::Now
 if ($PreflightObservedAt -lt $PostrunNotBefore) {
     $preflightReasons.Add("postrun_window_not_open")
 }
+if ($PreflightObservedAt -gt $PostrunLatestFullStart) {
+    $preflightReasons.Add("postrun_latest_full_runtime_start_passed")
+}
 if ($PreflightObservedAt -ge $PostrunHardDeadline) {
     $preflightReasons.Add("postrun_hard_deadline_passed")
 }
 if ([string]$Guard.usage.status -ne "AVAILABLE" -or [double]$Guard.usage.remaining_percent -le 15.0) {
     $preflightReasons.Add("weekly_quota_or_telemetry_block")
 }
-if ([string]$Guard.gate.run_id -ne [string]$Plan.campaign_id) {
-    $preflightReasons.Add("active_gate_campaign_mismatch")
+if (-not $ExecutionApprovalAuthorized) {
+    $preflightReasons.Add("manifest_bound_execution_not_authorized")
 }
-if ([string]$Guard.gate.status -ne "READY_FOR_POSTPROCESS") {
-    $preflightReasons.Add("active_gate_not_ready_for_postprocess")
+if ([string]$Guard.gate.status -eq "RUNNING") {
+    $preflightReasons.Add("active_gate_running")
 }
 if ([string]$Disposition.campaign_id -ne [string]$Plan.campaign_id) {
     $preflightReasons.Add("postrun_disposition_campaign_mismatch")
 }
+if ([string]$Disposition.plan_hash -ne $ExpectedPlanHash) {
+    $preflightReasons.Add("postrun_disposition_plan_mismatch")
+}
+
+$ObservedCampaignManifestSha256 = $null
+if ($EvidenceMode -eq "ACTIVE_DENSE_GATE") {
+    if ([string]$Guard.gate.run_id -ne [string]$Plan.campaign_id) {
+        $preflightReasons.Add("active_gate_campaign_mismatch")
+    }
+    if ([string]$Guard.gate.status -ne "READY_FOR_POSTPROCESS") {
+        $preflightReasons.Add("active_gate_not_ready_for_postprocess")
+    }
+    if (
+        [System.IO.Path]::GetFullPath([string]$Disposition.campaign_manifest_path) -ne
+            [System.IO.Path]::GetFullPath($CampaignManifestPath) -or
+        -not (Test-Path -LiteralPath $CampaignManifestPath -PathType Leaf)
+    ) {
+        $preflightReasons.Add("active_dense_campaign_manifest_mismatch")
+    } else {
+        $ObservedCampaignManifestSha256 = Get-Sha256 -Path $CampaignManifestPath
+        if (
+            [string]$Disposition.campaign_manifest_sha256 -ne
+                $ObservedCampaignManifestSha256
+        ) {
+            $preflightReasons.Add("active_dense_campaign_manifest_hash_mismatch")
+        }
+    }
+} elseif ($EvidenceMode -eq "IMMUTABLE_COMPLETED_CAMPAIGN_MANIFEST_AFTER_PIT") {
+    $requiredPit = $Handoff.required_pit_completion
+    if (
+        [string]$Disposition.required_prior_pit_run_id -ne [string]$requiredPit.run_id -or
+        [string]$Disposition.required_prior_pit_plan_hash -ne
+            [string]$requiredPit.schedule_plan_hash
+    ) {
+        $preflightReasons.Add("deferred_pit_binding_mismatch")
+    }
+    if (
+        [string]$Guard.gate.run_id -ne [string]$requiredPit.run_id -or
+        [string]$Guard.gate.status -ne "READY_FOR_POSTPROCESS"
+    ) {
+        $preflightReasons.Add("deferred_pit_gate_not_ready")
+    }
+    $pitDisposition = $Guard.pit_postrun_disposition
+    if (
+        [string]$pitDisposition.status -ne "COMPLETE" -or
+        [string]$pitDisposition.run_id -ne [string]$requiredPit.run_id -or
+        [string]$pitDisposition.schedule_plan_hash -ne
+            [string]$requiredPit.schedule_plan_hash
+    ) {
+        $preflightReasons.Add("deferred_pit_postrun_not_complete")
+    }
+    $writerClaimPath = [System.IO.Path]::GetFullPath(
+        [string]$Handoff.global_writer_claim_path
+    )
+    if (Test-LiveGlobalWriterClaim -Path $writerClaimPath) {
+        $preflightReasons.Add("live_global_writer_claim")
+    }
+    if (
+        [System.IO.Path]::GetFullPath([string]$Disposition.campaign_manifest_path) -ne
+            [System.IO.Path]::GetFullPath($CampaignManifestPath) -or
+        -not (Test-Path -LiteralPath $CampaignManifestPath -PathType Leaf)
+    ) {
+        $preflightReasons.Add("deferred_campaign_manifest_mismatch")
+    } else {
+        $ObservedCampaignManifestSha256 = Get-Sha256 -Path $CampaignManifestPath
+        if (
+            [string]$Disposition.campaign_manifest_sha256 -ne
+                $ObservedCampaignManifestSha256
+        ) {
+            $preflightReasons.Add("deferred_campaign_manifest_hash_mismatch")
+        } else {
+            $CampaignManifest = Get-Content -LiteralPath $CampaignManifestPath -Raw |
+                ConvertFrom-Json -DateKind String
+            Assert-DenseCampaignManifestBinding `
+                -Manifest $CampaignManifest `
+                -Plan $Plan `
+                -PlanPath $PlanPath `
+                -Candidate $Candidate `
+                -Handoff $Handoff
+        }
+    }
+    if (
+        [System.IO.Path]::GetFullPath([string]$Disposition.handoff_manifest_path) -ne
+            $HandoffManifestPath -or
+        [string]$Disposition.handoff_manifest_sha256 -ne
+            [string]$Handoff.canonical_manifest.file_sha256
+    ) {
+        $preflightReasons.Add("deferred_handoff_manifest_mismatch")
+    }
+    if ($ExecutionApprovalAuthorized -and $ExecutionApprovalReceipt) {
+        if (
+            [System.IO.Path]::GetFullPath(
+                [string]$ExecutionApprovalReceipt.campaign_manifest_path
+            ) -ne [System.IO.Path]::GetFullPath($CampaignManifestPath) -or
+            [string]$ExecutionApprovalReceipt.campaign_manifest_sha256 -ne
+                $ObservedCampaignManifestSha256
+        ) {
+            $preflightReasons.Add("execution_approval_campaign_manifest_mismatch")
+        }
+    }
+} else {
+    $preflightReasons.Add("unsupported_completion_evidence_mode")
+}
+
 if ([string]$Disposition.status -eq "RUNNING") {
     $preflightStatus = "ALREADY_RUNNING"
 } elseif ([string]$Disposition.status -eq "MATERIALIZATION_ACCEPTED") {
@@ -422,12 +706,19 @@ $preflight = [ordered]@{
     plan_hash = $ExpectedPlanHash
     guard_decision = [string]$Guard.decision
     disposition_status = [string]$Disposition.status
+    completion_evidence_mode = $EvidenceMode
+    execution_approval_authorized = $ExecutionApprovalAuthorized
+    campaign_manifest_path = $CampaignManifestPath
+    campaign_manifest_sha256 = $ObservedCampaignManifestSha256
+    handoff_manifest_path = $HandoffManifestPath
+    handoff_manifest_sha256 = [string]$Handoff.canonical_manifest.file_sha256
     reasons = @($preflightReasons)
     runtime_contract = [ordered]@{
         total_max_runtime_sec = $TotalMaxRuntimeSec
         quality_max_runtime_sec = $QualityMaxRuntimeSec
         materialization_max_runtime_sec = $MaterializationMaxRuntimeSec
         postrun_not_before_local = $PostrunNotBefore.ToString("o")
+        latest_full_runtime_start_local = $PostrunLatestFullStart.ToString("o")
         postrun_hard_deadline_local = $PostrunHardDeadline.ToString("o")
     }
     output_paths = [ordered]@{
@@ -477,6 +768,14 @@ if ($VisibleChild) {
                         $QualityMaxRuntimeSec -and
                     [int]$candidateReservation.materialization_max_runtime_sec -eq
                         $MaterializationMaxRuntimeSec -and
+                    [string]$candidateReservation.completion_evidence_mode -eq
+                        $EvidenceMode -and
+                    [string]$candidateReservation.campaign_manifest_sha256 -eq
+                        $ObservedCampaignManifestSha256 -and
+                    [string]$candidateReservation.handoff_manifest_sha256 -eq
+                        [string]$Handoff.canonical_manifest.file_sha256 -and
+                    [string]$candidateReservation.postrun_latest_full_runtime_start_local -eq
+                        $PostrunLatestFullStart.ToString("o") -and
                     [string]$candidateReservation.postrun_hard_deadline_local -eq
                         $PostrunHardDeadline.ToString("o")
                 ) {
@@ -502,6 +801,10 @@ if ($VisibleChild) {
         total_max_runtime_sec = $TotalMaxRuntimeSec
         quality_max_runtime_sec = $QualityMaxRuntimeSec
         materialization_max_runtime_sec = $MaterializationMaxRuntimeSec
+        completion_evidence_mode = $EvidenceMode
+        campaign_manifest_sha256 = $ObservedCampaignManifestSha256
+        handoff_manifest_sha256 = [string]$Handoff.canonical_manifest.file_sha256
+        postrun_latest_full_runtime_start_local = $PostrunLatestFullStart.ToString("o")
         postrun_hard_deadline_local = $PostrunHardDeadline.ToString("o")
     }
     Write-JsonCreateNew -Path $OwnerPath -Payload $owner
@@ -526,6 +829,17 @@ if ($VisibleChild) {
         if (-not (Test-Path -LiteralPath $CampaignManifestPath -PathType Leaf)) {
             throw "Campaign manifest is missing: $CampaignManifestPath"
         }
+        if ((Get-Sha256 -Path $CampaignManifestPath) -ne $ObservedCampaignManifestSha256) {
+            throw "Campaign manifest changed after preflight."
+        }
+        $RuntimeCampaignManifest = Get-Content -LiteralPath $CampaignManifestPath -Raw |
+            ConvertFrom-Json -DateKind String
+        Assert-DenseCampaignManifestBinding `
+            -Manifest $RuntimeCampaignManifest `
+            -Plan $Plan `
+            -PlanPath $PlanPath `
+            -Candidate $Candidate `
+            -Handoff $Handoff
         if (-not (Test-Path -LiteralPath $QualityReportPath -PathType Leaf)) {
             $owner.stage = "CAMPAIGN_DATA_QUALITY"
             Write-JsonAtomic -Path $OwnerPath -Payload $owner
@@ -632,6 +946,10 @@ $reservation = [ordered]@{
     total_max_runtime_sec = $TotalMaxRuntimeSec
     quality_max_runtime_sec = $QualityMaxRuntimeSec
     materialization_max_runtime_sec = $MaterializationMaxRuntimeSec
+    completion_evidence_mode = $EvidenceMode
+    campaign_manifest_sha256 = $ObservedCampaignManifestSha256
+    handoff_manifest_sha256 = [string]$Handoff.canonical_manifest.file_sha256
+    postrun_latest_full_runtime_start_local = $PostrunLatestFullStart.ToString("o")
     postrun_hard_deadline_local = $PostrunHardDeadline.ToString("o")
     final = $false
 }
@@ -705,6 +1023,10 @@ $result = [ordered]@{
     total_max_runtime_sec = $TotalMaxRuntimeSec
     quality_max_runtime_sec = $QualityMaxRuntimeSec
     materialization_max_runtime_sec = $MaterializationMaxRuntimeSec
+    completion_evidence_mode = $EvidenceMode
+    campaign_manifest_sha256 = $ObservedCampaignManifestSha256
+    handoff_manifest_sha256 = [string]$Handoff.canonical_manifest.file_sha256
+    postrun_latest_full_runtime_start_local = $PostrunLatestFullStart.ToString("o")
     postrun_hard_deadline_local = $PostrunHardDeadline.ToString("o")
 }
 if ($Json) {
