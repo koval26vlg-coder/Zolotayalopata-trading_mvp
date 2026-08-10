@@ -3,10 +3,99 @@ param(
     [switch]$Json,
     [switch]$OfflineWork,
     [string[]]$ReadResourcePath = @(),
-    [string[]]$WriteResourcePath = @()
+    [string[]]$WriteResourcePath = @(),
+    [ValidateRange(2, 50)][int]$StableReadAttempts = 6,
+    [ValidateRange(0, 1000)][int]$StableReadDelayMs = 50
 )
 
 $ErrorActionPreference = "Stop"
+
+function Read-StableJsonFile {
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [Parameter(Mandatory = $true)][int]$Attempts,
+        [Parameter(Mandatory = $true)][int]$DelayMs
+    )
+
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+        throw "JSON file not found: $Path"
+    }
+
+    $strictUtf8 = [System.Text.UTF8Encoding]::new($false, $true)
+    $previousHash = $null
+    $lastError = "file did not produce two consecutive matching reads"
+
+    for ($attempt = 1; $attempt -le $Attempts; $attempt++) {
+        try {
+            $bytes = [System.IO.File]::ReadAllBytes($Path)
+            if ($bytes.Length -eq 0) {
+                throw "file is empty"
+            }
+
+            $raw = $strictUtf8.GetString($bytes)
+            if ($raw.Length -gt 0 -and $raw[0] -eq [char]0xFEFF) {
+                $raw = $raw.Substring(1)
+            }
+            $value = ConvertFrom-Json -InputObject $raw -ErrorAction Stop
+
+            $sha256 = [System.Security.Cryptography.SHA256]::Create()
+            try {
+                $hash = [System.Convert]::ToHexString($sha256.ComputeHash($bytes)).ToLowerInvariant()
+            } finally {
+                $sha256.Dispose()
+            }
+
+            if ($previousHash -and $hash -eq $previousHash) {
+                return [pscustomobject]@{
+                    value = $value
+                    sha256 = $hash
+                    attempts = $attempt
+                }
+            }
+
+            $previousHash = $hash
+            $lastError = "valid JSON changed before a confirming read"
+        } catch {
+            $lastError = $_.Exception.Message
+            $previousHash = $null
+        }
+
+        if ($attempt -lt $Attempts -and $DelayMs -gt 0) {
+            [System.Threading.Thread]::Sleep($DelayMs)
+        }
+    }
+
+    throw "stable JSON unavailable after $Attempts attempts; last error: $lastError"
+}
+
+function Assert-RunStateRecord {
+    param(
+        [Parameter(Mandatory = $true)]$Record,
+        [Parameter(Mandatory = $true)][string]$Label,
+        [Parameter(Mandatory = $true)][string[]]$AllowedSchemas
+    )
+
+    foreach ($field in @("schema", "project", "run_id", "status")) {
+        $property = $Record.PSObject.Properties[$field]
+        if (
+            $null -eq $property -or
+            -not ($property.Value -is [string]) -or
+            [string]::IsNullOrWhiteSpace([string]$property.Value)
+        ) {
+            throw "$Label.$field must be a non-empty string"
+        }
+    }
+
+    if ($AllowedSchemas -notcontains [string]$Record.schema) {
+        throw "$Label.schema is unsupported: $($Record.schema)"
+    }
+    if ([string]$Record.project -ne "trading_mvp") {
+        throw "$Label.project must be trading_mvp"
+    }
+    if (@("RUNNING", "READY_FOR_POSTPROCESS", "STOPPED_INCOMPLETE", "REJECTED_INCOMPLETE") -notcontains [string]$Record.status) {
+        throw "$Label.status is unsupported: $($Record.status)"
+    }
+}
 
 function Set-ObjectProperty {
     param(
@@ -422,11 +511,20 @@ function Test-ExpectedOutputsComplete {
     return $true
 }
 
-if (-not (Test-Path -LiteralPath $GatePath)) {
-    throw "Active run gate not found: $GatePath"
+try {
+    $gateRead = Read-StableJsonFile `
+        -Path $GatePath `
+        -Attempts $StableReadAttempts `
+        -DelayMs $StableReadDelayMs
+    Assert-RunStateRecord `
+        -Record $gateRead.value `
+        -Label "active_run_gate" `
+        -AllowedSchemas @("active_run_gate_v1", "active_run_gate_v2")
+} catch {
+    throw "ACTIVE_RUN_GATE_UNSTABLE_OR_INVALID: $($_.Exception.Message)"
 }
 
-$gate = Get-Content -Raw -LiteralPath $GatePath | ConvertFrom-Json
+$gate = $gateRead.value
 $legacyGateRunType = if ($gate.PSObject.Properties.Name -contains "run_type") {
     [string]$gate.run_type
 } else {
@@ -438,46 +536,47 @@ $pointerReplacedLegacyGate = $false
 $agentLogDir = Split-Path -Parent (Resolve-Path -LiteralPath $GatePath).Path
 $currentRunPointerPath = Join-Path $agentLogDir "current-run.json"
 $currentRunPointer = $null
+$currentRunPointerRead = $null
 if (Test-Path -LiteralPath $currentRunPointerPath) {
     try {
-        $candidatePointer = Get-Content -Raw -LiteralPath $currentRunPointerPath | ConvertFrom-Json
-        $pointerStatus = [string]$candidatePointer.status
-        $pointerMatches = (
-            [string]$candidatePointer.schema -eq "active_run_pointer_v1" -and
-            [string]$candidatePointer.project -eq [string]$gate.project -and
-            ($pointerStatus -eq "RUNNING" -or [string]$candidatePointer.run_id -eq [string]$gate.run_id)
-        )
-        if ($pointerMatches) {
-            $currentRunPointer = $candidatePointer
-            if ([string]$candidatePointer.run_id -ne [string]$gate.run_id) {
-                # A pointer to a different run is authoritative. Never inherit
-                # completion fields, expected outputs or counters from the old run.
-                $gate = $candidatePointer | ConvertTo-Json -Depth 16 | ConvertFrom-Json
-                $pointerReplacedLegacyGate = $true
-            } else {
-                foreach ($field in @(
-                    "run_id",
-                    "status",
-                    "manifest_path",
-                    "collector_pid",
-                    "monitor_pid",
-                    "process_ids",
-                    "output",
-                    "updated_at",
-                    "launch_record_path"
-                )) {
-                    if ($null -ne $candidatePointer.PSObject.Properties[$field]) {
-                        Set-ObjectProperty -Object $gate -Name $field -Value $candidatePointer.$field
-                    }
+        $currentRunPointerRead = Read-StableJsonFile `
+            -Path $currentRunPointerPath `
+            -Attempts $StableReadAttempts `
+            -DelayMs $StableReadDelayMs
+        Assert-RunStateRecord `
+            -Record $currentRunPointerRead.value `
+            -Label "current_run_pointer" `
+            -AllowedSchemas @("active_run_pointer_v1")
+        $candidatePointer = $currentRunPointerRead.value
+        $currentRunPointer = $candidatePointer
+        if ([string]$candidatePointer.run_id -ne [string]$gate.run_id) {
+            # current-run.json is authoritative for every valid terminal or
+            # running state. Never inherit fields from another run.
+            $gate = $candidatePointer | ConvertTo-Json -Depth 16 | ConvertFrom-Json
+            $pointerReplacedLegacyGate = $true
+        } else {
+            foreach ($field in @(
+                "run_id",
+                "status",
+                "manifest_path",
+                "collector_pid",
+                "monitor_pid",
+                "process_ids",
+                "output",
+                "updated_at",
+                "launch_record_path"
+            )) {
+                if ($null -ne $candidatePointer.PSObject.Properties[$field]) {
+                    Set-ObjectProperty -Object $gate -Name $field -Value $candidatePointer.$field
                 }
             }
-            if ($candidatePointer.output -and $candidatePointer.output.PSObject.Properties.Name -contains "path") {
-                Set-ObjectProperty -Object $gate -Name "output_path" -Value ([string]$candidatePointer.output.path)
-            }
-            $gateSource = "current_run_pointer"
         }
+        if ($candidatePointer.output -and $candidatePointer.output.PSObject.Properties.Name -contains "path") {
+            Set-ObjectProperty -Object $gate -Name "output_path" -Value ([string]$candidatePointer.output.path)
+        }
+        $gateSource = "current_run_pointer"
     } catch {
-        $pointerError = $_.Exception.Message
+        throw "ACTIVE_RUN_POINTER_UNSTABLE_OR_INVALID: $($_.Exception.Message)"
     }
 }
 
@@ -790,6 +889,10 @@ if ($status -eq "READY_FOR_POSTPROCESS" -and ([string]$gate.run_id) -like "fundi
 }
 
 $result = [pscustomobject]@{
+    gate_read_attempts = $gateRead.attempts
+    gate_read_sha256 = $gateRead.sha256
+    current_run_pointer_read_attempts = if ($currentRunPointerRead) { $currentRunPointerRead.attempts } else { $null }
+    current_run_pointer_read_sha256 = if ($currentRunPointerRead) { $currentRunPointerRead.sha256 } else { $null }
     gate_source = $gateSource
     current_run_pointer_path = if ($gateSource -eq "current_run_pointer") { $currentRunPointerPath } else { $null }
     launch_record_path = $launchRecordPath

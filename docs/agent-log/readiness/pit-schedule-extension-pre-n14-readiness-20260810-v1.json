@@ -1,0 +1,85 @@
+{
+  "schema": "trading_mvp_pit_schedule_extension_pre_n14_readiness_v1",
+  "status": "PRE_N14_CAPACITY_AUDIT_COMPLETE_NOT_APPROVAL_READY",
+  "created_at": "2026-08-10T20:37:22.2909010+03:00",
+  "active_pointer": {
+    "run_id": "pit_universe_v2_forward_20260811_n14",
+    "start_local": "2026-08-11T01:00:00+03:00",
+    "end_local": "2026-08-11T01:20:00+03:00",
+    "source_plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+    "preserved": true
+  },
+  "gate_integrity_hardening": {
+    "checker_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_active_run_gate.ps1",
+    "checker_sha256": "8b62fab37799b272f98741bd5b2cba9796cc931ba8821e1c365bb50e0139cc16",
+    "stable_matching_reads_required": 2,
+    "default_attempts": 6,
+    "default_delay_ms": 50,
+    "persistent_failure_code": "ACTIVE_RUN_GATE_UNSTABLE_OR_INVALID",
+    "current_run_pointer_failure_code": "ACTIVE_RUN_POINTER_UNSTABLE_OR_INVALID",
+    "fail_closed": true
+  },
+  "pre_n14_capacity_audit": {
+    "audit_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\pit-universe-v2-schedule-horizon-audit-31b4b6c7-20260810-202750-v4.json",
+    "audit_file_sha256": "c47a8626256f414b0cccf566b1f505707276fc216bd5527fa2e0d34c0d120c73",
+    "audit_tool_sha256": "36178cfb74eea867aa41e39e79f318d1a05deaba976d919142910a59c497f1c0",
+    "deterministic_result_hash": "46b399708d789a7c35434f55116e2160512cb0e1cf89721df9dd4fcb8b226411",
+    "quality_ledger_sha256": "8b7d4c49c32563ac21667aee44fce3443134ce6bf71aeebc3e84396332f8b562",
+    "accepted_distinct_dates": 9,
+    "reachable_scheduled_dates": 1,
+    "train_gate_shortfall_dates": 10,
+    "rate_adjusted_extension_nights": 12,
+    "remaining_stage_capacity_nights": 11,
+    "recommended_extension_nights": 11,
+    "stage_capacity_limited": true
+  },
+  "pre_n14_extension_planonly": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_extension_planonly_20260812_from_31b4b6c7_20260810-202750-v4.json",
+    "file_sha256": "1196282fa5fe5fbd3e50e1fb57aad538b3af7f4d47cde15f273764831630a940",
+    "plan_hash": "e476065da05495b7af90059b316e3cd143885d979a525854feab747d7736bd67",
+    "nights": 11,
+    "start_local": "2026-08-12T01:00:00+03:00",
+    "end_local": "2026-08-22T01:20:00+03:00",
+    "hard_deadline_local": "2026-08-22T07:00:00+03:00",
+    "mode": "PlanOnly",
+    "schedule_approved": false,
+    "collection_started": false,
+    "may_be_used_as_post_n14_approval_packet": false
+  },
+  "activation_boundary": {
+    "reason": "Approving the extension before N14 would replace active_gate.approved_night_schedule and block the exact N14 plan hash.",
+    "active_policy_changed": false,
+    "dynamic_pointer_changed": false,
+    "extension_approval_created": false,
+    "collector_started": false,
+    "required_after_n14": [
+      "exact N14 COMPLETE and postrun COMPLETE",
+      "no global writer claim",
+      "fresh quality ledger read and hash",
+      "new immutable horizon audit and extension PlanOnly",
+      "one exact hash-bound user approval before schedule activation"
+    ]
+  },
+  "verification": {
+    "tests_command": "C:\\Program Files\\Python313\\python.exe -m unittest trading_mvp.tests.test_active_run_gate trading_mvp.tests.test_pit_schedule_horizon trading_mvp.tests.test_night_schedule_plan trading_mvp.tests.test_pit_train_progress_monitor trading_mvp.tests.test_pit_postrun_policy",
+    "tests_passed": 69,
+    "ruff_check": "PASS",
+    "ruff_format_check": "PASS_HORIZON_FILES; LEGACY_ACTIVE_GATE_TEST_FORMAT_PRESERVED_TO_AVOID_UNRELATED_CHURN",
+    "py_compile": "PASS",
+    "n14_plan_validation": "VALID",
+    "n14_runtime_hashes_match": true
+  },
+  "safety": {
+    "network_access": false,
+    "market_data_read": false,
+    "returns_or_pnl_read": false,
+    "oos_read": false,
+    "evaluator_started": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "RUN_EXACT_N14_WHEN_DUE_THEN_BUILD_FRESH_POST_N14_EXTENSION_PACKET"
+}

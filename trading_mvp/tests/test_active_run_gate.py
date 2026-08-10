@@ -5,6 +5,8 @@ import os
 import shutil
 import subprocess
 import tempfile
+import threading
+import time
 import unittest
 from pathlib import Path
 
@@ -16,6 +18,202 @@ COMPLETION_AUDIT_SCRIPT = REPO_ROOT / "tools" / "trading_goal_completion_audit.p
 
 
 class ActiveRunGateTests(unittest.TestCase):
+    def test_gate_read_rejects_incomplete_record(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            gate = Path(tmp) / "active-run-gate.json"
+            gate.write_text(
+                json.dumps({"status": "READY_FOR_POSTPROCESS"}),
+                encoding="utf-8",
+            )
+
+            completed = subprocess.run(
+                [
+                    "pwsh",
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(GATE_SCRIPT),
+                    "-GatePath",
+                    str(gate),
+                    "-Json",
+                    "-StableReadAttempts",
+                    "2",
+                    "-StableReadDelayMs",
+                    "0",
+                ],
+                check=False,
+                text=True,
+                capture_output=True,
+            )
+
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn(
+            "ACTIVE_RUN_GATE_UNSTABLE_OR_INVALID",
+            completed.stderr + completed.stdout,
+        )
+
+    def test_invalid_current_run_pointer_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            agent_log = Path(tmp) / "docs" / "agent-log"
+            agent_log.mkdir(parents=True)
+            gate = agent_log / "active-run-gate.json"
+            gate.write_text(
+                json.dumps(
+                    {
+                        "schema": "active_run_gate_v2",
+                        "project": "trading_mvp",
+                        "run_id": "gate-fixture",
+                        "status": "READY_FOR_POSTPROCESS",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (agent_log / "current-run.json").write_text(
+                '{"schema":"active_run_pointer_v1"}\n{"torn":true}',
+                encoding="utf-8",
+            )
+
+            completed = subprocess.run(
+                [
+                    "pwsh",
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(GATE_SCRIPT),
+                    "-GatePath",
+                    str(gate),
+                    "-Json",
+                    "-StableReadAttempts",
+                    "2",
+                    "-StableReadDelayMs",
+                    "0",
+                ],
+                check=False,
+                text=True,
+                capture_output=True,
+            )
+
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn(
+            "ACTIVE_RUN_POINTER_UNSTABLE_OR_INVALID",
+            completed.stderr + completed.stdout,
+        )
+
+    def test_terminal_pointer_for_different_run_overrides_ready_gate(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            agent_log = Path(tmp) / "docs" / "agent-log"
+            agent_log.mkdir(parents=True)
+            gate = agent_log / "active-run-gate.json"
+            gate.write_text(
+                json.dumps(
+                    {
+                        "schema": "active_run_gate_v2",
+                        "project": "trading_mvp",
+                        "run_id": "stale-ready-run",
+                        "status": "READY_FOR_POSTPROCESS",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (agent_log / "current-run.json").write_text(
+                json.dumps(
+                    {
+                        "schema": "active_run_pointer_v1",
+                        "project": "trading_mvp",
+                        "run_id": "current-stopped-run",
+                        "status": "STOPPED_INCOMPLETE",
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            result = self._run_gate(gate)
+
+        self.assertEqual(result["gate_source"], "current_run_pointer")
+        self.assertEqual(result["run_id"], "current-stopped-run")
+        self.assertEqual(result["status"], "STOPPED_INCOMPLETE")
+
+
+    def test_gate_read_retries_transient_invalid_json(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            agent_log = root / "docs" / "agent-log"
+            agent_log.mkdir(parents=True)
+            gate = agent_log / "active-run-gate.json"
+            gate.write_text(
+                '{"schema":"active_run_gate_v2"}\n{"torn":true}', encoding="utf-8"
+            )
+
+            valid_gate = json.dumps(
+                {
+                    "schema": "active_run_gate_v2",
+                    "project": "trading_mvp",
+                    "run_id": "stable-read-fixture",
+                    "status": "READY_FOR_POSTPROCESS",
+                }
+            )
+
+            def replace_gate() -> None:
+                time.sleep(2.0)
+                replacement = gate.with_suffix(".json.tmp")
+                replacement.write_text(valid_gate, encoding="utf-8")
+                os.replace(replacement, gate)
+
+            writer = threading.Thread(target=replace_gate)
+            writer.start()
+            try:
+                result = self._run_gate(
+                    gate,
+                    "-StableReadAttempts",
+                    "50",
+                    "-StableReadDelayMs",
+                    "100",
+                )
+            finally:
+                writer.join(timeout=2)
+
+        self.assertEqual(result["status"], "READY_FOR_POSTPROCESS")
+        self.assertEqual(result["run_id"], "stable-read-fixture")
+        self.assertGreater(result["gate_read_attempts"], 2)
+
+    def test_gate_read_fails_closed_when_json_stays_invalid(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            agent_log = root / "docs" / "agent-log"
+            agent_log.mkdir(parents=True)
+            gate = agent_log / "active-run-gate.json"
+            gate.write_text(
+                '{"schema":"active_run_gate_v2"}\n{"torn":true}', encoding="utf-8"
+            )
+
+            completed = subprocess.run(
+                [
+                    "pwsh",
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(GATE_SCRIPT),
+                    "-GatePath",
+                    str(gate),
+                    "-Json",
+                    "-StableReadAttempts",
+                    "3",
+                    "-StableReadDelayMs",
+                    "10",
+                ],
+                check=False,
+                text=True,
+                capture_output=True,
+            )
+
+        self.assertNotEqual(completed.returncode, 0)
+        self.assertIn(
+            "ACTIVE_RUN_GATE_UNSTABLE_OR_INVALID",
+            completed.stderr + completed.stdout,
+        )
     def test_current_run_pointer_does_not_inherit_stale_completion_fields(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -772,6 +970,7 @@ class ActiveRunGateTests(unittest.TestCase):
                     "schema": "active_run_gate_v1",
                     "project": "trading_mvp",
                     "run_id": "funding_collect_fixture",
+                    "status": "READY_FOR_POSTPROCESS",
                     "monitor_pid": 999999,
                     "process_ids": [999999],
                     "output_path": str(output),
