@@ -79,12 +79,27 @@ if ($collectExit -eq 0 -and $pairsExit -eq 0 -and $gateExit -eq 0) {
     $auditStdout | Tee-Object -FilePath $logPath -Append
 }
 
+$historyOut = Join-Path $projectRoot "exports\trading-mvp\analysis\funding_forward_history_audit_$stamp.json"
+$historyStdout = @("SKIPPED: current snapshot audit failed")
+$historyExit = 1
+if ($auditExit -eq 0) {
+    $historyStdout = & $PythonExe (Join-Path $projectRoot "trading_mvp\src\funding_forward_history_audit.py") `
+        --analysis-dir (Join-Path $projectRoot "exports\trading-mvp\analysis") `
+        --daily-dir (Join-Path $projectRoot "exports\trading-mvp\daily") `
+        --through-stamp $stamp `
+        --symbol "AKE_USDT" `
+        --current-audit $auditOut `
+        --out $historyOut 2>&1
+    $historyExit = $LASTEXITCODE
+    $historyStdout | Tee-Object -FilePath $logPath -Append
+}
+
 $reportPath = Join-Path $reportDir "funding_forward_$stamp.md"
 @(
     "# Funding forward snapshot $stamp",
     "",
-    "Run: ``$runId`` (top=$Top, days=$Days), collector_exit=$collectExit, pairs_exit=$pairsExit, gate_exit=$gateExit, audit_exit=$auditExit",
-    "Artifacts: ``exports/trading-mvp/daily/$runId/manifest.json``, ``exports/trading-mvp/analysis/funding_pairs_forward_$stamp.json``, ``exports/trading-mvp/analysis/execution_gate_forward_$stamp.json``, ``exports/trading-mvp/analysis/funding_forward_audit_$stamp.json``",
+    "Run: ``$runId`` (top=$Top, days=$Days), collector_exit=$collectExit, pairs_exit=$pairsExit, gate_exit=$gateExit, audit_exit=$auditExit, history_exit=$historyExit",
+    "Artifacts: ``exports/trading-mvp/daily/$runId/manifest.json``, ``exports/trading-mvp/analysis/funding_pairs_forward_$stamp.json``, ``exports/trading-mvp/analysis/execution_gate_forward_$stamp.json``, ``exports/trading-mvp/analysis/funding_forward_audit_$stamp.json``, ``exports/trading-mvp/analysis/funding_forward_history_audit_$stamp.json``",
     "Universe: ``$UniverseCsv`` (explicitly pinned; this runner does not migrate the universe snapshot)",
     "",
     "## Funding pairs",
@@ -105,6 +120,12 @@ $reportPath = Join-Path $reportDir "funding_forward_$stamp.md"
 ) + $auditStdout + @(
     '```',
     "",
+    "## Longitudinal overlap audit",
+    "",
+    '```text'
+) + $historyStdout + @(
+    '```',
+    "",
     "## Interpretation limits",
     "",
     "- Decision is watchlist-only, never edge acceptance.",
@@ -115,6 +136,6 @@ $reportPath = Join-Path $reportDir "funding_forward_$stamp.md"
     "- Chronological OOS, walk-forward and stress gates are not run by this task."
 ) | Set-Content -Path $reportPath -Encoding UTF8
 
-"[$(Get-Date -Format o)] done collector_exit=$collectExit pairs_exit=$pairsExit gate_exit=$gateExit audit_exit=$auditExit report=$reportPath" | Tee-Object -FilePath $logPath -Append
-if ($collectExit -ne 0 -or $pairsExit -ne 0 -or $gateExit -ne 0 -or $auditExit -ne 0) { exit 1 }
+"[$(Get-Date -Format o)] done collector_exit=$collectExit pairs_exit=$pairsExit gate_exit=$gateExit audit_exit=$auditExit history_exit=$historyExit report=$reportPath" | Tee-Object -FilePath $logPath -Append
+if ($collectExit -ne 0 -or $pairsExit -ne 0 -or $gateExit -ne 0 -or $auditExit -ne 0 -or $historyExit -ne 0) { exit 1 }
 exit 0
