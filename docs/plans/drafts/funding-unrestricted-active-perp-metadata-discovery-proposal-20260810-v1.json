@@ -1,0 +1,181 @@
+{
+  "schema": "trading_mvp_funding_unrestricted_metadata_discovery_proposal_v1",
+  "proposal_id": "funding_unrestricted_active_perp_metadata_discovery_20260810_v1",
+  "mode": "PlanOnlyMetadataDiscoveryProposal",
+  "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+  "generated_at_utc": "2026-08-10T08:36:48.474178Z",
+  "research_only": true,
+  "objective": "Discover every currently active USDT-settled perpetual contract on MEXC and Gate without coin, category, top-N or Binance-status exclusions.",
+  "source_bindings": {
+    "universe_policy": {
+      "path": "docs\\plans\\funding-asset-universe-policy-v1.json",
+      "file_sha256": "f59e5d4e8eec0655d54937f2eea0dc5483f81163b58feeafbf5dc388d46bccd8",
+      "policy_hash": "d1fdfa616a562f9437018e3c2fd0c883483a9fdab78c6c7894012df9efee40a7"
+    },
+    "current_cache_feasibility_audit": {
+      "path": "docs\\agent-log\\readiness\\funding-unrestricted-cache-feasibility-20260810-v1.json",
+      "file_sha256": "2cbf49cacda2effffd50849efbd33efb9fa0074dc6287ed547deb05a0aa0c749",
+      "deterministic_result_hash": "071f15a41defb04cf6e47f84e40b5f59681151f81e8993afa5a929bba9222dc7",
+      "decision": "CURRENT_CACHE_FIXED_HOLD_STRESS_INSUFFICIENT",
+      "cached_assets_analyzed": 108,
+      "fixed_hold_planonly_allowed_from_current_cache": false
+    }
+  },
+  "branch_boundary": {
+    "current_top_200_cache_is_complete_unrestricted_universe": false,
+    "current_cache_may_support_full_universe_claim": false,
+    "existing_closed_funding_branches_reopened": false,
+    "holding_period_or_signal_retuned": false,
+    "metadata_discovery_is_hypothesis_neutral": true,
+    "oos_values_used_for_discovery_design": false
+  },
+  "discovery_contract": {
+    "instrument_scope": {
+      "venues": [
+        "mexc",
+        "gateio"
+      ],
+      "market": "USDT_SETTLED_LINEAR_PERPETUAL",
+      "required_status": "ACTIVE_TRADING",
+      "all_active_contracts_per_venue": true,
+      "all_shared_ticker_candidates": true,
+      "maximum_candidates": null
+    },
+    "exclusion_contract": {
+      "top_n_filter_allowed": false,
+      "volume_rank_filter_allowed": false,
+      "binance_status_filter_allowed": false,
+      "asset_category_filter_allowed": false,
+      "market_cap_filter_allowed": false,
+      "listing_age_filter_allowed": false,
+      "symbol_blacklist_allowed": false
+    },
+    "endpoint_allowlist": [
+      {
+        "venue": "mexc",
+        "base_url": "https://contract.mexc.com",
+        "path": "/api/v1/contract/detail",
+        "method": "GET",
+        "query_parameters_allowed": [],
+        "persisted_field_allowlist": [
+          "symbol",
+          "baseCoin",
+          "baseCoinName",
+          "quoteCoin",
+          "quoteCoinName",
+          "settleCoin",
+          "state",
+          "apiAllowed"
+        ]
+      },
+      {
+        "venue": "gateio",
+        "base_url": "https://api.gateio.ws",
+        "path": "/api/v4/futures/usdt/contracts",
+        "method": "GET",
+        "query_parameters_allowed": [],
+        "persisted_field_allowlist": [
+          "name",
+          "status",
+          "type",
+          "in_delisting"
+        ]
+      }
+    ],
+    "request_limits": {
+      "maximum_total_http_requests": 4,
+      "maximum_attempts_per_endpoint": 2,
+      "request_body_allowed": false,
+      "private_or_auth_headers_allowed": false
+    },
+    "response_handling": {
+      "raw_response_persistence_allowed": false,
+      "persist_allowlisted_contract_metadata_only": true,
+      "incidental_prices_or_funding_fields_must_be_discarded": true,
+      "market_values_may_affect_selection": false,
+      "response_body_sha256_recorded": true
+    }
+  },
+  "identity_contract": {
+    "ticker_intersection_allowed_for_discovery": true,
+    "ticker_match_disposition": "PROVISIONAL_CANDIDATE_ONLY_NOT_IDENTITY_EVIDENCE",
+    "same_underlying_status_after_discovery": "UNRESOLVED_UNLESS_SEPARATELY_PROVEN",
+    "official_same_underlying_evidence_required_before_strategy_planonly": true,
+    "unresolved_or_conflicting_identity_disposition": "EXCLUDE_FAIL_CLOSED"
+  },
+  "output_contract": {
+    "immutable": true,
+    "overwrite_allowed": false,
+    "root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\funding-unrestricted-metadata-discovery",
+    "required_files": [
+      "mexc-active-contracts.json",
+      "gateio-active-contracts.json",
+      "provisional-shared-ticker-candidates.json",
+      "manifest.json"
+    ],
+    "raw_api_payload_files_allowed": false,
+    "manifest_must_bind": [
+      "proposal_hash",
+      "source_policy_file_sha256",
+      "source_policy_hash",
+      "endpoint_urls",
+      "response_body_sha256",
+      "projected_output_sha256",
+      "contract_counts",
+      "provisional_shared_ticker_count",
+      "runtime_start_and_finish_utc"
+    ]
+  },
+  "runtime_contract": {
+    "top_level_visible_launcher": "tools\\start_funding_unrestricted_metadata_discovery_visible.ps1",
+    "visible_terminal_required": true,
+    "preflight_only_supported": true,
+    "single_use": true,
+    "max_runtime_sec": 300,
+    "hard_output_cap_bytes": 50000000,
+    "active_run_gate_must_not_be_running": true,
+    "global_market_data_writer_must_be_absent": true,
+    "global_writer_claim_required": true,
+    "network_scope": "PUBLIC_CONTRACT_METADATA_ENDPOINTS_ONLY"
+  },
+  "implementation_after_exact_approval": {
+    "runtime_module": "trading_mvp\\src\\funding_unrestricted_metadata_discovery.py",
+    "synthetic_tests": "trading_mvp\\tests\\test_funding_unrestricted_metadata_discovery.py",
+    "visible_launcher": "tools\\start_funding_unrestricted_metadata_discovery_visible.ps1",
+    "one_visible_metadata_run_allowed": true,
+    "collector_or_evaluator_implementation_in_scope": false
+  },
+  "authorization": {
+    "proposal_freeze_allowed": true,
+    "offline_implementation_allowed": false,
+    "synthetic_tests_allowed": false,
+    "actual_network_run_allowed": false,
+    "market_data_collector_allowed": false,
+    "funding_rates_or_prices_persisted_allowed": false,
+    "oos_market_value_read_allowed": false,
+    "evaluator_allowed": false,
+    "returns_or_pnl_allowed": false,
+    "grid_or_retune_allowed": false,
+    "execution_probe_allowed": false,
+    "paper_or_live_allowed": false,
+    "private_api_keys_allowed": false,
+    "real_capital_allowed": false,
+    "leverage_or_margin_allowed": false,
+    "exact_user_approval_required": true
+  },
+  "next_checkpoint": {
+    "after_successful_discovery": "Freeze the exact identity-verified candidate set and its data requirements.",
+    "separate_exact_candidate_planonly_required": true,
+    "separate_strategy_or_collector_launch_approval_required": true,
+    "automatic_funding_collection_after_discovery": false,
+    "automatic_oos_or_evaluator_after_discovery": false
+  },
+  "independent_review": {
+    "swarm_dry_run_completed": true,
+    "independent_verdict_available": false,
+    "status": "SWARM_LIMITED_NO_ACTUAL_REVIEW",
+    "local_deterministic_boundary_tests_authoritative": true
+  },
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "0ac65470275e28819583bf6599d57674cda0cf6a523e4dbb1d85583997380f77"
+}
