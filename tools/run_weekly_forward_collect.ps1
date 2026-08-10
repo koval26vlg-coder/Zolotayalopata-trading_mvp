@@ -4,11 +4,20 @@ param(
     [int]$Top = 200,
     [int]$Days = 200,
     [int]$MaxSymbols = 0,
-    [string]$PythonExe = "C:\Users\koval\Documents\ОК.ру\.venv\Scripts\python.exe"
+    [string]$PythonExe = "C:\Users\koval\Documents\ОК.ру\.venv\Scripts\python.exe",
+    [string]$UniverseCsv = "",
+    [string]$IdentityEvidencePath = ""
 )
 
 $ErrorActionPreference = "Continue"
 $projectRoot = Split-Path -Parent $PSScriptRoot
+if ([string]::IsNullOrWhiteSpace($UniverseCsv)) {
+    # Preserve the existing universe contract; changing the snapshot requires a separate review.
+    $UniverseCsv = Join-Path $projectRoot "coins_not_on_binance_full_2026-05-29.csv"
+}
+if ([string]::IsNullOrWhiteSpace($IdentityEvidencePath)) {
+    $IdentityEvidencePath = Join-Path $projectRoot "docs\analysis\funding-forward\funding_forward_identity_evidence_20260810_v1.json"
+}
 $stamp = Get-Date -Format "yyyyMMdd"
 $runId = "daily_forward_$stamp"
 $logDir = Join-Path $projectRoot "logs\weekly-forward"
@@ -24,6 +33,7 @@ $collectorArgs = @(
     "--exchanges", "mexc,gateio",
     "--top", $Top,
     "--days", $Days,
+    "--universe-csv", $UniverseCsv,
     "--run-id", $runId
 )
 if ($MaxSymbols -gt 0) { $collectorArgs += @("--max-symbols", $MaxSymbols) }
@@ -48,12 +58,34 @@ $gateStdout = & $PythonExe (Join-Path $projectRoot "trading_mvp\src\execution_ga
 $gateExit = $LASTEXITCODE
 $gateStdout | Tee-Object -FilePath $logPath -Append
 
+$manifestPath = Join-Path $runDir "manifest.json"
+$auditOut = Join-Path $projectRoot "exports\trading-mvp\analysis\funding_forward_audit_$stamp.json"
+$auditStdout = @("SKIPPED: upstream collector, pairs, or execution gate failed")
+$auditExit = 1
+if ($collectExit -eq 0 -and $pairsExit -eq 0 -and $gateExit -eq 0) {
+    $auditArgs = @(
+        (Join-Path $projectRoot "trading_mvp\src\funding_forward_audit.py"),
+        "--manifest", $manifestPath,
+        "--pairs-json", $pairsOut,
+        "--execution-json", $gateOut,
+        "--universe-csv", $UniverseCsv,
+        "--out", $auditOut
+    )
+    if (Test-Path -LiteralPath $IdentityEvidencePath -PathType Leaf) {
+        $auditArgs += @("--identity-evidence", $IdentityEvidencePath)
+    }
+    $auditStdout = & $PythonExe @auditArgs 2>&1
+    $auditExit = $LASTEXITCODE
+    $auditStdout | Tee-Object -FilePath $logPath -Append
+}
+
 $reportPath = Join-Path $reportDir "funding_forward_$stamp.md"
 @(
     "# Funding forward snapshot $stamp",
     "",
-    "Run: ``$runId`` (top=$Top, days=$Days), collector_exit=$collectExit, pairs_exit=$pairsExit, gate_exit=$gateExit",
-    "Artifacts: ``exports/trading-mvp/daily/$runId/manifest.json``, ``exports/trading-mvp/analysis/funding_pairs_forward_$stamp.json``, ``exports/trading-mvp/analysis/execution_gate_forward_$stamp.json``",
+    "Run: ``$runId`` (top=$Top, days=$Days), collector_exit=$collectExit, pairs_exit=$pairsExit, gate_exit=$gateExit, audit_exit=$auditExit",
+    "Artifacts: ``exports/trading-mvp/daily/$runId/manifest.json``, ``exports/trading-mvp/analysis/funding_pairs_forward_$stamp.json``, ``exports/trading-mvp/analysis/execution_gate_forward_$stamp.json``, ``exports/trading-mvp/analysis/funding_forward_audit_$stamp.json``",
+    "Universe: ``$UniverseCsv`` (explicitly pinned; this runner does not migrate the universe snapshot)",
     "",
     "## Funding pairs",
     "",
@@ -64,8 +96,25 @@ $reportPath = Join-Path $reportDir "funding_forward_$stamp.md"
     "## Execution gate (стаканы watchlist)",
     "",
     '```text'
-) + $gateStdout + @('```') | Set-Content -Path $reportPath -Encoding UTF8
+) + $gateStdout + @(
+    '```',
+    "",
+    "## Deterministic offline audit",
+    "",
+    '```text'
+) + $auditStdout + @(
+    '```',
+    "",
+    "## Interpretation limits",
+    "",
+    "- Decision is watchlist-only, never edge acceptance.",
+    "- The universe is selected by current 24h volume and then backfilled historically; it is not point-in-time.",
+    "- Ticker equality is not asset identity. Only same-contract exchange evidence is marked verified.",
+    "- Order-book capacity is one snapshot, not time-averaged executable capacity.",
+    "- Annualized funding minus modeled costs is not realized return or PnL.",
+    "- Chronological OOS, walk-forward and stress gates are not run by this task."
+) | Set-Content -Path $reportPath -Encoding UTF8
 
-"[$(Get-Date -Format o)] done collector_exit=$collectExit pairs_exit=$pairsExit gate_exit=$gateExit report=$reportPath" | Tee-Object -FilePath $logPath -Append
-if ($collectExit -ne 0 -or $pairsExit -ne 0 -or $gateExit -ne 0) { exit 1 }
+"[$(Get-Date -Format o)] done collector_exit=$collectExit pairs_exit=$pairsExit gate_exit=$gateExit audit_exit=$auditExit report=$reportPath" | Tee-Object -FilePath $logPath -Append
+if ($collectExit -ne 0 -or $pairsExit -ne 0 -or $gateExit -ne 0 -or $auditExit -ne 0) { exit 1 }
 exit 0

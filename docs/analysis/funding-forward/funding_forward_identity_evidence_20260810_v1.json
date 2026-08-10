@@ -1,0 +1,53 @@
+{
+  "schema": "funding_forward_identity_evidence_v1",
+  "created_at_utc": "2026-08-10T07:03:37.6821103Z",
+  "verification_scope": "identity_only_no_profitability_claim",
+  "research_only": true,
+  "assets": [
+    {
+      "symbol": "AKE",
+      "source_coin_id": "ake-akedo",
+      "asset_name": "Akedo",
+      "contract": {
+        "network": "BSC",
+        "address": "0x2c3a8Ee94dDD97244a93Bc48298f97d2C412F7Db"
+      },
+      "venues": [
+        {
+          "venue": "mexc",
+          "name": "AKEDO",
+          "symbol": "AKE",
+          "market_types": [
+            "spot",
+            "perpetual"
+          ],
+          "contract_address": "0x2c3a8Ee94dDD97244a93Bc48298f97d2C412F7Db",
+          "official_urls": [
+            "https://www.mexc.com/announcements/article/initial-listing-mexc-will-list-akedo-ake-in-innovation-zone-with-convert-feature-17827791529373",
+            "https://www.mexc.com/announcements/article/initial-futures-listing-akedo-ake-usdt-m-futures-to-list-on-aug-21-2025-12-17827791529516",
+            "https://www.mexc.com/futures/AKE_USDT"
+          ]
+        },
+        {
+          "venue": "gateio",
+          "name": "Akedo",
+          "symbol": "AKE",
+          "market_types": [
+            "spot",
+            "perpetual"
+          ],
+          "contract_address": "0x2c3a8Ee94dDD97244a93Bc48298f97d2C412F7Db",
+          "official_urls": [
+            "https://www.gate.com/ru/announcements/article/47411",
+            "https://www.gate.com/es/announcements/article/47401"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "This evidence validates asset identity only.",
+    "It does not validate historical symbol identity before listing dates.",
+    "It does not prove liquidity, executable capacity, expectancy, returns, PnL, or an edge."
+  ]
+}
