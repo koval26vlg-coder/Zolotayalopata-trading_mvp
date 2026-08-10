@@ -1,0 +1,60 @@
+{
+  "schema": "trading_mvp_funding_unrestricted_metadata_discovery_approval_receipt_v1",
+  "created_at_utc": "2026-08-10T08:46:21.712408Z",
+  "status": "ACTIVE_SINGLE_USE",
+  "user_approval_received": true,
+  "user_approval_text": "Разрешаю unrestricted funding active-perp metadata discovery v1 по proposal_hash=0ac65470275e28819583bf6599d57674cda0cf6a523e4dbb1d85583997380f77 и proposal_file_sha256=8270be9ae66e546e0f5eca4d774d8f85985e732527bab0fc92415766c08b4de0: реализовать offline runtime и synthetic tests, затем при свежем открытом guard и отсутствии другого writer выполнить один видимый public read-only запуск через tools\\start_funding_unrestricted_metadata_discovery_visible.ps1, максимум 300 секунд и 50 MB. Разрешены только официальные contract metadata endpoints MEXC и Gate, максимум 4 HTTP-запроса, без сохранения raw payload, funding rates или цен. STOPPED_INCOMPLETE не повторять. Без collector/evaluator, OOS, returns/PnL, grid/retune, execution probe, paper/live, private API, реальных денег, плеча или маржи. После discovery требуется отдельный exact identity-verified candidate PlanOnly и отдельное разрешение на сбор данных.",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\funding-unrestricted-active-perp-metadata-discovery-proposal-20260810-v1.json",
+    "file_sha256": "8270be9ae66e546e0f5eca4d774d8f85985e732527bab0fc92415766c08b4de0",
+    "proposal_hash": "0ac65470275e28819583bf6599d57674cda0cf6a523e4dbb1d85583997380f77"
+  },
+  "run_binding": {
+    "run_id": "funding_unrestricted_metadata_discovery_20260810_v1",
+    "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\funding-unrestricted-metadata-discovery\\funding_unrestricted_metadata_discovery_20260810_v1",
+    "runtime_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\funding-unrestricted-metadata-discovery-runtime-manifest-20260810-v1.json",
+    "top_level_visible_launcher": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_funding_unrestricted_metadata_discovery_visible.ps1",
+    "single_use": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "execution_scope": {
+    "offline_runtime_implementation_allowed": true,
+    "synthetic_tests_allowed": true,
+    "one_visible_public_read_only_metadata_run_allowed": true,
+    "max_runtime_sec": 300,
+    "hard_output_cap_bytes": 50000000,
+    "maximum_total_http_requests": 4,
+    "maximum_attempts_per_endpoint": 2,
+    "allowed_endpoint_urls": [
+      "https://contract.mexc.com/api/v1/contract/detail",
+      "https://api.gateio.ws/api/v4/futures/usdt/contracts"
+    ],
+    "request_method": "GET",
+    "request_body_allowed": false,
+    "private_or_auth_headers_allowed": false,
+    "raw_response_persistence_allowed": false,
+    "funding_rates_or_prices_persisted_allowed": false,
+    "global_writer_claim_required": true,
+    "fresh_open_guard_required": true
+  },
+  "forbidden_scope": {
+    "market_data_collector": false,
+    "evaluator": false,
+    "oos_market_values": false,
+    "returns_or_pnl": false,
+    "grid_or_retune": false,
+    "execution_probe": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "automatic_candidate_planonly": false,
+    "automatic_data_collection": false
+  },
+  "next_checkpoint": {
+    "identity_verified_candidate_planonly_required": true,
+    "separate_exact_data_collection_approval_required": true
+  },
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "d0186ee9f0fc0081f0d9f21955173ef99797833a7ddd5a9912dda285fa3ef18b"
+}

@@ -1,0 +1,65 @@
+{
+  "schema": "trading_mvp_funding_unrestricted_metadata_discovery_runtime_manifest_v1",
+  "generated_at_utc": "2026-08-10T08:46:21.712408Z",
+  "status": "FROZEN_WITH_EXACT_SINGLE_USE_APPROVAL",
+  "run_id": "funding_unrestricted_metadata_discovery_20260810_v1",
+  "research_only": true,
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\funding-unrestricted-active-perp-metadata-discovery-proposal-20260810-v1.json",
+    "file_sha256": "8270be9ae66e546e0f5eca4d774d8f85985e732527bab0fc92415766c08b4de0",
+    "proposal_hash": "0ac65470275e28819583bf6599d57674cda0cf6a523e4dbb1d85583997380f77"
+  },
+  "approval_receipt": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-10-funding-unrestricted-metadata-discovery-v1-approval.json",
+    "file_sha256": "7d5446dcaec2f65c27f0c764e9f3bbe87fc24e3793a4a89b55b1726815aa21f6",
+    "receipt_hash": "d0186ee9f0fc0081f0d9f21955173ef99797833a7ddd5a9912dda285fa3ef18b"
+  },
+  "runtime": {
+    "module_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\funding_unrestricted_metadata_discovery.py",
+    "module_sha256": "151800729b2ce986ace428048b168f6794d37c9f1e88f0ee09b12cc2f51f3b79",
+    "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_funding_unrestricted_metadata_discovery_visible.ps1",
+    "launcher_sha256": "d728ed8f36a3399c27e166a9f3c5214cd62272eee8e8aca74960a8080cc03175",
+    "python_dependencies": "STANDARD_LIBRARY_ONLY",
+    "proxy_policy": "ENVIRONMENT_PROXIES_DISABLED"
+  },
+  "execution": {
+    "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\funding-unrestricted-metadata-discovery\\funding_unrestricted_metadata_discovery_20260810_v1",
+    "endpoint_urls": [
+      "https://contract.mexc.com/api/v1/contract/detail",
+      "https://api.gateio.ws/api/v4/futures/usdt/contracts"
+    ],
+    "request_method": "GET",
+    "max_runtime_sec": 300,
+    "hard_output_cap_bytes": 50000000,
+    "maximum_total_http_requests": 4,
+    "maximum_attempts_per_endpoint": 2,
+    "maximum_response_bytes_per_endpoint": 25000000,
+    "minimum_active_contracts_per_venue": 50,
+    "global_writer_claim_required": true,
+    "visible_terminal_required": true,
+    "single_use": true,
+    "stopped_incomplete_retry_authorized": false,
+    "raw_response_persistence_allowed": false,
+    "funding_rates_or_prices_persisted_allowed": false
+  },
+  "identity_boundary": {
+    "ticker_intersection_status": "PROVISIONAL_ONLY_NOT_IDENTITY_EVIDENCE",
+    "same_underlying_verified": false,
+    "separate_exact_identity_verified_candidate_planonly_required": true,
+    "separate_data_collection_approval_required": true
+  },
+  "forbidden_actions": {
+    "collector": false,
+    "evaluator": false,
+    "oos": false,
+    "returns_or_pnl": false,
+    "grid_or_retune": false,
+    "execution_probe": false,
+    "paper_or_live": false,
+    "private_api": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "manifest_hash_method": "sha256_canonical_json_excluding_manifest_hash",
+  "manifest_hash": "da070dc30b4019b9bfbd5d2fd257f635d37e77fd58c314c7f7851dd339df7e58"
+}
