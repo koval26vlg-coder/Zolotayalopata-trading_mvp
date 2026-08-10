@@ -1,0 +1,64 @@
+{
+  "schema": "trading_mvp_funding_spread_daily_hold_proposal_disposition_v1",
+  "created_at_utc": "2026-08-10T08:00:44.747653+00:00",
+  "status": "TERMINALLY_SUPERSEDED_NOT_IMPLEMENTABLE",
+  "decision": "REJECT_PROPOSAL_PREIMPLEMENTATION_ECONOMICS_MISMATCH",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\funding-spread-daily-hold-v1-planonly-proposal-20260810-v1.json",
+    "file_sha256": "59a7cbceaed2cbb23f86960774c98ace9ae1efa7f6a4f8d41c1f983d66dbc47a",
+    "proposal_hash": "8d824b9c01fcf9ff526b951e8caa6a4f7c146aa6dafc7d55af99ffa919e3a09d",
+    "immutable_original_modified": false
+  },
+  "approval_receipt": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-10-funding-spread-daily-hold-v1-planonly-v1-approval.json",
+    "file_sha256": "6fd8df9baece454d4500fcbb531fe28f922c6814d5df249de6bdc83252d1d2f7",
+    "receipt_hash": "1159cb5a9f29de0d7b27f7b78b26cc38842cbf9244c49d02c938f7aef03ee3ab",
+    "consumed": false
+  },
+  "economics_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\funding-daily-hold-v1-proposal-economics-audit-20260810-v1.json",
+    "file_sha256": "d5713d1d76c022e6211171fea82868e5e397f2a5ed7702cb7c1f6f837e9368ec",
+    "deterministic_result_hash": "41135dd570708fdc18c10a79fa019b99c29565e5d45cdde320293c0a2543143e",
+    "minimum_assets_required": 4,
+    "normal_positive_candidate_count": 0,
+    "stress_positive_candidate_count": 0,
+    "stress_break_even_within_oos_count": 1,
+    "explicit_price_alpha_contract": false
+  },
+  "authoritative_effect": {
+    "old_proposal_or_approval_reuse_allowed": false,
+    "official_identity_verification_required_for_old_proposal": false,
+    "strategy_implementation_allowed": false,
+    "planonly_build_allowed": false,
+    "runtime_manifest_build_allowed": false,
+    "oos_evaluation_allowed": false,
+    "output_generation_allowed": false
+  },
+  "replacement_universe_policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\funding-asset-universe-policy-v1.json",
+    "file_sha256": "f59e5d4e8eec0655d54937f2eea0dc5483f81163b58feeafbf5dc388d46bccd8",
+    "policy_id": "funding_any_asset_official_identity_v1",
+    "policy_hash": "d1fdfa616a562f9437018e3c2fd0c883483a9fdab78c6c7894012df9efee40a7",
+    "scope": "FUNDING_STRATEGIES_ONLY",
+    "asset_universe_mode": "ALL_ASSETS_WITHOUT_CATEGORY_EXCLUSIONS",
+    "binding_effect": "Future funding proposals may consider every asset category and Binance-listing status, then freeze an exact identity-verified candidate set under a new hash.",
+    "changes_current_venue_scope": false
+  },
+  "next_allowed_action": "BUILD_NEW_PRE_OOS_FUNDING_CANDIDATE_PROPOSAL_BOUND_TO_UNRESTRICTED_ASSET_POLICY_AND_COST_FEASIBILITY",
+  "safety": {
+    "oos_market_values_read": false,
+    "returns_or_pnl_computed": false,
+    "evaluator_run": false,
+    "collector_run": false,
+    "network_market_data_accessed": false,
+    "grid_or_retune": false,
+    "execution_probe": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "stopped_incomplete_resumed": false
+  },
+  "disposition_hash_method": "sha256_canonical_json_excluding_disposition_hash",
+  "disposition_hash": "fdf5f85b7e38598b6b0e463d4ecffa991c251d83921e0313c2e235a16e3fd296"
+}

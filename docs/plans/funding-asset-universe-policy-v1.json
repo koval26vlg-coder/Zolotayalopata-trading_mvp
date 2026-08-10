@@ -1,0 +1,73 @@
+{
+  "schema": "trading_mvp_funding_asset_universe_policy_v1",
+  "policy_id": "funding_any_asset_official_identity_v1",
+  "status": "ACTIVE_FOR_NEW_FUNDING_PLANONLY_CONTRACTS",
+  "scope": "FUNDING_STRATEGIES_ONLY",
+  "effective_from_utc": "2026-08-10T00:00:00Z",
+  "user_directive_ru": "Funding-стратегии могут использовать любые монеты без исключения.",
+  "asset_universe": {
+    "mode": "ALL_ASSETS_WITHOUT_CATEGORY_EXCLUSIONS",
+    "whitelist_required": false,
+    "blacklisted_symbols": [],
+    "blacklisted_categories": [],
+    "binance_listing_status_filter": "NONE",
+    "category_filters": {
+      "exclude_binance_listed": false,
+      "exclude_non_binance": false,
+      "exclude_stablecoins": false,
+      "exclude_memecoins": false,
+      "exclude_new_listings": false,
+      "exclude_low_market_cap": false,
+      "exclude_unknown_market_cap": false,
+      "exclude_wrapped_assets": false,
+      "exclude_rebrands": false,
+      "exclude_leveraged_tokens": false
+    },
+    "selection_rule": "Asset name, ticker, category, age, market capitalization, Binance listing status or narrative may never be used as an exclusion rule for a funding strategy.",
+    "ranking_rule": "Candidates may be ranked by frozen pre-OOS funding, quality, liquidity and cost evidence, but ranking does not create an asset-category exclusion.",
+    "survivorship_rule": "Point-in-time listing and lifecycle evidence remains required when a historical claim depends on availability at the evaluated timestamp."
+  },
+  "candidate_eligibility_gates": {
+    "official_identity": "EXACT_SAME_UNDERLYING_VERIFIED_PER_VENUE",
+    "ticker_text_alone_is_identity_evidence": false,
+    "public_market_exists_on_each_required_venue": true,
+    "required_data_complete": true,
+    "quality_liquidity_and_cost_gates_apply": true,
+    "asset_category_may_exclude": [],
+    "fail_closed_reasons": [
+      "official underlying identity is unresolved or differs between required venues",
+      "required public instrument is absent or inactive on a required venue",
+      "required immutable data is missing, corrupt or hash-mismatched",
+      "frozen quality, liquidity, capacity or cost gate fails"
+    ]
+  },
+  "current_venue_scope": [
+    "mexc",
+    "gateio"
+  ],
+  "venue_scope_changed_by_this_policy": false,
+  "venue_scope_note": "This rule expands eligible assets only. It does not add Binance or any other venue to a strategy whose venue contract remains MEXC/Gate.",
+  "binding": {
+    "existing_immutable_proposals_or_plans_changed": false,
+    "old_hash_reuse_allowed": false,
+    "new_funding_proposal_must_bind_policy_path_and_sha256": true,
+    "new_funding_planonly_must_freeze_exact_candidate_set": true,
+    "candidate_set_change_after_plan_hash": "REQUIRES_NEW_PLAN_HASH",
+    "current_daily_hold_v1_proposal_disposition": "UNAFFECTED_BY_THIS_POLICY_AND_MUST_BE_AUDITED_UNDER_ITS_OWN_FROZEN_UNIVERSE"
+  },
+  "authorization": {
+    "candidate_discovery_on_pre_oos_data": true,
+    "official_identity_metadata_verification": true,
+    "oos_market_value_read": false,
+    "evaluator_or_collector_launch": false,
+    "returns_or_pnl": false,
+    "grid_or_retune": false,
+    "execution_probe": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "policy_hash_method": "sha256_canonical_json_excluding_policy_hash",
+  "policy_hash": "d1fdfa616a562f9437018e3c2fd0c883483a9fdab78c6c7894012df9efee40a7"
+}

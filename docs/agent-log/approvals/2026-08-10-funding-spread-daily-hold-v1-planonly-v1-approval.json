@@ -1,0 +1,52 @@
+{
+  "schema": "trading_mvp_funding_spread_daily_hold_planonly_approval_receipt_v1",
+  "created_at_utc": "2026-08-10T08:00:44.747653+00:00",
+  "status": "RECEIVED_NOT_CONSUMED_PREIMPLEMENTATION_ECONOMICS_FAIL",
+  "user_approval_received": true,
+  "user_approval_text": "Разрешаю funding spread daily hold v1 PlanOnly по proposal_hash=8d824b9c01fcf9ff526b951e8caa6a4f7c146aa6dafc7d55af99ffa919e3a09d и proposal_file_sha256=59a7cbceaed2cbb23f86960774c98ace9ae1efa7f6a4f8d41c1f983d66dbc47a: проверить официальную идентичность активов, реализовать код, synthetic tests и собрать immutable PlanOnly/runtime manifest. Без чтения OOS-значений, запуска evaluator/collector, returns/PnL, grid/retune, execution probe, paper/live, private API, реальных денег, плеча или маржи. Это не разрешение на OOS-запуск.",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\funding-spread-daily-hold-v1-planonly-proposal-20260810-v1.json",
+    "file_sha256": "59a7cbceaed2cbb23f86960774c98ace9ae1efa7f6a4f8d41c1f983d66dbc47a",
+    "proposal_hash": "8d824b9c01fcf9ff526b951e8caa6a4f7c146aa6dafc7d55af99ffa919e3a09d"
+  },
+  "preimplementation_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\funding-daily-hold-v1-proposal-economics-audit-20260810-v1.json",
+    "file_sha256": "d5713d1d76c022e6211171fea82868e5e397f2a5ed7702cb7c1f6f837e9368ec",
+    "deterministic_result_hash": "41135dd570708fdc18c10a79fa019b99c29565e5d45cdde320293c0a2543143e",
+    "decision": "REJECT_PROPOSAL_PREIMPLEMENTATION_ECONOMICS_MISMATCH",
+    "audit_passed": true,
+    "proposal_approval_consumable": false
+  },
+  "approval_consumption": {
+    "consumed": false,
+    "reason": "The frozen four-day funding carry cannot cover frozen normal or stress cycle costs for the required minimum candidate count.",
+    "late_reuse_allowed": false,
+    "implementation_authorized_from_this_receipt": false,
+    "planonly_or_runtime_manifest_authorized_from_this_receipt": false,
+    "oos_execution_authorized": false
+  },
+  "work_performed": {
+    "proposal_hash_and_file_hash_verified": true,
+    "pre_oos_summary_economics_audited": true,
+    "official_identity_network_verification_performed": false,
+    "strategy_or_evaluator_implemented": false,
+    "immutable_planonly_built": false,
+    "runtime_manifest_built": false
+  },
+  "safety": {
+    "oos_market_values_read": false,
+    "returns_or_pnl_computed": false,
+    "evaluator_run": false,
+    "collector_run": false,
+    "network_market_data_accessed": false,
+    "grid_or_retune": false,
+    "execution_probe": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "stopped_incomplete_resumed": false
+  },
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "1159cb5a9f29de0d7b27f7b78b26cc38842cbf9244c49d02c938f7aef03ee3ab"
+}
