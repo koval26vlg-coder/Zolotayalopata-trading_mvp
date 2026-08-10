@@ -1,0 +1,88 @@
+{
+  "schema": "trading_mvp_funding_unrestricted_metadata_discovery_disposition_v1",
+  "created_at_utc": "2026-08-10T14:50:42.4284635Z",
+  "status": "STOPPED_INCOMPLETE",
+  "decision": "TERMINALLY_CLOSE_APPROVED_DISCOVERY_NO_RETRY",
+  "terminal": true,
+  "run_id": "funding_unrestricted_metadata_discovery_20260810_v1",
+  "approval": {
+    "proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\funding-unrestricted-active-perp-metadata-discovery-proposal-20260810-v1.json",
+    "proposal_file_sha256": "8270be9ae66e546e0f5eca4d774d8f85985e732527bab0fc92415766c08b4de0",
+    "proposal_hash": "0ac65470275e28819583bf6599d57674cda0cf6a523e4dbb1d85583997380f77",
+    "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-10-funding-unrestricted-metadata-discovery-v1-approval.json",
+    "receipt_file_sha256": "7d5446dcaec2f65c27f0c764e9f3bbe87fc24e3793a4a89b55b1726815aa21f6",
+    "receipt_hash": "d0186ee9f0fc0081f0d9f21955173ef99797833a7ddd5a9912dda285fa3ef18b",
+    "approval_consumed": true,
+    "approval_reuse_allowed": false,
+    "retry_authorized": false
+  },
+  "runtime": {
+    "manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\funding-unrestricted-metadata-discovery-runtime-manifest-20260810-v1.json",
+    "manifest_file_sha256": "6f9c99830d44e92a3080d08980a960a856555451cd0fb35b1ed4343fd170f4ce",
+    "manifest_hash": "da070dc30b4019b9bfbd5d2fd257f635d37e77fd58c314c7f7851dd339df7e58",
+    "implementation_commit": "4b79a05425e563a2fb12a3ed60649a40a4fbfdff",
+    "max_runtime_sec": 300,
+    "hard_output_cap_bytes": 50000000,
+    "maximum_total_http_requests": 4
+  },
+  "launch_evidence": {
+    "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\funding_unrestricted_metadata_discovery_20260810_v1.launch.json",
+    "launch_record_file_sha256": "9e81de0135f2656b36ee1994e0d854e356196d10fbe6d0fe41b08cba3d1c8294",
+    "launch_status": "STOPPED_INCOMPLETE",
+    "visible_terminal_launched": true,
+    "visible_terminal_pid": 37832,
+    "terminal_ownership_verified": true,
+    "writer_pid": 1988,
+    "started_at_utc": "2026-08-10T09:06:46.5695145+00:00",
+    "writer_claim_acquired_at_utc": "2026-08-10T09:06:51.262170+00:00",
+    "finished_at_utc": "2026-08-10T09:07:01.7732681+00:00",
+    "writer_claim_archive_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\global-writer-claim-archive\\funding_unrestricted_metadata_discovery_20260810_v1.20260810T090701756478Z.json",
+    "writer_claim_archive_file_sha256": "74944fe6a796a0cd9731604a69b00415a1a7c87e58e1d80cd6bd3b22c04586ac",
+    "writer_claim_released": true,
+    "active_writer_claim_exists_at_disposition": false
+  },
+  "failure": {
+    "runtime_exit_code": 2,
+    "launcher_message": "Metadata runtime failed with exit code 2.",
+    "durable_error_detail_status": "NOT_CAPTURED",
+    "exact_failure_cause": "UNKNOWN",
+    "failure_stage": "UNKNOWN_AFTER_WRITER_CLAIM",
+    "http_request_count_status": "UNKNOWN_BOUNDED_MAX_4",
+    "http_request_count_maximum": 4,
+    "inference_not_authoritative": "The approximately ten-second owned runtime is compatible with a network or endpoint failure but does not prove one."
+  },
+  "output": {
+    "expected_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\funding-unrestricted-metadata-discovery\\funding_unrestricted_metadata_discovery_20260810_v1",
+    "output_path_exists_at_disposition": false,
+    "accepted_discovery_artifact_exists": false,
+    "raw_payload_persisted": false,
+    "funding_rates_persisted": false,
+    "prices_persisted": false,
+    "identity_verified_candidate_planonly_created": false
+  },
+  "safety": {
+    "second_writer_started": false,
+    "collector_run": false,
+    "evaluator_run": false,
+    "oos_values_read": false,
+    "returns_or_pnl_computed": false,
+    "grid_or_retune": false,
+    "execution_probe": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "stopped_incomplete_resumed": false
+  },
+  "next_checkpoint": {
+    "branch_status": "TERMINALLY_CLOSED_NO_RETRY",
+    "discovery_accepted": false,
+    "identity_verified_candidate_planonly_allowed_from_this_run": false,
+    "data_collection_allowed": false,
+    "required_action": "NEW_EXACT_FAILURE_DIAGNOSTIC_REFREEZE_AND_ONE_SHOT_APPROVAL",
+    "required_change": "Persist bounded sanitized failure diagnostics without persisting raw payloads, funding rates or prices.",
+    "old_receipt_reuse_allowed": false
+  },
+  "disposition_hash_method": "sha256_canonical_json_excluding_disposition_hash",
+  "disposition_hash": "1b2727abc139088176da183ec814130180db5d2b007f5c1acc8b7321031fef1c"
+}
