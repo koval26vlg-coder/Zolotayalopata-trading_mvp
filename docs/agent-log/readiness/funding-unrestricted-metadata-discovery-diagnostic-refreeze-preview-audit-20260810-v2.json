@@ -1,0 +1,88 @@
+{
+  "schema": "trading_mvp_funding_unrestricted_metadata_discovery_diagnostic_refreeze_preview_audit_v2",
+  "generated_at_utc": "2026-08-10T15:37:47.8252387Z",
+  "status": "PASS_EXACT_PATCH_READY_NOT_APPLIED_NOT_AUTHORIZED",
+  "base_commit": "94842c538cbe4f35d8aacd03b05928955b5ac615",
+  "terminal_source_run": {
+    "run_id": "funding_unrestricted_metadata_discovery_20260810_v1",
+    "status": "STOPPED_INCOMPLETE",
+    "retry_authorized": false,
+    "disposition_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\funding-unrestricted-metadata-discovery-20260810-v1-stopped-incomplete.json",
+    "disposition_file_sha256": "07e02627f78952abd4aa445fa96626d7a0b373c31ef1a27a890641e988835c27",
+    "disposition_hash": "1b2727abc139088176da183ec814130180db5d2b007f5c1acc8b7321031fef1c"
+  },
+  "implementation_preview": {
+    "patch_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\funding-unrestricted-metadata-discovery-diagnostic-refreeze-implementation-preview-20260810-v2.patch",
+    "patch_file_sha256": "f116ab6695988402ea636f8f46b7de1f48a52c57f3b7734b0417c4efb4de9f47",
+    "patch_applied_in_primary_worktree": false,
+    "patch_file_count": 3,
+    "files": [
+      {
+        "path": "trading_mvp\\src\\funding_unrestricted_metadata_discovery.py",
+        "preimage_sha256": "151800729b2ce986ace428048b168f6794d37c9f1e88f0ee09b12cc2f51f3b79",
+        "postimage_sha256": "da0a8765d2459d81be008248f6b46c445257382cfa4ac02ba1bc672d8e9ff6e9"
+      },
+      {
+        "path": "trading_mvp\\tests\\test_funding_unrestricted_metadata_discovery.py",
+        "preimage_sha256": "cff44dec607fd9b71d8010804fe6f2a1fe4f48dab6d7b7227304a679ff10f716",
+        "postimage_sha256": "de1ce95ff91c34101c3c7078b42219393f0a0d042360ae700b8745bc62294ee7"
+      },
+      {
+        "path": "tools\\start_funding_unrestricted_metadata_discovery_visible.ps1",
+        "preimage_sha256": "d728ed8f36a3399c27e166a9f3c5214cd62272eee8e8aca74960a8080cc03175",
+        "postimage_sha256": "09e04101aacb065c065403f05212e25a0a0eac818d14a03c71977a14f206bb34"
+      }
+    ]
+  },
+  "diagnostic_contract": {
+    "schema": "trading_mvp_funding_unrestricted_metadata_discovery_failure_v2",
+    "immutable_exclusive_create": true,
+    "maximum_bytes": 16384,
+    "allowlisted_category_stage_endpoint_exception_only": true,
+    "free_form_error_text_persisted": false,
+    "raw_payload_persisted": false,
+    "funding_rates_persisted": false,
+    "prices_persisted": false,
+    "request_count_bounded_maximum": 4,
+    "http_redirect_following_allowed": false,
+    "writer_exact_property_validation": true,
+    "reader_canonical_hash_and_json_type_validation": true,
+    "failure_hash_required": true
+  },
+  "verification": {
+    "isolated_preview_worktree": "C:\\zlp-v2",
+    "independent_apply_worktree": "C:\\zv2",
+    "git_apply_check": "PASS",
+    "independent_postimage_hashes_match": true,
+    "tdd_red_import_failure_observed": true,
+    "targeted_synthetic_tests": "17/17 PASS",
+    "all_funding_tests": "99/99 PASS",
+    "ruff": "PASS",
+    "py_compile": "PASS",
+    "powershell_parser": "PASS",
+    "unapproved_preflight": "BLOCKED_MISSING_V2_RUNTIME_MANIFEST",
+    "network_accessed": false,
+    "output_created": false,
+    "failure_record_created_by_preflight": false
+  },
+  "scope_audit": {
+    "endpoint_urls_changed": false,
+    "request_limits_changed": false,
+    "runtime_or_output_cap_changed": false,
+    "venue_or_universe_changed": false,
+    "identity_boundary_changed": false,
+    "collector_or_evaluator_added": false,
+    "oos_or_returns_read": false,
+    "grid_or_retune_added": false,
+    "paper_live_private_or_capital_added": false,
+    "stopped_incomplete_v1_retried": false
+  },
+  "authorization": {
+    "patch_apply_authorized": false,
+    "runtime_manifest_v2_creation_authorized": false,
+    "network_run_v2_authorized": false,
+    "exact_user_approval_required": true
+  },
+  "audit_hash_method": "sha256_canonical_json_excluding_audit_hash",
+  "audit_hash": "517112fd6c4853a83848cb4d0370c6c6975c63fa18bd60970ba60f4d65dfdde0"
+}
