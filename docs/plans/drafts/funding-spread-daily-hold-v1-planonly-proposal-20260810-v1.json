@@ -1,0 +1,811 @@
+{
+  "schema": "trading_mvp_funding_spread_daily_hold_planonly_proposal_v1",
+  "mode": "PlanOnlyReviewProposal",
+  "status": "USER_REVIEW_REQUIRED_NOT_AUTHORIZED",
+  "generated_at_local": "2026-08-10T10:45:36.5832896+03:00",
+  "generated_at_utc": "2026-08-10T07:45:36.5832896Z",
+  "research_only": true,
+  "problem_statement": {
+    "decision": "MATERIALLY_DISTINCT_DAILY_OOS_CONTRACT_REQUIRED",
+    "simple_explanation": "The current immutable cache has daily candles, while the closed legacy strategy requires hourly entry prices. A new daily hold contract is required and cannot be treated as a resume.",
+    "legacy_strategy_reopened": false,
+    "oos_values_read_for_this_proposal": false,
+    "august_performance_used_for_candidate_selection": false
+  },
+  "branch_boundary": {
+    "legacy_hypothesis_id": "funding_regime_persistence_carry_v2",
+    "legacy_plan": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\funding-regime-persistence-v2\\plans\\funding_regime_persistence_v2_planonly_20260717_001014.json",
+      "sha256": "2eebb78dd7fc57f5e0a74ea707e8a9ce2d1dfdd66162dc3b0ad8d1ee5d328cf4",
+      "size_bytes": 11148
+    },
+    "legacy_plan_hash": "c51562b959001970f3c689f7e277e8d3131d17c7f5b0e4e206f29750b1b60465",
+    "legacy_closure": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\funding-regime-persistence-v2\\closures\\funding_regime_persistence_v2_closure_20260717_004220.json",
+      "sha256": "a821a012c83f9d5b38a76680187f4b38e50f6bf8a6a4b08e5bbd4673b55203cc",
+      "size_bytes": 2073
+    },
+    "legacy_closure_status": "BRANCH_CLOSED_INSUFFICIENT_DATA",
+    "legacy_verdict": "INSUFFICIENT_DATA",
+    "new_hypothesis_id": "cross_venue_perp_funding_spread_daily_hold_v1",
+    "materially_distinct_fields": [
+      "kline_resolution_1h_to_1d",
+      "entry_next_hour_open_to_fixed_daily_open",
+      "dynamic_regime_hold_to_fixed_non_overlapping_four_day_holds",
+      "pre_oos_cross_sectional_candidate_freeze"
+    ],
+    "same_strategy_resume_allowed": false,
+    "stopped_incomplete_resume_allowed": false
+  },
+  "reopening_evidence": {
+    "audit": {
+      "path": "exports\\trading-mvp\\analysis\\funding_forward_reopen_audit_20260810.json",
+      "sha256": "127ef671b5808eef4760f9381e22cf86e0d35a98b823da5dafe5ca42e683ef78",
+      "size_bytes": 6413
+    },
+    "deterministic_result_hash": "cc2f64c2a95aa3787dbdcfd3e9b9447ba8b1006eaebc02f8e09a5800dbe5ea89",
+    "decision": "CURRENT_CACHE_REQUIRES_MATERIALLY_DISTINCT_PLANONLY",
+    "current_kline_resolution": "1d",
+    "legacy_required_kline_resolution": "1h",
+    "market_row_arrays_parsed": false,
+    "returns_or_pnl_read": false
+  },
+  "pre_oos_candidate_freeze": {
+    "cutoff_utc": "2026-07-21T00:00:00Z",
+    "source_manifest": {
+      "path": "exports\\trading-mvp\\daily\\daily_forward_20260720\\manifest.json",
+      "sha256": "c42633f8af0b491b8e7d10bfe783f47386013ea6cd9b3495edc5c8de41c2277b",
+      "size_bytes": 153557
+    },
+    "pair_summary": {
+      "path": "exports\\trading-mvp\\analysis\\funding_pairs_forward_20260720.json",
+      "sha256": "9e086cc2fb32607559455c2cfa5e9768be24e489fa1c84edbc0f8f0eea22bc1d",
+      "size_bytes": 66467
+    },
+    "execution_gate": {
+      "path": "exports\\trading-mvp\\analysis\\execution_gate_forward_20260720.json",
+      "sha256": "626bdcba27fa8f169ee75036197ea57fadcf20beeb4ad240e23c33607d471382",
+      "size_bytes": 40516
+    },
+    "selection_rule": "Exact Jul20 execution-gate candidates with empty errors and positive g_construction_perp_perp.net_annual_pct, intersected with the Jul20 pair summary; no recomputation and no August performance selection.",
+    "selected_symbols": [
+      "BULLA",
+      "ESPORTS",
+      "AKE",
+      "EVAA",
+      "SKYAI",
+      "B",
+      "BTW",
+      "RAVE"
+    ],
+    "selected_count": 8,
+    "directions_frozen_from": "Jul20 pair_summary spread_gate_minus_mexc.direction",
+    "candidate_selection_may_not_change_after_oos_read": true,
+    "candidates": [
+      {
+        "symbol": "BULLA",
+        "instrument": "BULLA_USDT",
+        "frozen_legacy_direction_label": "short_b_long_a",
+        "frozen_venue_direction": "short_mexc_perp_long_gateio_perp",
+        "pre_oos_aligned_days": 91,
+        "pre_oos_annualized_spread_pct": -9.33,
+        "pre_oos_sign_consistency": 0.582,
+        "pre_oos_pair_net_annual_pct": 0.93,
+        "pre_oos_execution_gate_net_annual_pct": 0.39,
+        "pre_oos_execution_capacity_usd": 398.11,
+        "pre_oos_execution_error_count": 0,
+        "identity_status": "PENDING_OFFICIAL_SAME_ASSET_VERIFICATION",
+        "current_source_complete": false,
+        "eligibility_before_oos_value_read": "EXCLUDE_MISSING_DUAL_LEG_SOURCE"
+      },
+      {
+        "symbol": "ESPORTS",
+        "instrument": "ESPORTS_USDT",
+        "frozen_legacy_direction_label": "short_b_long_a",
+        "frozen_venue_direction": "short_mexc_perp_long_gateio_perp",
+        "pre_oos_aligned_days": 91,
+        "pre_oos_annualized_spread_pct": -31.53,
+        "pre_oos_sign_consistency": 0.418,
+        "pre_oos_pair_net_annual_pct": 23.13,
+        "pre_oos_execution_gate_net_annual_pct": 24.07,
+        "pre_oos_execution_capacity_usd": 510.25,
+        "pre_oos_execution_error_count": 0,
+        "identity_status": "PENDING_OFFICIAL_SAME_ASSET_VERIFICATION",
+        "current_source_complete": true,
+        "eligibility_before_oos_value_read": "PENDING_IDENTITY_ONLY"
+      },
+      {
+        "symbol": "AKE",
+        "instrument": "AKE_USDT",
+        "frozen_legacy_direction_label": "short_b_long_a",
+        "frozen_venue_direction": "short_mexc_perp_long_gateio_perp",
+        "pre_oos_aligned_days": 91,
+        "pre_oos_annualized_spread_pct": -29.75,
+        "pre_oos_sign_consistency": 0.879,
+        "pre_oos_pair_net_annual_pct": 21.35,
+        "pre_oos_execution_gate_net_annual_pct": 21.9,
+        "pre_oos_execution_capacity_usd": 1671.56,
+        "pre_oos_execution_error_count": 0,
+        "identity_status": "OFFICIAL_SAME_ASSET_VERIFIED",
+        "current_source_complete": true,
+        "eligibility_before_oos_value_read": "IDENTITY_AND_SOURCE_PRECHECK_PASS"
+      },
+      {
+        "symbol": "EVAA",
+        "instrument": "EVAA_USDT",
+        "frozen_legacy_direction_label": "short_b_long_a",
+        "frozen_venue_direction": "short_mexc_perp_long_gateio_perp",
+        "pre_oos_aligned_days": 91,
+        "pre_oos_annualized_spread_pct": -28.95,
+        "pre_oos_sign_consistency": 0.813,
+        "pre_oos_pair_net_annual_pct": 20.55,
+        "pre_oos_execution_gate_net_annual_pct": 21.25,
+        "pre_oos_execution_capacity_usd": 1416.02,
+        "pre_oos_execution_error_count": 0,
+        "identity_status": "PENDING_OFFICIAL_SAME_ASSET_VERIFICATION",
+        "current_source_complete": true,
+        "eligibility_before_oos_value_read": "PENDING_IDENTITY_ONLY"
+      },
+      {
+        "symbol": "SKYAI",
+        "instrument": "SKYAI_USDT",
+        "frozen_legacy_direction_label": "short_a_long_b",
+        "frozen_venue_direction": "short_gateio_perp_long_mexc_perp",
+        "pre_oos_aligned_days": 91,
+        "pre_oos_annualized_spread_pct": 15.62,
+        "pre_oos_sign_consistency": 0.451,
+        "pre_oos_pair_net_annual_pct": 7.22,
+        "pre_oos_execution_gate_net_annual_pct": 8.05,
+        "pre_oos_execution_capacity_usd": 519.8,
+        "pre_oos_execution_error_count": 0,
+        "identity_status": "PENDING_OFFICIAL_SAME_ASSET_VERIFICATION",
+        "current_source_complete": true,
+        "eligibility_before_oos_value_read": "PENDING_IDENTITY_ONLY"
+      },
+      {
+        "symbol": "B",
+        "instrument": "B_USDT",
+        "frozen_legacy_direction_label": "short_b_long_a",
+        "frozen_venue_direction": "short_mexc_perp_long_gateio_perp",
+        "pre_oos_aligned_days": 91,
+        "pre_oos_annualized_spread_pct": -21.49,
+        "pre_oos_sign_consistency": 0.758,
+        "pre_oos_pair_net_annual_pct": 13.09,
+        "pre_oos_execution_gate_net_annual_pct": 12.9,
+        "pre_oos_execution_capacity_usd": 1668.84,
+        "pre_oos_execution_error_count": 0,
+        "identity_status": "PENDING_OFFICIAL_SAME_ASSET_VERIFICATION",
+        "current_source_complete": false,
+        "eligibility_before_oos_value_read": "EXCLUDE_MISSING_DUAL_LEG_SOURCE"
+      },
+      {
+        "symbol": "BTW",
+        "instrument": "BTW_USDT",
+        "frozen_legacy_direction_label": "short_a_long_b",
+        "frozen_venue_direction": "short_gateio_perp_long_mexc_perp",
+        "pre_oos_aligned_days": 47,
+        "pre_oos_annualized_spread_pct": 10.19,
+        "pre_oos_sign_consistency": 0.574,
+        "pre_oos_pair_net_annual_pct": 1.79,
+        "pre_oos_execution_gate_net_annual_pct": 0.88,
+        "pre_oos_execution_capacity_usd": 1160.74,
+        "pre_oos_execution_error_count": 0,
+        "identity_status": "PENDING_OFFICIAL_SAME_ASSET_VERIFICATION",
+        "current_source_complete": true,
+        "eligibility_before_oos_value_read": "PENDING_IDENTITY_ONLY"
+      },
+      {
+        "symbol": "RAVE",
+        "instrument": "RAVE_USDT",
+        "frozen_legacy_direction_label": "short_a_long_b",
+        "frozen_venue_direction": "short_gateio_perp_long_mexc_perp",
+        "pre_oos_aligned_days": 91,
+        "pre_oos_annualized_spread_pct": 57.49,
+        "pre_oos_sign_consistency": 0.824,
+        "pre_oos_pair_net_annual_pct": 49.09,
+        "pre_oos_execution_gate_net_annual_pct": 49.92,
+        "pre_oos_execution_capacity_usd": 1451.67,
+        "pre_oos_execution_error_count": 0,
+        "identity_status": "PENDING_OFFICIAL_SAME_ASSET_VERIFICATION",
+        "current_source_complete": true,
+        "eligibility_before_oos_value_read": "PENDING_IDENTITY_ONLY"
+      }
+    ]
+  },
+  "identity_gate": {
+    "current_evidence": {
+      "path": "docs\\analysis\\funding-forward\\funding_forward_identity_evidence_20260810_v1.json",
+      "sha256": "0b7efae62d5c284ac59bfb003178eb9879af8ca694b40e0502a7b89dca577b81",
+      "size_bytes": 1804
+    },
+    "verified_symbols": [
+      "AKE"
+    ],
+    "pending_symbols": [
+      "BULLA",
+      "ESPORTS",
+      "EVAA",
+      "SKYAI",
+      "B",
+      "BTW",
+      "RAVE"
+    ],
+    "exact_requirement": "Every included MEXC/Gate pair must be proven to represent the same underlying asset using official venue or official project contract identifiers; ticker text alone is insufficient.",
+    "unresolved_identity_disposition": "EXCLUDE_BEFORE_ANY_OOS_VALUE_READ",
+    "minimum_verified_source_complete_assets": 4,
+    "public_identity_metadata_network_access_after_approval": true,
+    "market_data_network_access_after_approval": false
+  },
+  "sealed_oos_inputs": {
+    "root": "exports\\trading-mvp\\daily\\daily_forward_20260810",
+    "manifest": {
+      "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\manifest.json",
+      "sha256": "836f1909a2147b0b514dcfb5cfc389eba819a85d663ea17749bb80dcb222d484",
+      "size_bytes": 153681
+    },
+    "collector_run_id": "daily_forward_20260810",
+    "collector_start_sec": 1769061904,
+    "collector_end_sec": 1786341904,
+    "collector_days": 200,
+    "collector_error_count": 0,
+    "kline_resolution": "1d",
+    "oos_start_utc": "2026-07-21T00:00:00Z",
+    "oos_end_exclusive_utc": "2026-08-10T00:00:00Z",
+    "excluded_incomplete_or_post_window_day": "2026-08-10",
+    "existing_file_bindings": [
+      {
+        "symbol": "ESPORTS",
+        "instrument": "ESPORTS_USDT",
+        "exchange": "mexc",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\klines\\ESPORTS_USDT.json",
+        "sha256": "7481a0598b8dd0d3953e6af6c0d14e54f2c5d515d9ff9febdd2e660b5f54bc7c",
+        "size_bytes": 28759,
+        "manifest_rows": 200,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "ESPORTS",
+        "instrument": "ESPORTS_USDT",
+        "exchange": "mexc",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\funding\\ESPORTS_USDT.json",
+        "sha256": "76620d8f8901a4291d8598098de7a9fda1f28a8e28fd3930ee2333b4aaaaa365",
+        "size_bytes": 73844,
+        "manifest_rows": 1584,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "ESPORTS",
+        "instrument": "ESPORTS_USDT",
+        "exchange": "gateio",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\klines\\ESPORTS_USDT.json",
+        "sha256": "1d951de784b0fde2caae6d2061f96bac4fe000288e510822e1f510234a38a0b4",
+        "size_bytes": 28731,
+        "manifest_rows": 201,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "ESPORTS",
+        "instrument": "ESPORTS_USDT",
+        "exchange": "gateio",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\funding\\ESPORTS_USDT.json",
+        "sha256": "d80cdcce3d9cdf06aabf79a60c0fd62bd79fd67ff04ca64d831d30533d6dfb47",
+        "size_bytes": 58423,
+        "manifest_rows": 1256,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "AKE",
+        "instrument": "AKE_USDT",
+        "exchange": "mexc",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\klines\\AKE_USDT.json",
+        "sha256": "a8710fa4def1b1b3262f2c1107f5e144924edaf60a8fdfc2588a5800c1c72a3c",
+        "size_bytes": 30522,
+        "manifest_rows": 200,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "AKE",
+        "instrument": "AKE_USDT",
+        "exchange": "mexc",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\funding\\AKE_USDT.json",
+        "sha256": "ddb39bc07fcacb3fc7d5ea91a7c7ba62ca354c1a412ea513dc038e303b8c0abf",
+        "size_bytes": 55907,
+        "manifest_rows": 1200,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "AKE",
+        "instrument": "AKE_USDT",
+        "exchange": "gateio",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\klines\\AKE_USDT.json",
+        "sha256": "a3145aa7a41fb0ff94acddb8b8a77bf5109cb9d9bc58702e8a1a570af769be50",
+        "size_bytes": 30673,
+        "manifest_rows": 201,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "AKE",
+        "instrument": "AKE_USDT",
+        "exchange": "gateio",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\funding\\AKE_USDT.json",
+        "sha256": "af1fcd14080ab62a1fdf3f83f83b963de1ad619baff615f7428208e4f8893143",
+        "size_bytes": 48801,
+        "manifest_rows": 1073,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "EVAA",
+        "instrument": "EVAA_USDT",
+        "exchange": "mexc",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\klines\\EVAA_USDT.json",
+        "sha256": "c20903b67abc3704a7e1fd0ab7790cdb9fd94ee7a11968ceaa61b8c7cafa82f1",
+        "size_bytes": 28524,
+        "manifest_rows": 200,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "EVAA",
+        "instrument": "EVAA_USDT",
+        "exchange": "mexc",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\funding\\EVAA_USDT.json",
+        "sha256": "c130dafab6c82a01b269d6f825f45dcb79ec44b8c5b027b587d859543b74a0f4",
+        "size_bytes": 55469,
+        "manifest_rows": 1200,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "EVAA",
+        "instrument": "EVAA_USDT",
+        "exchange": "gateio",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\klines\\EVAA_USDT.json",
+        "sha256": "579a0296d78898f182a0951319cce1a6979dbac9f3ad21bde09f81c96c93093a",
+        "size_bytes": 28257,
+        "manifest_rows": 201,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "EVAA",
+        "instrument": "EVAA_USDT",
+        "exchange": "gateio",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\funding\\EVAA_USDT.json",
+        "sha256": "c29b3202a6135d9ca5bee03c407130cd4dbbcc14d65124c29bbee16e60cea627",
+        "size_bytes": 24837,
+        "manifest_rows": 537,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "SKYAI",
+        "instrument": "SKYAI_USDT",
+        "exchange": "mexc",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\klines\\SKYAI_USDT.json",
+        "sha256": "f937e477407df1bfb347055ad256e103cd9e9db5b66cfc1f37d3d00b6b03a3a8",
+        "size_bytes": 29087,
+        "manifest_rows": 200,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "SKYAI",
+        "instrument": "SKYAI_USDT",
+        "exchange": "mexc",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\funding\\SKYAI_USDT.json",
+        "sha256": "b44ffd47757c3f7277e2afb8d917a301c932f658c4f60ae6d8fd91258e0f2153",
+        "size_bytes": 55562,
+        "manifest_rows": 1200,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "SKYAI",
+        "instrument": "SKYAI_USDT",
+        "exchange": "gateio",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\klines\\SKYAI_USDT.json",
+        "sha256": "49405f3a3321584e45f4c204eb86bf215e03045744f9e47c8de99ed6536d95cd",
+        "size_bytes": 29264,
+        "manifest_rows": 201,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "SKYAI",
+        "instrument": "SKYAI_USDT",
+        "exchange": "gateio",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\funding\\SKYAI_USDT.json",
+        "sha256": "84908d23178264a0798ab5185dc9c725b91177abebe48816e43b14c703072831",
+        "size_bytes": 49339,
+        "manifest_rows": 1073,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "B",
+        "instrument": "B_USDT",
+        "exchange": "gateio",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\klines\\B_USDT.json",
+        "sha256": "e4f2d23ddb9f96299dc2f5f29c2e5a2d09f7351a98bd9d30b02d1a862ffa1932",
+        "size_bytes": 28100,
+        "manifest_rows": 201,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "B",
+        "instrument": "B_USDT",
+        "exchange": "gateio",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\funding\\B_USDT.json",
+        "sha256": "8308695b578cb7d60576a19bc89c5a53a7465f5505a0d7e6e409cd0b5aa6b50a",
+        "size_bytes": 48743,
+        "manifest_rows": 1074,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "BTW",
+        "instrument": "BTW_USDT",
+        "exchange": "mexc",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\klines\\BTW_USDT.json",
+        "sha256": "dc7f6a35942c0141f2028712ca93a1bf64b480f14530dda9aa288d47d580a300",
+        "size_bytes": 20234,
+        "manifest_rows": 139,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "BTW",
+        "instrument": "BTW_USDT",
+        "exchange": "mexc",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\funding\\BTW_USDT.json",
+        "sha256": "0a13c9081377e9280747390a76c8bcf0aa655451e2fd402a8f47f69c876faddf",
+        "size_bytes": 38620,
+        "manifest_rows": 819,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "BTW",
+        "instrument": "BTW_USDT",
+        "exchange": "gateio",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\klines\\BTW_USDT.json",
+        "sha256": "f2908ea190187174efc7daadad9066f2d5c3362128ca20304c50fc20424a619f",
+        "size_bytes": 10192,
+        "manifest_rows": 68,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "BTW",
+        "instrument": "BTW_USDT",
+        "exchange": "gateio",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\funding\\BTW_USDT.json",
+        "sha256": "8a5106567424c2cae807c8912afc630130fc2bb7841adc157f6dcbdc1e16bdf2",
+        "size_bytes": 18810,
+        "manifest_rows": 400,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "RAVE",
+        "instrument": "RAVE_USDT",
+        "exchange": "mexc",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\klines\\RAVE_USDT.json",
+        "sha256": "2f7085a0727fc13761714586a309d6ccbb188d91f8a28cd7f249ff8c66f0ddb3",
+        "size_bytes": 27990,
+        "manifest_rows": 200,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "RAVE",
+        "instrument": "RAVE_USDT",
+        "exchange": "mexc",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\funding\\RAVE_USDT.json",
+        "sha256": "463124eef16b8fc4cf98d465103c3c26aaf3f9f57f0c99695e761a68e288d801",
+        "size_bytes": 65936,
+        "manifest_rows": 1409,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "RAVE",
+        "instrument": "RAVE_USDT",
+        "exchange": "gateio",
+        "kind": "klines",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\klines\\RAVE_USDT.json",
+        "sha256": "737a9db6b983ac1672a17c83c89de6ac1589450974891a00f3cd1af34ce9f73b",
+        "size_bytes": 28165,
+        "manifest_rows": 201,
+        "manifest_status": "ok"
+      },
+      {
+        "symbol": "RAVE",
+        "instrument": "RAVE_USDT",
+        "exchange": "gateio",
+        "kind": "funding",
+        "path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\funding\\RAVE_USDT.json",
+        "sha256": "5d1a1899d5bcdde082b5da38223bc97894f6a28d29061e6839b86222d7fa9c3d",
+        "size_bytes": 51635,
+        "manifest_rows": 1096,
+        "manifest_status": "ok"
+      }
+    ],
+    "missing_sources": [
+      {
+        "symbol": "BULLA",
+        "instrument": "BULLA_USDT",
+        "exchange": "mexc",
+        "kind": "klines",
+        "expected_path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\klines\\BULLA_USDT.json",
+        "reason": "file_missing_and_not_present_in_current_manifest"
+      },
+      {
+        "symbol": "BULLA",
+        "instrument": "BULLA_USDT",
+        "exchange": "mexc",
+        "kind": "funding",
+        "expected_path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\funding\\BULLA_USDT.json",
+        "reason": "file_missing_and_not_present_in_current_manifest"
+      },
+      {
+        "symbol": "BULLA",
+        "instrument": "BULLA_USDT",
+        "exchange": "gateio",
+        "kind": "klines",
+        "expected_path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\klines\\BULLA_USDT.json",
+        "reason": "file_missing_and_not_present_in_current_manifest"
+      },
+      {
+        "symbol": "BULLA",
+        "instrument": "BULLA_USDT",
+        "exchange": "gateio",
+        "kind": "funding",
+        "expected_path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\gateio\\funding\\BULLA_USDT.json",
+        "reason": "file_missing_and_not_present_in_current_manifest"
+      },
+      {
+        "symbol": "B",
+        "instrument": "B_USDT",
+        "exchange": "mexc",
+        "kind": "klines",
+        "expected_path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\klines\\B_USDT.json",
+        "reason": "file_missing_and_not_present_in_current_manifest"
+      },
+      {
+        "symbol": "B",
+        "instrument": "B_USDT",
+        "exchange": "mexc",
+        "kind": "funding",
+        "expected_path": "exports\\trading-mvp\\daily\\daily_forward_20260810\\mexc\\funding\\B_USDT.json",
+        "reason": "file_missing_and_not_present_in_current_manifest"
+      }
+    ],
+    "source_complete_symbols_observed_without_row_value_read": [
+      "ESPORTS",
+      "AKE",
+      "EVAA",
+      "SKYAI",
+      "BTW",
+      "RAVE"
+    ],
+    "source_incomplete_symbols": [
+      "BULLA",
+      "B"
+    ],
+    "market_file_bytes_hashed": true,
+    "market_row_arrays_parsed": false,
+    "funding_rates_read": false,
+    "prices_read": false,
+    "returns_or_pnl_read": false,
+    "new_collection_allowed": false,
+    "partial_source_backfill_allowed": false
+  },
+  "strategy_contract": {
+    "route": "cross_venue_perp_perp",
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "universe": "exact verified subset of the frozen eight candidates",
+    "non_binance_only": true,
+    "quote": "USDT",
+    "position_direction": "fixed per asset from the Jul20 pre-OOS snapshot; never refit in OOS",
+    "entry": "At the first complete daily candle open at each fold start on both venues.",
+    "exit": "At the last complete daily candle close immediately before the fold end-exclusive timestamp on both venues.",
+    "holding_period_complete_utc_days": 4,
+    "fold_method": "five fixed non-overlapping chronological OOS folds, no refit",
+    "funding_cashflow": "Use actual funding settlements with timestamps in [fold_start, fold_end_exclusive), signed by the frozen venue direction.",
+    "price_component": "Delta-neutral two-leg price PnL from entry opens to exit closes, reported separately and included in primary net PnL.",
+    "primary_metric": "price_plus_funding_net_after_all_costs",
+    "price_only_metric_reported_separately": true,
+    "one_position_per_asset_per_fold": true,
+    "overlapping_positions_per_asset": false,
+    "parameter_selection_on_oos": false,
+    "grid_search": false,
+    "retune": false,
+    "fully_collateralized_historical_accounting": true,
+    "gross_leverage_for_historical_normalization": 1.0,
+    "trading_or_order_execution": false
+  },
+  "chronological_oos": {
+    "pre_oos_cutoff_utc": "2026-07-21T00:00:00Z",
+    "oos_start_utc": "2026-07-21T00:00:00Z",
+    "oos_end_exclusive_utc": "2026-08-10T00:00:00Z",
+    "complete_utc_days": 20,
+    "folds": [
+      {
+        "fold": 1,
+        "start_utc": "2026-07-21T00:00:00Z",
+        "end_exclusive_utc": "2026-07-25T00:00:00Z",
+        "complete_utc_days": 4
+      },
+      {
+        "fold": 2,
+        "start_utc": "2026-07-25T00:00:00Z",
+        "end_exclusive_utc": "2026-07-29T00:00:00Z",
+        "complete_utc_days": 4
+      },
+      {
+        "fold": 3,
+        "start_utc": "2026-07-29T00:00:00Z",
+        "end_exclusive_utc": "2026-08-02T00:00:00Z",
+        "complete_utc_days": 4
+      },
+      {
+        "fold": 4,
+        "start_utc": "2026-08-02T00:00:00Z",
+        "end_exclusive_utc": "2026-08-06T00:00:00Z",
+        "complete_utc_days": 4
+      },
+      {
+        "fold": 5,
+        "start_utc": "2026-08-06T00:00:00Z",
+        "end_exclusive_utc": "2026-08-10T00:00:00Z",
+        "complete_utc_days": 4
+      }
+    ],
+    "embargo": "No OOS market row values may be parsed before a later exact plan_hash-bound evaluation approval.",
+    "no_peeking": true
+  },
+  "economics_contract": {
+    "source": "Preserve the conservative taker-only economics from the terminal legacy PlanOnly; do not inherit the optimistic Jul20 maker-mix selection cost.",
+    "source_legacy_plan_sha256": "2eebb78dd7fc57f5e0a74ea707e8a9ce2d1dfdd66162dc3b0ad8d1ee5d328cf4",
+    "cost_profile_sha256": "449c775e2691ebfe00497cdb0810840b5e70e7710495434e7a9bd4729aeba3ec",
+    "notional_quote_per_leg": 500.0,
+    "normal_cycle_cost_bps_per_asset_fold": 78.0,
+    "stress_cycle_cost_bps_per_asset_fold": 116.0,
+    "normal_funding_treatment": "actual favorable and adverse funding cashflows",
+    "stress_favorable_funding_haircut": 0.5,
+    "stress_adverse_funding_haircut": 1.0,
+    "rebates_or_vip_assumed": false,
+    "maker_fill_assumed": false,
+    "cost_or_threshold_tuning_allowed": false
+  },
+  "validation_contract": {
+    "pre_oos_gates": {
+      "minimum_verified_source_complete_assets": 4,
+      "both_route_directions_required": true,
+      "all_included_sources_hash_match": true,
+      "all_included_manifest_statuses_ok": true,
+      "every_fold_has_both_daily_price_legs": true,
+      "every_fold_has_both_funding_legs": true,
+      "unresolved_identity_or_source_gap": "exclude before value read; fail closed if fewer than four remain"
+    },
+    "oos_acceptance_gates": {
+      "minimum_episodes": 20,
+      "minimum_unique_assets": 4,
+      "minimum_positive_walk_forward_folds": 4,
+      "fold_count": 5,
+      "total_net_expectancy_after_costs_gt": 0.0,
+      "profit_factor_gte": 1.2,
+      "positive_event_rate_gte": 0.6,
+      "stress_total_net_pnl_gte": 0.0,
+      "cluster_bootstrap_95pct_expectancy_lower_bound_gt": 0.0,
+      "maximum_single_asset_positive_pnl_share": 0.25,
+      "maximum_single_fold_positive_pnl_share": 0.25,
+      "maximum_single_event_positive_pnl_share": 0.25,
+      "maximum_drawdown_fraction_of_collateral": 0.1
+    },
+    "bootstrap": {
+      "method": "two-way cluster bootstrap by asset and fold",
+      "resamples": 10000,
+      "seed": 20260810,
+      "confidence": 0.95
+    },
+    "historical_acceptance_ceiling": "ACCEPT_FOR_EXECUTION_PROBE",
+    "historical_reject_state": "REJECT_DAILY_FUNDING_SPREAD_HOLD_V1",
+    "execution_probe_snapshots_required_after_historical_accept": 180,
+    "paper_or_live_allowed": false
+  },
+  "runtime_policy": {
+    "plan_builder_max_runtime_sec": 300,
+    "synthetic_tests_max_runtime_sec": 1800,
+    "future_oos_evaluator_max_runtime_sec": 1800,
+    "future_oos_evaluation_visible_terminal_required": true,
+    "network_market_data_required": false,
+    "collector_required": false,
+    "one_global_market_data_writer_preserved": true
+  },
+  "proposed_implementation_after_exact_approval": {
+    "new_plan_builder": "trading_mvp\\src\\funding_spread_daily_hold_v1.py",
+    "new_evaluator": "trading_mvp\\src\\funding_spread_daily_hold_v1_evaluator.py",
+    "new_tests": [
+      "trading_mvp\\tests\\test_funding_spread_daily_hold_v1.py",
+      "trading_mvp\\tests\\test_funding_spread_daily_hold_v1_evaluator.py"
+    ],
+    "new_visible_wrapper": "tools\\run_funding_spread_daily_hold_v1_visible.ps1",
+    "new_identity_evidence": "docs\\analysis\\funding-forward\\funding_forward_identity_evidence_20260810_v2.json",
+    "immutable_plan_target": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\funding-spread-daily-hold-v1\\plans\\funding_spread_daily_hold_v1_planonly_20260810_v1.json",
+    "canonical_runtime_manifest_target": "docs\\plans\\funding-spread-daily-hold-runtime-manifest-20260810-v1.json",
+    "tests_use_synthetic_fixtures_only": true,
+    "oos_evaluator_may_be_implemented_but_not_run": true,
+    "oos_market_row_values_may_not_be_read": true,
+    "immutable_plan_actual_oos_evaluation_allowed": false
+  },
+  "authorized_scope_after_exact_proposal_approval": {
+    "allowed_operations": [
+      "official identity metadata verification only",
+      "offline code implementation",
+      "synthetic fixture tests",
+      "static checks",
+      "immutable PlanOnly build",
+      "canonical runtime manifest build"
+    ],
+    "collector_launch": false,
+    "market_data_network_access": false,
+    "oos_market_value_read": false,
+    "evaluator_execution": false,
+    "returns_or_pnl_computation": false,
+    "grid_or_retune": false,
+    "execution_probe": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "stopped_incomplete_resume": false
+  },
+  "two_checkpoint_authorization": {
+    "checkpoint_1": "Exact approval of this proposal authorizes implementation, official identity metadata verification, synthetic tests and immutable PlanOnly/runtime-manifest creation only.",
+    "checkpoint_2": "A separate future exact approval bound to the new PlanOnly path, file SHA-256 and plan_hash is required before any OOS market row values are parsed or any evaluator is run.",
+    "this_proposal_authorizes_checkpoint_2": false
+  },
+  "authorization": {
+    "authorized": false,
+    "executable": false,
+    "implementation_allowed": false,
+    "identity_metadata_verification_allowed": false,
+    "planonly_build_allowed": false,
+    "oos_evaluation_allowed": false,
+    "exact_user_approval_required": true
+  },
+  "safety": {
+    "collector_started": false,
+    "network_market_data_accessed": false,
+    "market_row_arrays_parsed": false,
+    "funding_rates_read": false,
+    "prices_read": false,
+    "returns_read": false,
+    "pnl_computed": false,
+    "oos_run": false,
+    "evaluator_run": false,
+    "grid_or_retune": false,
+    "execution_probe_started": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "next_allowed_action": "REQUEST_EXACT_FUNDING_SPREAD_DAILY_HOLD_V1_PLANONLY_APPROVAL",
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "8d824b9c01fcf9ff526b951e8caa6a4f7c146aa6dafc7d55af99ffa919e3a09d"
+}
