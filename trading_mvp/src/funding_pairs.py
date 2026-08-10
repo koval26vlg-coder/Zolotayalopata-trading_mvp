@@ -5,7 +5,6 @@ import json
 import math
 import statistics
 import sys
-import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -21,6 +20,23 @@ DEFAULT_TURNOVER_PER_YEAR = 12.0
 
 def _utc_day(ts: float) -> int:
     return int(ts // DAY_SEC)
+
+
+def _analysis_as_of(manifest: dict[str, Any], explicit_now_ts: float | None) -> tuple[float, str]:
+    if explicit_now_ts is not None:
+        value = float(explicit_now_ts)
+        source = "explicit_now_ts"
+    else:
+        params = manifest.get("params")
+        raw_value = params.get("end_sec") if isinstance(params, dict) else None
+        try:
+            value = float(raw_value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("manifest.params.end_sec is required when now_ts is omitted") from exc
+        source = "manifest.params.end_sec"
+    if not math.isfinite(value) or value <= 0:
+        raise ValueError("funding analysis as-of timestamp must be finite and positive")
+    return value, source
 
 
 def load_funding_daily(run_dir: Path, exchange: str, symbol: str) -> dict[int, float]:
@@ -186,7 +202,7 @@ def analyze_pairs(
         )
     ]
 
-    now = now_ts if now_ts is not None else time.time()
+    now, analysis_as_of_source = _analysis_as_of(manifest, now_ts)
     to_day = _utc_day(now)
     from_day = to_day - window_days
     spot_set = mexc_spot_symbols(Path(fee_evidence_dir))
@@ -247,6 +263,9 @@ def analyze_pairs(
             "route": "cross_venue_perp_perp",
             "cycle_cost_bps": cycle_cost["total_bps"],
             "spread_definition": "daily_funding_gate_minus_mexc",
+            "analysis_as_of_ts": now,
+            "analysis_as_of_utc": datetime.fromtimestamp(now, timezone.utc).isoformat(),
+            "analysis_as_of_source": analysis_as_of_source,
         },
         "cost_profile": profile.as_dict(),
         "shared_symbols_before_non_binance_filter": len(shared_all),

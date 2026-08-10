@@ -136,7 +136,12 @@ class PairAnalysisTests(unittest.TestCase):
                     )
             root.mkdir(parents=True, exist_ok=True)
             root.joinpath("manifest.json").write_text(
-                json.dumps({"universe": universe}),
+                json.dumps(
+                    {
+                        "params": {"end_sec": 11 * 86400},
+                        "universe": universe,
+                    }
+                ),
                 encoding="utf-8",
             )
 
@@ -145,10 +150,11 @@ class PairAnalysisTests(unittest.TestCase):
                 evidence,
                 window_days=20,
                 min_aligned_days=2,
-                now_ts=11 * 86400,
             )
 
             self.assertEqual(report["schema"], "funding_pairs_v2")
+            self.assertEqual(report["params"]["analysis_as_of_ts"], 11 * 86400)
+            self.assertEqual(report["params"]["analysis_as_of_source"], "manifest.params.end_sec")
             self.assertEqual(report["shared_symbols_before_non_binance_filter"], 2)
             self.assertEqual(report["shared_symbols_total"], 1)
             self.assertEqual(report["pairs"][0]["symbol"], "AAA_USDT")
