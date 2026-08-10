@@ -6,6 +6,8 @@ import json
 import os
 import re
 import shutil
+import socket
+import ssl
 import sys
 import tempfile
 import time
@@ -13,6 +15,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
+from urllib import error as urlerror
 from urllib import request
 
 
@@ -21,13 +24,16 @@ GATEIO_ENDPOINT = "https://api.gateio.ws/api/v4/futures/usdt/contracts"
 ENDPOINTS = (MEXC_ENDPOINT, GATEIO_ENDPOINT)
 
 PROPOSAL_SCHEMA = (
-    "trading_mvp_funding_unrestricted_metadata_discovery_proposal_v1"
+    "trading_mvp_funding_unrestricted_metadata_discovery_diagnostic_refreeze_proposal_v2"
 )
 RECEIPT_SCHEMA = (
-    "trading_mvp_funding_unrestricted_metadata_discovery_approval_receipt_v1"
+    "trading_mvp_funding_unrestricted_metadata_discovery_approval_receipt_v2"
 )
 RUNTIME_MANIFEST_SCHEMA = (
-    "trading_mvp_funding_unrestricted_metadata_discovery_runtime_manifest_v1"
+    "trading_mvp_funding_unrestricted_metadata_discovery_runtime_manifest_v2"
+)
+FAILURE_DIAGNOSTIC_SCHEMA = (
+    "trading_mvp_funding_unrestricted_metadata_discovery_failure_v2"
 )
 GLOBAL_WRITER_CLAIM_SCHEMA = "trading_mvp_global_market_writer_claim_v1"
 
@@ -59,10 +65,100 @@ SAFE_RUN_ID = re.compile(r"^[A-Za-z0-9_.-]+$")
 SAFE_CONTRACT_NAME = re.compile(r"^[A-Za-z0-9._-]+_USDT$")
 MAX_RESPONSE_BYTES = 25_000_000
 DEFAULT_USER_AGENT = "trading-mvp-metadata-discovery/1.0"
+FAILURE_DIAGNOSTIC_MAX_BYTES = 16_384
+FAILURE_TIMESTAMP_PATTERN = re.compile(
+    r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$"
+)
+
+ENDPOINT_IDS = {
+    MEXC_ENDPOINT: "MEXC_CONTRACT_DETAIL",
+    GATEIO_ENDPOINT: "GATEIO_CONTRACTS",
+}
+FAILURE_CATEGORIES = frozenset(
+    {
+        "BINDING_VALIDATION",
+        "CONNECTION_REFUSED",
+        "CONNECTION_RESET",
+        "DNS_RESOLUTION",
+        "HTTP_STATUS",
+        "INVALID_JSON",
+        "NETWORK_IO",
+        "REQUEST_BUDGET",
+        "RESPONSE_TOO_LARGE",
+        "RUNTIME_DEADLINE",
+        "TLS_FAILURE",
+        "TIMEOUT",
+        "URL_ERROR",
+        "WRITER_CLAIM",
+        "CONTRACT_METADATA_VALIDATION",
+        "OUTPUT_COMMIT",
+        "INTERNAL_ERROR",
+    }
+)
+FAILURE_STAGES = frozenset(
+    {
+        "BINDING_VALIDATION",
+        "WRITER_CLAIM",
+        "HTTP_REQUEST",
+        "HTTP_RESPONSE",
+        "RESPONSE_DECODE",
+        "CONTRACT_PROJECTION",
+        "OUTPUT_COMMIT",
+        "RUNTIME_DEADLINE",
+        "INTERNAL",
+    }
+)
+SAFE_EXCEPTION_TYPES = frozenset(
+    {
+        "DISCOVERY_ERROR",
+        "HTTP_ERROR",
+        "OS_ERROR",
+        "SSL_ERROR",
+        "TIMEOUT_ERROR",
+        "URL_ERROR",
+        "VALUE_ERROR",
+        "OTHER",
+    }
+)
+FAILURE_RECORD_FIELDS = frozenset(
+    {
+        "schema",
+        "status",
+        "run_id",
+        "observed_at_utc",
+        "proposal_hash",
+        "failure",
+        "maximum_total_http_requests",
+        "raw_payload_persisted",
+        "funding_rates_persisted",
+        "prices_persisted",
+        "retry_authorized",
+        "failure_hash_method",
+        "failure_hash",
+    }
+)
+FAILURE_DETAIL_FIELDS = frozenset(
+    {
+        "category",
+        "stage",
+        "endpoint_id",
+        "exception_type",
+        "http_status",
+        "attempt",
+        "request_count",
+    }
+)
 
 
 class DiscoveryError(RuntimeError):
-    pass
+    def __init__(
+        self,
+        message: str,
+        *,
+        diagnostic: Mapping[str, Any] | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.diagnostic = dict(diagnostic or {})
 
 
 def _canonical_json_bytes(payload: Any) -> bytes:
@@ -142,6 +238,321 @@ def _utc_now() -> str:
 
 def _json_bytes(payload: Any) -> bytes:
     return (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+
+
+def _safe_int(value: Any, *, minimum: int, maximum: int) -> int | None:
+    try:
+        normalized = int(value)
+    except (TypeError, ValueError):
+        return None
+    return normalized if minimum <= normalized <= maximum else None
+
+
+def _sanitize_failure_diagnostic(
+    diagnostic: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    source = diagnostic if isinstance(diagnostic, Mapping) else {}
+    category = str(source.get("category") or "")
+    stage = str(source.get("stage") or "")
+    endpoint_id = str(source.get("endpoint_id") or "") or None
+    exception_type = str(source.get("exception_type") or "")
+    if category not in FAILURE_CATEGORIES:
+        category = "INTERNAL_ERROR"
+    if stage not in FAILURE_STAGES:
+        stage = "INTERNAL"
+    if endpoint_id not in set(ENDPOINT_IDS.values()):
+        endpoint_id = None
+    if exception_type not in SAFE_EXCEPTION_TYPES:
+        exception_type = "OTHER"
+    return {
+        "category": category,
+        "stage": stage,
+        "endpoint_id": endpoint_id,
+        "exception_type": exception_type,
+        "http_status": _safe_int(source.get("http_status"), minimum=100, maximum=599),
+        "attempt": _safe_int(source.get("attempt"), minimum=0, maximum=2),
+        "request_count": _safe_int(
+            source.get("request_count"), minimum=0, maximum=4
+        ),
+    }
+
+
+def _failure_context(
+    *,
+    category: str,
+    stage: str,
+    endpoint_url: str | None = None,
+    exception_type: str = "DISCOVERY_ERROR",
+    http_status: int | None = None,
+    attempt: int | None = None,
+    request_count: int | None = None,
+) -> dict[str, Any]:
+    return _sanitize_failure_diagnostic(
+        {
+            "category": category,
+            "stage": stage,
+            "endpoint_id": ENDPOINT_IDS.get(str(endpoint_url or "")),
+            "exception_type": exception_type,
+            "http_status": http_status,
+            "attempt": attempt,
+            "request_count": request_count,
+        }
+    )
+
+
+def _classify_request_failure(
+    exc: Exception,
+    *,
+    endpoint_url: str,
+    attempt: int,
+    request_count: int,
+) -> dict[str, Any]:
+    category = "NETWORK_IO"
+    exception_type = "OTHER"
+    http_status = None
+    reason: Any = exc
+    if isinstance(exc, urlerror.HTTPError):
+        category = "HTTP_STATUS"
+        exception_type = "HTTP_ERROR"
+        http_status = int(exc.code)
+    elif isinstance(exc, urlerror.URLError):
+        category = "URL_ERROR"
+        exception_type = "URL_ERROR"
+        reason = exc.reason
+
+    if isinstance(reason, socket.gaierror):
+        category = "DNS_RESOLUTION"
+        exception_type = "OS_ERROR"
+    elif isinstance(reason, (TimeoutError, socket.timeout)):
+        category = "TIMEOUT"
+        exception_type = "TIMEOUT_ERROR"
+    elif isinstance(reason, ssl.SSLError):
+        category = "TLS_FAILURE"
+        exception_type = "SSL_ERROR"
+    elif isinstance(reason, ConnectionRefusedError):
+        category = "CONNECTION_REFUSED"
+        exception_type = "OS_ERROR"
+    elif isinstance(reason, ConnectionResetError):
+        category = "CONNECTION_RESET"
+        exception_type = "OS_ERROR"
+    elif isinstance(reason, OSError) and not isinstance(exc, urlerror.HTTPError):
+        if category != "URL_ERROR":
+            category = "NETWORK_IO"
+        exception_type = "OS_ERROR"
+
+    return _failure_context(
+        category=category,
+        stage="HTTP_REQUEST",
+        endpoint_url=endpoint_url,
+        exception_type=exception_type,
+        http_status=http_status,
+        attempt=attempt,
+        request_count=request_count,
+    )
+
+
+def build_failure_diagnostic_record(
+    *,
+    run_id: str,
+    expected_proposal_hash: str,
+    diagnostic: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    if SAFE_RUN_ID.fullmatch(run_id) is None:
+        raise DiscoveryError("run_id contains unsafe characters")
+    if SHA256_PATTERN.fullmatch(expected_proposal_hash) is None:
+        raise DiscoveryError("expected proposal hash is invalid")
+    record: dict[str, Any] = {
+        "schema": FAILURE_DIAGNOSTIC_SCHEMA,
+        "status": "STOPPED_INCOMPLETE",
+        "run_id": run_id,
+        "observed_at_utc": _utc_now(),
+        "proposal_hash": expected_proposal_hash,
+        "failure": _sanitize_failure_diagnostic(diagnostic),
+        "maximum_total_http_requests": 4,
+        "raw_payload_persisted": False,
+        "funding_rates_persisted": False,
+        "prices_persisted": False,
+        "retry_authorized": False,
+        "failure_hash_method": "sha256_canonical_json_excluding_failure_hash",
+    }
+    record["failure_hash"] = _canonical_hash(record)
+    return record
+
+
+def _require_optional_json_int(
+    value: Any,
+    *,
+    label: str,
+    minimum: int,
+    maximum: int,
+) -> None:
+    if value is None:
+        return
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise DiscoveryError(f"failure diagnostic {label} must be an integer or null")
+    if not minimum <= value <= maximum:
+        raise DiscoveryError(f"failure diagnostic {label} is outside its safe range")
+
+
+def validate_failure_diagnostic_record(
+    record: Mapping[str, Any],
+    *,
+    expected_run_id: str | None = None,
+    expected_proposal_hash: str | None = None,
+) -> dict[str, Any]:
+    normalized = dict(record)
+    _require_exact_keys(normalized, set(FAILURE_RECORD_FIELDS), "failure diagnostic top-level")
+    if normalized.get("schema") != FAILURE_DIAGNOSTIC_SCHEMA:
+        raise DiscoveryError("failure diagnostic schema mismatch")
+    if normalized.get("status") != "STOPPED_INCOMPLETE":
+        raise DiscoveryError("failure diagnostic status mismatch")
+
+    run_id = normalized.get("run_id")
+    if not isinstance(run_id, str) or SAFE_RUN_ID.fullmatch(run_id) is None:
+        raise DiscoveryError("failure diagnostic run_id is invalid")
+    if expected_run_id is not None and run_id != expected_run_id:
+        raise DiscoveryError("failure diagnostic run_id binding mismatch")
+
+    observed_at = normalized.get("observed_at_utc")
+    if not isinstance(observed_at, str) or FAILURE_TIMESTAMP_PATTERN.fullmatch(observed_at) is None:
+        raise DiscoveryError("failure diagnostic timestamp is invalid")
+    try:
+        parsed_timestamp = datetime.fromisoformat(observed_at.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise DiscoveryError("failure diagnostic timestamp is invalid") from exc
+    if parsed_timestamp.utcoffset() != timezone.utc.utcoffset(parsed_timestamp):
+        raise DiscoveryError("failure diagnostic timestamp is not UTC")
+
+    proposal_hash = normalized.get("proposal_hash")
+    if not isinstance(proposal_hash, str) or SHA256_PATTERN.fullmatch(proposal_hash) is None:
+        raise DiscoveryError("failure diagnostic proposal hash is invalid")
+    if expected_proposal_hash is not None and proposal_hash != expected_proposal_hash:
+        raise DiscoveryError("failure diagnostic proposal hash binding mismatch")
+
+    if (
+        isinstance(normalized.get("maximum_total_http_requests"), bool)
+        or normalized.get("maximum_total_http_requests") != 4
+    ):
+        raise DiscoveryError("failure diagnostic request cap changed")
+    for field in (
+        "raw_payload_persisted",
+        "funding_rates_persisted",
+        "prices_persisted",
+        "retry_authorized",
+    ):
+        if normalized.get(field) is not False:
+            raise DiscoveryError(f"failure diagnostic {field} must remain false")
+    if (
+        normalized.get("failure_hash_method")
+        != "sha256_canonical_json_excluding_failure_hash"
+    ):
+        raise DiscoveryError("failure diagnostic hash method changed")
+
+    failure = normalized.get("failure")
+    if not isinstance(failure, Mapping):
+        raise DiscoveryError("failure diagnostic detail must be an object")
+    detail = dict(failure)
+    _require_exact_keys(detail, set(FAILURE_DETAIL_FIELDS), "failure diagnostic detail")
+    if detail.get("category") not in FAILURE_CATEGORIES:
+        raise DiscoveryError("failure diagnostic category is not allowlisted")
+    if detail.get("stage") not in FAILURE_STAGES:
+        raise DiscoveryError("failure diagnostic stage is not allowlisted")
+    if detail.get("endpoint_id") not in {None, *ENDPOINT_IDS.values()}:
+        raise DiscoveryError("failure diagnostic endpoint is not allowlisted")
+    if detail.get("exception_type") not in SAFE_EXCEPTION_TYPES:
+        raise DiscoveryError("failure diagnostic exception type is not allowlisted")
+    _require_optional_json_int(
+        detail.get("http_status"),
+        label="http_status",
+        minimum=100,
+        maximum=599,
+    )
+    _require_optional_json_int(
+        detail.get("attempt"),
+        label="attempt",
+        minimum=0,
+        maximum=2,
+    )
+    _require_optional_json_int(
+        detail.get("request_count"),
+        label="request_count",
+        minimum=0,
+        maximum=4,
+    )
+
+    observed_hash = normalized.get("failure_hash")
+    if not isinstance(observed_hash, str) or SHA256_PATTERN.fullmatch(observed_hash) is None:
+        raise DiscoveryError("failure diagnostic hash is invalid")
+    body = dict(normalized)
+    body.pop("failure_hash", None)
+    if observed_hash != _canonical_hash(body):
+        raise DiscoveryError("failure diagnostic canonical hash mismatch")
+    return normalized
+
+
+def validate_failure_diagnostic_path(
+    repo_root: str | Path,
+    run_id: str,
+    requested_path: str | Path,
+) -> Path:
+    root = Path(repo_root).expanduser().resolve()
+    expected = (
+        root
+        / "docs"
+        / "agent-log"
+        / "run-gates"
+        / f"{run_id}.runtime-failure.json"
+    ).resolve()
+    requested = Path(requested_path).expanduser().resolve()
+    if not _same_path(expected, requested):
+        raise DiscoveryError("failure diagnostic path is not the exact run binding")
+    return requested
+
+
+def write_failure_diagnostic(
+    path: str | Path,
+    record: Mapping[str, Any],
+) -> dict[str, Any]:
+    target = Path(path).expanduser().resolve()
+    normalized = validate_failure_diagnostic_record(record)
+    encoded = _json_bytes(normalized)
+    if len(encoded) > FAILURE_DIAGNOSTIC_MAX_BYTES:
+        raise DiscoveryError("failure diagnostic exceeds the byte cap")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        descriptor = os.open(target, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError as exc:
+        raise DiscoveryError("failure diagnostic already exists") from exc
+    try:
+        with os.fdopen(descriptor, "wb") as handle:
+            handle.write(encoded)
+            handle.flush()
+            os.fsync(handle.fileno())
+    except Exception:
+        target.unlink(missing_ok=True)
+        raise
+    return normalized
+
+
+def read_failure_diagnostic(
+    path: str | Path,
+    *,
+    expected_run_id: str,
+    expected_proposal_hash: str,
+) -> dict[str, Any]:
+    target = Path(path).expanduser().resolve()
+    try:
+        size = target.stat().st_size
+    except OSError as exc:
+        raise DiscoveryError("failure diagnostic is missing or unreadable") from exc
+    if size <= 0 or size > FAILURE_DIAGNOSTIC_MAX_BYTES:
+        raise DiscoveryError("failure diagnostic size is outside the safe range")
+    payload = _load_json_object(target, "failure diagnostic")
+    return validate_failure_diagnostic_record(
+        payload,
+        expected_run_id=expected_run_id,
+        expected_proposal_hash=expected_proposal_hash,
+    )
 
 
 def _write_json(path: Path, payload: Any) -> tuple[str, int]:
@@ -291,6 +702,19 @@ def build_provisional_ticker_candidates(
     ]
 
 
+class RejectRedirectHandler(request.HTTPRedirectHandler):
+    def redirect_request(
+        self,
+        req: Any,
+        fp: Any,
+        code: int,
+        msg: str,
+        headers: Any,
+        newurl: str,
+    ) -> None:
+        return None
+
+
 class BoundedMetadataClient:
     def __init__(
         self,
@@ -308,7 +732,10 @@ class BoundedMetadataClient:
             raise DiscoveryError("endpoint attempt budget must remain exactly 2")
         if max_response_bytes <= 0 or max_response_bytes > MAX_RESPONSE_BYTES:
             raise DiscoveryError("response byte cap is invalid")
-        self.opener = opener or request.build_opener(request.ProxyHandler({}))
+        self.opener = opener or request.build_opener(
+            request.ProxyHandler({}),
+            RejectRedirectHandler(),
+        )
         self.max_total_requests = max_total_requests
         self.max_attempts_per_endpoint = max_attempts_per_endpoint
         self.max_response_bytes = max_response_bytes
@@ -322,17 +749,55 @@ class BoundedMetadataClient:
 
     def fetch(self, url: str) -> tuple[Any, dict[str, Any]]:
         if url not in ENDPOINTS:
-            raise DiscoveryError(f"endpoint is not allowlisted: {url}")
+            raise DiscoveryError(
+                "endpoint is not allowlisted",
+                diagnostic=_failure_context(
+                    category="BINDING_VALIDATION",
+                    stage="BINDING_VALIDATION",
+                    request_count=self.request_count,
+                ),
+            )
         if self.request_count >= self.max_total_requests:
-            raise DiscoveryError("HTTP request budget exhausted")
+            raise DiscoveryError(
+                "HTTP request budget exhausted",
+                diagnostic=_failure_context(
+                    category="REQUEST_BUDGET",
+                    stage="HTTP_REQUEST",
+                    endpoint_url=url,
+                    request_count=self.request_count,
+                ),
+            )
 
-        last_error = "unknown error"
+        last_diagnostic = _failure_context(
+            category="INTERNAL_ERROR",
+            stage="HTTP_REQUEST",
+            endpoint_url=url,
+            request_count=self.request_count,
+        )
         for attempt in range(1, self.max_attempts_per_endpoint + 1):
             if self.request_count >= self.max_total_requests:
-                raise DiscoveryError("HTTP request budget exhausted")
+                raise DiscoveryError(
+                    "HTTP request budget exhausted",
+                    diagnostic=_failure_context(
+                        category="REQUEST_BUDGET",
+                        stage="HTTP_REQUEST",
+                        endpoint_url=url,
+                        attempt=attempt,
+                        request_count=self.request_count,
+                    ),
+                )
             remaining = self.deadline_monotonic - self.monotonic()
             if remaining <= 0:
-                raise DiscoveryError("runtime deadline reached before HTTP request")
+                raise DiscoveryError(
+                    "runtime deadline reached before HTTP request",
+                    diagnostic=_failure_context(
+                        category="RUNTIME_DEADLINE",
+                        stage="RUNTIME_DEADLINE",
+                        endpoint_url=url,
+                        attempt=attempt,
+                        request_count=self.request_count,
+                    ),
+                )
             timeout = max(0.1, min(30.0, remaining))
             req = request.Request(
                 url,
@@ -348,14 +813,44 @@ class BoundedMetadataClient:
                 with self.opener.open(req, timeout=timeout) as response:
                     status = int(getattr(response, "status", 200))
                     if status != 200:
-                        raise DiscoveryError(f"HTTP status {status}")
+                        raise DiscoveryError(
+                            "metadata endpoint returned a non-200 status",
+                            diagnostic=_failure_context(
+                                category="HTTP_STATUS",
+                                stage="HTTP_RESPONSE",
+                                endpoint_url=url,
+                                exception_type="HTTP_ERROR",
+                                http_status=status,
+                                attempt=attempt,
+                                request_count=self.request_count,
+                            ),
+                        )
                     raw = response.read(self.max_response_bytes + 1)
                 if len(raw) > self.max_response_bytes:
-                    raise DiscoveryError("metadata response exceeds the in-memory byte cap")
+                    raise DiscoveryError(
+                        "metadata response exceeds the in-memory byte cap",
+                        diagnostic=_failure_context(
+                            category="RESPONSE_TOO_LARGE",
+                            stage="HTTP_RESPONSE",
+                            endpoint_url=url,
+                            attempt=attempt,
+                            request_count=self.request_count,
+                        ),
+                    )
                 try:
                     payload = json.loads(raw.decode("utf-8"))
                 except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-                    raise DiscoveryError("metadata response is not valid UTF-8 JSON") from exc
+                    raise DiscoveryError(
+                        "metadata response is not valid UTF-8 JSON",
+                        diagnostic=_failure_context(
+                            category="INVALID_JSON",
+                            stage="RESPONSE_DECODE",
+                            endpoint_url=url,
+                            exception_type="VALUE_ERROR",
+                            attempt=attempt,
+                            request_count=self.request_count,
+                        ),
+                    ) from exc
                 return payload, {
                     "url": url,
                     "method": "GET",
@@ -364,12 +859,25 @@ class BoundedMetadataClient:
                     "response_bytes": len(raw),
                     "response_body_sha256": hashlib.sha256(raw).hexdigest(),
                 }
+            except DiscoveryError as exc:
+                last_diagnostic = exc.diagnostic or _failure_context(
+                    category="INTERNAL_ERROR",
+                    stage="HTTP_REQUEST",
+                    endpoint_url=url,
+                    attempt=attempt,
+                    request_count=self.request_count,
+                )
             except Exception as exc:  # urllib exposes several unrelated error types.
-                last_error = f"{type(exc).__name__}: {exc}"
+                last_diagnostic = _classify_request_failure(
+                    exc,
+                    endpoint_url=url,
+                    attempt=attempt,
+                    request_count=self.request_count,
+                )
 
         raise DiscoveryError(
-            f"metadata endpoint failed after {self.max_attempts_per_endpoint} attempts: "
-            f"{url}; last_error={last_error}"
+            f"metadata endpoint failed after {self.max_attempts_per_endpoint} attempts",
+            diagnostic=last_diagnostic,
         )
 
 
@@ -604,10 +1112,15 @@ def _validate_proposal(
         raise DiscoveryError("proposal authorization boundary is missing")
     if authorization.get("actual_network_run_allowed") is not False:
         raise DiscoveryError("proposal must remain non-executable without receipt")
-    if expected_file_sha256 != (
-        "8270be9ae66e546e0f5eca4d774d8f85985e732527bab0fc92415766c08b4de0"
-    ):
-        raise DiscoveryError("unexpected proposal file binding")
+    failure_diagnostic = runtime.get("failure_diagnostic")
+    if not isinstance(failure_diagnostic, dict):
+        raise DiscoveryError("proposal failure diagnostic contract is missing")
+    if failure_diagnostic.get("required_on_execution_failure") is not True:
+        raise DiscoveryError("proposal no longer requires a failure diagnostic")
+    if failure_diagnostic.get("maximum_bytes") != FAILURE_DIAGNOSTIC_MAX_BYTES:
+        raise DiscoveryError("proposal failure diagnostic byte cap changed")
+    if failure_diagnostic.get("free_form_error_text_allowed") is not False:
+        raise DiscoveryError("proposal unexpectedly allows free-form failure text")
 
 
 def _validate_receipt(
@@ -617,6 +1130,7 @@ def _validate_receipt(
     proposal_file_sha256: str,
     proposal_hash: str,
     run_id: str,
+    failure_diagnostic_path: Path,
 ) -> Path:
     if receipt.get("schema") != RECEIPT_SCHEMA:
         raise DiscoveryError("approval receipt schema mismatch")
@@ -640,6 +1154,11 @@ def _validate_receipt(
         raise DiscoveryError("approval receipt single-use run binding changed")
     if binding.get("stopped_incomplete_retry_authorized") is not False:
         raise DiscoveryError("approval receipt unexpectedly allows retry")
+    if not _same_path(
+        str(binding.get("failure_diagnostic_path") or ""),
+        failure_diagnostic_path,
+    ):
+        raise DiscoveryError("approval receipt failure diagnostic path mismatch")
     if scope.get("one_visible_public_read_only_metadata_run_allowed") is not True:
         raise DiscoveryError("approval receipt does not allow the visible metadata run")
     if scope.get("max_runtime_sec") != 300:
@@ -654,6 +1173,10 @@ def _validate_receipt(
         raise DiscoveryError("approval receipt endpoint scope changed")
     if scope.get("global_writer_claim_required") is not True:
         raise DiscoveryError("approval receipt no longer requires one writer")
+    if scope.get("sanitized_failure_diagnostic_required") is not True:
+        raise DiscoveryError("approval receipt no longer requires safe diagnostics")
+    if scope.get("failure_diagnostic_max_bytes") != FAILURE_DIAGNOSTIC_MAX_BYTES:
+        raise DiscoveryError("approval receipt diagnostic byte cap changed")
     if any(value is not False for value in forbidden.values()):
         raise DiscoveryError("approval receipt forbidden scope changed")
     return Path(str(binding.get("output_path") or "")).expanduser().resolve()
@@ -671,6 +1194,7 @@ def _validate_runtime_manifest(
     receipt_hash: str,
     run_id: str,
     output_path: Path,
+    failure_diagnostic_path: Path,
 ) -> int:
     if manifest.get("schema") != RUNTIME_MANIFEST_SCHEMA:
         raise DiscoveryError("runtime manifest schema mismatch")
@@ -713,6 +1237,11 @@ def _validate_runtime_manifest(
     )
     if not _same_path(execution.get("output_path", ""), output_path):
         raise DiscoveryError("runtime manifest output path mismatch")
+    if not _same_path(
+        execution.get("failure_diagnostic_path", ""),
+        failure_diagnostic_path,
+    ):
+        raise DiscoveryError("runtime manifest failure diagnostic path mismatch")
     if execution.get("endpoint_urls") != list(ENDPOINTS):
         raise DiscoveryError("runtime manifest endpoint URLs changed")
     if execution.get("max_runtime_sec") != 300:
@@ -730,6 +1259,12 @@ def _validate_runtime_manifest(
         raise DiscoveryError("runtime manifest unexpectedly allows raw responses")
     if execution.get("funding_rates_or_prices_persisted_allowed") is not False:
         raise DiscoveryError("runtime manifest unexpectedly allows market values")
+    if execution.get("sanitized_failure_diagnostic_required") is not True:
+        raise DiscoveryError("runtime manifest no longer requires safe diagnostics")
+    if execution.get("failure_diagnostic_max_bytes") != FAILURE_DIAGNOSTIC_MAX_BYTES:
+        raise DiscoveryError("runtime manifest diagnostic byte cap changed")
+    if execution.get("free_form_failure_text_persistence_allowed") is not False:
+        raise DiscoveryError("runtime manifest allows free-form failure text")
     return minimum
 
 
@@ -751,6 +1286,15 @@ def _validate_execution_artifacts_full(
     requested_output = Path(output_path).expanduser().resolve()
     if SAFE_RUN_ID.fullmatch(run_id) is None:
         raise DiscoveryError("run_id contains unsafe characters")
+    failure_diagnostic_path = validate_failure_diagnostic_path(
+        root,
+        run_id,
+        root
+        / "docs"
+        / "agent-log"
+        / "run-gates"
+        / f"{run_id}.runtime-failure.json",
+    )
 
     proposal_file_sha256 = _verify_file_hash(
         proposal_target,
@@ -784,6 +1328,7 @@ def _validate_execution_artifacts_full(
         proposal_file_sha256=proposal_file_sha256,
         proposal_hash=proposal_hash,
         run_id=run_id,
+        failure_diagnostic_path=failure_diagnostic_path,
     )
     if not _same_path(requested_output, bound_output):
         raise DiscoveryError("requested output does not match the approval receipt")
@@ -806,6 +1351,7 @@ def _validate_execution_artifacts_full(
         receipt_hash=receipt_hash,
         run_id=run_id,
         output_path=bound_output,
+        failure_diagnostic_path=failure_diagnostic_path,
     )
     return ValidatedArtifacts(
         proposal=proposal,
@@ -870,13 +1416,30 @@ def execute_discovery(
     run_id: str,
 ) -> dict[str, Any]:
     if artifacts.output_path.exists():
-        raise DiscoveryError("single-use immutable output already exists")
-    verify_global_writer_claim(
-        claim_path,
-        run_id=run_id,
-        owner_pid=owner_pid,
-        ownership_token=ownership_token,
-    )
+        raise DiscoveryError(
+            "single-use immutable output already exists",
+            diagnostic=_failure_context(
+                category="BINDING_VALIDATION",
+                stage="BINDING_VALIDATION",
+                request_count=0,
+            ),
+        )
+    try:
+        verify_global_writer_claim(
+            claim_path,
+            run_id=run_id,
+            owner_pid=owner_pid,
+            ownership_token=ownership_token,
+        )
+    except DiscoveryError as exc:
+        raise DiscoveryError(
+            "global writer claim validation failed",
+            diagnostic=_failure_context(
+                category="WRITER_CLAIM",
+                stage="WRITER_CLAIM",
+                request_count=0,
+            ),
+        ) from exc
     started_at_utc = _utc_now()
     started_monotonic = time.monotonic()
     deadline = started_monotonic + 300.0
@@ -884,42 +1447,72 @@ def execute_discovery(
 
     mexc_payload, mexc_evidence = client.fetch(MEXC_ENDPOINT)
     gate_payload, gate_evidence = client.fetch(GATEIO_ENDPOINT)
-    mexc_records = project_mexc_active_contracts(mexc_payload)
-    gate_records = project_gateio_active_contracts(gate_payload)
-    candidates = build_provisional_ticker_candidates(mexc_records, gate_records)
+    try:
+        mexc_records = project_mexc_active_contracts(mexc_payload)
+        gate_records = project_gateio_active_contracts(gate_payload)
+        candidates = build_provisional_ticker_candidates(mexc_records, gate_records)
+    except DiscoveryError as exc:
+        raise DiscoveryError(
+            "contract metadata projection failed",
+            diagnostic=_failure_context(
+                category="CONTRACT_METADATA_VALIDATION",
+                stage="CONTRACT_PROJECTION",
+                request_count=client.request_count,
+            ),
+        ) from exc
     finished_monotonic = time.monotonic()
     duration = finished_monotonic - started_monotonic
     if duration > 300.0 or finished_monotonic > deadline:
-        raise DiscoveryError("runtime exceeded 300 seconds before output commit")
+        raise DiscoveryError(
+            "runtime exceeded 300 seconds before output commit",
+            diagnostic=_failure_context(
+                category="RUNTIME_DEADLINE",
+                stage="RUNTIME_DEADLINE",
+                request_count=client.request_count,
+            ),
+        )
     finished_at_utc = _utc_now()
 
-    manifest = write_immutable_discovery(
-        artifacts.output_path,
-        run_id=run_id,
-        mexc_records=mexc_records,
-        gateio_records=gate_records,
-        provisional_candidates=candidates,
-        endpoint_evidence={"mexc": mexc_evidence, "gateio": gate_evidence},
-        bindings={
-            "proposal_path": str(
-                Path(artifacts.receipt["proposal"]["path"]).resolve()
+    try:
+        manifest = write_immutable_discovery(
+            artifacts.output_path,
+            run_id=run_id,
+            mexc_records=mexc_records,
+            gateio_records=gate_records,
+            provisional_candidates=candidates,
+            endpoint_evidence={"mexc": mexc_evidence, "gateio": gate_evidence},
+            bindings={
+                "proposal_path": str(
+                    Path(artifacts.receipt["proposal"]["path"]).resolve()
+                ),
+                "proposal_file_sha256": artifacts.proposal_file_sha256,
+                "proposal_hash": artifacts.proposal_hash,
+                "receipt_file_sha256": artifacts.receipt_file_sha256,
+                "receipt_hash": artifacts.receipt_hash,
+                "runtime_manifest_file_sha256": artifacts.runtime_manifest_file_sha256,
+                "runtime_manifest_hash": artifacts.runtime_manifest_hash,
+            },
+            started_at_utc=started_at_utc,
+            finished_at_utc=finished_at_utc,
+            duration_sec=duration,
+            request_count=client.request_count,
+            hard_output_cap_bytes=50_000_000,
+            minimum_active_contracts_per_venue=(
+                artifacts.minimum_active_contracts_per_venue
             ),
-            "proposal_file_sha256": artifacts.proposal_file_sha256,
-            "proposal_hash": artifacts.proposal_hash,
-            "receipt_file_sha256": artifacts.receipt_file_sha256,
-            "receipt_hash": artifacts.receipt_hash,
-            "runtime_manifest_file_sha256": artifacts.runtime_manifest_file_sha256,
-            "runtime_manifest_hash": artifacts.runtime_manifest_hash,
-        },
-        started_at_utc=started_at_utc,
-        finished_at_utc=finished_at_utc,
-        duration_sec=duration,
-        request_count=client.request_count,
-        hard_output_cap_bytes=50_000_000,
-        minimum_active_contracts_per_venue=(
-            artifacts.minimum_active_contracts_per_venue
-        ),
-    )
+        )
+    except (DiscoveryError, OSError) as exc:
+        raise DiscoveryError(
+            "immutable output commit failed",
+            diagnostic=_failure_context(
+                category="OUTPUT_COMMIT",
+                stage="OUTPUT_COMMIT",
+                exception_type=(
+                    "DISCOVERY_ERROR" if isinstance(exc, DiscoveryError) else "OS_ERROR"
+                ),
+                request_count=client.request_count,
+            ),
+        ) from exc
     return {
         "schema": "trading_mvp_funding_metadata_discovery_execution_v1",
         "status": COMPLETE_STATUS,
@@ -950,14 +1543,17 @@ def build_arg_parser() -> argparse.ArgumentParser:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--preflight-only", action="store_true")
     mode.add_argument("--execute", action="store_true")
+    mode.add_argument("--validate-failure-diagnostic-only", action="store_true")
     parser.add_argument("--global-writer-claim-path")
     parser.add_argument("--owner-pid", type=int)
     parser.add_argument("--ownership-token")
+    parser.add_argument("--failure-diagnostic-path")
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_arg_parser().parse_args(argv)
+    failure_diagnostic_path: Path | None = None
     common = {
         "repo_root": args.repo_root,
         "proposal_path": args.proposal_path,
@@ -969,9 +1565,49 @@ def main(argv: Sequence[str] | None = None) -> int:
         "run_id": args.run_id,
     }
     try:
-        if args.preflight_only:
+        if args.validate_failure_diagnostic_only:
+            if not args.failure_diagnostic_path:
+                raise DiscoveryError("failure diagnostic validation requires its path")
+            failure_diagnostic_path = validate_failure_diagnostic_path(
+                args.repo_root,
+                args.run_id,
+                args.failure_diagnostic_path,
+            )
+            record = read_failure_diagnostic(
+                failure_diagnostic_path,
+                expected_run_id=args.run_id,
+                expected_proposal_hash=args.expected_proposal_hash,
+            )
+            result = {
+                "schema": "trading_mvp_funding_metadata_failure_validation_v2",
+                "status": "VALIDATED_ALLOWLISTED_FAILURE",
+                "run_id": args.run_id,
+                "failure_hash": record["failure_hash"],
+                "failure": record["failure"],
+                "raw_payload_persisted": False,
+                "funding_rates_persisted": False,
+                "prices_persisted": False,
+                "retry_authorized": False,
+            }
+        elif args.preflight_only:
             result = validate_execution_artifacts(**common)
         else:
+            if not args.failure_diagnostic_path:
+                raise DiscoveryError("execute requires the failure diagnostic path")
+            failure_diagnostic_path = validate_failure_diagnostic_path(
+                args.repo_root,
+                args.run_id,
+                args.failure_diagnostic_path,
+            )
+            if failure_diagnostic_path.exists():
+                raise DiscoveryError(
+                    "failure diagnostic already exists; single-use run is terminal",
+                    diagnostic=_failure_context(
+                        category="BINDING_VALIDATION",
+                        stage="BINDING_VALIDATION",
+                        request_count=0,
+                    ),
+                )
             if not args.global_writer_claim_path:
                 raise DiscoveryError("execute requires the global writer claim path")
             if not args.owner_pid or args.owner_pid <= 0:
@@ -986,14 +1622,58 @@ def main(argv: Sequence[str] | None = None) -> int:
                 ownership_token=args.ownership_token,
                 run_id=args.run_id,
             )
-    except DiscoveryError as exc:
+    except Exception as exc:
+        diagnostic = (
+            exc.diagnostic
+            if isinstance(exc, DiscoveryError) and exc.diagnostic
+            else _failure_context(
+                category=(
+                    "BINDING_VALIDATION"
+                    if isinstance(exc, DiscoveryError)
+                    else "INTERNAL_ERROR"
+                ),
+                stage=(
+                    "BINDING_VALIDATION"
+                    if isinstance(exc, DiscoveryError)
+                    else "INTERNAL"
+                ),
+                exception_type=(
+                    "DISCOVERY_ERROR" if isinstance(exc, DiscoveryError) else "OTHER"
+                ),
+                request_count=0,
+            )
+        )
+        diagnostic_record = None
+        diagnostic_write_status = "NOT_REQUESTED_PREFLIGHT"
+        if args.execute and failure_diagnostic_path is not None:
+            try:
+                diagnostic_record = write_failure_diagnostic(
+                    failure_diagnostic_path,
+                    build_failure_diagnostic_record(
+                        run_id=args.run_id,
+                        expected_proposal_hash=args.expected_proposal_hash,
+                        diagnostic=diagnostic,
+                    ),
+                )
+                diagnostic_write_status = "IMMUTABLE_SANITIZED_FAILURE_WRITTEN"
+            except Exception:
+                diagnostic_write_status = "FAILURE_DIAGNOSTIC_WRITE_FAILED_CLOSED"
         print(
             json.dumps(
                 {
-                    "schema": "trading_mvp_funding_metadata_discovery_error_v1",
+                    "schema": "trading_mvp_funding_metadata_discovery_error_v2",
                     "status": "STOPPED_INCOMPLETE",
                     "run_id": args.run_id,
-                    "error": str(exc),
+                    "failure": _sanitize_failure_diagnostic(diagnostic),
+                    "failure_hash": (
+                        diagnostic_record.get("failure_hash")
+                        if isinstance(diagnostic_record, dict)
+                        else None
+                    ),
+                    "diagnostic_write_status": diagnostic_write_status,
+                    "raw_payload_persisted": False,
+                    "funding_rates_persisted": False,
+                    "prices_persisted": False,
                     "retry_authorized": False,
                 },
                 ensure_ascii=False,

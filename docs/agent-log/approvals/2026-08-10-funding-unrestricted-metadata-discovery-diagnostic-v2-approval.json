@@ -1,0 +1,82 @@
+{
+  "schema": "trading_mvp_funding_unrestricted_metadata_discovery_approval_receipt_v2",
+  "created_at_utc": "2026-08-10T19:22:14.209424Z",
+  "status": "ACTIVE_SINGLE_USE",
+  "user_approval_received": true,
+  "user_approval_text": "Разрешаю unrestricted funding metadata diagnostic refreeze v2 по proposal_hash=3f247f93428e8b4e8cb340b3c1144e2b6bbeadc77bb9871e814b61a8bd5bfa75 и proposal_file_sha256=0105b8afcf7dc9372d72dab4987b045baa5f62cf508f8193278803ad08ce8b3f: применить exact patch sha256=f116ab6695988402ea636f8f46b7de1f48a52c57f3b7734b0417c4efb4de9f47, проверить pre/postimage hashes, выполнить offline tests, создать новый immutable approval receipt/runtime manifest v2 и при свежем открытом guard и отсутствии другого writer выполнить один видимый public read-only запуск funding_unrestricted_metadata_discovery_20260810_v2 через tools\\start_funding_unrestricted_metadata_discovery_visible.ps1, максимум 300 секунд, 50 MB и 4 HTTP-запроса только к frozen official MEXC/Gate contract metadata endpoints, без HTTP redirects. Разрешаю сохранять только immutable sanitized failure diagnostic до 16384 bytes с exact allowlisted fields и canonical hash, без free-form error text, raw payload, funding rates или prices. STOPPED_INCOMPLETE v2 не повторять. V1 не resume/retry и старые receipt/output не использовать. Без collector/evaluator, OOS, returns/PnL, grid/retune, execution probe, paper/live, private API, реальных денег, плеча или маржи. После успешного discovery требуется отдельный exact identity-verified candidate PlanOnly и отдельное разрешение на сбор данных.",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\funding-unrestricted-metadata-discovery-diagnostic-refreeze-proposal-20260810-v2.json",
+    "file_sha256": "0105b8afcf7dc9372d72dab4987b045baa5f62cf508f8193278803ad08ce8b3f",
+    "proposal_hash": "3f247f93428e8b4e8cb340b3c1144e2b6bbeadc77bb9871e814b61a8bd5bfa75"
+  },
+  "exact_patch": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\funding-unrestricted-metadata-discovery-diagnostic-refreeze-implementation-preview-20260810-v2.patch",
+    "file_sha256": "f116ab6695988402ea636f8f46b7de1f48a52c57f3b7734b0417c4efb4de9f47",
+    "postimages": {
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\funding_unrestricted_metadata_discovery.py": "da0a8765d2459d81be008248f6b46c445257382cfa4ac02ba1bc672d8e9ff6e9",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_funding_unrestricted_metadata_discovery.py": "de1ce95ff91c34101c3c7078b42219393f0a0d042360ae700b8745bc62294ee7",
+      "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_funding_unrestricted_metadata_discovery_visible.ps1": "09e04101aacb065c065403f05212e25a0a0eac818d14a03c71977a14f206bb34"
+    }
+  },
+  "terminal_v1_boundary": {
+    "run_id": "funding_unrestricted_metadata_discovery_20260810_v1",
+    "status": "STOPPED_INCOMPLETE",
+    "resume_or_retry_authorized": false,
+    "old_receipt_or_output_reuse_allowed": false
+  },
+  "run_binding": {
+    "run_id": "funding_unrestricted_metadata_discovery_20260810_v2",
+    "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\funding-unrestricted-metadata-discovery\\funding_unrestricted_metadata_discovery_20260810_v2",
+    "failure_diagnostic_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\funding_unrestricted_metadata_discovery_20260810_v2.runtime-failure.json",
+    "runtime_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\funding-unrestricted-metadata-discovery-runtime-manifest-20260810-v2.json",
+    "top_level_visible_launcher": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_funding_unrestricted_metadata_discovery_visible.ps1",
+    "single_use": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "execution_scope": {
+    "offline_runtime_implementation_allowed": true,
+    "synthetic_tests_allowed": true,
+    "one_visible_public_read_only_metadata_run_allowed": true,
+    "max_runtime_sec": 300,
+    "hard_output_cap_bytes": 50000000,
+    "maximum_total_http_requests": 4,
+    "maximum_attempts_per_endpoint": 2,
+    "allowed_endpoint_urls": [
+      "https://contract.mexc.com/api/v1/contract/detail",
+      "https://api.gateio.ws/api/v4/futures/usdt/contracts"
+    ],
+    "request_method": "GET",
+    "http_redirect_following_allowed": false,
+    "request_body_allowed": false,
+    "private_or_auth_headers_allowed": false,
+    "raw_response_persistence_allowed": false,
+    "funding_rates_or_prices_persisted_allowed": false,
+    "sanitized_failure_diagnostic_required": true,
+    "failure_diagnostic_max_bytes": 16384,
+    "free_form_failure_text_persistence_allowed": false,
+    "global_writer_claim_required": true,
+    "fresh_open_guard_required": true
+  },
+  "forbidden_scope": {
+    "market_data_collector": false,
+    "evaluator": false,
+    "oos_market_values": false,
+    "returns_or_pnl": false,
+    "grid_or_retune": false,
+    "execution_probe": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false,
+    "v1_resume_or_retry": false,
+    "old_receipt_or_output_reuse": false,
+    "automatic_candidate_planonly": false,
+    "automatic_data_collection": false
+  },
+  "next_checkpoint": {
+    "identity_verified_candidate_planonly_required": true,
+    "separate_exact_data_collection_approval_required": true
+  },
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "bf03462c5d2a86b8106d11a1ca35fc4dfb58d1a6b8f15683435de826907b35a7"
+}

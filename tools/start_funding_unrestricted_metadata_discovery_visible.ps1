@@ -11,16 +11,17 @@ $runtimeModule = Join-Path $repoRoot "trading_mvp\src\funding_unrestricted_metad
 $writerClaimCli = Join-Path $repoRoot "trading_mvp\src\global_market_writer_claim.py"
 $autopilotChecker = Join-Path $repoRoot "tools\check_trading_mvp_autopilot.ps1"
 $activeRunChecker = Join-Path $repoRoot "tools\check_active_run_gate.ps1"
-$proposalPath = Join-Path $repoRoot "docs\plans\drafts\funding-unrestricted-active-perp-metadata-discovery-proposal-20260810-v1.json"
-$receiptPath = Join-Path $repoRoot "docs\agent-log\approvals\2026-08-10-funding-unrestricted-metadata-discovery-v1-approval.json"
-$runtimeManifestPath = Join-Path $repoRoot "docs\plans\funding-unrestricted-metadata-discovery-runtime-manifest-20260810-v1.json"
+$runtimeManifestPath = Join-Path $repoRoot "docs\plans\funding-unrestricted-metadata-discovery-runtime-manifest-20260810-v2.json"
 $globalWriterClaimPath = Join-Path $repoRoot "docs\agent-log\active-market-data-writer-claim.json"
 $globalWriterClaimArchiveDir = Join-Path $repoRoot "docs\agent-log\global-writer-claim-archive"
-$runId = "funding_unrestricted_metadata_discovery_20260810_v1"
+$runId = "funding_unrestricted_metadata_discovery_20260810_v2"
 $launchRecordPath = Join-Path $repoRoot "docs\agent-log\run-gates\$runId.launch.json"
+$failureDiagnosticPath = Join-Path $repoRoot "docs\agent-log\run-gates\$runId.runtime-failure.json"
 $outputPath = "E:\ZolotyayLopata-data\exports\trading-mvp\funding-unrestricted-metadata-discovery\$runId"
-$expectedProposalFileSha256 = "8270be9ae66e546e0f5eca4d774d8f85985e732527bab0fc92415766c08b4de0"
-$expectedProposalHash = "0ac65470275e28819583bf6599d57674cda0cf6a523e4dbb1d85583997380f77"
+$proposalPath = $null
+$receiptPath = $null
+$expectedProposalFileSha256 = $null
+$expectedProposalHash = $null
 $allowedEndpointUrls = @(
     "https://contract.mexc.com/api/v1/contract/detail",
     "https://api.gateio.ws/api/v4/futures/usdt/contracts"
@@ -68,6 +69,114 @@ function Get-Sha256 {
         throw "Required file is missing: $Path"
     }
     return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
+}
+
+function Test-SamePath {
+    param(
+        [Parameter(Mandatory = $true)][string]$Left,
+        [Parameter(Mandatory = $true)][string]$Right
+    )
+
+    return [string]::Equals(
+        [System.IO.Path]::GetFullPath($Left),
+        [System.IO.Path]::GetFullPath($Right),
+        [System.StringComparison]::OrdinalIgnoreCase
+    )
+}
+
+function Get-RuntimeManifestBinding {
+    if (-not (Test-Path -LiteralPath $runtimeManifestPath -PathType Leaf)) {
+        throw "Diagnostic v2 runtime manifest is missing. Exact approval is required."
+    }
+    $manifest = ConvertFrom-JsonPreserveDateStrings -InputJson (
+        Get-Content -Raw -LiteralPath $runtimeManifestPath
+    )
+    if (
+        [string]$manifest.schema -ne
+        "trading_mvp_funding_unrestricted_metadata_discovery_runtime_manifest_v2" -or
+        [string]$manifest.status -ne "FROZEN_WITH_EXACT_SINGLE_USE_APPROVAL" -or
+        [string]$manifest.run_id -ne $runId
+    ) {
+        throw "Diagnostic v2 runtime manifest identity mismatch."
+    }
+    if (-not $manifest.proposal -or -not $manifest.approval_receipt -or -not $manifest.execution) {
+        throw "Diagnostic v2 runtime manifest bindings are incomplete."
+    }
+    foreach ($value in @(
+        [string]$manifest.proposal.file_sha256,
+        [string]$manifest.proposal.proposal_hash
+    )) {
+        if ($value -notmatch '^[0-9a-f]{64}$') {
+            throw "Diagnostic v2 proposal hash binding is invalid."
+        }
+    }
+    if (-not (Test-SamePath -Left ([string]$manifest.execution.output_path) -Right $outputPath)) {
+        throw "Diagnostic v2 output path binding mismatch."
+    }
+    if (-not (Test-SamePath `
+        -Left ([string]$manifest.execution.failure_diagnostic_path) `
+        -Right $failureDiagnosticPath
+    )) {
+        throw "Diagnostic v2 failure path binding mismatch."
+    }
+    return $manifest
+}
+
+function Assert-ExactPropertySet {
+    param(
+        [Parameter(Mandatory = $true)]$Object,
+        [Parameter(Mandatory = $true)][string[]]$Expected,
+        [Parameter(Mandatory = $true)][string]$Label
+    )
+
+    $observed = @($Object.PSObject.Properties.Name | Sort-Object)
+    $required = @($Expected | Sort-Object)
+    if ((Compare-Object -ReferenceObject $required -DifferenceObject $observed).Count -ne 0) {
+        throw "$Label property set changed."
+    }
+}
+
+function Read-RuntimeFailureDiagnostic {
+    if (-not (Test-Path -LiteralPath $failureDiagnosticPath -PathType Leaf)) {
+        throw "Runtime failure diagnostic is missing."
+    }
+    $file = Get-Item -LiteralPath $failureDiagnosticPath
+    if ($file.Length -le 0 -or $file.Length -gt 16384) {
+        throw "Runtime failure diagnostic byte cap changed."
+    }
+    $arguments = @(Get-RuntimeArguments) + @("--validate-failure-diagnostic-only")
+    $diagnostic = Invoke-PythonJson -Arguments $arguments
+    Assert-ExactPropertySet -Object $diagnostic -Label "failure diagnostic" -Expected @(
+        "schema", "status", "run_id", "failure_hash", "failure",
+        "raw_payload_persisted", "funding_rates_persisted", "prices_persisted",
+        "retry_authorized"
+    )
+    Assert-ExactPropertySet -Object $diagnostic.failure -Label "failure detail" -Expected @(
+        "category", "stage", "endpoint_id", "exception_type", "http_status",
+        "attempt", "request_count"
+    )
+    if (
+        [string]$diagnostic.schema -ne "trading_mvp_funding_metadata_failure_validation_v2" -or
+        [string]$diagnostic.status -ne "VALIDATED_ALLOWLISTED_FAILURE" -or
+        [string]$diagnostic.run_id -ne $runId -or
+        $diagnostic.raw_payload_persisted -ne $false -or
+        $diagnostic.funding_rates_persisted -ne $false -or
+        $diagnostic.prices_persisted -ne $false -or
+        $diagnostic.retry_authorized -ne $false -or
+        [string]$diagnostic.failure_hash -notmatch '^[0-9a-f]{64}$'
+    ) {
+        throw "Runtime failure diagnostic safety contract changed."
+    }
+    return [ordered]@{
+        path = $failureDiagnosticPath
+        file_sha256 = Get-Sha256 -Path $failureDiagnosticPath
+        failure_hash = [string]$diagnostic.failure_hash
+        failure = $diagnostic.failure
+        raw_payload_persisted = $false
+        funding_rates_persisted = $false
+        prices_persisted = $false
+        retry_authorized = $false
+    }
 }
 
 function Test-ProcessAlive {
@@ -158,7 +267,8 @@ function Get-RuntimeArguments {
         "--receipt-path", $receiptPath,
         "--runtime-manifest-path", $runtimeManifestPath,
         "--output-path", $outputPath,
-        "--run-id", $runId
+        "--run-id", $runId,
+        "--failure-diagnostic-path", $failureDiagnosticPath
     )
 }
 
@@ -254,15 +364,19 @@ function Invoke-FullPreflight {
     if ((Split-Path -Leaf $PSCommandPath) -ne $launcherFileName) {
         throw "The metadata discovery must run through its exact top-level launcher."
     }
+    if (Test-Path -LiteralPath $failureDiagnosticPath -PathType Leaf) {
+        throw "STOPPED_INCOMPLETE failure diagnostic exists; this exact run is terminal."
+    }
 
     if (-not $IgnoreOwnLaunchRecord) {
         $existing = Get-ExistingLaunchDisposition
         if ($existing) {
             return [ordered]@{
-                schema = "trading_mvp_funding_metadata_visible_preflight_v1"
+                schema = "trading_mvp_funding_metadata_visible_preflight_v2"
                 status = [string]$existing.status
                 run_id = $runId
                 launch_record_path = $launchRecordPath
+                failure_diagnostic_path = $failureDiagnosticPath
                 output_path = $outputPath
                 network_requested = $false
             }
@@ -273,12 +387,13 @@ function Invoke-FullPreflight {
     $runtime = Invoke-RuntimePreflight
     if ([string]$runtime.status -eq "ALREADY_COMPLETE_IMMUTABLE_NO_NETWORK") {
         return [ordered]@{
-            schema = "trading_mvp_funding_metadata_visible_preflight_v1"
+            schema = "trading_mvp_funding_metadata_visible_preflight_v2"
             status = "ALREADY_COMPLETE"
             run_id = $runId
             guard = $guard
             runtime = $runtime
             launch_record_path = $launchRecordPath
+            failure_diagnostic_path = $failureDiagnosticPath
             output_path = $outputPath
             network_requested = $false
         }
@@ -287,12 +402,13 @@ function Invoke-FullPreflight {
         throw "Runtime preflight did not return PREFLIGHT_OK_NO_NETWORK."
     }
     return [ordered]@{
-        schema = "trading_mvp_funding_metadata_visible_preflight_v1"
+        schema = "trading_mvp_funding_metadata_visible_preflight_v2"
         status = "READY_FOR_VISIBLE_SINGLE_USE"
         run_id = $runId
         guard = $guard
         runtime = $runtime
         launch_record_path = $launchRecordPath
+        failure_diagnostic_path = $failureDiagnosticPath
         output_path = $outputPath
         max_runtime_sec = $maxRuntimeSec
         hard_output_cap_bytes = $hardOutputCapBytes
@@ -428,6 +544,11 @@ if ($PreflightOnly -and $VisibleWorker) {
 }
 
 $python = Resolve-ProjectPython
+$runtimeBinding = Get-RuntimeManifestBinding
+$proposalPath = [string]$runtimeBinding.proposal.path
+$receiptPath = [string]$runtimeBinding.approval_receipt.path
+$expectedProposalFileSha256 = [string]$runtimeBinding.proposal.file_sha256
+$expectedProposalHash = [string]$runtimeBinding.proposal.proposal_hash
 
 if ($PreflightOnly) {
     Invoke-FullPreflight | ConvertTo-Json -Depth 20
@@ -492,13 +613,14 @@ if (-not $VisibleWorker) {
     }
 
     [ordered]@{
-        schema = "trading_mvp_funding_metadata_visible_terminal_launch_v1"
+        schema = "trading_mvp_funding_metadata_visible_terminal_launch_v2"
         status = "VISIBLE_TERMINAL_LAUNCHED"
         run_id = $runId
         visible_terminal_pid = $terminal.Id
         terminal_ownership_verified = $true
         child_status = [string]$ownedRecord.status
         launch_record_path = $launchRecordPath
+        failure_diagnostic_path = $failureDiagnosticPath
         output_path = $outputPath
         max_runtime_sec = $maxRuntimeSec
         hard_output_cap_bytes = $hardOutputCapBytes
@@ -508,7 +630,7 @@ if (-not $VisibleWorker) {
 }
 
 $launchRecord = [ordered]@{
-    schema = "trading_mvp_funding_metadata_discovery_launch_v1"
+    schema = "trading_mvp_funding_metadata_discovery_launch_v2"
     status = "VISIBLE_WORKER_CLAIMED"
     run_id = $runId
     visible_terminal_pid = $PID
@@ -527,6 +649,9 @@ $launchRecord = [ordered]@{
     launcher_path = $PSCommandPath
     launcher_sha256 = Get-Sha256 -Path $PSCommandPath
     output_path = $outputPath
+    failure_diagnostic_path = $failureDiagnosticPath
+    failure_diagnostic_file_sha256 = $null
+    runtime_failure = $null
     max_runtime_sec = $maxRuntimeSec
     hard_output_cap_bytes = $hardOutputCapBytes
     maximum_total_http_requests = 4
@@ -590,7 +715,22 @@ try {
     }
     $stopwatch.Stop()
     if ($runtimeProcess.ExitCode -ne 0) {
-        throw "Metadata runtime failed with exit code $($runtimeProcess.ExitCode)."
+        $safeFailure = Read-RuntimeFailureDiagnostic
+        $launchRecord.failure_diagnostic_file_sha256 = $safeFailure.file_sha256
+        $launchRecord.runtime_failure = $safeFailure
+        $runtimeFailureMessage = (
+            "Metadata runtime failed: category={0}; stage={1}; endpoint={2}; " +
+            "exit_code={3}."
+        ) -f @(
+            [string]$safeFailure.failure.category,
+            [string]$safeFailure.failure.stage,
+            [string]$safeFailure.failure.endpoint_id,
+            $runtimeProcess.ExitCode
+        )
+        throw $runtimeFailureMessage
+    }
+    if (Test-Path -LiteralPath $failureDiagnosticPath -PathType Leaf) {
+        throw "Runtime returned success with an unexpected failure diagnostic."
     }
 
     $completed = Assert-CompletedOutput
@@ -610,6 +750,21 @@ try {
     $failure = $_.Exception.Message
     if ($runtimeProcess -and -not $runtimeProcess.HasExited) {
         Stop-Process -Id $runtimeProcess.Id -Force -ErrorAction SilentlyContinue
+    }
+    if (
+        (Test-Path -LiteralPath $failureDiagnosticPath -PathType Leaf) -and
+        -not $launchRecord.failure_diagnostic_file_sha256
+    ) {
+        try {
+            $safeFailure = Read-RuntimeFailureDiagnostic
+            $launchRecord.failure_diagnostic_file_sha256 = $safeFailure.file_sha256
+            $launchRecord.runtime_failure = $safeFailure
+        } catch {
+            $launchRecord.runtime_failure = [ordered]@{
+                status = "INVALID_FAILURE_DIAGNOSTIC_BLOCKED"
+                free_form_error_persisted = $false
+            }
+        }
     }
     if ($globalClaimToken -and -not $globalClaimReleased) {
         try {

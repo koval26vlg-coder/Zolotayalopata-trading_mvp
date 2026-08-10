@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import io
 import json
@@ -19,11 +20,17 @@ from funding_unrestricted_metadata_discovery import (  # noqa: E402
     MEXC_ENDPOINT,
     BoundedMetadataClient,
     DiscoveryError,
+    RejectRedirectHandler,
+    build_failure_diagnostic_record,
     build_provisional_ticker_candidates,
     project_gateio_active_contracts,
     project_mexc_active_contracts,
+    main,
+    read_failure_diagnostic,
     validate_execution_artifacts,
+    validate_failure_diagnostic_path,
     verify_global_writer_claim,
+    write_failure_diagnostic,
     write_immutable_discovery,
 )
 
@@ -319,6 +326,291 @@ class FundingUnrestrictedMetadataDiscoveryTests(unittest.TestCase):
         with self.assertRaisesRegex(DiscoveryError, "request budget exhausted"):
             client.fetch(MEXC_ENDPOINT)
 
+    def test_default_client_rejects_redirects_before_any_followup_request(self) -> None:
+        client = BoundedMetadataClient()
+        redirect_handlers = [
+            handler
+            for handler in client.opener.handlers
+            if isinstance(handler, RejectRedirectHandler)
+        ]
+
+        self.assertEqual(len(redirect_handlers), 1)
+        self.assertIsNone(
+            redirect_handlers[0].redirect_request(
+                None,
+                None,
+                302,
+                "Found",
+                {},
+                "https://unapproved.example/metadata",
+            )
+        )
+
+    def test_network_failure_diagnostic_is_allowlisted_and_has_no_error_text(self) -> None:
+        secret = "fundingRate=0.75 price=123 raw-payload-secret"
+        opener = FakeOpener([OSError(secret), OSError(secret)])
+        client = BoundedMetadataClient(
+            opener=opener,
+            max_total_requests=4,
+            max_attempts_per_endpoint=2,
+            monotonic=lambda: 1.0,
+            deadline_monotonic=10.0,
+        )
+
+        with self.assertRaises(DiscoveryError) as raised:
+            client.fetch(MEXC_ENDPOINT)
+
+        diagnostic = raised.exception.diagnostic
+        self.assertEqual(diagnostic["category"], "NETWORK_IO")
+        self.assertEqual(diagnostic["stage"], "HTTP_REQUEST")
+        self.assertEqual(diagnostic["endpoint_id"], "MEXC_CONTRACT_DETAIL")
+        self.assertEqual(diagnostic["exception_type"], "OS_ERROR")
+        self.assertEqual(diagnostic["attempt"], 2)
+        self.assertEqual(diagnostic["request_count"], 2)
+        self.assertNotIn(secret, json.dumps(diagnostic, sort_keys=True))
+
+    def test_failure_diagnostic_is_immutable_bounded_and_sanitized(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            run_id = "fixture_metadata_v2"
+            target = root / "docs" / "agent-log" / "run-gates" / (
+                f"{run_id}.runtime-failure.json"
+            )
+            validated = validate_failure_diagnostic_path(root, run_id, target)
+            record = build_failure_diagnostic_record(
+                run_id=run_id,
+                expected_proposal_hash="a" * 64,
+                diagnostic={
+                    "category": "HTTP_STATUS",
+                    "stage": "HTTP_REQUEST",
+                    "endpoint_id": "GATEIO_CONTRACTS",
+                    "exception_type": "HTTP_ERROR",
+                    "http_status": 403,
+                    "attempt": 1,
+                    "request_count": 1,
+                    "error": "raw fundingRate=1 price=2",
+                },
+            )
+            written = write_failure_diagnostic(validated, record)
+
+            persisted = json.loads(validated.read_text(encoding="utf-8"))
+            self.assertEqual(written["failure_hash"], persisted["failure_hash"])
+            self.assertEqual(persisted["failure"]["category"], "HTTP_STATUS")
+            self.assertEqual(persisted["failure"]["http_status"], 403)
+            self.assertEqual(
+                sorted(persisted["failure"]),
+                [
+                    "attempt",
+                    "category",
+                    "endpoint_id",
+                    "exception_type",
+                    "http_status",
+                    "request_count",
+                    "stage",
+                ],
+            )
+            serialized = json.dumps(persisted, sort_keys=True)
+            for forbidden in (
+                "raw fundingRate=1 price=2",
+                "fundingRate=1",
+                "price=2",
+                '"error"',
+            ):
+                self.assertNotIn(forbidden, serialized)
+            self.assertFalse(persisted["raw_payload_persisted"])
+            self.assertFalse(persisted["funding_rates_persisted"])
+            self.assertFalse(persisted["prices_persisted"])
+            self.assertLess(validated.stat().st_size, 16_384)
+            with self.assertRaisesRegex(DiscoveryError, "already exists"):
+                write_failure_diagnostic(validated, record)
+
+    def test_failure_writer_rejects_extra_top_level_or_nested_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            run_id = "fixture_strict_failure_v2"
+            target = root / "docs" / "agent-log" / "run-gates" / (
+                f"{run_id}.runtime-failure.json"
+            )
+            record = build_failure_diagnostic_record(
+                run_id=run_id,
+                expected_proposal_hash="a" * 64,
+                diagnostic={
+                    "category": "HTTP_STATUS",
+                    "stage": "HTTP_RESPONSE",
+                    "endpoint_id": "MEXC_CONTRACT_DETAIL",
+                    "exception_type": "HTTP_ERROR",
+                    "http_status": 302,
+                    "attempt": 1,
+                    "request_count": 1,
+                },
+            )
+
+            top_level = dict(record)
+            top_level["raw_payload"] = "fundingRate=1 price=2"
+            with self.assertRaisesRegex(DiscoveryError, "top-level fields changed"):
+                write_failure_diagnostic(target, top_level)
+
+            nested = dict(record)
+            nested["failure"] = dict(record["failure"])
+            nested["failure"]["error"] = "fundingRate=1 price=2"
+            with self.assertRaisesRegex(DiscoveryError, "detail fields changed"):
+                write_failure_diagnostic(target, nested)
+            self.assertFalse(target.exists())
+
+    def test_failure_reader_rechecks_hash_and_numeric_json_types(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            run_id = "fixture_read_failure_v2"
+            target = root / "docs" / "agent-log" / "run-gates" / (
+                f"{run_id}.runtime-failure.json"
+            )
+            record = build_failure_diagnostic_record(
+                run_id=run_id,
+                expected_proposal_hash="a" * 64,
+                diagnostic={
+                    "category": "HTTP_STATUS",
+                    "stage": "HTTP_RESPONSE",
+                    "endpoint_id": "GATEIO_CONTRACTS",
+                    "exception_type": "HTTP_ERROR",
+                    "http_status": 429,
+                    "attempt": 1,
+                    "request_count": 1,
+                },
+            )
+            target.parent.mkdir(parents=True)
+            target.write_text(json.dumps(record), encoding="utf-8")
+            loaded = read_failure_diagnostic(
+                target,
+                expected_run_id=run_id,
+                expected_proposal_hash="a" * 64,
+            )
+            self.assertEqual(loaded["failure_hash"], record["failure_hash"])
+
+            tampered = dict(record)
+            tampered["failure"] = dict(record["failure"])
+            tampered["failure"]["request_count"] = "1"
+            target.write_text(json.dumps(tampered), encoding="utf-8")
+            with self.assertRaisesRegex(DiscoveryError, "request_count must be"):
+                read_failure_diagnostic(
+                    target,
+                    expected_run_id=run_id,
+                    expected_proposal_hash="a" * 64,
+                )
+
+            tampered["failure"]["request_count"] = 1
+            tampered["failure_hash"] = "b" * 64
+            target.write_text(json.dumps(tampered), encoding="utf-8")
+            with self.assertRaisesRegex(DiscoveryError, "canonical hash mismatch"):
+                read_failure_diagnostic(
+                    target,
+                    expected_run_id=run_id,
+                    expected_proposal_hash="a" * 64,
+                )
+
+    def test_failure_validation_cli_returns_only_allowlisted_summary(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            run_id = "fixture_cli_failure_v2"
+            failure_path = root / "docs" / "agent-log" / "run-gates" / (
+                f"{run_id}.runtime-failure.json"
+            )
+            record = build_failure_diagnostic_record(
+                run_id=run_id,
+                expected_proposal_hash="a" * 64,
+                diagnostic={
+                    "category": "HTTP_STATUS",
+                    "stage": "HTTP_RESPONSE",
+                    "endpoint_id": "MEXC_CONTRACT_DETAIL",
+                    "exception_type": "HTTP_ERROR",
+                    "http_status": 302,
+                    "attempt": 1,
+                    "request_count": 1,
+                },
+            )
+            write_failure_diagnostic(failure_path, record)
+            stdout = io.StringIO()
+            with contextlib.redirect_stdout(stdout):
+                exit_code = main(
+                    [
+                        "--repo-root",
+                        str(root),
+                        "--proposal-path",
+                        str(root / "unused-proposal.json"),
+                        "--expected-proposal-file-sha256",
+                        "b" * 64,
+                        "--expected-proposal-hash",
+                        "a" * 64,
+                        "--receipt-path",
+                        str(root / "unused-receipt.json"),
+                        "--runtime-manifest-path",
+                        str(root / "unused-manifest.json"),
+                        "--output-path",
+                        str(root / "unused-output"),
+                        "--run-id",
+                        run_id,
+                        "--failure-diagnostic-path",
+                        str(failure_path),
+                        "--validate-failure-diagnostic-only",
+                    ]
+                )
+
+            self.assertEqual(exit_code, 0)
+            rendered = json.loads(stdout.getvalue())
+            self.assertEqual(rendered["status"], "VALIDATED_ALLOWLISTED_FAILURE")
+            self.assertEqual(rendered["failure_hash"], record["failure_hash"])
+            self.assertEqual(set(rendered["failure"]), set(record["failure"]))
+            self.assertNotIn("observed_at_utc", rendered)
+
+    def test_execute_binding_failure_writes_safe_diagnostic_without_network(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            run_id = "fixture_execute_failure_v2"
+            failure_path = root / "docs" / "agent-log" / "run-gates" / (
+                f"{run_id}.runtime-failure.json"
+            )
+            output = root / "output"
+            stderr = io.StringIO()
+            with contextlib.redirect_stderr(stderr):
+                exit_code = main(
+                    [
+                        "--repo-root",
+                        str(root),
+                        "--proposal-path",
+                        str(root / "missing-proposal.json"),
+                        "--expected-proposal-file-sha256",
+                        "b" * 64,
+                        "--expected-proposal-hash",
+                        "a" * 64,
+                        "--receipt-path",
+                        str(root / "missing-receipt.json"),
+                        "--runtime-manifest-path",
+                        str(root / "missing-manifest.json"),
+                        "--output-path",
+                        str(output),
+                        "--run-id",
+                        run_id,
+                        "--failure-diagnostic-path",
+                        str(failure_path),
+                        "--execute",
+                        "--global-writer-claim-path",
+                        str(root / "missing-claim.json"),
+                        "--owner-pid",
+                        "123",
+                        "--ownership-token",
+                        "c" * 32,
+                    ]
+                )
+
+            self.assertEqual(exit_code, 2)
+            self.assertTrue(failure_path.is_file())
+            self.assertFalse(output.exists())
+            record = json.loads(failure_path.read_text(encoding="utf-8"))
+            self.assertEqual(record["failure"]["category"], "BINDING_VALIDATION")
+            self.assertEqual(record["failure"]["request_count"], 0)
+            rendered = stderr.getvalue()
+            self.assertNotIn("missing-proposal", rendered)
+            self.assertNotIn("could not be loaded", rendered)
+
     def test_immutable_writer_refuses_overwrite_and_never_writes_raw_payload(self) -> None:
         mexc = [
             {
@@ -442,28 +734,25 @@ class FundingUnrestrictedMetadataDiscoveryTests(unittest.TestCase):
                     ownership_token="b" * 32,
                 )
 
-    def test_frozen_artifacts_validate_and_preflight_does_not_create_output(self) -> None:
+    def test_terminal_v1_artifacts_cannot_authorize_diagnostic_v2_runtime(self) -> None:
         receipt = json.loads(RECEIPT_PATH.read_text(encoding="utf-8"))
         output = Path(receipt["run_binding"]["output_path"])
         existed_before = output.exists()
-        result = validate_execution_artifacts(
-            repo_root=ROOT,
-            proposal_path=PROPOSAL_PATH,
-            expected_proposal_file_sha256=(
-                "8270be9ae66e546e0f5eca4d774d8f85985e732527bab0fc92415766c08b4de0"
-            ),
-            expected_proposal_hash=(
-                "0ac65470275e28819583bf6599d57674cda0cf6a523e4dbb1d85583997380f77"
-            ),
-            receipt_path=RECEIPT_PATH,
-            runtime_manifest_path=RUNTIME_MANIFEST_PATH,
-            output_path=output,
-            run_id="funding_unrestricted_metadata_discovery_20260810_v1",
-        )
-        self.assertIn(
-            result["status"],
-            {"PREFLIGHT_OK_NO_NETWORK", "ALREADY_COMPLETE_IMMUTABLE_NO_NETWORK"},
-        )
+        with self.assertRaises(DiscoveryError):
+            validate_execution_artifacts(
+                repo_root=ROOT,
+                proposal_path=PROPOSAL_PATH,
+                expected_proposal_file_sha256=(
+                    "8270be9ae66e0f5eca4d774d8f85985e732527bab0fc92415766c08b4de0"
+                ),
+                expected_proposal_hash=(
+                    "0ac65470275e28819583bf6599d57674cda0cf6a523e4dbb1d85583997380f77"
+                ),
+                receipt_path=RECEIPT_PATH,
+                runtime_manifest_path=RUNTIME_MANIFEST_PATH,
+                output_path=output,
+                run_id="funding_unrestricted_metadata_discovery_20260810_v1",
+            )
         self.assertEqual(output.exists(), existed_before)
 
     def test_launcher_is_visible_single_owner_and_has_no_market_data_scope(self) -> None:
@@ -478,6 +767,9 @@ class FundingUnrestrictedMetadataDiscoveryTests(unittest.TestCase):
             '"-NoExit"',
             "VISIBLE_TERMINAL_LAUNCHED",
             "terminal_ownership_verified",
+            "runtime-failure.json",
+            "Read-RuntimeFailureDiagnostic",
+            "--validate-failure-diagnostic-only",
             "PreflightOnly",
             "VisibleWorker",
             "STOPPED_INCOMPLETE",

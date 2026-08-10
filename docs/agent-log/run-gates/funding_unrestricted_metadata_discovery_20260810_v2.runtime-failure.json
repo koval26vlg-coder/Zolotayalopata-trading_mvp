@@ -1,0 +1,23 @@
+{
+  "schema": "trading_mvp_funding_unrestricted_metadata_discovery_failure_v2",
+  "status": "STOPPED_INCOMPLETE",
+  "run_id": "funding_unrestricted_metadata_discovery_20260810_v2",
+  "observed_at_utc": "2026-08-10T19:23:09.078457Z",
+  "proposal_hash": "3f247f93428e8b4e8cb340b3c1144e2b6bbeadc77bb9871e814b61a8bd5bfa75",
+  "failure": {
+    "category": "CONTRACT_METADATA_VALIDATION",
+    "stage": "CONTRACT_PROJECTION",
+    "endpoint_id": null,
+    "exception_type": "DISCOVERY_ERROR",
+    "http_status": null,
+    "attempt": null,
+    "request_count": 2
+  },
+  "maximum_total_http_requests": 4,
+  "raw_payload_persisted": false,
+  "funding_rates_persisted": false,
+  "prices_persisted": false,
+  "retry_authorized": false,
+  "failure_hash_method": "sha256_canonical_json_excluding_failure_hash",
+  "failure_hash": "b27f86f9a55af986b54f61ba2b6246c8da6f91a0cd0da76b03fc3e0d6664d39d"
+}
