@@ -11,6 +11,8 @@ param(
     [int]$MinTwoExchangeBases = 15,
     [int]$MinTwoExchangeFullCoverage1h4hBases = 8,
     [double]$MinFullCoverageRatio = 0.80,
+    [ValidateRange(0, 2147483647)][int]$MaxDuplicateCandles = 0,
+    [switch]$RequireOfficialIdentityAfterQuality,
     [switch]$UpdateGate,
     [switch]$Json
 )
@@ -20,7 +22,11 @@ $ErrorActionPreference = "Stop"
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $gateChecker = Join-Path $repoRoot "tools\check_active_run_gate.ps1"
 $gatePath = Join-Path $repoRoot "docs\agent-log\active-run-gate.json"
+$currentRunPath = Join-Path $repoRoot "docs\agent-log\current-run.json"
 $modulePath = Join-Path $repoRoot "trading_mvp\src\slow_liquidity_history_quality.py"
+$exactRecollectRunId = "slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6"
+$exactRecollectQualityOutputPath = `
+    "E:\ZolotyayLopata-data\exports\trading-mvp\analysis\slow_liquidity_history_recollect_quality_20260813_pagecap_provenance_slotintegrity_v6.json"
 
 function Set-JsonProperty {
     param(
@@ -103,6 +109,15 @@ $InputJsonl = Resolve-RepoPath $InputJsonl
 $ManifestPath = Resolve-RepoPath $ManifestPath
 $OutputPath = Resolve-RepoPath $OutputPath
 
+if ($UpdateGate -and $rawGate -and
+    [string]$rawGate.run_id -ceq $exactRecollectRunId) {
+    throw "Exact recollect gate updates require run_exact_slow_liquidity_recollect_quality.ps1."
+}
+if ([System.IO.Path]::GetFullPath($OutputPath) -ieq
+    [System.IO.Path]::GetFullPath($exactRecollectQualityOutputPath)) {
+    throw "The exact recollect final quality report is owned by run_exact_slow_liquidity_recollect_quality.ps1."
+}
+
 if (-not (Test-Path -LiteralPath $InputJsonl)) {
     throw "InputJsonl not found: $InputJsonl"
 }
@@ -141,7 +156,8 @@ $argsList = @(
     "--max-api-error-slot-rate", $MaxApiErrorSlotRate,
     "--min-two-exchange-bases", $MinTwoExchangeBases,
     "--min-two-exchange-full-coverage-1h4h-bases", $MinTwoExchangeFullCoverage1h4hBases,
-    "--min-full-coverage-ratio", $MinFullCoverageRatio
+    "--min-full-coverage-ratio", $MinFullCoverageRatio,
+    "--max-duplicate-candles", $MaxDuplicateCandles
 )
 
 $raw = & $python @argsList
@@ -150,11 +166,29 @@ if ($LASTEXITCODE -ne 0) {
 }
 $result = $raw | ConvertFrom-Json
 
+if ($RequireOfficialIdentityAfterQuality -and [bool]$result.accepted) {
+    Set-JsonProperty -Object $result -Name "decision" -Value `
+        "SLOW_LIQUIDITY_HISTORY_RECOLLECT_QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL"
+    Set-JsonProperty -Object $result -Name "fixed_signal_plan_allowed" -Value $false
+    Set-JsonProperty -Object $result -Name "normalizer_allowed" -Value $false
+    Set-JsonProperty -Object $result -Name "identity_verification_required" -Value $true
+    Set-JsonProperty -Object $result -Name "identity_verification_authorized" -Value $false
+    Set-JsonProperty -Object $result -Name "next_step_after_ready" -Value `
+        "Request a separate exact official MEXC/Gate spot identity verification approval. Exclude unresolved or conflicting tickers; require at least eight verified bases before fixed-signal PlanOnly."
+    [System.IO.File]::WriteAllText(
+        $OutputPath,
+        (($result | ConvertTo-Json -Depth 20) + "`n"),
+        [System.Text.UTF8Encoding]::new($false)
+    )
+}
+
 if ($UpdateGate) {
     $gateDoc = Get-Content -Raw -LiteralPath $gatePath | ConvertFrom-Json
     $accepted = [bool]$result.accepted
     $metrics = $result.metrics
-    $nextStep = if ($accepted) {
+    $nextStep = if ($accepted -and $RequireOfficialIdentityAfterQuality) {
+        "Await separate exact approval for official MEXC/Gate spot identity verification. Do not run fixed-signal, replay, OOS, evaluator, grid, paper or live steps."
+    } elseif ($accepted) {
         "Run fixed-signal PlanOnly for slow_liquidity_regime_breakout_retest on clean 1h/4h two-venue slice. Do not run replay/grid/live/API/paper-forward until fixed-signal gate passes."
     } else {
         "Do not replay/grid. Recollect or rescope slow-liquidity history to enough two-venue 1h/4h coverage before signal design."
@@ -167,6 +201,9 @@ if ($UpdateGate) {
     Set-JsonProperty -Object $gateDoc -Name "replay_allowed" -Value $false
     Set-JsonProperty -Object $gateDoc -Name "grid_allowed" -Value $false
     Set-JsonProperty -Object $gateDoc -Name "paper_forward_allowed" -Value $false
+    Set-JsonProperty -Object $gateDoc -Name "identity_verification_required" -Value `
+        ([bool]($accepted -and $RequireOfficialIdentityAfterQuality))
+    Set-JsonProperty -Object $gateDoc -Name "identity_verification_authorized" -Value $false
     Set-JsonProperty -Object $gateDoc -Name "last_slow_liquidity_history_data_quality_at" -Value ((Get-Date).ToString("yyyy-MM-dd HH:mm:ss zzz"))
     Set-JsonProperty -Object $gateDoc -Name "last_slow_liquidity_history_data_quality_output_path" -Value $OutputPath
     Set-JsonProperty -Object $gateDoc -Name "last_slow_liquidity_history_data_quality_decision" -Value ([string]$result.decision)
@@ -174,7 +211,13 @@ if ($UpdateGate) {
     Set-JsonProperty -Object $gateDoc -Name "last_slow_liquidity_history_data_quality_warnings" -Value @($result.warnings)
     Set-JsonProperty -Object $gateDoc -Name "strategy_branch_status" -Value ([ordered]@{
         branch = "slow_liquidity_regime_breakout_retest"
-        verdict = if ($accepted) { "history_quality_accepted_ready_for_fixed_signal_planonly" } else { "history_quality_rejected" }
+        verdict = if ($accepted -and $RequireOfficialIdentityAfterQuality) {
+            "history_quality_accepted_await_official_identity_approval"
+        } elseif ($accepted) {
+            "history_quality_accepted_ready_for_fixed_signal_planonly"
+        } else {
+            "history_quality_rejected"
+        }
         decision_source = $OutputPath
         selected_at = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss zzz")
         previous_branch = "spot_perp_basis_or_listing_event"
@@ -191,6 +234,18 @@ if ($UpdateGate) {
         next_step_required = if ($accepted) { "fixed_signal_planonly_on_clean_1h4h_slice" } else { "recollect_or_rescope_history" }
     })
     $gateDoc | ConvertTo-Json -Depth 16 | Set-Content -LiteralPath $gatePath -Encoding UTF8
+    [ordered]@{
+        schema = "active_run_pointer_v1"
+        project = "trading_mvp"
+        run_id = [string]$gateDoc.run_id
+        status = [string]$gateDoc.status
+        updated_at = [string]$gateDoc.updated_at
+        manifest_path = [string]$gateDoc.manifest_path
+        output = [ordered]@{ path = [string]$gateDoc.output_path; kind = "file" }
+        collector_pid = $null
+        monitor_pid = $null
+        process_ids = @()
+    } | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $currentRunPath -Encoding UTF8
     $result | Add-Member -NotePropertyName "gate_updated" -NotePropertyValue $true
 } else {
     $result | Add-Member -NotePropertyName "gate_updated" -NotePropertyValue $false

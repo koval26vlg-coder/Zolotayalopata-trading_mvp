@@ -1,0 +1,75 @@
+{
+  "schema": "trading_mvp_slow_liquidity_official_currentness_topology_v2_launcher_gate_json_integrity_audit_v1",
+  "status": "CRITICAL_BLOCKED_BEFORE_NETWORK_V2_NOT_LAUNCHABLE",
+  "generated_at_utc": "2026-08-14T05:32:25.0935530+00:00",
+  "project": "trading_mvp",
+  "run_id": "slow_liquidity_official_currentness_topology_discovery_20260814_v2",
+  "research_only": true,
+  "finding": {
+    "finding_id": "V2_ACTIVE_RUN_GATE_JSON_MODE_MISSING",
+    "severity": "CRITICAL",
+    "deterministic": true,
+    "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_official_currentness_topology_v2_visible.ps1",
+    "launcher_file_sha256": "4d5ae74e0d3e8169d220b4e4d38ac0c339b8f867b0d368475a552ca64a3937a3",
+    "checker_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_active_run_gate.ps1",
+    "checker_file_sha256": "59a80bc6731c15358781732f7987efd4c4eea8f7874c134e1921577f80f63eea",
+    "checker_json_switch_present": true,
+    "launcher_checker_invocation_line": 465,
+    "launcher_json_parse_line": 467,
+    "actual_invocation": "& $activeRunChecker 2>&1",
+    "required_invocation": "& $activeRunChecker -Json 2>&1",
+    "observed_pipeline_record_count": 5,
+    "observed_pipeline_record_types": [
+      "Microsoft.PowerShell.Commands.Internal.Format.FormatStartData",
+      "Microsoft.PowerShell.Commands.Internal.Format.GroupStartData",
+      "Microsoft.PowerShell.Commands.Internal.Format.FormatEntryData",
+      "Microsoft.PowerShell.Commands.Internal.Format.GroupEndData",
+      "Microsoft.PowerShell.Commands.Internal.Format.FormatEndData"
+    ],
+    "json_parse_succeeds": false,
+    "sanitized_reason_code": "ACTIVE_RUN_GATE_JSON_REQUIRED",
+    "failure_phase": "FULL_PREFLIGHT_BEFORE_WRITER_CLAIM_VISIBLE_TERMINAL_AND_NETWORK",
+    "network_accessed": false,
+    "official_source_content_read": false
+  },
+  "frozen_v2": {
+    "proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\slow-liquidity-official-currentness-topology-v2-refreeze-proposal-20260814-v2.json",
+    "proposal_file_sha256": "c79faa302577051af7d0328dcb11f473f0b61419076f973e4f4778b1e1de128c",
+    "proposal_hash": "05e27bbcf824b7413aaae8e08f059e83343b0c1edfc90ee61308611132faba94",
+    "runtime_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-currentness-topology-runtime-manifest-20260814-v2.json",
+    "runtime_manifest_file_sha256": "05e13fbb0524f0ea3dc7f4d3f6003011037c02e7d922b74454188a9a22db4e94",
+    "runtime_manifest_hash": "921106cf8e6c9df44759480ad8f7a895f1f98d574d8c0c26b1dd10a87ae8c499",
+    "immutable_files_changed": false,
+    "execution_approval_safe": false,
+    "disposition": "SUPERSEDED_BEFORE_EXECUTION_REQUIRES_NEW_V3_OFFLINE_REFREEZE"
+  },
+  "side_effect_audit": {
+    "execution_manifest_present": false,
+    "launch_record_present": false,
+    "launcher_capability_present": false,
+    "global_writer_claim_present": false,
+    "output_present": false,
+    "topology_output_created": false,
+    "identity_evidence_created": false,
+    "request_plan_created": false,
+    "currentness_verdict_created": false
+  },
+  "required_remediation": {
+    "successor_run_id": "slow_liquidity_official_currentness_topology_discovery_20260814_v3",
+    "isolated_runtime_and_launcher": true,
+    "active_gate_must_be_invoked_with_json": true,
+    "real_checker_contract_regression_required": true,
+    "preflight_only_must_remain_blocked_without_execution_approval": true,
+    "separate_exact_code_bound_network_execution_approval_required_after_refreeze": true
+  },
+  "forbidden_actions": [
+    "approve_or_execute_v2",
+    "create_v2_execution_manifest_or_receipt",
+    "launch_v2_visible_terminal",
+    "claim_global_writer_for_v2",
+    "create_v2_output",
+    "retry_v1"
+  ],
+  "audit_hash_method": "sha256_canonical_json_excluding_audit_hash",
+  "audit_hash": "527f4f120234eb36ffd4ac6b1554f0fafcc9dcf9f976143cd7e466aba97fe51a"
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "trading_mvp_slow_liquidity_official_identity_offline_approval_receipt_v1",
+  "status": "APPROVED_OFFLINE_IMPLEMENTATION_ONLY",
+  "approved_at_utc": "2026-08-13T13:05:57.033Z",
+  "user_authorization_text": "разрешаю",
+  "response_annotation_index": 1,
+  "selected_prior_response_text": "Это разрешит только offline-код, тесты и manifest. Сеть и identity-output останутся запрещены. Ничего не запущено.",
+  "authorization_interpretation": "EXACT_CONTEXT_BOUND_OFFLINE_ONLY",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\slow-liquidity-official-asset-identity-verification-proposal-20260813-v1.json",
+    "file_sha256": "52d2c848888577a61e6994b57786616a9732c2ec384d6c4633325123b1b63c62",
+    "proposal_hash": "3a4479cacaceb310556821df8bd0f28d5cb1dac06644764c9b209bf3e234d8a4"
+  },
+  "authorized_scope": {
+    "offline_runtime_implementation": true,
+    "synthetic_tests": true,
+    "approval_receipt_creation": true,
+    "runtime_manifest_creation": true,
+    "preflight_only": true,
+    "official_source_content_read": false,
+    "actual_network_run": false,
+    "identity_output": false,
+    "candidate_planonly_creation": false
+  },
+  "prohibited_scope": {
+    "collector_or_evaluator": true,
+    "oos": true,
+    "returns_or_pnl": true,
+    "grid_or_retune": true,
+    "execution_probe": true,
+    "paper_or_live": true,
+    "private_api": true,
+    "real_capital": true,
+    "leverage_or_margin": true
+  },
+  "separate_exact_code_bound_execution_approval_required": true,
+  "network_accessed_while_freezing": false,
+  "identity_output_created_while_freezing": false,
+  "global_writer_claim_created_while_freezing": false,
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "2fe328e19c887e471bf1d32fb7bc06ae619a9c369d8754ba15380db12384fa47"
+}

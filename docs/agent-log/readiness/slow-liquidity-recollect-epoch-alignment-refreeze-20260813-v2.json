@@ -1,0 +1,142 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_epoch_alignment_refreeze_v2",
+  "generated_at_utc": "2026-08-12T22:23:15.957148+00:00",
+  "status": "REFREEZE_REQUIRED_PREIMAGE_REPRODUCED_POSTIMAGE_PASS",
+  "scope": "OFFLINE_SYNTHETIC_AND_TIMESTAMP_METADATA_ONLY_NO_NETWORK",
+  "superseded_plan": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_hash": "315a220a3976698b118f795c6f125245adb37415dbe7324c8f35e985a665bd89",
+    "plan_file_sha256": "f83b8948e4eb1d732c0b272b0fe0507600bae7e2a262ff7804d8978b864087c2",
+    "collector_bound_sha256": "c2f24f6accc604600c01bf57a9c6148de506afac96245806d6a2e40251c09737",
+    "actual_collection_allowed": false,
+    "approval_receipt_present": false,
+    "launch_record_present": false,
+    "output_present": false,
+    "disposition": "SUPERSEDED_INTEGRITY_FAIL_CLOSED_NOT_LAUNCHABLE"
+  },
+  "defect": {
+    "category": "UNALIGNED_EPOCH_CANDLE_PAGE_BOUNDARY_GAP",
+    "cause": "request pages advanced from an arbitrary wall-clock second while exchange candles open on epoch-aligned interval boundaries",
+    "deterministic_fixture": {
+      "exchange": "mexc",
+      "granularity": "1h",
+      "start_ts": 123,
+      "requested_interval_count": 1200,
+      "effective_page_cap": 500,
+      "requests": 3,
+      "preimage_missing_candles": 2,
+      "preimage_missing_zero_based_positions": [
+        499,
+        999
+      ],
+      "preimage_test_result": "FAIL_AS_EXPECTED",
+      "postimage_test_result": "PASS"
+    },
+    "scope_effect": "request and attempt counts remain unchanged; only first/last request bounds are aligned to candle intervals"
+  },
+  "patch_integrity": {
+    "collector_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_history_collector.py",
+    "reconstructed_preimage_sha256": "c2f24f6accc604600c01bf57a9c6148de506afac96245806d6a2e40251c09737",
+    "postimage_sha256": "be6887b7cd83ea548c2d9cfa2bed8701e29854404f47e5ddfec8a183f271c7dd",
+    "preimage_matches_superseded_plan": true,
+    "change": "ceil start_ts and floor end_ts to interval boundaries before page construction"
+  },
+  "source_timestamp_metadata_audit": {
+    "path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\ohlcv.jsonl",
+    "file_sha256": "5801a8f1ce031ca69e4977621f37e62f607c5c3a2919b4f97182685e8aa26b6b",
+    "selected_bases": [
+      "BDX",
+      "CC",
+      "EDGE",
+      "MNT",
+      "OKB",
+      "RAIN",
+      "STETH",
+      "USDD",
+      "WEETH"
+    ],
+    "matched_two_venue_1h4h_slots": 36,
+    "history_start_offsets_by_exchange_timeframe": {
+      "mexc:1h": [
+        651
+      ],
+      "mexc:4h": [
+        11451
+      ],
+      "gateio:1h": [
+        651
+      ],
+      "gateio:4h": [
+        11451
+      ]
+    },
+    "all_selected_scope_starts_unaligned": true,
+    "fields_read": [
+      "exchange",
+      "base",
+      "granularity",
+      "history_start_ts",
+      "history_end_ts",
+      "data_status",
+      "candle_ts"
+    ],
+    "price_or_volume_fields_read": false,
+    "interpretation": "confirms exposure to non-aligned boundaries; the deterministic synthetic fixture proves the page-gap mechanism"
+  },
+  "verification": {
+    "focused_alignment_test": {
+      "passed": 1,
+      "failed": 0,
+      "runtime_sec": 0.07
+    },
+    "collector_and_quality_unit_suites": {
+      "passed": 19,
+      "failed": 0,
+      "runtime_sec": 1.98
+    },
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_history_collector.py",
+    "test_sha256": "30bd3eb8c46fae42e99fbe54b94d3c96a32119ec0130be5f003b93bbe108f8a5"
+  },
+  "contract_preservation": {
+    "bases": [
+      "STETH",
+      "WEETH",
+      "CC",
+      "OKB",
+      "RAIN",
+      "MNT",
+      "USDD",
+      "BDX",
+      "EDGE"
+    ],
+    "exchanges": [
+      "mexc",
+      "gateio"
+    ],
+    "timeframes": [
+      "1h",
+      "4h"
+    ],
+    "history_days": 56,
+    "logical_requests": 63,
+    "maximum_http_attempts": 126,
+    "max_runtime_sec": 900,
+    "hard_output_cap_bytes": 100000000,
+    "scope_changed": false
+  },
+  "safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "new_output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "next_action": "BUILD_NEW_IMMUTABLE_HASH_BOUND_PLANONLY_AND_REQUIRE_NEW_EXACT_APPROVAL",
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "e7e33221e6e24fa9b240bfdb774df37020f2713cfda64f871a5adf10320a389c"
+}

@@ -4,6 +4,8 @@ param(
     [string]$PlanPreviewPath = "",
     [string]$HypothesisBankPath = "",
     [string]$ContinuousProductionPolicyPath = "",
+    [string]$ExactSlowLiquidityRecollectPlanPath = "",
+    [string]$SprintReadinessPath = "",
     [switch]$SkipSwarm
 )
 
@@ -17,6 +19,11 @@ $defaultPlanPreviewPath = Join-Path $repoRoot "exports\trading-mvp\run\ws_collec
 $legacyPlanPreviewPath = Join-Path $repoRoot "exports\trading-mvp\run\ws_collect_6h_plan_preview_latest.json"
 $defaultHypothesisBankPath = Join-Path $repoRoot "docs\research\trading_mvp_hypothesis_bank_v1.json"
 $defaultContinuousProductionPolicyPath = Join-Path $repoRoot "docs\plans\trading-mvp-continuous-production-policy-v1.json"
+$defaultExactSlowLiquidityRecollectPlanPath = Join-Path $repoRoot "docs\plans\slow-liquidity-history-recollect-planonly-20260813-pagecap-provenance-slotintegrity-v6.json"
+$defaultSprintReadinessPath = Join-Path $repoRoot "docs\agent-log\readiness\one-week-historical-edge-sprint-readiness-20260812-v1.json"
+$slowLiquidityExactRecollectLauncherScript = Join-Path $repoRoot "tools\start_exact_approved_slow_liquidity_history_recollect_visible.ps1"
+$slowLiquidityExactRecollectStatusHelper = Join-Path $repoRoot "tools\slow_liquidity_exact_recollect_status.ps1"
+. $slowLiquidityExactRecollectStatusHelper
 
 if ([string]::IsNullOrWhiteSpace($PlanPreviewPath)) {
     if (Test-Path -LiteralPath $defaultPlanPreviewPath) {
@@ -32,6 +39,12 @@ if ([string]::IsNullOrWhiteSpace($HypothesisBankPath)) {
 }
 if ([string]::IsNullOrWhiteSpace($ContinuousProductionPolicyPath)) {
     $ContinuousProductionPolicyPath = $defaultContinuousProductionPolicyPath
+}
+if ([string]::IsNullOrWhiteSpace($ExactSlowLiquidityRecollectPlanPath)) {
+    $ExactSlowLiquidityRecollectPlanPath = $defaultExactSlowLiquidityRecollectPlanPath
+}
+if ([string]::IsNullOrWhiteSpace($SprintReadinessPath)) {
+    $SprintReadinessPath = $defaultSprintReadinessPath
 }
 
 function Read-JsonFileIfExists {
@@ -74,6 +87,12 @@ function Get-PreviewPlanCommand {
 }
 
 $gate = & pwsh -NoProfile -ExecutionPolicy Bypass -File $gateChecker -GatePath $GatePath -Json | ConvertFrom-Json
+$slowLiquidityExactRecollectStatus = Get-SlowLiquidityExactRecollectStatus `
+    -Gate $gate `
+    -PlanPath $ExactSlowLiquidityRecollectPlanPath `
+    -ReadinessPath $SprintReadinessPath `
+    -DefaultLauncherPath $slowLiquidityExactRecollectLauncherScript `
+    -RawGatePath $GatePath
 $preview = Read-JsonFileIfExists -Path $PlanPreviewPath
 $hypothesisBank = Read-JsonFileIfExists -Path $HypothesisBankPath
 $continuousPolicy = Read-JsonFileIfExists -Path $ContinuousProductionPolicyPath
@@ -165,7 +184,96 @@ $blockedActions = @(
     "postprocess_without_matching_completed_manifest"
 )
 
-if ($gateStatus -eq "RUNNING") {
+if ([bool]$slowLiquidityExactRecollectStatus.checkpoint_relevant) {
+    $requiresApproval = [bool]$slowLiquidityExactRecollectStatus.requires_user_approval
+    $requiredInput = [string]$slowLiquidityExactRecollectStatus.required_user_input
+    $nextAction = [string]$slowLiquidityExactRecollectStatus.next_action
+    $blockedActions += @(
+        "evaluator_or_oos",
+        "returns_or_pnl",
+        "grid_or_retune",
+        "execution_probe",
+        "paper_or_live",
+        "private_api_or_real_capital",
+        "leverage_or_margin",
+        "official_identity_without_separate_exact_approval"
+    )
+    switch ([string]$slowLiquidityExactRecollectStatus.phase) {
+        "INTEGRITY_BLOCKED" {
+            $status = "EXACT_SLOW_LIQUIDITY_RECOLLECT_INTEGRITY_BLOCKED"
+            $nextAction = "Repair the exact immutable lifecycle binding. Do not create a receipt, launch, output, or quality result."
+            $requiredInput = "repair_exact_slow_liquidity_recollect_binding"
+            $requiresApproval = $false
+            $allowedActions = @("quick_status_checks", "repair_exact_slow_liquidity_recollect_binding")
+            $blockedActions += @("collector_with_invalid_binding", "quality_with_invalid_binding")
+            break
+        }
+        "AWAITING_EXACT_APPROVAL" {
+            $status = "AWAITING_EXACT_SLOW_LIQUIDITY_RECOLLECT_APPROVAL"
+            $allowedActions = @(
+                "quick_status_checks",
+                "read_current_exact_approval_packet",
+                "non_starting_approval_freeze_preflight"
+            )
+            $blockedActions += @("collector_before_exact_approval", "launch_record_or_output_before_exact_approval")
+            break
+        }
+        "APPROVED_AWAITING_VISIBLE_LAUNCH" {
+            $status = "EXACT_SLOW_LIQUIDITY_RECOLLECT_APPROVED_READY_FOR_VISIBLE_LAUNCH"
+            $allowedActions = @("single_exact_visible_public_read_only_launch", "quick_status_checks")
+            $blockedActions += @("second_launch", "hidden_launch", "collector_scope_change")
+            break
+        }
+        "VISIBLE_LAUNCH_STARTING" {
+            $status = "EXACT_SLOW_LIQUIDITY_RECOLLECT_VISIBLE_LAUNCH_STARTING"
+            $allowedActions = @("exact_status_check", "exact_stop")
+            $blockedActions += @("duplicate_owner", "second_launch")
+            break
+        }
+        "RUNNING" {
+            $status = "EXACT_SLOW_LIQUIDITY_RECOLLECT_RUNNING_STATUS_ONLY"
+            $allowedActions = @("exact_status_check", "exact_stop")
+            $blockedActions += @("second_writer", "consumer_of_incomplete_output", "offline_work_without_scoped_gate")
+            break
+        }
+        "READY_FOR_TECHNICAL_QUALITY" {
+            $status = "EXACT_SLOW_LIQUIDITY_RECOLLECT_READY_FOR_TECHNICAL_QUALITY"
+            $allowedActions = @("exact_technical_quality_preflight", "exact_technical_quality")
+            $blockedActions += @("official_identity_check", "evaluator_or_replay")
+            break
+        }
+        "TECHNICAL_QUALITY_COMMITTING" {
+            $status = "EXACT_SLOW_LIQUIDITY_RECOLLECT_TECHNICAL_QUALITY_COMMITTING"
+            $allowedActions = @("exact_status_check")
+            $blockedActions += @("duplicate_quality_run")
+            break
+        }
+        "STOPPED_INCOMPLETE_NO_RETRY" {
+            $status = "EXACT_SLOW_LIQUIDITY_RECOLLECT_STOPPED_INCOMPLETE_NO_RETRY"
+            $allowedActions = @("exact_status_check")
+            $blockedActions += @("resume", "retry", "rescope_without_new_exact_approval")
+            break
+        }
+        "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL" {
+            $status = "EXACT_SLOW_LIQUIDITY_RECOLLECT_QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL"
+            $allowedActions = @("exact_status_check", "await_exact_official_identity_approval")
+            $blockedActions += @("official_identity_without_separate_exact_approval", "fixed_signal_before_identity")
+            break
+        }
+        "QUALITY_REJECTED_TERMINAL_NO_RETRY" {
+            $status = "EXACT_SLOW_LIQUIDITY_RECOLLECT_QUALITY_REJECTED_TERMINAL_NO_RETRY"
+            $allowedActions = @("exact_status_check")
+            $blockedActions += @("resume", "retry", "rescope_without_new_exact_approval")
+            break
+        }
+        default {
+            $status = "EXACT_SLOW_LIQUIDITY_RECOLLECT_INTEGRITY_BLOCKED"
+            $nextAction = "Unknown exact lifecycle phase; fail closed."
+            $allowedActions = @("quick_status_checks")
+            $blockedActions += "all_exact_lifecycle_actions"
+        }
+    }
+} elseif ($gateStatus -eq "RUNNING") {
     $status = "RUNNING_STATUS_ONLY"
     $nextAction = "Do only short status/ETA checks until the active run finishes."
     $allowedActions = @("status_eta_checks_only")
@@ -212,12 +320,16 @@ $result = [ordered]@{
     next_action = $nextAction
     allowed_actions = $allowedActions
     blocked_actions = $blockedActions
-    visible_start_shortcut = if ($previewHypothesisEligible -and $previewFitsApprovedWindow) { $startDenseWsShortcut } else { $null }
+    primary_command = if ([bool]$slowLiquidityExactRecollectStatus.checkpoint_relevant) { [string]$slowLiquidityExactRecollectStatus.primary_command } else { $null }
+    exact_approval_packet_command = if ([bool]$slowLiquidityExactRecollectStatus.awaiting_approval) { [string]$slowLiquidityExactRecollectStatus.approval_packet_command } else { $null }
+    exact_visible_launch_command = if ([bool]$slowLiquidityExactRecollectStatus.approved_awaiting_launch) { [string]$slowLiquidityExactRecollectStatus.launch_command } else { $null }
+    visible_start_shortcut = if (-not [bool]$slowLiquidityExactRecollectStatus.checkpoint_relevant -and $previewHypothesisEligible -and $previewFitsApprovedWindow) { $startDenseWsShortcut } else { $null }
     plan_preview_path = $PlanPreviewPath
     plan_preview_present = [bool]($null -ne $preview)
     hypothesis_bank_path = $HypothesisBankPath
     continuous_production_policy_path = $ContinuousProductionPolicyPath
     eligible_dense_hypothesis_ids = @($eligibleDenseHypothesisIds)
+    slow_liquidity_exact_recollect = $slowLiquidityExactRecollectStatus
     plan_preview = if ($preview) {
         [ordered]@{
             mode = [string]$preview.mode

@@ -423,6 +423,35 @@ class PitScheduleHorizonTests(unittest.TestCase):
         self.assertEqual(result["recommended_extension_nights"], 5)
         self.assertEqual(result["extension_start_date"], "2026-08-12")
 
+    def test_extension_start_skips_windows_expired_after_source_schedule(self) -> None:
+        plan = make_plan(first_date="2026-07-29", nights=14)
+        rows = [
+            quality_row("2026-07-14", True),
+            quality_row("2026-07-15", True),
+            quality_row("2026-07-16", False),
+            quality_row("2026-07-23", True),
+            quality_row("2026-07-28", True),
+        ]
+
+        result = compute_schedule_horizon(
+            plan,
+            rows,
+            observed_at=datetime(2026, 8, 13, 10, 36, tzinfo=TZ),
+        )
+
+        self.assertEqual(result["extension_start_date"], "2026-08-14")
+
+    def test_extension_can_use_today_when_segment_start_is_still_future(self) -> None:
+        plan = make_plan(first_date="2026-07-29", nights=14)
+
+        result = compute_schedule_horizon(
+            plan,
+            [quality_row("2026-07-14", True)],
+            observed_at=datetime(2026, 8, 13, 0, 30, tzinfo=TZ),
+        )
+
+        self.assertEqual(result["extension_start_date"], "2026-08-13")
+
     def test_caps_rate_adjusted_extension_at_remaining_stage_capacity(self) -> None:
         plan = make_plan(first_date="2026-07-29", nights=14)
         rows = [

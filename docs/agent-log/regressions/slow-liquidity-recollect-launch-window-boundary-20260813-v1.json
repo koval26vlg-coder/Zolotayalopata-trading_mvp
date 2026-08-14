@@ -1,0 +1,81 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_launch_window_boundary_v1",
+  "generated_at_utc": "2026-08-12T21:24:29.397242+00:00",
+  "status": "PASS_ALL_BOUNDARIES_FAIL_CLOSED_NO_SIDE_EFFECTS",
+  "scope": "OFFLINE_REAL_LAUNCHER_PREFLIGHT_WITH_TEMPORARY_PLANONLY_NO_NETWORK",
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_hash": "315a220a3976698b118f795c6f125245adb37415dbe7324c8f35e985a665bd89",
+    "plan_file_sha256": "f83b8948e4eb1d732c0b272b0fe0507600bae7e2a262ff7804d8978b864087c2",
+    "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+    "actual_collection_allowed": false,
+    "plan_changed": false
+  },
+  "implementation": {
+    "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_history_recollect_visible.ps1",
+    "launcher_sha256": "d3013a4a84ad43d8ef874842d2e161bb5027cc26929657d2f215751367f399c1",
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_recollect_launch_window.py",
+    "test_sha256": "2e37a182ccc738c8306eca6a3460cd44e772a176ac60217ef4cb011d37d3f8be",
+    "preflight_only": true,
+    "temporary_planonly_per_scenario": true
+  },
+  "verification": {
+    "isolated": {
+      "passed": 1,
+      "failed": 0,
+      "runtime_sec": 13.46
+    },
+    "linked_regression": {
+      "passed": 45,
+      "failed": 0,
+      "runtime_sec": 60.91
+    },
+    "scenarios": [
+      {
+        "id": "not_open",
+        "required_reason": "launch_window_not_open",
+        "observed": true
+      },
+      {
+        "id": "latest_start_passed",
+        "required_reason": "latest_start_passed",
+        "observed": true
+      },
+      {
+        "id": "runtime_does_not_fit",
+        "required_reason": "full_runtime_exceeds_hard_deadline",
+        "observed": true
+      },
+      {
+        "id": "open_without_receipt",
+        "required_reason": "exact_approval_receipt_missing",
+        "time_window_reason_observed": false
+      }
+    ],
+    "all_preflights_would_start": false,
+    "all_preflights_approval_receipt_present": false,
+    "temporary_output_created": false,
+    "temporary_receipt_created": false,
+    "temporary_launch_record_created": false
+  },
+  "production_safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "authority": {
+    "current_exact_approval_present": false,
+    "collector_launch_authorized": false,
+    "new_exact_hash_bound_approval_required": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "c13c58e1e5bfb543eb5cb230fdae10fbd201731e60529c40a9c0e289712fdbe8"
+}

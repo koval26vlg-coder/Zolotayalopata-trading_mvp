@@ -1,0 +1,451 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_candidate_audit_v1",
+  "generated_at_utc": "2026-08-12T07:04:02.134464+00:00",
+  "status": "PASS_EXACT_RECOLLECT_SCOPE_READY_PLANONLY",
+  "decision": "RECOLLECT_MEXC_GATE_1H4H_PAGE_CAP_CORRECTION_FOR_NINE_PROVISIONAL_IDENTITY_CANDIDATES",
+  "source_bindings": {
+    "source_jsonl": {
+      "path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\ohlcv.jsonl",
+      "sha256": "5801a8f1ce031ca69e4977621f37e62f607c5c3a2919b4f97182685e8aa26b6b"
+    },
+    "manifest": {
+      "path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\manifest.json",
+      "sha256": "26fd2c8eac662feacb41762ee135d05669e9881a413e5e9d7e849646d23bced0"
+    },
+    "quality": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_history_data_quality_20260812_091543.json",
+      "sha256": "7f4a7fb716a582622793a4db2b1f02edd01a3d2a8bbbbca15c94f52bf7e2958a"
+    },
+    "frozen_universe": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-universe-20260812-pagecapfix-v1.csv",
+      "sha256": "47698ad97b7b36107f549012ea6ef01d33008f927678c291175dc472737db56a"
+    }
+  },
+  "root_cause": {
+    "category": "DETERMINISTIC_EXCHANGE_PAGE_CAP_PAGINATION_GAP",
+    "mexc_observed_response_cap_candles": 500,
+    "previous_requested_chunk_candles": 1000,
+    "previous_cursor_advance_candles": 1000,
+    "resulting_internal_gap_candles_per_1h_slot": 500,
+    "affected_candidate_slot_count": 9,
+    "duplicate_candles": 0
+  },
+  "selection_contract": {
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "timeframes": [
+      "1h",
+      "4h"
+    ],
+    "quote": "USDT",
+    "min_existing_non_mexc_slot_coverage_ratio": 0.8,
+    "required_mexc_1h_gap_signature": [
+      500
+    ],
+    "bases": [
+      "STETH",
+      "WEETH",
+      "CC",
+      "OKB",
+      "RAIN",
+      "MNT",
+      "USDD",
+      "BDX",
+      "EDGE"
+    ],
+    "base_count": 9,
+    "identity_source": "first unique CoinPaprika universe row matching the prior collector manifest",
+    "official_venue_identity_status": "UNRESOLVED",
+    "ticker_match_is_official_identity_evidence": false,
+    "known_source_symbol_collisions": {
+      "EDGE": [
+        "edge-edgex",
+        "edge-definitive"
+      ],
+      "RAIN": [
+        "rain-rain-protocol",
+        "rain-rainmaker-games",
+        "rain-rain-coin"
+      ]
+    },
+    "required_after_data_quality": "separate official MEXC/Gate spot identity verification; exclude unresolved or conflicting candidates",
+    "terminal_if_verified_bases_below": 8
+  },
+  "candidates": [
+    {
+      "base": "STETH",
+      "slots": {
+        "mexc:1h": {
+          "actual_candles": 844,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.6275092936802974,
+          "internal_gap_count": 1,
+          "internal_missing_candles": 500,
+          "internal_gap_sizes_candles": [
+            500
+          ]
+        },
+        "mexc:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:1h": {
+          "actual_candles": 1344,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.9992565055762082,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        }
+      }
+    },
+    {
+      "base": "WEETH",
+      "slots": {
+        "mexc:1h": {
+          "actual_candles": 844,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.6275092936802974,
+          "internal_gap_count": 1,
+          "internal_missing_candles": 500,
+          "internal_gap_sizes_candles": [
+            500
+          ]
+        },
+        "mexc:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:1h": {
+          "actual_candles": 1344,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.9992565055762082,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        }
+      }
+    },
+    {
+      "base": "CC",
+      "slots": {
+        "mexc:1h": {
+          "actual_candles": 844,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.6275092936802974,
+          "internal_gap_count": 1,
+          "internal_missing_candles": 500,
+          "internal_gap_sizes_candles": [
+            500
+          ]
+        },
+        "mexc:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:1h": {
+          "actual_candles": 1344,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.9992565055762082,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        }
+      }
+    },
+    {
+      "base": "OKB",
+      "slots": {
+        "mexc:1h": {
+          "actual_candles": 844,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.6275092936802974,
+          "internal_gap_count": 1,
+          "internal_missing_candles": 500,
+          "internal_gap_sizes_candles": [
+            500
+          ]
+        },
+        "mexc:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:1h": {
+          "actual_candles": 1344,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.9992565055762082,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        }
+      }
+    },
+    {
+      "base": "RAIN",
+      "slots": {
+        "mexc:1h": {
+          "actual_candles": 844,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.6275092936802974,
+          "internal_gap_count": 1,
+          "internal_missing_candles": 500,
+          "internal_gap_sizes_candles": [
+            500
+          ]
+        },
+        "mexc:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:1h": {
+          "actual_candles": 1158,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.8609665427509293,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:4h": {
+          "actual_candles": 290,
+          "expected_candles": 337,
+          "coverage_ratio": 0.8605341246290801,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        }
+      }
+    },
+    {
+      "base": "MNT",
+      "slots": {
+        "mexc:1h": {
+          "actual_candles": 844,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.6275092936802974,
+          "internal_gap_count": 1,
+          "internal_missing_candles": 500,
+          "internal_gap_sizes_candles": [
+            500
+          ]
+        },
+        "mexc:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:1h": {
+          "actual_candles": 1344,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.9992565055762082,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        }
+      }
+    },
+    {
+      "base": "USDD",
+      "slots": {
+        "mexc:1h": {
+          "actual_candles": 844,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.6275092936802974,
+          "internal_gap_count": 1,
+          "internal_missing_candles": 500,
+          "internal_gap_sizes_candles": [
+            500
+          ]
+        },
+        "mexc:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:1h": {
+          "actual_candles": 1344,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.9992565055762082,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        }
+      }
+    },
+    {
+      "base": "BDX",
+      "slots": {
+        "mexc:1h": {
+          "actual_candles": 844,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.6275092936802974,
+          "internal_gap_count": 1,
+          "internal_missing_candles": 500,
+          "internal_gap_sizes_candles": [
+            500
+          ]
+        },
+        "mexc:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:1h": {
+          "actual_candles": 1344,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.9992565055762082,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        }
+      }
+    },
+    {
+      "base": "EDGE",
+      "slots": {
+        "mexc:1h": {
+          "actual_candles": 844,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.6275092936802974,
+          "internal_gap_count": 1,
+          "internal_missing_candles": 500,
+          "internal_gap_sizes_candles": [
+            500
+          ]
+        },
+        "mexc:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:1h": {
+          "actual_candles": 1344,
+          "expected_candles": 1345,
+          "coverage_ratio": 0.9992565055762082,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        },
+        "gateio:4h": {
+          "actual_candles": 336,
+          "expected_candles": 337,
+          "coverage_ratio": 0.9970326409495549,
+          "internal_gap_count": 0,
+          "internal_missing_candles": 0,
+          "internal_gap_sizes_candles": []
+        }
+      }
+    }
+  ],
+  "expected_effect_of_fix": {
+    "mexc_request_page_cap_candles": 500,
+    "mexc_1h_logical_pages_per_base": 3,
+    "mexc_4h_logical_pages_per_base": 1,
+    "gateio_1h_logical_pages_per_base": 2,
+    "gateio_4h_logical_pages_per_base": 1,
+    "expected_two_venue_full_coverage_1h4h_bases": 9,
+    "frozen_minimum_required_bases": 8
+  },
+  "safety": {
+    "network_accessed": false,
+    "new_collector_started": false,
+    "market_values_evaluated": false,
+    "oos_read": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "deterministic_result_hash": "aea4bb96e6a8bb7d3d033320fd09d17ab7f58611fe26cb7866a51b9b067f4656"
+}

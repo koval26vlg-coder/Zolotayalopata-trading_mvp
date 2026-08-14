@@ -21,6 +21,7 @@ APPROVAL_TEXT = "подтверждаю visible slow-liquidity OHLCV history col
 DEFAULT_UNIVERSE_PATH = Path("coins_not_on_binance_full_2026-05-29.csv")
 DEFAULT_EXCHANGES = ("mexc", "gateio", "bitget")
 DEFAULT_GRANULARITIES = ("15m", "1h", "4h")
+EXACT_QUALITY_CONTRACT_VERSION = "slow_liquidity_history_exact_v2"
 
 
 @dataclass(frozen=True)
@@ -110,6 +111,18 @@ def symbol_for_exchange(exchange: str, base: str, quote: str) -> str:
     return f"{base}{quote}"
 
 
+def align_history_bounds(start_ts: int, end_ts: int, granularity: str) -> tuple[int, int]:
+    interval = INTERVAL_SECONDS[granularity]
+    aligned_start = ((start_ts + interval - 1) // interval) * interval
+    aligned_end = (end_ts // interval) * interval
+    if aligned_end < aligned_start:
+        raise ValueError(
+            f"history range has no complete {granularity} candle: "
+            f"start_ts={start_ts} end_ts={end_ts}"
+        )
+    return aligned_start, aligned_end
+
+
 def build_jobs(
     assets: list[UniverseAsset],
     *,
@@ -123,6 +136,9 @@ def build_jobs(
     for asset in assets:
         for exchange in exchanges:
             for granularity in granularities:
+                aligned_start_ts, aligned_end_ts = align_history_bounds(
+                    start_ts, end_ts, granularity
+                )
                 jobs.append(
                     HistoryJob(
                         exchange=exchange,
@@ -130,8 +146,8 @@ def build_jobs(
                         base=asset.base,
                         quote=quote,
                         granularity=granularity,
-                        start_ts=start_ts,
-                        end_ts=end_ts,
+                        start_ts=aligned_start_ts,
+                        end_ts=aligned_end_ts,
                     )
                 )
     return jobs
@@ -239,15 +255,24 @@ def fetch_range(
     sleep_sec: float,
 ) -> tuple[list[Candle], int]:
     interval_sec = INTERVAL_SECONDS[job.granularity]
-    cursor = job.start_ts
+    client_limit = int(getattr(client, "max_candles_per_request", candles_per_request))
+    request_limit = min(candles_per_request, max(1, client_limit))
+    cursor = ((job.start_ts + interval_sec - 1) // interval_sec) * interval_sec
+    range_end = (job.end_ts // interval_sec) * interval_sec
     requests_made = 0
     deduped: dict[int, Candle] = {}
-    while cursor <= job.end_ts:
-        chunk_end = min(job.end_ts, cursor + interval_sec * max(1, candles_per_request - 1))
-        candles = client.fetch_ohlcv(job.symbol, job.granularity, cursor, chunk_end, candles_per_request)
+    while cursor <= range_end:
+        chunk_end = min(
+            range_end,
+            cursor + interval_sec * max(1, request_limit - 1),
+        )
+        candles = client.fetch_ohlcv(job.symbol, job.granularity, cursor, chunk_end, request_limit)
         requests_made += 1
         for candle in candles:
-            if job.start_ts <= candle.ts <= job.end_ts:
+            if (
+                cursor <= candle.ts <= chunk_end
+                and candle.ts % interval_sec == 0
+            ):
                 deduped[candle.ts] = candle
         cursor = chunk_end + interval_sec
         if sleep_sec > 0:
@@ -270,12 +295,14 @@ def build_initial_manifest(
     exchanges: list[str],
     granularities: list[str],
     history_days: int,
+    history_anchor_ts: int,
     candles_per_request: int,
     approval_text: str,
     resumed_existing_stats: dict[str, Any],
 ) -> dict[str, Any]:
     return {
         "mode": "slow_liquidity_history_collect",
+        "quality_contract_version": EXACT_QUALITY_CONTRACT_VERSION,
         "run_id": run_id,
         "started_at": utc_now_iso(),
         "finished_at": None,
@@ -295,6 +322,8 @@ def build_initial_manifest(
         "manifest_path": str(manifest_path),
         "quote": "USDT",
         "history_days": history_days,
+        "history_anchor_ts": history_anchor_ts,
+        "history_anchor_iso": iso_from_ts(history_anchor_ts),
         "selected_bases": [asset.base for asset in assets],
         "selected_assets": [asset.__dict__ for asset in assets],
         "exchanges": exchanges,
@@ -387,6 +416,7 @@ def collect_history(
         exchanges=exchanges,
         granularities=granularities,
         history_days=history_days,
+        history_anchor_ts=end_ts,
         candles_per_request=candles_per_request,
         approval_text=confirmed_approval_text,
         resumed_existing_stats=existing_stats,

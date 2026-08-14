@@ -78,6 +78,7 @@ class Candle:
 class PublicOhlcvClient:
     exchange = ""
     base_url = ""
+    max_candles_per_request = 1000
 
     def __init__(self, timeout_sec: int = 15, max_retries: int = 2) -> None:
         self.timeout_sec = timeout_sec
@@ -186,6 +187,7 @@ def parse_bitget_spot_candles(payload: Any) -> list[Candle]:
 class MexcSpotOhlcvClient(PublicOhlcvClient):
     exchange = "mexc"
     base_url = "https://api.mexc.com"
+    max_candles_per_request = 500
 
     def fetch_ohlcv(self, symbol: str, granularity: str, start_ts: int, end_ts: int, limit: int) -> list[Candle]:
         interval = "60m" if granularity == "1h" else granularity
@@ -223,6 +225,7 @@ class GateSpotOhlcvClient(PublicOhlcvClient):
 class BitgetSpotOhlcvClient(PublicOhlcvClient):
     exchange = "bitget"
     base_url = "https://api.bitget.com"
+    max_candles_per_request = 500
 
     GRANULARITY_MAP = {
         "1m": "1min",
@@ -411,14 +414,16 @@ def fetch_window(
     sleep_sec: float,
 ) -> tuple[list[Candle], int]:
     interval_sec = INTERVAL_SECONDS[granularity]
+    client_limit = int(getattr(client, "max_candles_per_request", candles_per_request))
+    request_limit = min(candles_per_request, max(1, client_limit))
     start_ts = int(float(event["window_start_ts"]))
     end_ts = int(float(event["window_end_ts"]))
     cursor = start_ts
     requests_made = 0
     deduped: dict[int, Candle] = {}
     while cursor <= end_ts:
-        chunk_end = min(end_ts, cursor + interval_sec * max(1, candles_per_request - 1))
-        candles = client.fetch_ohlcv(event["symbol"], granularity, cursor, chunk_end, candles_per_request)
+        chunk_end = min(end_ts, cursor + interval_sec * max(1, request_limit - 1))
+        candles = client.fetch_ohlcv(event["symbol"], granularity, cursor, chunk_end, request_limit)
         requests_made += 1
         for candle in candles:
             if start_ts <= candle.ts <= end_ts:

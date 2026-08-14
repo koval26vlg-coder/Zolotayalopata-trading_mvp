@@ -1,3 +1,17 @@
 docs/agent-log/approvals/2026-08-10-funding-unrestricted-metadata-discovery-diagnostic-v2-approval.json -text
 docs/agent-log/run-gates/funding_unrestricted_metadata_discovery_20260810_v2.runtime-failure.json -text
 docs/plans/funding-unrestricted-metadata-discovery-runtime-manifest-20260810-v2.json -text
+docs/agent-log/approvals/2026-08-12-slow-liquidity-history-recollect-pagecapfix-v1-approval.json -text
+docs/agent-log/readiness/slow-liquidity-history-recollect-candidate-audit-20260812-pagecapfix-v1.json -text
+docs/plans/slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json -text
+docs/plans/slow-liquidity-history-recollect-universe-20260812-pagecapfix-v1.csv -text
+tools/start_exact_approved_slow_liquidity_history_recollect_visible.ps1 -text
+tools/freeze_exact_approved_slow_liquidity_history_recollect.ps1 -text
+tools/start_slow_liquidity_history_collect_visible.ps1 -text
+tools/trading_slow_liquidity_history_data_quality.ps1 -text
+trading_mvp/src/global_market_writer_claim.py -text
+trading_mvp/src/listing_event_history_collect_plan.py -text
+trading_mvp/src/listing_event_history_collector.py -text
+trading_mvp/src/slow_liquidity_history_collector.py -text
+trading_mvp/src/slow_liquidity_history_quality.py -text
+trading_mvp/src/slow_liquidity_recollect_control_plane.py -text

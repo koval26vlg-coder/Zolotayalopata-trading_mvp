@@ -1,0 +1,168 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_quality_schema_namespace_integrity_refreeze_v4",
+  "generated_at_utc": "2026-08-12T23:17:01.276076+00:00",
+  "status": "REFREEZE_REQUIRED_PREIMAGE_FALSE_ACCEPT_AND_NAMESPACE_COLLISION_POSTIMAGE_REJECT",
+  "scope": "OFFLINE_SYNTHETIC_ONLY_NO_NETWORK",
+  "superseded_plan": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-alignment-qualitygridfix-v3.json",
+    "plan_hash": "0e063d946f775efb56d716109b162e51407013a571741f6d9247e88c461f6193",
+    "plan_file_sha256": "9585437d7d68a56c058823cdb34dab60bc0c5d48109fcadc02705ede025cdd87",
+    "actual_collection_allowed": false,
+    "approval_receipt_present": false,
+    "launch_record_present": false,
+    "output_present": false,
+    "disposition": "SUPERSEDED_QUALITY_SCHEMA_AND_NAMESPACE_INTEGRITY_FAIL_CLOSED_NOT_LAUNCHABLE"
+  },
+  "defects": [
+    {
+      "category": "QUALITY_GATE_ACCEPTED_WRONG_ROW_IDENTITY_BINDINGS",
+      "cause": "quality did not bind quote symbol or collector job_key to exchange base and granularity",
+      "preimage_fixture": {
+        "rows": 12,
+        "wrong_quote_rows": 12,
+        "wrong_symbol_rows": 12,
+        "wrong_job_key_rows": 12,
+        "accepted": true,
+        "reasons": []
+      },
+      "postimage": {
+        "accepted": false,
+        "valid_ok_rows": 0,
+        "reasons": [
+          "unexpected_quotes",
+          "unexpected_symbols",
+          "unexpected_job_keys"
+        ]
+      }
+    },
+    {
+      "category": "QUALITY_GATE_ACCEPTED_INVALID_OHLCV_SEMANTICS",
+      "cause": "quality counted rows without finite numeric positive-price nonnegative-volume or OHLC consistency checks",
+      "preimage_fixtures": [
+        {
+          "case": "all_open_nan",
+          "rows": 12,
+          "accepted": true,
+          "reasons": []
+        },
+        {
+          "case": "negative_prices_and_volumes",
+          "rows": 12,
+          "accepted": true,
+          "reasons": []
+        },
+        {
+          "case": "high_below_low_open_close",
+          "rows": 12,
+          "accepted": true,
+          "reasons": []
+        }
+      ],
+      "postimage": [
+        {
+          "case": "all_open_nan",
+          "accepted": false,
+          "valid_ok_rows": 0,
+          "invalid_ohlcv_values": 12
+        },
+        {
+          "case": "negative_prices_and_volumes",
+          "accepted": false,
+          "valid_ok_rows": 0,
+          "non_positive_prices": 12,
+          "negative_volumes": 12
+        },
+        {
+          "case": "high_below_low_open_close",
+          "accepted": false,
+          "valid_ok_rows": 0,
+          "inconsistent_ohlc_rows": 12
+        }
+      ]
+    },
+    {
+      "category": "QUALITY_OUTPUT_NAMESPACE_COLLISION",
+      "cause": "V3 PlanOnly pointed technical quality output at the superseded V1 filename while the generic wrapper protected a different V2 filename",
+      "v3_plan_quality_output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\analysis\\slow_liquidity_history_recollect_quality_20260812_pagecapfix_v1.json",
+      "v3_wrapper_exact_quality_output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\analysis\\slow_liquidity_history_recollect_quality_20260813_pagecap_alignmentfix_v2.json",
+      "v4_unique_quality_output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\analysis\\slow_liquidity_history_recollect_quality_20260813_pagecap_alignment_qualityintegrityfix_v4.json",
+      "all_paths_absent_before_refreeze": true
+    }
+  ],
+  "patch_integrity": {
+    "quality_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_history_quality.py",
+    "quality_preimage_sha256": "388be1ecf6d90177c71ddd7855d94560a0d5a56dce12f48c049a81eccd83fefa",
+    "quality_postimage_sha256": "e016d728255d5b36f841daad7eb6513ac3e0a200f7de66ea7205832fbc4bd865",
+    "control_plane_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_recollect_control_plane.py",
+    "control_plane_preimage_sha256": "a024d1d0cd23e2bffd81e97d918276aa6470f06470ff723cc45a473b1e676916",
+    "control_plane_postimage_sha256": "908cb7c4de094866bfba2997797193ce7d558ad007d4bd4e8c69a67eae49a768",
+    "quality_wrapper_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\trading_slow_liquidity_history_data_quality.ps1",
+    "quality_wrapper_preimage_sha256": "128b3fca708cf7d1a3c3c27454b661224c57472669d8edc28155e811a9b59f9c",
+    "quality_wrapper_postimage_sha256": "3a68ddd127e2f10d38670651c69291696b47cbcf7a6db82144576b74e2366562",
+    "changes": [
+      "bind quote symbol and job_key to the exact row scope",
+      "allow only ok api_error and no_data_or_unmatched statuses",
+      "count only finite numeric and semantically valid OHLCV rows",
+      "require positive prices nonnegative volumes and consistent candle bounds",
+      "require optional trade_count to be a nonnegative integer",
+      "require ok error to be empty and placeholder market payload to be null",
+      "require aligned history bounds for all statuses",
+      "bind exact manifest quote to the PlanOnly universe quote",
+      "use one unique V4 output namespace for technical quality"
+    ]
+  },
+  "verification": {
+    "focused_tests": {
+      "passed": 30,
+      "failed": 0
+    },
+    "four_preimage_false_accept_classes_reproduced_before_patch": true,
+    "four_postimage_cases_terminally_rejected": true,
+    "valid_clean_frozen_scope_accepted": true,
+    "one_unavailable_base_frozen_threshold_accepted": true,
+    "two_unavailable_bases_frozen_threshold_rejected": true
+  },
+  "contract_preservation": {
+    "bases": [
+      "STETH",
+      "WEETH",
+      "CC",
+      "OKB",
+      "RAIN",
+      "MNT",
+      "USDD",
+      "BDX",
+      "EDGE"
+    ],
+    "exchanges": [
+      "mexc",
+      "gateio"
+    ],
+    "timeframes": [
+      "1h",
+      "4h"
+    ],
+    "quote": "USDT",
+    "history_days": 56,
+    "logical_requests": 63,
+    "maximum_http_attempts": 126,
+    "max_runtime_sec": 900,
+    "hard_output_cap_bytes": 100000000,
+    "scope_changed": false
+  },
+  "safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "new_output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "next_action": "BUILD_NEW_IMMUTABLE_QUALITYINTEGRITYFIX_V4_PLANONLY_AND_REQUIRE_NEW_EXACT_APPROVAL",
+  "deterministic_result_hash_method": "sha256_canonical_json_excluding_deterministic_result_hash",
+  "deterministic_result_hash": "e43d7300c8bd8d4e9779dbfd0d5d6b377ea48d59d39e5d89dc85a3be720f8027"
+}

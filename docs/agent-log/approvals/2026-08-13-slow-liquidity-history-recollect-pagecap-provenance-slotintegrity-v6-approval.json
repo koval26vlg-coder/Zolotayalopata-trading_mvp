@@ -1,0 +1,63 @@
+{
+  "schema": "trading_mvp_slow_liquidity_history_recollect_approval_v1",
+  "status": "APPROVED",
+  "approval_type": "EXACT_HASH_BOUND_VISIBLE_PUBLIC_RECOLLECT",
+  "approved_by": "user",
+  "approved_at_utc": "2026-08-13T06:23:59.8207353+00:00",
+  "user_approval_text": "Разрешаю один видимый public read-only запуск slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6 через tools\\start_exact_approved_slow_liquidity_history_recollect_visible.ps1 по plan_hash=b7b2104eaad9404dbf97699d777276acbb187edaa03327dea8f8329f3e084632 и plan_file_sha256=d649f61fb7adbd333ff5b979be8a9bcc3e0373beed6bcbe04c29583e34b03e94: MEXC и Gate, монеты STETH, WEETH, CC, OKB, RAIN, MNT, USDD, BDX, EDGE, интервалы 1h и 4h, история 56 дней, один global writer, максимум 63 логических запроса и 126 HTTP-попыток, 900 секунд и 100 MB. Старт не раньше 12.08.2026 10:00 +03 и не позже 13.08.2026 18:00 +03, жёсткая остановка 13.08.2026 18:15 +03. После успешного сбора разрешаю только техническую проверку качества. Официальная проверка идентичности монет требует отдельного разрешения. STOPPED_INCOMPLETE не повторять. Без evaluator, OOS, returns/PnL, grid/retune, execution probe, paper/live, private API, реальных денег, плеча или маржи.",
+  "user_approval_text_sha256": "58fbdc17b06cb3977cad97ba7aa6411c3ebd52d6d00bb274042bfe684bab3fa5",
+  "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-provenance-slotintegrity-v6.json",
+  "plan_file_sha256": "d649f61fb7adbd333ff5b979be8a9bcc3e0373beed6bcbe04c29583e34b03e94",
+  "plan_hash": "b7b2104eaad9404dbf97699d777276acbb187edaa03327dea8f8329f3e084632",
+  "run_id": "slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6",
+  "bases": [
+    "STETH",
+    "WEETH",
+    "CC",
+    "OKB",
+    "RAIN",
+    "MNT",
+    "USDD",
+    "BDX",
+    "EDGE"
+  ],
+  "exchanges": [
+    "mexc",
+    "gateio"
+  ],
+  "timeframes": [
+    "1h",
+    "4h"
+  ],
+  "history_days": 56,
+  "max_runtime_sec": 900,
+  "hard_output_cap_bytes": 100000000,
+  "maximum_http_attempts": 126,
+  "policy_rebind_status": "FROZEN_WITH_EXACT_RECOLLECT_EXECUTION_APPROVAL",
+  "required_guard_decision": "SLOW_LIQUIDITY_HISTORY_RECOLLECT_EXACT_APPROVED_PAGECAP_PROVENANCE_SLOTINTEGRITY_V6",
+  "single_use": true,
+  "stop_incomplete_retry_authorized": false,
+  "official_identity_verification_authorized": false,
+  "evaluator_or_oos_authorized": false,
+  "paper_or_live_authorized": false,
+  "private_api_or_real_capital_authorized": false,
+  "forbidden": [
+    "second market-data writer",
+    "resume or retry after STOPPED_INCOMPLETE",
+    "collector scope expansion",
+    "evaluator",
+    "official identity metadata discovery without a separate exact approval",
+    "OOS",
+    "returns or PnL",
+    "grid or retune",
+    "execution probe",
+    "paper or live trading",
+    "private API keys",
+    "real capital",
+    "leverage or margin",
+    "direct generic data-quality gate update for this exact run",
+    "technical quality on any substituted run, manifest, or output"
+  ],
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "51cfe506960c814c1caaf23671aaaf359d408fe4ffc6c75c627f773283685e26"
+}

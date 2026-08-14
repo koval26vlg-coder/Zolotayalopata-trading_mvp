@@ -5,6 +5,8 @@ param(
     [string]$PolicyPath = "",
     [string]$GatePath = "",
     [string]$StatePath = "",
+    [string]$CurrentReadinessPointerPath = "",
+    [string]$GlobalWriterClaimPath = "",
     [string]$SessionRoot = "",
     [string]$PitPostrunSummaryPath = "",
     [switch]$Json
@@ -79,8 +81,23 @@ if (-not $StatePath) {
 if (-not $SessionRoot) {
     $SessionRoot = Join-Path $env:USERPROFILE ".codex\sessions"
 }
+if (-not $CurrentReadinessPointerPath) {
+    $CurrentReadinessPointerPath = Join-Path `
+        $repoRoot `
+        "docs\agent-log\one-week-edge-sprint-readiness-pointer.json"
+}
+if (-not $GlobalWriterClaimPath) {
+    $GlobalWriterClaimPath = Join-Path `
+        $repoRoot `
+        "docs\agent-log\active-market-data-writer-claim.json"
+}
 
-foreach ($requiredPath in @($guard, $PolicyPath, $GatePath, $SessionRoot)) {
+foreach ($requiredPath in @(
+    $guard,
+    $PolicyPath,
+    $GatePath,
+    $SessionRoot
+)) {
     if (-not (Test-Path -LiteralPath $requiredPath)) {
         throw "Required autopilot input is missing: $requiredPath"
     }
@@ -104,6 +121,8 @@ $output = & $python $guard `
     --policy $PolicyPath `
     --gate $GatePath `
     --state $StatePath `
+    --current-readiness-pointer $CurrentReadinessPointerPath `
+    --global-writer-claim $GlobalWriterClaimPath `
     --session-root $SessionRoot `
     --thread-id $ThreadId `
     --min-remaining-percent $MinWeeklyRemainingPercent `

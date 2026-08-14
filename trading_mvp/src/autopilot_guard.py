@@ -13,6 +13,10 @@ from autopilot_research_backlog import next_task as next_research_task
 from codex_weekly_usage import collect_weekly_usage, evaluate_usage_guard
 from continuous_production import resolve_run_window
 import dense_ws_materialization_bound_plan as dense_ws_bound_plan
+from one_week_edge_sprint_readiness import (
+    CurrentSprintReadinessError,
+    resolve_current_sprint_readiness,
+)
 
 
 LIMIT_PAUSE_DECISIONS = {
@@ -1933,6 +1937,7 @@ def evaluate_autopilot_state(
     pit_schedule_extension: dict[str, Any] | None = None,
     long_campaign_approval: dict[str, Any] | None = None,
     dense_ws_postrun: dict[str, Any] | None = None,
+    current_sprint_readiness: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     usage_decision = str(usage.get("decision", "PAUSE_USAGE_TELEMETRY_UNAVAILABLE"))
     gate_status = str(gate.get("gate_status") or gate.get("status") or "UNKNOWN")
@@ -1946,6 +1951,40 @@ def evaluate_autopilot_state(
         if isinstance(dense_ws_postrun, dict)
         else _dense_ws_postrun_base(status="NOT_APPLICABLE")
     )
+    current_readiness = (
+        current_sprint_readiness
+        if isinstance(current_sprint_readiness, dict)
+        else None
+    )
+    current_readiness_status = str((current_readiness or {}).get("status") or "")
+    superseded_policy_candidates: dict[str, Any] | None = None
+    effective_long_campaign_candidate = (
+        policy.get("next_long_campaign")
+        if isinstance(policy.get("next_long_campaign"), dict)
+        else None
+    )
+    effective_pit_schedule_extension = pit_schedule_extension
+    if current_readiness_status == "READY":
+        superseded_policy_candidates = {
+            "long_campaign": effective_long_campaign_candidate,
+            "pit_schedule_extension": pit_schedule_extension,
+            "long_campaign_approval": long_campaign_approval,
+            "dense_ws_postrun_disposition": dense_ws_postrun_state,
+        }
+        effective_long_campaign_candidate = current_readiness.get(
+            "long_campaign_candidate"
+        )
+        effective_pit_schedule_extension = current_readiness.get(
+            "pit_schedule_extension_candidate"
+        )
+        long_campaign_approval = None
+        dense_ws_postrun_state = _dense_ws_postrun_base(
+            status="NOT_APPLICABLE_CURRENT_SPRINT_READINESS"
+        )
+        dense_ws_postrun_state["reason"] = (
+            "legacy_dense_policy_superseded_by_current_sprint_readiness"
+        )
+        dense_ws_postrun_state["execution_authorized"] = False
 
     if usage_decision in LIMIT_PAUSE_DECISIONS:
         status = (
@@ -2017,7 +2056,7 @@ def evaluate_autopilot_state(
             and schedule_duration_sec > 0
             and schedule_duration_sec <= short_segment_limit_sec
         )
-        long_campaign_candidate = policy.get("next_long_campaign")
+        long_campaign_candidate = effective_long_campaign_candidate
         if not isinstance(long_campaign_candidate, dict):
             long_campaign_candidate = {}
         long_candidate_ready = bool(
@@ -2044,7 +2083,9 @@ def evaluate_autopilot_state(
             and str(long_campaign_candidate.get("plan_path") or "").strip()
             and len(str(long_campaign_candidate.get("plan_hash") or "")) == 64
         )
-        if isinstance(dense_ws_postrun, dict):
+        if current_readiness_status == "READY":
+            pass
+        elif isinstance(dense_ws_postrun, dict):
             dense_ws_postrun_state = dense_ws_postrun
         elif active_dense_gate_data_quality_ready:
             dense_ws_postrun_state = _dense_ws_postrun_base(
@@ -2091,7 +2132,134 @@ def evaluate_autopilot_state(
             or str(prior_dense_ws_postrun.get("campaign_manifest_sha256") or "")
             != str(dense_ws_postrun_state.get("campaign_manifest_sha256") or "")
         )
-        if schedule_status == "INVALID" or campaign_status == "INVALID":
+        if current_readiness_status == "INVALID":
+            status = "CRITICAL_STOP"
+            decision = "CRITICAL_STOP_CURRENT_SPRINT_READINESS_INTEGRITY"
+            stop_new_actions = True
+            critical_checkpoint_notification_required = (
+                str((prior_state or {}).get("decision") or "") != decision
+                or str(
+                    ((prior_state or {}).get("current_sprint_readiness") or {}).get(
+                        "error"
+                    )
+                    or ""
+                )
+                != str((current_readiness or {}).get("error") or "")
+            )
+            action_due = critical_checkpoint_notification_required
+            next_action = "notify_current_sprint_readiness_integrity_conflict"
+        elif current_readiness_status == "MISSING":
+            status = "CRITICAL_STOP"
+            decision = "CRITICAL_STOP_CURRENT_SPRINT_READINESS_MISSING"
+            stop_new_actions = True
+            critical_checkpoint_notification_required = (
+                str((prior_state or {}).get("decision") or "") != decision
+            )
+            action_due = critical_checkpoint_notification_required
+            next_action = "notify_current_sprint_readiness_missing"
+        elif current_readiness_status == "REFRESH_REQUIRED":
+            status = "ACTIVE"
+            decision = "REFRESH_CURRENT_SPRINT_READINESS"
+            stop_new_actions = True
+            action_due = True
+            next_action = "rebuild_current_sprint_readiness_without_execution"
+        elif current_readiness_status == "READY":
+            status = "ACTIVE"
+            readiness_source_status = str(
+                current_readiness.get("source_status") or ""
+            )
+            readiness_execution_authorized = (
+                current_readiness.get("execution_authorized") is True
+            )
+            if (
+                readiness_source_status
+                == "TOPOLOGY_RUNTIME_FROZEN_WITH_EXACT_EXECUTION_APPROVAL"
+                and readiness_execution_authorized
+            ):
+                decision = (
+                    "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
+                    "TOPOLOGY_DISCOVERY"
+                )
+            elif (
+                readiness_source_status
+                == (
+                    "TOPOLOGY_V2_LAUNCHER_REJECTED_AWAIT_V3_OFFLINE_"
+                    "REFREEZE_APPROVAL"
+                )
+                and not readiness_execution_authorized
+            ):
+                decision = (
+                    "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
+                    "TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL"
+                )
+            elif (
+                readiness_source_status
+                == "TOPOLOGY_V2_RUNTIME_FROZEN_AWAIT_EXACT_EXECUTION_APPROVAL"
+                and not readiness_execution_authorized
+            ):
+                decision = (
+                    "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
+                    "TOPOLOGY_V2_EXECUTION_APPROVAL"
+                )
+            elif (
+                readiness_source_status
+                == "IDENTITY_RUNTIME_FROZEN_WITH_EXACT_CODE_BOUND_EXECUTION_APPROVAL"
+                and readiness_execution_authorized
+            ):
+                decision = "RUN_SLOW_LIQUIDITY_OFFICIAL_IDENTITY_VERIFICATION"
+            elif (
+                readiness_source_status
+                == "IDENTITY_RUNTIME_FROZEN_AWAIT_EXACT_CODE_BOUND_EXECUTION_APPROVAL"
+            ):
+                decision = (
+                    "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_IDENTITY_"
+                    "EXECUTION_APPROVAL"
+                )
+            else:
+                decision = "AWAIT_EXACT_ONE_WEEK_EDGE_SPRINT_APPROVAL_CHECKPOINT"
+            stop_new_actions = False
+            action_due = decision in {
+                "RUN_SLOW_LIQUIDITY_OFFICIAL_IDENTITY_VERIFICATION",
+                "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY",
+                "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL",
+                "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V2_EXECUTION_APPROVAL",
+            }
+            next_action = str(
+                current_readiness.get("next_safe_action")
+                or "await_one_exact_approval_checkpoint"
+            )
+            if decision == "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY":
+                topology = current_readiness.get("official_currentness_topology") or {}
+                topology_run_id = str(topology.get("run_id") or "")
+                launch_record_path = (
+                    Path(__file__).resolve().parents[2]
+                    / "docs"
+                    / "agent-log"
+                    / "run-gates"
+                    / f"{topology_run_id}.launch.json"
+                )
+                if topology_run_id and launch_record_path.is_file():
+                    topology_launch = _load_json(launch_record_path)
+                    topology_launch_status = str(topology_launch.get("status") or "")
+                    if topology_launch_status == "STOPPED_INCOMPLETE":
+                        decision = (
+                            "TERMINAL_REJECT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
+                            "TOPOLOGY_STOPPED_INCOMPLETE_NO_RETRY"
+                        )
+                        stop_new_actions = True
+                        action_due = True
+                        critical_checkpoint_notification_required = True
+                        next_action = "do_not_retry_without_new_exact_approval"
+                    elif topology_launch_status == "COMPLETE":
+                        decision = (
+                            "TERMINAL_ACCEPT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
+                            "TOPOLOGY_COMPLETE"
+                        )
+                        stop_new_actions = True
+                        action_due = True
+                        critical_checkpoint_notification_required = True
+                        next_action = "await_separate_official_identity_approval"
+        elif schedule_status == "INVALID" or campaign_status == "INVALID":
             status = "CRITICAL_STOP"
             decision = "CRITICAL_STOP_INVALID_SCHEDULE"
             stop_new_actions = True
@@ -2349,10 +2517,10 @@ def evaluate_autopilot_state(
                 "critical_checkpoint"
             )
             extension_status = str(
-                (pit_schedule_extension or {}).get("status") or ""
+                (effective_pit_schedule_extension or {}).get("status") or ""
             )
             extension_approval_status = str(
-                (pit_schedule_extension or {}).get(
+                (effective_pit_schedule_extension or {}).get(
                     "approval_request_status"
                 )
                 or ""
@@ -2390,7 +2558,7 @@ def evaluate_autopilot_state(
                 stop_new_actions = False
                 action_due = True
                 source_hash = str(
-                    (pit_schedule_extension or {}).get(
+                    (effective_pit_schedule_extension or {}).get(
                         "source_plan_hash"
                     )
                     or ""
@@ -2407,7 +2575,7 @@ def evaluate_autopilot_state(
                 decision = "AWAIT_EXPLICIT_PIT_SCHEDULE_EXTENSION_APPROVAL"
                 stop_new_actions = False
                 extension_hash = str(
-                    (pit_schedule_extension or {}).get("plan_hash") or ""
+                    (effective_pit_schedule_extension or {}).get("plan_hash") or ""
                 )
                 prior_extension_hash = str(
                     (
@@ -2579,16 +2747,14 @@ def evaluate_autopilot_state(
         "next_action": next_action,
         "schedule_window": schedule_window,
         "campaign_window": campaign_window,
-        "long_campaign_candidate": (
-            policy.get("next_long_campaign")
-            if isinstance(policy.get("next_long_campaign"), dict)
-            else None
-        ),
+        "current_sprint_readiness": current_readiness,
+        "superseded_policy_candidates": superseded_policy_candidates,
+        "long_campaign_candidate": effective_long_campaign_candidate,
         "long_campaign_approval": long_campaign_approval,
         "dense_ws_postrun_disposition": dense_ws_postrun_state,
         "productive_fallback": productive_fallback,
         "research_fallback": research_fallback,
-        "pit_schedule_extension_candidate": pit_schedule_extension,
+        "pit_schedule_extension_candidate": effective_pit_schedule_extension,
         "usage": usage,
         "gate": {
             "status": gate_status,
@@ -2616,6 +2782,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--policy", type=Path, required=True)
     parser.add_argument("--gate", type=Path, required=True)
     parser.add_argument("--state", type=Path, required=True)
+    parser.add_argument("--current-readiness-pointer", type=Path)
+    parser.add_argument("--global-writer-claim", type=Path)
     parser.add_argument("--session-root", type=Path, required=True)
     parser.add_argument("--thread-id", required=True)
     parser.add_argument("--min-remaining-percent", type=float, default=15.0)
@@ -2638,6 +2806,40 @@ def main(argv: Iterable[str] | None = None) -> int:
         min_remaining_percent=args.min_remaining_percent,
     )
     observed_at = _iso_now()
+    if args.current_readiness_pointer is not None:
+        current_pit_schedule = policy.get("current_pit_schedule")
+        current_pit_pointer_value = (
+            current_pit_schedule.get("pointer_path")
+            if isinstance(current_pit_schedule, dict)
+            else None
+        )
+        if not current_pit_pointer_value or args.global_writer_claim is None:
+            current_sprint_readiness = {
+                "status": "INVALID",
+                "error": (
+                    "current readiness requires the current PIT pointer and "
+                    "global writer claim path"
+                ),
+            }
+        else:
+            try:
+                current_sprint_readiness = resolve_current_sprint_readiness(
+                    args.current_readiness_pointer,
+                    gate_path=args.gate,
+                    pit_pointer_path=Path(str(current_pit_pointer_value)),
+                    writer_claim_path=args.global_writer_claim,
+                )
+            except CurrentSprintReadinessError as exc:
+                current_sprint_readiness = {
+                    "status": exc.status,
+                    "error": str(exc),
+                    "pointer_path": str(
+                        args.current_readiness_pointer.expanduser().resolve()
+                    ),
+                    "execution_authorized": False,
+                }
+    else:
+        current_sprint_readiness = None
     try:
         schedule_window = resolve_schedule_window(
             policy,
@@ -2761,6 +2963,7 @@ def main(argv: Iterable[str] | None = None) -> int:
         pit_schedule_extension=pit_schedule_extension,
         long_campaign_approval=long_campaign_approval,
         dense_ws_postrun=dense_ws_postrun,
+        current_sprint_readiness=current_sprint_readiness,
     )
     _write_json_atomic(args.state, result)
     print(json.dumps(result, ensure_ascii=False, indent=2))

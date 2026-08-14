@@ -1,0 +1,94 @@
+{
+  "schema": "trading_mvp_slow_liquidity_official_currentness_topology_v3_refreeze_proposal_v1",
+  "status": "PLANONLY_AWAIT_EXACT_OFFLINE_REFREEZE_APPROVAL",
+  "generated_at_utc": "2026-08-14T05:32:25.0935530+00:00",
+  "proposal_id": "slow_liquidity_official_currentness_topology_v3_refreeze_20260814_v1",
+  "defect_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\slow-liquidity-official-currentness-topology-v2-launcher-gate-json-integrity-audit-20260814-v1.json",
+    "file_sha256": "c919adb83b4e0674aa321fa03d52453930c0c0f81c5babd04ce9ac9bc6f7bbd0",
+    "audit_hash": "527f4f120234eb36ffd4ac6b1554f0fafcc9dcf9f976143cd7e466aba97fe51a",
+    "finding_id": "V2_ACTIVE_RUN_GATE_JSON_MODE_MISSING"
+  },
+  "superseded_v2": {
+    "run_id": "slow_liquidity_official_currentness_topology_discovery_20260814_v2",
+    "status": "FROZEN_OFFLINE_NEVER_EXECUTED_NOT_LAUNCHABLE",
+    "proposal_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\slow-liquidity-official-currentness-topology-v2-refreeze-proposal-20260814-v2.json",
+    "proposal_file_sha256": "c79faa302577051af7d0328dcb11f473f0b61419076f973e4f4778b1e1de128c",
+    "proposal_hash": "05e27bbcf824b7413aaae8e08f059e83343b0c1edfc90ee61308611132faba94",
+    "runtime_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-currentness-topology-runtime-manifest-20260814-v2.json",
+    "runtime_manifest_file_sha256": "05e13fbb0524f0ea3dc7f4d3f6003011037c02e7d922b74454188a9a22db4e94",
+    "runtime_manifest_hash": "921106cf8e6c9df44759480ad8f7a895f1f98d574d8c0c26b1dd10a87ae8c499",
+    "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_official_currentness_topology_v2_visible.ps1",
+    "launcher_file_sha256": "4d5ae74e0d3e8169d220b4e4d38ac0c339b8f867b0d368475a552ca64a3937a3",
+    "retry_authorized": false,
+    "execution_authorized": false
+  },
+  "proposed_successor": {
+    "run_id": "slow_liquidity_official_currentness_topology_discovery_20260814_v3",
+    "runtime_module_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_official_currentness_topology_v3.py",
+    "runtime_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-currentness-topology-runtime-manifest-20260814-v3.json",
+    "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_official_currentness_topology_v3_visible.ps1",
+    "synthetic_tests_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_official_currentness_topology_v3.py",
+    "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-official-currentness-topology\\slow_liquidity_official_currentness_topology_discovery_20260814_v3",
+    "exact_seed_urls": [
+      "https://www.mexc.com/robots.txt",
+      "https://www.mexc.com/sitemap.xml",
+      "https://www.mexc.com/support/articles/",
+      "https://www.gate.com/robots.txt",
+      "https://www.gate.com/sitemap.xml",
+      "https://www.gate.com/announcements"
+    ],
+    "limits": {
+      "maximum_total_http_requests": 6,
+      "maximum_attempts_per_url": 1,
+      "maximum_response_bytes_per_request": 1000000,
+      "max_runtime_sec": 300,
+      "hard_output_cap_bytes": 10000000
+    }
+  },
+  "exact_fix_contract": {
+    "active_run_gate_invocation": "& $activeRunChecker -Json 2>&1",
+    "active_run_gate_json_mode_required": true,
+    "active_run_gate_status_running_blocks": true,
+    "malformed_or_non_json_gate_output_blocks": true,
+    "no_writer_claim_before_all_preflight_checks": true,
+    "no_visible_terminal_before_all_preflight_checks": true,
+    "no_network_before_visible_worker_ownership_and_writer_claim": true,
+    "v2_runtime_and_launcher_remain_immutable": true
+  },
+  "requested_offline_scope": {
+    "new_run_id_code_refreeze": true,
+    "active_run_gate_json_contract_fix": true,
+    "sanitized_failure_envelope": true,
+    "synthetic_tests": true,
+    "real_checker_contract_regression": true,
+    "immutable_runtime_manifest": true,
+    "visible_launcher_implementation": true,
+    "preflight_only": true,
+    "policy_readiness_guard_rebind": true,
+    "network": false,
+    "official_source_content_read": false,
+    "approval_receipt": false,
+    "execution_manifest": false,
+    "writer_claim": false,
+    "topology_output": false,
+    "identity_evidence": false,
+    "request_plan": false,
+    "currentness_verdict": false,
+    "visible_launcher_execution": false
+  },
+  "safety": {
+    "collector_or_evaluator": false,
+    "oos_or_returns_or_pnl": false,
+    "grid_or_retune": false,
+    "execution_probe": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false,
+    "stopped_incomplete_retry": false
+  },
+  "approval_effect": "OFFLINE_REFREEZE_ONLY_NETWORK_REMAINS_BLOCKED",
+  "separate_network_execution_approval_required": true,
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "8d4e58344ae91c731de29c34786e00c3a682445f635b617e850d24b3b5770364"
+}

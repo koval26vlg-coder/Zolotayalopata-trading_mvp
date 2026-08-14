@@ -1,0 +1,100 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_production_threshold_boundary_v1",
+  "generated_at_utc": "2026-08-12T19:40:57.957231Z",
+  "status": "PASS",
+  "scope": "SYNTHETIC_OFFLINE_TECHNICAL_QUALITY_ONLY",
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_hash": "fbb8f39f46026ed3b393a95822497242c3055ce63372cec7d0b4b04821f2a1b5",
+    "plan_file_sha256": "f77b43ba2bdd9f40891a29d6b467845e3a1d42c25673373d0052e2a1e219b1aa",
+    "thresholds": {
+      "min_ok_rows": 25000,
+      "min_ok_bases": 8,
+      "min_ok_exchanges": 2,
+      "min_ok_market_granularity_slots": 32,
+      "min_ok_slot_fraction": 0.8,
+      "max_api_error_slot_rate": 0.2,
+      "min_two_exchange_bases": 8,
+      "min_two_exchange_full_coverage_1h4h_bases": 8,
+      "min_full_coverage_ratio": 0.8,
+      "duplicate_candles": 0
+    },
+    "bases": [
+      "STETH",
+      "WEETH",
+      "CC",
+      "OKB",
+      "RAIN",
+      "MNT",
+      "USDD",
+      "BDX",
+      "EDGE"
+    ]
+  },
+  "boundary_cases": [
+    {
+      "case": "clean_nine_base_scope",
+      "ok_rows": 30240,
+      "ok_slots": 36,
+      "two_exchange_full_coverage_1h4h_bases": 9,
+      "expected": "ACCEPT",
+      "observed": "ACCEPT"
+    },
+    {
+      "case": "one_base_unavailable_on_gate",
+      "ok_rows": 28560,
+      "api_error_slots": 2,
+      "two_exchange_full_coverage_1h4h_bases": 8,
+      "expected": "ACCEPT",
+      "observed": "ACCEPT"
+    },
+    {
+      "case": "two_bases_unavailable_on_gate",
+      "ok_rows": 26880,
+      "api_error_slots": 4,
+      "two_exchange_full_coverage_1h4h_bases": 7,
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "required_reasons": [
+        "min_two_exchange_bases",
+        "min_two_exchange_full_coverage_1h4h_bases"
+      ]
+    }
+  ],
+  "verification": {
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_history_quality.py",
+    "test_file_sha256": "9a0b61389f31fb2be4354a4fce803e2c4a7424105b445e3e7be1fecdc4b17bea",
+    "focused_quality_tests": {
+      "passed": 8,
+      "failed": 0,
+      "runtime_sec": 4.83
+    },
+    "linked_regression": {
+      "passed": 17,
+      "failed": 0,
+      "runtime_sec": 12.94
+    },
+    "implementation_bindings_verified": 10,
+    "launcher_binding_verified": true,
+    "plan_hash_unchanged": true
+  },
+  "safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "receipt_created": false,
+    "launch_record_created": false,
+    "market_output_created": false,
+    "identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "authority": {
+    "launch_authorized": false,
+    "technical_quality_actual_authorized": false,
+    "official_identity_authorized": false,
+    "new_exact_collection_approval_still_required": true
+  },
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "ed93df193659649d6220a810fc6aa6b6544fc6f6f303c8e77aa6e437adab027e"
+}

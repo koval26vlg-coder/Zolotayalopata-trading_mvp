@@ -38,7 +38,10 @@ class HistoricalBasisV2VisibleCollectTests(unittest.TestCase):
             "replay_allowed": False,
         }
         gate.write_text(json.dumps(payload), encoding="utf-8")
-        current.write_text(json.dumps(payload), encoding="utf-8")
+        current.write_text(
+            json.dumps({**payload, "schema": "active_run_pointer_v1"}),
+            encoding="utf-8",
+        )
         return plan, plan_path, gate, current
 
     def _base_command(

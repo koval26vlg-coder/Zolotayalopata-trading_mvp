@@ -1,0 +1,174 @@
+{
+  "schema": "trading_mvp_slow_liquidity_identity_request_plan_discovery_runtime_manifest_v1",
+  "status": "FROZEN_OFFLINE_AWAIT_EXACT_DISCOVERY_EXECUTION_APPROVAL",
+  "generated_at_utc": "2026-08-13T18:35:44.401736Z",
+  "research_only": true,
+  "run_id": "slow_liquidity_identity_request_plan_discovery_20260813_v2",
+  "discovery_plan": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-identity-request-plan-discovery-20260813-v2\\plan.json",
+    "file_sha256": "501f42f7f418fcc07522f8df8a59db38db106cd3d2ae86cc598ffb19af34afe4",
+    "plan_hash": "6246471964815d139e6900298a2a78e80e830df40f0c06b39078487c254183cc"
+  },
+  "parent_official_identity_runtime": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260813-v4.json",
+    "file_sha256": "0001cb25541e56e225a962f3d1eb9b4ef18055eb891d3b392b2f65bca3e70924",
+    "manifest_hash": "2e93b5c9b2bae219aa1072b3fd44a0af7e7b29728a6977ed3159eb643348269f"
+  },
+  "runtime": {
+    "module_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_identity_request_plan_discovery.py",
+    "module_sha256": "bae92d9c0d0f2a1ad4b63e49b335ae44aa96aa98bd1d67f140c706111ba2024e",
+    "synthetic_tests_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_identity_request_plan_discovery.py",
+    "synthetic_tests_sha256": "1d5a6ce64e906dd4fff58b37dd9b9c10d8012be784cac388f9a621617ddd6d6b",
+    "guard_checker_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_trading_mvp_autopilot.ps1",
+    "guard_checker_sha256": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+    "synthetic_fixture_parser_only": true,
+    "network_discovery_callable_exposed": false,
+    "network_adapter_implemented": false,
+    "execution_manifest_validator_implemented": false,
+    "visible_launcher_implemented": false,
+    "loaded_module_identity_verification_implemented": false
+  },
+  "offline_authorization": {
+    "mode": "DIRECT_USER_RESPONSE_ANNOTATION_OFFLINE_ONLY",
+    "response_annotation_index": 1,
+    "user_authorization_text": "разрешаю",
+    "authorized_scope": {
+      "offline_runtime_implementation": true,
+      "synthetic_tests": true,
+      "planonly_manifest_creation": true,
+      "runtime_manifest_creation": true,
+      "preflight_only": true,
+      "actual_network_run": false,
+      "official_source_content_read": false,
+      "identity_output": false,
+      "global_writer_claim": false,
+      "candidate_planonly_creation": false,
+      "collector_or_evaluator": false,
+      "oos_or_returns_or_pnl": false,
+      "grid_or_retune": false,
+      "paper_or_live": false,
+      "private_api_or_real_capital": false,
+      "leverage_or_margin": false
+    }
+  },
+  "compatibility_contract": {
+    "consumer_runtime": "slow_liquidity_official_identity_verification_v1",
+    "required_pair_count": 18,
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "bases": [
+      "STETH",
+      "WEETH",
+      "CC",
+      "OKB",
+      "RAIN",
+      "MNT",
+      "USDD",
+      "BDX",
+      "EDGE"
+    ],
+    "instrument_template": "{BASE}_USDT",
+    "request_plan_items_must_pass_consumer_validator": true
+  },
+  "navigation_contract": {
+    "provider": "BING_RSS",
+    "scheme": "https",
+    "host": "www.bing.com",
+    "path": "/search",
+    "role": "NAVIGATION_ONLY_NOT_IDENTITY_EVIDENCE",
+    "search_result_title_is_identity_evidence": false,
+    "search_result_snippet_is_identity_evidence": false,
+    "search_result_persistence_allowed": false,
+    "redirect_following_allowed": false
+  },
+  "official_source_contract": {
+    "metadata_endpoints": {
+      "mexc": "https://contract.mexc.com/api/v1/contract/detail",
+      "gateio": "https://api.gateio.ws/api/v4/futures/usdt/contracts"
+    },
+    "evidence_hosts": {
+      "mexc": {
+        "host": "www.mexc.com",
+        "allowed_path_prefix": "/support/articles/"
+      },
+      "gateio": {
+        "host": "www.gate.com",
+        "allowed_path_prefix": "/announcements/article/"
+      }
+    },
+    "only_allowlisted_official_page_content_is_identity_evidence": true,
+    "ticker_or_name_match_alone_is_identity_evidence": false,
+    "exact_active_perpetual_metadata_required": true,
+    "exact_unique_canonical_identifier_required": true
+  },
+  "currentness_contract": {
+    "active_perpetual_metadata_snapshot_required": true,
+    "single_navigation_result_is_currentness_evidence": false,
+    "metadata_to_official_page_linkage_required": true,
+    "metadata_to_official_page_linkage_implemented": false,
+    "synthetic_fixture_may_claim_real_completion": false,
+    "actual_current_request_plan_status_enabled": false
+  },
+  "limits": {
+    "maximum_total_http_requests": 38,
+    "maximum_attempts_per_url": 1,
+    "maximum_response_bytes_per_request": 1000000,
+    "max_runtime_sec": 600,
+    "hard_output_cap_bytes": 20000000
+  },
+  "output_contract": {
+    "required_files": [
+      "request-plan.json",
+      "manifest.json"
+    ],
+    "immutable_exclusive_create": true,
+    "raw_payload_persistence_allowed": false,
+    "search_snippet_persistence_allowed": false,
+    "prices_or_funding_rates_persistence_allowed": false,
+    "identity_verdict_created": false,
+    "candidate_planonly_created": false
+  },
+  "execution_authorization": {
+    "approved": false,
+    "execution_approval_receipt": null,
+    "actual_network_run_allowed": false,
+    "official_source_content_read_allowed": false,
+    "output_creation_allowed": false,
+    "identity_output_allowed": false,
+    "global_writer_claim_allowed": false,
+    "execution_manifest_supported": false,
+    "network_adapter_available": false,
+    "visible_launcher_available": false,
+    "runtime_can_mint_execution_approval": false,
+    "external_runtime_manifest_file_sha256_required_for_execution": true,
+    "external_runtime_manifest_hash_required_for_execution": true,
+    "separate_exact_code_bound_refreeze_and_execution_approval_required": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "preflight_contract": {
+    "status": "BLOCKED_AWAIT_EXACT_DISCOVERY_EXECUTION_APPROVAL",
+    "must_not_create_output": true,
+    "must_not_access_network": true,
+    "must_not_claim_global_writer": true,
+    "direct_runtime_invocation_forbidden": true,
+    "actual_execution_path_present": false,
+    "new_code_bound_runtime_refreeze_required_before_execution_approval": true
+  },
+  "safety": {
+    "network_accessed": false,
+    "official_source_content_read": false,
+    "output_created": false,
+    "identity_output_created": false,
+    "global_writer_claim_created": false,
+    "collector_or_evaluator_run": false,
+    "oos_or_returns_or_pnl_read": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false
+  },
+  "manifest_hash_method": "sha256_canonical_json_excluding_manifest_hash",
+  "manifest_hash": "f2cedc562660b25da6d0eac1845deb2e4ef17ba38782867ed49792f13fb392e1"
+}

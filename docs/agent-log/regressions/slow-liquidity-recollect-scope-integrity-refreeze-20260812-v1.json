@@ -1,0 +1,84 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_scope_integrity_refreeze_v1",
+  "generated_at_utc": "2026-08-12T20:01:24.600919+00:00",
+  "status": "PASS_FAIL_CLOSED",
+  "scope": "SYNTHETIC_OFFLINE_TECHNICAL_QUALITY_ONLY",
+  "finding": {
+    "severity": "CRITICAL_INTEGRITY_FALSE_ACCEPT",
+    "before_fix": "quality thresholds could accept rows from foreign bases when manifest counts and selected_bases still matched the frozen scope",
+    "affected_dimensions": [
+      "base",
+      "exchange",
+      "granularity",
+      "source"
+    ],
+    "collector_launched_before_fix": false,
+    "market_output_created_before_fix": false
+  },
+  "fix": {
+    "runtime_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_history_quality.py",
+    "runtime_sha256": "266bbc38b45fa164086391b20c67ae6f73a3c17f7174f361b8e9c020e25dd9fe",
+    "required_source": "slow_liquidity_history",
+    "manifest_bound_dimensions": [
+      "selected_bases",
+      "exchanges",
+      "granularities"
+    ],
+    "fail_reasons": [
+      "unexpected_bases",
+      "unexpected_exchanges",
+      "unexpected_granularities",
+      "unexpected_sources"
+    ]
+  },
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_hash": "315a220a3976698b118f795c6f125245adb37415dbe7324c8f35e985a665bd89",
+    "plan_file_sha256": "f83b8948e4eb1d732c0b272b0fe0507600bae7e2a262ff7804d8978b864087c2",
+    "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL"
+  },
+  "verification": {
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_history_quality.py",
+    "test_file_sha256": "77237b5ed72d15b347db189342df32314bb9fa7bbb5aadb7d58763dcbd95342d",
+    "red_test_observed_before_fix": true,
+    "focused_quality_tests": {
+      "passed": 9,
+      "failed": 0
+    },
+    "linked_plan_control_quality_tests": {
+      "passed": 20,
+      "failed": 0
+    },
+    "full_exact_regression": {
+      "passed": 89,
+      "failed": 0,
+      "skipped": 5,
+      "runtime_sec": 273.67
+    },
+    "foreign_dimension_case": {
+      "expected": "REJECT",
+      "observed": "REJECT",
+      "required_reasons_present": true
+    }
+  },
+  "safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "receipt_created": false,
+    "launch_record_created": false,
+    "market_output_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "authority": {
+    "old_approval_hashes_valid": false,
+    "launch_authorized_by_old_packet": false,
+    "new_exact_hash_bound_collection_approval_required": true,
+    "official_identity_requires_separate_approval": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "513a61ab02a0aef39da3b47d42e92409c22daa4199e0c045fb3e705fd08d7ecf"
+}

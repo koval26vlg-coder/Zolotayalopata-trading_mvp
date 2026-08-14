@@ -1,0 +1,73 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_epoch_alignment_offset_matrix_v1",
+  "generated_at_utc": "2026-08-12T22:40:20.977300+00:00",
+  "status": "PASS_BOTH_VENUES_1H4H_OFFSET_MATRIX_NO_GAPS_OR_DUPLICATES",
+  "scope": "OFFLINE_SYNTHETIC_ONLY_NO_NETWORK_NO_PLAN_MUTATION",
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-alignmentfix-v2.json",
+    "plan_hash": "13e66dc7f0b14ea17380b19313d9fc8f4bdabf85a33d141d2d70088a7be60e58",
+    "plan_file_sha256": "3fc1d9326d74db68257d80b0dea8972c8308c835e0c3a187ad2120ba617f1db6",
+    "plan_unchanged": true
+  },
+  "matrix": {
+    "exchanges": [
+      "mexc",
+      "gateio"
+    ],
+    "page_sizes": {
+      "mexc": 500,
+      "gateio": 1000
+    },
+    "timeframes": [
+      "1h",
+      "4h"
+    ],
+    "history_days": 56,
+    "offsets_per_timeframe": [
+      "0",
+      "1",
+      "123",
+      "interval_half",
+      "interval_minus_1"
+    ],
+    "venue_timeframe_offset_cases": 20,
+    "extra_empty_complete_candle_case": 1,
+    "assertions": [
+      "output timestamps equal every epoch-aligned complete candle in range",
+      "no duplicate timestamps",
+      "request count equals ceiling of expected candles divided by venue page cap",
+      "every request start and end is interval aligned",
+      "every page is within the venue cap",
+      "adjacent pages are exactly one interval apart",
+      "a range containing no complete candle performs zero requests"
+    ]
+  },
+  "verification": {
+    "focused": {
+      "passed": 2,
+      "failed": 0,
+      "runtime_sec": 0.08
+    },
+    "full_linked": {
+      "passed": 101,
+      "failed": 0,
+      "runtime_sec": 80.52
+    },
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_recollect_alignment_matrix.py",
+    "test_sha256": "cf0ac682e76b0b10a21fa56cc38090a469c7444d87bc4765765b4d9e9e5967aa"
+  },
+  "safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "market_values_read": false,
+    "returns_or_pnl_read": false,
+    "evaluator_or_oos_run": false,
+    "grid_or_retune_run": false
+  },
+  "deterministic_result_hash_method": "sha256_canonical_json_excluding_deterministic_result_hash",
+  "deterministic_result_hash": "1fa8a33ab69d6575523ef4dabf35b4636a5f581fb9e3c8651734857673bfbc0b"
+}

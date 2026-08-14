@@ -1,0 +1,79 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_quality_input_tamper_v1",
+  "generated_at_utc": "2026-08-12T21:31:15.101550+00:00",
+  "status": "PASS_OUTPUT_MANIFEST_LAUNCH_RECORD_TAMPER_FAIL_CLOSED",
+  "scope": "OFFLINE_SYNTHETIC_EXACT_QUALITY_INPUT_INTEGRITY_NO_NETWORK",
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_hash": "315a220a3976698b118f795c6f125245adb37415dbe7324c8f35e985a665bd89",
+    "plan_file_sha256": "f83b8948e4eb1d732c0b272b0fe0507600bae7e2a262ff7804d8978b864087c2",
+    "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+    "actual_collection_allowed": false,
+    "plan_changed": false
+  },
+  "implementation": {
+    "quality_runner_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_exact_slow_liquidity_recollect_quality.ps1",
+    "quality_runner_sha256": "01606074ae151a17fd2795952884868a1be2b6bfc32942c8aa6cf103a2707807",
+    "control_plane_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_recollect_control_plane.py",
+    "control_plane_sha256": "a024d1d0cd23e2bffd81e97d918276aa6470f06470ff723cc45a473b1e676916",
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_recollect_quality_runner_integration.py",
+    "test_sha256": "0c95e35377a39d9f465769573d8aca4e9e606543cdebae8b0450b0b87967220d",
+    "production_implementation_changed": false
+  },
+  "verification": {
+    "quality_runner_integration": {
+      "passed": 7,
+      "failed": 0,
+      "runtime_sec": 10.52
+    },
+    "linked_regression": {
+      "passed": 58,
+      "failed": 0,
+      "runtime_sec": 61.47
+    },
+    "tamper_cases": [
+      {
+        "input": "output_jsonl",
+        "expected_error": "quality_output_sha256_mismatch",
+        "blocked_before_commit": true
+      },
+      {
+        "input": "manifest",
+        "expected_errors": [
+          "quality_manifest_sha256_mismatch",
+          "quality_manifest_bases_mismatch"
+        ],
+        "blocked_before_commit": true
+      },
+      {
+        "input": "launch_record",
+        "expected_error": "quality_launch_terminal_ownership_verified_mismatch",
+        "blocked_before_commit": true
+      }
+    ],
+    "quality_report_created_on_tamper": false,
+    "active_gate_changed_on_tamper": false,
+    "current_run_pointer_changed_on_tamper": false
+  },
+  "production_safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "authority": {
+    "current_exact_approval_present": false,
+    "collector_launch_authorized": false,
+    "technical_quality_allowed_only_after_exact_complete": true,
+    "new_exact_hash_bound_approval_required": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "3361639b40f17e1c5002814504c0ef7f80bc80365f9e0c05cb6328334762d638"
+}

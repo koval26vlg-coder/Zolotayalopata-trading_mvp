@@ -1,0 +1,182 @@
+{
+  "schema": "trading_mvp_slow_liquidity_official_identity_runtime_manifest_v1",
+  "status": "FROZEN_OFFLINE_IMPLEMENTATION_AWAIT_EXACT_CODE_BOUND_EXECUTION_APPROVAL",
+  "generated_at_utc": "2026-08-13T17:27:35.9857787Z",
+  "research_only": true,
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\slow-liquidity-official-asset-identity-verification-proposal-20260813-v1.json",
+    "file_sha256": "52d2c848888577a61e6994b57786616a9732c2ec384d6c4633325123b1b63c62",
+    "proposal_hash": "3a4479cacaceb310556821df8bd0f28d5cb1dac06644764c9b209bf3e234d8a4"
+  },
+  "offline_approval_receipt": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-13-slow-liquidity-official-identity-offline-v1-approval.json",
+    "file_sha256": "ce285ff3b4f1ec0c7def93ca6953a4fd0693ac8280e1d07b315b126af3baad11",
+    "receipt_hash": "2fe328e19c887e471bf1d32fb7bc06ae619a9c369d8754ba15380db12384fa47"
+  },
+  "runtime": {
+    "module_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_official_identity_verification.py",
+    "module_sha256": "ffb94b256a9ed02b42eab5b18ca9c7922d16d49abd73a32c0d9dfa9d7db46e40",
+    "synthetic_tests_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_official_identity_verification.py",
+    "synthetic_tests_sha256": "096c277ff5cc4d6381ff31033709b7b8bee1aaa58c7f025b941ee0c507e759fc",
+    "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_official_identity_visible.ps1",
+    "launcher_sha256": "76c50549ec7e3537929ccb91796b83e53a71ff8169d1391465a551b7cb500dfb",
+    "guard_checker_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_trading_mvp_autopilot.ps1",
+    "guard_checker_sha256": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+    "autopilot_guard_module_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\autopilot_guard.py",
+    "autopilot_guard_module_sha256": "e2732780ec8ac45f8b369e9e8432c0bb3d9724e55189a6297e580d23cf356e59",
+    "readiness_module_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\one_week_edge_sprint_readiness.py",
+    "readiness_module_sha256": "2bad753df3bc037402976ff9fd52db8297d345fab67c864fd7013a5ff99f46a7"
+  },
+  "verification_scope": {
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "market": "USDT_SETTLED_LINEAR_PERPETUAL",
+    "bases": [
+      "STETH",
+      "WEETH",
+      "CC",
+      "OKB",
+      "RAIN",
+      "MNT",
+      "USDD",
+      "BDX",
+      "EDGE"
+    ],
+    "base_count": 9,
+    "quote": "USDT",
+    "all_bases_must_be_reviewed": true,
+    "category_exclusions_allowed": false,
+    "symbol_blacklist_allowed": false,
+    "minimum_verified_bases_after_exclusions": 8
+  },
+  "official_source_contract": {
+    "metadata_endpoints": [
+      {
+        "venue": "mexc",
+        "url": "https://contract.mexc.com/api/v1/contract/detail",
+        "method": "GET"
+      },
+      {
+        "venue": "gateio",
+        "url": "https://api.gateio.ws/api/v4/futures/usdt/contracts",
+        "method": "GET"
+      }
+    ],
+    "evidence_hosts": [
+      {
+        "venue": "mexc",
+        "scheme": "https",
+        "host": "www.mexc.com",
+        "allowed_path_prefix": "/support/articles/"
+      },
+      {
+        "venue": "gateio",
+        "scheme": "https",
+        "host": "www.gate.com",
+        "allowed_path_prefix": "/announcements/article/"
+      }
+    ],
+    "search_or_navigation_output_is_identity_evidence": false,
+    "only_content_on_allowlisted_official_hosts_is_evidence": true,
+    "http_redirect_following_allowed": false,
+    "request_body_allowed": false,
+    "private_or_auth_headers_allowed": false,
+    "environment_proxies_allowed": false,
+    "maximum_total_http_requests": 40,
+    "maximum_attempts_per_url": 2,
+    "maximum_response_bytes_per_request": 1000000,
+    "max_runtime_sec": 600,
+    "hard_output_cap_bytes": 20000000,
+    "raw_response_persistence_allowed": false,
+    "prices_or_funding_rates_persisted_allowed": false,
+    "market_values_may_affect_identity_decision": false,
+    "response_body_sha256_required": true,
+    "evidence_locator_required": true,
+    "evidence_fragment_sha256_required": true,
+    "sanitized_evidence_fragment_required": true,
+    "sanitized_evidence_fragment_max_bytes": 512,
+    "free_form_evidence_text_allowed": false
+  },
+  "identity_contract": {
+    "ticker_match_is_identity_evidence": false,
+    "asset_name_match_is_identity_evidence": false,
+    "source_coin_id_is_identity_evidence": false,
+    "economic_or_wrapped_asset_equivalence_allowed": false,
+    "required_per_venue": [
+      "official_source_url",
+      "response_body_sha256",
+      "instrument_id",
+      "base_ticker",
+      "canonical_asset_identifier_namespace",
+      "canonical_asset_identifier_value",
+      "canonical_asset_identifier_label",
+      "evidence_locator_type",
+      "evidence_locator_value",
+      "evidence_fragment_sha256",
+      "sanitized_evidence_fragment"
+    ],
+    "same_underlying_acceptance": "Both venues independently publish the same canonical asset identifier for the exact perpetual base.",
+    "evm_identifier_comparison": "ASCII_CASE_INSENSITIVE",
+    "non_evm_identifier_comparison": "EXACT",
+    "missing_identifier_disposition": "UNRESOLVED_EXCLUDE_FAIL_CLOSED",
+    "conflicting_identifier_disposition": "REJECT_EXCLUDE_FAIL_CLOSED",
+    "verified_bases_below_minimum_disposition": "INSUFFICIENT_IDENTITY_VERIFIED_UNIVERSE_NO_RESCOPE_WITHOUT_NEW_APPROVAL"
+  },
+  "output_contract": {
+    "run_id": "slow_liquidity_official_asset_identity_verification_20260813_v1",
+    "root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-official-identity",
+    "run_output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-official-identity\\slow_liquidity_official_asset_identity_verification_20260813_v1",
+    "required_files": [
+      "identity-evidence.json",
+      "manifest.json"
+    ],
+    "immutable_exclusive_create": true,
+    "overwrite_allowed": false,
+    "raw_payload_files_allowed": false,
+    "manifest_must_bind_source_files_and_response_hashes": true,
+    "manifest_must_bind_sanitized_identifier_evidence": true
+  },
+  "execution_authorization": {
+    "approved": false,
+    "execution_approval_receipt": null,
+    "actual_network_run_allowed": false,
+    "official_source_content_read_allowed": false,
+    "identity_output_allowed": false,
+    "global_writer_claim_allowed": false,
+    "separate_exact_code_bound_execution_approval_required": true,
+    "runtime_can_mint_execution_approval": false,
+    "launcher_can_mint_execution_approval": false,
+    "manual_codex_checkpoint_after_direct_user_approval_required": true
+  },
+  "preflight_contract": {
+    "missing_or_invalid_execution_manifest_status": "BLOCKED_AWAIT_EXACT_CODE_BOUND_EXECUTION_APPROVAL",
+    "must_not_create_output_before_execution_approval": true,
+    "must_not_access_network_before_execution_approval": true,
+    "visible_terminal_required_for_actual_run": true,
+    "global_writer_claim_required_for_actual_run": true,
+    "active_run_gate_must_not_be_running": true,
+    "authoritative_guard_exact_execution_decision_required": true,
+    "direct_runtime_invocation_forbidden": true,
+    "launcher_capability_required": true,
+    "visible_console_process_membership_required": true,
+    "single_use": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "safety": {
+    "network_accessed": false,
+    "official_source_content_read": false,
+    "identity_output_created": false,
+    "global_writer_claim_created": false,
+    "candidate_planonly_created": false,
+    "collector_or_evaluator_run": false,
+    "oos_or_returns_or_pnl_read": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false
+  },
+  "manifest_hash_method": "sha256_canonical_json_excluding_manifest_hash",
+  "manifest_hash": "10eea458884dc11eaabdcadb48febbcbb33482697d3dfd4e69a0b3f16b2d4f20"
+}

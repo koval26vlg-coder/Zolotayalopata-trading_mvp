@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": 20564,
+  "owner_kind": "slow_liquidity_history_recollect",
+  "ownership_token": "127bc33e4a9354d87a6c31bfa4593a85",
+  "plan_hash": "b7b2104eaad9404dbf97699d777276acbb187edaa03327dea8f8329f3e084632",
+  "output_namespace": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6",
+  "claimed_at_utc": "2026-08-13T06:24:54.449103+00:00",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "writer_attached_at_utc": "2026-08-13T06:24:57.875590+00:00",
+  "final_status": "READY_FOR_POSTPROCESS",
+  "released_at_utc": "2026-08-13T06:25:46.847390+00:00"
+}

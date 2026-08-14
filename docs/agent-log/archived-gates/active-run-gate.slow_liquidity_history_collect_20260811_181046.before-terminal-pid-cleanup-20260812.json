@@ -1,0 +1,99 @@
+{
+  "schema": "active_run_gate_v1",
+  "project": "trading_mvp",
+  "run_id": "slow_liquidity_history_collect_20260811_181046",
+  "status": "READY_FOR_POSTPROCESS",
+  "created_at": "2026-08-11T18:10:49+03:00",
+  "purpose": "Visible research-only public OHLCV slow-liquidity history collect; no replay/grid/live/API keys.",
+  "blocking_rule": "While status is RUNNING, do not run replay/grid/backtest/paper-forward/new collectors/code edits. Only status/ETA checks are allowed.",
+  "monitor_pid": 28604,
+  "process_ids": [
+    28604,
+    28024
+  ],
+  "monitor_script": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\run_visible_monitor.ps1",
+  "output_root": "E:\\trading_mvp\\slow-liquidity-history",
+  "output_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\ohlcv.jsonl",
+  "output_kind": "jsonl",
+  "manifest_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\manifest.json",
+  "stdout_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\stdout.log",
+  "stderr_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\stderr.log",
+  "monitor_error_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\monitor_error.log",
+  "universe_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\coins_not_on_binance_full_2026-05-29.csv",
+  "selected_bases": 50,
+  "exchanges": [
+    "mexc",
+    "gateio",
+    "bitget"
+  ],
+  "timeframes": [
+    "15m",
+    "1h",
+    "4h"
+  ],
+  "history_days": 56,
+  "estimated_jobs": 450,
+  "estimated_total_requests": 1350.0,
+  "estimated_runtime_min": 19.1,
+  "replay_allowed": false,
+  "grid_allowed": false,
+  "paper_forward_allowed": false,
+  "live_orders": false,
+  "api_keys": false,
+  "leverage_or_margin": false,
+  "status_check_command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_active_run_gate.ps1\" -Json",
+  "ready_condition": "manifest.final == true AND decision == SLOW_LIQUIDITY_HISTORY_COLLECT_COMPLETED_READY_FOR_DATA_QUALITY",
+  "next_step_after_ready": "Do not replay/grid. Recollect or rescope slow-liquidity history to enough two-venue 1h/4h coverage before signal design.",
+  "resume_command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_slow_liquidity_history_collect_visible.ps1\" -ConfirmedSlowLiquidityHistoryCollect -ResumeIncomplete -RunId slow_liquidity_history_collect_20260811_181046 -OutputRoot \"E:\\trading_mvp\\slow-liquidity-history\"",
+  "visible_terminal_pid": 28604,
+  "updated_at": "2026-08-12T09:15:52+03:00",
+  "collector_pid": 28024,
+  "final": true,
+  "stop_reason": "completed",
+  "monitor_pid_alive": false,
+  "next_goal_decision": "SLOW_LIQUIDITY_HISTORY_DATA_QUALITY_REJECTED_NEEDS_RECOLLECT_OR_RESCOPE",
+  "next_goal_reason": "Slow-liquidity history data-quality accepted=False; ok_rows=261129, ok_bases=28, ok_slots=160, two_exchange_bases=20, clean_1h4h_two_venue_bases=4, api_error_slot_rate=0.644444444444444.",
+  "raw_gate_next_step_after_ready": "Do not replay/grid. Recollect or rescope slow-liquidity history to enough two-venue 1h/4h coverage before signal design.",
+  "last_slow_liquidity_history_collect_manifest_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\manifest.json",
+  "last_slow_liquidity_history_collect_output_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\ohlcv.jsonl",
+  "last_slow_liquidity_history_collect_stdout_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\stdout.log",
+  "last_slow_liquidity_history_collect_stderr_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_collect_20260811_181046\\stderr.log",
+  "rows": 261419,
+  "errors": 290,
+  "expected_outputs_complete": true,
+  "last_slow_liquidity_history_data_quality_at": "2026-08-12 09:15:52 +03:00",
+  "last_slow_liquidity_history_data_quality_output_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_history_data_quality_20260812_091543.json",
+  "last_slow_liquidity_history_data_quality_decision": "SLOW_LIQUIDITY_HISTORY_DATA_QUALITY_REJECTED_NEEDS_RECOLLECT_OR_RESCOPE",
+  "last_slow_liquidity_history_data_quality_reasons": [
+    "min_two_exchange_full_coverage_1h4h_bases"
+  ],
+  "last_slow_liquidity_history_data_quality_warnings": [
+    "15m_two_exchange_full_coverage_absent_use_1h4h_only",
+    "high_universe_unavailable_slot_rate",
+    "partial_candle_coverage_slots_present"
+  ],
+  "strategy_branch_status": {
+    "branch": "slow_liquidity_regime_breakout_retest",
+    "verdict": "history_quality_rejected",
+    "decision_source": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_history_data_quality_20260812_091543.json",
+    "selected_at": "2026-08-12 09:15:52 +03:00",
+    "previous_branch": "spot_perp_basis_or_listing_event",
+    "live_orders": false,
+    "api_keys": false,
+    "leverage_or_margin": false,
+    "replay_allowed_now": false,
+    "grid_allowed": false,
+    "paper_forward_allowed": false,
+    "data_quality_accepted": false,
+    "data_quality_reasons": [
+      "min_two_exchange_full_coverage_1h4h_bases"
+    ],
+    "data_quality_warnings": [
+      "15m_two_exchange_full_coverage_absent_use_1h4h_only",
+      "high_universe_unavailable_slot_rate",
+      "partial_candle_coverage_slots_present"
+    ],
+    "clean_1h4h_two_venue_bases": 4,
+    "next_step_required": "recollect_or_rescope_history"
+  }
+}

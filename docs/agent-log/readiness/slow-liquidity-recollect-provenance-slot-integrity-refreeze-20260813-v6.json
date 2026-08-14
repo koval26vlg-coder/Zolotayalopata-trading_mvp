@@ -1,0 +1,89 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_provenance_slot_integrity_refreeze_v1",
+  "status": "COMPLETE_FAIL_CLOSED_NO_LAUNCH",
+  "generated_at_utc": "2026-08-13T00:10:34.9493523+00:00",
+  "scope": "offline_code_and_synthetic_quality_only",
+  "superseded_plan": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-alignment-qualityintegrity-rangefix-v5.json",
+    "plan_hash": "6a88ee9443e0b8c59c89694c94f9c4395e2e5847373a16ce4fa38f6fcae18eee",
+    "plan_file_sha256": "55315b274418a17bf2c65fd588c796fa61d6469d0f0c39929266771e12e07aaf",
+    "disposition": "SUPERSEDED_PROVENANCE_AND_SLOT_INTEGRITY_FAIL_CLOSED_NOT_LAUNCHABLE",
+    "approval_receipt_created": false,
+    "collector_started": false,
+    "output_created": false,
+    "quality_output_created": false
+  },
+  "confirmed_preimage_false_accepts": [
+    {
+      "case": "stale_exact_length_history",
+      "preimage_accepted": true,
+      "postimage_accepted": false,
+      "postimage_primary_reason": "history_anchor_range_mismatch"
+    },
+    {
+      "case": "manifest_category_count_swap",
+      "preimage_accepted": true,
+      "postimage_accepted": false,
+      "postimage_primary_reason": "manifest_ohlcv_rows_mismatch"
+    },
+    {
+      "case": "missing_completed_slot",
+      "preimage_accepted": true,
+      "postimage_accepted": false,
+      "postimage_primary_reason": "missing_expected_slots"
+    },
+    {
+      "case": "mixed_ok_and_error_slot",
+      "preimage_accepted": true,
+      "postimage_accepted": false,
+      "postimage_primary_reason": "mixed_slot_statuses"
+    }
+  ],
+  "postimage_contract": {
+    "quality_contract_version": "slow_liquidity_history_exact_v2",
+    "history_anchor_bound_to_collector_start": true,
+    "history_ranges_bound_to_anchor_and_history_days": true,
+    "manifest_counts_bound_to_actual_status_counts": true,
+    "expected_cartesian_slots_required": true,
+    "mixed_ok_and_placeholder_slots_allowed": false,
+    "duplicate_placeholder_slots_allowed": false,
+    "timestamp_iso_fields_bound_to_integer_timestamps": true,
+    "launch_manifest_time_chain_required": true,
+    "clean_full_nine_base_fixture_accepted": true,
+    "clean_full_nine_base_fixture_rows": 30240,
+    "clean_full_nine_base_fixture_slots": 36
+  },
+  "implementation": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_history_collector.py",
+      "sha256": "f6bcdbce059d8a1689819854f097888d328a5f66b51726761afa22b5b9386836"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_history_quality.py",
+      "sha256": "7a34c92df3584a3026a17090efd0a7bd52c96cc49eccf613fccc5a04a59f7ff6"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_recollect_control_plane.py",
+      "sha256": "8c53ba2e9d39a96cde77712e179b3e4d4db0d198dd6c5ed2a3173bd5744d1d82"
+    }
+  ],
+  "focused_regression": {
+    "command": "C:\\Program Files\\Python313\\python.exe -m unittest -v <9 exact provenance and slot integrity tests>",
+    "tests_passed": 9,
+    "tests_failed": 0
+  },
+  "safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "writer_claim_created": false,
+    "receipt_created": false,
+    "output_namespace_created": false,
+    "market_values_read": false,
+    "oos_or_evaluator_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune": false,
+    "paper_or_live": false
+  },
+  "deterministic_result_hash_method": "sha256_canonical_json_excluding_generated_at_utc_and_deterministic_result_hash",
+  "deterministic_result_hash": "f050bf4a7ae4aa722f8ca15f8a3ece115960085f932558b6218bce4d91534cdf"
+}

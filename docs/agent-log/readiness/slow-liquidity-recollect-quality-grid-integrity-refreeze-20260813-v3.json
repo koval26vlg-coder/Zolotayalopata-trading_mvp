@@ -1,0 +1,108 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_quality_grid_integrity_refreeze_v3",
+  "generated_at_utc": "2026-08-12T22:50:40.568296+00:00",
+  "status": "REFREEZE_REQUIRED_PREIMAGE_FALSE_ACCEPT_POSTIMAGE_REJECT",
+  "scope": "OFFLINE_SYNTHETIC_ONLY_NO_NETWORK",
+  "superseded_plan": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-alignmentfix-v2.json",
+    "plan_hash": "13e66dc7f0b14ea17380b19313d9fc8f4bdabf85a33d141d2d70088a7be60e58",
+    "plan_file_sha256": "3fc1d9326d74db68257d80b0dea8972c8308c835e0c3a187ad2120ba617f1db6",
+    "actual_collection_allowed": false,
+    "approval_receipt_present": false,
+    "launch_record_present": false,
+    "output_present": false,
+    "disposition": "SUPERSEDED_QUALITY_INTEGRITY_FAIL_CLOSED_NOT_LAUNCHABLE"
+  },
+  "defect": {
+    "category": "QUALITY_GATE_ACCEPTED_OFF_GRID_CANDLE_TIMESTAMPS",
+    "cause": "coverage counted unique candle timestamps without requiring epoch alignment, valid integer type, or aligned history bounds",
+    "synthetic_fixture": {
+      "exchanges": [
+        "mexc",
+        "gateio"
+      ],
+      "timeframes": [
+        "1h",
+        "4h"
+      ],
+      "provisional_bases": 9,
+      "complete_off_grid_bases": 8,
+      "timestamp_offset_sec": 123,
+      "raw_ok_rows": 26912,
+      "preimage_accepted": true,
+      "preimage_decision": "SLOW_LIQUIDITY_HISTORY_DATA_QUALITY_ACCEPTED_READY_FOR_FIXED_SIGNAL_PLANONLY",
+      "preimage_reasons": [],
+      "postimage_accepted": false,
+      "postimage_decision": "SLOW_LIQUIDITY_HISTORY_DATA_QUALITY_REJECTED_NEEDS_RECOLLECT_OR_RESCOPE",
+      "postimage_off_grid_candles": 26912,
+      "postimage_valid_ok_rows": 0,
+      "postimage_full_bases": 0
+    },
+    "impact": "a complete but temporally invalid dataset could pass technical quality and become eligible for later signal planning"
+  },
+  "patch_integrity": {
+    "collector_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_history_collector.py",
+    "collector_preimage_sha256": "be6887b7cd83ea548c2d9cfa2bed8701e29854404f47e5ddfec8a183f271c7dd",
+    "collector_postimage_sha256": "2954200bc016fafd0ae4217fa984285588bbe569600d244343ccb653c628c68c",
+    "quality_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_history_quality.py",
+    "quality_preimage_sha256": "266bbc38b45fa164086391b20c67ae6f73a3c17f7174f361b8e9c020e25dd9fe",
+    "quality_postimage_sha256": "388be1ecf6d90177c71ddd7855d94560a0d5a56dce12f48c049a81eccd83fefa",
+    "changes": [
+      "collector keeps only interval-aligned candles inside the exact requested page",
+      "quality accepts only strict integer candle timestamps",
+      "quality counts coverage only inside ceil-start/floor-end aligned bounds",
+      "quality terminally rejects missing invalid off-grid out-of-range and inconsistent history metadata"
+    ]
+  },
+  "verification": {
+    "focused_timestamp_integrity_tests": {
+      "passed": 3,
+      "failed": 0,
+      "runtime_sec": 0.1
+    },
+    "full_off_grid_fixture_postimage": "REJECT",
+    "preimage_result_reproduced_before_patch": true
+  },
+  "contract_preservation": {
+    "bases": [
+      "STETH",
+      "WEETH",
+      "CC",
+      "OKB",
+      "RAIN",
+      "MNT",
+      "USDD",
+      "BDX",
+      "EDGE"
+    ],
+    "exchanges": [
+      "mexc",
+      "gateio"
+    ],
+    "timeframes": [
+      "1h",
+      "4h"
+    ],
+    "history_days": 56,
+    "logical_requests": 63,
+    "maximum_http_attempts": 126,
+    "max_runtime_sec": 900,
+    "hard_output_cap_bytes": 100000000,
+    "scope_changed": false
+  },
+  "safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "new_output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "next_action": "BUILD_NEW_IMMUTABLE_QUALITYGRIDFIX_PLANONLY_AND_REQUIRE_NEW_EXACT_APPROVAL",
+  "deterministic_result_hash_method": "sha256_canonical_json_excluding_deterministic_result_hash",
+  "deterministic_result_hash": "34703d2cee6f0c1e921cfa3e4765ed8b9fdf9067d3ae9385630dd2bf86b0e958"
+}

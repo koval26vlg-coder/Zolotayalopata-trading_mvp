@@ -1,0 +1,64 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_quality_atomic_rollback_v1",
+  "generated_at_utc": "2026-08-12T20:25:21.829281+00:00",
+  "status": "PASS_FULL_ATOMIC_ROLLBACK",
+  "scope": "SYNTHETIC_OFFLINE_TEMP_NAMESPACE_NO_NETWORK",
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_hash": "315a220a3976698b118f795c6f125245adb37415dbe7324c8f35e985a665bd89",
+    "plan_file_sha256": "f83b8948e4eb1d732c0b272b0fe0507600bae7e2a262ff7804d8978b864087c2",
+    "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+    "plan_changed": false
+  },
+  "fault_injection": {
+    "injected_after_quality_report_commit": true,
+    "injected_after_active_gate_commit": true,
+    "injected_before_current_run_pointer_commit": true,
+    "expected_failure": "fixture_pointer_commit_failure",
+    "failure_observed": true
+  },
+  "rollback_proof": {
+    "quality_report_removed": true,
+    "active_gate_restored_byte_for_byte": true,
+    "current_run_pointer_restored_byte_for_byte": true,
+    "temporary_quality_files_removed": true,
+    "partial_success_state_left_behind": false
+  },
+  "verification": {
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_recollect_quality_runner_integration.py",
+    "test_file_sha256": "f6a6557d35331e49c8039505980c4ab5cf93c32b31c761767c92ab9a7c151026",
+    "quality_runner_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_exact_slow_liquidity_recollect_quality.ps1",
+    "quality_runner_sha256": "01606074ae151a17fd2795952884868a1be2b6bfc32942c8aa6cf103a2707807",
+    "focused_integration": {
+      "passed": 5,
+      "failed": 0,
+      "runtime_sec": 9.69
+    },
+    "full_linked_regression": {
+      "passed": 109,
+      "failed": 0,
+      "skipped": 5,
+      "runtime_sec": 205.22
+    }
+  },
+  "production_safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "authority": {
+    "current_exact_approval_present": false,
+    "collector_launch_authorized": false,
+    "new_exact_hash_bound_approval_required": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "9e313d94b439bb2c491556903036ef7926d3dab5949c0d0514f7611d71797b64"
+}

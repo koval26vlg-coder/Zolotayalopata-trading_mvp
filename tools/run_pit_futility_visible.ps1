@@ -329,7 +329,12 @@ function Update-RunGate {
         next_step_after_ready = $nextStep
     }
     Write-JsonAtomic -Path $GatePath -Value $document
-    Write-JsonAtomic -Path $CurrentRunPath -Value $document
+    $pointerDocument = [ordered]@{}
+    foreach ($entry in $document.GetEnumerator()) {
+        $pointerDocument[$entry.Key] = $entry.Value
+    }
+    $pointerDocument.schema = "active_run_pointer_v1"
+    Write-JsonAtomic -Path $CurrentRunPath -Value $pointerDocument
 }
 
 function Invoke-RunMvpChild {

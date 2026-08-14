@@ -371,7 +371,10 @@ class GateMembershipMomentumV2ExecutionProbeRuntimeTests(unittest.TestCase):
             gate = root / "active-run-gate.json"
             current = root / "current-run.json"
             gate.write_text(json.dumps(gate_payload), encoding="utf-8")
-            current.write_text(json.dumps(gate_payload), encoding="utf-8")
+            current.write_text(
+                json.dumps({**gate_payload, "schema": "active_run_pointer_v1"}),
+                encoding="utf-8",
+            )
             gate_hash = hashlib.sha256(gate.read_bytes()).hexdigest()
             current_hash = hashlib.sha256(current.read_bytes()).hexdigest()
             completed = subprocess.run(

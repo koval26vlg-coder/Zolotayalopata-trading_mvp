@@ -26,6 +26,7 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $gatePath = Join-Path $repoRoot "docs\agent-log\active-run-gate.json"
+$currentRunPath = Join-Path $repoRoot "docs\agent-log\current-run.json"
 $gateChecker = Join-Path $repoRoot "tools\check_active_run_gate.ps1"
 $collectorModule = Join-Path $repoRoot "trading_mvp\src\slow_liquidity_history_collector.py"
 $requiredApprovalText = "подтверждаю visible slow-liquidity OHLCV history collect"
@@ -55,6 +56,19 @@ function Write-Gate {
     param([Parameter(Mandatory = $true)]$Gate)
     New-Item -ItemType Directory -Force -Path (Split-Path $gatePath) | Out-Null
     $Gate | ConvertTo-Json -Depth 18 | Set-Content -LiteralPath $gatePath -Encoding UTF8
+    $terminalState = [string]$Gate.status -ne "RUNNING"
+    [ordered]@{
+        schema = "active_run_pointer_v1"
+        project = "trading_mvp"
+        run_id = [string]$Gate.run_id
+        status = [string]$Gate.status
+        updated_at = if ($Gate.updated_at) { [string]$Gate.updated_at } else { (Get-Date).ToString("o") }
+        manifest_path = [string]$Gate.manifest_path
+        output = [ordered]@{ path = [string]$Gate.output_path; kind = "file" }
+        collector_pid = if ($terminalState) { $null } else { $Gate.collector_pid }
+        monitor_pid = if ($terminalState) { $null } else { $Gate.monitor_pid }
+        process_ids = if ($terminalState) { @() } else { @($Gate.process_ids) }
+    } | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $currentRunPath -Encoding UTF8
 }
 
 function ConvertTo-PSLiteral {
@@ -149,21 +163,29 @@ $monitorErrorPath = Join-Path $runDir "monitor_error.log"
 $monitorScriptPath = Join-Path $runDir "run_visible_monitor.ps1"
 $python = Resolve-Python
 
-$estimatedRequestsPerMarket = 0
-foreach ($tf in $timeframeList) {
-    $interval = switch ($tf) {
-        "1m" { 60 }
-        "5m" { 300 }
-        "15m" { 900 }
-        "1h" { 3600 }
-        "4h" { 14400 }
-        default { 3600 }
-    }
-    $candles = [Math]::Ceiling(($HistoryDays * 86400.0) / $interval) + 1
-    $estimatedRequestsPerMarket += [Math]::Ceiling($candles / [Math]::Max(1, $CandlesPerRequest))
-}
 $estimatedJobs = $TargetBases * $exchangeList.Count * $timeframeList.Count
-$estimatedRequests = $TargetBases * $exchangeList.Count * $estimatedRequestsPerMarket
+$estimatedRequestsByExchange = [ordered]@{}
+$estimatedRequests = 0
+foreach ($exchange in $exchangeList) {
+    $exchangePageCap = if ($exchange -in @("mexc", "bitget")) { 500 } else { 1000 }
+    $effectivePageSize = [Math]::Min([Math]::Max(1, $CandlesPerRequest), $exchangePageCap)
+    $estimatedRequestsPerMarket = 0
+    foreach ($tf in $timeframeList) {
+        $interval = switch ($tf) {
+            "1m" { 60 }
+            "5m" { 300 }
+            "15m" { 900 }
+            "1h" { 3600 }
+            "4h" { 14400 }
+            default { 3600 }
+        }
+        $candles = [Math]::Ceiling(($HistoryDays * 86400.0) / $interval) + 1
+        $estimatedRequestsPerMarket += [Math]::Ceiling($candles / $effectivePageSize)
+    }
+    $exchangeRequests = $TargetBases * $estimatedRequestsPerMarket
+    $estimatedRequestsByExchange[$exchange] = $exchangeRequests
+    $estimatedRequests += $exchangeRequests
+}
 $estimatedRuntimeMin = [Math]::Round((($estimatedRequests * [Math]::Max(0.0, $SleepSec)) + ($estimatedRequests * 0.6)) / 60.0, 1)
 
 $plan = [ordered]@{
@@ -191,6 +213,7 @@ $plan = [ordered]@{
     exchanges = $exchangeList
     timeframes = $timeframeList
     estimated_jobs = $estimatedJobs
+    estimated_requests_by_exchange = $estimatedRequestsByExchange
     estimated_total_requests = $estimatedRequests
     estimated_runtime_min = $estimatedRuntimeMin
     output_jsonl = $outputJsonl
@@ -251,6 +274,7 @@ $monitorScript = @"
 
 `$repoRoot = $(ConvertTo-PSLiteral $repoRoot)
 `$gatePath = $(ConvertTo-PSLiteral $gatePath)
+`$currentRunPath = $(ConvertTo-PSLiteral $currentRunPath)
 `$gateChecker = $(ConvertTo-PSLiteral $gateChecker)
 `$launcherScript = $(ConvertTo-PSLiteral $PSCommandPath)
 `$python = $(ConvertTo-PSLiteral $python)
@@ -314,6 +338,19 @@ function Set-JsonProperty {
 function Write-Gate {
     param(`$Gate)
     `$Gate | ConvertTo-Json -Depth 18 | Set-Content -LiteralPath `$gatePath -Encoding UTF8
+    `$terminalState = [string]`$Gate.status -ne "RUNNING"
+    [ordered]@{
+        schema = "active_run_pointer_v1"
+        project = "trading_mvp"
+        run_id = [string]`$Gate.run_id
+        status = [string]`$Gate.status
+        updated_at = if (`$Gate.updated_at) { [string]`$Gate.updated_at } else { (Get-Date).ToString("o") }
+        manifest_path = [string]`$Gate.manifest_path
+        output = [ordered]@{ path = [string]`$Gate.output_path; kind = "file" }
+        collector_pid = if (`$terminalState) { `$null } else { `$Gate.collector_pid }
+        monitor_pid = if (`$terminalState) { `$null } else { `$Gate.monitor_pid }
+        process_ids = if (`$terminalState) { @() } else { @(`$Gate.process_ids) }
+    } | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath `$currentRunPath -Encoding UTF8
 }
 
 function ConvertTo-ProcessArgument {

@@ -1,0 +1,146 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_runtime_range_refreeze_regression_v5",
+  "generated_at_utc": "2026-08-12T23:51:53.194933+00:00",
+  "status": "PASS_NEW_IMMUTABLE_PLANONLY_AWAIT_EXACT_APPROVAL",
+  "scope": "OFFLINE_SYNTHETIC_AND_NON_WRITING_PREFLIGHT_ONLY_NO_NETWORK",
+  "latest_user_packet": {
+    "run_id": "slow_liquidity_history_recollect_20260812_pagecapfix_v1",
+    "plan_hash": "fbb8f39f46026ed3b393a95822497242c3055ce63372cec7d0b4b04821f2a1b5",
+    "plan_file_sha256": "f77b43ba2bdd9f40891a29d6b467845e3a1d42c25673373d0052e2a1e219b1aa",
+    "used": false,
+    "disposition": "SUPERSEDED_INTEGRITY_FAIL_CLOSED_NOT_LAUNCHABLE"
+  },
+  "superseded_v4": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-alignment-qualityintegrityfix-v4.json",
+    "plan_hash": "07f1da73566b5cf2829f21af01a0fe802adfe2b43e028a750b943f30bb6fba7d",
+    "plan_file_sha256": "3f05ff156d2847835314c2e96d1e51bab3de54689653a81e330df62f734453b5",
+    "approval_receipt_present": false,
+    "launch_record_present": false,
+    "output_present": false,
+    "quality_output_present": false,
+    "disposition": "SUPERSEDED_RUNTIME_RANGE_CONTRACT_INCOMPATIBLE_FAIL_CLOSED_NOT_LAUNCHABLE"
+  },
+  "v5_plan": {
+    "run_id": "slow_liquidity_history_recollect_20260813_pagecap_alignment_qualityintegrity_rangefix_v5",
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-alignment-qualityintegrity-rangefix-v5.json",
+    "plan_hash": "6a88ee9443e0b8c59c89694c94f9c4395e2e5847373a16ce4fa38f6fcae18eee",
+    "plan_file_sha256": "55315b274418a17bf2c65fd588c796fa61d6469d0f0c39929266771e12e07aaf",
+    "actual_collection_allowed": false,
+    "quality_output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\analysis\\slow_liquidity_history_recollect_quality_20260813_pagecap_alignment_qualityintegrity_rangefix_v5.json",
+    "approval_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-13-slow-liquidity-history-recollect-pagecap-alignment-qualityintegrity-rangefix-v5-approval.json",
+    "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\slow_liquidity_history_recollect_20260813_pagecap_alignment_qualityintegrity_rangefix_v5.launch.json",
+    "output_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_recollect_20260813_pagecap_alignment_qualityintegrity_rangefix_v5"
+  },
+  "root_cause_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\slow-liquidity-recollect-runtime-range-contract-refreeze-20260813-v5.json",
+    "file_sha256": "aceefb89fb24769879e8916704cfecc68d3f11d89283f1fcca7b8d0930981120",
+    "deterministic_result_hash": "a7dda6efdf02958b7537a6e4d48983bac368fa84e1992ff06901b828a0d680d4"
+  },
+  "runtime_range_contract": {
+    "normal_wall_clock_bounds_aligned_before_job_creation": true,
+    "row_history_bounds_match_fetch_bounds": true,
+    "exact_56_day_aligned_window_required": true,
+    "accepted_aligned_1h_candle_counts": [
+      1344,
+      1345
+    ],
+    "accepted_aligned_4h_candle_counts": [
+      336,
+      337
+    ],
+    "shortened_47_day_claim_terminally_rejected": true
+  },
+  "patch_integrity": {
+    "collector_preimage_sha256": "2954200bc016fafd0ae4217fa984285588bbe569600d244343ccb653c628c68c",
+    "collector_postimage_sha256": "b71012ffd10371dfaf92046ae98462e1b479636f3c7ac024d78a299c488b63ea",
+    "quality_preimage_sha256": "e016d728255d5b36f841daad7eb6513ac3e0a200f7de66ea7205832fbc4bd865",
+    "quality_postimage_sha256": "95578eb792fe59098848f7d75bb2f99e596f3957edcf75d80b6a32a6cbb75d9e",
+    "all_v5_plan_bindings_match_current_files": true,
+    "canonical_plan_hash_verified": true
+  },
+  "verification": {
+    "focused_collector_and_quality": {
+      "passed": 32,
+      "failed": 0
+    },
+    "focused_collector_quality_plan_control_plane": {
+      "passed": 51,
+      "failed": 0
+    },
+    "full_linked_core": {
+      "passed": 110,
+      "failed": 0,
+      "runtime_sec": 81.79
+    },
+    "legacy_visible_and_status": {
+      "passed": 28,
+      "failed": 0,
+      "skipped_environment": 5,
+      "runtime_sec": 68.53
+    },
+    "distinct_linked_total": {
+      "passed": 138,
+      "failed": 0,
+      "skipped_environment": 5
+    },
+    "normal_wall_clock_collector_output_quality_accepted": true,
+    "shortened_history_false_accept_closed": true
+  },
+  "guard_before_preflights": {
+    "status": "ACTIVE",
+    "stop_new_actions": false,
+    "weekly_telemetry_status": "AVAILABLE",
+    "weekly_remaining_percent": 50.0,
+    "active_run_gate_status": "READY_FOR_POSTPROCESS",
+    "global_writer_claim_present": false
+  },
+  "approval_freeze_preflight": {
+    "status": "AWAIT_EXACT_USER_APPROVAL",
+    "would_write": false,
+    "blockers": [],
+    "network_accessed": false,
+    "collector_started": false,
+    "output_created": false
+  },
+  "visible_launcher_preflight": {
+    "status": "BLOCKED_AWAITING_EXACT_APPROVAL",
+    "would_start": false,
+    "reasons": [
+      "exact_approval_receipt_missing"
+    ],
+    "network_accessed": false,
+    "output_created": false
+  },
+  "side_effect_check": {
+    "approval_receipt_present": false,
+    "launch_record_present": false,
+    "output_directory_present": false,
+    "manifest_present": false,
+    "output_jsonl_present": false,
+    "quality_output_present": false,
+    "global_writer_claim_present": false
+  },
+  "exact_approval_packet": {
+    "status": "AWAIT_EXACT_USER_APPROVAL",
+    "text": "Разрешаю один видимый public read-only запуск slow_liquidity_history_recollect_20260813_pagecap_alignment_qualityintegrity_rangefix_v5 через tools\\start_exact_approved_slow_liquidity_history_recollect_visible.ps1 по plan_hash=6a88ee9443e0b8c59c89694c94f9c4395e2e5847373a16ce4fa38f6fcae18eee и plan_file_sha256=55315b274418a17bf2c65fd588c796fa61d6469d0f0c39929266771e12e07aaf: MEXC и Gate, монеты STETH, WEETH, CC, OKB, RAIN, MNT, USDD, BDX, EDGE, интервалы 1h и 4h, история 56 дней, один global writer, максимум 63 логических запроса и 126 HTTP-попыток, 900 секунд и 100 MB. Старт не раньше 12.08.2026 10:00 +03 и не позже 13.08.2026 18:00 +03, жёсткая остановка 13.08.2026 18:15 +03. После успешного сбора разрешаю только техническую проверку качества. Официальная проверка идентичности монет требует отдельного разрешения. STOPPED_INCOMPLETE не повторять. Без evaluator, OOS, returns/PnL, grid/retune, execution probe, paper/live, private API, реальных денег, плеча или маржи."
+  },
+  "safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false,
+    "paper_or_live_run": false,
+    "private_api_used": false,
+    "real_capital_used": false,
+    "leverage_or_margin_used": false
+  },
+  "next_action": "REQUEST_ONE_EXACT_V5_HASH_BOUND_APPROVAL_PACKET",
+  "deterministic_result_hash_method": "sha256_canonical_json_excluding_deterministic_result_hash",
+  "deterministic_result_hash": "5381ef896ce95c87c6d80e8a6404e5c90f18dc90eabd17af6f76c67d42a58c68"
+}

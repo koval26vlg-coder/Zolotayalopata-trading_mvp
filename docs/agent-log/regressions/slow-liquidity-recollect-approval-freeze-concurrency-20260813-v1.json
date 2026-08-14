@@ -1,0 +1,78 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_approval_freeze_concurrency_v1",
+  "generated_at_utc": "2026-08-12T21:55:14.205516+00:00",
+  "status": "PASS_SINGLE_RECEIPT_COMPLETE_BUNDLE_CONCURRENT_COMMIT",
+  "scope": "OFFLINE_SYNTHETIC_TEMP_CONTROL_PLANE_NO_NETWORK",
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_hash": "315a220a3976698b118f795c6f125245adb37415dbe7324c8f35e985a665bd89",
+    "plan_file_sha256": "f83b8948e4eb1d732c0b272b0fe0507600bae7e2a262ff7804d8978b864087c2",
+    "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+    "actual_collection_allowed": false,
+    "plan_changed": false
+  },
+  "implementation": {
+    "approval_freezer_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\freeze_exact_approved_slow_liquidity_history_recollect.ps1",
+    "approval_freezer_sha256": "172724b687b68e08bcc381b24e2b7e4d0bd8295de51393daa2e34626455d94cd",
+    "control_plane_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_recollect_control_plane.py",
+    "control_plane_sha256": "a024d1d0cd23e2bffd81e97d918276aa6470f06470ff723cc45a473b1e676916",
+    "exact_launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_history_recollect_visible.ps1",
+    "exact_launcher_sha256": "d3013a4a84ad43d8ef874842d2e161bb5027cc26929657d2f215751367f399c1",
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_recollect_freezer_integration.py",
+    "test_sha256": "7c6a102f3d6f6897ec858e82090729fbfe9586077568779f751f4e517686832d",
+    "receipt_commit_primitive": ".NET FileMode.CreateNew",
+    "commit_barrier_injected_into_fixture_copy_only": true,
+    "production_implementation_changed": false,
+    "plan_or_launcher_changed": false
+  },
+  "verification": {
+    "participants_per_race": 2,
+    "repeated_race_iterations": 15,
+    "successful_complete_bundles": 15,
+    "rejected_competing_commits": 15,
+    "exactly_one_success_per_iteration": true,
+    "winner_status": "FROZEN_WITH_EXACT_RECOLLECT_EXECUTION_APPROVAL",
+    "final_bundle_validation_status": "VALID",
+    "loser_removed_winner_receipt": false,
+    "loser_rolled_back_winner_policy": false,
+    "loser_rolled_back_winner_gate": false,
+    "isolated_race_test": {
+      "passed": 1,
+      "failed": 0,
+      "runtime_sec": 3.42
+    },
+    "freezer_integration_suite": {
+      "passed": 6,
+      "failed": 0,
+      "runtime_sec": 18.52
+    },
+    "linked_regression": {
+      "passed": 71,
+      "failed": 0,
+      "runtime_sec": 81.32
+    },
+    "temporary_namespace_only": true,
+    "temporary_namespaces_removed": true
+  },
+  "production_safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "authority": {
+    "current_exact_approval_present": false,
+    "collector_launch_authorized": false,
+    "single_use_receipt_commit_proven_concurrency_safe": true,
+    "new_exact_hash_bound_approval_required": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "6b53f15b52140c8dbac6ebfb85a94dc5cb440797a9360f858f780d01a26d6a43"
+}

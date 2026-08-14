@@ -1,0 +1,116 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_runtime_range_contract_refreeze_v5",
+  "generated_at_utc": "2026-08-12T23:42:20.769683+00:00",
+  "status": "REFREEZE_REQUIRED_V4_RUNTIME_RANGE_WOULD_TERMINALLY_REJECT_POSTIMAGE_PASS",
+  "scope": "OFFLINE_SYNTHETIC_ONLY_NO_NETWORK",
+  "superseded_plan": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-alignment-qualityintegrityfix-v4.json",
+    "plan_hash": "07f1da73566b5cf2829f21af01a0fe802adfe2b43e028a750b943f30bb6fba7d",
+    "plan_file_sha256": "3f05ff156d2847835314c2e96d1e51bab3de54689653a81e330df62f734453b5",
+    "approval_receipt_present": false,
+    "launch_record_present": false,
+    "output_present": false,
+    "quality_output_present": false,
+    "disposition": "SUPERSEDED_RUNTIME_RANGE_CONTRACT_INCOMPATIBLE_FAIL_CLOSED_NOT_LAUNCHABLE"
+  },
+  "defect": {
+    "category": "COLLECTOR_QUALITY_HISTORY_RANGE_CONTRACT_MISMATCH",
+    "cause": "collector stored raw wall-clock start and end seconds in every row while quality required both row bounds to be epoch-aligned to the candle interval",
+    "production_effect": "a normal visible V4 collect would finish, but every real row would be excluded by technical quality as invalid_history_ranges",
+    "preimage_fixture": {
+      "granularity": "1h",
+      "history_start_ts": 1800001,
+      "history_end_ts": 1814401,
+      "quality_accepted": false,
+      "invalid_history_ranges": 1,
+      "valid_ok_rows": 0,
+      "reasons": [
+        "min_ok_rows",
+        "min_ok_bases",
+        "min_ok_exchanges",
+        "min_ok_market_granularity_slots",
+        "min_ok_slot_fraction",
+        "invalid_history_ranges"
+      ]
+    }
+  },
+  "postimage": {
+    "raw_wall_clock_fixture": {
+      "start_ts": 1800123,
+      "history_days": 56,
+      "end_ts": 6638523
+    },
+    "aligned_jobs": [
+      {
+        "granularity": "1h",
+        "start_ts": 1803600,
+        "end_ts": 6638400,
+        "expected_candles": 1344
+      },
+      {
+        "granularity": "4h",
+        "start_ts": 1814400,
+        "end_ts": 6638400,
+        "expected_candles": 336
+      }
+    ],
+    "collector_rows_quality_accepted": true,
+    "history_window_mismatch_slots": 0,
+    "shortened_47_day_claim_rejected": true,
+    "shortened_reject_reason": "history_window_mismatch"
+  },
+  "patch_integrity": {
+    "collector_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_history_collector.py",
+    "collector_preimage_sha256": "2954200bc016fafd0ae4217fa984285588bbe569600d244343ccb653c628c68c",
+    "collector_postimage_sha256": "b71012ffd10371dfaf92046ae98462e1b479636f3c7ac024d78a299c488b63ea",
+    "quality_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_history_quality.py",
+    "quality_preimage_sha256": "e016d728255d5b36f841daad7eb6513ac3e0a200f7de66ea7205832fbc4bd865",
+    "quality_postimage_sha256": "95578eb792fe59098848f7d75bb2f99e596f3957edcf75d80b6a32a6cbb75d9e",
+    "changes": [
+      "align each job start upward and end downward to its exact candle interval before collection",
+      "write the aligned job bounds into every output row",
+      "require every row history window to contain exactly the 56-day aligned candle count",
+      "reject shortened or overlong row-declared history windows before threshold counting"
+    ]
+  },
+  "verification": {
+    "focused_collector_and_quality_tests": {
+      "passed": 32,
+      "failed": 0
+    },
+    "unaligned_wall_clock_job_matrix_aligned": true,
+    "actual_collector_output_contract_quality_compatible": true,
+    "shortened_full_coverage_false_accept_closed": true
+  },
+  "contract_preservation": {
+    "history_days": 56,
+    "exchanges": [
+      "mexc",
+      "gateio"
+    ],
+    "timeframes": [
+      "1h",
+      "4h"
+    ],
+    "logical_requests": 63,
+    "maximum_http_attempts": 126,
+    "max_runtime_sec": 900,
+    "hard_output_cap_bytes": 100000000,
+    "scope_changed": false
+  },
+  "safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "next_action": "BUILD_NEW_IMMUTABLE_RANGEFIX_V5_PLANONLY_AND_REQUIRE_NEW_EXACT_APPROVAL",
+  "deterministic_result_hash_method": "sha256_canonical_json_excluding_deterministic_result_hash",
+  "deterministic_result_hash": "a7dda6efdf02958b7537a6e4d48983bac368fa84e1992ff06901b828a0d680d4"
+}

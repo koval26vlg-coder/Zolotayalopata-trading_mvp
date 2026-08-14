@@ -97,6 +97,81 @@ function Assert-RunStateRecord {
     }
 }
 
+function Get-RunStateTimestamp {
+    param(
+        [Parameter(Mandatory = $true)]$Record,
+        [Parameter(Mandatory = $true)][string]$Path
+    )
+
+    foreach ($field in @("updated_at", "completed_at", "created_at", "started_at")) {
+        $property = $Record.PSObject.Properties[$field]
+        if ($null -eq $property -or [string]::IsNullOrWhiteSpace([string]$property.Value)) {
+            continue
+        }
+        $parsed = [DateTimeOffset]::MinValue
+        if ([DateTimeOffset]::TryParse([string]$property.Value, [ref]$parsed)) {
+            return $parsed.ToUniversalTime()
+        }
+    }
+
+    return [DateTimeOffset](Get-Item -LiteralPath $Path).LastWriteTimeUtc
+}
+
+function Resolve-LaunchRecordRunType {
+    param(
+        [Parameter(Mandatory = $true)]$Record,
+        [Parameter(Mandatory = $true)]$Gate
+    )
+
+    if (
+        [string]$Record.run_id -ne [string]$Gate.run_id -or
+        [string]::IsNullOrWhiteSpace([string]$Record.manifest_path)
+    ) {
+        throw "Current launch record identity mismatch."
+    }
+
+    $schema = [string]$Record.schema
+    if ($schema -eq "active_run_launch_record_v1") {
+        if (
+            [string]$Record.project -ne [string]$Gate.project -or
+            [string]::IsNullOrWhiteSpace([string]$Record.run_type)
+        ) {
+            throw "Current launch record identity mismatch."
+        }
+        return [string]$Record.run_type
+    }
+
+    if ($schema -eq "trading_mvp_slow_liquidity_recollect_launch_v1") {
+        $allowedStatuses = @(
+            "VISIBLE_WORKER_CLAIMED",
+            "PREFLIGHT_PASSED",
+            "GLOBAL_WRITER_CLAIMED",
+            "RUNNING",
+            "COMPLETE",
+            "STOPPED_INCOMPLETE"
+        )
+        $terminalOwner = $Record.PSObject.Properties["terminal_ownership_verified"]
+        $retryAuthorized = $Record.PSObject.Properties["retry_authorized"]
+        if (
+            $allowedStatuses -notcontains [string]$Record.status -or
+            $null -eq $terminalOwner -or
+            -not ($terminalOwner.Value -is [bool]) -or
+            $terminalOwner.Value -ne $true -or
+            $null -eq $retryAuthorized -or
+            -not ($retryAuthorized.Value -is [bool]) -or
+            $retryAuthorized.Value -ne $false -or
+            [string]$Record.plan_file_sha256 -notmatch "^[0-9a-f]{64}$" -or
+            [string]$Record.plan_hash -notmatch "^[0-9a-f]{64}$" -or
+            [string]$Record.approval_receipt_sha256 -notmatch "^[0-9a-f]{64}$"
+        ) {
+            throw "Current launch record identity mismatch."
+        }
+        return "slow_liquidity_history_recollect"
+    }
+
+    throw "Current launch record identity mismatch."
+}
+
 function Set-ObjectProperty {
     param(
         [Parameter(Mandatory = $true)]$Object,
@@ -550,10 +625,19 @@ if (Test-Path -LiteralPath $currentRunPointerPath) {
         $candidatePointer = $currentRunPointerRead.value
         $currentRunPointer = $candidatePointer
         if ([string]$candidatePointer.run_id -ne [string]$gate.run_id) {
-            # current-run.json is authoritative for every valid terminal or
-            # running state. Never inherit fields from another run.
-            $gate = $candidatePointer | ConvertTo-Json -Depth 16 | ConvertFrom-Json
-            $pointerReplacedLegacyGate = $true
+            $pointerTimestamp = Get-RunStateTimestamp `
+                -Record $candidatePointer -Path $currentRunPointerPath
+            $gateTimestamp = Get-RunStateTimestamp -Record $gate -Path $GatePath
+            if ($pointerTimestamp -ge $gateTimestamp) {
+                # Never inherit fields from another run. A stale terminal pointer
+                # cannot override a newer active-run gate.
+                $gate = $candidatePointer | ConvertTo-Json -Depth 16 | ConvertFrom-Json
+                $pointerReplacedLegacyGate = $true
+            } else {
+                $currentRunPointer = $null
+                $pointerError = "stale_current_run_pointer_ignored"
+                $gateSource = "newer_active_run_gate"
+            }
         } else {
             foreach ($field in @(
                 "run_id",
@@ -571,10 +655,12 @@ if (Test-Path -LiteralPath $currentRunPointerPath) {
                 }
             }
         }
-        if ($candidatePointer.output -and $candidatePointer.output.PSObject.Properties.Name -contains "path") {
+        if ($currentRunPointer -and $candidatePointer.output -and $candidatePointer.output.PSObject.Properties.Name -contains "path") {
             Set-ObjectProperty -Object $gate -Name "output_path" -Value ([string]$candidatePointer.output.path)
         }
-        $gateSource = "current_run_pointer"
+        if ($currentRunPointer) {
+            $gateSource = "current_run_pointer"
+        }
     } catch {
         throw "ACTIVE_RUN_POINTER_UNSTABLE_OR_INVALID: $($_.Exception.Message)"
     }
@@ -605,15 +691,8 @@ if ($launchRecordPath) {
         $candidateLaunchRecord = (
             Get-Content -Raw -LiteralPath $launchRecordPath | ConvertFrom-Json
         )
-        if (
-            [string]$candidateLaunchRecord.schema -ne "active_run_launch_record_v1" -or
-            [string]$candidateLaunchRecord.project -ne [string]$gate.project -or
-            [string]$candidateLaunchRecord.run_id -ne [string]$gate.run_id -or
-            [string]::IsNullOrWhiteSpace([string]$candidateLaunchRecord.run_type) -or
-            [string]::IsNullOrWhiteSpace([string]$candidateLaunchRecord.manifest_path)
-        ) {
-            throw "Current launch record identity mismatch."
-        }
+        $launchRunType = Resolve-LaunchRecordRunType `
+            -Record $candidateLaunchRecord -Gate $gate
         if (
             $candidateLaunchRecord.manifest_path -and
             $gate.manifest_path -and
@@ -623,7 +702,6 @@ if ($launchRecordPath) {
             throw "Current launch record manifest path mismatch."
         }
         $launchRecord = $candidateLaunchRecord
-        $launchRunType = [string]$launchRecord.run_type
         if ($launchRunType) {
             if (
                 -not $pointerReplacedLegacyGate -and

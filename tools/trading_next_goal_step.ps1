@@ -1,5 +1,8 @@
 param(
-    [switch]$Json
+    [switch]$Json,
+    [string]$GatePath = "",
+    [string]$ExactSlowLiquidityRecollectPlanPath = "",
+    [string]$SprintReadinessPath = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -37,6 +40,11 @@ $slowLiquidityRescopePlanOnlyScript = Join-Path $repoRoot "tools\trading_slow_li
 $slowLiquidityEventCensusScript = Join-Path $repoRoot "tools\trading_slow_liquidity_event_census_planonly.ps1"
 $slowLiquidityFixedV1PlanScript = Join-Path $repoRoot "tools\trading_slow_liquidity_fixed_v1_planonly.ps1"
 $slowLiquidityReplayV1Script = Join-Path $repoRoot "tools\trading_slow_liquidity_replay_v1_planonly.ps1"
+$slowLiquidityExactRecollectStatusHelper = Join-Path $repoRoot "tools\slow_liquidity_exact_recollect_status.ps1"
+$defaultSlowLiquidityExactRecollectPlanPath = Join-Path $repoRoot "docs\plans\slow-liquidity-history-recollect-planonly-20260813-pagecap-provenance-slotintegrity-v6.json"
+$defaultSlowLiquidityExactRecollectReadinessPath = Join-Path $repoRoot "docs\agent-log\readiness\one-week-historical-edge-sprint-readiness-20260812-v1.json"
+$slowLiquidityExactRecollectLauncherScript = Join-Path $repoRoot "tools\start_exact_approved_slow_liquidity_history_recollect_visible.ps1"
+. $slowLiquidityExactRecollectStatusHelper
 $spotPerpBasisPlanOnlyScript = Join-Path $repoRoot "tools\trading_spot_perp_basis_mean_reversion_planonly.ps1"
 $spotPerpBasisAvailabilityPreflightScript = Join-Path $repoRoot "tools\trading_spot_perp_basis_availability_preflight.ps1"
 $spotPerpBasisPublicProbeScript = Join-Path $repoRoot "tools\trading_spot_perp_basis_public_probe.ps1"
@@ -51,7 +59,7 @@ $listingEventHistoryDataQualityScript = Join-Path $repoRoot "tools\trading_listi
 $listingEventHistoryAvailabilityPreflightScript = Join-Path $repoRoot "tools\trading_listing_event_history_availability_preflight.ps1"
 $listingEventReplayPlanOnlyScript = Join-Path $repoRoot "tools\trading_listing_event_replay_planonly.ps1"
 $branchSelectorScript = Join-Path $repoRoot "tools\trading_branch_selector.ps1"
-$gatePath = Join-Path $repoRoot "docs\agent-log\active-run-gate.json"
+$defaultGatePath = Join-Path $repoRoot "docs\agent-log\active-run-gate.json"
 $backtestDir = Join-Path $repoRoot "exports\trading-mvp\backtests"
 $crossVenueFullOutputPath = Join-Path $repoRoot "exports\trading-mvp\backtests\cross_venue_dislocation_full_ws_durable_72h_2exchange_pregap_20260708.json"
 $visibleWsCollectScript = Join-Path $repoRoot "tools\start_ws_collect_visible.ps1"
@@ -68,6 +76,16 @@ $preview7dFundingShortcut = Join-Path $repoRoot "TRADING_PREVIEW_7D_FUNDING.cmd"
 $start7dFundingShortcut = Join-Path $repoRoot "TRADING_START_7D_FUNDING_CONFIRMED.cmd"
 $previewDenseWsShortcut = Join-Path $repoRoot "TRADING_PREVIEW_DENSE_WS.cmd"
 $startDenseWsShortcut = Join-Path $repoRoot "TRADING_START_DENSE_WS_CONFIRMED.cmd"
+
+if ([string]::IsNullOrWhiteSpace($GatePath)) {
+    $GatePath = $defaultGatePath
+}
+if ([string]::IsNullOrWhiteSpace($ExactSlowLiquidityRecollectPlanPath)) {
+    $ExactSlowLiquidityRecollectPlanPath = $defaultSlowLiquidityExactRecollectPlanPath
+}
+if ([string]::IsNullOrWhiteSpace($SprintReadinessPath)) {
+    $SprintReadinessPath = $defaultSlowLiquidityExactRecollectReadinessPath
+}
 $wsPostprocessShortcut = Join-Path $repoRoot "TRADING_WS_POSTPROCESS_FROM_GATE.cmd"
 $visibleWsPlanPreviewLatest = Join-Path $repoRoot "exports\trading-mvp\run\ws_collect_plan_preview_latest.json"
 $visibleWsLegacyPlanPreviewLatest = Join-Path $repoRoot "exports\trading-mvp\run\ws_collect_6h_plan_preview_latest.json"
@@ -197,8 +215,152 @@ function Resolve-WsCollectCommands {
     }
 }
 
-$gate = & pwsh -NoProfile -ExecutionPolicy Bypass -File $gateChecker -Json | ConvertFrom-Json
+$gate = & pwsh -NoProfile -ExecutionPolicy Bypass -File $gateChecker -GatePath $GatePath -Json | ConvertFrom-Json
 $rawGate = Read-JsonFileOrNull -Path $gatePath
+$slowLiquidityExactRecollectStatus = Get-SlowLiquidityExactRecollectStatus `
+    -Gate $gate `
+    -PlanPath $ExactSlowLiquidityRecollectPlanPath `
+    -ReadinessPath $SprintReadinessPath `
+    -DefaultLauncherPath $slowLiquidityExactRecollectLauncherScript `
+    -RawGatePath $GatePath
+$slowLiquidityExactRecollectCheckpointGate = [bool]$slowLiquidityExactRecollectStatus.checkpoint_relevant
+$slowLiquidityExactRecollectPhase = [string]$slowLiquidityExactRecollectStatus.phase
+$slowLiquidityExactRecollectAwaitingApprovalGate = [bool]$slowLiquidityExactRecollectStatus.awaiting_approval
+$slowLiquidityExactRecollectIntegrityBlockedGate = [bool]$slowLiquidityExactRecollectStatus.integrity_blocked
+
+if ($slowLiquidityExactRecollectCheckpointGate) {
+    $phase = $slowLiquidityExactRecollectPhase
+    $decision = switch ($phase) {
+        "INTEGRITY_BLOCKED" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_INTEGRITY_BLOCKED"; break }
+        "AWAITING_EXACT_APPROVAL" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_AWAITING_EXACT_APPROVAL"; break }
+        "APPROVED_AWAITING_VISIBLE_LAUNCH" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_APPROVED_RUN_VISIBLE_ONCE"; break }
+        "VISIBLE_LAUNCH_STARTING" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_VISIBLE_LAUNCH_STARTING_STATUS_ONLY"; break }
+        "RUNNING" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_RUNNING_STATUS_ONLY"; break }
+        "READY_FOR_TECHNICAL_QUALITY" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_RUN_TECHNICAL_QUALITY_ONLY"; break }
+        "TECHNICAL_QUALITY_COMMITTING" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_TECHNICAL_QUALITY_COMMITTING_STATUS_ONLY"; break }
+        "STOPPED_INCOMPLETE_NO_RETRY" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_STOPPED_INCOMPLETE_NO_RETRY"; break }
+        "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL"; break }
+        "QUALITY_REJECTED_TERMINAL_NO_RETRY" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_QUALITY_REJECTED_TERMINAL_NO_RETRY"; break }
+        default { "SLOW_LIQUIDITY_EXACT_RECOLLECT_INTEGRITY_BLOCKED" }
+    }
+    $allowedActions = switch ($phase) {
+        "INTEGRITY_BLOCKED" { @("inspect_exact_slow_liquidity_recollect_binding", "repair_immutable_lifecycle_binding"); break }
+        "AWAITING_EXACT_APPROVAL" { @("await_exact_hash_bound_slow_liquidity_recollect_approval", "read_current_exact_approval_packet", "run_non_starting_approval_freeze_preflight", "quick_status_checks"); break }
+        "APPROVED_AWAITING_VISIBLE_LAUNCH" { @("run_single_exact_visible_public_read_only_launch", "quick_status_checks"); break }
+        "VISIBLE_LAUNCH_STARTING" { @("exact_status_check", "exact_stop"); break }
+        "RUNNING" { @("exact_status_check", "exact_stop"); break }
+        "READY_FOR_TECHNICAL_QUALITY" { @("run_exact_technical_quality_preflight", "run_exact_technical_quality"); break }
+        "TECHNICAL_QUALITY_COMMITTING" { @("exact_status_check"); break }
+        "STOPPED_INCOMPLETE_NO_RETRY" { @("exact_status_check"); break }
+        "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL" { @("await_exact_official_asset_identity_verification_approval", "exact_status_check"); break }
+        "QUALITY_REJECTED_TERMINAL_NO_RETRY" { @("exact_status_check"); break }
+        default { @("exact_status_check") }
+    }
+    $blockedActions = @(
+        "hidden_or_second_collector",
+        "evaluator",
+        "oos",
+        "returns_or_pnl",
+        "grid_or_retune",
+        "execution_probe",
+        "paper_or_live",
+        "private_api_or_real_capital",
+        "leverage_or_margin",
+        "official_identity_without_separate_exact_approval"
+    )
+    if ($phase -eq "AWAITING_EXACT_APPROVAL") {
+        $blockedActions += @("collector_before_exact_approval", "launch_record_or_output_before_exact_approval")
+    }
+    if ($phase -in @("VISIBLE_LAUNCH_STARTING", "RUNNING")) {
+        $blockedActions += @("duplicate_owner", "second_writer", "consumer_of_incomplete_output")
+    }
+    if ($phase -in @("STOPPED_INCOMPLETE_NO_RETRY", "QUALITY_REJECTED_TERMINAL_NO_RETRY")) {
+        $blockedActions += @("resume", "retry", "rescope_without_new_exact_approval")
+    }
+    if ($phase -eq "INTEGRITY_BLOCKED") {
+        $blockedActions += @("receipt_or_launch_with_invalid_binding", "quality_with_invalid_binding")
+    }
+
+    $primaryCommand = if ($slowLiquidityExactRecollectIntegrityBlockedGate) {
+        "blocked: repair exact slow-liquidity lifecycle binding"
+    } else {
+        [string]$slowLiquidityExactRecollectStatus.primary_command
+    }
+    $legacyVisibleCollectCommand = if ($phase -eq "AWAITING_EXACT_APPROVAL") {
+        [string]$slowLiquidityExactRecollectStatus.preflight_command
+    } else {
+        $primaryCommand
+    }
+    $resolution = if ($phase -eq "AWAITING_EXACT_APPROVAL") {
+        "slow_liquidity_exact_recollect_awaiting_exact_hash_bound_approval"
+    } else {
+        "slow_liquidity_exact_recollect_$($phase.ToLowerInvariant())"
+    }
+    $result = [ordered]@{
+        generated_at = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss zzz")
+        decision = $decision
+        reason = if ($slowLiquidityExactRecollectIntegrityBlockedGate) {
+            "The exact slow-liquidity lifecycle failed closed because its immutable bindings do not match."
+        } else {
+            [string]$slowLiquidityExactRecollectStatus.next_action
+        }
+        allowed_actions = @($allowedActions)
+        blocked_actions = @($blockedActions)
+        requires_user_approval = [bool]$slowLiquidityExactRecollectStatus.requires_user_approval
+        requires_user_approval_for_actual_collect = $slowLiquidityExactRecollectAwaitingApprovalGate
+        required_user_input = [string]$slowLiquidityExactRecollectStatus.required_user_input
+        primary_command = $primaryCommand
+        state = [ordered]@{
+            gate_status = [string]$gate.status
+            run_id = [string]$gate.run_id
+            replay_allowed = $false
+            grid_allowed = $false
+            paper_forward_allowed = $false
+            live_orders = $false
+            strategy_accepted = $false
+            slow_liquidity_exact_recollect_checkpoint_gate = $true
+            slow_liquidity_exact_recollect_phase = $phase
+            slow_liquidity_exact_recollect_awaiting_approval_gate = $slowLiquidityExactRecollectAwaitingApprovalGate
+            slow_liquidity_exact_recollect_integrity_blocked_gate = $slowLiquidityExactRecollectIntegrityBlockedGate
+            slow_liquidity_exact_recollect_receipt_present = [bool]$slowLiquidityExactRecollectStatus.receipt_present
+            slow_liquidity_exact_recollect_launch_record_present = [bool]$slowLiquidityExactRecollectStatus.launch_record_present
+            slow_liquidity_exact_recollect_output_present = [bool]$slowLiquidityExactRecollectStatus.output_present
+            slow_liquidity_exact_recollect_manifest_present = [bool]$slowLiquidityExactRecollectStatus.manifest_present
+            slow_liquidity_exact_recollect_quality_output_present = [bool]$slowLiquidityExactRecollectStatus.quality_output_present
+            slow_liquidity_exact_recollect_errors = @($slowLiquidityExactRecollectStatus.errors)
+        }
+        commands = [ordered]@{
+            slow_liquidity_exact_recollect_preflight = [string]$slowLiquidityExactRecollectStatus.preflight_command
+            slow_liquidity_exact_recollect_approval_packet = [string]$slowLiquidityExactRecollectStatus.approval_packet_command
+            slow_liquidity_exact_recollect_launch = [string]$slowLiquidityExactRecollectStatus.launch_command
+            slow_liquidity_exact_recollect_status = [string]$slowLiquidityExactRecollectStatus.status_command
+            slow_liquidity_exact_recollect_stop = [string]$slowLiquidityExactRecollectStatus.stop_command
+            slow_liquidity_exact_recollect_quality_preflight = [string]$slowLiquidityExactRecollectStatus.quality_preflight_command
+            slow_liquidity_exact_recollect_quality = [string]$slowLiquidityExactRecollectStatus.quality_command
+            visible_collect_legacy_resolution = $resolution
+            visible_collect_preview = $legacyVisibleCollectCommand
+            visible_collect_after_approval = $legacyVisibleCollectCommand
+            gate_status = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$gateChecker`" -GatePath `"$GatePath`" -Json"
+        }
+        fast_path = [ordered]@{
+            reason = "exact_slow_liquidity_lifecycle_is_current"
+            phase = $phase
+            raw_gate_path = $GatePath
+            heavy_checks_skipped = @($preflightScript, $acceptanceGateScript, $goalStatusScript, $sweepReversalGateScript, $swarmStatusScript)
+        }
+    }
+    if ($Json) {
+        $result | ConvertTo-Json -Depth 12
+        exit 0
+    }
+    Write-Host "trading_mvp Next Goal Step" -ForegroundColor Cyan
+    Write-Host "Decision: $($result.decision)"
+    Write-Host "Phase: $phase"
+    Write-Host "Next: $($result.reason)"
+    Write-Host "Command: $primaryCommand"
+    exit 0
+}
+
 $spotPitEventForwardApprovalReady = [string]$gate.next_goal_decision -eq "SPOT_PIT_EVENT_FORWARD_COLLECT_APPROVAL_PACKET_READY_AWAITING_EXPLICIT_CONFIRMATION"
 if ($spotPitEventForwardApprovalReady) {
     $packetPath = [string]$rawGate.spot_pit_event_forward_approval_packet_path
@@ -1403,14 +1565,20 @@ $slowLiquidityFixedV1ReplayValidationCommand = $slowLiquidityReplayV1UpdateGateC
 $slowLiquidityIndependentReviewCommand = "manual independent review: send fixed slow-liquidity v1 replay artifact to Rой/reviewer; no paper-forward/live/API/grid"
 $slowLiquidityRejectedSelectNextBranchCommand = $structuralBranchPlanOnlyCommand
 $slowLiquidityActivePlanOnlyCommand = if ($slowLiquidityReplayV1CandidateGate) { $slowLiquidityIndependentReviewCommand } elseif ($slowLiquidityReplayV1RejectedGate) { $slowLiquidityRejectedSelectNextBranchCommand } elseif ($slowLiquidityFixedV1ReadyGate) { $slowLiquidityFixedV1ReplayValidationCommand } elseif ($slowLiquidityEventCensusAcceptedGate) { $slowLiquidityFixedV1PlanUpdateGateCommand } elseif ($slowLiquidityEventCensusRejectedGate) { $slowLiquidityRejectedSelectNextBranchCommand } elseif ($slowLiquidityV0RejectedReadyForCensusGate) { $slowLiquidityEventCensusUpdateGateCommand } elseif ($slowLiquidityFeatureNormalizerReadyGate) { $slowLiquidityFixedReplayValidationCommand } elseif ($slowLiquidityFeatureNormalizerRejectedGate) { $slowLiquidityRescopePlanOnlyUpdateGateCommand } elseif ($slowLiquidityFixedSignalReadyGate) { $slowLiquidityFeatureNormalizerUpdateGateCommand } elseif ($slowLiquidityHistoryQualityAcceptedGate) { $slowLiquidityFixedSignalPlanUpdateGateCommand } elseif ($slowLiquidityHistoryDataPlanReadyGate) { $slowLiquidityHistoryAwaitApprovalCommand } elseif ($slowLiquidityDataAvailabilityReadyGate) { $slowLiquidityDataAvailabilityPreflightUpdateGateCommand } elseif ($slowLiquidityDataAvailabilityRejectedGate) { $slowLiquidityHistoryPlanUpdateGateCommand } elseif ($slowLiquidityDataAvailabilityAcceptedGate) { $slowLiquidityFixedSignalPlanUpdateGateCommand } else { $slowLiquidityPlanOnlyCommand }
+$slowLiquidityExactRecollectPreflightCommand = if ($slowLiquidityExactRecollectAwaitingApprovalGate) { [string]$slowLiquidityExactRecollectStatus.preflight_command } else { "blocked: repair exact slow-liquidity recollect PlanOnly/readiness binding" }
+$slowLiquidityExactRecollectApprovalPacketCommand = if ($slowLiquidityExactRecollectAwaitingApprovalGate) { [string]$slowLiquidityExactRecollectStatus.approval_packet_command } else { "blocked: exact slow-liquidity approval packet is not the current lifecycle action" }
 $visibleWsCollectCommandResolution = Resolve-WsCollectCommands -ScriptPath $visibleWsCollectScript -PlanPreviewPath $visibleWsPlanPreviewLatest
 $visibleWsCollectPreviewCommand = $visibleWsCollectCommandResolution.preview_command
 $visibleWsCollectCommand = $visibleWsCollectCommandResolution.command
-$visibleCollectPreviewCommand = if ($slowLiquiditySelectedGate) { $slowLiquidityActivePlanOnlyCommand } elseif ($spotPerpBasisAvailabilityRejectedGate) { $structuralBranchPlanOnlyCommand } elseif ($spotPerpBasisSelectedGate) { $spotPerpBasisActivePlanOnlyCommand } elseif ($listingEventReplayRejectedGate) { $structuralBranchPlanOnlyCommand } elseif ($listingEventReplayCandidateGate) { $listingEventReplayValidationPacketCommand } elseif ($crossVenueRejectedGate -or $listingEventSelectedGate) { $listingEventActivePlanOnlyCommand } elseif ($crossVenueStructuralSelectedGate) { $crossVenueImplementationPlanOnlyCommand } elseif ($fundingRejectedBaseFeesGate) { $structuralBranchPlanOnlyCommand } elseif ($liquiditySweepRejectedGate) { $fundingBasisPlanOnlyCommand } elseif ($fundingBlockedBySwarm) { $visibleWsCollectPreviewCommand } else { $visibleFundingCollectPreviewCommand }
-$visibleCollectCommand = if ($slowLiquiditySelectedGate) { $slowLiquidityActivePlanOnlyCommand } elseif ($spotPerpBasisAvailabilityRejectedGate) { $structuralBranchPlanOnlyCommand } elseif ($spotPerpBasisSelectedGate) { $spotPerpBasisActivePlanOnlyCommand } elseif ($listingEventReplayRejectedGate) { $structuralBranchPlanOnlyCommand } elseif ($listingEventReplayCandidateGate) { $listingEventReplayValidationPacketCommand } elseif ($crossVenueRejectedGate -or $listingEventSelectedGate) { $listingEventActiveAfterApprovalCommand } elseif ($crossVenueStructuralSelectedGate) { $crossVenueImplementationPlanOnlyCommand } elseif ($fundingRejectedBaseFeesGate) { $structuralBranchPlanOnlyCommand } elseif ($liquiditySweepRejectedGate) { $fundingBasisPlanOnlyCommand } elseif ($fundingBlockedBySwarm) { $visibleWsCollectCommand } else { $visibleFundingCollectCommand }
+$visibleCollectPreviewCommand = if ($slowLiquidityExactRecollectAwaitingApprovalGate -or $slowLiquidityExactRecollectIntegrityBlockedGate) { $slowLiquidityExactRecollectPreflightCommand } elseif ($slowLiquiditySelectedGate) { $slowLiquidityActivePlanOnlyCommand } elseif ($spotPerpBasisAvailabilityRejectedGate) { $structuralBranchPlanOnlyCommand } elseif ($spotPerpBasisSelectedGate) { $spotPerpBasisActivePlanOnlyCommand } elseif ($listingEventReplayRejectedGate) { $structuralBranchPlanOnlyCommand } elseif ($listingEventReplayCandidateGate) { $listingEventReplayValidationPacketCommand } elseif ($crossVenueRejectedGate -or $listingEventSelectedGate) { $listingEventActivePlanOnlyCommand } elseif ($crossVenueStructuralSelectedGate) { $crossVenueImplementationPlanOnlyCommand } elseif ($fundingRejectedBaseFeesGate) { $structuralBranchPlanOnlyCommand } elseif ($liquiditySweepRejectedGate) { $fundingBasisPlanOnlyCommand } elseif ($fundingBlockedBySwarm) { $visibleWsCollectPreviewCommand } else { $visibleFundingCollectPreviewCommand }
+$visibleCollectCommand = if ($slowLiquidityExactRecollectAwaitingApprovalGate -or $slowLiquidityExactRecollectIntegrityBlockedGate) { $slowLiquidityExactRecollectPreflightCommand } elseif ($slowLiquiditySelectedGate) { $slowLiquidityActivePlanOnlyCommand } elseif ($spotPerpBasisAvailabilityRejectedGate) { $structuralBranchPlanOnlyCommand } elseif ($spotPerpBasisSelectedGate) { $spotPerpBasisActivePlanOnlyCommand } elseif ($listingEventReplayRejectedGate) { $structuralBranchPlanOnlyCommand } elseif ($listingEventReplayCandidateGate) { $listingEventReplayValidationPacketCommand } elseif ($crossVenueRejectedGate -or $listingEventSelectedGate) { $listingEventActiveAfterApprovalCommand } elseif ($crossVenueStructuralSelectedGate) { $crossVenueImplementationPlanOnlyCommand } elseif ($fundingRejectedBaseFeesGate) { $structuralBranchPlanOnlyCommand } elseif ($liquiditySweepRejectedGate) { $fundingBasisPlanOnlyCommand } elseif ($fundingBlockedBySwarm) { $visibleWsCollectCommand } else { $visibleFundingCollectCommand }
 $visibleCollectPreviewShortcut = if ($slowLiquiditySelectedGate -or $spotPerpBasisAvailabilityRejectedGate -or $spotPerpBasisSelectedGate -or $listingEventReplayRejectedGate -or $listingEventReplayCandidateGate -or $crossVenueRejectedGate -or $listingEventSelectedGate -or $crossVenueStructuralSelectedGate -or $fundingRejectedBaseFeesGate -or $liquiditySweepRejectedGate) { "" } elseif ($fundingBlockedBySwarm) { $previewDenseWsShortcut } else { $preview7dFundingShortcut }
 $visibleCollectConfirmedShortcut = if ($slowLiquiditySelectedGate -or $spotPerpBasisAvailabilityRejectedGate -or $spotPerpBasisSelectedGate -or $listingEventReplayRejectedGate -or $listingEventReplayCandidateGate -or $crossVenueRejectedGate -or $listingEventSelectedGate -or $crossVenueStructuralSelectedGate -or $fundingRejectedBaseFeesGate -or $liquiditySweepRejectedGate) { "" } elseif ($fundingBlockedBySwarm) { $startDenseWsShortcut } else { $start7dFundingShortcut }
-$visibleCollectLegacyResolution = if ($slowLiquiditySelectedGate) {
+$visibleCollectLegacyResolution = if ($slowLiquidityExactRecollectIntegrityBlockedGate) {
+    "slow_liquidity_exact_recollect_integrity_blocked"
+} elseif ($slowLiquidityExactRecollectAwaitingApprovalGate) {
+    "slow_liquidity_exact_recollect_awaiting_exact_hash_bound_approval"
+} elseif ($slowLiquiditySelectedGate) {
     "slow_liquidity_regime_breakout_retest_planonly_selected_no_collect"
 } elseif ($spotPerpBasisAvailabilityRejectedGate) {
     "spot_perp_basis_public_probe_rejected_select_next_non_hft_branch"
@@ -1491,7 +1659,37 @@ if ([string]$gate.status -eq "RUNNING") {
     $primaryCommand = "prepare paper-forward plan; live remains blocked"
     $reason = "Research accepted but paper-forward has not been accepted. Live is still blocked."
 } elseif ([string]$acceptance.stage -eq "research_only_no_accepted_strategy") {
-    if ($slowLiquiditySelectedGate) {
+    if ($slowLiquidityExactRecollectIntegrityBlockedGate) {
+        $decision = "SLOW_LIQUIDITY_EXACT_RECOLLECT_INTEGRITY_BLOCKED"
+        $allowedActions = @(
+            "inspect_exact_slow_liquidity_recollect_binding",
+            "repair_immutable_planonly_readiness_binding"
+        )
+        $blockedActions += @(
+            "collector_before_exact_approval",
+            "approval_receipt_creation_with_mismatched_hashes",
+            "launch_record_or_output_creation"
+        )
+        $primaryCommand = $slowLiquidityExactRecollectPreflightCommand
+        $reason = "The exact slow-liquidity recollect PlanOnly/readiness binding failed closed. Repair and refreeze it before requesting approval or starting any collector."
+    } elseif ($slowLiquidityExactRecollectAwaitingApprovalGate) {
+        $decision = "SLOW_LIQUIDITY_EXACT_RECOLLECT_AWAITING_EXACT_APPROVAL"
+        $allowedActions = @(
+            "await_exact_hash_bound_slow_liquidity_recollect_approval",
+            "read_current_exact_approval_packet",
+            "run_non_starting_approval_freeze_preflight",
+            "quick_status_checks"
+        )
+        $blockedActions += @(
+            "collector_before_exact_approval",
+            "approval_receipt_before_matching_user_text",
+            "launch_record_or_output_before_exact_approval"
+        )
+        $requiresUserApproval = $true
+        $requiresUserApprovalForActualCollect = $true
+        $primaryCommand = $slowLiquidityExactRecollectApprovalPacketCommand
+        $reason = "The page-cap-fix recollect PlanOnly is frozen and internally consistent. Read the current exact approval packet with the non-writing approval-freeze preflight, then await matching exact user text."
+    } elseif ($slowLiquiditySelectedGate) {
         $decision = if ($slowLiquidityReplayV1CandidateGate) {
             "SLOW_LIQUIDITY_FIXED_V1_REPLAY_CANDIDATE_REQUIRES_INDEPENDENT_REVIEW"
         } elseif ($slowLiquidityReplayV1RejectedGate) {
@@ -1921,6 +2119,15 @@ $result = [ordered]@{
         listing_event_history_collect_preview_awaiting_approval_gate = $listingEventHistoryCollectPreviewAwaitingApprovalGate
         cross_venue_structural_selected_gate = $crossVenueStructuralSelectedGate
         slow_liquidity_regime_selected_gate = $slowLiquiditySelectedGate
+        slow_liquidity_exact_recollect_awaiting_approval_gate = $slowLiquidityExactRecollectAwaitingApprovalGate
+        slow_liquidity_exact_recollect_integrity_blocked_gate = $slowLiquidityExactRecollectIntegrityBlockedGate
+        slow_liquidity_exact_recollect_plan_path = [string]$slowLiquidityExactRecollectStatus.plan_path
+        slow_liquidity_exact_recollect_plan_hash = [string]$slowLiquidityExactRecollectStatus.plan_hash
+        slow_liquidity_exact_recollect_plan_file_sha256 = [string]$slowLiquidityExactRecollectStatus.plan_file_sha256
+        slow_liquidity_exact_recollect_receipt_present = [bool]$slowLiquidityExactRecollectStatus.receipt_present
+        slow_liquidity_exact_recollect_launch_record_present = [bool]$slowLiquidityExactRecollectStatus.launch_record_present
+        slow_liquidity_exact_recollect_output_present = [bool]$slowLiquidityExactRecollectStatus.output_present
+        slow_liquidity_exact_recollect_errors = @($slowLiquidityExactRecollectStatus.errors)
         slow_liquidity_data_availability_ready_gate = $slowLiquidityDataAvailabilityReadyGate
         slow_liquidity_data_availability_accepted_gate = $slowLiquidityDataAvailabilityAcceptedGate
         slow_liquidity_data_availability_rejected_gate = $slowLiquidityDataAvailabilityRejectedGate
@@ -1974,6 +2181,8 @@ $result = [ordered]@{
         slow_liquidity_fixed_v1_planonly_update_gate = $slowLiquidityFixedV1PlanUpdateGateCommand
         slow_liquidity_replay_v1_planonly = $slowLiquidityReplayV1Command
         slow_liquidity_replay_v1_planonly_update_gate = $slowLiquidityReplayV1UpdateGateCommand
+        slow_liquidity_exact_recollect_preflight = $slowLiquidityExactRecollectPreflightCommand
+        slow_liquidity_exact_recollect_approval_packet = $slowLiquidityExactRecollectApprovalPacketCommand
         spot_perp_basis_mean_reversion_planonly = $spotPerpBasisPlanOnlyCommand
         spot_perp_basis_availability_preflight = $spotPerpBasisAvailabilityPreflightCommand
         spot_perp_basis_availability_preflight_update_gate = $spotPerpBasisAvailabilityPreflightUpdateGateCommand

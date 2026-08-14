@@ -457,7 +457,22 @@ def compute_schedule_horizon(
     remaining_stage_capacity = max(0, target_dates - len(accepted_dates))
     recommended_nights = min(rate_adjusted_nights, remaining_stage_capacity)
     last_scheduled_date = max(date.fromisoformat(value) for value in scheduled_dates)
-    extension_start_date = (last_scheduled_date + timedelta(days=1)).isoformat()
+    first_segment_start = _parse_aware_datetime(
+        str(segments[0].get("start_local") or ""),
+        field="segment.start_local",
+    )
+    observed_in_schedule_tz = observed_at.astimezone(first_segment_start.tzinfo)
+    candidate_start_today = datetime.combine(
+        observed_in_schedule_tz.date(),
+        first_segment_start.timetz(),
+    )
+    earliest_unexpired_date = observed_in_schedule_tz.date()
+    if candidate_start_today <= observed_in_schedule_tz:
+        earliest_unexpired_date += timedelta(days=1)
+    extension_start_date = max(
+        last_scheduled_date + timedelta(days=1),
+        earliest_unexpired_date,
+    ).isoformat()
 
     return {
         "decision": (

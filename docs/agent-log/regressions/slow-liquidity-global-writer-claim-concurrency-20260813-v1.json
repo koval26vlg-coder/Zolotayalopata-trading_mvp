@@ -1,0 +1,68 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_concurrency_regression_v1",
+  "generated_at_utc": "2026-08-12T21:46:05.985976+00:00",
+  "status": "PASS_EXACTLY_ONE_PROCESS_CLAIMS_GLOBAL_WRITER",
+  "scope": "OFFLINE_SYNTHETIC_TEMP_NAMESPACE_NO_NETWORK",
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_hash": "315a220a3976698b118f795c6f125245adb37415dbe7324c8f35e985a665bd89",
+    "plan_file_sha256": "f83b8948e4eb1d732c0b272b0fe0507600bae7e2a262ff7804d8978b864087c2",
+    "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+    "actual_collection_allowed": false,
+    "plan_changed": false
+  },
+  "implementation": {
+    "global_writer_claim_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\global_market_writer_claim.py",
+    "global_writer_claim_sha256": "6c57b5612d8dc972ebb94941c514bae7333c1cb21b13dd4487e2fe6a2569ea2e",
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_global_market_writer_claim.py",
+    "test_sha256": "dde2c429ab8eb582e463b04e0b4eca8fc2e37ecc46c2ce0c3d106daeafa8ec33",
+    "exact_launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_history_recollect_visible.ps1",
+    "exact_launcher_sha256": "d3013a4a84ad43d8ef874842d2e161bb5027cc26929657d2f215751367f399c1",
+    "claim_primitive": "os.open(O_WRONLY|O_CREAT|O_EXCL)",
+    "production_implementation_changed": false,
+    "plan_or_launcher_changed": false
+  },
+  "verification": {
+    "participants_per_race": 8,
+    "repeated_race_iterations": 25,
+    "expected_winners_per_iteration": 1,
+    "total_winners_observed": 25,
+    "total_rejected_observed": 175,
+    "all_iterations_exactly_one_winner": true,
+    "persisted_claim_matches_winner": true,
+    "loser_error_contract": "GLOBAL_MARKET_WRITER_CLAIM_EXISTS",
+    "isolated_module_suite": {
+      "passed": 5,
+      "failed": 0,
+      "runtime_sec": 0.26
+    },
+    "linked_regression": {
+      "passed": 65,
+      "failed": 0,
+      "runtime_sec": 61.32
+    },
+    "temporary_namespace_only": true,
+    "temporary_namespaces_removed": true
+  },
+  "production_safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "authority": {
+    "current_exact_approval_present": false,
+    "collector_launch_authorized": false,
+    "single_global_writer_invariant_proven_at_claim_boundary": true,
+    "new_exact_hash_bound_approval_required": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "999bb9a928b693db921e0e82ae0f0fc87c657d12be6d7d476249b201b0fd5424"
+}

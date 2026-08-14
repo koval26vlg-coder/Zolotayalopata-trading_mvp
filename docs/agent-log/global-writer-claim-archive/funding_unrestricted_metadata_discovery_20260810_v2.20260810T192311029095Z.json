@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "funding_unrestricted_metadata_discovery_20260810_v2",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": 29168,
+  "owner_kind": "funding_metadata_visible_worker",
+  "ownership_token": "484e22562376e6ad00d46e35d190cb51",
+  "plan_hash": "3f247f93428e8b4e8cb340b3c1144e2b6bbeadc77bb9871e814b61a8bd5bfa75",
+  "output_namespace": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\funding-unrestricted-metadata-discovery\\funding_unrestricted_metadata_discovery_20260810_v2",
+  "claimed_at_utc": "2026-08-10T19:22:58.468865+00:00",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "writer_attached_at_utc": "2026-08-10T19:22:58.601389+00:00",
+  "final_status": "STOPPED_INCOMPLETE",
+  "released_at_utc": "2026-08-10T19:23:11.027173+00:00"
+}

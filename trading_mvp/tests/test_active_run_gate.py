@@ -135,6 +135,44 @@ class ActiveRunGateTests(unittest.TestCase):
         self.assertEqual(result["run_id"], "current-stopped-run")
         self.assertEqual(result["status"], "STOPPED_INCOMPLETE")
 
+    def test_stale_terminal_pointer_does_not_override_newer_gate(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            agent_log = Path(tmp) / "docs" / "agent-log"
+            agent_log.mkdir(parents=True)
+            gate = agent_log / "active-run-gate.json"
+            gate.write_text(
+                json.dumps(
+                    {
+                        "schema": "active_run_gate_v1",
+                        "project": "trading_mvp",
+                        "run_id": "newer-slow-liquidity-run",
+                        "status": "READY_FOR_POSTPROCESS",
+                        "updated_at": "2026-08-12T09:15:00+03:00",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            pointer = agent_log / "current-run.json"
+            pointer.write_text(
+                json.dumps(
+                    {
+                        "schema": "active_run_pointer_v1",
+                        "project": "trading_mvp",
+                        "run_id": "older-pit-run",
+                        "status": "READY_FOR_POSTPROCESS",
+                        "updated_at": "2026-08-11T01:20:00+03:00",
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            result = self._run_gate(gate)
+
+        self.assertEqual(result["gate_source"], "newer_active_run_gate")
+        self.assertEqual(result["run_id"], "newer-slow-liquidity-run")
+        self.assertEqual(result["status"], "READY_FOR_POSTPROCESS")
+        self.assertEqual(result["pointer_error"], "stale_current_run_pointer_ignored")
+
 
     def test_gate_read_retries_transient_invalid_json(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -352,6 +390,139 @@ class ActiveRunGateTests(unittest.TestCase):
         self.assertIsNone(result["readiness_output_path"])
         self.assertIn("expected_outputs", result["stale_run_metadata_ignored"])
         self.assertIsNone(result["launch_record_error"])
+
+    def test_exact_slow_liquidity_launch_record_is_current_run_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            agent_log = root / "docs" / "agent-log"
+            agent_log.mkdir(parents=True)
+            output = root / "ohlcv.jsonl"
+            output.write_text("{}\n", encoding="utf-8")
+            manifest = root / "manifest.json"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "run_id": "slow-current",
+                        "final": True,
+                        "output_path": str(output),
+                        "rows": 1,
+                        "errors": 0,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            launch_record = root / "slow.launch.json"
+            launch_record.write_text(
+                json.dumps(
+                    {
+                        "schema": "trading_mvp_slow_liquidity_recollect_launch_v1",
+                        "status": "COMPLETE",
+                        "run_id": "slow-current",
+                        "terminal_ownership_verified": True,
+                        "plan_file_sha256": "a" * 64,
+                        "plan_hash": "b" * 64,
+                        "approval_receipt_sha256": "c" * 64,
+                        "manifest_path": str(manifest),
+                        "retry_authorized": False,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            gate = agent_log / "active-run-gate.json"
+            gate.write_text(
+                json.dumps(
+                    {
+                        "schema": "active_run_gate_v1",
+                        "project": "trading_mvp",
+                        "run_id": "slow-current",
+                        "status": "READY_FOR_POSTPROCESS",
+                        "manifest_path": str(manifest),
+                        "output_path": str(output),
+                        "process_ids": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (agent_log / "current-run.json").write_text(
+                json.dumps(
+                    {
+                        "schema": "active_run_pointer_v1",
+                        "project": "trading_mvp",
+                        "run_id": "slow-current",
+                        "status": "READY_FOR_POSTPROCESS",
+                        "manifest_path": str(manifest),
+                        "process_ids": [],
+                        "launch_record_path": str(launch_record),
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            result = self._run_gate(gate)
+
+        self.assertIsNone(result["launch_record_error"])
+        self.assertEqual(result["run_type"], "slow_liquidity_history_recollect")
+        self.assertEqual(result["status"], "READY_FOR_POSTPROCESS")
+
+    def test_slow_liquidity_launch_record_requires_verified_terminal_owner(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            agent_log = root / "docs" / "agent-log"
+            agent_log.mkdir(parents=True)
+            manifest = root / "manifest.json"
+            manifest.write_text(
+                json.dumps({"run_id": "slow-current", "final": True}),
+                encoding="utf-8",
+            )
+            launch_record = root / "slow.launch.json"
+            launch_record.write_text(
+                json.dumps(
+                    {
+                        "schema": "trading_mvp_slow_liquidity_recollect_launch_v1",
+                        "status": "COMPLETE",
+                        "run_id": "slow-current",
+                        "terminal_ownership_verified": False,
+                        "plan_file_sha256": "a" * 64,
+                        "plan_hash": "b" * 64,
+                        "approval_receipt_sha256": "c" * 64,
+                        "manifest_path": str(manifest),
+                        "retry_authorized": False,
+                    }
+                ),
+                encoding="utf-8",
+            )
+            gate = agent_log / "active-run-gate.json"
+            gate.write_text(
+                json.dumps(
+                    {
+                        "schema": "active_run_gate_v1",
+                        "project": "trading_mvp",
+                        "run_id": "slow-current",
+                        "status": "READY_FOR_POSTPROCESS",
+                        "manifest_path": str(manifest),
+                        "process_ids": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (agent_log / "current-run.json").write_text(
+                json.dumps(
+                    {
+                        "schema": "active_run_pointer_v1",
+                        "project": "trading_mvp",
+                        "run_id": "slow-current",
+                        "status": "READY_FOR_POSTPROCESS",
+                        "manifest_path": str(manifest),
+                        "process_ids": [],
+                        "launch_record_path": str(launch_record),
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            result = self._run_gate(gate)
+
+        self.assertIn("identity mismatch", result["launch_record_error"])
 
     def test_invalid_current_launch_record_cannot_open_gate_from_old_outputs(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

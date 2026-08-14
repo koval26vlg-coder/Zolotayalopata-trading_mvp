@@ -1,0 +1,76 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_quality_input_toctou_v1",
+  "generated_at_utc": "2026-08-12T21:36:14.339679+00:00",
+  "status": "PASS_MANIFEST_OUTPUT_LATE_MUTATION_FAIL_CLOSED",
+  "scope": "OFFLINE_SYNTHETIC_EXACT_QUALITY_PRECOMMIT_RACE_NO_NETWORK",
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_hash": "315a220a3976698b118f795c6f125245adb37415dbe7324c8f35e985a665bd89",
+    "plan_file_sha256": "f83b8948e4eb1d732c0b272b0fe0507600bae7e2a262ff7804d8978b864087c2",
+    "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+    "actual_collection_allowed": false,
+    "plan_changed": false
+  },
+  "implementation": {
+    "quality_runner_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\run_exact_slow_liquidity_recollect_quality.ps1",
+    "quality_runner_sha256": "01606074ae151a17fd2795952884868a1be2b6bfc32942c8aa6cf103a2707807",
+    "control_plane_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_recollect_control_plane.py",
+    "control_plane_sha256": "a024d1d0cd23e2bffd81e97d918276aa6470f06470ff723cc45a473b1e676916",
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_recollect_quality_runner_integration.py",
+    "test_sha256": "c2e0a9cf3464fd753212eebc5d4831b64fcfcdfdcfbb5fa2a4ae928cdc2b82bf",
+    "production_implementation_changed": false
+  },
+  "verification": {
+    "quality_runner_integration": {
+      "passed": 9,
+      "failed": 0,
+      "runtime_sec": 14.93
+    },
+    "linked_regression": {
+      "passed": 60,
+      "failed": 0,
+      "runtime_sec": 61.11
+    },
+    "race_cases": [
+      {
+        "input": "manifest",
+        "mutation_point": "after_initial_validation_during_quality_wrapper",
+        "blocked_by": "precommit_context_revalidation",
+        "expected_error": "ValueError: manifest file SHA256 mismatch",
+        "blocked_before_commit": true
+      },
+      {
+        "input": "output_jsonl",
+        "mutation_point": "after_initial_validation_during_quality_wrapper",
+        "blocked_by": "precommit_context_revalidation",
+        "expected_error": "ValueError: output file SHA256 mismatch",
+        "blocked_before_commit": true
+      }
+    ],
+    "quality_report_committed_on_race": false,
+    "active_gate_changed_on_race": false,
+    "current_run_pointer_changed_on_race": false,
+    "temporary_quality_report_left_behind": false
+  },
+  "production_safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "authority": {
+    "current_exact_approval_present": false,
+    "collector_launch_authorized": false,
+    "technical_quality_allowed_only_after_exact_complete": true,
+    "new_exact_hash_bound_approval_required": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "fc0e1bc6505fede6cbeb6ecf6bdd1ee8e81b462b5869b0520c0d2986a6c5b2f7"
+}

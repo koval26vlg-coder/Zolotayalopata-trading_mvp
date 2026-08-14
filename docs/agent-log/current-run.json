@@ -1,16 +1,16 @@
 {
   "schema": "active_run_pointer_v1",
   "project": "trading_mvp",
-  "run_id": "pit_universe_v2_forward_20260804_n07",
+  "run_id": "slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6",
   "status": "READY_FOR_POSTPROCESS",
-  "updated_at": "2026-08-04T01:20:14+03:00",
-  "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260804_n07\\manifest.json",
+  "updated_at": "2026-08-13T09:26:42.2041669+03:00",
+  "manifest_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6\\manifest.json",
   "output": {
-    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260804_n07\\snapshots.jsonl",
+    "path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6\\ohlcv.jsonl",
     "kind": "file"
   },
   "collector_pid": null,
   "monitor_pid": null,
   "process_ids": [],
-  "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\pit_universe_v2_forward_20260804_n07.launch.json"
+  "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6.launch.json"
 }

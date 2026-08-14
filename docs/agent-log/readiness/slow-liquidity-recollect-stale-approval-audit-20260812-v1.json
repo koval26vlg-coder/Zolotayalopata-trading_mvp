@@ -1,0 +1,83 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_stale_approval_audit_v1",
+  "generated_at_utc": "2026-08-12T19:34:17.872590Z",
+  "status": "STALE_EXACT_APPROVAL_SUPERSEDED_NO_LAUNCH",
+  "run_id": "slow_liquidity_history_recollect_20260812_pagecapfix_v1",
+  "finding": {
+    "summary": "The approved exact hashes were valid when requested, but a later safety refreeze replaced the PlanOnly and bound runtime files before the approval arrived.",
+    "semantic_scope_matches_current_plan": true,
+    "exact_hash_binding_matches_current_plan": false,
+    "exact_approval_reuse_allowed": false,
+    "old_plan_restoration_allowed": false,
+    "reason": "Exact approvals bind immutable bytes, not only semantic scope. Restoring superseded safety code would bypass the newer fail-closed control plane."
+  },
+  "approved_packet": {
+    "plan_hash": "56894d038b6e7193d5ccd417829ba61983029277b207def8e62768f97df83ac7",
+    "plan_file_sha256": "34f7a919bbac3874939fa2d998219d95566270bd0bfea2d62008171f2044e131",
+    "validated_status": "VALID",
+    "validated_at_utc": "2026-08-12T10:00:09.607Z",
+    "approval_received_at_utc": "2026-08-12T19:15:59.564Z",
+    "implementation_files_count": 9,
+    "launcher_sha256": "0b81edc2cf4d9ea9aa3c2eb3d407a6cd47a2af1ec4b2568280c47182b337be51",
+    "data_quality_wrapper_sha256": "d315df1652dd4bf0cbe1156fde1584011a4228774d8283382ea7e7f8054bac1a",
+    "exact_quality_runner_sha256": "b8a75fe5a7a933e8448963dcf1bbff70b8c107bd82373625cb054a66adb07c06"
+  },
+  "superseding_refreeze": {
+    "observed_at_utc": "2026-08-12T10:26:41.415Z",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_generated_at": "2026-08-12T10:26:41.324693+00:00",
+    "plan_hash": "fbb8f39f46026ed3b393a95822497242c3055ce63372cec7d0b4b04821f2a1b5",
+    "plan_file_sha256": "f77b43ba2bdd9f40891a29d6b467845e3a1d42c25673373d0052e2a1e219b1aa",
+    "implementation_files_count": 10,
+    "launcher_sha256": "d3013a4a84ad43d8ef874842d2e161bb5027cc26929657d2f215751367f399c1",
+    "data_quality_wrapper_sha256": "3879d694c7337371c16587419c1a5b7621938bd5b61a3f45b7e39171acb541d9",
+    "exact_quality_runner_sha256": "01606074ae151a17fd2795952884868a1be2b6bfc32942c8aa6cf103a2707807",
+    "new_binding_added": "active_run_gate_checker"
+  },
+  "timeline_evidence": {
+    "rollout_path": "C:\\Users\\koval\\.codex\\sessions\\2026\\05\\29\\rollout-2026-05-29T14-42-15-019e738a-b37c-7a33-ae04-6cc80739f184.jsonl",
+    "old_packet_validation_line": 183754,
+    "superseding_refreeze_line": 184070,
+    "user_approval_line": 184761,
+    "ordering": "OLD_PACKET_VALIDATED_THEN_REFROZEN_THEN_APPROVED"
+  },
+  "safety_disposition": {
+    "launch_allowed": false,
+    "receipt_creation_allowed": false,
+    "network_requests_allowed": false,
+    "collector_started": false,
+    "technical_data_quality_started": false,
+    "stopped_incomplete_retry_authorized": false,
+    "new_exact_approval_required": true
+  },
+  "artifact_absence_snapshot": {
+    "approval_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-12-slow-liquidity-history-recollect-pagecapfix-v1-approval.json",
+    "approval_receipt_exists": false,
+    "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\slow_liquidity_history_recollect_20260812_pagecapfix_v1.launch.json",
+    "launch_record_exists": false,
+    "output_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_recollect_20260812_pagecapfix_v1",
+    "output_exists": false,
+    "global_writer_claim_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\active-market-data-writer-claim.json",
+    "global_writer_claim_exists": false
+  },
+  "verification": {
+    "offline_regression_result": "PASS",
+    "tests_passed": 85,
+    "tests_skipped": 5,
+    "tests_failed": 0,
+    "test_runtime_sec": 239.45,
+    "active_run_gate_status": "READY_FOR_POSTPROCESS",
+    "active_run_gate_live_process_ids": [],
+    "weekly_remaining_percent": 66.0,
+    "network_used": false
+  },
+  "next_action": {
+    "decision": "AWAIT_NEW_EXACT_APPROVAL_FOR_CURRENT_IMMUTABLE_PLAN",
+    "current_plan_hash": "fbb8f39f46026ed3b393a95822497242c3055ce63372cec7d0b4b04821f2a1b5",
+    "current_plan_file_sha256": "f77b43ba2bdd9f40891a29d6b467845e3a1d42c25673373d0052e2a1e219b1aa",
+    "preflight_only_allowed": true,
+    "actual_launch_allowed_before_new_receipt": false
+  },
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "5cbea3bc1bec0fd17ba75a694968af39f32b9c0a0dff23bf2ba035a300456e39"
+}

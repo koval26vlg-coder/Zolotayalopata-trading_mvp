@@ -39,7 +39,9 @@ The plan file also contains executable commands. Approval separately binds the c
 
 ## Approval
 
-`tools/approve_trading_night_schedule.ps1` requires `-ConfirmedNightScheduleApproval`. It refuses a `RUNNING` or `STOPPED_INCOMPLETE` gate, revalidates the plan, calls `authorize-segment` for the first segment, writes one immutable approval record and adds its hash-bound reference to the gate. The approval seals the collection stage and quality-ledger path. It never starts the collector.
+`tools/approve_trading_night_schedule.ps1` is the sealed receipt writer. It requires `-ConfirmedNightScheduleApproval`, refuses a `RUNNING` or `STOPPED_INCOMPLETE` gate, revalidates the plan, calls `authorize-segment` for the first segment, writes one immutable approval record and adds its hash-bound reference to the gate. The approval seals the collection stage and quality-ledger path. It never starts the collector.
+
+New schedules must be activated through `tools/activate_approved_trading_night_schedule_pointer.ps1`, not by calling the receipt writer directly. The activator validates the same immutable plan and stage, creates or reuses the exact approval receipt, verifies the gate binding, and writes the authoritative dynamic schedule pointer last. `-PreflightOnly` performs all validation without writes. Repeating an exact completed activation is read-only and idempotent; repeating after an interrupted receipt/gate write repairs only the missing exact bindings. A tampered receipt, changed plan, active writer, incomplete run, or expired window fails closed before the pointer changes.
 
 One approval covers only the listed segment run ids until the final deadline. Changing the plan, tools, run id, duration, interval, output root or window invalidates authorization.
 

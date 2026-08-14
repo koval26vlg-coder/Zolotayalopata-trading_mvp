@@ -45,7 +45,10 @@ class HistoricalBasisV2ExecutionProbeVisibleTests(unittest.TestCase):
                 "final": True,
             }
             gate.write_text(json.dumps(gate_payload), encoding="utf-8")
-            current.write_text(json.dumps(gate_payload), encoding="utf-8")
+            current.write_text(
+                json.dumps({**gate_payload, "schema": "active_run_pointer_v1"}),
+                encoding="utf-8",
+            )
             gate_hash = hashlib.sha256(gate.read_bytes()).hexdigest()
             current_hash = hashlib.sha256(current.read_bytes()).hexdigest()
             output_root = root / "probe-output"

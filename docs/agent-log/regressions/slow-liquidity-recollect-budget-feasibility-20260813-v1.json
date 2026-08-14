@@ -1,0 +1,87 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_budget_feasibility_v1",
+  "generated_at_utc": "2026-08-12T22:43:44.721185+00:00",
+  "status": "PASS_REQUEST_ATTEMPT_QUALITY_AND_OUTPUT_BUDGETS_FEASIBLE",
+  "scope": "OFFLINE_PLAN_ALGEBRA_AND_SYNTHETIC_SERIALIZATION_NO_NETWORK",
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-alignmentfix-v2.json",
+    "plan_hash": "13e66dc7f0b14ea17380b19313d9fc8f4bdabf85a33d141d2d70088a7be60e58",
+    "plan_file_sha256": "3fc1d9326d74db68257d80b0dea8972c8308c835e0c3a187ad2120ba617f1db6",
+    "plan_unchanged": true
+  },
+  "request_budget": {
+    "unaligned_logical_requests_by_exchange": {
+      "mexc": 36,
+      "gateio": 27
+    },
+    "aligned_logical_requests_by_exchange": {
+      "mexc": 36,
+      "gateio": 27
+    },
+    "logical_requests": 63,
+    "max_retries": 1,
+    "maximum_http_attempts": 126,
+    "matches_plan": true
+  },
+  "quality_feasibility": {
+    "expected_success_rows_unaligned": 30240,
+    "expected_success_rows_aligned": 30276,
+    "plan_min_ok_rows": 25000,
+    "complete_rows_per_base_unaligned": 3360,
+    "seven_complete_bases_rows": 23520,
+    "eight_complete_bases_rows": 26880,
+    "required_two_exchange_full_coverage_bases": 8,
+    "market_granularity_slots_total": 36,
+    "market_granularity_slots_minimum": 32,
+    "interpretation": "the row threshold rejects seven complete bases and admits eight complete bases"
+  },
+  "output_cap_feasibility": {
+    "sample_success_row_with_largest_finite_floats_bytes": 679,
+    "conservative_bytes_per_success_row": 2048,
+    "maximum_expected_success_rows": 30276,
+    "conservative_success_output_bytes": 62005248,
+    "hard_output_cap_bytes": 100000000,
+    "conservative_headroom_bytes": 37994752,
+    "minimum_required_headroom_bytes": 25000000,
+    "pass": true
+  },
+  "verification": {
+    "focused_budget_suite": {
+      "passed": 3,
+      "failed": 0,
+      "runtime_sec": 0.07
+    },
+    "cross_linked_collector_quality_plan_suite": {
+      "passed": 30,
+      "failed": 0,
+      "runtime_sec": 2.02
+    },
+    "previous_full_linked_baseline": {
+      "passed": 101,
+      "failed": 0,
+      "runtime_sec": 80.52
+    },
+    "test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_recollect_budget_feasibility.py",
+    "test_sha256": "6120e8f22e7a06c04b51437f9b1c9ad61451f4f1db100ffd2f13ed5e5e8afaf0"
+  },
+  "limits": {
+    "proves_contract_internal_feasibility": true,
+    "proves_actual_venue_availability": false,
+    "proves_positive_edge": false,
+    "network_collection_still_requires_exact_approval": true
+  },
+  "safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "market_values_read": false,
+    "returns_or_pnl_read": false,
+    "evaluator_or_oos_run": false,
+    "grid_or_retune_run": false
+  },
+  "deterministic_result_hash_method": "sha256_canonical_json_excluding_deterministic_result_hash",
+  "deterministic_result_hash": "583eae446c3043ddf225ed1c003eb15242d93303bbbb1083093afb78a4ce17fa"
+}

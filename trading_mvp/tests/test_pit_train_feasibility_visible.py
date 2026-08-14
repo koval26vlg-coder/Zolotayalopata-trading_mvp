@@ -36,7 +36,9 @@ class PitTrainFeasibilityVisibleTests(unittest.TestCase):
             encoding="utf-8",
         )
         current = root / "current-run.json"
-        current.write_text(gate.read_text(encoding="utf-8"), encoding="utf-8")
+        current_payload = json.loads(gate.read_text(encoding="utf-8"))
+        current_payload["schema"] = "active_run_pointer_v1"
+        current.write_text(json.dumps(current_payload), encoding="utf-8")
         return [
             pwsh,
             "-NoProfile",
@@ -182,7 +184,10 @@ class PitTrainFeasibilityVisibleTests(unittest.TestCase):
                 "replay_allowed": False,
             }
             gate.write_text(json.dumps(initial_gate), encoding="utf-8")
-            current.write_text(json.dumps(initial_gate), encoding="utf-8")
+            current.write_text(
+                json.dumps({**initial_gate, "schema": "active_run_pointer_v1"}),
+                encoding="utf-8",
+            )
             real_gate = REPO_ROOT / "docs" / "agent-log" / "active-run-gate.json"
             real_gate_sha = hashlib.sha256(real_gate.read_bytes()).hexdigest()
             token = "fixture-owned-token"
@@ -307,7 +312,10 @@ class PitTrainFeasibilityVisibleTests(unittest.TestCase):
                 "replay_allowed": False,
             }
             gate.write_text(json.dumps(owned_gate), encoding="utf-8")
-            current.write_text(json.dumps(owned_gate), encoding="utf-8")
+            current.write_text(
+                json.dumps({**owned_gate, "schema": "active_run_pointer_v1"}),
+                encoding="utf-8",
+            )
             ledger = root / "quality.jsonl"
             ledger.write_text("", encoding="utf-8")
             output = root / "must-not-exist.json"

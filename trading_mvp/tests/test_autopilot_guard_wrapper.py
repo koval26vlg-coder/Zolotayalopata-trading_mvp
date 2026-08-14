@@ -126,6 +126,12 @@ class AutopilotGuardWrapperTests(unittest.TestCase):
         gate_path: Path,
         summary_path: Path,
     ) -> tuple[subprocess.CompletedProcess[str], dict[str, object], Path]:
+        readiness_dir = root / "readiness"
+        readiness_dir.mkdir(exist_ok=True)
+        readiness_report = readiness_dir / "report.json"
+        readiness_report.write_text("{}\n", encoding="utf-8")
+        readiness_pointer = root / "readiness-pointer.json"
+        readiness_pointer.write_text("{}\n", encoding="utf-8")
         guard_output_path = root / "fake-guard-output.json"
         guard_output_path.write_text(json.dumps(guard), encoding="utf-8")
         fake_python = root / "fake-python.cmd"
@@ -151,6 +157,10 @@ class AutopilotGuardWrapperTests(unittest.TestCase):
                 str(gate_path),
                 "-StatePath",
                 str(state_path),
+                "-CurrentReadinessPointerPath",
+                str(readiness_pointer),
+                "-GlobalWriterClaimPath",
+                str(root / "writer-claim.json"),
                 "-SessionRoot",
                 str(root / "sessions"),
                 "-PitPostrunSummaryPath",
@@ -166,6 +176,131 @@ class AutopilotGuardWrapperTests(unittest.TestCase):
         )
         payload = json.loads(completed.stdout)
         return completed, payload, state_path
+
+    def test_wrapper_passes_current_readiness_and_writer_claim_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            plan, _, pointer, policy, gate = self._write_inputs(root)
+            capture_path = root / "args.txt"
+            guard_output_path = root / "fake-guard-output.json"
+            guard_output_path.write_text(
+                json.dumps(self._guard(plan, pointer)),
+                encoding="utf-8",
+            )
+            fake_python = root / "fake-python.cmd"
+            fake_python.write_text(
+                '@echo off\r\necho %* > "%FAKE_GUARD_ARGS%"\r\n'
+                'type "%FAKE_GUARD_OUTPUT%"\r\nexit /b 0\r\n',
+                encoding="ascii",
+            )
+            readiness_dir = root / "readiness"
+            readiness_dir.mkdir()
+            readiness_pointer = root / "readiness-pointer.json"
+            readiness_pointer.write_text("{}\n", encoding="utf-8")
+            state_path = root / "state.json"
+            env = os.environ.copy()
+            env["TRADING_MVP_PYTHON"] = str(fake_python)
+            env["FAKE_GUARD_OUTPUT"] = str(guard_output_path)
+            env["FAKE_GUARD_ARGS"] = str(capture_path)
+
+            completed = subprocess.run(
+                [
+                    self.pwsh,
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(WRAPPER),
+                    "-PolicyPath",
+                    str(policy),
+                    "-GatePath",
+                    str(gate),
+                    "-StatePath",
+                    str(state_path),
+                    "-CurrentReadinessPointerPath",
+                    str(readiness_pointer),
+                    "-GlobalWriterClaimPath",
+                    str(root / "writer-claim.json"),
+                    "-SessionRoot",
+                    str(root / "sessions"),
+                    "-Json",
+                ],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+                env=env,
+            )
+            captured = capture_path.read_text(encoding="utf-8")
+
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertIn("--current-readiness-pointer", captured)
+        self.assertIn(str(readiness_pointer), captured)
+        self.assertIn("--global-writer-claim", captured)
+        self.assertIn(str(root / "writer-claim.json"), captured)
+
+    def test_missing_readiness_pointer_reaches_fail_closed_guard(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            plan, _, pointer, policy, gate = self._write_inputs(root)
+            capture_path = root / "args.txt"
+            guard_output_path = root / "fake-guard-output.json"
+            guard_output_path.write_text(
+                json.dumps(
+                    self._guard(plan, pointer, run_id="paper_public_probe")
+                ),
+                encoding="utf-8",
+            )
+            fake_python = root / "fake-python.cmd"
+            fake_python.write_text(
+                '@echo off\r\necho %* > "%FAKE_GUARD_ARGS%"\r\n'
+                'type "%FAKE_GUARD_OUTPUT%"\r\nexit /b 0\r\n',
+                encoding="ascii",
+            )
+            missing_pointer = root / "missing-readiness-pointer.json"
+            state_path = root / "state.json"
+            env = os.environ.copy()
+            env["TRADING_MVP_PYTHON"] = str(fake_python)
+            env["FAKE_GUARD_OUTPUT"] = str(guard_output_path)
+            env["FAKE_GUARD_ARGS"] = str(capture_path)
+
+            completed = subprocess.run(
+                [
+                    self.pwsh,
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(WRAPPER),
+                    "-PolicyPath",
+                    str(policy),
+                    "-GatePath",
+                    str(gate),
+                    "-StatePath",
+                    str(state_path),
+                    "-CurrentReadinessPointerPath",
+                    str(missing_pointer),
+                    "-GlobalWriterClaimPath",
+                    str(root / "writer-claim.json"),
+                    "-SessionRoot",
+                    str(root / "sessions"),
+                    "-PitPostrunSummaryPath",
+                    str(root / "missing-summary.json"),
+                    "-Json",
+                ],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=False,
+                env=env,
+            )
+            captured = capture_path.read_text(encoding="utf-8")
+
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        self.assertFalse(missing_pointer.exists())
+        self.assertIn(str(missing_pointer), captured)
 
     def test_unrelated_ready_gate_is_not_applicable(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

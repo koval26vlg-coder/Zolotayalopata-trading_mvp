@@ -1,0 +1,127 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_approval_packet_routing_v1",
+  "generated_at_utc": "2026-08-12T21:13:22.753902+00:00",
+  "status": "PASS_CURRENT_EXACT_PACKET_FAIL_CLOSED",
+  "scope": "OFFLINE_CONTROL_PLANE_AND_SYNTHETIC_TESTS_NO_NETWORK",
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_hash": "315a220a3976698b118f795c6f125245adb37415dbe7324c8f35e985a665bd89",
+    "plan_file_sha256": "f83b8948e4eb1d732c0b272b0fe0507600bae7e2a262ff7804d8978b864087c2",
+    "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+    "actual_collection_allowed": false,
+    "plan_changed": false
+  },
+  "implementation": {
+    "files": [
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\slow_liquidity_exact_recollect_status.ps1",
+        "sha256": "25ac93313d08066290827396f2e753042c62a79bf27b77a3fac209d331ae1835"
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\trading_quick_status.ps1",
+        "sha256": "c909cc4713f85a30569deb2c460f618887b028af4e06f5d4a59f538ad59ce24b"
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\trading_goal_status.ps1",
+        "sha256": "20e4adc514352084052c9c33e02ea4ce627a8373eb120b84c1ed20b70b85485f"
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\trading_next_goal_step.ps1",
+        "sha256": "ae72eb498be87cf5563922d908e88a0ca9666b58c57ec462a47d245a064c2ef0"
+      }
+    ],
+    "approval_packet_source": "commands.approval_freeze_preflight",
+    "approval_packet_primary_before_receipt": true,
+    "launcher_preflight_preserved_separately": true,
+    "legacy_visible_fields_preserve_launcher_preflight": true,
+    "unsafe_apply_or_unresolved_placeholder_fails_closed": true,
+    "expected_user_approval_text_sha256": "8a4021f7b0ff304de967497ec076b86143639392d3c25b32ffba585fe4ac66ae"
+  },
+  "verification": {
+    "test_files": [
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_recollect_status_lifecycle.py",
+        "sha256": "3abb933a56c615d6e6d262813a042e8779807ab9f6c1285b867e10ccbef03238"
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_visible_ws_collect_wrapper.py",
+        "sha256": "c2320986d4f4f0ea5d027af67362108167d82e2f3f77b494ab8fb89b5ba33a57"
+      }
+    ],
+    "powershell_parser_checks_passed": true,
+    "focused_lifecycle": {
+      "passed": 6,
+      "failed": 0,
+      "runtime_sec": 10.91
+    },
+    "focused_consumer_compatibility": {
+      "passed": 12,
+      "failed": 0,
+      "skipped": 1,
+      "deselected": 26,
+      "runtime_sec": 24.12
+    },
+    "full_linked_regression": {
+      "passed": 115,
+      "failed": 0,
+      "skipped": 5,
+      "runtime_sec": 131.96
+    },
+    "real_state": {
+      "quick_status": "AWAITING_EXACT_SLOW_LIQUIDITY_RECOLLECT_APPROVAL",
+      "goal_status": "slow_liquidity_exact_recollect_awaiting_exact_hash_bound_approval",
+      "next_goal_step": "SLOW_LIQUIDITY_EXACT_RECOLLECT_AWAITING_EXACT_APPROVAL",
+      "primary_command_uses_approval_freezer_preflight": true,
+      "primary_command_contains_exact_plan_hashes": true,
+      "launcher_preflight_is_separate": true,
+      "visible_launch_command_present": false,
+      "receipt_present": false,
+      "launch_record_present": false,
+      "output_present": false,
+      "errors": []
+    }
+  },
+  "preflight": {
+    "approval_freezer_status": "AWAIT_EXACT_USER_APPROVAL",
+    "approval_freezer_would_write": false,
+    "launcher_status": "BLOCKED_AWAITING_EXACT_APPROVAL",
+    "launcher_would_start": false,
+    "network_accessed": false,
+    "output_created": false,
+    "receipt_present": false,
+    "launch_record_present": false,
+    "global_writer_claim_present": false
+  },
+  "stale_user_packets": [
+    {
+      "plan_hash": "56894d038b6e7193d5ccd417829ba61983029277b207def8e62768f97df83ac7",
+      "plan_file_sha256": "34f7a919bbac3874939fa2d998219d95566270bd0bfea2d62008171f2044e131",
+      "accepted": false
+    },
+    {
+      "plan_hash": "fbb8f39f46026ed3b393a95822497242c3055ce63372cec7d0b4b04821f2a1b5",
+      "plan_file_sha256": "f77b43ba2bdd9f40891a29d6b467845e3a1d42c25673373d0052e2a1e219b1aa",
+      "accepted": false
+    }
+  ],
+  "production_safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "authority": {
+    "current_exact_approval_present": false,
+    "collector_launch_authorized": false,
+    "new_exact_hash_bound_approval_required": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "67c6d2a48573f1c7d2ccf67a67c9e4d72a86163081e0fd605bd45d691179bc1a"
+}

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import shutil
@@ -86,6 +87,8 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
             "leverage_or_margin = $false",
             "ResumeIncomplete",
             "E:\\trading_mvp\\slow-liquidity-history",
+            "current-run.json",
+            "active_run_pointer_v1",
         ):
             self.assertIn(needle, text)
 
@@ -125,6 +128,11 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
         self.assertEqual(payload["history_days"], 56)
         self.assertEqual(payload["target_bases"], 50)
         self.assertEqual(payload["timeframes"], ["15m", "1h", "4h"])
+        self.assertEqual(
+            payload.get("estimated_requests_by_exchange"),
+            {"mexc": 750, "gateio": 450, "bitget": 750},
+        )
+        self.assertEqual(payload["estimated_total_requests"], 1950)
 
         help_result = subprocess.run(
             [sys.executable, str(collector), "--help"],
@@ -942,6 +950,8 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
             "trading_quick_status",
             "safe_for_frequent_checks",
             "would_start",
+            "AWAITING_EXACT_SLOW_LIQUIDITY_RECOLLECT_APPROVAL",
+            "slow_liquidity_exact_recollect",
             "STALE_DENSE_WS_PLAN_REQUIRES_NEW_HASH_BOUND_PLAN",
             "AWAITING_EXACT_CAMPAIGN_APPROVAL",
             "eligible_dense_hypothesis_ids",
@@ -962,6 +972,8 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
             gate_path.write_text(
                 json.dumps(
                     {
+                        "schema": "active_run_gate_v1",
+                        "project": "trading_mvp",
                         "status": "READY_FOR_POSTPROCESS",
                         "run_id": "unit_test_rejected_postprocess",
                         "replay_allowed": False,
@@ -1024,6 +1036,141 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
         self.assertFalse(payload["plan_preview"]["fits_any_approved_window"])
         self.assertIsNone(payload["plan_preview"]["command_after_explicit_approval"])
         self.assertIn("trading_ws_collect_approval_packet.ps1", payload["heavy_checks_skipped"])
+
+    def test_trading_quick_status_routes_exact_slow_liquidity_approval_without_start(self) -> None:
+        script = REPO_ROOT / "tools" / "trading_quick_status.ps1"
+        pwsh = shutil.which("pwsh")
+        if not pwsh:
+            self.skipTest("pwsh is not available")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            gate_path = tmp_path / "docs" / "agent-log" / "active-run-gate.json"
+            gate_path.parent.mkdir(parents=True)
+            gate_path.write_text(
+                json.dumps(
+                    {
+                        "schema": "active_run_gate_v1",
+                        "project": "trading_mvp",
+                        "status": "READY_FOR_POSTPROCESS",
+                        "run_id": "slow_liquidity_history_collect_fixture",
+                        "replay_allowed": False,
+                        "next_goal_decision": "SLOW_LIQUIDITY_HISTORY_DATA_QUALITY_REJECTED_NEEDS_RECOLLECT_OR_RESCOPE",
+                        "requires_explicit_user_approval_for_actual_collect": False,
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            plan_path = tmp_path / "slow-liquidity-exact-plan.json"
+            receipt_path = tmp_path / "approval.json"
+            launch_path = tmp_path / "launch.json"
+            output_path = tmp_path / "output"
+            plan_hash = "a" * 64
+            plan_path.write_text(
+                json.dumps(
+                    {
+                        "schema": "trading_mvp_slow_liquidity_history_recollect_planonly_v1",
+                        "mode": "PlanOnly",
+                        "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+                        "actual_collection_allowed": False,
+                        "plan_hash": plan_hash,
+                        "execution": {
+                            "run_id": "slow_liquidity_history_recollect_fixture",
+                            "output_path": str(output_path),
+                            "launch_record_path": str(launch_path),
+                        },
+                        "approval_receipt": {"path": str(receipt_path)},
+                        "launcher": {
+                            "path": str(
+                                REPO_ROOT
+                                / "tools"
+                                / "start_exact_approved_slow_liquidity_history_recollect_visible.ps1"
+                            )
+                        },
+                        "commands": {
+                            "approval_freeze_preflight": (
+                                "pwsh -NoProfile -ExecutionPolicy Bypass -File \""
+                                + str(
+                                    REPO_ROOT
+                                    / "tools"
+                                    / "freeze_exact_approved_slow_liquidity_history_recollect.ps1"
+                                )
+                                + "\" -PlanPath \""
+                                + str(plan_path)
+                                + "\" -ExpectedPlanHash <PLAN_HASH> "
+                                + "-ExpectedPlanFileSha256 <PLAN_FILE_SHA256> "
+                                + "-PreflightOnly -Json"
+                            )
+                        },
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+            plan_file_sha256 = hashlib.sha256(plan_path.read_bytes()).hexdigest()
+            readiness_path = tmp_path / "readiness.json"
+            readiness_path.write_text(
+                json.dumps(
+                    {
+                        "schema": "trading_mvp_one_week_historical_edge_sprint_readiness_v1",
+                        "status": "AWAIT_EXACT_SLOW_LIQUIDITY_RECOLLECT_APPROVAL",
+                        "slow_liquidity_candidate": {
+                            "exact_plan_path": str(plan_path),
+                            "exact_plan_file_sha256": plan_file_sha256,
+                            "exact_plan_hash": plan_hash,
+                        },
+                    },
+                    ensure_ascii=False,
+                ),
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    pwsh,
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(script),
+                    "-GatePath",
+                    str(gate_path),
+                    "-ExactSlowLiquidityRecollectPlanPath",
+                    str(plan_path),
+                    "-SprintReadinessPath",
+                    str(readiness_path),
+                    "-SkipSwarm",
+                    "-Json",
+                ],
+                cwd=str(REPO_ROOT),
+                text=True,
+                capture_output=True,
+                timeout=60,
+                check=False,
+            )
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr + result.stdout)
+        payload = json.loads(result.stdout)
+        self.assertEqual(payload["status"], "AWAITING_EXACT_SLOW_LIQUIDITY_RECOLLECT_APPROVAL")
+        self.assertTrue(payload["requires_explicit_user_approval_for_actual_collect"])
+        self.assertEqual(payload["required_user_input"], "exact_slow_liquidity_recollect_approval")
+        self.assertFalse(payload["would_start"])
+        self.assertIsNone(payload["visible_start_shortcut"])
+        self.assertTrue(payload["slow_liquidity_exact_recollect"]["plan_valid"])
+        self.assertTrue(payload["slow_liquidity_exact_recollect"]["awaiting_approval"])
+        self.assertFalse(payload["slow_liquidity_exact_recollect"]["receipt_present"])
+        self.assertFalse(payload["slow_liquidity_exact_recollect"]["launch_record_present"])
+        self.assertFalse(payload["slow_liquidity_exact_recollect"]["output_present"])
+        self.assertIn(
+            "freeze_exact_approved_slow_liquidity_history_recollect.ps1",
+            payload["primary_command"],
+        )
+        self.assertEqual(
+            payload["primary_command"], payload["exact_approval_packet_command"]
+        )
+        self.assertIn("-PreflightOnly", payload["slow_liquidity_exact_recollect"]["preflight_command"])
+        self.assertIn("collector_before_exact_approval", payload["blocked_actions"])
 
     def test_wrapper_exposes_early_density_and_schema_guards(self) -> None:
         text = (REPO_ROOT / "tools" / "start_ws_collect_visible.ps1").read_text(encoding="utf-8")
@@ -1949,6 +2096,9 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
             "slow_liquidity_data_availability_preflight_command",
             "slow_liquidity_history_data_plan_command",
             "slow_liquidity_history_data_plan_ready_gate",
+            "slow_liquidity_exact_recollect_awaiting_approval_gate",
+            "slow_liquidity_exact_recollect_preflight_command",
+            "start_exact_approved_slow_liquidity_history_recollect_visible.ps1",
             "slow_liquidity_data_availability_rejected_gate",
             "cross_venue_rejected_gate",
             "listing_event_selected_gate",
@@ -2002,6 +2152,58 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
             self.assertIn("start_pit_cross_venue_forward_oos_visible.ps1", payload["visible_collect_command"])
             self.assertIn("-ConfirmedForwardOosCollect", payload["visible_collect_command"])
             self.assertEqual(payload["accepted_trading_strategies"], 0)
+            return
+        if payload.get("slow_liquidity_exact_recollect_awaiting_approval_gate"):
+            plan_path = (
+                REPO_ROOT
+                / "docs"
+                / "plans"
+                / "slow-liquidity-history-recollect-planonly-20260813-pagecap-provenance-slotintegrity-v6.json"
+            )
+            plan = json.loads(plan_path.read_text(encoding="utf-8"))
+            self.assertEqual(
+                payload["primary_edge_status"],
+                "slow_liquidity_exact_recollect_awaiting_exact_hash_bound_approval",
+            )
+            self.assertEqual(
+                payload["primary_edge_candidate"],
+                "Slow liquidity exact recollect awaiting exact approval",
+            )
+            self.assertTrue(payload["requires_user_approval_for_actual_collect"])
+            self.assertEqual(
+                payload["visible_collect_command_legacy_resolution"],
+                "slow_liquidity_exact_recollect_awaiting_exact_hash_bound_approval",
+            )
+            self.assertIn("start_exact_approved_slow_liquidity_history_recollect_visible.ps1", payload["visible_collect_command"])
+            self.assertIn("-PreflightOnly", payload["visible_collect_command"])
+            self.assertEqual(
+                payload["slow_liquidity_exact_recollect_plan_hash"],
+                plan["plan_hash"],
+            )
+            self.assertEqual(
+                payload["slow_liquidity_exact_recollect_plan_file_sha256"],
+                hashlib.sha256(plan_path.read_bytes()).hexdigest(),
+            )
+            return
+        if payload.get("slow_liquidity_exact_recollect_checkpoint_gate"):
+            phase = payload["slow_liquidity_exact_recollect_phase"]
+            expected_status = f"slow_liquidity_exact_recollect_{phase.lower()}"
+            self.assertEqual(payload["primary_edge_status"], expected_status)
+            self.assertEqual(
+                payload["visible_collect_command_legacy_resolution"],
+                expected_status,
+            )
+            self.assertIn("Slow liquidity exact recollect", payload["primary_edge_candidate"])
+            self.assertEqual(
+                payload["visible_collect_command"],
+                payload["slow_liquidity_exact_recollect_status_command"],
+            )
+            self.assertIn(
+                "start_exact_approved_slow_liquidity_history_recollect_visible.ps1",
+                payload["visible_collect_command"],
+            )
+            self.assertIn("-Status", payload["visible_collect_command"])
+            self.assertIn("-Json", payload["visible_collect_command"])
             return
         if payload.get("slow_liquidity_regime_selected_gate"):
             if payload.get("slow_liquidity_history_data_plan_ready_gate"):
@@ -2269,6 +2471,9 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
             "slow_liquidity_history_data_plan",
             "slow_liquidity_data_availability_rejected_gate",
             "slow_liquidity_history_data_plan_ready_gate",
+            "slow_liquidity_exact_recollect_awaiting_approval_gate",
+            "slow_liquidity_exact_recollect_preflight",
+            "start_exact_approved_slow_liquidity_history_recollect_visible.ps1",
             "cross_venue_rejected_gate",
             "listing_event_selected_gate",
             "slow_liquidity_regime_breakout_retest_planonly_selected_no_collect",
@@ -2330,6 +2535,51 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
             self.assertIn("start_pit_cross_venue_forward_oos_visible.ps1", commands["command_after_explicit_approval"])
             self.assertFalse(payload["state"]["strategy_accepted"])
             self.assertFalse(payload["state"]["replay_allowed"])
+            return
+        if payload["state"].get("slow_liquidity_exact_recollect_awaiting_approval_gate"):
+            self.assertEqual(
+                payload["decision"],
+                "SLOW_LIQUIDITY_EXACT_RECOLLECT_AWAITING_EXACT_APPROVAL",
+            )
+            self.assertTrue(payload["requires_user_approval"])
+            self.assertTrue(payload["requires_user_approval_for_actual_collect"])
+            self.assertIn("await_exact_hash_bound_slow_liquidity_recollect_approval", payload["allowed_actions"])
+            self.assertIn("collector_before_exact_approval", payload["blocked_actions"])
+            self.assertIn("freeze_exact_approved_slow_liquidity_history_recollect.ps1", payload["primary_command"])
+            self.assertIn("-PreflightOnly", payload["primary_command"])
+            self.assertEqual(
+                commands["visible_collect_legacy_resolution"],
+                "slow_liquidity_exact_recollect_awaiting_exact_hash_bound_approval",
+            )
+            self.assertEqual(
+                payload["primary_command"],
+                commands["slow_liquidity_exact_recollect_approval_packet"],
+            )
+            self.assertIn(
+                "start_exact_approved_slow_liquidity_history_recollect_visible.ps1",
+                commands["slow_liquidity_exact_recollect_preflight"],
+            )
+            return
+        if payload["state"].get("slow_liquidity_exact_recollect_checkpoint_gate"):
+            phase = payload["state"]["slow_liquidity_exact_recollect_phase"]
+            self.assertEqual(
+                payload["decision"],
+                f"SLOW_LIQUIDITY_EXACT_RECOLLECT_{phase}",
+            )
+            self.assertEqual(
+                commands["visible_collect_legacy_resolution"],
+                f"slow_liquidity_exact_recollect_{phase.lower()}",
+            )
+            self.assertEqual(
+                payload["primary_command"],
+                commands["slow_liquidity_exact_recollect_status"],
+            )
+            self.assertIn(
+                "start_exact_approved_slow_liquidity_history_recollect_visible.ps1",
+                payload["primary_command"],
+            )
+            self.assertIn("-Status", payload["primary_command"])
+            self.assertIn("-Json", payload["primary_command"])
             return
         if payload["state"].get("selected_branch") == "forward_pit_universe_event_liquidity_anomaly":
             self.assertEqual(

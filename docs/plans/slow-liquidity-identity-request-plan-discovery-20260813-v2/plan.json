@@ -1,0 +1,272 @@
+{
+  "schema": "trading_mvp_slow_liquidity_identity_request_plan_discovery_plan_v1",
+  "status": "PLANONLY_OFFLINE_AWAIT_EXACT_EXECUTION_APPROVAL",
+  "mode": "PlanOnly",
+  "generated_at_utc": "2026-08-13T18:35:44.401735Z",
+  "run_id": "slow_liquidity_identity_request_plan_discovery_20260813_v2",
+  "research_only": true,
+  "goal": "Build an exact official-source request plan for identity verification",
+  "compatibility_contract": {
+    "consumer_runtime": "slow_liquidity_official_identity_verification_v1",
+    "required_pair_count": 18,
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "bases": [
+      "STETH",
+      "WEETH",
+      "CC",
+      "OKB",
+      "RAIN",
+      "MNT",
+      "USDD",
+      "BDX",
+      "EDGE"
+    ],
+    "instrument_template": "{BASE}_USDT",
+    "request_plan_items_must_pass_consumer_validator": true
+  },
+  "navigation_contract": {
+    "provider": "BING_RSS",
+    "scheme": "https",
+    "host": "www.bing.com",
+    "path": "/search",
+    "role": "NAVIGATION_ONLY_NOT_IDENTITY_EVIDENCE",
+    "search_result_title_is_identity_evidence": false,
+    "search_result_snippet_is_identity_evidence": false,
+    "search_result_persistence_allowed": false,
+    "redirect_following_allowed": false
+  },
+  "official_source_contract": {
+    "metadata_endpoints": {
+      "mexc": "https://contract.mexc.com/api/v1/contract/detail",
+      "gateio": "https://api.gateio.ws/api/v4/futures/usdt/contracts"
+    },
+    "evidence_hosts": {
+      "mexc": {
+        "host": "www.mexc.com",
+        "allowed_path_prefix": "/support/articles/"
+      },
+      "gateio": {
+        "host": "www.gate.com",
+        "allowed_path_prefix": "/announcements/article/"
+      }
+    },
+    "only_allowlisted_official_page_content_is_identity_evidence": true,
+    "ticker_or_name_match_alone_is_identity_evidence": false,
+    "exact_active_perpetual_metadata_required": true,
+    "exact_unique_canonical_identifier_required": true
+  },
+  "currentness_contract": {
+    "active_perpetual_metadata_snapshot_required": true,
+    "single_navigation_result_is_currentness_evidence": false,
+    "metadata_to_official_page_linkage_required": true,
+    "metadata_to_official_page_linkage_implemented": false,
+    "synthetic_fixture_may_claim_real_completion": false,
+    "actual_current_request_plan_status_enabled": false
+  },
+  "seed_items": [
+    {
+      "venue": "mexc",
+      "base_ticker": "STETH",
+      "instrument_id": "STETH_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22STETH%22+%22STETH_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"STETH\" \"STETH_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "STETH",
+      "instrument_id": "STETH_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22STETH%22+%22STETH_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"STETH\" \"STETH_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "WEETH",
+      "instrument_id": "WEETH_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22WEETH%22+%22WEETH_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"WEETH\" \"WEETH_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "WEETH",
+      "instrument_id": "WEETH_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22WEETH%22+%22WEETH_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"WEETH\" \"WEETH_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "CC",
+      "instrument_id": "CC_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22CC%22+%22CC_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"CC\" \"CC_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "CC",
+      "instrument_id": "CC_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22CC%22+%22CC_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"CC\" \"CC_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "OKB",
+      "instrument_id": "OKB_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22OKB%22+%22OKB_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"OKB\" \"OKB_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "OKB",
+      "instrument_id": "OKB_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22OKB%22+%22OKB_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"OKB\" \"OKB_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "RAIN",
+      "instrument_id": "RAIN_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22RAIN%22+%22RAIN_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"RAIN\" \"RAIN_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "RAIN",
+      "instrument_id": "RAIN_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22RAIN%22+%22RAIN_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"RAIN\" \"RAIN_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "MNT",
+      "instrument_id": "MNT_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22MNT%22+%22MNT_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"MNT\" \"MNT_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "MNT",
+      "instrument_id": "MNT_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22MNT%22+%22MNT_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"MNT\" \"MNT_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "USDD",
+      "instrument_id": "USDD_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22USDD%22+%22USDD_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"USDD\" \"USDD_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "USDD",
+      "instrument_id": "USDD_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22USDD%22+%22USDD_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"USDD\" \"USDD_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "BDX",
+      "instrument_id": "BDX_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22BDX%22+%22BDX_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"BDX\" \"BDX_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "BDX",
+      "instrument_id": "BDX_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22BDX%22+%22BDX_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"BDX\" \"BDX_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "EDGE",
+      "instrument_id": "EDGE_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22EDGE%22+%22EDGE_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"EDGE\" \"EDGE_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "EDGE",
+      "instrument_id": "EDGE_USDT",
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22EDGE%22+%22EDGE_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"EDGE\" \"EDGE_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    }
+  ],
+  "limits": {
+    "maximum_total_http_requests": 38,
+    "maximum_attempts_per_url": 1,
+    "maximum_response_bytes_per_request": 1000000,
+    "max_runtime_sec": 600,
+    "hard_output_cap_bytes": 20000000
+  },
+  "output_contract": {
+    "required_files": [
+      "request-plan.json",
+      "manifest.json"
+    ],
+    "immutable_exclusive_create": true,
+    "raw_payload_persistence_allowed": false,
+    "search_snippet_persistence_allowed": false,
+    "prices_or_funding_rates_persistence_allowed": false,
+    "identity_verdict_created": false,
+    "candidate_planonly_created": false
+  },
+  "execution_authorization": {
+    "approved": false,
+    "actual_network_run_allowed": false,
+    "output_creation_allowed": false,
+    "global_writer_claim_allowed": false,
+    "separate_exact_code_bound_execution_approval_required": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "safety": {
+    "network_accessed": false,
+    "output_created": false,
+    "collector_or_evaluator_run": false,
+    "oos_or_returns_or_pnl_read": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "6246471964815d139e6900298a2a78e80e830df40f0c06b39078487c254183cc"
+}

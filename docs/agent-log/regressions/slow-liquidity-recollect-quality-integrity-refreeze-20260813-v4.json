@@ -1,0 +1,141 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_quality_integrity_refreeze_regression_v4",
+  "generated_at_utc": "2026-08-12T23:31:53.923441+00:00",
+  "status": "PASS_NEW_IMMUTABLE_PLANONLY_AWAIT_EXACT_APPROVAL",
+  "scope": "OFFLINE_SYNTHETIC_AND_NON_WRITING_PREFLIGHT_ONLY_NO_NETWORK",
+  "latest_user_packet": {
+    "run_id": "slow_liquidity_history_recollect_20260812_pagecapfix_v1",
+    "plan_hash": "fbb8f39f46026ed3b393a95822497242c3055ce63372cec7d0b4b04821f2a1b5",
+    "plan_file_sha256": "f77b43ba2bdd9f40891a29d6b467845e3a1d42c25673373d0052e2a1e219b1aa",
+    "used": false,
+    "disposition": "SUPERSEDED_INTEGRITY_FAIL_CLOSED_NOT_LAUNCHABLE"
+  },
+  "superseded_v3": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-alignment-qualitygridfix-v3.json",
+    "plan_hash": "0e063d946f775efb56d716109b162e51407013a571741f6d9247e88c461f6193",
+    "plan_file_sha256": "9585437d7d68a56c058823cdb34dab60bc0c5d48109fcadc02705ede025cdd87",
+    "approval_receipt_present": false,
+    "launch_record_present": false,
+    "output_present": false,
+    "disposition": "SUPERSEDED_QUALITY_SCHEMA_AND_NAMESPACE_INTEGRITY_FAIL_CLOSED_NOT_LAUNCHABLE"
+  },
+  "v4_plan": {
+    "run_id": "slow_liquidity_history_recollect_20260813_pagecap_alignment_qualityintegrityfix_v4",
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-alignment-qualityintegrityfix-v4.json",
+    "plan_hash": "07f1da73566b5cf2829f21af01a0fe802adfe2b43e028a750b943f30bb6fba7d",
+    "plan_file_sha256": "3f05ff156d2847835314c2e96d1e51bab3de54689653a81e330df62f734453b5",
+    "actual_collection_allowed": false,
+    "quality_output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\analysis\\slow_liquidity_history_recollect_quality_20260813_pagecap_alignment_qualityintegrityfix_v4.json",
+    "approval_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-13-slow-liquidity-history-recollect-pagecap-alignment-qualityintegrityfix-v4-approval.json",
+    "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\slow_liquidity_history_recollect_20260813_pagecap_alignment_qualityintegrityfix_v4.launch.json",
+    "output_path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_recollect_20260813_pagecap_alignment_qualityintegrityfix_v4"
+  },
+  "root_cause_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\slow-liquidity-recollect-quality-schema-namespace-integrity-refreeze-20260813-v4.json",
+    "file_sha256": "e109dc3366dbf5a57d77b02f1878adb91e04a3462fa3798fe072422bcca11556",
+    "deterministic_result_hash": "e43d7300c8bd8d4e9779dbfd0d5d6b377ea48d59d39e5d89dc85a3be720f8027"
+  },
+  "closed_false_accept_classes": [
+    "wrong_quote_symbol_job_key",
+    "non_finite_or_non_numeric_ohlcv",
+    "non_positive_prices_or_negative_volumes",
+    "inconsistent_ohlc_bounds"
+  ],
+  "namespace_integrity": {
+    "v4_quality_output_unique": true,
+    "v4_quality_output_absent_before_approval": true,
+    "v1_v2_v3_quality_outputs_not_reused": true
+  },
+  "patch_integrity": {
+    "quality_runtime_sha256": "e016d728255d5b36f841daad7eb6513ac3e0a200f7de66ea7205832fbc4bd865",
+    "control_plane_sha256": "908cb7c4de094866bfba2997797193ce7d558ad007d4bd4e8c69a67eae49a768",
+    "quality_wrapper_sha256": "3a68ddd127e2f10d38670651c69291696b47cbcf7a6db82144576b74e2366562",
+    "approval_rebind_tool_sha256": "89095b88ba0668e404a63c347d2ede03fd4b16dde2019becf8d3bde965bf2a9c",
+    "exact_quality_runner_sha256": "b2e27080702e71f6eca628c952d5a56da8c8efec08ff4035487db1404ab7118d",
+    "visible_launcher_sha256": "8d08fb4bfaadefd3118926526a92c59efa666fcec79a6dc48c6807e703f7ecc4"
+  },
+  "verification": {
+    "focused_quality_and_control_plane": {
+      "passed": 30,
+      "failed": 0
+    },
+    "focused_v4_plan": {
+      "passed": 7,
+      "failed": 0
+    },
+    "full_linked_core": {
+      "passed": 107,
+      "failed": 0,
+      "runtime_sec": 80.349
+    },
+    "legacy_visible_and_status": {
+      "passed": 28,
+      "failed": 0,
+      "skipped_environment": 5
+    },
+    "distinct_linked_total": {
+      "passed": 135,
+      "failed": 0,
+      "skipped_environment": 5
+    },
+    "clean_frozen_scope_accepts": true,
+    "all_synthetic_integrity_defects_reject": true
+  },
+  "guard_before_preflights": {
+    "status": "ACTIVE",
+    "stop_new_actions": false,
+    "weekly_telemetry_status": "AVAILABLE",
+    "weekly_remaining_percent": 51.0,
+    "active_run_gate_status": "READY_FOR_POSTPROCESS",
+    "global_writer_claim_present": false
+  },
+  "approval_freeze_preflight": {
+    "status": "AWAIT_EXACT_USER_APPROVAL",
+    "would_write": false,
+    "blockers": [],
+    "network_accessed": false,
+    "collector_started": false,
+    "output_created": false
+  },
+  "visible_launcher_preflight": {
+    "status": "BLOCKED_AWAITING_EXACT_APPROVAL",
+    "would_start": false,
+    "reasons": [
+      "exact_approval_receipt_missing"
+    ],
+    "network_accessed": false,
+    "output_created": false
+  },
+  "side_effect_check": {
+    "approval_receipt_present": false,
+    "launch_record_present": false,
+    "output_directory_present": false,
+    "manifest_present": false,
+    "output_jsonl_present": false,
+    "quality_output_present": false,
+    "global_writer_claim_present": false
+  },
+  "exact_approval_packet": {
+    "status": "AWAIT_EXACT_USER_APPROVAL",
+    "text": "Разрешаю один видимый public read-only запуск slow_liquidity_history_recollect_20260813_pagecap_alignment_qualityintegrityfix_v4 через tools\\start_exact_approved_slow_liquidity_history_recollect_visible.ps1 по plan_hash=07f1da73566b5cf2829f21af01a0fe802adfe2b43e028a750b943f30bb6fba7d и plan_file_sha256=3f05ff156d2847835314c2e96d1e51bab3de54689653a81e330df62f734453b5: MEXC и Gate, монеты STETH, WEETH, CC, OKB, RAIN, MNT, USDD, BDX, EDGE, интервалы 1h и 4h, история 56 дней, один global writer, максимум 63 логических запроса и 126 HTTP-попыток, 900 секунд и 100 MB. Старт не раньше 12.08.2026 10:00 +03 и не позже 13.08.2026 18:00 +03, жёсткая остановка 13.08.2026 18:15 +03. После успешного сбора разрешаю только техническую проверку качества. Официальная проверка идентичности монет требует отдельного разрешения. STOPPED_INCOMPLETE не повторять. Без evaluator, OOS, returns/PnL, grid/retune, execution probe, paper/live, private API, реальных денег, плеча или маржи."
+  },
+  "safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false,
+    "paper_or_live_run": false,
+    "private_api_used": false,
+    "real_capital_used": false,
+    "leverage_or_margin_used": false
+  },
+  "next_action": "REQUEST_ONE_EXACT_V4_HASH_BOUND_APPROVAL_PACKET",
+  "deterministic_result_hash_method": "sha256_canonical_json_excluding_deterministic_result_hash",
+  "deterministic_result_hash": "4aea3f31745eaa0a25d7c60a4e18e1611d356fa6fd942bd46de79f72dc2aa4ba"
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_terminal_stop_contract_v1",
+  "generated_at_utc": "2026-08-12T20:14:26.834140+00:00",
+  "status": "PASS_TERMINAL_NO_RETRY",
+  "scope": "SYNTHETIC_OFFLINE_TEMP_NAMESPACE_NO_NETWORK",
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_hash": "315a220a3976698b118f795c6f125245adb37415dbe7324c8f35e985a665bd89",
+    "plan_file_sha256": "f83b8948e4eb1d732c0b272b0fe0507600bae7e2a262ff7804d8978b864087c2",
+    "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_history_recollect_visible.ps1",
+    "launcher_sha256": "d3013a4a84ad43d8ef874842d2e161bb5027cc26929657d2f215751367f399c1"
+  },
+  "dynamic_stop_proof": {
+    "synthetic_writer_started": true,
+    "public_network_accessed": false,
+    "owned_stop_command_observed": "STOP_REQUESTED",
+    "writer_process_terminated": true,
+    "writer_claim_released": true,
+    "writer_claim_archived_final_status": "STOPPED_INCOMPLETE",
+    "launch_record_final_status": "STOPPED_INCOMPLETE",
+    "active_gate_final_status": "STOPPED_INCOMPLETE",
+    "next_goal_decision": "SLOW_LIQUIDITY_HISTORY_RECOLLECT_STOPPED_INCOMPLETE_NO_RETRY",
+    "retry_authorized": false
+  },
+  "automatic_limit_control_flow": {
+    "hard_output_cap_kills_before_throw": true,
+    "max_runtime_kills_before_throw": true,
+    "hard_deadline_kills_before_throw": true,
+    "all_paths_share_terminal_cleanup": true,
+    "resume_flag_absent": true
+  },
+  "verification": {
+    "plan_test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_recollect_plan.py",
+    "plan_test_sha256": "74d37686d34f1a7ac9ef2553edfa3abe6761d05f550e5d59c6f26b1ddfd28e0f",
+    "fixture_test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_recollect_freezer_integration.py",
+    "fixture_test_sha256": "b2177de16ae7658afdbb3e8aa1032f6408a6696072ffbcf1845b3ca9cf2f39f6",
+    "linked_tests": {
+      "passed": 11,
+      "failed": 0,
+      "runtime_sec": 15.78
+    }
+  },
+  "production_safety": {
+    "collector_started": false,
+    "receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "plan_changed": false
+  },
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "30fbdb3adc02331996e9c0fbc61c988a1ce00f535255663a000c39e5c671114f"
+}

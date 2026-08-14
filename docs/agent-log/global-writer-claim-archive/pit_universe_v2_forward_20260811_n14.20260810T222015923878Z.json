@@ -1,0 +1,21 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "pit_universe_v2_forward_20260811_n14",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": 30536,
+  "owner_kind": "pit_countdown_visible_child",
+  "ownership_token": "eda5eac2772f7fc1b0947614328a0437",
+  "plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+  "output_namespace": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260811_n14",
+  "claimed_at_utc": "2026-08-10T22:00:06.032811+00:00",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "final_status": "READY_FOR_POSTPROCESS",
+  "released_at_utc": "2026-08-10T22:20:15.922180+00:00"
+}

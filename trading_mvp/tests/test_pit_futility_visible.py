@@ -37,7 +37,10 @@ class PitFutilityVisibleTests(unittest.TestCase):
         }
         gate.write_text(json.dumps(initial_gate), encoding="utf-8")
         current = root / "current-run.json"
-        current.write_text(json.dumps(initial_gate), encoding="utf-8")
+        current.write_text(
+            json.dumps({**initial_gate, "schema": "active_run_pointer_v1"}),
+            encoding="utf-8",
+        )
         command = [
             pwsh,
             "-NoProfile",

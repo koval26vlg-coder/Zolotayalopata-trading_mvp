@@ -1,0 +1,132 @@
+{
+  "schema": "trading_mvp_slow_liquidity_recollect_two_venue_filled_matrix_regression_v1",
+  "generated_at_utc": "2026-08-12T22:14:09.874010+00:00",
+  "status": "PASS_9_BASES_2_VENUES_1H4H_63_LOGICAL_REQUESTS_CONTIGUOUS",
+  "scope": "OFFLINE_SYNTHETIC_FILLED_CANDLES_NO_NETWORK_NO_MARKET_VALUES",
+  "plan_binding": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260812-pagecapfix-v1.json",
+    "plan_hash": "315a220a3976698b118f795c6f125245adb37415dbe7324c8f35e985a665bd89",
+    "plan_file_sha256": "f83b8948e4eb1d732c0b272b0fe0507600bae7e2a262ff7804d8978b864087c2",
+    "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+    "actual_collection_allowed": false,
+    "plan_changed": false
+  },
+  "implementation": {
+    "collector_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_history_collector.py",
+    "collector_sha256": "c2f24f6accc604600c01bf57a9c6148de506afac96245806d6a2e40251c09737",
+    "collector_test_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\tests\\test_slow_liquidity_history_collector.py",
+    "collector_test_sha256": "9b7b8995e7f009ee5ba0d3d3b644701f77588caac7c4c562967139fc9de2fe33",
+    "exact_launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_history_recollect_visible.ps1",
+    "exact_launcher_sha256": "d3013a4a84ad43d8ef874842d2e161bb5027cc26929657d2f215751367f399c1",
+    "production_implementation_changed": false,
+    "plan_or_launcher_changed": false
+  },
+  "frozen_matrix": {
+    "bases": [
+      "STETH",
+      "WEETH",
+      "CC",
+      "OKB",
+      "RAIN",
+      "MNT",
+      "USDD",
+      "BDX",
+      "EDGE"
+    ],
+    "base_count": 9,
+    "exchanges": [
+      "mexc",
+      "gateio"
+    ],
+    "timeframes": [
+      "1h",
+      "4h"
+    ],
+    "history_days": 56,
+    "configured_candles_per_request": 1000,
+    "effective_page_sizes": {
+      "mexc": 500,
+      "gateio": 1000
+    },
+    "candles_per_base_by_timeframe": {
+      "1h": 1345,
+      "4h": 337
+    },
+    "synthetic_candles_per_exchange": 15138,
+    "synthetic_candles_total": 30276
+  },
+  "verification": {
+    "gate_page_cap_boundary_cases": [
+      {
+        "candles": 999,
+        "expected_requests": 1,
+        "observed_requests": 1
+      },
+      {
+        "candles": 1000,
+        "expected_requests": 1,
+        "observed_requests": 1
+      },
+      {
+        "candles": 1001,
+        "expected_requests": 2,
+        "observed_requests": 2
+      },
+      {
+        "candles": 1999,
+        "expected_requests": 2,
+        "observed_requests": 2
+      },
+      {
+        "candles": 2000,
+        "expected_requests": 2,
+        "observed_requests": 2
+      },
+      {
+        "candles": 2001,
+        "expected_requests": 3,
+        "observed_requests": 3
+      }
+    ],
+    "requests_by_exchange": {
+      "mexc": 36,
+      "gateio": 27
+    },
+    "logical_requests_total": 63,
+    "maximum_http_attempts": 126,
+    "all_job_timestamps_contiguous": true,
+    "duplicate_timestamps": 0,
+    "all_36_jobs_filled": true,
+    "focused_collector_suite": {
+      "passed": 9,
+      "failed": 0,
+      "runtime_sec": 0.13
+    },
+    "linked_regression": {
+      "passed": 89,
+      "failed": 0,
+      "errors": 0,
+      "runtime_sec": 78.58
+    }
+  },
+  "production_safety": {
+    "network_accessed": false,
+    "collector_started": false,
+    "approval_receipt_created": false,
+    "launch_record_created": false,
+    "output_created": false,
+    "global_writer_claim_created": false,
+    "official_identity_verification_run": false,
+    "evaluator_or_oos_run": false,
+    "returns_or_pnl_read": false,
+    "grid_or_retune_run": false
+  },
+  "authority": {
+    "current_exact_approval_present": false,
+    "collector_launch_authorized": false,
+    "new_exact_hash_bound_approval_required": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "deterministic_result_hash_method": "sha256(canonical_json_without_deterministic_result_hash; utf8; sort_keys=true; separators=comma_colon)",
+  "deterministic_result_hash": "acc9caf70788eb0a7eddffb7c1411006601ee7a92ebee6a7393cbc1ead1664c8"
+}

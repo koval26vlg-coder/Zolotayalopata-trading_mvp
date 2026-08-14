@@ -116,6 +116,7 @@ class HistoricalBasisV2RunMvpTests(unittest.TestCase):
                 json.dumps(
                     {
                         "schema": "active_run_gate_v2",
+                        "project": "trading_mvp",
                         "status": "READY_FOR_POSTPROCESS",
                         "gate_status": "READY_FOR_POSTPROCESS",
                         "run_id": "fixture-gate",
@@ -237,6 +238,7 @@ class HistoricalBasisV2RunMvpTests(unittest.TestCase):
                 json.dumps(
                     {
                         "schema": "active_run_gate_v2",
+                        "project": "trading_mvp",
                         "status": "READY_FOR_POSTPROCESS",
                         "gate_status": "READY_FOR_POSTPROCESS",
                         "run_id": "fixture-gate",
@@ -298,6 +300,7 @@ class HistoricalBasisV2RunMvpTests(unittest.TestCase):
                 json.dumps(
                     {
                         "schema": "active_run_gate_v2",
+                        "project": "trading_mvp",
                         "status": "READY_FOR_POSTPROCESS",
                         "gate_status": "READY_FOR_POSTPROCESS",
                         "run_id": "fixture-gate",

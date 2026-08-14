@@ -49,7 +49,9 @@ class PitFullEvaluationVisibleTests(unittest.TestCase):
         gate = root / "active-run-gate.json"
         current = root / "current-run.json"
         self._gate(gate)
-        current.write_bytes(gate.read_bytes())
+        current_payload = json.loads(gate.read_text(encoding="utf-8"))
+        current_payload["schema"] = "active_run_pointer_v1"
+        current.write_text(json.dumps(current_payload), encoding="utf-8")
         return [
             pwsh,
             "-NoProfile",
@@ -176,7 +178,9 @@ class PitFullEvaluationVisibleTests(unittest.TestCase):
             gate = agent_log / "active-run-gate.json"
             current = agent_log / "current-run.json"
             self._gate(gate)
-            current.write_bytes(gate.read_bytes())
+            current_payload = json.loads(gate.read_text(encoding="utf-8"))
+            current_payload["schema"] = "active_run_pointer_v1"
+            current.write_text(json.dumps(current_payload), encoding="utf-8")
             real_gate = REPO_ROOT / "docs" / "agent-log" / "active-run-gate.json"
             real_gate_sha = hashlib.sha256(real_gate.read_bytes()).hexdigest()
             token = "fixture-full-evaluation-token"
