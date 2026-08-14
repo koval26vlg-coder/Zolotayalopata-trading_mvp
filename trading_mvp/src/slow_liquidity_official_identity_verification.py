@@ -65,6 +65,28 @@ REQUIRED_READINESS_SOURCE_STATUS = (
     "IDENTITY_RUNTIME_FROZEN_WITH_EXACT_CODE_BOUND_EXECUTION_APPROVAL"
 )
 REQUIRED_READINESS_CHECKPOINT_ID = "slow_liquidity_identity_execution_phase_2"
+RUNTIME_REVISION_V5 = "v5"
+PARENT_IDENTITY_V4_RUNTIME_FILE_SHA256 = (
+    "0001cb25541e56e225a962f3d1eb9b4ef18055eb891d3b392b2f65bca3e70924"
+)
+PARENT_IDENTITY_V4_RUNTIME_HASH = (
+    "2e93b5c9b2bae219aa1072b3fd44a0af7e7b29728a6977ed3159eb643348269f"
+)
+TOPOLOGY_V4_RUNTIME_FILE_SHA256 = (
+    "ddea956647b0110d079a191a0653dd66bd27e675df9d0b01b1e3e3f6b825aba6"
+)
+TOPOLOGY_V4_RUNTIME_HASH = (
+    "9ab770ba4e3a857d5a2dee8ba74260a8d7d717080afb411abab009a3ccf508c0"
+)
+REPO_ROOT = Path(__file__).resolve().parents[2]
+PARENT_IDENTITY_V4_RUNTIME_PATH = (
+    REPO_ROOT
+    / "docs/plans/slow-liquidity-official-identity-runtime-manifest-20260813-v4.json"
+)
+TOPOLOGY_V4_RUNTIME_PATH = (
+    REPO_ROOT
+    / "docs/plans/slow-liquidity-official-currentness-topology-runtime-manifest-20260814-v4.json"
+)
 EXPECTED_BASES = (
     "STETH",
     "WEETH",
@@ -535,6 +557,122 @@ def build_runtime_manifest(
     return manifest
 
 
+def _validate_v5_refreeze_lineage(
+    *,
+    parent_runtime_manifest_path: str | Path,
+    topology_runtime_manifest_path: str | Path,
+) -> dict[str, Any]:
+    parent_path = Path(parent_runtime_manifest_path).expanduser().resolve()
+    topology_path = Path(topology_runtime_manifest_path).expanduser().resolve()
+    _require(
+        parent_path == PARENT_IDENTITY_V4_RUNTIME_PATH,
+        "identity v5 parent runtime path mismatch",
+    )
+    _require(
+        topology_path == TOPOLOGY_V4_RUNTIME_PATH,
+        "identity v5 topology runtime path mismatch",
+    )
+    _require(
+        _sha256_file(parent_path) == PARENT_IDENTITY_V4_RUNTIME_FILE_SHA256,
+        "identity v5 parent runtime file hash mismatch",
+    )
+    _require(
+        _sha256_file(topology_path) == TOPOLOGY_V4_RUNTIME_FILE_SHA256,
+        "identity v5 topology runtime file hash mismatch",
+    )
+    parent = _load_json(parent_path, "identity v4 parent runtime manifest")
+    topology = _load_json(topology_path, "topology v4 runtime manifest")
+    _require(
+        parent.get("manifest_hash") == PARENT_IDENTITY_V4_RUNTIME_HASH
+        and canonical_hash_without(parent, "manifest_hash")
+        == PARENT_IDENTITY_V4_RUNTIME_HASH,
+        "identity v5 parent runtime canonical hash mismatch",
+    )
+    parent_execution = parent.get("execution_authorization")
+    _require(
+        isinstance(parent_execution, dict)
+        and parent_execution.get("approved") is False
+        and parent_execution.get("actual_network_run_allowed") is False
+        and parent_execution.get("identity_output_allowed") is False,
+        "identity v5 parent execution boundary mismatch",
+    )
+    _require(
+        topology.get("schema")
+        == "trading_mvp_slow_liquidity_official_currentness_topology_runtime_manifest_v4"
+        and topology.get("status")
+        == "FROZEN_OFFLINE_V4_AWAIT_EXACT_TOPOLOGY_EXECUTION_APPROVAL"
+        and topology.get("manifest_hash") == TOPOLOGY_V4_RUNTIME_HASH
+        and canonical_hash_without(topology, "manifest_hash") == TOPOLOGY_V4_RUNTIME_HASH,
+        "identity v5 topology runtime binding mismatch",
+    )
+    topology_execution = topology.get("execution_authorization")
+    _require(
+        isinstance(topology_execution, dict)
+        and topology_execution.get("approved") is False
+        and topology_execution.get("network_run_allowed") is False,
+        "identity v5 topology execution boundary mismatch",
+    )
+    return {
+        "identity_runtime_v4": {
+            "path": str(parent_path),
+            "file_sha256": PARENT_IDENTITY_V4_RUNTIME_FILE_SHA256,
+            "manifest_hash": PARENT_IDENTITY_V4_RUNTIME_HASH,
+            "execution_authorized": False,
+        },
+        "topology_runtime_v4": {
+            "path": str(topology_path),
+            "file_sha256": TOPOLOGY_V4_RUNTIME_FILE_SHA256,
+            "manifest_hash": TOPOLOGY_V4_RUNTIME_HASH,
+            "execution_authorized": False,
+            "topology_output_consumed": False,
+        },
+    }
+
+
+def build_runtime_manifest_v5(
+    *,
+    proposal_path: str | Path,
+    expected_proposal_hash: str,
+    expected_proposal_file_sha256: str,
+    approval_receipt_path: str | Path,
+    parent_runtime_manifest_path: str | Path,
+    topology_runtime_manifest_path: str | Path,
+    runtime_module_path: str | Path,
+    synthetic_tests_path: str | Path,
+    launcher_path: str | Path,
+    generated_at_utc: str,
+    guard_checker_path: str | Path | None = None,
+) -> dict[str, Any]:
+    manifest = build_runtime_manifest(
+        proposal_path=proposal_path,
+        expected_proposal_hash=expected_proposal_hash,
+        expected_proposal_file_sha256=expected_proposal_file_sha256,
+        approval_receipt_path=approval_receipt_path,
+        runtime_module_path=runtime_module_path,
+        synthetic_tests_path=synthetic_tests_path,
+        launcher_path=launcher_path,
+        generated_at_utc=generated_at_utc,
+        guard_checker_path=guard_checker_path,
+    )
+    manifest["runtime_revision"] = RUNTIME_REVISION_V5
+    manifest["refreeze_lineage"] = _validate_v5_refreeze_lineage(
+        parent_runtime_manifest_path=parent_runtime_manifest_path,
+        topology_runtime_manifest_path=topology_runtime_manifest_path,
+    )
+    manifest["offline_refreeze_authorization"] = {
+        "mode": "DIRECT_EXACT_USER_APPROVAL_NOT_MATERIALIZED_AS_NEW_RECEIPT",
+        "existing_offline_receipt_reused": True,
+        "new_approval_receipt_created": False,
+        "network_accessed": False,
+        "official_source_content_read": False,
+        "identity_output_created": False,
+        "topology_output_consumed": False,
+        "separate_exact_network_execution_approval_required": True,
+    }
+    manifest["manifest_hash"] = canonical_hash_without(manifest, "manifest_hash")
+    return manifest
+
+
 def validate_runtime_manifest(manifest: Mapping[str, Any]) -> None:
     _require(manifest.get("schema") == RUNTIME_MANIFEST_SCHEMA, "runtime manifest schema mismatch")
     _require(manifest.get("status") == PHASE1_STATUS, "runtime manifest status mismatch")
@@ -654,6 +792,33 @@ def validate_runtime_manifest(manifest: Mapping[str, Any]) -> None:
         _require(preflight.get(key) is True, f"preflight safety disabled: {key}")
     _require(preflight.get("stopped_incomplete_retry_authorized") is False, "STOPPED_INCOMPLETE retry enabled")
 
+    revision = manifest.get("runtime_revision")
+    if revision is None:
+        return
+    _require(revision == RUNTIME_REVISION_V5, "identity runtime revision mismatch")
+    lineage = manifest.get("refreeze_lineage")
+    _require(isinstance(lineage, dict), "identity v5 refreeze lineage is missing")
+    expected_lineage = _validate_v5_refreeze_lineage(
+        parent_runtime_manifest_path=PARENT_IDENTITY_V4_RUNTIME_PATH,
+        topology_runtime_manifest_path=TOPOLOGY_V4_RUNTIME_PATH,
+    )
+    _require(lineage == expected_lineage, "identity v5 refreeze lineage mismatch")
+    authorization = manifest.get("offline_refreeze_authorization")
+    _require(
+        authorization
+        == {
+            "mode": "DIRECT_EXACT_USER_APPROVAL_NOT_MATERIALIZED_AS_NEW_RECEIPT",
+            "existing_offline_receipt_reused": True,
+            "new_approval_receipt_created": False,
+            "network_accessed": False,
+            "official_source_content_read": False,
+            "identity_output_created": False,
+            "topology_output_consumed": False,
+            "separate_exact_network_execution_approval_required": True,
+        },
+        "identity v5 offline authorization mismatch",
+    )
+
 
 def _write_immutable_json(path: str | Path, payload: Mapping[str, Any]) -> Path:
     output = Path(path).expanduser().resolve()
@@ -722,6 +887,49 @@ def freeze_offline_bundle(
         "runtime_manifest_file_sha256": _sha256_file(manifest_path),
         "runtime_manifest_hash": manifest["manifest_hash"],
         "network_accessed": False,
+        "identity_output_created": False,
+        "separate_exact_code_bound_execution_approval_required": True,
+    }
+
+
+def freeze_offline_refreeze_v5(
+    *,
+    proposal_path: str | Path,
+    expected_proposal_hash: str,
+    expected_proposal_file_sha256: str,
+    approval_receipt_path: str | Path,
+    parent_runtime_manifest_path: str | Path,
+    topology_runtime_manifest_path: str | Path,
+    runtime_manifest_path: str | Path,
+    runtime_module_path: str | Path,
+    synthetic_tests_path: str | Path,
+    launcher_path: str | Path,
+    generated_at_utc: str,
+    guard_checker_path: str | Path | None = None,
+) -> dict[str, Any]:
+    manifest = build_runtime_manifest_v5(
+        proposal_path=proposal_path,
+        expected_proposal_hash=expected_proposal_hash,
+        expected_proposal_file_sha256=expected_proposal_file_sha256,
+        approval_receipt_path=approval_receipt_path,
+        parent_runtime_manifest_path=parent_runtime_manifest_path,
+        topology_runtime_manifest_path=topology_runtime_manifest_path,
+        runtime_module_path=runtime_module_path,
+        synthetic_tests_path=synthetic_tests_path,
+        launcher_path=launcher_path,
+        generated_at_utc=generated_at_utc,
+        guard_checker_path=guard_checker_path,
+    )
+    manifest_path = _write_immutable_json(runtime_manifest_path, manifest)
+    return {
+        "status": PHASE1_STATUS,
+        "runtime_revision": RUNTIME_REVISION_V5,
+        "runtime_manifest_path": str(manifest_path),
+        "runtime_manifest_file_sha256": _sha256_file(manifest_path),
+        "runtime_manifest_hash": manifest["manifest_hash"],
+        "approval_receipt_created": False,
+        "network_accessed": False,
+        "official_source_content_read": False,
         "identity_output_created": False,
         "separate_exact_code_bound_execution_approval_required": True,
     }
@@ -2306,6 +2514,7 @@ def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument("--freeze-offline-bundle", action="store_true")
+    action.add_argument("--freeze-offline-refreeze-v5", action="store_true")
     action.add_argument("--validate-runtime-manifest", action="store_true")
     action.add_argument("--preflight-execution", action="store_true")
     action.add_argument("--preflight-authoritative-execution", action="store_true")
@@ -2314,6 +2523,8 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--expected-proposal-hash")
     parser.add_argument("--expected-proposal-file-sha256")
     parser.add_argument("--approval-receipt-path")
+    parser.add_argument("--parent-runtime-manifest-path")
+    parser.add_argument("--topology-runtime-manifest-path")
     parser.add_argument("--runtime-manifest-path")
     parser.add_argument("--runtime-module-path", default=str(Path(__file__).resolve()))
     parser.add_argument("--synthetic-tests-path")
@@ -2335,6 +2546,38 @@ def _parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    if args.freeze_offline_refreeze_v5:
+        required = (
+            "proposal_path",
+            "expected_proposal_hash",
+            "expected_proposal_file_sha256",
+            "approval_receipt_path",
+            "parent_runtime_manifest_path",
+            "topology_runtime_manifest_path",
+            "runtime_manifest_path",
+            "synthetic_tests_path",
+            "launcher_path",
+            "generated_at_utc",
+        )
+        _require(
+            all(getattr(args, name) is not None for name in required),
+            "identity v5 refreeze arguments are incomplete",
+        )
+        result = freeze_offline_refreeze_v5(
+            proposal_path=args.proposal_path,
+            expected_proposal_hash=args.expected_proposal_hash,
+            expected_proposal_file_sha256=args.expected_proposal_file_sha256,
+            approval_receipt_path=args.approval_receipt_path,
+            parent_runtime_manifest_path=args.parent_runtime_manifest_path,
+            topology_runtime_manifest_path=args.topology_runtime_manifest_path,
+            runtime_manifest_path=args.runtime_manifest_path,
+            runtime_module_path=args.runtime_module_path,
+            synthetic_tests_path=args.synthetic_tests_path,
+            launcher_path=args.launcher_path,
+            generated_at_utc=args.generated_at_utc,
+        )
+        print(json.dumps(result, ensure_ascii=False))
+        return 0
     if args.freeze_offline_bundle:
         required = (
             "proposal_path",

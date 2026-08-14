@@ -16,12 +16,18 @@ from trading_mvp.src.slow_liquidity_official_identity_verification import (
     EXECUTION_MANIFEST_SCHEMA,
     EXECUTION_RECEIPT_SCHEMA,
     OFFLINE_RECEIPT_SCHEMA,
+    PARENT_IDENTITY_V4_RUNTIME_FILE_SHA256,
+    PARENT_IDENTITY_V4_RUNTIME_HASH,
     RUNTIME_MANIFEST_SCHEMA,
+    RUNTIME_REVISION_V5,
+    TOPOLOGY_V4_RUNTIME_FILE_SHA256,
+    TOPOLOGY_V4_RUNTIME_HASH,
     FetchedResponse,
     IdentityVerificationError,
     build_identity_result,
     build_offline_approval_receipt,
     build_runtime_manifest,
+    build_runtime_manifest_v5,
     canonical_hash_without,
     collect_identity_evidence,
     collect_identity_evidence_bundle,
@@ -47,6 +53,22 @@ PROPOSAL_PATH = (
 PROPOSAL_HASH = "3a4479cacaceb310556821df8bd0f28d5cb1dac06644764c9b209bf3e234d8a4"
 PROPOSAL_FILE_SHA256 = (
     "52d2c848888577a61e6994b57786616a9732c2ec384d6c4633325123b1b63c62"
+)
+OFFLINE_RECEIPT_PATH = (
+    REPO_ROOT
+    / "docs/agent-log/approvals/2026-08-13-slow-liquidity-official-identity-offline-v1-approval.json"
+)
+PARENT_IDENTITY_V4_RUNTIME_PATH = (
+    REPO_ROOT
+    / "docs/plans/slow-liquidity-official-identity-runtime-manifest-20260813-v4.json"
+)
+TOPOLOGY_V4_RUNTIME_PATH = (
+    REPO_ROOT
+    / "docs/plans/slow-liquidity-official-currentness-topology-runtime-manifest-20260814-v4.json"
+)
+IDENTITY_V5_RUNTIME_PATH = (
+    REPO_ROOT
+    / "docs/plans/slow-liquidity-official-identity-runtime-manifest-20260814-v5.json"
 )
 BASES = ("STETH", "WEETH", "CC", "OKB", "RAIN", "MNT", "USDD", "BDX", "EDGE")
 
@@ -1239,18 +1261,69 @@ class ExecutionBoundaryTests(unittest.TestCase):
             self.assertFalse(payload["identity_output_created"])
             self.assertFalse(output.exists())
 
-    def test_launcher_default_binds_current_runtime_manifest_v4(self) -> None:
+    def test_identity_runtime_v5_binds_exact_refreeze_lineage(self) -> None:
+        observed = json.loads(IDENTITY_V5_RUNTIME_PATH.read_text(encoding="utf-8"))
+        launcher = (
+            REPO_ROOT / "tools/start_exact_approved_slow_liquidity_official_identity_visible.ps1"
+        )
+        expected = build_runtime_manifest_v5(
+            proposal_path=PROPOSAL_PATH,
+            expected_proposal_hash=PROPOSAL_HASH,
+            expected_proposal_file_sha256=PROPOSAL_FILE_SHA256,
+            approval_receipt_path=OFFLINE_RECEIPT_PATH,
+            parent_runtime_manifest_path=PARENT_IDENTITY_V4_RUNTIME_PATH,
+            topology_runtime_manifest_path=TOPOLOGY_V4_RUNTIME_PATH,
+            runtime_module_path=(
+                REPO_ROOT
+                / "trading_mvp/src/slow_liquidity_official_identity_verification.py"
+            ),
+            synthetic_tests_path=Path(__file__).resolve(),
+            launcher_path=launcher,
+            generated_at_utc=observed["generated_at_utc"],
+        )
+        self.assertEqual(observed, expected)
+        self.assertEqual(observed["runtime_revision"], RUNTIME_REVISION_V5)
+        self.assertEqual(
+            observed["refreeze_lineage"]["identity_runtime_v4"]["file_sha256"],
+            PARENT_IDENTITY_V4_RUNTIME_FILE_SHA256,
+        )
+        self.assertEqual(
+            observed["refreeze_lineage"]["identity_runtime_v4"]["manifest_hash"],
+            PARENT_IDENTITY_V4_RUNTIME_HASH,
+        )
+        self.assertEqual(
+            observed["refreeze_lineage"]["topology_runtime_v4"]["file_sha256"],
+            TOPOLOGY_V4_RUNTIME_FILE_SHA256,
+        )
+        self.assertEqual(
+            observed["refreeze_lineage"]["topology_runtime_v4"]["manifest_hash"],
+            TOPOLOGY_V4_RUNTIME_HASH,
+        )
+        self.assertFalse(
+            observed["offline_refreeze_authorization"]["new_approval_receipt_created"]
+        )
+        validate_runtime_manifest(observed)
+
+    def test_launcher_default_binds_current_runtime_manifest_v5(self) -> None:
         launcher = (
             REPO_ROOT / "tools/start_exact_approved_slow_liquidity_official_identity_visible.ps1"
         )
         source = launcher.read_text(encoding="utf-8")
 
         self.assertIn(
+            "slow-liquidity-official-identity-runtime-manifest-20260814-v5.json",
+            source,
+        )
+        self.assertIn(
+            "slow-liquidity-official-identity-execution-manifest-20260814-v5.json",
+            source,
+        )
+        self.assertNotIn(
             "slow-liquidity-official-identity-runtime-manifest-20260813-v4.json",
             source,
         )
         self.assertNotIn(
-            "slow-liquidity-official-identity-runtime-manifest-20260813-v1.json",
+            "slow-liquidity-official-identity-execution-manifest-20260813-v1.json",
             source,
         )
 

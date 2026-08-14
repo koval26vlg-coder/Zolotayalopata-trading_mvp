@@ -2203,6 +2203,15 @@ def evaluate_autopilot_state(
                 )
             elif (
                 readiness_source_status
+                == "TOPOLOGY_V4_RUNTIME_FROZEN_AWAIT_EXACT_EXECUTION_APPROVAL"
+                and not readiness_execution_authorized
+            ):
+                decision = (
+                    "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
+                    "TOPOLOGY_V4_EXECUTION_APPROVAL"
+                )
+            elif (
+                readiness_source_status
                 == "TOPOLOGY_V3_RUNTIME_FROZEN_AWAIT_EXACT_EXECUTION_APPROVAL"
                 and not readiness_execution_authorized
             ):
@@ -2241,6 +2250,7 @@ def evaluate_autopilot_state(
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY",
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V3",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL",
+                "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V4_EXECUTION_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V3_EXECUTION_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V2_EXECUTION_APPROVAL",
             }

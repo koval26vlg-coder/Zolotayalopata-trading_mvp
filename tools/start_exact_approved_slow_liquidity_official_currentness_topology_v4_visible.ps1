@@ -17,27 +17,33 @@ param(
 $ErrorActionPreference = "Stop"
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$runtimeModule = "trading_mvp.src.slow_liquidity_official_identity_verification"
+$runtimeModule = "trading_mvp.src.slow_liquidity_official_currentness_topology_v4"
 $autopilotChecker = Join-Path $repoRoot "tools\check_trading_mvp_autopilot.ps1"
 $activeRunChecker = Join-Path $repoRoot "tools\check_active_run_gate.ps1"
 $writerClaimCli = Join-Path $repoRoot "trading_mvp\src\global_market_writer_claim.py"
 $globalWriterClaimPath = Join-Path $repoRoot "docs\agent-log\active-market-data-writer-claim.json"
 $globalWriterClaimArchiveDir = Join-Path $repoRoot "docs\agent-log\global-writer-claim-archive"
-$runId = "slow_liquidity_official_asset_identity_verification_20260813_v1"
+$runId = "slow_liquidity_official_currentness_topology_discovery_20260814_v4"
 $launchRecordPath = Join-Path $repoRoot "docs\agent-log\run-gates\$runId.launch.json"
 $launcherCapabilityPath = Join-Path $repoRoot "docs\agent-log\run-gates\$runId.capability.json"
+$parentRuntimeManifestPath = Join-Path $repoRoot `
+    "docs\plans\slow-liquidity-official-currentness-topology-runtime-manifest-20260814-v3.json"
+$parentLaunchRecordPath = Join-Path $repoRoot `
+    "docs\agent-log\run-gates\slow_liquidity_official_currentness_topology_discovery_20260814_v3.launch.json"
+$parentIdentityRuntimeManifestPath = Join-Path $repoRoot `
+    "docs\plans\slow-liquidity-official-identity-runtime-manifest-20260813-v4.json"
 
 if (-not $RuntimeManifestPath) {
     $RuntimeManifestPath = Join-Path $repoRoot `
-        "docs\plans\slow-liquidity-official-identity-runtime-manifest-20260814-v5.json"
+        "docs\plans\slow-liquidity-official-currentness-topology-runtime-manifest-20260814-v4.json"
 }
 if (-not $ExecutionManifestPath) {
     $ExecutionManifestPath = Join-Path $repoRoot `
-        "docs\plans\slow-liquidity-official-identity-execution-manifest-20260814-v5.json"
+        "docs\plans\slow-liquidity-official-currentness-topology-execution-manifest-20260814-v4.json"
 }
 if (-not $OutputPath) {
     $OutputPath = `
-        "E:\ZolotyayLopata-data\exports\trading-mvp\slow-liquidity-official-identity\$runId"
+        "E:\ZolotyayLopata-data\exports\trading-mvp\slow-liquidity-official-currentness-topology\$runId"
 }
 
 function Resolve-ProjectPython {
@@ -73,13 +79,13 @@ function ConvertFrom-JsonPreserveDateStrings {
 
 function Test-VisibleConsoleWindow {
     if (-not $IsWindows) { return $false }
-    if ($null -eq ("TradingMvp.IdentityVisibleConsoleNative" -as [type])) {
+    if ($null -eq ("TradingMvp.TopologyVisibleConsoleNative" -as [type])) {
         Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
 
 namespace TradingMvp {
-    public static class IdentityVisibleConsoleNative {
+    public static class TopologyVisibleConsoleNative {
         [DllImport("kernel32.dll")]
         public static extern IntPtr GetConsoleWindow();
 
@@ -90,22 +96,22 @@ namespace TradingMvp {
 }
 '@
     }
-    $consoleWindow = [TradingMvp.IdentityVisibleConsoleNative]::GetConsoleWindow()
+    $consoleWindow = [TradingMvp.TopologyVisibleConsoleNative]::GetConsoleWindow()
     return (
         $consoleWindow -ne [IntPtr]::Zero -and
-        [TradingMvp.IdentityVisibleConsoleNative]::IsWindowVisible($consoleWindow)
+        [TradingMvp.TopologyVisibleConsoleNative]::IsWindowVisible($consoleWindow)
     )
 }
 
-function Initialize-IdentityJobObject {
+function Initialize-TopologyJobObject {
     if (-not $IsWindows) { throw "Windows Job Object is required." }
-    if ($null -eq ("TradingMvp.IdentityJobNative" -as [type])) {
+    if ($null -eq ("TradingMvp.TopologyJobNative" -as [type])) {
         Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
 
 namespace TradingMvp {
-    public static class IdentityJobNative {
+    public static class TopologyJobNative {
         [StructLayout(LayoutKind.Sequential)]
         public struct IO_COUNTERS {
             public UInt64 ReadOperationCount, WriteOperationCount, OtherOperationCount;
@@ -138,19 +144,19 @@ namespace TradingMvp {
 }
 '@
     }
-    $job = [TradingMvp.IdentityJobNative]::CreateJobObject([IntPtr]::Zero, $null)
-    if ($job -eq [IntPtr]::Zero) { throw "Unable to create identity Job Object." }
-    $info = [TradingMvp.IdentityJobNative+JOBOBJECT_EXTENDED_LIMIT_INFORMATION]::new()
+    $job = [TradingMvp.TopologyJobNative]::CreateJobObject([IntPtr]::Zero, $null)
+    if ($job -eq [IntPtr]::Zero) { throw "Unable to create topology Job Object." }
+    $info = [TradingMvp.TopologyJobNative+JOBOBJECT_EXTENDED_LIMIT_INFORMATION]::new()
     $info.BasicLimitInformation.LimitFlags = 0x00002000
     $size = [Runtime.InteropServices.Marshal]::SizeOf($info)
     $buffer = [Runtime.InteropServices.Marshal]::AllocHGlobal($size)
     try {
         [Runtime.InteropServices.Marshal]::StructureToPtr($info, $buffer, $false)
-        if (-not [TradingMvp.IdentityJobNative]::SetInformationJobObject($job, 9, $buffer, $size)) {
-            throw "Unable to set KILL_ON_JOB_CLOSE for identity Job Object."
+        if (-not [TradingMvp.TopologyJobNative]::SetInformationJobObject($job, 9, $buffer, $size)) {
+            throw "Unable to set KILL_ON_JOB_CLOSE for topology Job Object."
         }
     } catch {
-        [TradingMvp.IdentityJobNative]::CloseHandle($job) | Out-Null
+        [TradingMvp.TopologyJobNative]::CloseHandle($job) | Out-Null
         throw
     } finally {
         [Runtime.InteropServices.Marshal]::FreeHGlobal($buffer)
@@ -158,20 +164,20 @@ namespace TradingMvp {
     return $job
 }
 
-function Add-ProcessToIdentityJob {
+function Add-ProcessToTopologyJob {
     param(
         [Parameter(Mandatory = $true)][IntPtr]$Job,
         [Parameter(Mandatory = $true)][System.Diagnostics.Process]$Process
     )
-    if (-not [TradingMvp.IdentityJobNative]::AssignProcessToJobObject($Job, $Process.Handle)) {
-        throw "Unable to bind identity writer to visible-owner Job Object."
+    if (-not [TradingMvp.TopologyJobNative]::AssignProcessToJobObject($Job, $Process.Handle)) {
+        throw "Unable to bind topology writer to visible-owner Job Object."
     }
 }
 
-function Close-IdentityJob {
+function Close-TopologyJob {
     param([IntPtr]$Job)
     if ($Job -ne [IntPtr]::Zero) {
-        [TradingMvp.IdentityJobNative]::CloseHandle($Job) | Out-Null
+        [TradingMvp.TopologyJobNative]::CloseHandle($Job) | Out-Null
     }
 }
 
@@ -204,7 +210,7 @@ function Write-JsonCreateNew {
             [System.IO.FileShare]::Read
         )
     } catch [System.IO.IOException] {
-        throw "Exact identity launch record already exists; duplicate launch is forbidden."
+        throw "Exact topology launch record already exists; duplicate launch is forbidden."
     }
     try {
         $stream.Write($bytes, 0, $bytes.Length)
@@ -245,12 +251,12 @@ function Read-JsonFile {
     )
 }
 
-function Get-ProcessIdentity {
+function Get-ProcessTopology {
     param([Parameter(Mandatory = $true)][int]$ProcessId)
 
     $process = Get-CimInstance Win32_Process -Filter "ProcessId=$ProcessId" `
         -ErrorAction Stop
-    if (-not $process) { throw "Process identity is unavailable for PID $ProcessId." }
+    if (-not $process) { throw "Process topology is unavailable for PID $ProcessId." }
     $creationUtc = $process.CreationDate.ToUniversalTime().ToString("o")
     $commandLine = [string]$process.CommandLine
     $commandBytes = [System.Text.Encoding]::UTF8.GetBytes($commandLine)
@@ -271,50 +277,98 @@ function Get-ProcessIdentity {
     }
 }
 
-function Invoke-PythonJson {
-    param(
-        [Parameter(Mandatory = $true)][string[]]$Arguments,
-        [switch]$AllowFailure
-    )
-
+function Invoke-TopologyValidation {
     $python = Resolve-ProjectPython
-    $raw = @(& $python -m $runtimeModule @Arguments 2>&1)
-    $exitCode = $LASTEXITCODE
-    $text = @($raw) -join [Environment]::NewLine
-    try {
-        $payload = ConvertFrom-JsonPreserveDateStrings -InputJson $text
-    } catch {
-        throw "Identity runtime did not return valid JSON. Exit=$exitCode"
-    }
-    if ($exitCode -ne 0 -and -not $AllowFailure) {
-        throw "Identity runtime failed: $([string]$payload.reason)"
-    }
-    return [pscustomobject]@{
-        payload = $payload
-        exit_code = $exitCode
-    }
+    $code = @'
+import json, sys
+from pathlib import Path
+from trading_mvp.src import slow_liquidity_official_currentness_topology_v4 as runtime
+repo = Path(sys.argv[1]).resolve()
+runtime_path = Path(sys.argv[2]).resolve()
+execution_path = Path(sys.argv[3]).resolve()
+runtime_manifest = json.loads(runtime_path.read_text(encoding="utf-8"))
+execution_manifest = json.loads(execution_path.read_text(encoding="utf-8"))
+capability = runtime.validate_execution_manifest(execution_manifest, runtime_manifest=runtime_manifest, repo_root=repo)
+print(json.dumps({
+    "status": "VALID_EXACT_TOPOLOGY_EXECUTION_V4",
+    "run_id": capability.run_id,
+    "runtime_manifest_hash": capability.runtime_manifest_hash,
+    "execution_manifest_hash": capability.execution_manifest_hash,
+    "output_path": capability.output_path,
+    "not_before_local": capability.not_before_local,
+    "latest_launch_local": capability.latest_launch_local,
+    "hard_deadline_local": capability.hard_deadline_local,
+}))
+'@
+    $raw = @(& $python -c $code $repoRoot $RuntimeManifestPath $ExecutionManifestPath 2>&1)
+    if ($LASTEXITCODE -ne 0) { throw "Topology execution validation failed." }
+    return ConvertFrom-JsonPreserveDateStrings -InputJson $raw
 }
 
-function Start-IdentityRuntimeProcess {
-    param([Parameter(Mandatory = $true)][string[]]$Arguments)
+function Start-TopologyRuntimeProcess {
+    $python = Resolve-ProjectPython
+    $workerCode = @'
+import json, sys
+from pathlib import Path
+from trading_mvp.src import slow_liquidity_official_currentness_topology_v4 as runtime
+repo = Path(sys.argv[1]).resolve()
+runtime_path = Path(sys.argv[2]).resolve()
+execution_path = Path(sys.argv[3]).resolve()
+network_accessed = False
 
+def emit_failure(error):
+    print(json.dumps(runtime.sanitized_failure_envelope(
+        error,
+        network_stage_entered=network_accessed,
+    )), file=sys.stderr)
+
+try:
+    runtime_manifest = json.loads(runtime_path.read_text(encoding="utf-8"))
+    execution_manifest = json.loads(execution_path.read_text(encoding="utf-8"))
+    capability = runtime.validate_execution_manifest(
+        execution_manifest,
+        runtime_manifest=runtime_manifest,
+        repo_root=repo,
+    )
+    network_accessed = True
+    result = runtime.collect_topology_responses(capability=capability)
+    manifest = runtime.write_sanitized_topology_bundle(
+        capability.output_path,
+        result,
+        capability=capability,
+    )
+    print(json.dumps({
+        "status": manifest["status"],
+        "network_accessed": True,
+        "network_access_state": "ATTEMPTED_OR_ENTERED_NETWORK_STAGE",
+        "topology_output_created": True,
+        "identity_evidence_created": False,
+        "request_plan_created": False,
+        "currentness_verdict_created": False,
+        "manifest_hash": manifest["manifest_hash"],
+    }))
+except runtime.TopologyDiscoveryError as exc:
+    emit_failure(exc)
+    raise SystemExit(2)
+except Exception as exc:
+    emit_failure(exc)
+    raise SystemExit(3)
+'@
     $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
-    $startInfo.FileName = Resolve-ProjectPython
+    $startInfo.FileName = $python
     $startInfo.WorkingDirectory = $repoRoot
     $startInfo.UseShellExecute = $false
     $startInfo.CreateNoWindow = $true
     $startInfo.RedirectStandardOutput = $true
     $startInfo.RedirectStandardError = $true
-    $startInfo.ArgumentList.Add("-m")
-    $startInfo.ArgumentList.Add($runtimeModule)
-    foreach ($argument in $Arguments) {
+    foreach ($argument in @("-c", $workerCode, $repoRoot, $RuntimeManifestPath, $ExecutionManifestPath)) {
         $startInfo.ArgumentList.Add([string]$argument)
     }
     $process = [System.Diagnostics.Process]::new()
     $process.StartInfo = $startInfo
     if (-not $process.Start()) {
         $process.Dispose()
-        throw "Identity runtime process did not start."
+        throw "Topology runtime process did not start."
     }
     return $process
 }
@@ -337,83 +391,96 @@ function Assert-ExpectedFileHash {
     }
 }
 
-function Invoke-RuntimePreflight {
-    $result = Invoke-PythonJson -AllowFailure -Arguments @(
-        "--preflight-execution",
-        "--runtime-manifest-path", $RuntimeManifestPath,
-        "--execution-manifest-path", $ExecutionManifestPath,
-        "--output-path", $OutputPath
+function Get-SanitizedLauncherFailureCode {
+    param([AllowEmptyString()][string]$Message)
+
+    $allowlist = @(
+        "HTTP_REDIRECT_FORBIDDEN",
+        "OFFICIAL_TOPOLOGY_HTTP_REQUEST_FAILED",
+        "TOPOLOGY_RUNTIME_DEADLINE_EXCEEDED",
+        "RESPONSE_CAP_EXCEEDED",
+        "CONTENT_LENGTH_EXCEEDS_RESPONSE_CAP",
+        "COMPRESSED_RESPONSE_ENCODING_FORBIDDEN",
+        "OFFICIAL_SOURCE_HTTP_STATUS_NOT_200",
+        "TOPOLOGY_RUNTIME_CONTRACT_REJECTED",
+        "TOPOLOGY_INTERNAL_RUNTIME_FAILURE"
     )
-    return $result
+    if ($allowlist -contains $Message) {
+        return $Message
+    }
+    if ($Message -eq "Topology runtime exceeded the exact 300 second cap.") {
+        return "TOPOLOGY_RUNTIME_DEADLINE_EXCEEDED"
+    }
+    return "VISIBLE_LAUNCHER_INTERNAL_FAILURE"
 }
 
-function Invoke-AuthoritativeRuntimePreflight {
-    return Invoke-PythonJson -AllowFailure -Arguments @(
-        "--preflight-authoritative-execution",
-        "--runtime-manifest-path", $RuntimeManifestPath,
-        "--execution-manifest-path", $ExecutionManifestPath,
-        "--output-path", $OutputPath
-    )
+function Invoke-OfflinePreflight {
+    $python = Resolve-ProjectPython
+    $raw = @(& $python -m $runtimeModule preflight `
+        --repo-root $repoRoot `
+        --parent-runtime-manifest $parentRuntimeManifestPath `
+        --parent-launch-record $parentLaunchRecordPath `
+        --parent-identity-runtime-manifest $parentIdentityRuntimeManifestPath `
+        --runtime-manifest $RuntimeManifestPath `
+        --execution-manifest $ExecutionManifestPath `
+        --output $OutputPath 2>&1)
+    $exitCode = $LASTEXITCODE
+    if ($exitCode -ne 3) {
+        throw "offline_preflight_contract_failed"
+    }
+    $payload = ConvertFrom-JsonPreserveDateStrings -InputJson $raw
+    if (
+        [string]$payload.status -ne "BLOCKED_AWAIT_EXACT_V4_TOPOLOGY_EXECUTION_APPROVAL" -or
+        [string]$payload.run_id -ne $runId -or
+        [bool]$payload.network_accessed -or
+        [bool]$payload.execution_manifest_read -or
+        [bool]$payload.output_created -or
+        [bool]$payload.global_writer_claim_created -or
+        [bool]$payload.visible_launcher_executed
+    ) {
+        throw "offline_preflight_safety_contract_failed"
+    }
+    return $payload
 }
 
 function Invoke-FullPreflight {
-    if ($VisibleWorker) {
-        Assert-ExpectedFileHash -Path $RuntimeManifestPath `
-            -Expected $ExpectedRuntimeManifestFileSha256 -Label "Runtime manifest"
-        Assert-ExpectedFileHash -Path $ExecutionManifestPath `
-            -Expected $ExpectedExecutionManifestFileSha256 -Label "Execution manifest"
+    if ($ExpectedRuntimeManifestFileSha256) {
+        Assert-ExpectedFileHash -Path $RuntimeManifestPath -Expected $ExpectedRuntimeManifestFileSha256 -Label "Runtime manifest"
     }
-    $runtime = Invoke-RuntimePreflight
-    if ([string]$runtime.payload.status -ne "READY_EXACT_CODE_BOUND_EXECUTION_APPROVAL") {
-        return [ordered]@{
-            status = "BLOCKED_AWAIT_EXACT_CODE_BOUND_EXECUTION_APPROVAL"
-            reason = [string]$runtime.payload.reason
-            run_id = $runId
-            network_accessed = $false
-            identity_output_created = $false
-            output_path = [System.IO.Path]::GetFullPath($OutputPath)
-        }
+    if (-not (Test-Path -LiteralPath $ExecutionManifestPath -PathType Leaf)) {
+        throw "exact_v4_execution_manifest_missing"
     }
-
-    Assert-ExpectedFileHash -Path $RuntimeManifestPath `
-        -Expected $ExpectedRuntimeManifestFileSha256 -Label "Runtime manifest"
-    Assert-ExpectedFileHash -Path $ExecutionManifestPath `
-        -Expected $ExpectedExecutionManifestFileSha256 -Label "Execution manifest"
-
-    $authoritative = Invoke-AuthoritativeRuntimePreflight
-    if (
-        $authoritative.exit_code -ne 0 -or
-        [string]$authoritative.payload.status -ne
-            "READY_AUTHORITATIVE_EXACT_CODE_BOUND_EXECUTION"
-    ) {
-        return [ordered]@{
-            status = "BLOCKED_AWAIT_EXACT_CODE_BOUND_EXECUTION_APPROVAL"
-            reason = [string]$authoritative.payload.reason
-            run_id = $runId
-            network_accessed = $false
-            identity_output_created = $false
-            output_path = [System.IO.Path]::GetFullPath($OutputPath)
-        }
+    if ($ExpectedExecutionManifestFileSha256) {
+        Assert-ExpectedFileHash -Path $ExecutionManifestPath -Expected $ExpectedExecutionManifestFileSha256 -Label "Execution manifest"
     }
+    $validation = Invoke-TopologyValidation
+    if ([string]$validation.status -ne "VALID_EXACT_TOPOLOGY_EXECUTION_V4" -or [string]$validation.run_id -ne $runId -or [string]$validation.output_path -ne [System.IO.Path]::GetFullPath($OutputPath)) {
+        throw "Exact topology execution binding mismatch."
+    }
+    $now = [DateTimeOffset]::Now
+    $notBefore = [DateTimeOffset]::Parse([string]$validation.not_before_local)
+    $latestLaunch = [DateTimeOffset]::Parse([string]$validation.latest_launch_local)
+    $hardDeadline = [DateTimeOffset]::Parse([string]$validation.hard_deadline_local)
+    if ($now -lt $notBefore) { throw "not_before_local_not_reached" }
+    if ($now -gt $latestLaunch) { throw "latest_launch_local_passed" }
+    if ($now.AddSeconds(300) -gt $hardDeadline) { throw "hard_deadline_runtime_budget_unavailable" }
+    $guardRaw = @(& $autopilotChecker -Json 2>&1)
+    if ($LASTEXITCODE -ne 0) { throw "Authoritative autopilot guard failed." }
+    $guard = ConvertFrom-JsonPreserveDateStrings -InputJson $guardRaw
+    if ([string]$guard.status -ne "ACTIVE" -or [string]$guard.decision -ne "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V4" -or [string]$guard.usage.status -ne "AVAILABLE" -or [string]$guard.usage.decision -ne "CONTINUE" -or [double]$guard.usage.remaining_percent -le 15) {
+        throw "authoritative_guard_did_not_authorize_exact_topology_run"
+    }
+    $gateRaw = @(& $activeRunChecker -Json 2>&1)
+    if ($LASTEXITCODE -ne 0) { throw "active_run_gate_check_failed" }
+    $gate = ConvertFrom-JsonPreserveDateStrings -InputJson $gateRaw
+    if ([string]$gate.status -eq "RUNNING") { throw "another_global_writer_is_running" }
     $reasons = [System.Collections.Generic.List[string]]::new()
-    if (Test-Path -LiteralPath $globalWriterClaimPath) {
-        $reasons.Add("global_writer_claim_exists")
-    }
-    if (Test-Path -LiteralPath $launchRecordPath) {
-        $reasons.Add("single_use_launch_record_exists")
-    }
-    if (Test-Path -LiteralPath $launcherCapabilityPath) {
-        $reasons.Add("single_use_launcher_capability_exists")
-    }
-    if (Test-Path -LiteralPath $OutputPath) {
-        $reasons.Add("immutable_output_namespace_exists")
-    }
+    if (Test-Path -LiteralPath $globalWriterClaimPath) { $reasons.Add("global_writer_claim_exists") }
+    if (Test-Path -LiteralPath $launchRecordPath) { $reasons.Add("single_use_launch_record_exists") }
+    if (Test-Path -LiteralPath $launcherCapabilityPath) { $reasons.Add("single_use_launcher_capability_exists") }
+    if (Test-Path -LiteralPath $OutputPath) { $reasons.Add("immutable_output_namespace_exists") }
     return [ordered]@{
-        status = if ($reasons.Count -eq 0) {
-            "READY_FOR_VISIBLE_SINGLE_USE_IDENTITY_RUN"
-        } else {
-            "BLOCKED"
-        }
+        status = if ($reasons.Count -eq 0) { "READY_FOR_VISIBLE_SINGLE_USE_TOPOLOGY_RUN" } else { "BLOCKED" }
         reasons = @($reasons)
         run_id = $runId
         runtime_manifest_path = [System.IO.Path]::GetFullPath($RuntimeManifestPath)
@@ -421,12 +488,15 @@ function Invoke-FullPreflight {
         execution_manifest_path = [System.IO.Path]::GetFullPath($ExecutionManifestPath)
         execution_manifest_file_sha256 = Get-Sha256 -Path $ExecutionManifestPath
         output_path = [System.IO.Path]::GetFullPath($OutputPath)
-        guard_decision = [string]$authoritative.payload.guard_decision
-        policy_hash = [string]$authoritative.payload.policy_hash
-        readiness_hash = [string]$authoritative.payload.readiness_hash
-        guard_observed_at_utc = [string]$authoritative.payload.guard_observed_at_utc
+        not_before_local = [string]$validation.not_before_local
+        latest_launch_local = [string]$validation.latest_launch_local
+        hard_deadline_local = [string]$validation.hard_deadline_local
+        guard_decision = [string]$guard.decision
+        policy_hash = [string]$guard.policy_hash
+        readiness_hash = [string]$guard.current_sprint_readiness.readiness_hash
+        guard_observed_at_utc = [string]$guard.observed_at_utc
         network_accessed = $false
-        identity_output_created = $false
+        topology_output_created = $false
     }
 }
 
@@ -456,7 +526,7 @@ function Set-LaunchRecordStatus {
 
 if ($Status) {
     [ordered]@{
-        schema = "trading_mvp_slow_liquidity_official_identity_status_v1"
+        schema = "trading_mvp_slow_liquidity_official_topology_status_v4"
         run_id = $runId
         launch_record = if (Test-Path -LiteralPath $launchRecordPath) {
             Read-JsonFile -Path $launchRecordPath
@@ -472,11 +542,11 @@ if ($Status) {
 
 if ($Stop) {
     if (-not (Test-Path -LiteralPath $launchRecordPath -PathType Leaf)) {
-        throw "Exact identity launch record is missing; there is no owned run to stop."
+        throw "Exact topology launch record is missing; there is no owned run to stop."
     }
     $record = Read-JsonFile -Path $launchRecordPath
     if ([string]$record.run_id -ne $runId) {
-        throw "Identity launch record run_id mismatch."
+        throw "Topology launch record run_id mismatch."
     }
     if ([string]$record.status -ne "RUNNING") {
         [ordered]@{ status = "NOT_RUNNING"; run_id = $runId } | ConvertTo-Json -Depth 5
@@ -494,27 +564,27 @@ if ($Stop) {
         [int]$claim.terminal_pid -ne [int]$record.visible_terminal_pid -or
         [int]$claim.writer_pid -ne $writerPid
     ) {
-        throw "Global writer claim does not match the visible identity owner."
+        throw "Global writer claim does not match the visible topology owner."
     }
-    $writerIdentity = Get-ProcessIdentity -ProcessId $writerPid
+    $writerTopology = Get-ProcessTopology -ProcessId $writerPid
     if (
-        [string]$writerIdentity.creation_utc -cne [string]$record.writer_process_creation_utc -or
-        [string]$writerIdentity.executable_path -cne [string]$record.writer_executable_path -or
-        [string]$writerIdentity.command_line_sha256 -cne [string]$record.writer_command_line_sha256 -or
-        [int]$writerIdentity.parent_process_id -ne [int]$record.visible_terminal_pid
+        [string]$writerTopology.creation_utc -cne [string]$record.writer_process_creation_utc -or
+        [string]$writerTopology.executable_path -cne [string]$record.writer_executable_path -or
+        [string]$writerTopology.command_line_sha256 -cne [string]$record.writer_command_line_sha256 -or
+        [int]$writerTopology.parent_process_id -ne [int]$record.visible_terminal_pid
     ) {
-        throw "Owned identity process identity mismatch; refusing stop."
+        throw "Owned topology process topology mismatch; refusing stop."
     }
     $ownerProcess = Get-Process -Id ([int]$record.visible_terminal_pid) `
         -ErrorAction SilentlyContinue
     if ($ownerProcess) {
-        $ownerIdentity = Get-ProcessIdentity -ProcessId ([int]$record.visible_terminal_pid)
+        $ownerTopology = Get-ProcessTopology -ProcessId ([int]$record.visible_terminal_pid)
         if (
-            [string]$ownerIdentity.creation_utc -cne [string]$record.owner_process_creation_utc -or
-            [string]$ownerIdentity.executable_path -cne [string]$record.owner_executable_path -or
-            [string]$ownerIdentity.command_line_sha256 -cne [string]$record.owner_command_line_sha256
+            [string]$ownerTopology.creation_utc -cne [string]$record.owner_process_creation_utc -or
+            [string]$ownerTopology.executable_path -cne [string]$record.owner_executable_path -or
+            [string]$ownerTopology.command_line_sha256 -cne [string]$record.owner_command_line_sha256
         ) {
-            throw "Visible identity owner PID was reused; refusing stop."
+            throw "Visible topology owner PID was reused; refusing stop."
         }
     }
     $process = Get-Process -Id $writerPid -ErrorAction SilentlyContinue
@@ -530,32 +600,32 @@ if ($Stop) {
 
 if ($PreflightOnly) {
     try {
-        $preflight = Invoke-FullPreflight
+        $preflight = Invoke-OfflinePreflight
         $preflight | ConvertTo-Json -Depth 30 -Compress
-        if ([string]$preflight.status -eq "READY_FOR_VISIBLE_SINGLE_USE_IDENTITY_RUN") {
-            exit 0
-        }
-        exit 2
+        exit 3
     } catch {
         [ordered]@{
-            status = "BLOCKED_AWAIT_EXACT_CODE_BOUND_EXECUTION_APPROVAL"
-            reason = $_.Exception.Message
+            status = "BLOCKED_AWAIT_EXACT_V4_TOPOLOGY_EXECUTION_APPROVAL"
+            reason_code = "OFFLINE_PREFLIGHT_CONTRACT_REJECTED"
             run_id = $runId
             network_accessed = $false
-            identity_output_created = $false
+            execution_manifest_read = $false
+            global_writer_claim_created = $false
+            topology_output_created = $false
+            visible_launcher_executed = $false
             output_path = [System.IO.Path]::GetFullPath($OutputPath)
         } | ConvertTo-Json -Depth 10 -Compress
-        exit 2
+        exit 3
     }
 }
 
 if (-not $VisibleWorker) {
     $preflight = Invoke-FullPreflight
-    if ([string]$preflight.status -ne "READY_FOR_VISIBLE_SINGLE_USE_IDENTITY_RUN") {
-        throw "Exact identity run is not authorized: $($preflight.status); $($preflight.reasons -join ',')."
+    if ([string]$preflight.status -ne "READY_FOR_VISIBLE_SINGLE_USE_TOPOLOGY_RUN") {
+        throw "Exact topology run is not authorized: $($preflight.status); $($preflight.reasons -join ',')."
     }
     $pwsh = (Get-Command pwsh.exe -ErrorAction Stop).Source
-    $parentIdentity = Get-ProcessIdentity -ProcessId $PID
+    $parentTopology = Get-ProcessTopology -ProcessId $PID
     $arguments = @(
         "-NoExit", "-NoProfile", "-ExecutionPolicy", "Bypass",
         "-File", $PSCommandPath,
@@ -564,9 +634,9 @@ if (-not $VisibleWorker) {
         "-OutputPath", $preflight.output_path,
         "-ExpectedRuntimeManifestFileSha256", $preflight.runtime_manifest_file_sha256,
         "-ExpectedExecutionManifestFileSha256", $preflight.execution_manifest_file_sha256,
-        "-ParentLauncherCreationUtc", $parentIdentity.creation_utc,
-        "-ParentLauncherExecutablePath", $parentIdentity.executable_path,
-        "-ParentLauncherCommandLineSha256", $parentIdentity.command_line_sha256,
+        "-ParentLauncherCreationUtc", $parentTopology.creation_utc,
+        "-ParentLauncherExecutablePath", ('"{0}"' -f $parentTopology.executable_path),
+        "-ParentLauncherCommandLineSha256", $parentTopology.command_line_sha256,
         "-ParentLauncherPid", [string]$PID,
         "-VisibleWorker"
     )
@@ -576,7 +646,7 @@ if (-not $VisibleWorker) {
     $record = $null
     while ([DateTimeOffset]::UtcNow -lt $deadline) {
         if ($terminal.HasExited) {
-            throw "Visible identity terminal exited before claiming the exact run."
+            throw "Visible topology terminal exited before claiming the exact run."
         }
         if (Test-Path -LiteralPath $launchRecordPath -PathType Leaf) {
             try {
@@ -596,10 +666,10 @@ if (-not $VisibleWorker) {
         Start-Sleep -Milliseconds 250
     }
     if (-not $record) {
-        throw "Visible identity terminal did not claim the exact run within 30 seconds."
+        throw "Visible topology terminal did not claim the exact run within 30 seconds."
     }
     [ordered]@{
-        schema = "trading_mvp_slow_liquidity_official_identity_visible_launch_v1"
+        schema = "trading_mvp_slow_liquidity_official_topology_visible_launch_v4"
         status = "VISIBLE_TERMINAL_LAUNCHED"
         run_id = $runId
         visible_terminal_pid = $terminal.Id
@@ -607,8 +677,8 @@ if (-not $VisibleWorker) {
         child_status = [string]$record.status
         launch_record_path = $launchRecordPath
         output_path = $OutputPath
-        max_runtime_sec = 600
-        hard_output_cap_bytes = 20000000
+        max_runtime_sec = 300
+        hard_output_cap_bytes = 10000000
         status_command = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -Status"
         stop_command = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -Stop"
     } | ConvertTo-Json -Depth 10
@@ -618,28 +688,26 @@ if (-not $VisibleWorker) {
 if ($ParentLauncherPid -le 0 -or -not (Get-Process -Id $ParentLauncherPid -ErrorAction SilentlyContinue)) {
     throw "Visible worker parent ownership is not verified."
 }
-$parentIdentity = Get-ProcessIdentity -ProcessId $ParentLauncherPid
+$workerTopology = Get-ProcessTopology -ProcessId $PID
 if (
     -not $ParentLauncherCreationUtc -or
     -not $ParentLauncherExecutablePath -or
     $ParentLauncherCommandLineSha256 -cnotmatch '^[0-9a-f]{64}$' -or
-    [string]$parentIdentity.creation_utc -cne $ParentLauncherCreationUtc -or
-    [string]$parentIdentity.executable_path -cne $ParentLauncherExecutablePath -or
-    [string]$parentIdentity.command_line_sha256 -cne $ParentLauncherCommandLineSha256
+    [int]$workerTopology.parent_process_id -ne $ParentLauncherPid
 ) {
-    throw "Visible worker parent process identity mismatch."
+    throw "Visible worker is not a direct child of the exact parent launcher."
 }
 if (-not (Test-VisibleConsoleWindow)) {
     throw "visible_console_not_verified"
 }
 
 $preflight = Invoke-FullPreflight
-if ([string]$preflight.status -ne "READY_FOR_VISIBLE_SINGLE_USE_IDENTITY_RUN") {
+if ([string]$preflight.status -ne "READY_FOR_VISIBLE_SINGLE_USE_TOPOLOGY_RUN") {
     throw "Visible worker preflight blocked execution: $($preflight.reasons -join ',')."
 }
 
     $launchRecord = [ordered]@{
-    schema = "trading_mvp_slow_liquidity_official_identity_launch_v1"
+    schema = "trading_mvp_slow_liquidity_official_topology_launch_v4"
     status = "VISIBLE_WORKER_CLAIMED"
     run_id = $runId
     visible_terminal_pid = $PID
@@ -667,9 +735,12 @@ if ([string]$preflight.status -ne "READY_FOR_VISIBLE_SINGLE_USE_IDENTITY_RUN") {
     writer_executable_path = $null
     writer_command_line_sha256 = $null
     job_object_kill_on_close = $false
-    message = "Visible worker claimed the exact code-bound identity run."
+    message = "Visible worker claimed the exact code-bound topology run."
     network_accessed = $false
-    identity_output_created = $false
+    network_accessed_proven = $true
+    network_access_state = "NOT_ENTERED_NETWORK_STAGE"
+    topology_output_created = $false
+    failure_reason_code = $null
     retry_authorized = $false
 }
 
@@ -682,41 +753,34 @@ $capabilityCreated = $false
 try {
     Write-JsonCreateNew -Path $launchRecordPath -Object $launchRecord
     $recordOwned = $true
-    Write-Host "[slow-liquidity-identity] exact visible worker claimed: $runId" `
+    Write-Host "[slow-liquidity-topology] exact visible worker claimed: $runId" `
         -ForegroundColor Cyan
 
     $claim = Invoke-WriterClaim -Arguments @(
         "claim", "--path", $globalWriterClaimPath,
         "--run-id", $runId,
         "--owner-pid", [string]$PID,
-        "--owner-kind", "slow_liquidity_official_identity",
-        "--plan-hash", (Read-JsonFile -Path $RuntimeManifestPath).proposal.proposal_hash,
+        "--owner-kind", "slow_liquidity_official_topology",
+        "--plan-hash", (Read-JsonFile -Path $RuntimeManifestPath).manifest_hash,
         "--output-namespace", $OutputPath,
         "--terminal-pid", [string]$PID
     )
     $claimToken = [string]$claim.ownership_token
 
-    $jobObject = Initialize-IdentityJobObject
+    $jobObject = Initialize-TopologyJobObject
     $launchRecord.job_object_kill_on_close = $true
+    $outputParent = Split-Path -Parent $OutputPath
+    if (-not (Test-Path -LiteralPath $outputParent -PathType Container)) {
+        [System.IO.Directory]::CreateDirectory($outputParent) | Out-Null
+    }
     $launcherCapabilityToken = (
         [Convert]::ToHexString(
             [System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32)
         )
     ).ToLowerInvariant()
 
-    $runtimeProcess = Start-IdentityRuntimeProcess -Arguments @(
-        "--run-approved",
-        "--runtime-manifest-path", $RuntimeManifestPath,
-        "--execution-manifest-path", $ExecutionManifestPath,
-        "--output-path", $OutputPath,
-        "--global-writer-claim-path", $globalWriterClaimPath,
-        "--owner-pid", [string]$PID,
-        "--ownership-token", $claimToken,
-        "--writer-claim-wait-sec", "10",
-        "--launcher-capability-path", $launcherCapabilityPath,
-        "--launcher-capability-token", $launcherCapabilityToken
-    )
-    Add-ProcessToIdentityJob -Job $jobObject -Process $runtimeProcess
+    $runtimeProcess = Start-TopologyRuntimeProcess
+    Add-ProcessToTopologyJob -Job $jobObject -Process $runtimeProcess
     $null = Invoke-WriterClaim -Arguments @(
         "attach", "--path", $globalWriterClaimPath,
         "--run-id", $runId,
@@ -725,29 +789,29 @@ try {
         "--writer-pid", [string]$runtimeProcess.Id
     )
     $launchRecord.writer_pid = $runtimeProcess.Id
-    $ownerIdentity = Get-ProcessIdentity -ProcessId $PID
-    $writerIdentity = Get-ProcessIdentity -ProcessId $runtimeProcess.Id
-    if ([int]$writerIdentity.parent_process_id -ne $PID) {
-        throw "Identity runtime is not owned by the visible terminal."
+    $ownerTopology = Get-ProcessTopology -ProcessId $PID
+    $writerTopology = Get-ProcessTopology -ProcessId $runtimeProcess.Id
+    if ([int]$writerTopology.parent_process_id -ne $PID) {
+        throw "Topology runtime is not owned by the visible terminal."
     }
-    $launchRecord.owner_process_creation_utc = $ownerIdentity.creation_utc
-    $launchRecord.owner_executable_path = $ownerIdentity.executable_path
-    $launchRecord.owner_command_line_sha256 = $ownerIdentity.command_line_sha256
-    $launchRecord.writer_process_creation_utc = $writerIdentity.creation_utc
-    $launchRecord.writer_executable_path = $writerIdentity.executable_path
-    $launchRecord.writer_command_line_sha256 = $writerIdentity.command_line_sha256
+    $launchRecord.owner_process_creation_utc = $ownerTopology.creation_utc
+    $launchRecord.owner_executable_path = $ownerTopology.executable_path
+    $launchRecord.owner_command_line_sha256 = $ownerTopology.command_line_sha256
+    $launchRecord.writer_process_creation_utc = $writerTopology.creation_utc
+    $launchRecord.writer_executable_path = $writerTopology.executable_path
+    $launchRecord.writer_command_line_sha256 = $writerTopology.command_line_sha256
     $capability = [ordered]@{
-        schema = "trading_mvp_slow_liquidity_official_identity_launcher_capability_v1"
+        schema = "trading_mvp_slow_liquidity_official_topology_launcher_capability_v4"
         status = "ACTIVE"
         run_id = $runId
         owner_pid = $PID
         writer_pid = $runtimeProcess.Id
-        owner_process_creation_utc = $ownerIdentity.creation_utc
-        owner_executable_path = $ownerIdentity.executable_path
-        owner_command_line_sha256 = $ownerIdentity.command_line_sha256
-        writer_process_creation_utc = $writerIdentity.creation_utc
-        writer_executable_path = $writerIdentity.executable_path
-        writer_command_line_sha256 = $writerIdentity.command_line_sha256
+        owner_process_creation_utc = $ownerTopology.creation_utc
+        owner_executable_path = $ownerTopology.executable_path
+        owner_command_line_sha256 = $ownerTopology.command_line_sha256
+        writer_process_creation_utc = $writerTopology.creation_utc
+        writer_executable_path = $writerTopology.executable_path
+        writer_command_line_sha256 = $writerTopology.command_line_sha256
         launcher_path = [System.IO.Path]::GetFullPath($PSCommandPath)
         launcher_file_sha256 = Get-Sha256 -Path $PSCommandPath
         runtime_manifest_file_sha256 = Get-Sha256 -Path $RuntimeManifestPath
@@ -774,20 +838,20 @@ try {
     Set-LaunchRecordStatus -Record $launchRecord -NewStatus "RUNNING" `
         -Message "Fresh guard passed; single global writer claim acquired."
 
-    $runtimeDeadline = [DateTimeOffset]::UtcNow.AddSeconds(600)
+    $runtimeDeadline = [DateTimeOffset]::UtcNow.AddSeconds(300)
     $nextProgress = [DateTimeOffset]::UtcNow.AddSeconds(5)
     while (-not $runtimeProcess.HasExited) {
         if ([DateTimeOffset]::UtcNow -ge $runtimeDeadline) {
             $runtimeProcess.Kill($true)
             $runtimeProcess.WaitForExit()
-            throw "Identity runtime exceeded the exact 600 second cap."
+            throw "Topology runtime exceeded the exact 300 second cap."
         }
         if ([DateTimeOffset]::UtcNow -ge $nextProgress) {
             $elapsed = [math]::Round(
-                600 - ($runtimeDeadline - [DateTimeOffset]::UtcNow).TotalSeconds,
+                300 - ($runtimeDeadline - [DateTimeOffset]::UtcNow).TotalSeconds,
                 1
             )
-            Write-Host "[slow-liquidity-identity] RUNNING elapsed_sec=$elapsed writer_pid=$($runtimeProcess.Id)"
+            Write-Host "[slow-liquidity-topology] RUNNING elapsed_sec=$elapsed writer_pid=$($runtimeProcess.Id)"
             $nextProgress = [DateTimeOffset]::UtcNow.AddSeconds(5)
         }
         Start-Sleep -Milliseconds 200
@@ -796,14 +860,20 @@ try {
     $runtimeStdout = $runtimeProcess.StandardOutput.ReadToEnd()
     $runtimeStderr = $runtimeProcess.StandardError.ReadToEnd()
     if ($runtimeProcess.ExitCode -ne 0) {
-        $controlledReason = "identity_runtime_failed_exit_$($runtimeProcess.ExitCode)"
+        $controlledReason = "TOPOLOGY_INTERNAL_RUNTIME_FAILURE"
+        $launchRecord.network_accessed = $null
+        $launchRecord.network_accessed_proven = $false
+        $launchRecord.network_access_state = "UNKNOWN_UNCONTROLLED_RUNTIME_EXIT"
         try {
             $failure = ConvertFrom-JsonPreserveDateStrings -InputJson $runtimeStderr
-            if ([string]$failure.reason) {
-                $controlledReason = [string]$failure.reason
+            if ([string]$failure.reason_code) {
+                $controlledReason = [string]$failure.reason_code
+                $launchRecord.failure_reason_code = [string]$failure.reason_code
             }
             $launchRecord.network_accessed = $failure.network_accessed
-            $launchRecord.identity_output_created = $failure.identity_output_created
+            $launchRecord.network_accessed_proven = $true
+            $launchRecord.network_access_state = [string]$failure.network_access_state
+            $launchRecord.topology_output_created = $failure.topology_output_created
         } catch {
             # Never persist an uncontrolled stderr payload in the launch record.
         }
@@ -811,11 +881,13 @@ try {
     }
     $runtimePayload = ConvertFrom-JsonPreserveDateStrings -InputJson $runtimeStdout
     $launchRecord.network_accessed = [bool]$runtimePayload.network_accessed
-    $launchRecord.identity_output_created = [bool]$runtimePayload.identity_output_created
+    $launchRecord.network_accessed_proven = $true
+    $launchRecord.network_access_state = [string]$runtimePayload.network_access_state
+    $launchRecord.topology_output_created = [bool]$runtimePayload.topology_output_created
     $launchRecord.finished_at_utc = [DateTimeOffset]::UtcNow.ToString("o")
     Set-LaunchRecordStatus -Record $launchRecord -NewStatus "COMPLETE" `
         -Message ([string]$runtimePayload.status)
-    Write-Host "[slow-liquidity-identity] terminal result: $($runtimePayload.status)" `
+    Write-Host "[slow-liquidity-topology] terminal result: $($runtimePayload.status)" `
         -ForegroundColor Green
 } catch {
     if ($runtimeProcess -and -not $runtimeProcess.HasExited) {
@@ -827,17 +899,21 @@ try {
         }
     }
     if ($recordOwned) {
+        $failureCode = Get-SanitizedLauncherFailureCode -Message $_.Exception.Message
+        if (-not $launchRecord.failure_reason_code) {
+            $launchRecord.failure_reason_code = $failureCode
+        }
         $launchRecord.finished_at_utc = [DateTimeOffset]::UtcNow.ToString("o")
         $launchRecord.retry_authorized = $false
         Set-LaunchRecordStatus -Record $launchRecord -NewStatus "STOPPED_INCOMPLETE" `
-            -Message $_.Exception.Message
+            -Message $failureCode
     }
-    Write-Host "[slow-liquidity-identity] STOPPED_INCOMPLETE; retry is not authorized." `
+    Write-Host "[slow-liquidity-topology] STOPPED_INCOMPLETE; retry is not authorized." `
         -ForegroundColor Red
     throw
 } finally {
     if ($jobObject -ne [IntPtr]::Zero) {
-        Close-IdentityJob -Job $jobObject
+        Close-TopologyJob -Job $jobObject
         $jobObject = [IntPtr]::Zero
     }
     if ($capabilityCreated) {
@@ -862,7 +938,7 @@ try {
                 Write-JsonAtomic -Path $launchRecordPath -Object $launchRecord
             }
         } catch {
-            Write-Host "[slow-liquidity-identity] writer claim release failed: $($_.Exception.Message)" `
+            Write-Host "[slow-liquidity-topology] writer claim release failed: $($_.Exception.Message)" `
                 -ForegroundColor Red
         }
     }
