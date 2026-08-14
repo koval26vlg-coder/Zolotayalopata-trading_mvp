@@ -777,6 +777,41 @@ class CurrentSprintReadinessTests(unittest.TestCase):
         self.assertFalse(result["stop_new_actions"])
         self.assertTrue(result["current_sprint_readiness"]["execution_authorized"])
 
+    def test_topology_v4_exact_approval_routes_only_v4_visible_run(self) -> None:
+        result = evaluate_autopilot_state(
+            policy={"policy_id": "policy", "thread_id": "thread"},
+            policy_hash="a" * 64,
+            gate={"status": "READY_FOR_POSTPROCESS", "run_id": "ready"},
+            usage={"decision": "CONTINUE", "remaining_percent": 100.0},
+            prior_state=None,
+            observed_at_utc="2026-08-14T17:00:00Z",
+            current_sprint_readiness={
+                "status": "READY",
+                "source_status": (
+                    "TOPOLOGY_V4_RUNTIME_FROZEN_WITH_EXACT_EXECUTION_APPROVAL"
+                ),
+                "execution_authorized": True,
+                "next_safe_action": (
+                    "run_exact_approved_slow_liquidity_official_currentness_"
+                    "topology_v4_visible"
+                ),
+                "official_currentness_topology": {
+                    "run_id": (
+                        "slow_liquidity_official_currentness_topology_"
+                        "discovery_v4_unit_test"
+                    )
+                },
+            },
+        )
+
+        self.assertEqual(
+            result["decision"],
+            "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V4",
+        )
+        self.assertTrue(result["action_due"])
+        self.assertFalse(result["stop_new_actions"])
+        self.assertTrue(result["current_sprint_readiness"]["execution_authorized"])
+
     def test_phase2_identity_runtime_routes_only_exact_visible_run(self) -> None:
         result = evaluate_autopilot_state(
             policy={"policy_id": "policy", "thread_id": "thread"},

@@ -2182,6 +2182,15 @@ def evaluate_autopilot_state(
                 )
             elif (
                 readiness_source_status
+                == "TOPOLOGY_V4_RUNTIME_FROZEN_WITH_EXACT_EXECUTION_APPROVAL"
+                and readiness_execution_authorized
+            ):
+                decision = (
+                    "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
+                    "TOPOLOGY_DISCOVERY_V4"
+                )
+            elif (
+                readiness_source_status
                 == "TOPOLOGY_V3_RUNTIME_FROZEN_WITH_EXACT_EXECUTION_APPROVAL"
                 and readiness_execution_authorized
             ):
@@ -2249,6 +2258,7 @@ def evaluate_autopilot_state(
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_IDENTITY_VERIFICATION",
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY",
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V3",
+                "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V4",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V4_EXECUTION_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V3_EXECUTION_APPROVAL",
@@ -2261,6 +2271,7 @@ def evaluate_autopilot_state(
             if decision in {
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY",
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V3",
+                "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V4",
             }:
                 topology = current_readiness.get("official_currentness_topology") or {}
                 topology_run_id = str(topology.get("run_id") or "")

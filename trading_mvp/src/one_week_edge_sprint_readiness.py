@@ -126,6 +126,9 @@ TOPOLOGY_V3_EXECUTION_READINESS_STATUS = (
 TOPOLOGY_V4_REFREEZE_READINESS_STATUS = (
     "TOPOLOGY_V4_RUNTIME_FROZEN_AWAIT_EXACT_EXECUTION_APPROVAL"
 )
+TOPOLOGY_V4_EXECUTION_READINESS_STATUS = (
+    "TOPOLOGY_V4_RUNTIME_FROZEN_WITH_EXACT_EXECUTION_APPROVAL"
+)
 TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL_READINESS_STATUS = (
     "TOPOLOGY_V2_LAUNCHER_REJECTED_AWAIT_V3_OFFLINE_REFREEZE_APPROVAL"
 )
@@ -143,6 +146,7 @@ CURRENT_READINESS_STATUSES = (
     TOPOLOGY_V3_REFREEZE_READINESS_STATUS,
     TOPOLOGY_V3_EXECUTION_READINESS_STATUS,
     TOPOLOGY_V4_REFREEZE_READINESS_STATUS,
+    TOPOLOGY_V4_EXECUTION_READINESS_STATUS,
     TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL_READINESS_STATUS,
 )
 CURRENT_PERMISSION_FIELDS = (
@@ -1904,6 +1908,545 @@ def _resolve_topology_v4_refreeze_readiness(
     }
 
 
+def _validate_topology_v4_completed_bundle(
+    *,
+    topology_runtime: Any,
+    topology: Mapping[str, Any],
+    runtime_path: Path,
+    runtime_manifest: Mapping[str, Any],
+    execution_path: Path,
+    execution_manifest: Mapping[str, Any],
+    output_path: Path,
+) -> dict[str, Any]:
+    run_id = str(topology.get("run_id") or "")
+    launch_record_path = (
+        _REPO_ROOT / "docs" / "agent-log" / "run-gates" / f"{run_id}.launch.json"
+    ).resolve()
+    launch_record, _, launch_record_sha = _read_current_json(
+        launch_record_path,
+        "topology v4 terminal launch record",
+    )
+    _current_require(
+        launch_record.get("status") == "COMPLETE"
+        and launch_record.get("run_id") == run_id
+        and launch_record.get("terminal_ownership_verified") is True
+        and launch_record.get("message")
+        == "COMPLETE_SANITIZED_TOPOLOGY_NOT_IDENTITY_EVIDENCE"
+        and launch_record.get("network_accessed") is True
+        and launch_record.get("network_accessed_proven") is True
+        and launch_record.get("topology_output_created") is True
+        and launch_record.get("failure_reason_code") is None
+        and launch_record.get("retry_authorized") is False,
+        "topology v4 terminal launch record mismatch",
+    )
+    _current_require(
+        _resolve(str(launch_record.get("runtime_manifest_path") or ""))
+        == runtime_path
+        and launch_record.get("runtime_manifest_file_sha256")
+        == _sha256(runtime_path)
+        and _resolve(str(launch_record.get("execution_manifest_path") or ""))
+        == execution_path
+        and launch_record.get("execution_manifest_file_sha256")
+        == _sha256(execution_path)
+        and _resolve(str(launch_record.get("output_path") or "")) == output_path,
+        "topology v4 terminal artifact binding mismatch",
+    )
+
+    archive_path = _resolve(
+        str(launch_record.get("global_writer_claim_archive_path") or "")
+    )
+    expected_archive_root = (
+        _REPO_ROOT / "docs" / "agent-log" / "global-writer-claim-archive"
+    ).resolve()
+    _current_require(
+        archive_path.parent == expected_archive_root
+        and archive_path.name.startswith(f"{run_id}.")
+        and archive_path.suffix == ".json",
+        "topology v4 writer archive path mismatch",
+    )
+    writer_archive, _, writer_archive_sha = _read_current_json(
+        archive_path,
+        "topology v4 released writer claim",
+    )
+    _current_require(
+        writer_archive.get("status") == "RELEASED"
+        and writer_archive.get("final_status") == "COMPLETE"
+        and writer_archive.get("run_id") == run_id
+        and writer_archive.get("owner_pid") is None
+        and writer_archive.get("writer_pid") is None
+        and writer_archive.get("plan_hash") == runtime_manifest.get("manifest_hash")
+        and _resolve(str(writer_archive.get("output_namespace") or ""))
+        == output_path
+        and writer_archive.get("research_only") is True
+        and writer_archive.get("live_orders") is False
+        and writer_archive.get("private_api_keys") is False
+        and writer_archive.get("real_capital") is False
+        and writer_archive.get("leverage_or_margin") is False,
+        "topology v4 released writer claim mismatch",
+    )
+
+    try:
+        topology_runtime._assert_no_reparse_components(output_path)
+    except topology_runtime.TopologyDiscoveryError as exc:
+        raise CurrentSprintReadinessError(
+            f"invalid topology v4 output path: {exc}"
+        ) from exc
+    _current_require(output_path.is_dir(), "topology v4 output is not a directory")
+    children = list(output_path.iterdir())
+    _current_require(
+        {child.name for child in children} == {"manifest.json", "topology.json"}
+        and all(child.is_file() and not child.is_symlink() for child in children),
+        "topology v4 output file allowlist mismatch",
+    )
+    manifest_path = output_path / "manifest.json"
+    topology_path = output_path / "topology.json"
+    output_manifest, manifest_raw, manifest_sha = _read_current_json(
+        manifest_path,
+        "topology v4 output manifest",
+    )
+    result, topology_raw, topology_sha = _read_current_json(
+        topology_path,
+        "topology v4 sanitized output",
+    )
+    _current_require(
+        len(manifest_raw) + len(topology_raw)
+        <= int((topology.get("limits") or {}).get("hard_output_cap_bytes") or 0),
+        "topology v4 terminal output cap exceeded",
+    )
+    try:
+        topology_runtime._validate_sanitized_result(result)
+    except topology_runtime.TopologyDiscoveryError as exc:
+        raise CurrentSprintReadinessError(
+            f"invalid topology v4 sanitized result: {exc}"
+        ) from exc
+
+    expected_manifest_keys = {
+        "schema",
+        "status",
+        "run_id",
+        "execution_manifest_hash",
+        "runtime_manifest_hash",
+        "topology_file",
+        "raw_payload_persisted",
+        "identity_evidence_created",
+        "request_plan_created",
+        "currentness_verdict_created",
+        "manifest_hash_method",
+        "manifest_hash",
+    }
+    _current_require(
+        set(output_manifest) == expected_manifest_keys
+        and output_manifest.get("schema")
+        == "trading_mvp_slow_liquidity_official_currentness_topology_output_manifest_v4"
+        and output_manifest.get("status")
+        == "COMPLETE_SANITIZED_TOPOLOGY_NOT_IDENTITY_EVIDENCE"
+        and output_manifest.get("run_id") == run_id
+        and output_manifest.get("runtime_manifest_hash")
+        == runtime_manifest.get("manifest_hash")
+        and output_manifest.get("execution_manifest_hash")
+        == execution_manifest.get("manifest_hash")
+        and output_manifest.get("raw_payload_persisted") is False
+        and output_manifest.get("identity_evidence_created") is False
+        and output_manifest.get("request_plan_created") is False
+        and output_manifest.get("currentness_verdict_created") is False
+        and output_manifest.get("manifest_hash_method")
+        == "sha256_canonical_json_excluding_manifest_hash"
+        and output_manifest.get("manifest_hash")
+        == canonical_hash_without(output_manifest, "manifest_hash"),
+        "topology v4 output manifest mismatch",
+    )
+    topology_file = output_manifest.get("topology_file") or {}
+    _current_require(
+        topology_file
+        == {
+            "name": "topology.json",
+            "file_sha256": topology_sha,
+            "bytes": len(topology_raw),
+            "result_hash": result.get("result_hash"),
+        },
+        "topology v4 output file binding mismatch",
+    )
+    records = result.get("records") or []
+    limits = topology.get("limits") or {}
+    _current_require(
+        result.get("run_id") == run_id
+        and result.get("request_count")
+        == int(limits.get("maximum_total_http_requests") or 0)
+        and [record.get("source_url") for record in records]
+        == list(topology.get("exact_seed_urls") or [])
+        and all(
+            int(record.get("response_bytes") or 0)
+            <= int(limits.get("maximum_response_bytes_per_request") or 0)
+            for record in records
+        )
+        and result.get("raw_payload_persisted") is False
+        and result.get("identity_evidence_created") is False
+        and result.get("topology_success_does_not_authorize_identity_runtime")
+        is True
+        and result.get("topology_success_does_not_prove_exhaustiveness") is True,
+        "topology v4 sanitized result scope mismatch",
+    )
+    for record in records:
+        status_code = int(record.get("http_status_code") or 0)
+        if 300 <= status_code < 400:
+            _current_require(
+                record.get("response_body_read") is False
+                and int(record.get("response_bytes") or 0) == 0
+                and record.get("response_sha256") is None
+                and record.get("redirect_location"),
+                "topology v4 redirect metadata contract mismatch",
+            )
+
+    return {
+        "status": "COMPLETE_SANITIZED_TOPOLOGY_NOT_IDENTITY_EVIDENCE",
+        "launch_record_path": str(launch_record_path),
+        "launch_record_file_sha256": launch_record_sha,
+        "writer_claim_archive_path": str(archive_path),
+        "writer_claim_archive_file_sha256": writer_archive_sha,
+        "manifest_path": str(manifest_path),
+        "manifest_file_sha256": manifest_sha,
+        "manifest_hash": output_manifest["manifest_hash"],
+        "topology_path": str(topology_path),
+        "topology_file_sha256": topology_sha,
+        "result_hash": result["result_hash"],
+        "request_count": result["request_count"],
+        "output_bytes": len(manifest_raw) + len(topology_raw),
+        "identity_evidence_created": False,
+        "request_plan_created": False,
+        "currentness_verdict_created": False,
+        "raw_payload_persisted": False,
+    }
+
+
+def _resolve_topology_v4_execution_readiness(
+    report: Mapping[str, Any],
+    *,
+    pointer_file: Path,
+    pointer_sha: str,
+    readiness_path: Path,
+    report_sha: str,
+    gate_file: Path,
+    writer_claim_file: Path,
+) -> dict[str, Any]:
+    permissions = report.get("permissions")
+    _current_require(isinstance(permissions, dict), "readiness permissions are missing")
+    _current_require(
+        set(permissions) == set(CURRENT_PERMISSION_FIELDS),
+        "readiness permission allowlist mismatch",
+    )
+    for field in CURRENT_PERMISSION_FIELDS:
+        _current_require(
+            permissions.get(field) is False,
+            f"topology v4 readiness illegally enables {field}",
+        )
+
+    topology = report.get("official_currentness_topology")
+    _current_require(isinstance(topology, Mapping), "topology v4 readiness is missing")
+    _current_require(
+        topology.get("status") == "FROZEN_V4_WITH_EXACT_TOPOLOGY_EXECUTION_APPROVAL",
+        "topology v4 status mismatch",
+    )
+    _current_require(
+        topology.get("execution_authorized") is True
+        and topology.get("network_authorized") is True,
+        "topology v4 exact execution approval is missing",
+    )
+    _current_require(topology.get("single_use") is True, "topology v4 is not single-use")
+    _current_require(
+        topology.get("future_execution_single_use_required") is True,
+        "topology v4 future execution is not single-use",
+    )
+    _current_require(
+        topology.get("stopped_incomplete_retry_authorized") is False,
+        "topology v4 retry was enabled",
+    )
+    _current_require(
+        topology.get("execution_manifest_present") is True
+        and topology.get("execution_approval_receipt_present") is True,
+        "topology v4 approval artifacts are missing",
+    )
+    for field in ("launch_record_present", "writer_claim_present", "output_present"):
+        _current_require(topology.get(field) is False, f"topology v4 {field} changed")
+    for field in (
+        "identity_evidence_authorized",
+        "request_plan_authorized",
+        "currentness_verdict_authorized",
+    ):
+        _current_require(
+            topology.get(field) is False,
+            f"topology v4 illegally enables {field}",
+        )
+
+    runtime_path, runtime_manifest = _current_ref(
+        topology.get("runtime_manifest"),
+        "topology v4 runtime manifest",
+        parse_json=True,
+    )
+    launcher_path, _ = _current_ref(
+        topology.get("visible_launcher"),
+        "topology v4 visible launcher",
+        parse_json=False,
+    )
+    execution_path, execution_manifest = _current_ref(
+        topology.get("execution_manifest"),
+        "topology v4 execution manifest",
+        parse_json=True,
+    )
+    approval_path, approval_receipt = _current_ref(
+        topology.get("execution_approval_receipt"),
+        "topology v4 execution approval receipt",
+        parse_json=True,
+    )
+    _current_require(
+        all(
+            isinstance(value, dict)
+            for value in (runtime_manifest, execution_manifest, approval_receipt)
+        ),
+        "topology v4 approved payload is missing",
+    )
+
+    topology_runtime = _load_topology_v4_runtime_validator()
+    try:
+        topology_runtime.validate_runtime_manifest(
+            runtime_manifest,
+            repo_root=_REPO_ROOT,
+        )
+        topology_runtime.validate_execution_manifest(
+            execution_manifest,
+            runtime_manifest=runtime_manifest,
+            repo_root=_REPO_ROOT,
+        )
+    except topology_runtime.TopologyDiscoveryError as exc:
+        raise CurrentSprintReadinessError(
+            f"topology v4 approved runtime validation failed: {exc}"
+        ) from exc
+    _current_require(
+        runtime_path == topology_runtime.RUNTIME_MANIFEST_PATH
+        and launcher_path == topology_runtime.VISIBLE_LAUNCHER_PATH
+        and execution_path == topology_runtime.EXECUTION_MANIFEST_PATH
+        and approval_path == topology_runtime.APPROVAL_RECEIPT_PATH,
+        "topology v4 approved path binding mismatch",
+    )
+    _current_require(
+        runtime_manifest.get("run_id") == topology.get("run_id")
+        and execution_manifest.get("run_id") == topology.get("run_id")
+        and approval_receipt.get("run_id") == topology.get("run_id"),
+        "topology v4 approved run binding mismatch",
+    )
+    _current_require(
+        topology.get("refreeze_parents") == runtime_manifest.get("refreeze_parents"),
+        "topology v4 parent binding mismatch",
+    )
+    _current_require(
+        topology.get("exact_change_contract")
+        == runtime_manifest.get("exact_change_contract"),
+        "topology v4 change contract mismatch",
+    )
+    _current_require(
+        execution_manifest.get("manifest_hash")
+        == (topology.get("execution_manifest") or {}).get("manifest_hash")
+        and approval_receipt.get("receipt_hash")
+        == (topology.get("execution_approval_receipt") or {}).get("receipt_hash"),
+        "topology v4 approved hash binding mismatch",
+    )
+    source_contract = runtime_manifest.get("source_contract") or {}
+    _current_require(
+        topology.get("exact_seed_urls") == source_contract.get("exact_seed_urls"),
+        "topology v4 seed URL allowlist mismatch",
+    )
+    expected_limits = {
+        key: source_contract.get(key)
+        for key in (
+            "maximum_total_http_requests",
+            "maximum_attempts_per_url",
+            "maximum_response_bytes_per_request",
+            "max_runtime_sec",
+            "hard_output_cap_bytes",
+        )
+    }
+    _current_require(
+        topology.get("limits") == expected_limits,
+        "topology v4 limit binding mismatch",
+    )
+    output_path = _resolve(str(topology.get("output_path") or ""))
+    _current_require(
+        output_path == topology_runtime.OUTPUT_PATH,
+        "topology v4 output path mismatch",
+    )
+    terminal_bundle = None
+    if output_path.exists():
+        terminal_bundle = _validate_topology_v4_completed_bundle(
+            topology_runtime=topology_runtime,
+            topology=topology,
+            runtime_path=runtime_path,
+            runtime_manifest=runtime_manifest,
+            execution_path=execution_path,
+            execution_manifest=execution_manifest,
+            output_path=output_path,
+        )
+
+    identity = report.get("official_identity_phase_1")
+    _current_require(isinstance(identity, Mapping), "identity v5 readiness is missing")
+    identity_runtime_path, identity_runtime_manifest = _current_ref(
+        identity.get("runtime_manifest"),
+        "identity v5 runtime manifest",
+        parse_json=True,
+    )
+    _current_require(
+        isinstance(identity_runtime_manifest, dict),
+        "identity v5 runtime payload is missing",
+    )
+    _current_require(
+        canonical_hash_without(identity_runtime_manifest, "manifest_hash")
+        == identity_runtime_manifest.get("manifest_hash"),
+        "identity v5 canonical manifest hash mismatch",
+    )
+    _current_require(
+        identity_runtime_manifest.get("runtime_revision") == "v5",
+        "identity runtime is not v5",
+    )
+    _current_require(
+        identity.get("status")
+        == (
+            "STALE_CODE_BINDINGS_REQUIRES_SEPARATE_OFFLINE_REFREEZE_"
+            "BEFORE_EXECUTION_APPROVAL"
+        )
+        and identity.get("code_bindings_current") is False,
+        "identity v5 stale code-binding state mismatch",
+    )
+    identity_execution = identity_runtime_manifest.get("execution_authorization") or {}
+    _current_require(
+        identity_execution.get("approved") is False
+        and identity_execution.get("actual_network_run_allowed") is False
+        and identity.get("network_execution_authorized") is False
+        and identity.get("identity_output_authorized") is False,
+        "identity v5 execution or output was enabled",
+    )
+    topology_lineage = (
+        identity_runtime_manifest.get("refreeze_lineage") or {}
+    ).get("topology_runtime_v4")
+    _current_require(
+        topology_lineage
+        == {
+            "path": str(runtime_path),
+            "file_sha256": (topology.get("runtime_manifest") or {}).get(
+                "file_sha256"
+            ),
+            "manifest_hash": runtime_manifest.get("manifest_hash"),
+            "execution_authorized": False,
+            "topology_output_consumed": False,
+        },
+        "identity v5 topology lineage mismatch",
+    )
+
+    slow = report.get("slow_liquidity")
+    _current_require(isinstance(slow, Mapping), "slow liquidity readiness is missing")
+    _, current_gate = _current_ref(
+        slow.get("gate"),
+        "active gate",
+        expected_path=gate_file,
+        dynamic=True,
+        parse_json=True,
+    )
+    _current_require(isinstance(current_gate, dict), "active gate payload is missing")
+    _current_require(
+        current_gate.get("status") == "READY_FOR_POSTPROCESS"
+        and current_gate.get("run_id") == slow.get("run_id")
+        and current_gate.get("next_goal_decision") == EXPECTED_QUALITY_DECISION,
+        "active gate changed before topology v4 launch",
+        status="REFRESH_REQUIRED",
+    )
+    if writer_claim_file.exists():
+        _current_error(
+            "global market-data writer claim appeared after readiness",
+            status="REFRESH_REQUIRED",
+        )
+
+    checkpoints = report.get("approval_checkpoints")
+    _current_require(isinstance(checkpoints, list), "approval checkpoints are missing")
+    expected_ids = [
+        "pit_extension_schedule_activation",
+        "slow_liquidity_currentness_topology_v4_execution",
+        "dense_three_hour_segmented_refreeze_phase_1",
+    ]
+    _current_require(
+        [str(item.get("id") or "") for item in checkpoints if isinstance(item, dict)]
+        == expected_ids,
+        "topology v4 approval checkpoint allowlist mismatch",
+    )
+    checkpoint = checkpoints[1]
+    _current_require(
+        checkpoint.get("status") == "APPROVED_SINGLE_USE"
+        and checkpoint.get("runtime_manifest_file_sha256")
+        == (topology.get("runtime_manifest") or {}).get("file_sha256")
+        and checkpoint.get("runtime_manifest_hash")
+        == runtime_manifest.get("manifest_hash")
+        and checkpoint.get("execution_manifest_file_sha256")
+        == (topology.get("execution_manifest") or {}).get("file_sha256")
+        and checkpoint.get("execution_manifest_hash")
+        == execution_manifest.get("manifest_hash")
+        and checkpoint.get("execution_approval_receipt_file_sha256")
+        == (topology.get("execution_approval_receipt") or {}).get("file_sha256")
+        and checkpoint.get("execution_approval_receipt_hash")
+        == approval_receipt.get("receipt_hash"),
+        "topology v4 approval checkpoint binding mismatch",
+    )
+    _current_require(
+        report.get("next_safe_action")
+        == "run_exact_approved_slow_liquidity_official_currentness_topology_v4_visible",
+        "topology v4 readiness next action changed",
+    )
+    return {
+        "status": "READY",
+        "pointer_path": str(pointer_file),
+        "pointer_file_sha256": pointer_sha,
+        "readiness_path": str(readiness_path),
+        "readiness_file_sha256": report_sha,
+        "readiness_hash": report["readiness_hash"],
+        "generated_at_utc": report["generated_at_utc"],
+        "source_status": report["status"],
+        "execution_authorized": True,
+        "next_safe_action": report["next_safe_action"],
+        "approval_checkpoints": checkpoints,
+        "primary_frozen_basis_terminal": report.get("primary_frozen_basis_terminal"),
+        "official_currentness_topology": {
+            "status": topology["status"],
+            "run_id": topology["run_id"],
+            "runtime_manifest_path": str(runtime_path),
+            "visible_launcher_path": str(launcher_path),
+            "execution_manifest_path": str(execution_path),
+            "execution_approval_receipt_path": str(approval_path),
+            "output_path": str(output_path),
+            "execution_authorized": True,
+            "network_authorized": True,
+            "single_use": True,
+            "stopped_incomplete_retry_authorized": False,
+            "terminal_bundle": terminal_bundle,
+        },
+        "official_identity_phase_1": {
+            "status": identity["status"],
+            "code_bindings_current": False,
+            "runtime_manifest_path": str(identity_runtime_path),
+            "runtime_manifest_file_sha256": (
+                identity.get("runtime_manifest") or {}
+            ).get("file_sha256"),
+            "runtime_manifest_hash": identity_runtime_manifest["manifest_hash"],
+            "network_execution_authorized": False,
+            "identity_output_authorized": False,
+        },
+        "active_pit_pointer_path": str(
+            _resolve(
+                str(
+                    ((report.get("pit_shadow_track") or {}).get("active_pointer") or {}).get(
+                        "path"
+                    )
+                    or ""
+                )
+            )
+        ),
+    }
+
+
 def _resolve_topology_v3_execution_readiness(
     report: Mapping[str, Any],
     *,
@@ -2192,6 +2735,16 @@ def resolve_current_sprint_readiness(
         "readiness canonical hash mismatch",
     )
 
+    if source_status == TOPOLOGY_V4_EXECUTION_READINESS_STATUS:
+        return _resolve_topology_v4_execution_readiness(
+            report,
+            pointer_file=pointer_file,
+            pointer_sha=pointer_sha,
+            readiness_path=readiness_path,
+            report_sha=report_sha,
+            gate_file=gate_file,
+            writer_claim_file=writer_claim_file,
+        )
     if source_status == TOPOLOGY_V4_REFREEZE_READINESS_STATUS:
         return _resolve_topology_v4_refreeze_readiness(
             report,

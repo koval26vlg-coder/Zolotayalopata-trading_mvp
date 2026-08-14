@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "slow_liquidity_official_currentness_topology_discovery_20260814_v4",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": 26848,
+  "owner_kind": "slow_liquidity_official_topology",
+  "ownership_token": "39b4bee9b74d3531ff46fd88d7e55bae",
+  "plan_hash": "9ab770ba4e3a857d5a2dee8ba74260a8d7d717080afb411abab009a3ccf508c0",
+  "output_namespace": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-official-currentness-topology\\slow_liquidity_official_currentness_topology_discovery_20260814_v4",
+  "claimed_at_utc": "2026-08-14T17:13:05.607661+00:00",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "writer_attached_at_utc": "2026-08-14T17:13:09.160818+00:00",
+  "final_status": "COMPLETE",
+  "released_at_utc": "2026-08-14T17:13:15.202799+00:00"
+}

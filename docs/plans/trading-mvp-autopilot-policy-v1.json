@@ -718,14 +718,20 @@
     "paper_or_live_authorized": false
   },
   "slow_liquidity_official_currentness_topology": {
-    "schema": "trading_mvp_slow_liquidity_official_currentness_topology_policy_rebind_v6_offline_refreeze_v1",
-    "status": "FROZEN_OFFLINE_V4_AWAIT_EXACT_TOPOLOGY_EXECUTION_APPROVAL",
+    "schema": "trading_mvp_slow_liquidity_official_currentness_topology_policy_rebind_v7_execution_approved_v1",
+    "status": "FROZEN_V4_WITH_EXACT_TOPOLOGY_EXECUTION_APPROVAL",
     "run_id": "slow_liquidity_official_currentness_topology_discovery_20260814_v4",
     "runtime_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-currentness-topology-runtime-manifest-20260814-v4.json",
     "runtime_manifest_file_sha256": "ddea956647b0110d079a191a0653dd66bd27e675df9d0b01b1e3e3f6b825aba6",
     "runtime_manifest_hash": "9ab770ba4e3a857d5a2dee8ba74260a8d7d717080afb411abab009a3ccf508c0",
     "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_official_currentness_topology_v4_visible.ps1",
     "launcher_file_sha256": "7db5426f20761b0c72418e65d11b581fc9d06e58a41a8fc748c0c7856e45d44b",
+    "approval_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-14-slow-liquidity-official-currentness-topology-execution-v4-approval.json",
+    "approval_receipt_file_sha256": "851ce7cf65e40204494fe67ec6979e872634ce1c4d42766c92247088e9b67729",
+    "approval_receipt_hash": "8ba0da3afb071000ec0b1ed262481bd6aa634ce0e1109db43ba4d7a8f87b275c",
+    "execution_manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-currentness-topology-execution-manifest-20260814-v4.json",
+    "execution_manifest_file_sha256": "cd2387b4ac6f1bdd91091e94c1d52f2509cfe56e4aadfb83a706bcf6efd3e817",
+    "execution_manifest_hash": "66333bb0410d45b84de5cf9250e07e53d905cb98e3c5a6689b336d1e18a75091",
     "identity_runtime_v5": {
       "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260814-v5.json",
       "file_sha256": "b1420ea01663d14f007546690ff3d57876b8860268db75c2e238bfe18723a8c5",
@@ -764,8 +770,7 @@
       "safe_location_persisted": true,
       "unsafe_location_persisted": false
     },
-    "required_current_guard_decision": "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V4_EXECUTION_APPROVAL",
-    "required_future_guard_decision_after_separate_approval": "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V4",
+    "required_future_guard_decision": "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V4",
     "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-official-currentness-topology\\slow_liquidity_official_currentness_topology_discovery_20260814_v4",
     "exact_seed_urls": [
       "https://www.mexc.com/robots.txt",
@@ -780,14 +785,19 @@
     "maximum_response_bytes_per_request": 1000000,
     "max_runtime_sec": 300,
     "hard_output_cap_bytes": 10000000,
-    "official_source_content_read_authorized": false,
-    "approval_receipt_creation_authorized": false,
-    "execution_manifest_creation_authorized": false,
+    "launch_window": {
+      "not_before_local": "2026-08-14T20:00:00+03:00",
+      "latest_launch_local": "2026-08-15T07:30:00+03:00",
+      "hard_deadline_local": "2026-08-15T07:40:00+03:00"
+    },
+    "official_source_content_read_authorized": true,
+    "approval_receipt_creation_authorized": true,
+    "execution_manifest_creation_authorized": true,
     "visible_launcher_implementation_authorized": true,
-    "visible_launcher_execution_authorized": false,
+    "visible_launcher_execution_authorized": true,
     "preflight_only_authorized": true,
-    "global_writer_claim_authorized": false,
-    "sanitized_topology_output_authorized": false,
+    "global_writer_claim_authorized": true,
+    "sanitized_topology_output_authorized": true,
     "identity_evidence_authorized": false,
     "request_plan_authorized": false,
     "currentness_verdict_authorized": false,
@@ -801,12 +811,12 @@
     "leverage_or_margin_authorized": false,
     "future_execution_single_use_required": true,
     "stopped_incomplete_retry_authorized": false,
-    "execution_manifest_present": false,
-    "approval_receipt_present": false,
+    "execution_manifest_present": true,
+    "approval_receipt_present": true,
     "launch_record_present": false,
     "writer_claim_present": false,
     "output_present": false,
-    "separate_exact_code_bound_network_execution_approval_required": true,
+    "separate_exact_code_bound_network_execution_approval_required": false,
     "superseded_v3": {
       "run_id": "slow_liquidity_official_currentness_topology_discovery_20260814_v3",
       "status": "STOPPED_INCOMPLETE_NO_RETRY",
@@ -840,13 +850,13 @@
         "retry_authorized": false
       }
     },
-    "execution_authorized": false,
-    "network_authorized": false,
-    "actual_collection_allowed": false,
-    "approval_receipt_allowed": false,
-    "execution_manifest_allowed": false,
-    "visible_launcher_execution_allowed": false,
-    "writer_claim_allowed": false,
-    "output_allowed": false
+    "execution_authorized": true,
+    "network_authorized": true,
+    "actual_collection_allowed": true,
+    "approval_receipt_allowed": true,
+    "execution_manifest_allowed": true,
+    "visible_launcher_execution_allowed": true,
+    "writer_claim_allowed": true,
+    "output_allowed": true
   }
 }
