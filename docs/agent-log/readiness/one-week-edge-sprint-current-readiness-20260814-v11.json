@@ -1,0 +1,290 @@
+{
+  "schema": "trading_mvp_one_week_edge_sprint_current_readiness_v2",
+  "status": "TOPOLOGY_V3_RUNTIME_FROZEN_WITH_EXACT_EXECUTION_APPROVAL",
+  "generated_at_utc": "2026-08-14T15:03:59.972562Z",
+  "project": "trading_mvp",
+  "goal": "One-Week Historical Edge Sprint",
+  "research_only": true,
+  "primary_frozen_basis_terminal": {
+    "status": "TERMINAL_CLOSED_INSUFFICIENT_DATA",
+    "hypothesis_id": "cross_venue_perp_basis_convergence_history_v1",
+    "sprint_plan": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\2026-07-15-trading-mvp-one-week-historical-edge-sprint.md",
+      "file_sha256": "cbf88e1f634735360910ea3b8934c99cb98cfb38be7b9b9b50369c0fc29b8626",
+      "size_bytes": 10926
+    },
+    "currentness_audit": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\cross-venue-basis-terminal-currentness-audit-20260802T1323+0300.json",
+      "file_sha256": "8640b20c5a5e9257998646c66afa1b5f574c3295c56a117a9d0f6fc591be83d2",
+      "size_bytes": 5455
+    },
+    "terminal_report": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\historical-basis\\reports\\basis_sprint_retention_closure_20260715_115819.json",
+      "file_sha256": "55fe4c4e07d54e5ffd48aac04f49b4087cb0d6539bc387171dc19a7e02d6d19c",
+      "size_bytes": 3928,
+      "artifact_hash": "802662634518419e53c0ddb86d2501a213d4ec32b8fa06d401da0f8a46195f42"
+    },
+    "verdict": "INSUFFICIENT_DATA",
+    "reason_code": "GATE_5M_PUBLIC_HISTORY_RETENTION_LT_FROZEN_220D",
+    "required_history_days": 220,
+    "maximum_recent_gate_history_days_at_5m": 34.722,
+    "edge_evaluated": false,
+    "market_rows_read": false,
+    "oos_read": false,
+    "returns_read": false,
+    "pnl_read": false,
+    "next_allowed_command": "none_branch_closed_insufficient_data",
+    "forbidden_actions": [
+      "historical_collect_220d_5m_gate_public",
+      "train_evaluation",
+      "oos_evaluation",
+      "execution_probe",
+      "paper_forward",
+      "live_orders",
+      "retune_frozen_contract"
+    ],
+    "repeat_same_contract_authorized": false,
+    "retune_authorized": false,
+    "collector_launch_authorized": false,
+    "execution_authorized": false
+  },
+  "slow_liquidity": {
+    "run_id": "slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6",
+    "plan": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-provenance-slotintegrity-v6.json",
+      "file_sha256": "d649f61fb7adbd333ff5b979be8a9bcc3e0373beed6bcbe04c29583e34b03e94",
+      "size_bytes": 28028,
+      "plan_hash": "b7b2104eaad9404dbf97699d777276acbb187edaa03327dea8f8329f3e084632"
+    },
+    "approval_receipt": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-13-slow-liquidity-history-recollect-pagecap-provenance-slotintegrity-v6-approval.json",
+      "file_sha256": "32574a85c6ee02cc36da4bab50822ec801a182e6eff048056a404cd38128798c",
+      "size_bytes": 3551
+    },
+    "launch_record": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6.launch.json",
+      "file_sha256": "d57e002caf89ded3f21e1ed88829cdb1074bfd6936b112c9edca908f01ebe1e8",
+      "size_bytes": 2620
+    },
+    "manifest": {
+      "path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6\\manifest.json",
+      "file_sha256": "b4a45a66030cfdef957268053814372d40659a6c0202c8268ec9cb284731ef37",
+      "size_bytes": 6476,
+      "final": true,
+      "rows": 30021,
+      "errors": 0
+    },
+    "output": {
+      "path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6\\ohlcv.jsonl",
+      "file_sha256": "96ea0272f95b0f47edb897b328ad1ee7ab2ef30489e9822f70301970cc228be9",
+      "size_bytes": 16760559
+    },
+    "technical_quality": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\analysis\\slow_liquidity_history_recollect_quality_20260813_pagecap_provenance_slotintegrity_v6.json",
+      "file_sha256": "9f240efe9a300f4e1a57c6c8438eab63c9169bdf4bb9ff47f6cc50175e7e6a9e",
+      "size_bytes": 14485,
+      "decision": "SLOW_LIQUIDITY_HISTORY_RECOLLECT_QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL",
+      "accepted": true,
+      "ok_rows": 30021,
+      "ok_bases": 9,
+      "ok_exchanges": 2,
+      "two_exchange_full_coverage_1h4h_bases": 9,
+      "duplicate_candles": 0
+    },
+    "gate": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\active-run-gate.json",
+      "file_sha256": "34ced6557bf51d7199fa1fa6a889c4a4619249c92fd8ff83a9094852914988b8",
+      "size_bytes": 7660
+    },
+    "identity_verification_required": true,
+    "identity_verification_authorized": false,
+    "evaluator_or_oos_authorized": false
+  },
+  "official_identity_phase_1": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\slow-liquidity-official-asset-identity-verification-proposal-20260813-v1.json",
+    "file_sha256": "52d2c848888577a61e6994b57786616a9732c2ec384d6c4633325123b1b63c62",
+    "size_bytes": 9588,
+    "proposal_hash": "3a4479cacaceb310556821df8bd0f28d5cb1dac06644764c9b209bf3e234d8a4",
+    "status": "FROZEN_OFFLINE_IMPLEMENTATION_AWAIT_EXACT_CODE_BOUND_EXECUTION_APPROVAL",
+    "phase_1_approved": true,
+    "network_execution_authorized": false,
+    "identity_output_authorized": false,
+    "next_required_action": "REQUEST_EXACT_HASH_BOUND_IDENTITY_APPROVAL",
+    "offline_implementation_completed": true,
+    "runtime_manifest": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260813-v4.json",
+      "file_sha256": "0001cb25541e56e225a962f3d1eb9b4ef18055eb891d3b392b2f65bca3e70924",
+      "size_bytes": 8109,
+      "manifest_hash": "2e93b5c9b2bae219aa1072b3fd44a0af7e7b29728a6977ed3159eb643348269f",
+      "status": "FROZEN_OFFLINE_IMPLEMENTATION_AWAIT_EXACT_CODE_BOUND_EXECUTION_APPROVAL",
+      "offline_approval_receipt": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-13-slow-liquidity-official-identity-offline-v1-approval.json",
+        "file_sha256": "ce285ff3b4f1ec0c7def93ca6953a4fd0693ac8280e1d07b315b126af3baad11",
+        "size_bytes": 1922,
+        "receipt_hash": "2fe328e19c887e471bf1d32fb7bc06ae619a9c369d8754ba15380db12384fa47"
+      }
+    }
+  },
+  "pit_shadow_track": {
+    "active_pointer": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\trading-mvp-autopilot-schedule-pointer.json",
+      "file_sha256": "75e8e337dd8ffa00da4254939b7a0e0ca7305c6da0386a3eca9c60924db792ba",
+      "size_bytes": 894,
+      "plan_hash": "31b4b6c73487953755409ce32dafb818c4bc8c61b7db67ecd709a6457ece8af7",
+      "status": "ACTIVE",
+      "has_pending_segment": false
+    },
+    "quality_ledger": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\quality-certifications.jsonl",
+      "file_sha256": "1b04d10b9450e78cddc26e224260006a3f3d9aee4524f543d65277a61ecd2260",
+      "size_bytes": 28832,
+      "accepted_distinct_dates": 10,
+      "hypothesis_contract_sha256": "b5e3abd4942fc117b92c324e931d8d91671df3de99b403875bcf38983c26d857"
+    },
+    "accepted_distinct_dates": 10,
+    "train_target_distinct_dates": 20,
+    "extension_plan": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\fast-edge-track\\schedules\\pit_universe_v2_train_extension_planonly_20260814_from_31b4b6c7_v2.json",
+      "file_sha256": "4d5957c6622fb472bea3a7cea830068701bdfdeea8162c604891f3de26632733",
+      "size_bytes": 42040,
+      "plan_hash": "9ff7b57c65ef4dbcdc44d9c327053b272c199a1a4a75a0d71a1d6f3791c85c02",
+      "mode": "PlanOnly",
+      "schedule_approved": false
+    },
+    "extension_segments": 10,
+    "extension_first_start_local": "2026-08-14T01:00:00+03:00",
+    "extension_last_end_local": "2026-08-23T01:20:00+03:00",
+    "extension_approval_required": true,
+    "extension_activation_authorized": false,
+    "collector_launch_authorized": false
+  },
+  "dense_three_hour_refreeze_phase_1": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\dense-ws-three-hour-segmented-refreeze-proposal-20260813-v1.json",
+    "file_sha256": "162c77698987e91f8e175be66d8a9379081ea2d8788f5974d240cdbd815bc6c0",
+    "size_bytes": 13745,
+    "proposal_hash": "5f9abb5fe9a6003f9f8c053e80b10d7409c59dc4ea11165861817bf4379b58b2",
+    "status": "AWAIT_EXACT_SEGMENTED_REFREEZE_APPROVAL",
+    "phase_1_approved": false,
+    "implementation_authorized": false,
+    "collector_launch_authorized": false
+  },
+  "permissions": {
+    "global_writer_present": false,
+    "identity_offline_implementation_authorized": false,
+    "identity_verification_authorized": false,
+    "pit_extension_activation_authorized": false,
+    "dense_refreeze_implementation_authorized": false,
+    "collector_launch_authorized": false,
+    "evaluator_or_oos_authorized": false,
+    "returns_or_pnl_authorized": false,
+    "grid_or_retune_authorized": false,
+    "execution_probe_authorized": false,
+    "paper_or_live_authorized": false,
+    "private_api_or_real_capital_authorized": false,
+    "leverage_or_margin_authorized": false,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "approval_checkpoints": [
+    {
+      "id": "pit_extension_schedule_activation",
+      "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+      "plan_hash": "9ff7b57c65ef4dbcdc44d9c327053b272c199a1a4a75a0d71a1d6f3791c85c02",
+      "plan_file_sha256": "4d5957c6622fb472bea3a7cea830068701bdfdeea8162c604891f3de26632733"
+    },
+    {
+      "id": "slow_liquidity_currentness_topology_v3_execution",
+      "status": "APPROVED_SINGLE_USE",
+      "runtime_manifest_file_sha256": "3bb73c98c49b3440738c1d770932b4a504a74b56d8e25a9b9bd23532c5ff0c21",
+      "runtime_manifest_hash": "57bae89770da5656671d671d96793ced40a4f192b2d9d12009e6fedad035140b",
+      "execution_manifest_file_sha256": "52b3dd0ba7ca9885187ac7012b748118b2c68441fcef2f4a450046ca72add57d",
+      "execution_manifest_hash": "c4b596242b1d5b1008fb1c8237a2917eae859930aa38c373a2d9bd7443b64b4b",
+      "execution_approval_receipt_file_sha256": "f014c06ba929fc8b50e317f1cbe2878227560eeae58ae91f0f858d8b96ece778",
+      "execution_approval_receipt_hash": "8db5a350ba3221284f131ee165d6cdad05ade5de51c1f985945eedeade24079d"
+    },
+    {
+      "id": "dense_three_hour_segmented_refreeze_phase_1",
+      "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+      "proposal_hash": "5f9abb5fe9a6003f9f8c053e80b10d7409c59dc4ea11165861817bf4379b58b2",
+      "proposal_file_sha256": "162c77698987e91f8e175be66d8a9379081ea2d8788f5974d240cdbd815bc6c0"
+    }
+  ],
+  "next_safe_action": "run_exact_approved_slow_liquidity_official_currentness_topology_v3_visible",
+  "readiness_hash_method": "sha256_canonical_json_excluding_readiness_hash",
+  "official_currentness_topology": {
+    "status": "FROZEN_V3_WITH_EXACT_TOPOLOGY_EXECUTION_APPROVAL",
+    "run_id": "slow_liquidity_official_currentness_topology_discovery_20260814_v3",
+    "proposal": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\slow-liquidity-official-currentness-topology-v3-refreeze-proposal-20260814-v1.json",
+      "file_sha256": "e34526bcd672e86d4ae6c4d722aea63ffd9ee86ef51d1884589d184868e9e657",
+      "size_bytes": 5281,
+      "proposal_hash": "8d4e58344ae91c731de29c34786e00c3a682445f635b617e850d24b3b5770364"
+    },
+    "integrity_audit": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\slow-liquidity-official-currentness-topology-v2-launcher-gate-json-integrity-audit-20260814-v1.json",
+      "file_sha256": "c919adb83b4e0674aa321fa03d52453930c0c0f81c5babd04ce9ac9bc6f7bbd0",
+      "size_bytes": 4050,
+      "audit_hash": "527f4f120234eb36ffd4ac6b1554f0fafcc9dcf9f976143cd7e466aba97fe51a"
+    },
+    "runtime_manifest": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-currentness-topology-runtime-manifest-20260814-v3.json",
+      "file_sha256": "3bb73c98c49b3440738c1d770932b4a504a74b56d8e25a9b9bd23532c5ff0c21",
+      "size_bytes": 8497,
+      "manifest_hash": "57bae89770da5656671d671d96793ced40a4f192b2d9d12009e6fedad035140b"
+    },
+    "visible_launcher": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_official_currentness_topology_v3_visible.ps1",
+      "file_sha256": "d746fc8596ebf2976caa4efa22278c383c4a66b66d61497da90dd7b2e6792d31",
+      "size_bytes": 40460
+    },
+    "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-official-currentness-topology\\slow_liquidity_official_currentness_topology_discovery_20260814_v3",
+    "exact_seed_urls": [
+      "https://www.mexc.com/robots.txt",
+      "https://www.mexc.com/sitemap.xml",
+      "https://www.mexc.com/support/articles/",
+      "https://www.gate.com/robots.txt",
+      "https://www.gate.com/sitemap.xml",
+      "https://www.gate.com/announcements"
+    ],
+    "limits": {
+      "hard_output_cap_bytes": 10000000,
+      "max_runtime_sec": 300,
+      "maximum_attempts_per_url": 1,
+      "maximum_response_bytes_per_request": 1000000,
+      "maximum_total_http_requests": 6
+    },
+    "execution_authorized": true,
+    "network_authorized": true,
+    "future_execution_single_use_required": true,
+    "stopped_incomplete_retry_authorized": false,
+    "execution_manifest_present": true,
+    "execution_approval_receipt_present": true,
+    "launch_record_present": false,
+    "writer_claim_present": false,
+    "output_present": false,
+    "identity_evidence_authorized": false,
+    "request_plan_authorized": false,
+    "currentness_verdict_authorized": false,
+    "superseded_v2": {
+      "run_id": "slow_liquidity_official_currentness_topology_discovery_20260814_v2",
+      "runtime_manifest_file_sha256": "05e13fbb0524f0ea3dc7f4d3f6003011037c02e7d922b74454188a9a22db4e94",
+      "runtime_manifest_hash": "921106cf8e6c9df44759480ad8f7a895f1f98d574d8c0c26b1dd10a87ae8c499",
+      "launcher_file_sha256": "4d5ae74e0d3e8169d220b4e4d38ac0c339b8f867b0d368475a552ca64a3937a3",
+      "execution_authorized": false,
+      "retry_authorized": false
+    },
+    "execution_manifest": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-currentness-topology-execution-manifest-20260814-v3.json",
+      "file_sha256": "52b3dd0ba7ca9885187ac7012b748118b2c68441fcef2f4a450046ca72add57d",
+      "size_bytes": 5545,
+      "manifest_hash": "c4b596242b1d5b1008fb1c8237a2917eae859930aa38c373a2d9bd7443b64b4b"
+    },
+    "execution_approval_receipt": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-14-slow-liquidity-official-currentness-topology-execution-v3-approval.json",
+      "file_sha256": "f014c06ba929fc8b50e317f1cbe2878227560eeae58ae91f0f858d8b96ece778",
+      "size_bytes": 5271,
+      "receipt_hash": "8db5a350ba3221284f131ee165d6cdad05ade5de51c1f985945eedeade24079d"
+    },
+    "single_use": true
+  },
+  "readiness_hash": "1e8155072f4cec918d9236d6bf50484524ace0f8b55b1118cf6cf7d48e595f0c"
+}
