@@ -678,6 +678,38 @@ class CurrentSprintReadinessTests(unittest.TestCase):
             result["current_sprint_readiness"]["execution_authorized"]
         )
 
+    def test_topology_v3_refreeze_waits_for_exact_execution_approval(self) -> None:
+        result = evaluate_autopilot_state(
+            policy={"policy_id": "policy", "thread_id": "thread"},
+            policy_hash="a" * 64,
+            gate={"status": "READY_FOR_POSTPROCESS", "run_id": "ready"},
+            usage={"decision": "CONTINUE", "remaining_percent": 100.0},
+            prior_state=None,
+            observed_at_utc="2026-08-14T13:45:00Z",
+            current_sprint_readiness={
+                "status": "READY",
+                "source_status": (
+                    "TOPOLOGY_V3_RUNTIME_FROZEN_AWAIT_EXACT_EXECUTION_APPROVAL"
+                ),
+                "execution_authorized": False,
+                "next_safe_action": (
+                    "await_exact_slow_liquidity_official_currentness_"
+                    "topology_v3_execution_approval"
+                ),
+            },
+        )
+
+        self.assertEqual(
+            result["decision"],
+            "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_"
+            "V3_EXECUTION_APPROVAL",
+        )
+        self.assertTrue(result["action_due"])
+        self.assertFalse(result["stop_new_actions"])
+        self.assertFalse(
+            result["current_sprint_readiness"]["execution_authorized"]
+        )
+
     def test_phase2_identity_runtime_routes_only_exact_visible_run(self) -> None:
         result = evaluate_autopilot_state(
             policy={"policy_id": "policy", "thread_id": "thread"},

@@ -117,6 +117,9 @@ TOPOLOGY_EXECUTION_READINESS_STATUS = (
 TOPOLOGY_V2_REFREEZE_READINESS_STATUS = (
     "TOPOLOGY_V2_RUNTIME_FROZEN_AWAIT_EXACT_EXECUTION_APPROVAL"
 )
+TOPOLOGY_V3_REFREEZE_READINESS_STATUS = (
+    "TOPOLOGY_V3_RUNTIME_FROZEN_AWAIT_EXACT_EXECUTION_APPROVAL"
+)
 TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL_READINESS_STATUS = (
     "TOPOLOGY_V2_LAUNCHER_REJECTED_AWAIT_V3_OFFLINE_REFREEZE_APPROVAL"
 )
@@ -131,6 +134,7 @@ CURRENT_READINESS_STATUSES = (
     IDENTITY_PHASE2_READINESS_STATUS,
     TOPOLOGY_EXECUTION_READINESS_STATUS,
     TOPOLOGY_V2_REFREEZE_READINESS_STATUS,
+    TOPOLOGY_V3_REFREEZE_READINESS_STATUS,
     TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL_READINESS_STATUS,
 )
 CURRENT_PERMISSION_FIELDS = (
@@ -205,6 +209,18 @@ def _load_topology_v2_runtime_validator() -> Any:
         return importlib.import_module(module_name)
     except ImportError as exc:
         raise ReadinessError("topology v2 runtime validator is unavailable") from exc
+
+
+def _load_topology_v3_runtime_validator() -> Any:
+    module_name = (
+        f"{__package__}.slow_liquidity_official_currentness_topology_v3"
+        if __package__
+        else "slow_liquidity_official_currentness_topology_v3"
+    )
+    try:
+        return importlib.import_module(module_name)
+    except ImportError as exc:
+        raise ReadinessError("topology v3 runtime validator is unavailable") from exc
 
 
 def _reject_json_constant(value: str) -> None:
@@ -1345,6 +1361,250 @@ def _resolve_topology_v2_refreeze_readiness(
     }
 
 
+def _resolve_topology_v3_refreeze_readiness(
+    report: Mapping[str, Any],
+    *,
+    pointer_file: Path,
+    pointer_sha: str,
+    readiness_path: Path,
+    report_sha: str,
+    gate_file: Path,
+    writer_claim_file: Path,
+) -> dict[str, Any]:
+    permissions = report.get("permissions")
+    _current_require(isinstance(permissions, dict), "readiness permissions are missing")
+    _current_require(
+        set(permissions) == set(CURRENT_PERMISSION_FIELDS),
+        "readiness permission allowlist mismatch",
+    )
+    for field in CURRENT_PERMISSION_FIELDS:
+        _current_require(
+            permissions.get(field) is False,
+            f"topology v3 readiness illegally enables {field}",
+        )
+
+    topology = report.get("official_currentness_topology")
+    _current_require(isinstance(topology, Mapping), "topology v3 readiness is missing")
+    _current_require(
+        topology.get("status")
+        == "FROZEN_OFFLINE_V3_AWAIT_EXACT_NETWORK_EXECUTION_APPROVAL",
+        "topology v3 status mismatch",
+    )
+    _current_require(
+        topology.get("execution_authorized") is False,
+        "topology v3 execution was enabled",
+    )
+    _current_require(
+        topology.get("network_authorized") is False,
+        "topology v3 network was enabled",
+    )
+    _current_require(
+        topology.get("future_execution_single_use_required") is True,
+        "topology v3 future execution is not single-use",
+    )
+    _current_require(
+        topology.get("stopped_incomplete_retry_authorized") is False,
+        "topology v3 retry was enabled",
+    )
+    for field in (
+        "execution_manifest_present",
+        "execution_approval_receipt_present",
+        "launch_record_present",
+        "writer_claim_present",
+        "output_present",
+    ):
+        _current_require(topology.get(field) is False, f"topology v3 {field} changed")
+
+    proposal_path, proposal = _current_ref(
+        topology.get("proposal"),
+        "topology v3 proposal",
+        parse_json=True,
+    )
+    audit_path, audit = _current_ref(
+        topology.get("integrity_audit"),
+        "topology v3 integrity audit",
+        parse_json=True,
+    )
+    runtime_path, runtime_manifest = _current_ref(
+        topology.get("runtime_manifest"),
+        "topology v3 runtime manifest",
+        parse_json=True,
+    )
+    launcher_path, _ = _current_ref(
+        topology.get("visible_launcher"),
+        "topology v3 visible launcher",
+        parse_json=False,
+    )
+    _current_require(isinstance(proposal, dict), "topology v3 proposal payload is missing")
+    _current_require(isinstance(audit, dict), "topology v3 integrity audit payload is missing")
+    _current_require(
+        isinstance(runtime_manifest, dict),
+        "topology v3 runtime payload is missing",
+    )
+    proposal_hash = str((topology.get("proposal") or {}).get("proposal_hash") or "")
+    audit_hash = str((topology.get("integrity_audit") or {}).get("audit_hash") or "")
+    _current_require(
+        HASH_PATTERN.fullmatch(proposal_hash) is not None
+        and proposal.get("proposal_hash") == proposal_hash,
+        "topology v3 proposal hash binding mismatch",
+    )
+    _current_require(
+        HASH_PATTERN.fullmatch(audit_hash) is not None
+        and audit.get("audit_hash") == audit_hash,
+        "topology v3 integrity audit hash binding mismatch",
+    )
+    topology_runtime = _load_topology_v3_runtime_validator()
+    try:
+        topology_runtime.validate_runtime_manifest(
+            runtime_manifest,
+            repo_root=_REPO_ROOT,
+        )
+    except topology_runtime.TopologyDiscoveryError as exc:
+        raise CurrentSprintReadinessError(
+            f"topology v3 runtime validation failed: {exc}"
+        ) from exc
+    _current_require(
+        runtime_manifest.get("run_id") == topology.get("run_id"),
+        "topology v3 run binding mismatch",
+    )
+    _current_require(
+        runtime_manifest.get("proposal")
+        == {
+            "path": str(proposal_path),
+            "file_sha256": (topology.get("proposal") or {}).get("file_sha256"),
+            "proposal_hash": proposal_hash,
+        },
+        "topology v3 runtime proposal binding mismatch",
+    )
+    _current_require(
+        runtime_manifest.get("defect_audit")
+        == {
+            "path": str(audit_path),
+            "file_sha256": (topology.get("integrity_audit") or {}).get("file_sha256"),
+            "audit_hash": audit_hash,
+            "finding_id": "V2_ACTIVE_RUN_GATE_JSON_MODE_MISSING",
+        },
+        "topology v3 runtime integrity audit binding mismatch",
+    )
+    runtime_code = runtime_manifest.get("runtime") or {}
+    _current_require(
+        runtime_code.get("visible_launcher_path") == str(launcher_path)
+        and runtime_code.get("visible_launcher_sha256")
+        == (topology.get("visible_launcher") or {}).get("file_sha256"),
+        "topology v3 launcher binding mismatch",
+    )
+    output_path = _resolve(str(topology.get("output_path") or ""))
+    _current_require(
+        output_path == topology_runtime.OUTPUT_PATH,
+        "topology v3 output path mismatch",
+    )
+    _current_require(not output_path.exists(), "topology v3 output exists before approval")
+
+    slow = report.get("slow_liquidity")
+    _current_require(isinstance(slow, Mapping), "slow liquidity readiness is missing")
+    _, current_gate = _current_ref(
+        slow.get("gate"),
+        "active gate",
+        expected_path=gate_file,
+        dynamic=True,
+        parse_json=True,
+    )
+    _current_require(isinstance(current_gate, dict), "active gate payload is missing")
+    _current_require(
+        current_gate.get("status") == "READY_FOR_POSTPROCESS",
+        "active gate is not open",
+        status="REFRESH_REQUIRED",
+    )
+    _current_require(
+        current_gate.get("run_id") == slow.get("run_id"),
+        "active gate run changed",
+        status="REFRESH_REQUIRED",
+    )
+    _current_require(
+        current_gate.get("next_goal_decision") == EXPECTED_QUALITY_DECISION,
+        "active gate decision changed",
+        status="REFRESH_REQUIRED",
+    )
+    if writer_claim_file.exists():
+        _current_error(
+            "global market-data writer claim appeared after readiness",
+            status="REFRESH_REQUIRED",
+        )
+
+    checkpoints = report.get("approval_checkpoints")
+    _current_require(isinstance(checkpoints, list), "approval checkpoints are missing")
+    expected_ids = [
+        "pit_extension_schedule_activation",
+        "slow_liquidity_currentness_topology_v3_execution",
+        "dense_three_hour_segmented_refreeze_phase_1",
+    ]
+    _current_require(
+        [str(item.get("id") or "") for item in checkpoints if isinstance(item, dict)]
+        == expected_ids,
+        "topology v3 approval checkpoint allowlist mismatch",
+    )
+    topology_checkpoint = checkpoints[1]
+    _current_require(
+        topology_checkpoint.get("status")
+        == "AWAIT_EXACT_CODE_BOUND_NETWORK_EXECUTION_APPROVAL"
+        and topology_checkpoint.get("proposal_file_sha256")
+        == (topology.get("proposal") or {}).get("file_sha256")
+        and topology_checkpoint.get("proposal_hash") == proposal_hash
+        and topology_checkpoint.get("integrity_audit_file_sha256")
+        == (topology.get("integrity_audit") or {}).get("file_sha256")
+        and topology_checkpoint.get("integrity_audit_hash") == audit_hash
+        and topology_checkpoint.get("runtime_manifest_file_sha256")
+        == (topology.get("runtime_manifest") or {}).get("file_sha256")
+        and topology_checkpoint.get("runtime_manifest_hash")
+        == runtime_manifest.get("manifest_hash")
+        and topology_checkpoint.get("visible_launcher_file_sha256")
+        == (topology.get("visible_launcher") or {}).get("file_sha256"),
+        "topology v3 approval checkpoint binding mismatch",
+    )
+    _current_require(
+        report.get("next_safe_action")
+        == "await_exact_slow_liquidity_official_currentness_topology_v3_execution_approval",
+        "topology v3 readiness next action changed",
+    )
+    return {
+        "status": "READY",
+        "pointer_path": str(pointer_file),
+        "pointer_file_sha256": pointer_sha,
+        "readiness_path": str(readiness_path),
+        "readiness_file_sha256": report_sha,
+        "readiness_hash": report["readiness_hash"],
+        "generated_at_utc": report["generated_at_utc"],
+        "source_status": report["status"],
+        "execution_authorized": False,
+        "next_safe_action": report["next_safe_action"],
+        "approval_checkpoints": checkpoints,
+        "primary_frozen_basis_terminal": report.get("primary_frozen_basis_terminal"),
+        "official_currentness_topology": {
+            "status": topology["status"],
+            "run_id": topology["run_id"],
+            "proposal_path": str(proposal_path),
+            "integrity_audit_path": str(audit_path),
+            "runtime_manifest_path": str(runtime_path),
+            "visible_launcher_path": str(launcher_path),
+            "output_path": str(output_path),
+            "execution_authorized": False,
+            "network_authorized": False,
+            "future_execution_single_use_required": True,
+            "stopped_incomplete_retry_authorized": False,
+        },
+        "active_pit_pointer_path": str(
+            _resolve(
+                str(
+                    ((report.get("pit_shadow_track") or {}).get("active_pointer") or {}).get(
+                        "path"
+                    )
+                    or ""
+                )
+            )
+        ),
+    }
+
+
 def resolve_current_sprint_readiness(
     pointer_path: str | Path,
     *,
@@ -1430,6 +1690,16 @@ def resolve_current_sprint_readiness(
         "readiness canonical hash mismatch",
     )
 
+    if source_status == TOPOLOGY_V3_REFREEZE_READINESS_STATUS:
+        return _resolve_topology_v3_refreeze_readiness(
+            report,
+            pointer_file=pointer_file,
+            pointer_sha=pointer_sha,
+            readiness_path=readiness_path,
+            report_sha=report_sha,
+            gate_file=gate_file,
+            writer_claim_file=writer_claim_file,
+        )
     if source_status == TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL_READINESS_STATUS:
         return _resolve_topology_v3_offline_refreeze_approval_readiness(
             report,
