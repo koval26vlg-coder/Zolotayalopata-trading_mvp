@@ -1,0 +1,36 @@
+{
+  "schema": "trading_mvp_slow_liquidity_identity_request_plan_discovery_v3_import_integrity_audit_v1",
+  "status": "CORRECTED_R1_OLD_IMMUTABLE_MANIFEST_SUPERSEDED_NOT_LAUNCHABLE",
+  "observed_at_utc": "2026-08-15T15:51:26.264Z",
+  "run_id": "slow_liquidity_identity_request_plan_discovery_20260815_v3",
+  "reason_code": "DIRECT_SCRIPT_PACKAGE_IMPORT_UNAVAILABLE",
+  "old_runtime_manifest": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-identity-request-plan-discovery-runtime-manifest-20260815-v3.json",
+    "file_sha256": "3776bd6e742785d2b9429f5781ed9a58bfd1b4142885ccc44a535d728ae4a6bf",
+    "manifest_hash": "d4bee5cfc2d77ff88a6884c1ab91e1eb0601720031ddc43300e78506a78423fc",
+    "preserved_immutable": true,
+    "launch_allowed": false
+  },
+  "corrected_runtime_manifest": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-identity-request-plan-discovery-runtime-manifest-20260815-v3-r1.json",
+    "file_sha256": "141e07c50c476a1210175115c6939fce6b459d16cb8b46a00a7c7318bf08ca8a",
+    "manifest_hash": "a1ddb1bec104c8f41028014395f1a93d4f8b6c7da6f89545816851569dc2ec84",
+    "launch_allowed_without_separate_exact_approval": false
+  },
+  "correction": {
+    "package_qualified_direct_script_import": true,
+    "regression_test_added": true,
+    "old_manifest_overwritten": false
+  },
+  "safety": {
+    "network_accessed": false,
+    "approval_receipt_created": false,
+    "execution_manifest_created": false,
+    "writer_claim_created": false,
+    "request_plan_output_created": false,
+    "identity_output_created": false,
+    "visible_launcher_executed": false
+  },
+  "audit_hash_method": "sha256_canonical_json_excluding_audit_hash",
+  "audit_hash": "5c129bb0a7b6fc3f756e636d33108b9b3d08dcabcbb2dac1e8fbe97d0c14969b"
+}

@@ -812,6 +812,70 @@ class CurrentSprintReadinessTests(unittest.TestCase):
         self.assertFalse(result["stop_new_actions"])
         self.assertTrue(result["current_sprint_readiness"]["execution_authorized"])
 
+    def test_request_plan_v3_refreeze_waits_for_exact_execution_approval(self) -> None:
+        result = evaluate_autopilot_state(
+            policy={"policy_id": "policy", "thread_id": "thread"},
+            policy_hash="a" * 64,
+            gate={"status": "READY_FOR_POSTPROCESS", "run_id": "ready"},
+            usage={"decision": "CONTINUE", "remaining_percent": 100.0},
+            prior_state=None,
+            observed_at_utc="2026-08-15T15:00:00Z",
+            current_sprint_readiness={
+                "status": "READY",
+                "source_status": (
+                    "REQUEST_PLAN_DISCOVERY_V3_RUNTIME_FROZEN_AWAIT_"
+                    "EXACT_EXECUTION_APPROVAL"
+                ),
+                "execution_authorized": False,
+                "next_safe_action": (
+                    "await_exact_slow_liquidity_identity_request_plan_"
+                    "discovery_v3_execution_approval"
+                ),
+                "official_identity_request_plan_discovery": {
+                    "run_id": "request_plan_discovery_v3_unit_test"
+                },
+            },
+        )
+
+        self.assertEqual(
+            result["decision"],
+            "AWAIT_EXACT_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V3_EXECUTION_APPROVAL",
+        )
+        self.assertTrue(result["action_due"])
+        self.assertFalse(result["stop_new_actions"])
+
+    def test_request_plan_v3_exact_approval_routes_only_v3_visible_run(self) -> None:
+        result = evaluate_autopilot_state(
+            policy={"policy_id": "policy", "thread_id": "thread"},
+            policy_hash="a" * 64,
+            gate={"status": "READY_FOR_POSTPROCESS", "run_id": "ready"},
+            usage={"decision": "CONTINUE", "remaining_percent": 100.0},
+            prior_state=None,
+            observed_at_utc="2026-08-15T15:00:00Z",
+            current_sprint_readiness={
+                "status": "READY",
+                "source_status": (
+                    "REQUEST_PLAN_DISCOVERY_V3_RUNTIME_FROZEN_WITH_"
+                    "EXACT_EXECUTION_APPROVAL"
+                ),
+                "execution_authorized": True,
+                "next_safe_action": (
+                    "run_exact_approved_slow_liquidity_identity_request_plan_"
+                    "discovery_v3_visible"
+                ),
+                "official_identity_request_plan_discovery": {
+                    "run_id": "request_plan_discovery_v3_unit_test"
+                },
+            },
+        )
+
+        self.assertEqual(
+            result["decision"],
+            "RUN_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V3",
+        )
+        self.assertTrue(result["action_due"])
+        self.assertFalse(result["stop_new_actions"])
+
     def test_phase2_identity_runtime_routes_only_exact_visible_run(self) -> None:
         result = evaluate_autopilot_state(
             policy={"policy_id": "policy", "thread_id": "thread"},

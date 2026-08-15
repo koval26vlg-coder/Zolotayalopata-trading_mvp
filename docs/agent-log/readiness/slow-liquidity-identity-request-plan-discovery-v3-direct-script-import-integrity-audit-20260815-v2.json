@@ -1,0 +1,52 @@
+{
+  "schema": "trading_mvp_slow_liquidity_identity_request_plan_discovery_v3_direct_script_import_integrity_audit_v2",
+  "status": "CORRECTED_R2_PRIOR_IMMUTABLE_MANIFESTS_SUPERSEDED_NOT_LAUNCHABLE",
+  "observed_at_utc": "2026-08-15T15:54:09.890Z",
+  "run_id": "slow_liquidity_identity_request_plan_discovery_20260815_v3",
+  "reason_code": "DIRECT_SCRIPT_REPO_ROOT_NOT_ON_SYS_PATH",
+  "superseded_runtime_manifests": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-identity-request-plan-discovery-runtime-manifest-20260815-v3.json",
+      "file_sha256": "3776bd6e742785d2b9429f5781ed9a58bfd1b4142885ccc44a535d728ae4a6bf",
+      "manifest_hash": "d4bee5cfc2d77ff88a6884c1ab91e1eb0601720031ddc43300e78506a78423fc",
+      "failure_reason_code": "DIRECT_SCRIPT_RELATIVE_IMPORT_UNAVAILABLE",
+      "preserved_immutable": true,
+      "launch_allowed": false
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-identity-request-plan-discovery-runtime-manifest-20260815-v3-r1.json",
+      "file_sha256": "141e07c50c476a1210175115c6939fce6b459d16cb8b46a00a7c7318bf08ca8a",
+      "manifest_hash": "a1ddb1bec104c8f41028014395f1a93d4f8b6c7da6f89545816851569dc2ec84",
+      "failure_reason_code": "DIRECT_SCRIPT_REPO_ROOT_NOT_ON_SYS_PATH",
+      "preserved_immutable": true,
+      "launch_allowed": false
+    }
+  ],
+  "corrected_runtime_manifest": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-identity-request-plan-discovery-runtime-manifest-20260815-v3-r2.json",
+    "file_sha256": "1a15342a57372142bd37b19bcf9426586ea426d29e1e4aa35ca42a3ca4d2a4cb",
+    "manifest_hash": "251e523ad1c9756a2e1c064421cc0056e4934ede7f0fd0c88adcaaddab8b83da",
+    "launch_allowed_without_separate_exact_approval": false
+  },
+  "previous_integrity_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\slow-liquidity-identity-request-plan-discovery-v3-import-integrity-audit-20260815-v1.json",
+    "file_sha256": "63b27f14d1bef5809db2a9aa76b6a33074e77441fa5772eaee464b0bd85b3ecd",
+    "audit_hash": "5c129bb0a7b6fc3f756e636d33108b9b3d08dcabcbb2dac1e8fbe97d0c14969b"
+  },
+  "correction": {
+    "repo_root_inserted_for_direct_script_import": true,
+    "isolated_subprocess_regression_test_added": true,
+    "prior_manifests_overwritten": false
+  },
+  "safety": {
+    "network_accessed": false,
+    "approval_receipt_created": false,
+    "execution_manifest_created": false,
+    "writer_claim_created": false,
+    "request_plan_output_created": false,
+    "identity_output_created": false,
+    "visible_launcher_executed": false
+  },
+  "audit_hash_method": "sha256_canonical_json_excluding_audit_hash",
+  "audit_hash": "18ee13a00a825ae5e0e8c7a4d4920824153801b366db5c2e2e7aa6331964d7be"
+}

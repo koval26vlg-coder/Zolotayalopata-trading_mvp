@@ -2173,6 +2173,29 @@ def evaluate_autopilot_state(
             )
             if (
                 readiness_source_status
+                == (
+                    "REQUEST_PLAN_DISCOVERY_V3_RUNTIME_FROZEN_WITH_"
+                    "EXACT_EXECUTION_APPROVAL"
+                )
+                and readiness_execution_authorized
+            ):
+                decision = (
+                    "RUN_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V3"
+                )
+            elif (
+                readiness_source_status
+                == (
+                    "REQUEST_PLAN_DISCOVERY_V3_RUNTIME_FROZEN_AWAIT_"
+                    "EXACT_EXECUTION_APPROVAL"
+                )
+                and not readiness_execution_authorized
+            ):
+                decision = (
+                    "AWAIT_EXACT_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_"
+                    "DISCOVERY_V3_EXECUTION_APPROVAL"
+                )
+            elif (
+                readiness_source_status
                 == "TOPOLOGY_RUNTIME_FROZEN_WITH_EXACT_EXECUTION_APPROVAL"
                 and readiness_execution_authorized
             ):
@@ -2259,6 +2282,8 @@ def evaluate_autopilot_state(
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY",
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V3",
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V4",
+                "RUN_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V3",
+                "AWAIT_EXACT_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V3_EXECUTION_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V4_EXECUTION_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V3_EXECUTION_APPROVAL",
@@ -2303,6 +2328,40 @@ def evaluate_autopilot_state(
                         action_due = True
                         critical_checkpoint_notification_required = True
                         next_action = "await_separate_official_identity_approval"
+            if decision == "RUN_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V3":
+                discovery = (
+                    current_readiness.get("official_identity_request_plan_discovery")
+                    or {}
+                )
+                discovery_run_id = str(discovery.get("run_id") or "")
+                launch_record_path = (
+                    Path(__file__).resolve().parents[2]
+                    / "docs"
+                    / "agent-log"
+                    / "run-gates"
+                    / f"{discovery_run_id}.launch.json"
+                )
+                if discovery_run_id and launch_record_path.is_file():
+                    launch = _load_json(launch_record_path)
+                    launch_status = str(launch.get("status") or "")
+                    if launch_status == "STOPPED_INCOMPLETE":
+                        decision = (
+                            "TERMINAL_REJECT_SLOW_LIQUIDITY_IDENTITY_REQUEST_"
+                            "PLAN_DISCOVERY_V3_STOPPED_INCOMPLETE_NO_RETRY"
+                        )
+                        stop_new_actions = True
+                        action_due = True
+                        critical_checkpoint_notification_required = True
+                        next_action = "do_not_retry_without_new_exact_approval"
+                    elif launch_status == "COMPLETE":
+                        decision = (
+                            "TERMINAL_ACCEPT_SLOW_LIQUIDITY_IDENTITY_REQUEST_"
+                            "PLAN_DISCOVERY_V3_COMPLETE"
+                        )
+                        stop_new_actions = True
+                        action_due = True
+                        critical_checkpoint_notification_required = True
+                        next_action = "await_separate_exact_official_identity_approval"
         elif schedule_status == "INVALID" or campaign_status == "INVALID":
             status = "CRITICAL_STOP"
             decision = "CRITICAL_STOP_INVALID_SCHEDULE"
