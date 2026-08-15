@@ -30,23 +30,12 @@ from trading_mvp.src.slow_liquidity_identity_request_plan_discovery import (
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PARENT_RUNTIME_MANIFEST = (
     REPO_ROOT
-    / "docs/plans/slow-liquidity-official-identity-runtime-manifest-20260813-v4.json"
+    / "docs/plans/slow-liquidity-official-identity-runtime-manifest-20260815-v7.json"
 )
 
 
-def _write_current_parent_runtime_manifest(root: Path) -> Path:
-    manifest = json.loads(PARENT_RUNTIME_MANIFEST.read_text(encoding="utf-8"))
-    runtime = manifest["runtime"]
-    for prefix in ("autopilot_guard_module", "readiness_module"):
-        path = Path(runtime[f"{prefix}_path"])
-        runtime[f"{prefix}_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
-    manifest["manifest_hash"] = canonical_hash_without(manifest, "manifest_hash")
-    path = root / "current-parent-runtime.json"
-    path.write_text(
-        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-    return path
+def _current_parent_runtime_manifest() -> Path:
+    return PARENT_RUNTIME_MANIFEST
 
 
 class DiscoveryPlanTests(unittest.TestCase):
@@ -99,9 +88,7 @@ class DiscoveryRuntimeTests(unittest.TestCase):
             )
             manifest = build_runtime_manifest(
                 discovery_plan_path=plan_path,
-                parent_identity_runtime_manifest_path=_write_current_parent_runtime_manifest(
-                    root
-                ),
+                parent_identity_runtime_manifest_path=_current_parent_runtime_manifest(),
                 runtime_module_path=REPO_ROOT
                 / "trading_mvp/src/slow_liquidity_identity_request_plan_discovery.py",
                 synthetic_tests_path=Path(__file__),
@@ -146,9 +133,7 @@ class DiscoveryRuntimeTests(unittest.TestCase):
             )
             manifest = build_runtime_manifest(
                 discovery_plan_path=plan_path,
-                parent_identity_runtime_manifest_path=_write_current_parent_runtime_manifest(
-                    root
-                ),
+                parent_identity_runtime_manifest_path=_current_parent_runtime_manifest(),
                 runtime_module_path=REPO_ROOT
                 / "trading_mvp/src/slow_liquidity_identity_request_plan_discovery.py",
                 synthetic_tests_path=Path(__file__),
@@ -180,9 +165,7 @@ class DiscoveryRuntimeTests(unittest.TestCase):
             )
             manifest = build_runtime_manifest(
                 discovery_plan_path=plan_path,
-                parent_identity_runtime_manifest_path=_write_current_parent_runtime_manifest(
-                    root
-                ),
+                parent_identity_runtime_manifest_path=_current_parent_runtime_manifest(),
                 runtime_module_path=REPO_ROOT
                 / "trading_mvp/src/slow_liquidity_identity_request_plan_discovery.py",
                 synthetic_tests_path=Path(__file__),
@@ -212,7 +195,7 @@ class DiscoveryRuntimeTests(unittest.TestCase):
                 "discovery_plan_path": bundle / "plan.json",
                 "runtime_manifest_path": bundle / "runtime.json",
                 "parent_identity_runtime_manifest_path": (
-                    _write_current_parent_runtime_manifest(root)
+                    _current_parent_runtime_manifest()
                 ),
                 "runtime_module_path": REPO_ROOT
                 / "trading_mvp/src/slow_liquidity_identity_request_plan_discovery.py",

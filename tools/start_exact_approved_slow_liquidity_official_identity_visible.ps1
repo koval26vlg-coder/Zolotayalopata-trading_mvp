@@ -29,11 +29,11 @@ $launcherCapabilityPath = Join-Path $repoRoot "docs\agent-log\run-gates\$runId.c
 
 if (-not $RuntimeManifestPath) {
     $RuntimeManifestPath = Join-Path $repoRoot `
-        "docs\plans\slow-liquidity-official-identity-runtime-manifest-20260814-v5.json"
+        "docs\plans\slow-liquidity-official-identity-runtime-manifest-20260815-v7.json"
 }
 if (-not $ExecutionManifestPath) {
     $ExecutionManifestPath = Join-Path $repoRoot `
-        "docs\plans\slow-liquidity-official-identity-execution-manifest-20260814-v5.json"
+        "docs\plans\slow-liquidity-official-identity-execution-manifest-20260815-v7.json"
 }
 if (-not $OutputPath) {
     $OutputPath = `

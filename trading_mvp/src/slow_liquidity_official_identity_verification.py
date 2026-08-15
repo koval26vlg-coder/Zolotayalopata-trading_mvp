@@ -66,6 +66,8 @@ REQUIRED_READINESS_SOURCE_STATUS = (
 )
 REQUIRED_READINESS_CHECKPOINT_ID = "slow_liquidity_identity_execution_phase_2"
 RUNTIME_REVISION_V5 = "v5"
+RUNTIME_REVISION_V6 = "v6"
+RUNTIME_REVISION_V7 = "v7"
 PARENT_IDENTITY_V4_RUNTIME_FILE_SHA256 = (
     "0001cb25541e56e225a962f3d1eb9b4ef18055eb891d3b392b2f65bca3e70924"
 )
@@ -78,6 +80,18 @@ TOPOLOGY_V4_RUNTIME_FILE_SHA256 = (
 TOPOLOGY_V4_RUNTIME_HASH = (
     "9ab770ba4e3a857d5a2dee8ba74260a8d7d717080afb411abab009a3ccf508c0"
 )
+PARENT_IDENTITY_V5_RUNTIME_FILE_SHA256 = (
+    "b1420ea01663d14f007546690ff3d57876b8860268db75c2e238bfe18723a8c5"
+)
+PARENT_IDENTITY_V5_RUNTIME_HASH = (
+    "a357153b53d670c73c961d9fc175047d4fa7da69960d75910b00eed016a1eff6"
+)
+PARENT_IDENTITY_V6_RUNTIME_FILE_SHA256 = (
+    "27ccc46587f2624f844f5ff34dd0a76ef54b9be7c663b66088532d3577bacae9"
+)
+PARENT_IDENTITY_V6_RUNTIME_HASH = (
+    "fd03c1be6b71eb89eaedd2228131df2d8ce72c201f7674a4124edab8565853b8"
+)
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PARENT_IDENTITY_V4_RUNTIME_PATH = (
     REPO_ROOT
@@ -86,6 +100,14 @@ PARENT_IDENTITY_V4_RUNTIME_PATH = (
 TOPOLOGY_V4_RUNTIME_PATH = (
     REPO_ROOT
     / "docs/plans/slow-liquidity-official-currentness-topology-runtime-manifest-20260814-v4.json"
+)
+PARENT_IDENTITY_V5_RUNTIME_PATH = (
+    REPO_ROOT
+    / "docs/plans/slow-liquidity-official-identity-runtime-manifest-20260814-v5.json"
+)
+PARENT_IDENTITY_V6_RUNTIME_PATH = (
+    REPO_ROOT
+    / "docs/plans/slow-liquidity-official-identity-runtime-manifest-20260814-v6.json"
 )
 EXPECTED_BASES = (
     "STETH",
@@ -629,6 +651,111 @@ def _validate_v5_refreeze_lineage(
     }
 
 
+def _validate_exact_offline_parent_runtime(
+    *,
+    parent_runtime_manifest_path: str | Path,
+    expected_path: Path,
+    expected_file_sha256: str,
+    expected_manifest_hash: str,
+    expected_revision: str,
+) -> dict[str, Any]:
+    parent_path = Path(parent_runtime_manifest_path).expanduser().resolve()
+    _require(parent_path == expected_path, "identity parent runtime path mismatch")
+    _require(
+        _sha256_file(parent_path) == expected_file_sha256,
+        "identity parent runtime file hash mismatch",
+    )
+    parent = _load_json(parent_path, "identity parent runtime manifest")
+    _require(
+        parent.get("schema") == RUNTIME_MANIFEST_SCHEMA
+        and parent.get("status") == PHASE1_STATUS
+        and parent.get("runtime_revision") == expected_revision,
+        "identity parent runtime contract mismatch",
+    )
+    _require(
+        parent.get("manifest_hash") == expected_manifest_hash
+        and canonical_hash_without(parent, "manifest_hash") == expected_manifest_hash,
+        "identity parent runtime canonical hash mismatch",
+    )
+    parent_execution = parent.get("execution_authorization")
+    _require(
+        isinstance(parent_execution, dict)
+        and parent_execution.get("approved") is False
+        and parent_execution.get("execution_approval_receipt") is None
+        and parent_execution.get("actual_network_run_allowed") is False
+        and parent_execution.get("official_source_content_read_allowed") is False
+        and parent_execution.get("identity_output_allowed") is False
+        and parent_execution.get("global_writer_claim_allowed") is False,
+        "identity parent execution boundary mismatch",
+    )
+    return {
+        "path": str(parent_path),
+        "file_sha256": expected_file_sha256,
+        "manifest_hash": expected_manifest_hash,
+        "runtime_revision": expected_revision,
+        "execution_authorized": False,
+    }
+
+
+def _validate_v6_refreeze_lineage(
+    *, parent_runtime_manifest_path: str | Path
+) -> dict[str, Any]:
+    return {
+        "identity_runtime_v5": _validate_exact_offline_parent_runtime(
+            parent_runtime_manifest_path=parent_runtime_manifest_path,
+            expected_path=PARENT_IDENTITY_V5_RUNTIME_PATH,
+            expected_file_sha256=PARENT_IDENTITY_V5_RUNTIME_FILE_SHA256,
+            expected_manifest_hash=PARENT_IDENTITY_V5_RUNTIME_HASH,
+            expected_revision=RUNTIME_REVISION_V5,
+        ),
+        "reason": "autopilot_guard_module_hash_drift_after_v5_freeze",
+    }
+
+
+def _validate_v7_refreeze_lineage(
+    *, parent_runtime_manifest_path: str | Path
+) -> dict[str, Any]:
+    return {
+        "identity_runtime_v6": _validate_exact_offline_parent_runtime(
+            parent_runtime_manifest_path=parent_runtime_manifest_path,
+            expected_path=PARENT_IDENTITY_V6_RUNTIME_PATH,
+            expected_file_sha256=PARENT_IDENTITY_V6_RUNTIME_FILE_SHA256,
+            expected_manifest_hash=PARENT_IDENTITY_V6_RUNTIME_HASH,
+            expected_revision=RUNTIME_REVISION_V6,
+        ),
+        "reason": "integrity_repair_after_invalid_unapproved_execution_artifacts",
+    }
+
+
+def _v6_offline_refreeze_authorization() -> dict[str, Any]:
+    return {
+        "mode": "DIRECT_EXACT_USER_APPROVAL_NOT_MATERIALIZED_AS_NEW_RECEIPT",
+        "existing_offline_receipt_reused": True,
+        "new_approval_receipt_created": False,
+        "network_accessed": False,
+        "official_source_content_read": False,
+        "identity_output_created": False,
+        "topology_output_consumed": False,
+        "separate_exact_network_execution_approval_required": True,
+        "refreeze_reason": "autopilot_guard_module_hash_mismatch_on_v5",
+    }
+
+
+def _v7_offline_refreeze_authorization() -> dict[str, Any]:
+    return {
+        "mode": "DIRECT_USER_CONTINUATION_FROM_ACCEPTED_V6_BASELINE_OFFLINE_ONLY",
+        "existing_offline_receipt_reused": True,
+        "new_approval_receipt_created": False,
+        "invalid_execution_approval_artifacts_reused": False,
+        "network_accessed": False,
+        "official_source_content_read": False,
+        "identity_output_created": False,
+        "topology_output_consumed": False,
+        "separate_exact_network_execution_approval_required": True,
+        "refreeze_reason": "integrity_repair_after_invalid_unapproved_execution_artifacts",
+    }
+
+
 def build_runtime_manifest_v5(
     *,
     proposal_path: str | Path,
@@ -669,6 +796,41 @@ def build_runtime_manifest_v5(
         "topology_output_consumed": False,
         "separate_exact_network_execution_approval_required": True,
     }
+    manifest["manifest_hash"] = canonical_hash_without(manifest, "manifest_hash")
+    return manifest
+
+
+def build_runtime_manifest_v7(
+    *,
+    proposal_path: str | Path,
+    expected_proposal_hash: str,
+    expected_proposal_file_sha256: str,
+    approval_receipt_path: str | Path,
+    parent_runtime_manifest_path: str | Path,
+    runtime_module_path: str | Path,
+    synthetic_tests_path: str | Path,
+    launcher_path: str | Path,
+    generated_at_utc: str,
+    guard_checker_path: str | Path | None = None,
+) -> dict[str, Any]:
+    manifest = build_runtime_manifest(
+        proposal_path=proposal_path,
+        expected_proposal_hash=expected_proposal_hash,
+        expected_proposal_file_sha256=expected_proposal_file_sha256,
+        approval_receipt_path=approval_receipt_path,
+        runtime_module_path=runtime_module_path,
+        synthetic_tests_path=synthetic_tests_path,
+        launcher_path=launcher_path,
+        generated_at_utc=generated_at_utc,
+        guard_checker_path=guard_checker_path,
+    )
+    manifest["runtime_revision"] = RUNTIME_REVISION_V7
+    manifest["refreeze_lineage"] = _validate_v7_refreeze_lineage(
+        parent_runtime_manifest_path=parent_runtime_manifest_path
+    )
+    manifest["offline_refreeze_authorization"] = (
+        _v7_offline_refreeze_authorization()
+    )
     manifest["manifest_hash"] = canonical_hash_without(manifest, "manifest_hash")
     return manifest
 
@@ -795,29 +957,57 @@ def validate_runtime_manifest(manifest: Mapping[str, Any]) -> None:
     revision = manifest.get("runtime_revision")
     if revision is None:
         return
-    _require(revision == RUNTIME_REVISION_V5, "identity runtime revision mismatch")
-    lineage = manifest.get("refreeze_lineage")
-    _require(isinstance(lineage, dict), "identity v5 refreeze lineage is missing")
-    expected_lineage = _validate_v5_refreeze_lineage(
-        parent_runtime_manifest_path=PARENT_IDENTITY_V4_RUNTIME_PATH,
-        topology_runtime_manifest_path=TOPOLOGY_V4_RUNTIME_PATH,
-    )
-    _require(lineage == expected_lineage, "identity v5 refreeze lineage mismatch")
-    authorization = manifest.get("offline_refreeze_authorization")
     _require(
-        authorization
-        == {
-            "mode": "DIRECT_EXACT_USER_APPROVAL_NOT_MATERIALIZED_AS_NEW_RECEIPT",
-            "existing_offline_receipt_reused": True,
-            "new_approval_receipt_created": False,
-            "network_accessed": False,
-            "official_source_content_read": False,
-            "identity_output_created": False,
-            "topology_output_consumed": False,
-            "separate_exact_network_execution_approval_required": True,
-        },
-        "identity v5 offline authorization mismatch",
+        revision in (
+            RUNTIME_REVISION_V5,
+            RUNTIME_REVISION_V6,
+            RUNTIME_REVISION_V7,
+        ),
+        "identity runtime revision mismatch",
     )
+    lineage = manifest.get("refreeze_lineage")
+    _require(isinstance(lineage, dict), "identity refreeze lineage is missing")
+    if revision == RUNTIME_REVISION_V5:
+        expected_lineage = _validate_v5_refreeze_lineage(
+            parent_runtime_manifest_path=PARENT_IDENTITY_V4_RUNTIME_PATH,
+            topology_runtime_manifest_path=TOPOLOGY_V4_RUNTIME_PATH,
+        )
+        _require(lineage == expected_lineage, "identity v5 refreeze lineage mismatch")
+        authorization = manifest.get("offline_refreeze_authorization")
+        _require(
+            authorization
+            == {
+                "mode": "DIRECT_EXACT_USER_APPROVAL_NOT_MATERIALIZED_AS_NEW_RECEIPT",
+                "existing_offline_receipt_reused": True,
+                "new_approval_receipt_created": False,
+                "network_accessed": False,
+                "official_source_content_read": False,
+                "identity_output_created": False,
+                "topology_output_consumed": False,
+                "separate_exact_network_execution_approval_required": True,
+            },
+            "identity v5 offline authorization mismatch",
+        )
+    elif revision == RUNTIME_REVISION_V6:
+        expected_lineage = _validate_v6_refreeze_lineage(
+            parent_runtime_manifest_path=PARENT_IDENTITY_V5_RUNTIME_PATH
+        )
+        _require(lineage == expected_lineage, "identity v6 refreeze lineage mismatch")
+        _require(
+            manifest.get("offline_refreeze_authorization")
+            == _v6_offline_refreeze_authorization(),
+            "identity v6 offline authorization mismatch",
+        )
+    else:
+        expected_lineage = _validate_v7_refreeze_lineage(
+            parent_runtime_manifest_path=PARENT_IDENTITY_V6_RUNTIME_PATH
+        )
+        _require(lineage == expected_lineage, "identity v7 refreeze lineage mismatch")
+        _require(
+            manifest.get("offline_refreeze_authorization")
+            == _v7_offline_refreeze_authorization(),
+            "identity v7 offline authorization mismatch",
+        )
 
 
 def _write_immutable_json(path: str | Path, payload: Mapping[str, Any]) -> Path:

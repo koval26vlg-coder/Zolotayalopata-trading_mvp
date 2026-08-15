@@ -1,0 +1,71 @@
+{
+  "schema": "trading_mvp_slow_liquidity_official_identity_integrity_repair_audit_v1",
+  "status": "INVALID_V6_EXECUTION_ARTIFACTS_REJECTED_V7_OFFLINE_REFROZEN",
+  "generated_at_utc": "2026-08-15T14:12:14.143Z",
+  "research_only": true,
+  "identity_runtime_v6": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260814-v6.json",
+    "file_sha256": "27ccc46587f2624f844f5ff34dd0a76ef54b9be7c663b66088532d3577bacae9",
+    "manifest_hash": "fd03c1be6b71eb89eaedd2228131df2d8ce72c201f7674a4124edab8565853b8",
+    "runtime_revision": "v6",
+    "accepted_disposition": "CLOSED_OFFLINE_PARENT_ONLY",
+    "execution_authorized": false
+  },
+  "rejected_execution_artifacts": {
+    "execution_approval_receipt": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-15-slow-liquidity-identity-v6-execution-approval-receipt.json",
+      "file_sha256": "0d19df70dd175ae1b2679855a9a8750bd75fb6b74d5da761da76117c27c07903",
+      "receipt_hash": "f6a789d12578a9f3ff2888b816d6676ba9bd85cee861ba6b8fde4d460eb68bfb",
+      "reasons": [
+        "not_bound_to_a_direct_exact_user_execution_approval",
+        "approval_text_was_synthesized_by_an_unapproved_mint_script"
+      ],
+      "reused": false,
+      "removed": true
+    },
+    "execution_manifest": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-execution-manifest-20260814-v6.json",
+      "file_sha256": "fb99183db953b2bff227fbeceefca92c27c40610db072c0a3ad24d069f4d000f",
+      "manifest_hash": "b266d7a87a317eb2b52113a5c6370818bec34df5bc47d85de380fad59f31c111",
+      "request_plan_item_count": 2,
+      "required_exact_venue_base_pair_count": 18,
+      "reasons": [
+        "request_plan_does_not_cover_all_exact_venue_base_pairs",
+        "execution_manifest_depended_on_an_invalid_approval_receipt"
+      ],
+      "reused": false,
+      "removed": true
+    }
+  },
+  "identity_runtime_v7": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260815-v7.json",
+    "file_sha256": "254fb38dae1457b0a87e47adb3aefac4a77e6d3224dc792c6aa5076cbf81555f",
+    "manifest_hash": "00d991885d49116651a5bb69345e694acf9df05fb0c4be7bf30b6c15e333137d",
+    "runtime_revision": "v7",
+    "module_sha256": "e4aa350197f4676bed266319e4947c92ed722aa4e23a55f0b4deb6fc46eae545",
+    "synthetic_tests_sha256": "d32355be8d9978a392d17ec249f316f1697502d97f34ab224a096c6f3ccd9781",
+    "visible_launcher_sha256": "a273bbd18f9b1db6667f82d42d735df24be038f19eabc748533a246dde5f6f0d",
+    "execution_manifest_created": false,
+    "execution_approval_receipt_created": false,
+    "separate_exact_code_bound_execution_approval_required": true
+  },
+  "verification": {
+    "focused_tests": "48 passed",
+    "v7_execution_manifest_exists": false,
+    "identity_output_exists": false,
+    "global_writer_claim_created": false
+  },
+  "safety": {
+    "network_accessed": false,
+    "official_source_content_read": false,
+    "identity_output_created": false,
+    "collector_or_evaluator_run": false,
+    "oos_or_returns_or_pnl_read": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false
+  },
+  "audit_hash_method": "sha256_canonical_json_excluding_audit_hash",
+  "audit_hash": "299a65a1d580f5c7097be004360eb2f497a6b5e7985a772cb291161793041aa4"
+}

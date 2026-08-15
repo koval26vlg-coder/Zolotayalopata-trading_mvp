@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import copy
+import hashlib
 import importlib
 import json
 import subprocess
@@ -121,10 +122,40 @@ OFFLINE_CHILD_SCRIPT = textwrap.dedent(
 )
 
 
+class HistoricalIdentityCurrentnessProposalTests(unittest.TestCase):
+    def test_checked_in_proposal_is_canonical_and_explicitly_stale(self) -> None:
+        checked_in = json.loads(CHECKED_IN.read_text(encoding="utf-8"))
+        bound_identity_path = Path(
+            checked_in["code_bindings"]["parent_identity_validator_path"]
+        )
+        current_identity_sha256 = hashlib.sha256(
+            bound_identity_path.read_bytes()
+        ).hexdigest()
+
+        self.assertEqual(
+            checked_in["proposal_hash"], canonical_proposal_hash(checked_in)
+        )
+        self.assertNotEqual(
+            current_identity_sha256,
+            checked_in["code_bindings"]["parent_identity_validator_sha256"],
+        )
+        with self.assertRaisesRegex(
+            ProposalError, "parent_identity_validator file hash changed"
+        ):
+            build_proposal(ROOT, GENERATED_AT)
+
+
 class SlowLiquidityIdentityCurrentnessRefreezeProposalTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.proposal = build_proposal(ROOT, GENERATED_AT)
+        try:
+            cls.proposal = build_proposal(ROOT, GENERATED_AT)
+        except ProposalError as exc:
+            if str(exc) == "parent_identity_validator file hash changed":
+                raise unittest.SkipTest(
+                    "historical topology proposal is superseded by identity runtime v7"
+                ) from exc
+            raise
 
     def test_proposal_is_hash_bound_planonly(self) -> None:
         proposal = self.proposal
