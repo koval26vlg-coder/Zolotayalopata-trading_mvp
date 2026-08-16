@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "slow_liquidity_identity_request_plan_discovery_20260815_v3",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": 19376,
+  "owner_kind": "slow_liquidity_identity_request_plan_discovery",
+  "ownership_token": "088973043874523ffc29bb6f3bf38faf",
+  "plan_hash": "251e523ad1c9756a2e1c064421cc0056e4934ede7f0fd0c88adcaaddab8b83da",
+  "output_namespace": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-identity-request-plan\\slow_liquidity_identity_request_plan_discovery_20260815_v3",
+  "claimed_at_utc": "2026-08-16T10:57:52.480187+00:00",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "writer_attached_at_utc": "2026-08-16T10:57:55.936484+00:00",
+  "final_status": "STOPPED_INCOMPLETE",
+  "released_at_utc": "2026-08-16T10:57:57.444316+00:00"
+}

@@ -1,0 +1,18 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_announcement_discovery_disposition_v1",
+  "status": "LISTING_ANNOUNCEMENT_DISCOVERY_INCOMPLETE",
+  "plan_id": "slow_liquidity_listing_announcement_discovery_20260816",
+  "plan_hash": "1a7e4505e611b505e23c98cd89be015dc04d14b2da7cf3df12085a21db9ec8db",
+  "plan_file_sha256": "4ed3124faf5abb26db95963aad316cccd98006945ae0bd5f1bd32ef07325bfa8",
+  "candidate_count": 1,
+  "selected_bases": [],
+  "invented_ticker_count": 0,
+  "listing_slug_match": false,
+  "official_source_url": "https://www.mexc.com/announcements/article/first-in-market-17827791537583",
+  "identity_verdict": false,
+  "retry_authorized": false,
+  "next_requires_exact_phrase_for": "new_listing_index_method_or_new_universe"
+}
+
+
+

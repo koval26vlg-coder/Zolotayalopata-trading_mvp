@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "slow_liquidity_calendar_first_gate_currency_json_20260816",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": 32580,
+  "owner_kind": "slow_liquidity_calendar_first_gate_currency_json",
+  "ownership_token": "ac41b0f19ab458f78fba86c0939b24dd",
+  "plan_hash": "388d81d40e866eb7ccfd93cc439c27a9c220e3f5167eb62cc92d6bbc1983f756",
+  "output_namespace": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-calendar-first-gate-currency-json\\slow_liquidity_calendar_first_gate_currency_json_20260816",
+  "claimed_at_utc": "2026-08-16T14:08:26.668527+00:00",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "writer_attached_at_utc": "2026-08-16T14:08:30.170039+00:00",
+  "final_status": "CALENDAR_FIRST_GATE_CURRENCY_JSON_INCOMPLETE",
+  "released_at_utc": "2026-08-16T14:18:59.792062+00:00"
+}

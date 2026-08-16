@@ -1,0 +1,14 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_announcement_article_approval_receipt_v1",
+  "status": "APPROVED_SINGLE_USE_VISIBLE_LISTING_ANNOUNCEMENT_ARTICLE",
+  "user_approval_text": "Разрешаю один видимый public read-only запуск slow_liquidity_listing_announcement_article_20260816 через tools\\start_exact_approved_slow_liquidity_listing_announcement_article_visible.ps1 по plan_hash=3b28ddd81b2feaa90ab2e4e35acf1a9292b8933084a82ab4d08b9842048f5f93 и plan_file_sha256=f44db661f812bf302e1cd249af78edb043a997e3cfccb21f681da4817ba93d4c: один official MEXC article URL из frozen discovery, exclude closed 9, no invented tickers, slug first-in-market не ticker, identity before OHLCV collect. Не Bing, не sitemap, не retry discovery/r1-r4, не reuse spot v2 consumer. Не v7. STOPPED_INCOMPLETE не повторять. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи.",
+  "plan_id": "slow_liquidity_listing_announcement_article_20260816",
+  "plan_hash": "3b28ddd81b2feaa90ab2e4e35acf1a9292b8933084a82ab4d08b9842048f5f93",
+  "plan_file_sha256": "f44db661f812bf302e1cd249af78edb043a997e3cfccb21f681da4817ba93d4c",
+  "identity_verdict": false,
+  "selected_bases": [],
+  "extracted_bases": [],
+  "listing_slug_match": false,
+  "invented_ticker_count": 0,
+  "retry_authorized": false
+}

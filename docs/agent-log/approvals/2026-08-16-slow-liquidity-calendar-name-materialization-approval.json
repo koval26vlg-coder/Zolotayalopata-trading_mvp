@@ -1,0 +1,32 @@
+{
+  "schema": "trading_mvp_slow_liquidity_calendar_name_materialization_approval_receipt_v1",
+  "status": "ACCEPTED_CALENDAR_NAME_MATERIALIZATION_NO_IDENTITY",
+  "approved_at_utc": "2026-08-16T12:41:24.617Z",
+  "user_approval_text": "Принимаю PlanOnly slow_liquidity_calendar_name_materialization_20260816 по plan_hash=cb18a5207955f39303360d41ea4b050f1c0fba701b33869c8d478c55262f717b и plan_file_sha256=218f03872479633af8e2fcef3b3ca089567665b141f1e23c4e7a569c33dc6146: материализовать имена по accepted calendar-first method, список из frozen local calendar, не invent, exclude closed 9. Не identity, не OHLCV, не reopen listing-first, не reuse spot v2 consumer, не replay, не v7. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи.",
+  "plan_id": "slow_liquidity_calendar_name_materialization_20260816",
+  "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-calendar-name-materialization-planonly-20260816.json",
+  "plan_hash": "cb18a5207955f39303360d41ea4b050f1c0fba701b33869c8d478c55262f717b",
+  "plan_file_sha256": "218f03872479633af8e2fcef3b3ca089567665b141f1e23c4e7a569c33dc6146",
+  "selected_base_count": 407,
+  "selected_bases_sha256": "3b5c44955f309041867763e89731f074e0a9721e0d184537d253b48fbde56322",
+  "invented_ticker_count": 0,
+  "names_materialized": true,
+  "identity_before_ohlcv_collect": true,
+  "listing_first_name_discovery_reopened": false,
+  "spot_v2_runtime_reuse": false,
+  "network_authorized": false,
+  "replay_allowed": false,
+  "identity_execution_authorized": false,
+  "ohlcv_collect_authorized": false,
+  "authorized_scope": {
+    "accept_calendar_name_materialization": true,
+    "actual_network_run": false,
+    "invent_ticker": false,
+    "reopen_listing_first_name_discovery": false,
+    "identity_execution": false,
+    "ohlcv_collect": false,
+    "spot_v2_runtime_reuse": false
+  },
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "c68152870f6d46e62c9b7ee4a6f1c2beb4086c76bfd809a0e5ce945b4a242e1a"
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_announcement_gap_approval_receipt_v1",
+  "status": "ACCEPTED_LISTING_ANNOUNCEMENT_GAP_NO_RESCOPE",
+  "approved_at_utc": "2026-08-16T07:40:58.701Z",
+  "user_approval_text": "Принимаю PlanOnly slow_liquidity_listing_announcement_gap_20260816 по plan_hash=e3b504d5ff912b2a9f201511a3afd738cd43cb79b6025d697d4db6c80c0b8a5a и plan_file_sha256=73c21bbae89aea042d9fda2898b665273239dcca0839610c5dc9629308059b73: listing-first indexes/article не дали selected_bases, first-in-market и title не ticker, не invent tickers, не identity, не OHLCV, не reuse spot v2 consumer. Не retry discovery/article/r1-r4, не v7. Rescope listing index или новый universe только отдельной новой фразой. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи.",
+  "plan_id": "slow_liquidity_listing_announcement_gap_20260816",
+  "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-announcement-gap-planonly-20260816.json",
+  "plan_hash": "e3b504d5ff912b2a9f201511a3afd738cd43cb79b6025d697d4db6c80c0b8a5a",
+  "plan_file_sha256": "73c21bbae89aea042d9fda2898b665273239dcca0839610c5dc9629308059b73",
+  "selected_bases": [],
+  "extracted_bases": [],
+  "invented_ticker_count": 0,
+  "listing_slug_match": false,
+  "observed_title_is_not_ticker": true,
+  "identity_verdict": false,
+  "identity_execution_authorized": false,
+  "ohlcv_collect_authorized": false,
+  "spot_v2_runtime_reuse": false,
+  "network_authorized": false,
+  "rescope_authorized": false,
+  "retry_authorized": false,
+  "authorized_scope": {
+    "accept_listing_announcement_gap_record": true,
+    "actual_network_run": false,
+    "invent_ticker": false,
+    "identity_execution": false,
+    "ohlcv_collect": false,
+    "spot_v2_runtime_reuse": false,
+    "rescope_listing_index_or_universe": false
+  },
+  "checkpoint_options_not_authorized": [
+    "CLOSE_LISTING_FIRST_AS_UNREACHABLE",
+    "NEW_LISTING_INDEX_METHOD",
+    "NEW_UNIVERSE"
+  ],
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "8bc7888a5f8ad4eb9868b2fac25eb3a2bff5793d825385822cc6ee55dc597b33"
+}

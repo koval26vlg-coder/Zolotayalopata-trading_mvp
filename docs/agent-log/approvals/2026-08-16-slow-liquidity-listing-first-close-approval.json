@@ -1,0 +1,33 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_first_close_approval_receipt_v1",
+  "status": "LISTING_FIRST_CLOSED_AS_UNREACHABLE",
+  "approved_at_utc": "2026-08-16T12:26:10.365Z",
+  "user_approval_text": "CLOSE_LISTING_FIRST_AS_UNREACHABLE — принимаю PlanOnly slow_liquidity_listing_first_close_20260816 по plan_hash=c0830512db1fef2e012262bcd6f7ad624437062a11712b09f4718ac0b261fc0f и plan_file_sha256=d1ce9ceadfe4803de5719c666e3a55c5e998f535f9083e00e64426a34c13bba2: закрыть listing-first name discovery как unreachable, selected_bases=[], не invent tickers, не identity, не OHLCV, не reuse spot v2 consumer, не новый universe, не retry discovery/article/r1-r4, не v7. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи.",
+  "plan_id": "slow_liquidity_listing_first_close_20260816",
+  "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-first-close-planonly-20260816.json",
+  "plan_hash": "c0830512db1fef2e012262bcd6f7ad624437062a11712b09f4718ac0b261fc0f",
+  "plan_file_sha256": "d1ce9ceadfe4803de5719c666e3a55c5e998f535f9083e00e64426a34c13bba2",
+  "selected_bases": [],
+  "invented_ticker_count": 0,
+  "listing_first_name_discovery_unreachable": true,
+  "identity_verdict": false,
+  "identity_execution_authorized": false,
+  "ohlcv_collect_authorized": false,
+  "spot_v2_runtime_reuse": false,
+  "network_authorized": false,
+  "new_universe_authorized": false,
+  "retry_authorized": false,
+  "replay_allowed": false,
+  "authorized_scope": {
+    "close_listing_first_name_discovery": true,
+    "actual_network_run": false,
+    "invent_ticker": false,
+    "identity_execution": false,
+    "ohlcv_collect": false,
+    "spot_v2_runtime_reuse": false,
+    "new_universe": false,
+    "retry_discovery_or_article": false
+  },
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "b68971465243bcb070969f2773eb792a9722e9fa88d44278e1eb75d01aea582c"
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "slow_liquidity_listing_announcement_article_20260816",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": 35448,
+  "owner_kind": "slow_liquidity_listing_announcement_article",
+  "ownership_token": "95371d5b1b9cd9c7923e29458cc5cb1f",
+  "plan_hash": "3b28ddd81b2feaa90ab2e4e35acf1a9292b8933084a82ab4d08b9842048f5f93",
+  "output_namespace": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-listing-announcement-article\\slow_liquidity_listing_announcement_article_20260816",
+  "claimed_at_utc": "2026-08-16T07:32:26.397220+00:00",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "writer_attached_at_utc": "2026-08-16T07:32:29.972048+00:00",
+  "final_status": "LISTING_ANNOUNCEMENT_ARTICLE_INCOMPLETE",
+  "released_at_utc": "2026-08-16T07:32:35.244044+00:00"
+}

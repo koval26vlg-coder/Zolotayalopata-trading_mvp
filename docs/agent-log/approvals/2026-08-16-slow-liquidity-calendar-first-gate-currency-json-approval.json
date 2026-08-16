@@ -1,0 +1,11 @@
+{
+  "schema": "trading_mvp_slow_liquidity_calendar_first_gate_currency_json_approval_receipt_v1",
+  "status": "APPROVED_SINGLE_USE_VISIBLE_CURRENCY_JSON",
+  "user_approval_text": "Разрешаю один видимый public read-only запуск slow_liquidity_calendar_first_gate_currency_json_20260816 через tools\\start_exact_approved_slow_liquidity_calendar_first_gate_currency_json_visible.ps1 по plan_hash=388d81d40e866eb7ccfd93cc439c27a9c220e3f5167eb62cc92d6bbc1983f756 и plan_file_sha256=25ab519895f262f6482a5b4c1b107f1517c83eadfdda235f4d8fac0f3414e1fd: official identity для accepted calendar-first 407 — только Gate GET /spot/currencies/BASE без ключа, MEXC unsigned JSON нет, не HTML pages, не invent URL, не identity verdict, не OHLCV. Не reopen listing-first, не reuse spot v2 consumer, не replay, не v7. STOPPED_INCOMPLETE не повторять. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи.",
+  "plan_id": "slow_liquidity_calendar_first_gate_currency_json_20260816",
+  "plan_hash": "388d81d40e866eb7ccfd93cc439c27a9c220e3f5167eb62cc92d6bbc1983f756",
+  "plan_file_sha256": "25ab519895f262f6482a5b4c1b107f1517c83eadfdda235f4d8fac0f3414e1fd",
+  "identity_verdict": false,
+  "ohlcv_collect_authorized": false,
+  "retry_authorized": false
+}

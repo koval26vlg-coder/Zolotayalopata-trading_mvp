@@ -1,0 +1,52 @@
+{
+  "schema": "trading_mvp_slow_liquidity_identity_request_plan_discovery_execution_approval_receipt_v3",
+  "status": "APPROVED",
+  "run_id": "slow_liquidity_identity_request_plan_discovery_20260815_v3",
+  "runtime_manifest": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-identity-request-plan-discovery-runtime-manifest-20260815-v3-r2.json",
+    "file_sha256": "1a15342a57372142bd37b19bcf9426586ea426d29e1e4aa35ca42a3ca4d2a4cb",
+    "manifest_hash": "251e523ad1c9756a2e1c064421cc0056e4934ede7f0fd0c88adcaaddab8b83da"
+  },
+  "visible_launcher": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_identity_request_plan_discovery_v3_visible.ps1",
+    "file_sha256": "bb01285b839b1eda39aa0bf76fe26d05e12f39839fd9d2898c9f78d025dd4e20"
+  },
+  "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-identity-request-plan\\slow_liquidity_identity_request_plan_discovery_20260815_v3",
+  "authorized_scope": {
+    "one_visible_public_read_only_request_plan_discovery_run": true,
+    "official_source_content_read": true,
+    "request_plan_output": true,
+    "global_writer_claim": true,
+    "approval_receipt_creation": false,
+    "identity_output": false,
+    "collector_or_evaluator": false,
+    "oos_or_returns_or_pnl": false,
+    "grid_or_retune": false,
+    "execution_probe": false,
+    "paper_or_live": false,
+    "private_api_or_real_capital": false,
+    "leverage_or_margin": false
+  },
+  "limits": {
+    "maximum_total_http_requests": 38,
+    "maximum_attempts_per_url": 1,
+    "maximum_response_bytes_per_request": 1000000,
+    "max_runtime_sec": 600,
+    "hard_output_cap_bytes": 20000000
+  },
+  "launch_window": {
+    "not_before_local": "2026-08-16T13:55:36.074+03:00",
+    "latest_launch_local": "2026-08-16T13:58:06.074+03:00",
+    "hard_deadline_local": "2026-08-16T14:08:06.074+03:00"
+  },
+  "authoritative_guard_contract": {
+    "required_guard_decision": "RUN_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V3",
+    "required_policy_file_sha256": "577a6dbb6fdc3b95f9dea67ac1b340ed5e2181b0e4ac6da1ad438b48ca1690a8"
+  },
+  "single_use": true,
+  "stopped_incomplete_retry_authorized": false,
+  "user_approval_text": "В текущем запросе пользователь явно потребовал продолжить и запустить следующий bounded same-scope public research step. Standing-разрешение ограничено public request-plan discovery для MEXC и Gate, только research-only режимом, одним видимым терминалом, одним global writer, лимитами runtime и без identity output, evaluator, OOS, PnL, grid, retune, paper/live, private API, капитала, плеча или маржи. Этот receipt одноразовый; STOPPED_INCOMPLETE retry запрещён.",
+  "approved_at_utc": "2026-08-16T10:56:06.074Z",
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "81f58ca67ca997245a28cd67af2326608eec5a0ed54975aa37585843daddc6bf"
+}

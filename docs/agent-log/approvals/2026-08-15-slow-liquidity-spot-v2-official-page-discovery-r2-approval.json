@@ -1,0 +1,14 @@
+{
+  "schema": "trading_mvp_slow_liquidity_spot_v2_discovery_r2_approval_receipt_v1",
+  "status": "APPROVED_SINGLE_USE_VISIBLE_DISCOVERY",
+  "user_approval_text": "Разрешаю один видимый public read-only запуск slow_liquidity_spot_v2_official_page_discovery_20260815_r2 через tools\\start_exact_approved_slow_liquidity_spot_v2_official_page_discovery_r2_visible.ps1 по plan_hash=257e2dd8590c0a6bba16b8ea0e99c3e5a40750c8cd3fa88d23acb44590112f04 и plan_file_sha256=e07c608c33df17d25d3a38c01f79cfe086106b5a6d04f8083157f258dad87cd6: MEXC и Gate SPOT_USDT, 18 пар из frozen instrument bindings, per-symbol metadata, MEXC BASEUSDT / Gate BASE_USDT, EDGE и RAIN fail-closed. Не повтор r1. Bing navigation только для поиска страниц. Официальные страницы — не identity verdict. Не v7 и не MEXC perp underscore ticker. STOPPED_INCOMPLETE не повторять. Без evaluator, OOS, returns/PnL, grid/retune, execution probe, paper/live, private API, реальных денег, плеча или маржи.",
+  "plan_id": "slow_liquidity_spot_v2_official_page_discovery_20260815_r2",
+  "plan_hash": "257e2dd8590c0a6bba16b8ea0e99c3e5a40750c8cd3fa88d23acb44590112f04",
+  "plan_file_sha256": "e07c608c33df17d25d3a38c01f79cfe086106b5a6d04f8083157f258dad87cd6",
+  "output_manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-spot-v2-official-page-discovery\\slow_liquidity_spot_v2_official_page_discovery_20260815_r2\\manifest.json",
+  "request_plan_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-spot-v2-official-page-discovery\\slow_liquidity_spot_v2_official_page_discovery_20260815_r2\\request-plan.json",
+  "request_plan_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "identity_verdict": false,
+  "retry_authorized": false,
+  "parent_retry": false
+}

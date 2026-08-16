@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_index_method_disposition_v1",
+  "status": "ACCEPTED_LISTING_INDEX_METHOD_UNAVAILABLE_NO_RESCOPE",
+  "plan_id": "slow_liquidity_listing_index_method_unavailable_20260816",
+  "plan_hash": "ab38823d404fa546608ed8c42db2b716194fbccacefa16e514bc917c83700d55",
+  "plan_file_sha256": "e825860938d9eaf96c9b7432375debc95787f775fac3c18431424fa30becc896",
+  "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-listing-index-method-unavailable-approval.json",
+  "receipt_hash": "d246caa0effec75143474734ee60526b951d10ed60bcafbe8b47fb2fe2f81d55",
+  "selected_bases": [],
+  "seed_items": [],
+  "invented_ticker_count": 0,
+  "invented_index_url_count": 0,
+  "network_authorized": false,
+  "identity_execution_authorized": false,
+  "ohlcv_collect_authorized": false,
+  "spot_v2_runtime_reuse": false,
+  "close_listing_first_authorized": false,
+  "new_universe_authorized": false,
+  "retry_authorized": false,
+  "next_requires_exact_phrase_for": "new_universe_only"
+}
+

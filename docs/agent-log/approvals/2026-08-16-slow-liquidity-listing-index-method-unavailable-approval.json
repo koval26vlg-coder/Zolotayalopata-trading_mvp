@@ -1,0 +1,40 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_index_method_approval_receipt_v1",
+  "status": "ACCEPTED_LISTING_INDEX_METHOD_UNAVAILABLE_NO_RESCOPE",
+  "approved_at_utc": "2026-08-16T08:00:39.521Z",
+  "user_approval_text": "Принимаю PlanOnly slow_liquidity_listing_index_method_unavailable_20260816 по plan_hash=ab38823d404fa546608ed8c42db2b716194fbccacefa16e514bc917c83700d55 и plan_file_sha256=e825860938d9eaf96c9b7432375debc95787f775fac3c18431424fa30becc896: второго grounded official listing-index URL нет, не invent index или ticker, не identity, не OHLCV, не reuse spot v2 consumer. Не retry discovery/article/r1-r4, не close listing-first, не новый universe этой фразой, не v7. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи.",
+  "plan_id": "slow_liquidity_listing_index_method_unavailable_20260816",
+  "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-index-method-unavailable-planonly-20260816.json",
+  "plan_hash": "ab38823d404fa546608ed8c42db2b716194fbccacefa16e514bc917c83700d55",
+  "plan_file_sha256": "e825860938d9eaf96c9b7432375debc95787f775fac3c18431424fa30becc896",
+  "selected_bases": [],
+  "invented_ticker_count": 0,
+  "invented_index_url_count": 0,
+  "seed_items": [],
+  "identity_verdict": false,
+  "identity_execution_authorized": false,
+  "ohlcv_collect_authorized": false,
+  "spot_v2_runtime_reuse": false,
+  "network_authorized": false,
+  "close_listing_first_authorized": false,
+  "new_universe_authorized": false,
+  "retry_authorized": false,
+  "authorized_scope": {
+    "accept_listing_index_method_unavailable_record": true,
+    "actual_network_run": false,
+    "invent_index_url": false,
+    "invent_ticker": false,
+    "identity_execution": false,
+    "ohlcv_collect": false,
+    "spot_v2_runtime_reuse": false,
+    "close_listing_first": false,
+    "new_universe": false
+  },
+  "checkpoint_options_not_authorized": [
+    "CLOSE_LISTING_FIRST_AS_UNREACHABLE",
+    "NEW_UNIVERSE",
+    "USER_SUPPLIED_GROUNDED_OFFICIAL_LISTING_INDEX_URL"
+  ],
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "d246caa0effec75143474734ee60526b951d10ed60bcafbe8b47fb2fe2f81d55"
+}

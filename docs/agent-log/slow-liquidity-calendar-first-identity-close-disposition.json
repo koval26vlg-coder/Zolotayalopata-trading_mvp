@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_slow_liquidity_calendar_first_identity_close_disposition_v1",
+  "status": "TWO_VENUE_OFFICIAL_IDENTITY_CLOSED_AS_INCOMPLETE",
+  "plan_id": "slow_liquidity_calendar_first_identity_close_20260816",
+  "plan_hash": "55b764789af94652e59471ecf8a8916680d7159744e05456274265f4a6ec0407",
+  "plan_file_sha256": "2485ddca3712b8af35455ab13cfa6e28fbe989858c6d8ec69010fe60a0994066",
+  "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-calendar-first-identity-close-approval.json",
+  "receipt_hash": "7aa6f8ce33433d4a0d5e8305f14ce0387a6919ec129510630fdadbb5986eb382",
+  "receipt_file_sha256": "9a46f489ba3d9accc3cecfd8a210edfa78eb37f7488c586f7f0a52753a309f88",
+  "selected_base_count": 407,
+  "unique_gate_evm_base_count": 244,
+  "unresolved_count": 163,
+  "two_venue_verified_base_count": 0,
+  "records_sha256": "e073a9b3d2aba7b29b3b90a0004431d33cc97ce63d8b37694fb7689ade407430",
+  "network_authorized": false,
+  "identity_verdict": false,
+  "ohlcv_collect_authorized": false,
+  "parent_retry_authorized": false,
+  "two_venue_official_identity_complete": false,
+  "documented_second_venue_method_unavailable": true,
+  "next_requires_exact_phrase_for": "new_documented_method_or_material_research_contract_change"
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "trading_mvp_slow_liquidity_official_identity_offline_approval_receipt_v1",
+  "status": "APPROVED_OFFLINE_IMPLEMENTATION_ONLY",
+  "approved_at_utc": "2026-08-15T17:09:43.077Z",
+  "user_authorization_text": "Разрешаю slow liquidity official identity offline implementation and refreeze spot v2 по proposal_hash=4ff5732fed76dd70ab1208253dfdf617aa33ac9d55580dffe5d08d4f5cae86bf и proposal_file_sha256=64bedf76b55a1bdada04c9b627f0df5c93cc47a329a709783cad16aa1ba02d48: реализовать runtime и synthetic tests, создать immutable code-bound runtime manifest для спот-пар собранного v6 датасета. EDGE и RAIN fail-closed при любой двусмысленности. Без сети и identity output.",
+  "response_annotation_index": 1,
+  "selected_prior_response_text": "Это открывает только offline-код: runtime, тесты и новый hash-bound manifest. Не открывает чтение официальных страниц, identity-output, replay, OOS, paper и live.",
+  "authorization_interpretation": "EXACT_CONTEXT_BOUND_OFFLINE_ONLY",
+  "proposal": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\slow-liquidity-official-asset-identity-verification-proposal-20260815-spot-v2.json",
+    "file_sha256": "64bedf76b55a1bdada04c9b627f0df5c93cc47a329a709783cad16aa1ba02d48",
+    "proposal_hash": "4ff5732fed76dd70ab1208253dfdf617aa33ac9d55580dffe5d08d4f5cae86bf"
+  },
+  "authorized_scope": {
+    "offline_runtime_implementation": true,
+    "synthetic_tests": true,
+    "approval_receipt_creation": true,
+    "runtime_manifest_creation": true,
+    "preflight_only": true,
+    "official_source_content_read": false,
+    "actual_network_run": false,
+    "identity_output": false,
+    "candidate_planonly_creation": false
+  },
+  "prohibited_scope": {
+    "collector_or_evaluator": true,
+    "oos": true,
+    "returns_or_pnl": true,
+    "grid_or_retune": true,
+    "execution_probe": true,
+    "paper_or_live": true,
+    "private_api": true,
+    "real_capital": true,
+    "leverage_or_margin": true
+  },
+  "separate_exact_code_bound_execution_approval_required": true,
+  "network_accessed_while_freezing": false,
+  "identity_output_created_while_freezing": false,
+  "global_writer_claim_created_while_freezing": false,
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "ce4c2f25724bd633e30e46f004822e4e1821be871f7ae88b40978e79583f5140"
+}

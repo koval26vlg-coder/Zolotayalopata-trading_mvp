@@ -1,0 +1,46 @@
+{
+  "schema": "trading_mvp_spot_v2_official_currency_json_launch_v1",
+  "status": "COMPLETE",
+  "run_id": "slow_liquidity_listing_announcement_discovery_20260816",
+  "visible_terminal_pid": 34404,
+  "terminal_ownership_verified": true,
+  "started_at_utc": "2026-08-16T06:52:21.0001513+00:00",
+  "updated_at_utc": "2026-08-16T06:52:32.1424094+00:00",
+  "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-announcement-discovery-planonly-20260816.json",
+  "plan_hash": "1a7e4505e611b505e23c98cd89be015dc04d14b2da7cf3df12085a21db9ec8db",
+  "plan_file_sha256": "4ed3124faf5abb26db95963aad316cccd98006945ae0bd5f1bd32ef07325bfa8",
+  "runtime_module_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_listing_announcement_discovery.py",
+  "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_exact_approved_slow_liquidity_listing_announcement_discovery_visible.ps1",
+  "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-listing-announcement-discovery\\slow_liquidity_listing_announcement_discovery_20260816",
+  "max_runtime_sec": 180,
+  "hard_output_cap_bytes": 5000000,
+  "global_writer_claim_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\active-market-data-writer-claim.json",
+  "writer_pid": 17696,
+  "global_writer_claim_archive_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\global-writer-claim-archive\\slow_liquidity_listing_announcement_discovery_20260816.20260816T065232128008Z.json",
+  "final_output": {
+    "status": "LISTING_ANNOUNCEMENT_DISCOVERY_INCOMPLETE",
+    "gate_record_count": 0,
+    "unresolved": [
+      null
+    ],
+    "request_count": 2,
+    "records_sha256": "",
+    "identity_verdict": false,
+    "html_request_plan": false,
+    "total_bytes": 735,
+    "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-listing-announcement-discovery\\slow_liquidity_listing_announcement_discovery_20260816\\manifest.json",
+    "records_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-listing-announcement-discovery\\slow_liquidity_listing_announcement_discovery_20260816\\listing-announcement-candidates.json"
+  },
+  "identity_verdict": false,
+  "v7_used": false,
+  "retry_authorized": false,
+  "message": "LISTING_ANNOUNCEMENT_DISCOVERY_INCOMPLETE",
+  "guard": {
+    "autopilot_status": "ACTIVE",
+    "weekly_remaining_percent": 22.0,
+    "gate_status": "READY_FOR_POSTPROCESS",
+    "gate_run_id": "slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6",
+    "observed_at_utc": "2026-08-16T06:52:26.0908365+00:00"
+  },
+  "finished_at_utc": "2026-08-16T06:52:32.1418795+00:00"
+}

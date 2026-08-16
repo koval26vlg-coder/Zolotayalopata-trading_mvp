@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "slow_liquidity_spot_v2_official_currency_json_20260815",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": 16716,
+  "owner_kind": "slow_liquidity_spot_v2_official_currency_json",
+  "ownership_token": "e5a50658526fc7ba430456063a971108",
+  "plan_hash": "b6db2d430d42728681594701e00ddeb95f302f5728e99f198daccadc930fc9fc",
+  "output_namespace": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-spot-v2-official-currency-json\\slow_liquidity_spot_v2_official_currency_json_20260815",
+  "claimed_at_utc": "2026-08-15T20:12:45.922051+00:00",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "writer_attached_at_utc": "2026-08-15T20:12:49.434706+00:00",
+  "final_status": "SPOT_V2_OFFICIAL_CURRENCY_JSON_INCOMPLETE",
+  "released_at_utc": "2026-08-15T20:13:04.773320+00:00"
+}

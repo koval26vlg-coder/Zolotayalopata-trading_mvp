@@ -1,0 +1,18 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_announcement_gap_disposition_v1",
+  "status": "ACCEPTED_LISTING_ANNOUNCEMENT_GAP_NO_RESCOPE",
+  "plan_id": "slow_liquidity_listing_announcement_gap_20260816",
+  "plan_hash": "e3b504d5ff912b2a9f201511a3afd738cd43cb79b6025d697d4db6c80c0b8a5a",
+  "plan_file_sha256": "73c21bbae89aea042d9fda2898b665273239dcca0839610c5dc9629308059b73",
+  "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-listing-announcement-gap-approval.json",
+  "receipt_hash": "8bc7888a5f8ad4eb9868b2fac25eb3a2bff5793d825385822cc6ee55dc597b33",
+  "selected_bases": [],
+  "invented_ticker_count": 0,
+  "network_authorized": false,
+  "identity_execution_authorized": false,
+  "ohlcv_collect_authorized": false,
+  "spot_v2_runtime_reuse": false,
+  "retry_authorized": false,
+  "next_requires_exact_phrase_for": "new_universe_or_close_listing_first"
+}
+

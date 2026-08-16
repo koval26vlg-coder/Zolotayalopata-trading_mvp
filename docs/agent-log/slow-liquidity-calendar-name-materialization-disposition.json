@@ -1,0 +1,21 @@
+{
+  "schema": "trading_mvp_slow_liquidity_calendar_name_materialization_disposition_v1",
+  "status": "ACCEPTED_CALENDAR_NAME_MATERIALIZATION_NO_IDENTITY",
+  "plan_id": "slow_liquidity_calendar_name_materialization_20260816",
+  "plan_hash": "cb18a5207955f39303360d41ea4b050f1c0fba701b33869c8d478c55262f717b",
+  "plan_file_sha256": "218f03872479633af8e2fcef3b3ca089567665b141f1e23c4e7a569c33dc6146",
+  "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-calendar-name-materialization-approval.json",
+  "receipt_hash": "c68152870f6d46e62c9b7ee4a6f1c2beb4086c76bfd809a0e5ce945b4a242e1a",
+  "selected_base_count": 407,
+  "selected_bases_sha256": "3b5c44955f309041867763e89731f074e0a9721e0d184537d253b48fbde56322",
+  "invented_ticker_count": 0,
+  "names_materialized": true,
+  "network_authorized": false,
+  "identity_execution_authorized": false,
+  "ohlcv_collect_authorized": false,
+  "listing_first_name_discovery_reopened": false,
+  "next_requires_exact_phrase_for": "visible_gate_currency_json_run",
+  "official_identity_planonly_status": "ACCEPTED_CALENDAR_FIRST_OFFICIAL_IDENTITY_NO_NETWORK",
+  "official_identity_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-calendar-first-official-identity-approval.json",
+  "official_identity_receipt_hash": "c806716203f142526c6d4894d5ea1595ff936e547fd6847edf3a0ef1223471f2"
+}

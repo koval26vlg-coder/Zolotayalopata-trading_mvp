@@ -1,0 +1,21 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "slow_liquidity_listing_momentum_first_days_collect_20260816",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": null,
+  "owner_kind": "listing_momentum_first_days_collector",
+  "ownership_token": "cce999871d2ef38d1056acb0e462ae05",
+  "plan_hash": "00b85404593c9cf9c344774e9868c6859f7201bbf0a5e639cae422fb892460b0",
+  "output_namespace": "E:\\trading_mvp\\listing-momentum-first-days\\slow_liquidity_listing_momentum_first_days_collect_20260816",
+  "claimed_at_utc": "2026-08-16T18:39:29.077405+00:00",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "final_status": "completed",
+  "released_at_utc": "2026-08-16T18:39:31.610519+00:00"
+}

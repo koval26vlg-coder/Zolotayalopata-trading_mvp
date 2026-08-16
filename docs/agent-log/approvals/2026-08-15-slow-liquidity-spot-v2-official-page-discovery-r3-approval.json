@@ -1,0 +1,11 @@
+{
+  "schema": "trading_mvp_slow_liquidity_spot_v2_discovery_r3_approval_receipt_v1",
+  "status": "APPROVED_SINGLE_USE_VISIBLE_DISCOVERY",
+  "user_approval_text": "Разрешаю один видимый public read-only запуск slow_liquidity_spot_v2_official_page_discovery_20260815_r3 через tools\\start_exact_approved_slow_liquidity_spot_v2_official_page_discovery_r3_visible.ps1 по plan_hash=fa527d7fcb2e01b56c1bf33f5d897e8c8ef69758b9f00963c0c1181da7658631 и plan_file_sha256=d14caf3556fa6707e8969263f878159a4a927e0e130577f0250bacec42b914f8: MEXC и Gate SPOT_USDT, 18 пар, per-symbol metadata, official sitemap и venue search, не Bing, не повтор r1/r2, MEXC BASEUSDT / Gate BASE_USDT, EDGE и RAIN fail-closed. Официальные страницы — не identity verdict. Не v7 и не MEXC perp underscore ticker. STOPPED_INCOMPLETE не повторять. Без evaluator, OOS, returns/PnL, grid/retune, execution probe, paper/live, private API, реальных денег, плеча или маржи.",
+  "plan_id": "slow_liquidity_spot_v2_official_page_discovery_20260815_r3",
+  "plan_hash": "fa527d7fcb2e01b56c1bf33f5d897e8c8ef69758b9f00963c0c1181da7658631",
+  "plan_file_sha256": "d14caf3556fa6707e8969263f878159a4a927e0e130577f0250bacec42b914f8",
+  "identity_verdict": false,
+  "retry_authorized": false,
+  "parent_retry": false
+}

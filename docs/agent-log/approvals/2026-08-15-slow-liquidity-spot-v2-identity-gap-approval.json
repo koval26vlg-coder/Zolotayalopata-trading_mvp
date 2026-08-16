@@ -1,0 +1,31 @@
+{
+  "schema": "trading_mvp_slow_liquidity_spot_v2_identity_gap_approval_receipt_v1",
+  "status": "ACCEPTED_IDENTITY_GAP_NO_RESCOPE",
+  "approved_at_utc": "2026-08-15T20:35:04.496Z",
+  "user_approval_text": "Принимаю PlanOnly slow_liquidity_spot_v2_identity_gap_20260815 по plan_hash=df92867aa836c6a03092d49895207ffac5260674bdcbf2b1d17a3912d0b58973 и plan_file_sha256=bdea19b374e845064513fa1261265a2922666c456ad2cb9ffaef1d02cc5c3279: 18-item official-page request plan недостижим, identity execution закрыт. Не retry currency JSON, не r5 sitemap/search/Bing, не v7. EDGE и RAIN fail-closed. Rescope universe или evidence class только отдельной новой фразой. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи.",
+  "plan_id": "slow_liquidity_spot_v2_identity_gap_20260815",
+  "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-spot-v2-identity-gap-planonly-20260815.json",
+  "plan_hash": "df92867aa836c6a03092d49895207ffac5260674bdcbf2b1d17a3912d0b58973",
+  "plan_file_sha256": "bdea19b374e845064513fa1261265a2922666c456ad2cb9ffaef1d02cc5c3279",
+  "identity_verdict": false,
+  "html_request_plan": false,
+  "network_authorized": false,
+  "rescope_authorized": false,
+  "retry_authorized": false,
+  "page_locator_r5_authorized": false,
+  "identity_execution_authorized": false,
+  "authorized_scope": {
+    "accept_identity_gap_record": true,
+    "actual_network_run": false,
+    "rescope_universe_or_evidence": false,
+    "identity_output": false,
+    "official_source_content_read": false
+  },
+  "checkpoint_options_not_authorized": [
+    "CLOSE_IDENTITY_AS_UNREACHABLE",
+    "RESCOPE_UNIVERSE_OR_EVIDENCE_CLASS",
+    "KEEP_HTML_18_IDENTITY_CLOSED"
+  ],
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "c1147f7ac6703e4ee3f6f8dd03b49825de63e8c70397effee0a00f0a63f00ff8"
+}

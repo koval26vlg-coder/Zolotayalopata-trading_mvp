@@ -1,0 +1,12 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_announcement_discovery_approval_receipt_v1",
+  "status": "APPROVED_SINGLE_USE_VISIBLE_LISTING_ANNOUNCEMENT_DISCOVERY",
+  "user_approval_text": "Разрешаю один видимый public read-only запуск slow_liquidity_listing_announcement_discovery_20260816 через tools\\start_exact_approved_slow_liquidity_listing_announcement_discovery_visible.ps1 по plan_hash=1a7e4505e611b505e23c98cd89be015dc04d14b2da7cf3df12085a21db9ec8db и plan_file_sha256=4ed3124faf5abb26db95963aad316cccd98006945ae0bd5f1bd32ef07325bfa8: official listing announcement indexes only, exclude closed 9, no invented tickers, identity before OHLCV collect. Не Bing, не sitemap, не retry r1-r4, не reuse spot v2 consumer. Не v7. STOPPED_INCOMPLETE не повторять. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи.",
+  "plan_id": "slow_liquidity_listing_announcement_discovery_20260816",
+  "plan_hash": "1a7e4505e611b505e23c98cd89be015dc04d14b2da7cf3df12085a21db9ec8db",
+  "plan_file_sha256": "4ed3124faf5abb26db95963aad316cccd98006945ae0bd5f1bd32ef07325bfa8",
+  "identity_verdict": false,
+  "selected_bases": [],
+  "invented_ticker_count": 0,
+  "retry_authorized": false
+}
