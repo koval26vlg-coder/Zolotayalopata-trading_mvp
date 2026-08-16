@@ -14,6 +14,8 @@ $swarmStatusScript = Join-Path $repoRoot "tools\trading_swarm_status.ps1"
 $tradingTestRunnerScript = Join-Path $repoRoot "tools\run_trading_tests.ps1"
 $acceptanceGateScript = Join-Path $repoRoot "tools\trading_strategy_acceptance_gate.ps1"
 $goalStatusScript = Join-Path $repoRoot "tools\trading_goal_status.ps1"
+$autopilotGuardScript = Join-Path $repoRoot "tools\check_trading_mvp_autopilot.ps1"
+$requestPlanV4LauncherScript = Join-Path $repoRoot "tools\start_exact_approved_slow_liquidity_identity_request_plan_discovery_v4_visible.ps1"
 $visibleCollectScript = Join-Path $repoRoot "tools\start_funding_collect_visible.ps1"
 $finalReviewScript = Join-Path $repoRoot "tools\run_funding_final_review_visible.ps1"
 $fundingViabilityGapScript = Join-Path $repoRoot "tools\funding_viability_gap.ps1"
@@ -217,6 +219,146 @@ function Resolve-WsCollectCommands {
 
 $gate = & pwsh -NoProfile -ExecutionPolicy Bypass -File $gateChecker -GatePath $GatePath -Json | ConvertFrom-Json
 $rawGate = Read-JsonFileOrNull -Path $gatePath
+$autopilotGuard = & pwsh -NoProfile -ExecutionPolicy Bypass -File $autopilotGuardScript -Json | ConvertFrom-Json
+
+if ([string]$autopilotGuard.decision -eq "TERMINAL_REJECT_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V4_STOPPED_INCOMPLETE_NO_RETRY") {
+    $v4LaunchCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$requestPlanV4LauncherScript`""
+    $v4StatusCommand = "$v4LaunchCommand -Status"
+    $v4StopCommand = "$v4LaunchCommand -Stop"
+    $terminalResult = [ordered]@{
+        generated_at = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss zzz")
+        mode = "trading_next_goal_step"
+        decision = [string]$autopilotGuard.decision
+        reason = "The immutable v4 run is STOPPED_INCOMPLETE with retry_authorized=false. Do not start it again. Inspect only the terminal record and status."
+        requires_user_approval = $false
+        requires_user_approval_for_actual_collect = $false
+        standing_research_authorized = $false
+        standing_research_scope_binding_valid = $false
+        primary_command = $v4StatusCommand
+        allowed_actions = @(
+            "inspect_terminal_launch_record",
+            "check_status",
+            "check_guard",
+            "check_active_run_gate"
+        )
+        blocked_actions = @(
+            "retry_stopped_incomplete_run",
+            "start_second_writer",
+            "network_research",
+            "identity_output",
+            "request_plan_output",
+            "evaluator",
+            "oos",
+            "returns_or_pnl",
+            "grid_or_retune",
+            "private_api_or_real_capital",
+            "leverage_or_margin",
+            "paper_or_live"
+        )
+        state = [ordered]@{
+            gate_status = [string]$gate.status
+            gate_run_id = [string]$gate.run_id
+            guard_status = [string]$autopilotGuard.status
+            guard_observed_at_utc = [string]$autopilotGuard.observed_at_utc
+            guard_policy_hash = [string]$autopilotGuard.policy_hash
+            guard_usage_remaining_percent = [double]$autopilotGuard.usage.remaining_percent
+            stop_new_actions = [bool]$autopilotGuard.stop_new_actions
+            next_action = [string]$autopilotGuard.next_action
+            live_process_ids = $autopilotGuard.gate.live_process_ids
+            output_created = $false
+            identity_output_created = $false
+            strategy_accepted = $false
+            live_orders = $false
+        }
+        commands = [ordered]@{
+            status = $v4StatusCommand
+            stop = $v4StopCommand
+            guard_status = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$autopilotGuardScript`" -Json"
+            gate_status = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$gateChecker`" -GatePath `"$GatePath`" -Json"
+        }
+        fast_path = [ordered]@{
+            reason = "v4_terminal_rejection_is_current"
+            raw_gate_path = $GatePath
+        }
+    }
+    if ($Json) {
+        $terminalResult | ConvertTo-Json -Depth 12
+        exit 0
+    }
+    Write-Host "trading_mvp Next Goal Step" -ForegroundColor Cyan
+    Write-Host "Decision: $($terminalResult.decision)"
+    Write-Host "Next: $($terminalResult.reason)"
+    Write-Host "Status: $v4StatusCommand"
+    exit 0
+}
+
+if ([string]$autopilotGuard.decision -eq "RUN_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V4") {
+    $v4LaunchCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$requestPlanV4LauncherScript`""
+    $v4StatusCommand = "$v4LaunchCommand -Status"
+    $v4StopCommand = "$v4LaunchCommand -Stop"
+    $v4Result = [ordered]@{
+        generated_at = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss zzz")
+        mode = "trading_next_goal_step"
+        decision = "RUN_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V4"
+        reason = "Fresh technical guard and standing same-scope public-research policy authorize one visible v4 request-plan discovery run."
+        requires_user_approval = $false
+        requires_user_approval_for_actual_collect = $false
+        standing_research_authorized = [bool]$autopilotGuard.standing_research_authorized
+        standing_research_scope_binding_valid = [bool]$autopilotGuard.standing_research_scope_binding_valid
+        primary_command = $v4LaunchCommand
+        allowed_actions = @(
+            "run_one_visible_public_read_only_request_plan_discovery_v4",
+            "use_one_global_writer",
+            "check_status",
+            "stop_owned_run"
+        )
+        blocked_actions = @(
+            "second_writer",
+            "retry_stopped_incomplete",
+            "identity_output",
+            "evaluator",
+            "oos",
+            "returns_or_pnl",
+            "grid_or_retune",
+            "private_api_or_real_capital",
+            "leverage_or_margin",
+            "paper_or_live"
+        )
+        state = [ordered]@{
+            gate_status = [string]$gate.status
+            gate_run_id = [string]$gate.run_id
+            guard_status = [string]$autopilotGuard.status
+            guard_observed_at_utc = [string]$autopilotGuard.observed_at_utc
+            guard_policy_hash = [string]$autopilotGuard.policy_hash
+            guard_usage_remaining_percent = [double]$autopilotGuard.usage.remaining_percent
+            stop_new_actions = [bool]$autopilotGuard.stop_new_actions
+            live_process_ids = $autopilotGuard.gate.live_process_ids
+            output_created = $false
+            identity_output_created = $false
+            strategy_accepted = $false
+            live_orders = $false
+        }
+        commands = [ordered]@{
+            launch = $v4LaunchCommand
+            status = $v4StatusCommand
+            stop = $v4StopCommand
+            gate_status = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$gateChecker`" -GatePath `"$GatePath`" -Json"
+            guard_status = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$autopilotGuardScript`" -Json"
+        }
+        fast_path = [ordered]@{
+            reason = "v4_request_plan_discovery_guard_is_current"
+            raw_gate_path = $GatePath
+        }
+    }
+    if ($Json) {
+        $v4Result | ConvertTo-Json -Depth 12
+        exit 0
+    }
+    Write-Host "trading_mvp Next Goal Step" -ForegroundColor Cyan
+    Write-Host "Decision: $($v4Result.decision)"
+    Write-Host "Command: $v4LaunchCommand"
+    exit 0
+}
 $slowLiquidityExactRecollectStatus = Get-SlowLiquidityExactRecollectStatus `
     -Gate $gate `
     -PlanPath $ExactSlowLiquidityRecollectPlanPath `

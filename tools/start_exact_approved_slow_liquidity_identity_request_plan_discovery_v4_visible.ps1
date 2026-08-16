@@ -1,4 +1,5 @@
 param(
+    [switch]$DiagnosticFullPreflight,
     [switch]$PreflightOnly,
     [switch]$VisibleWorker,
     [switch]$Status,
@@ -35,7 +36,7 @@ $parentIdentityRuntimeManifestPath = Join-Path $repoRoot `
 
 if (-not $RuntimeManifestPath) {
     $RuntimeManifestPath = Join-Path $repoRoot `
-        "docs\plans\slow-liquidity-identity-request-plan-discovery-runtime-manifest-20260816-v4-r2.json"
+        "docs\plans\slow-liquidity-identity-request-plan-discovery-runtime-manifest-20260816-v4-r6.json"
 }
 
 if (-not $ExecutionManifestPath) {
@@ -286,12 +287,10 @@ from pathlib import Path
 from trading_mvp.src import slow_liquidity_identity_request_plan_discovery_v4 as runtime
 repo = Path(sys.argv[1]).resolve()
 runtime_path = Path(sys.argv[2]).resolve()
-execution_path = Path(sys.argv[3]).resolve()
 runtime_manifest = json.loads(runtime_path.read_text(encoding="utf-8"))
-execution_manifest = json.loads(execution_path.read_text(encoding="utf-8"))
-capability = runtime.validate_execution_manifest(execution_manifest, runtime_manifest=runtime_manifest, repo_root=repo)
+capability = runtime.build_standing_execution_capability(runtime_manifest)
 print(json.dumps({
-    "status": "VALID_EXACT_REQUEST_PLAN_DISCOVERY_EXECUTION_V4",
+    "status": "VALID_STANDING_REQUEST_PLAN_DISCOVERY_EXECUTION_V4",
     "run_id": capability.run_id,
     "runtime_manifest_hash": capability.runtime_manifest_hash,
     "execution_manifest_hash": capability.execution_manifest_hash,
@@ -314,7 +313,6 @@ from pathlib import Path
 from trading_mvp.src import slow_liquidity_identity_request_plan_discovery_v4 as runtime
 repo = Path(sys.argv[1]).resolve()
 runtime_path = Path(sys.argv[2]).resolve()
-execution_path = Path(sys.argv[3]).resolve()
 network_accessed = False
 
 def emit_failure(error):
@@ -325,12 +323,7 @@ def emit_failure(error):
 
 try:
     runtime_manifest = json.loads(runtime_path.read_text(encoding="utf-8"))
-    execution_manifest = json.loads(execution_path.read_text(encoding="utf-8"))
-    capability = runtime.validate_execution_manifest(
-        execution_manifest,
-        runtime_manifest=runtime_manifest,
-        repo_root=repo,
-    )
+    capability = runtime.build_standing_execution_capability(runtime_manifest)
     network_accessed = True
     result = runtime.collect_request_plan(capability=capability)
     manifest = runtime.write_request_plan_bundle(
@@ -417,12 +410,12 @@ function Invoke-OfflinePreflight {
         --execution-manifest $ExecutionManifestPath `
         --output $OutputPath 2>&1)
     $exitCode = $LASTEXITCODE
-    if ($exitCode -ne 3) {
+    if ($exitCode -ne 0) {
         throw "offline_preflight_contract_failed"
     }
     $payload = ConvertFrom-JsonPreserveDateStrings -InputJson $raw
     if (
-        [string]$payload.status -ne "BLOCKED_AWAIT_EXACT_REQUEST_PLAN_DISCOVERY_V4_EXECUTION_APPROVAL" -or
+        [string]$payload.status -ne "READY_FOR_STANDING_PUBLIC_RESEARCH_EXECUTION" -or
         [string]$payload.run_id -ne $runId -or
         [bool]$payload.network_accessed -or
         [bool]$payload.execution_manifest_read -or
@@ -439,14 +432,8 @@ function Invoke-FullPreflight {
     if ($ExpectedRuntimeManifestFileSha256) {
         Assert-ExpectedFileHash -Path $RuntimeManifestPath -Expected $ExpectedRuntimeManifestFileSha256 -Label "Runtime manifest"
     }
-    if (-not (Test-Path -LiteralPath $ExecutionManifestPath -PathType Leaf)) {
-        throw "exact_request_plan_discovery_v4_execution_manifest_missing"
-    }
-    if ($ExpectedExecutionManifestFileSha256) {
-        Assert-ExpectedFileHash -Path $ExecutionManifestPath -Expected $ExpectedExecutionManifestFileSha256 -Label "Execution manifest"
-    }
     $validation = Invoke-TopologyValidation
-    if ([string]$validation.status -ne "VALID_EXACT_REQUEST_PLAN_DISCOVERY_EXECUTION_V4" -or [string]$validation.run_id -ne $runId -or [string]$validation.output_path -ne [System.IO.Path]::GetFullPath($OutputPath)) {
+    if ([string]$validation.status -ne "VALID_STANDING_REQUEST_PLAN_DISCOVERY_EXECUTION_V4" -or [string]$validation.run_id -ne $runId -or [string]$validation.output_path -ne [System.IO.Path]::GetFullPath($OutputPath)) {
         throw "Exact request-plan discovery execution binding mismatch."
     }
     $now = [DateTimeOffset]::Now
@@ -478,7 +465,7 @@ function Invoke-FullPreflight {
         runtime_manifest_path = [System.IO.Path]::GetFullPath($RuntimeManifestPath)
         runtime_manifest_file_sha256 = Get-Sha256 -Path $RuntimeManifestPath
         execution_manifest_path = [System.IO.Path]::GetFullPath($ExecutionManifestPath)
-        execution_manifest_file_sha256 = Get-Sha256 -Path $ExecutionManifestPath
+        execution_manifest_file_sha256 = if (Test-Path -LiteralPath $ExecutionManifestPath -PathType Leaf) { Get-Sha256 -Path $ExecutionManifestPath } else { $null }
         output_path = [System.IO.Path]::GetFullPath($OutputPath)
         not_before_local = [string]$validation.not_before_local
         latest_launch_local = [string]$validation.latest_launch_local
@@ -489,6 +476,21 @@ function Invoke-FullPreflight {
         guard_observed_at_utc = [string]$guard.observed_at_utc
         network_accessed = $false
         request_plan_output_created = $false
+        execution_mode = "standing_same_scope_public_research"
+    }
+}
+
+if ($DiagnosticFullPreflight) {
+    try {
+        Invoke-FullPreflight | ConvertTo-Json -Depth 30
+        exit 0
+    } catch {
+        [ordered]@{
+            status = "FULL_PREFLIGHT_FAILED"
+            error = $_.Exception.Message
+            exception_type = $_.Exception.GetType().FullName
+        } | ConvertTo-Json -Depth 10
+        exit 3
     }
 }
 
@@ -594,10 +596,10 @@ if ($PreflightOnly) {
     try {
         $preflight = Invoke-OfflinePreflight
         $preflight | ConvertTo-Json -Depth 30 -Compress
-        exit 3
+        exit 0
     } catch {
         [ordered]@{
-            status = "BLOCKED_AWAIT_EXACT_REQUEST_PLAN_DISCOVERY_V4_EXECUTION_APPROVAL"
+            status = "BLOCKED_STANDING_PUBLIC_RESEARCH_PREFLIGHT"
             reason_code = "OFFLINE_PREFLIGHT_CONTRACT_REJECTED"
             run_id = $runId
             network_accessed = $false
@@ -625,7 +627,6 @@ if (-not $VisibleWorker) {
         "-ExecutionManifestPath", $preflight.execution_manifest_path,
         "-OutputPath", $preflight.output_path,
         "-ExpectedRuntimeManifestFileSha256", $preflight.runtime_manifest_file_sha256,
-        "-ExpectedExecutionManifestFileSha256", $preflight.execution_manifest_file_sha256,
         "-ParentLauncherCreationUtc", $parentTopology.creation_utc,
         "-ParentLauncherExecutablePath", ('"{0}"' -f $parentTopology.executable_path),
         "-ParentLauncherCommandLineSha256", $parentTopology.command_line_sha256,
@@ -715,7 +716,7 @@ if ([string]$preflight.status -ne "READY_FOR_VISIBLE_SINGLE_USE_REQUEST_PLAN_DIS
     runtime_manifest_path = $RuntimeManifestPath
     runtime_manifest_file_sha256 = Get-Sha256 -Path $RuntimeManifestPath
     execution_manifest_path = $ExecutionManifestPath
-    execution_manifest_file_sha256 = Get-Sha256 -Path $ExecutionManifestPath
+    execution_manifest_file_sha256 = if (Test-Path -LiteralPath $ExecutionManifestPath -PathType Leaf) { Get-Sha256 -Path $ExecutionManifestPath } else { $null }
     output_path = $OutputPath
     global_writer_claim_path = $globalWriterClaimPath
     global_writer_claim_archive_path = $null
@@ -727,7 +728,8 @@ if ([string]$preflight.status -ne "READY_FOR_VISIBLE_SINGLE_USE_REQUEST_PLAN_DIS
     writer_executable_path = $null
     writer_command_line_sha256 = $null
     job_object_kill_on_close = $false
-    message = "Visible worker claimed the exact code-bound request-plan discovery run."
+    execution_mode = "standing_same_scope_public_research"
+    message = "Visible worker claimed the standing same-scope public request-plan discovery run."
     network_accessed = $false
     network_accessed_proven = $true
     network_access_state = "NOT_ENTERED_NETWORK_STAGE"
@@ -807,7 +809,7 @@ try {
         launcher_path = [System.IO.Path]::GetFullPath($PSCommandPath)
         launcher_file_sha256 = Get-Sha256 -Path $PSCommandPath
         runtime_manifest_file_sha256 = Get-Sha256 -Path $RuntimeManifestPath
-        execution_manifest_file_sha256 = Get-Sha256 -Path $ExecutionManifestPath
+        execution_manifest_file_sha256 = if (Test-Path -LiteralPath $ExecutionManifestPath -PathType Leaf) { Get-Sha256 -Path $ExecutionManifestPath } else { $null }
         output_path = [System.IO.Path]::GetFullPath($OutputPath)
         capability_token_sha256 = (
             [Convert]::ToHexString(

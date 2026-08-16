@@ -135,6 +135,9 @@ REQUEST_PLAN_V3_REFREEZE_READINESS_STATUS = (
 REQUEST_PLAN_V3_EXECUTION_READINESS_STATUS = (
     "REQUEST_PLAN_DISCOVERY_V3_RUNTIME_FROZEN_WITH_EXACT_EXECUTION_APPROVAL"
 )
+REQUEST_PLAN_V4_REFREEZE_READINESS_STATUS = (
+    "REQUEST_PLAN_DISCOVERY_V4_RUNTIME_FROZEN_STANDING_PUBLIC_RESEARCH"
+)
 TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL_READINESS_STATUS = (
     "TOPOLOGY_V2_LAUNCHER_REJECTED_AWAIT_V3_OFFLINE_REFREEZE_APPROVAL"
 )
@@ -155,6 +158,7 @@ CURRENT_READINESS_STATUSES = (
     TOPOLOGY_V4_EXECUTION_READINESS_STATUS,
     REQUEST_PLAN_V3_REFREEZE_READINESS_STATUS,
     REQUEST_PLAN_V3_EXECUTION_READINESS_STATUS,
+    REQUEST_PLAN_V4_REFREEZE_READINESS_STATUS,
     TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL_READINESS_STATUS,
 )
 CURRENT_PERMISSION_FIELDS = (
@@ -269,6 +273,22 @@ def _load_request_plan_v3_runtime_validator() -> Any:
         return importlib.import_module(module_name)
     except ImportError as exc:
         raise ReadinessError("request-plan discovery v3 runtime validator is unavailable") from exc
+
+
+def _load_request_plan_v4_runtime_validator() -> Any:
+    if __package__:
+        module_name = (
+            f"{__package__}.slow_liquidity_identity_request_plan_discovery_v4"
+        )
+    else:
+        repo_root = str(Path(__file__).resolve().parents[2])
+        if repo_root not in sys.path:
+            sys.path.insert(0, repo_root)
+        module_name = "trading_mvp.src.slow_liquidity_identity_request_plan_discovery_v4"
+    try:
+        return importlib.import_module(module_name)
+    except ImportError as exc:
+        raise ReadinessError("request-plan discovery v4 runtime validator is unavailable") from exc
 
 
 def _reject_json_constant(value: str) -> None:
@@ -2738,7 +2758,6 @@ def _resolve_request_plan_v3_readiness(
         "paper_or_live_authorized",
         "private_api_or_real_capital_authorized",
         "leverage_or_margin_authorized",
-        "launch_record_present",
         "writer_claim_present",
         "output_present",
     ):
@@ -2970,6 +2989,302 @@ def _resolve_request_plan_v3_readiness(
     }
 
 
+def _resolve_request_plan_v4_readiness(
+    report: Mapping[str, Any],
+    *,
+    pointer_file: Path,
+    pointer_sha: str,
+    readiness_path: Path,
+    report_sha: str,
+    gate_file: Path,
+    writer_claim_file: Path,
+) -> dict[str, Any]:
+    permissions = report.get("permissions")
+    _current_require(isinstance(permissions, dict), "readiness permissions are missing")
+    _current_require(
+        set(permissions) == set(CURRENT_PERMISSION_FIELDS),
+        "readiness permission allowlist mismatch",
+    )
+    for field in CURRENT_PERMISSION_FIELDS:
+        _current_require(
+            permissions.get(field) is False,
+            f"request-plan discovery v4 readiness illegally enables {field}",
+        )
+
+    discovery = report.get("official_identity_request_plan_discovery_v4")
+    _current_require(
+        isinstance(discovery, Mapping),
+        "request-plan discovery v4 readiness is missing",
+    )
+    runtime = _load_request_plan_v4_runtime_validator()
+    _current_require(
+        discovery.get("status") == runtime.RUNTIME_MANIFEST_STATUS,
+        "request-plan discovery v4 status mismatch",
+    )
+    _current_require(
+        discovery.get("run_id") == runtime.RUN_ID,
+        "request-plan discovery v4 run binding mismatch",
+    )
+    for field in (
+        "execution_authorized",
+        "network_authorized",
+        "official_source_content_read_authorized",
+        "request_plan_output_authorized",
+        "global_writer_claim_authorized",
+        "visible_launcher_execution_authorized",
+        "identity_output_authorized",
+        "collector_or_evaluator_authorized",
+        "evaluator_or_oos_authorized",
+        "returns_or_pnl_authorized",
+        "grid_or_retune_authorized",
+        "execution_probe_authorized",
+        "paper_or_live_authorized",
+        "private_api_or_real_capital_authorized",
+        "leverage_or_margin_authorized",
+        "writer_claim_present",
+        "output_present",
+    ):
+        _current_require(
+            discovery.get(field) is False,
+            f"request-plan discovery v4 {field} changed",
+        )
+    _current_require(
+        discovery.get("standing_same_scope_public_research_allowed") is True,
+        "request-plan discovery v4 standing authorization is missing",
+    )
+    _current_require(
+        discovery.get("required_future_guard_decision")
+        == "RUN_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V4",
+        "request-plan discovery v4 guard binding mismatch",
+    )
+    _current_require(
+        discovery.get("future_execution_single_use_required") is True,
+        "request-plan discovery v4 future execution is not single-use",
+    )
+    _current_require(
+        discovery.get("stopped_incomplete_retry_authorized") is False,
+        "request-plan discovery v4 retry was enabled",
+    )
+    _current_require(
+        discovery.get("execution_manifest_present") is False
+        and discovery.get("execution_approval_receipt_present") is False,
+        "request-plan discovery v4 approval artifacts appeared before execution",
+    )
+
+    runtime_path, runtime_manifest = _current_ref(
+        discovery.get("runtime_manifest"),
+        "request-plan discovery v4 runtime manifest",
+        expected_path=runtime.RUNTIME_MANIFEST_PATH,
+        parse_json=True,
+    )
+    launcher_path, _ = _current_ref(
+        discovery.get("visible_launcher"),
+        "request-plan discovery v4 visible launcher",
+        expected_path=runtime.VISIBLE_LAUNCHER_PATH,
+        parse_json=False,
+    )
+    _current_require(
+        isinstance(runtime_manifest, dict),
+        "request-plan discovery v4 runtime payload is missing",
+    )
+    try:
+        runtime.validate_runtime_manifest(runtime_manifest)
+    except runtime.RequestPlanDiscoveryV4Error as exc:
+        raise CurrentSprintReadinessError(
+            f"request-plan discovery v4 runtime validation failed: {exc}"
+        ) from exc
+    runtime_code = runtime_manifest.get("runtime") or {}
+    _current_require(
+        runtime_code.get("visible_launcher")
+        == {
+            "path": str(launcher_path),
+            "file_sha256": (discovery.get("visible_launcher") or {}).get(
+                "file_sha256"
+            ),
+        },
+        "request-plan discovery v4 launcher binding mismatch",
+    )
+    _current_require(
+        discovery.get("lineage") == runtime_manifest.get("lineage"),
+        "request-plan discovery v4 lineage mismatch",
+    )
+    _current_require(
+        discovery.get("limits") == runtime_manifest.get("limits"),
+        "request-plan discovery v4 limit binding mismatch",
+    )
+
+    output_path = _resolve(str(discovery.get("output_path") or ""))
+    _current_require(
+        output_path == runtime.OUTPUT_PATH,
+        "request-plan discovery v4 output path mismatch",
+    )
+    _current_require(
+        not output_path.exists(),
+        "request-plan discovery v4 output exists before its single run",
+        status="REFRESH_REQUIRED",
+    )
+    launch_record_path = _resolve(str(discovery.get("launch_record_path") or ""))
+    _current_require(
+        launch_record_path == runtime.LAUNCH_RECORD_PATH,
+        "request-plan discovery v4 launch record path mismatch",
+    )
+    terminal_attempt: dict[str, Any] | None = None
+    terminal_attempt_sha: str | None = None
+    if launch_record_path.exists():
+        terminal_attempt, _, terminal_attempt_sha = _read_current_json(
+            launch_record_path,
+            "request-plan discovery v4 terminal launch record",
+        )
+        _current_require(
+            terminal_attempt.get("run_id") == discovery.get("run_id")
+            and terminal_attempt.get("status") == "STOPPED_INCOMPLETE"
+            and terminal_attempt.get("terminal_ownership_verified") is True
+            and terminal_attempt.get("retry_authorized") is False
+            and terminal_attempt.get("network_accessed") is True
+            and terminal_attempt.get("network_accessed_proven") is True
+            and terminal_attempt.get("request_plan_output_created") is False
+            and str(terminal_attempt.get("failure_reason_code") or ""),
+            "request-plan discovery v4 terminal launch record mismatch",
+        )
+        terminal_runtime_path = _resolve(
+            str(terminal_attempt.get("runtime_manifest_path") or "")
+        )
+        _current_require(
+            terminal_runtime_path.is_file()
+            and terminal_attempt.get("runtime_manifest_file_sha256")
+            == _sha256(terminal_runtime_path),
+            "request-plan discovery v4 terminal runtime binding mismatch",
+        )
+    _current_require(
+        discovery.get("launch_record_present") is (terminal_attempt is not None),
+        "request-plan discovery v4 launch record state mismatch",
+    )
+    _current_require(
+        _resolve(str(discovery.get("execution_manifest_path") or ""))
+        == runtime.EXECUTION_MANIFEST_PATH
+        and _resolve(str(discovery.get("execution_approval_receipt_path") or ""))
+        == runtime.APPROVAL_RECEIPT_PATH,
+        "request-plan discovery v4 future artifact paths changed",
+    )
+    _current_require(
+        not runtime.EXECUTION_MANIFEST_PATH.exists()
+        and not runtime.APPROVAL_RECEIPT_PATH.exists(),
+        "request-plan discovery v4 future approval artifact appeared",
+        status="REFRESH_REQUIRED",
+    )
+
+    slow = report.get("slow_liquidity")
+    _current_require(isinstance(slow, Mapping), "slow liquidity readiness is missing")
+    _, current_gate = _current_ref(
+        slow.get("gate"),
+        "active gate",
+        expected_path=gate_file,
+        dynamic=True,
+        parse_json=True,
+    )
+    _current_require(isinstance(current_gate, dict), "active gate payload is missing")
+    _current_require(
+        current_gate.get("status") == "READY_FOR_POSTPROCESS",
+        "active gate is not open",
+        status="REFRESH_REQUIRED",
+    )
+    _current_require(
+        current_gate.get("run_id") == slow.get("run_id")
+        and current_gate.get("next_goal_decision") == EXPECTED_QUALITY_DECISION,
+        "active gate binding changed",
+        status="REFRESH_REQUIRED",
+    )
+    if writer_claim_file.exists():
+        _current_error(
+            "global market-data writer claim appeared after readiness",
+            status="REFRESH_REQUIRED",
+        )
+
+    checkpoints = report.get("approval_checkpoints")
+    _current_require(isinstance(checkpoints, list), "approval checkpoints are missing")
+    expected_ids = [
+        "pit_extension_schedule_activation",
+        "slow_liquidity_identity_request_plan_discovery_v4_execution",
+        "dense_three_hour_segmented_refreeze_phase_1",
+    ]
+    _current_require(
+        [str(item.get("id") or "") for item in checkpoints if isinstance(item, dict)]
+        == expected_ids,
+        "request-plan discovery v4 checkpoint allowlist mismatch",
+    )
+    checkpoint = checkpoints[1]
+    _current_require(
+        checkpoint.get("status") == "STANDING_SAME_SCOPE_PUBLIC_RESEARCH_ALLOWED"
+        and checkpoint.get("runtime_manifest_file_sha256")
+        == (discovery.get("runtime_manifest") or {}).get("file_sha256")
+        and checkpoint.get("runtime_manifest_hash")
+        == runtime_manifest.get("manifest_hash")
+        and checkpoint.get("visible_launcher_file_sha256")
+        == (discovery.get("visible_launcher") or {}).get("file_sha256")
+        and checkpoint.get("required_guard_decision")
+        == "RUN_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V4",
+        "request-plan discovery v4 checkpoint binding mismatch",
+    )
+    expected_next = (
+        "do_not_retry_without_new_exact_approval"
+        if terminal_attempt is not None
+        else "run_slow_liquidity_identity_request_plan_discovery_v4_visible"
+    )
+    _current_require(
+        report.get("next_safe_action") == expected_next,
+        "request-plan discovery v4 next action changed",
+    )
+    return {
+        "status": "READY",
+        "pointer_path": str(pointer_file),
+        "pointer_file_sha256": pointer_sha,
+        "readiness_path": str(readiness_path),
+        "readiness_file_sha256": report_sha,
+        "readiness_hash": report["readiness_hash"],
+        "generated_at_utc": report["generated_at_utc"],
+        "source_status": report["status"],
+        "execution_authorized": False,
+        "next_safe_action": report["next_safe_action"],
+        "approval_checkpoints": checkpoints,
+        "primary_frozen_basis_terminal": report.get("primary_frozen_basis_terminal"),
+        "official_identity_request_plan_discovery_v4": {
+            "status": discovery["status"],
+            "run_id": discovery["run_id"],
+            "runtime_manifest_path": str(runtime_path),
+            "visible_launcher_path": str(launcher_path),
+            "output_path": str(output_path),
+            "execution_manifest_path": str(runtime.EXECUTION_MANIFEST_PATH),
+            "execution_approval_receipt_path": str(runtime.APPROVAL_RECEIPT_PATH),
+            "execution_authorized": False,
+            "network_authorized": False,
+            "standing_same_scope_public_research_allowed": True,
+            "future_execution_single_use_required": True,
+            "stopped_incomplete_retry_authorized": False,
+            "launch_record_present": terminal_attempt is not None,
+            "lineage": discovery["lineage"],
+            "terminal_attempt": (
+                {
+                    "path": str(launch_record_path),
+                    "file_sha256": terminal_attempt_sha,
+                    "status": terminal_attempt.get("status"),
+                    "failure_reason_code": terminal_attempt.get(
+                        "failure_reason_code"
+                    ),
+                    "network_accessed": terminal_attempt.get("network_accessed"),
+                    "network_accessed_proven": terminal_attempt.get(
+                        "network_accessed_proven"
+                    ),
+                    "retry_authorized": terminal_attempt.get("retry_authorized"),
+                }
+                if terminal_attempt is not None
+                else None
+            ),
+        },
+        "official_identity_phase_1": report.get("official_identity_phase_1"),
+        "active_pit_pointer_path": str(report.get("active_pit_pointer_path") or ""),
+    }
+
+
 def resolve_current_sprint_readiness(
     pointer_path: str | Path,
     *,
@@ -3070,6 +3385,16 @@ def resolve_current_sprint_readiness(
         return _resolve_request_plan_v3_readiness(
             report,
             execution_expected=False,
+            pointer_file=pointer_file,
+            pointer_sha=pointer_sha,
+            readiness_path=readiness_path,
+            report_sha=report_sha,
+            gate_file=gate_file,
+            writer_claim_file=writer_claim_file,
+        )
+    if source_status == REQUEST_PLAN_V4_REFREEZE_READINESS_STATUS:
+        return _resolve_request_plan_v4_readiness(
+            report,
             pointer_file=pointer_file,
             pointer_sha=pointer_sha,
             readiness_path=readiness_path,

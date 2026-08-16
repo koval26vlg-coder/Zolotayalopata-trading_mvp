@@ -264,6 +264,24 @@ class RequestPlanDiscoveryV4Tests(unittest.TestCase):
             "metadata",
         )
 
+    def test_standing_capability_uses_runtime_binding_without_receipt(self) -> None:
+        manifest = runtime.build_runtime_manifest(
+            generated_at_utc="2026-08-16T12:00:00+00:00"
+        )
+        capability = runtime.build_standing_execution_capability(manifest)
+        self.assertEqual(capability.run_id, runtime.RUN_ID)
+        self.assertEqual(
+            capability.runtime_manifest_hash,
+            manifest["manifest_hash"],
+        )
+        self.assertEqual(
+            capability.execution_manifest_hash,
+            manifest["manifest_hash"],
+        )
+        self.assertEqual(capability.output_path, str(runtime.OUTPUT_PATH))
+        self.assertFalse(runtime.APPROVAL_RECEIPT_PATH.exists())
+        self.assertFalse(runtime.EXECUTION_MANIFEST_PATH.exists())
+
 
 if __name__ == "__main__":
     unittest.main()
