@@ -1,0 +1,309 @@
+{
+  "schema": "trading_mvp_slow_liquidity_spot_v2_official_page_discovery_planonly_r3",
+  "plan_id": "slow_liquidity_spot_v2_official_page_discovery_20260815_r3",
+  "mode": "PlanOnly",
+  "status": "AWAIT_EXACT_HASH_BOUND_DISCOVERY_APPROVAL",
+  "generated_at_utc": "2026-08-15T19:15:38.264Z",
+  "research_only": true,
+  "identity_evidence": false,
+  "network_authorized": false,
+  "execution_authorized": false,
+  "consumer_runtime": "slow_liquidity_official_asset_identity_verification_20260815_spot_v2",
+  "market": "SPOT_USDT",
+  "required_pair_count": 18,
+  "collision_fail_closed_bases": [
+    "EDGE",
+    "RAIN"
+  ],
+  "collision_ambiguity_disposition": "REJECT_EXCLUDE_FAIL_CLOSED",
+  "goal": "Discover official public pages via official sitemaps and venue announcement search, not Bing. This is not an identity verdict and not a retry of r1 or r2.",
+  "parent_discovery": {
+    "plan_id": "slow_liquidity_spot_v2_official_page_discovery_20260815_r2",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-spot-v2-official-page-discovery-planonly-20260815-r2.json",
+    "plan_hash": "257e2dd8590c0a6bba16b8ea0e99c3e5a40750c8cd3fa88d23acb44590112f04",
+    "parent_plan_file_sha256": "e07c608c33df17d25d3a38c01f79cfe086106b5a6d04f8083157f258dad87cd6",
+    "manifest_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-spot-v2-official-page-discovery\\slow_liquidity_spot_v2_official_page_discovery_20260815_r2\\manifest.json",
+    "manifest_sha256": "fe9bd942785d9ff1ef32d39e13159064650b06f16c56b4dce7401dff623a7f51",
+    "status": "SPOT_V2_OFFICIAL_PAGE_DISCOVERY_INCOMPLETE",
+    "retry_of_parent_forbidden": true,
+    "reason": "r2 listed all 18 instruments, but Bing navigation found no unique allowlisted official URL. Topology v4 recorded MEXC /support/articles/ as HTTP 308."
+  },
+  "topology_locator": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-official-currentness-topology\\slow_liquidity_official_currentness_topology_discovery_20260814_v4\\topology.json",
+    "file_sha256": "e0bd139724034dee1b37d2173814a70a8029d3f6a10d5e4059982bda2fa5aeaa",
+    "result_hash": "3e2ca0be86d57dcd3182d515ca0185e92f10748ca08e2926f6c34aac9d7343c7",
+    "identity_evidence": false
+  },
+  "source_bindings": {
+    "instrument_bindings": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-spot-v2-request-plan-bindings-20260815.json",
+      "plan_id": "slow_liquidity_spot_v2_request_plan_bindings_20260815",
+      "file_sha256": "bf68d7f87dad8495145a1e35e1ceaa319387db43f67fffaa648d59dead9b4061",
+      "plan_hash": "6f3eb75bd23303ee8c5123dbcdb53c70000ae414629f8734d970fe5e111b0d07"
+    },
+    "spot_v2_proposal": {
+      "proposal_hash": "4ff5732fed76dd70ab1208253dfdf617aa33ac9d55580dffe5d08d4f5cae86bf",
+      "file_sha256": "64bedf76b55a1bdada04c9b627f0df5c93cc47a329a709783cad16aa1ba02d48"
+    },
+    "spot_v2_runtime": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260815-spot-v2.json",
+      "file_sha256": "43b30ac5faeba2a13ab4ef97f7e5b757eb97436c94f59c2f16d091d3c66ef3b8",
+      "manifest_hash": "bc726311f22b81608da2de86ee0b997fdbfb5545f9675deaecb5df25a245a416"
+    }
+  },
+  "compatibility_contract": {
+    "consumer_runtime": "slow_liquidity_official_asset_identity_verification_20260815_spot_v2",
+    "required_pair_count": 18,
+    "instrument_rule": "collected_spot_instrument(venue, base)",
+    "perp_template_forbidden": true,
+    "v7_runtime_forbidden": true,
+    "bing_navigation_forbidden": true,
+    "full_catalog_metadata_forbidden": true,
+    "request_plan_items_must_pass_spot_v2_consumer": true
+  },
+  "navigation_contract": {
+    "provider": "OFFICIAL_SITEMAP_AND_VENUE_SEARCH",
+    "role": "NAVIGATION_ONLY_NOT_IDENTITY_EVIDENCE",
+    "bing_navigation_allowed": false,
+    "redirect_following_allowed": false,
+    "search_result_persistence_allowed": false,
+    "mexc_support_sitemap_index": "https://www.mexc.com/support/sitemap-index.xml",
+    "gate_announcement_sitemap": "https://www.gate.com/sitemaps/sitemap-announcement-001.xml",
+    "maximum_sitemap_children": 8,
+    "venue_search_path": "/announcements?keyword=<BASE>"
+  },
+  "official_source_contract": {
+    "metadata_mode": "PER_SYMBOL",
+    "discovery_path_prefixes": {
+      "mexc": [
+        "/support/articles/",
+        "/announcements/article/"
+      ],
+      "gateio": [
+        "/announcements/article/"
+      ]
+    },
+    "evidence_hosts": {
+      "mexc": {
+        "host": "www.mexc.com",
+        "allowed_path_prefix": "/support/articles/"
+      },
+      "gateio": {
+        "host": "www.gate.com",
+        "allowed_path_prefix": "/announcements/article/"
+      }
+    },
+    "mexc_announcement_prefix_is_discovery_only_until_identity_amendment": true,
+    "only_allowlisted_official_page_content_is_identity_evidence": true
+  },
+  "limits": {
+    "maximum_total_http_requests": 56,
+    "maximum_attempts_per_url": 2,
+    "maximum_response_bytes_per_request": 1000000,
+    "max_runtime_sec": 600,
+    "hard_output_cap_bytes": 20000000
+  },
+  "seed_items": [
+    {
+      "venue": "mexc",
+      "base_ticker": "STETH",
+      "instrument_id": "STETHUSDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.mexc.com/api/v3/exchangeInfo?symbol=STETHUSDT",
+      "search_url": "https://www.mexc.com/announcements?keyword=STETH",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "STETH",
+      "instrument_id": "STETH_USDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.gateio.ws/api/v4/spot/currency_pairs/STETH_USDT",
+      "search_url": "https://www.gate.com/announcements?keyword=STETH",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "WEETH",
+      "instrument_id": "WEETHUSDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.mexc.com/api/v3/exchangeInfo?symbol=WEETHUSDT",
+      "search_url": "https://www.mexc.com/announcements?keyword=WEETH",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "WEETH",
+      "instrument_id": "WEETH_USDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.gateio.ws/api/v4/spot/currency_pairs/WEETH_USDT",
+      "search_url": "https://www.gate.com/announcements?keyword=WEETH",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "CC",
+      "instrument_id": "CCUSDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.mexc.com/api/v3/exchangeInfo?symbol=CCUSDT",
+      "search_url": "https://www.mexc.com/announcements?keyword=CC",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "CC",
+      "instrument_id": "CC_USDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.gateio.ws/api/v4/spot/currency_pairs/CC_USDT",
+      "search_url": "https://www.gate.com/announcements?keyword=CC",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "OKB",
+      "instrument_id": "OKBUSDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.mexc.com/api/v3/exchangeInfo?symbol=OKBUSDT",
+      "search_url": "https://www.mexc.com/announcements?keyword=OKB",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "OKB",
+      "instrument_id": "OKB_USDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.gateio.ws/api/v4/spot/currency_pairs/OKB_USDT",
+      "search_url": "https://www.gate.com/announcements?keyword=OKB",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "RAIN",
+      "instrument_id": "RAINUSDT",
+      "collision_fail_closed": true,
+      "metadata_url": "https://api.mexc.com/api/v3/exchangeInfo?symbol=RAINUSDT",
+      "search_url": "https://www.mexc.com/announcements?keyword=RAIN",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "RAIN",
+      "instrument_id": "RAIN_USDT",
+      "collision_fail_closed": true,
+      "metadata_url": "https://api.gateio.ws/api/v4/spot/currency_pairs/RAIN_USDT",
+      "search_url": "https://www.gate.com/announcements?keyword=RAIN",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "MNT",
+      "instrument_id": "MNTUSDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.mexc.com/api/v3/exchangeInfo?symbol=MNTUSDT",
+      "search_url": "https://www.mexc.com/announcements?keyword=MNT",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "MNT",
+      "instrument_id": "MNT_USDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.gateio.ws/api/v4/spot/currency_pairs/MNT_USDT",
+      "search_url": "https://www.gate.com/announcements?keyword=MNT",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "USDD",
+      "instrument_id": "USDDUSDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.mexc.com/api/v3/exchangeInfo?symbol=USDDUSDT",
+      "search_url": "https://www.mexc.com/announcements?keyword=USDD",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "USDD",
+      "instrument_id": "USDD_USDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.gateio.ws/api/v4/spot/currency_pairs/USDD_USDT",
+      "search_url": "https://www.gate.com/announcements?keyword=USDD",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "BDX",
+      "instrument_id": "BDXUSDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.mexc.com/api/v3/exchangeInfo?symbol=BDXUSDT",
+      "search_url": "https://www.mexc.com/announcements?keyword=BDX",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "BDX",
+      "instrument_id": "BDX_USDT",
+      "collision_fail_closed": false,
+      "metadata_url": "https://api.gateio.ws/api/v4/spot/currency_pairs/BDX_USDT",
+      "search_url": "https://www.gate.com/announcements?keyword=BDX",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "EDGE",
+      "instrument_id": "EDGEUSDT",
+      "collision_fail_closed": true,
+      "metadata_url": "https://api.mexc.com/api/v3/exchangeInfo?symbol=EDGEUSDT",
+      "search_url": "https://www.mexc.com/announcements?keyword=EDGE",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "EDGE",
+      "instrument_id": "EDGE_USDT",
+      "collision_fail_closed": true,
+      "metadata_url": "https://api.gateio.ws/api/v4/spot/currency_pairs/EDGE_USDT",
+      "search_url": "https://www.gate.com/announcements?keyword=EDGE",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    }
+  ],
+  "approval_request": {
+    "exact_user_text_template": "Разрешаю один видимый public read-only запуск slow_liquidity_spot_v2_official_page_discovery_20260815_r3 через tools\\start_exact_approved_slow_liquidity_spot_v2_official_page_discovery_r3_visible.ps1 по plan_hash=<PLAN_HASH> и plan_file_sha256=<PLAN_FILE_SHA256>: MEXC и Gate SPOT_USDT, 18 пар, per-symbol metadata, official sitemap и venue search, не Bing, не повтор r1/r2, MEXC BASEUSDT / Gate BASE_USDT, EDGE и RAIN fail-closed. Официальные страницы — не identity verdict. Не v7 и не MEXC perp underscore ticker. STOPPED_INCOMPLETE не повторять. Без evaluator, OOS, returns/PnL, grid/retune, execution probe, paper/live, private API, реальных денег, плеча или маржи.",
+    "text_normalization": "normalize CRLF/CR to LF, then trim outer whitespace; all internal text must match exactly"
+  },
+  "authorized_scope_after_exact_approval": {
+    "one_visible_public_read_only_official_page_discovery": true,
+    "official_source_content_read": true,
+    "request_plan_output": true,
+    "identity_verdict": false,
+    "parent_retry": false,
+    "evaluator_or_oos": false,
+    "paper_or_live": false
+  },
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "actual_network_run_allowed": false,
+    "identity_verdict_allowed": false,
+    "exact_user_approval_required": true
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "fa527d7fcb2e01b56c1bf33f5d897e8c8ef69758b9f00963c0c1181da7658631"
+}

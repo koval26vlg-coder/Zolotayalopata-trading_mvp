@@ -1,0 +1,2160 @@
+{
+  "schema": "trading_mvp_slow_liquidity_calendar_first_gate_currency_json_planonly_v1",
+  "plan_id": "slow_liquidity_calendar_first_gate_currency_json_20260816",
+  "mode": "PlanOnly",
+  "status": "AWAIT_EXACT_HASH_BOUND_CURRENCY_JSON_APPROVAL",
+  "generated_at_utc": "2026-08-16T13:57:55.817Z",
+  "research_only": true,
+  "identity_evidence": false,
+  "identity_verdict_allowed": false,
+  "identity_execution_authorized": false,
+  "ohlcv_collect_authorized": false,
+  "network_authorized": false,
+  "execution_authorized": false,
+  "replay_allowed": false,
+  "spot_v2_runtime_reuse": false,
+  "listing_first_name_discovery_reopened": false,
+  "not_html_official_page_request_plan": true,
+  "market": "SPOT_USDT",
+  "venues": [
+    "mexc",
+    "gateio"
+  ],
+  "excluded_bases": [
+    "STETH",
+    "WEETH",
+    "CC",
+    "OKB",
+    "RAIN",
+    "MNT",
+    "USDD",
+    "BDX",
+    "EDGE"
+  ],
+  "selected_bases": [
+    "AAPLX",
+    "ACA",
+    "ACS",
+    "AERO",
+    "AFC",
+    "AGI",
+    "AIDOGE",
+    "AIN",
+    "AIO",
+    "AKE",
+    "ALCH",
+    "ALEO",
+    "ALEPH",
+    "ALEX",
+    "ALI",
+    "ALPH",
+    "ANON",
+    "APU",
+    "ARC",
+    "ARG",
+    "ARIA",
+    "ARRR",
+    "ARTY",
+    "ARW",
+    "ASM",
+    "ASP",
+    "ATH",
+    "ATR",
+    "ATS",
+    "AURORA",
+    "AVAIL",
+    "AVL",
+    "AZTEC",
+    "B",
+    "B2",
+    "B3",
+    "BABYDOGE",
+    "BABYSHARK",
+    "BADGER",
+    "BAL",
+    "BAN",
+    "BAS",
+    "BCCOIN",
+    "BEAM",
+    "BERT",
+    "BGSC",
+    "BID",
+    "BIRB",
+    "BLAST",
+    "BLESS",
+    "BLUAI",
+    "BLUE",
+    "BNC",
+    "BNKR",
+    "BOB",
+    "BONE",
+    "BR",
+    "BROCCOLI",
+    "BSV",
+    "BTR",
+    "BTS",
+    "BTT",
+    "BTX",
+    "BXN",
+    "BZZ",
+    "CARV",
+    "CAW",
+    "CBK",
+    "CCD",
+    "CELL",
+    "CESS",
+    "CHEEMS",
+    "CHEQ",
+    "CHEX",
+    "CHILLGUY",
+    "CLANKER",
+    "COAI",
+    "COINX",
+    "COQ",
+    "CORE",
+    "CORN",
+    "CPOOL",
+    "CRCLX",
+    "CRO",
+    "CROSS",
+    "CSPR",
+    "CTA",
+    "CTC",
+    "CTP",
+    "CTR",
+    "CUDIS",
+    "CWEB",
+    "CYS",
+    "DADDY",
+    "DAO",
+    "DATA",
+    "DEEP",
+    "DEGEN",
+    "DEP",
+    "DIAM",
+    "DKA",
+    "DMTR",
+    "DOG",
+    "DOGINME",
+    "DOOD",
+    "DRIFT",
+    "ECHO",
+    "EL",
+    "ELA",
+    "ELF",
+    "ELIZAOS",
+    "ELON",
+    "ELSA",
+    "ERG",
+    "ES",
+    "ESPORTS",
+    "ETHW",
+    "ETN",
+    "EVAA",
+    "FAI",
+    "FARM",
+    "FARTCOIN",
+    "FB",
+    "FHE",
+    "FITFI",
+    "FLR",
+    "FLUID",
+    "FOREST",
+    "FORT",
+    "FUEL",
+    "FUN",
+    "FUSE",
+    "GEOD",
+    "GF",
+    "GFI",
+    "GHST",
+    "GHX",
+    "GIGA",
+    "GLQ",
+    "GMEE",
+    "GMMT",
+    "GOAT",
+    "GOATED",
+    "GOCHU",
+    "GOMINING",
+    "GOOGLX",
+    "GORK",
+    "GRAM",
+    "GRASS",
+    "GRIFFAIN",
+    "GROK",
+    "GUA",
+    "GWEI",
+    "H",
+    "HAI",
+    "HANA",
+    "HEART",
+    "HELLO",
+    "HEU",
+    "HIPPO",
+    "HNT",
+    "HONEY",
+    "HOODX",
+    "HOOK",
+    "HOPR",
+    "HP",
+    "HTR",
+    "HTX",
+    "HYPE",
+    "ICNT",
+    "IDOL",
+    "IMT",
+    "IMU",
+    "IN",
+    "INTER",
+    "INX",
+    "IR",
+    "IRON",
+    "IRYS",
+    "JELLYJELLY",
+    "KAS",
+    "KEKIUS",
+    "KGEN",
+    "KILO",
+    "KLV",
+    "L3",
+    "LAB",
+    "LADYS",
+    "LAT",
+    "LAVA",
+    "LIGHT",
+    "LINGO",
+    "LIT",
+    "LKY",
+    "LMTS",
+    "LMWR",
+    "LOBO",
+    "LOT",
+    "LRC",
+    "LYX",
+    "M",
+    "MAGMA",
+    "MAJOR",
+    "MAN",
+    "MAT",
+    "MATH",
+    "MBX",
+    "MDAO",
+    "MELANIA",
+    "MENGO",
+    "MERL",
+    "MEW",
+    "MGO",
+    "ML",
+    "MLN",
+    "MOCA",
+    "MOG",
+    "MON",
+    "MOODENG",
+    "MYRO",
+    "MYX",
+    "NAKA",
+    "NAORIS",
+    "NAP",
+    "NATIX",
+    "NAVX",
+    "NCT",
+    "NEON",
+    "NFT",
+    "NIM",
+    "NKN",
+    "NODE",
+    "NODL",
+    "NOS",
+    "NPC",
+    "NS",
+    "NUM",
+    "NVDAX",
+    "NYM",
+    "OAS",
+    "OBOL",
+    "OCTA",
+    "OFC",
+    "OGPU",
+    "OL",
+    "OMI",
+    "ON",
+    "OORT",
+    "ORAI",
+    "ORDER",
+    "OVR",
+    "OWL",
+    "OXT",
+    "PAAL",
+    "PACK",
+    "PEAQ",
+    "PEIPEI",
+    "PEPECOIN",
+    "PERP",
+    "PI",
+    "PIEVERSE",
+    "PIGGY",
+    "PIPPIN",
+    "PIT",
+    "PNG",
+    "POKT",
+    "POLS",
+    "PONKE",
+    "POPCAT",
+    "POR",
+    "POWER",
+    "PRL",
+    "PRO",
+    "PROMPT",
+    "PROPC",
+    "PROPS",
+    "PUBLIC",
+    "PUFFER",
+    "PURR",
+    "PUSH",
+    "Q",
+    "QORPO",
+    "QQQON",
+    "QUBIC",
+    "RACA",
+    "RBC",
+    "RBNT",
+    "REACT",
+    "READY",
+    "RECALL",
+    "REEF",
+    "RION",
+    "RLS",
+    "ROAM",
+    "RON",
+    "RSC",
+    "RSS3",
+    "RWA",
+    "SAFE",
+    "SATS",
+    "SAUBER",
+    "SAUCE",
+    "SCA",
+    "SD",
+    "SEND",
+    "SHM",
+    "SHX",
+    "SIREN",
+    "SIS",
+    "SIX",
+    "SKR",
+    "SKYAI",
+    "SLC",
+    "SLX",
+    "SNEK",
+    "SNT",
+    "SOIL",
+    "SONIC",
+    "SOSO",
+    "SPA",
+    "SPARKLET",
+    "SPEC",
+    "SPX",
+    "SPYON",
+    "SPYX",
+    "SQD",
+    "SQT",
+    "STBL",
+    "STREAM",
+    "SUNDOG",
+    "SUPRA",
+    "SWARMS",
+    "SWFTC",
+    "TA",
+    "TAG",
+    "TAI",
+    "TAIKO",
+    "TAKE",
+    "TCOM",
+    "TET",
+    "TLOS",
+    "TOKEN",
+    "TOSHI",
+    "TRAC",
+    "TRADE",
+    "TRADOOR",
+    "TRCL",
+    "TROLL",
+    "TRUST",
+    "TRVL",
+    "TSLAX",
+    "U2U",
+    "UAI",
+    "UB",
+    "UDS",
+    "ULTIMA",
+    "UP",
+    "USAT",
+    "USELESS",
+    "VAI",
+    "VELO",
+    "VELVET",
+    "VENOM",
+    "VERT",
+    "VINE",
+    "VINU",
+    "VOLT",
+    "VON",
+    "VOOI",
+    "VR",
+    "VSN",
+    "VVV",
+    "WAVES",
+    "WBAI",
+    "WEMIX",
+    "WET",
+    "WILD",
+    "WMTX",
+    "WOD",
+    "WXT",
+    "XAN",
+    "XAVA",
+    "XCH",
+    "XCN",
+    "XCX",
+    "XDB",
+    "XDC",
+    "XNA",
+    "XNY",
+    "XPIN",
+    "XPR",
+    "XRD",
+    "XTER",
+    "XYM",
+    "XYO",
+    "ZBCN",
+    "ZENT",
+    "ZEREBRO",
+    "ZEST",
+    "ZETA",
+    "ZEUS",
+    "ZIG",
+    "ZKJ",
+    "ZORA",
+    "ZRC",
+    "ZTC",
+    "龙虾"
+  ],
+  "selected_base_count": 407,
+  "selected_bases_sha256": "3b5c44955f309041867763e89731f074e0a9721e0d184537d253b48fbde56322",
+  "invented_ticker_count": 0,
+  "evidence_class": "OFFICIAL_PUBLIC_REST_CURRENCY_JSON",
+  "identity_before_ohlcv_collect": true,
+  "two_venue_official_identity_complete": false,
+  "goal": "Collect official unsigned Gate currency JSON for the accepted calendar-first 407 names. MEXC unsigned contract JSON is not documented. This is not an identity verdict and not OHLCV collect.",
+  "parent_calendar_first_official_identity": {
+    "plan_id": "slow_liquidity_calendar_first_official_identity_20260816",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-calendar-first-official-identity-planonly-20260816.json",
+    "plan_hash": "39d92e6c20c6f8e179bb94180b8c854dd35fed6fccd9a9132d33e75ec6525625",
+    "parent_plan_file_sha256": "e0d4c1471e3c4b578d2ddca54c7da4130d725d40eafa3db7199819e79189bc61",
+    "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-calendar-first-official-identity-approval.json",
+    "receipt_hash": "c806716203f142526c6d4894d5ea1595ff936e547fd6847edf3a0ef1223471f2",
+    "receipt_file_sha256": "7ac0eed65d4097ffee1b0ae06c2a9da605b2b1b5dfcfe3e094d3bb1278250882",
+    "selected_bases_sha256": "3b5c44955f309041867763e89731f074e0a9721e0d184537d253b48fbde56322",
+    "status": "ACCEPTED_CALENDAR_FIRST_OFFICIAL_IDENTITY_NO_NETWORK"
+  },
+  "mexc_public_contract_json": {
+    "documented_unsigned_endpoint": false,
+    "capital_config_getall_requires_api_key": true,
+    "invented_undocumented_endpoint_forbidden": true
+  },
+  "official_json_contract": {
+    "provider": "GATE_APIV4_SPOT_CURRENCY",
+    "method": "GET",
+    "auth_required": false,
+    "url_prefix": "https://api.gateio.ws/api/v4/spot/currencies/",
+    "docs": "https://www.gate.com/docs/developers/apiv4/en/",
+    "token_address_field": "chains[].addr",
+    "chain_name_field": "chains[].name",
+    "redirect_following_allowed": false,
+    "raw_response_persistence_allowed": false
+  },
+  "limits": {
+    "maximum_total_http_requests": 407,
+    "maximum_attempts_per_url": 1,
+    "maximum_response_bytes_per_request": 1000000,
+    "max_runtime_sec": 900,
+    "hard_output_cap_bytes": 20000000
+  },
+  "seed_items": [
+    {
+      "base_ticker": "AAPLX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/AAPLX"
+    },
+    {
+      "base_ticker": "ACA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ACA"
+    },
+    {
+      "base_ticker": "ACS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ACS"
+    },
+    {
+      "base_ticker": "AERO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/AERO"
+    },
+    {
+      "base_ticker": "AFC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/AFC"
+    },
+    {
+      "base_ticker": "AGI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/AGI"
+    },
+    {
+      "base_ticker": "AIDOGE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/AIDOGE"
+    },
+    {
+      "base_ticker": "AIN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/AIN"
+    },
+    {
+      "base_ticker": "AIO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/AIO"
+    },
+    {
+      "base_ticker": "AKE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/AKE"
+    },
+    {
+      "base_ticker": "ALCH",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ALCH"
+    },
+    {
+      "base_ticker": "ALEO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ALEO"
+    },
+    {
+      "base_ticker": "ALEPH",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ALEPH"
+    },
+    {
+      "base_ticker": "ALEX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ALEX"
+    },
+    {
+      "base_ticker": "ALI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ALI"
+    },
+    {
+      "base_ticker": "ALPH",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ALPH"
+    },
+    {
+      "base_ticker": "ANON",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ANON"
+    },
+    {
+      "base_ticker": "APU",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/APU"
+    },
+    {
+      "base_ticker": "ARC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ARC"
+    },
+    {
+      "base_ticker": "ARG",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ARG"
+    },
+    {
+      "base_ticker": "ARIA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ARIA"
+    },
+    {
+      "base_ticker": "ARRR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ARRR"
+    },
+    {
+      "base_ticker": "ARTY",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ARTY"
+    },
+    {
+      "base_ticker": "ARW",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ARW"
+    },
+    {
+      "base_ticker": "ASM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ASM"
+    },
+    {
+      "base_ticker": "ASP",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ASP"
+    },
+    {
+      "base_ticker": "ATH",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ATH"
+    },
+    {
+      "base_ticker": "ATR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ATR"
+    },
+    {
+      "base_ticker": "ATS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ATS"
+    },
+    {
+      "base_ticker": "AURORA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/AURORA"
+    },
+    {
+      "base_ticker": "AVAIL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/AVAIL"
+    },
+    {
+      "base_ticker": "AVL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/AVL"
+    },
+    {
+      "base_ticker": "AZTEC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/AZTEC"
+    },
+    {
+      "base_ticker": "B",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/B"
+    },
+    {
+      "base_ticker": "B2",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/B2"
+    },
+    {
+      "base_ticker": "B3",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/B3"
+    },
+    {
+      "base_ticker": "BABYDOGE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BABYDOGE"
+    },
+    {
+      "base_ticker": "BABYSHARK",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BABYSHARK"
+    },
+    {
+      "base_ticker": "BADGER",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BADGER"
+    },
+    {
+      "base_ticker": "BAL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BAL"
+    },
+    {
+      "base_ticker": "BAN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BAN"
+    },
+    {
+      "base_ticker": "BAS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BAS"
+    },
+    {
+      "base_ticker": "BCCOIN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BCCOIN"
+    },
+    {
+      "base_ticker": "BEAM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BEAM"
+    },
+    {
+      "base_ticker": "BERT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BERT"
+    },
+    {
+      "base_ticker": "BGSC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BGSC"
+    },
+    {
+      "base_ticker": "BID",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BID"
+    },
+    {
+      "base_ticker": "BIRB",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BIRB"
+    },
+    {
+      "base_ticker": "BLAST",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BLAST"
+    },
+    {
+      "base_ticker": "BLESS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BLESS"
+    },
+    {
+      "base_ticker": "BLUAI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BLUAI"
+    },
+    {
+      "base_ticker": "BLUE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BLUE"
+    },
+    {
+      "base_ticker": "BNC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BNC"
+    },
+    {
+      "base_ticker": "BNKR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BNKR"
+    },
+    {
+      "base_ticker": "BOB",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BOB"
+    },
+    {
+      "base_ticker": "BONE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BONE"
+    },
+    {
+      "base_ticker": "BR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BR"
+    },
+    {
+      "base_ticker": "BROCCOLI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BROCCOLI"
+    },
+    {
+      "base_ticker": "BSV",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BSV"
+    },
+    {
+      "base_ticker": "BTR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BTR"
+    },
+    {
+      "base_ticker": "BTS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BTS"
+    },
+    {
+      "base_ticker": "BTT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BTT"
+    },
+    {
+      "base_ticker": "BTX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BTX"
+    },
+    {
+      "base_ticker": "BXN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BXN"
+    },
+    {
+      "base_ticker": "BZZ",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/BZZ"
+    },
+    {
+      "base_ticker": "CARV",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CARV"
+    },
+    {
+      "base_ticker": "CAW",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CAW"
+    },
+    {
+      "base_ticker": "CBK",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CBK"
+    },
+    {
+      "base_ticker": "CCD",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CCD"
+    },
+    {
+      "base_ticker": "CELL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CELL"
+    },
+    {
+      "base_ticker": "CESS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CESS"
+    },
+    {
+      "base_ticker": "CHEEMS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CHEEMS"
+    },
+    {
+      "base_ticker": "CHEQ",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CHEQ"
+    },
+    {
+      "base_ticker": "CHEX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CHEX"
+    },
+    {
+      "base_ticker": "CHILLGUY",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CHILLGUY"
+    },
+    {
+      "base_ticker": "CLANKER",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CLANKER"
+    },
+    {
+      "base_ticker": "COAI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/COAI"
+    },
+    {
+      "base_ticker": "COINX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/COINX"
+    },
+    {
+      "base_ticker": "COQ",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/COQ"
+    },
+    {
+      "base_ticker": "CORE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CORE"
+    },
+    {
+      "base_ticker": "CORN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CORN"
+    },
+    {
+      "base_ticker": "CPOOL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CPOOL"
+    },
+    {
+      "base_ticker": "CRCLX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CRCLX"
+    },
+    {
+      "base_ticker": "CRO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CRO"
+    },
+    {
+      "base_ticker": "CROSS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CROSS"
+    },
+    {
+      "base_ticker": "CSPR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CSPR"
+    },
+    {
+      "base_ticker": "CTA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CTA"
+    },
+    {
+      "base_ticker": "CTC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CTC"
+    },
+    {
+      "base_ticker": "CTP",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CTP"
+    },
+    {
+      "base_ticker": "CTR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CTR"
+    },
+    {
+      "base_ticker": "CUDIS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CUDIS"
+    },
+    {
+      "base_ticker": "CWEB",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CWEB"
+    },
+    {
+      "base_ticker": "CYS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/CYS"
+    },
+    {
+      "base_ticker": "DADDY",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DADDY"
+    },
+    {
+      "base_ticker": "DAO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DAO"
+    },
+    {
+      "base_ticker": "DATA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DATA"
+    },
+    {
+      "base_ticker": "DEEP",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DEEP"
+    },
+    {
+      "base_ticker": "DEGEN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DEGEN"
+    },
+    {
+      "base_ticker": "DEP",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DEP"
+    },
+    {
+      "base_ticker": "DIAM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DIAM"
+    },
+    {
+      "base_ticker": "DKA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DKA"
+    },
+    {
+      "base_ticker": "DMTR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DMTR"
+    },
+    {
+      "base_ticker": "DOG",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DOG"
+    },
+    {
+      "base_ticker": "DOGINME",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DOGINME"
+    },
+    {
+      "base_ticker": "DOOD",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DOOD"
+    },
+    {
+      "base_ticker": "DRIFT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/DRIFT"
+    },
+    {
+      "base_ticker": "ECHO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ECHO"
+    },
+    {
+      "base_ticker": "EL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/EL"
+    },
+    {
+      "base_ticker": "ELA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ELA"
+    },
+    {
+      "base_ticker": "ELF",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ELF"
+    },
+    {
+      "base_ticker": "ELIZAOS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ELIZAOS"
+    },
+    {
+      "base_ticker": "ELON",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ELON"
+    },
+    {
+      "base_ticker": "ELSA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ELSA"
+    },
+    {
+      "base_ticker": "ERG",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ERG"
+    },
+    {
+      "base_ticker": "ES",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ES"
+    },
+    {
+      "base_ticker": "ESPORTS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ESPORTS"
+    },
+    {
+      "base_ticker": "ETHW",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ETHW"
+    },
+    {
+      "base_ticker": "ETN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ETN"
+    },
+    {
+      "base_ticker": "EVAA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/EVAA"
+    },
+    {
+      "base_ticker": "FAI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FAI"
+    },
+    {
+      "base_ticker": "FARM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FARM"
+    },
+    {
+      "base_ticker": "FARTCOIN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FARTCOIN"
+    },
+    {
+      "base_ticker": "FB",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FB"
+    },
+    {
+      "base_ticker": "FHE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FHE"
+    },
+    {
+      "base_ticker": "FITFI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FITFI"
+    },
+    {
+      "base_ticker": "FLR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FLR"
+    },
+    {
+      "base_ticker": "FLUID",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FLUID"
+    },
+    {
+      "base_ticker": "FOREST",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FOREST"
+    },
+    {
+      "base_ticker": "FORT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FORT"
+    },
+    {
+      "base_ticker": "FUEL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FUEL"
+    },
+    {
+      "base_ticker": "FUN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FUN"
+    },
+    {
+      "base_ticker": "FUSE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/FUSE"
+    },
+    {
+      "base_ticker": "GEOD",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GEOD"
+    },
+    {
+      "base_ticker": "GF",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GF"
+    },
+    {
+      "base_ticker": "GFI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GFI"
+    },
+    {
+      "base_ticker": "GHST",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GHST"
+    },
+    {
+      "base_ticker": "GHX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GHX"
+    },
+    {
+      "base_ticker": "GIGA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GIGA"
+    },
+    {
+      "base_ticker": "GLQ",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GLQ"
+    },
+    {
+      "base_ticker": "GMEE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GMEE"
+    },
+    {
+      "base_ticker": "GMMT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GMMT"
+    },
+    {
+      "base_ticker": "GOAT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GOAT"
+    },
+    {
+      "base_ticker": "GOATED",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GOATED"
+    },
+    {
+      "base_ticker": "GOCHU",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GOCHU"
+    },
+    {
+      "base_ticker": "GOMINING",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GOMINING"
+    },
+    {
+      "base_ticker": "GOOGLX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GOOGLX"
+    },
+    {
+      "base_ticker": "GORK",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GORK"
+    },
+    {
+      "base_ticker": "GRAM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GRAM"
+    },
+    {
+      "base_ticker": "GRASS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GRASS"
+    },
+    {
+      "base_ticker": "GRIFFAIN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GRIFFAIN"
+    },
+    {
+      "base_ticker": "GROK",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GROK"
+    },
+    {
+      "base_ticker": "GUA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GUA"
+    },
+    {
+      "base_ticker": "GWEI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/GWEI"
+    },
+    {
+      "base_ticker": "H",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/H"
+    },
+    {
+      "base_ticker": "HAI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HAI"
+    },
+    {
+      "base_ticker": "HANA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HANA"
+    },
+    {
+      "base_ticker": "HEART",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HEART"
+    },
+    {
+      "base_ticker": "HELLO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HELLO"
+    },
+    {
+      "base_ticker": "HEU",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HEU"
+    },
+    {
+      "base_ticker": "HIPPO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HIPPO"
+    },
+    {
+      "base_ticker": "HNT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HNT"
+    },
+    {
+      "base_ticker": "HONEY",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HONEY"
+    },
+    {
+      "base_ticker": "HOODX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HOODX"
+    },
+    {
+      "base_ticker": "HOOK",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HOOK"
+    },
+    {
+      "base_ticker": "HOPR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HOPR"
+    },
+    {
+      "base_ticker": "HP",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HP"
+    },
+    {
+      "base_ticker": "HTR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HTR"
+    },
+    {
+      "base_ticker": "HTX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HTX"
+    },
+    {
+      "base_ticker": "HYPE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/HYPE"
+    },
+    {
+      "base_ticker": "ICNT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ICNT"
+    },
+    {
+      "base_ticker": "IDOL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/IDOL"
+    },
+    {
+      "base_ticker": "IMT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/IMT"
+    },
+    {
+      "base_ticker": "IMU",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/IMU"
+    },
+    {
+      "base_ticker": "IN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/IN"
+    },
+    {
+      "base_ticker": "INTER",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/INTER"
+    },
+    {
+      "base_ticker": "INX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/INX"
+    },
+    {
+      "base_ticker": "IR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/IR"
+    },
+    {
+      "base_ticker": "IRON",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/IRON"
+    },
+    {
+      "base_ticker": "IRYS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/IRYS"
+    },
+    {
+      "base_ticker": "JELLYJELLY",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/JELLYJELLY"
+    },
+    {
+      "base_ticker": "KAS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/KAS"
+    },
+    {
+      "base_ticker": "KEKIUS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/KEKIUS"
+    },
+    {
+      "base_ticker": "KGEN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/KGEN"
+    },
+    {
+      "base_ticker": "KILO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/KILO"
+    },
+    {
+      "base_ticker": "KLV",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/KLV"
+    },
+    {
+      "base_ticker": "L3",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/L3"
+    },
+    {
+      "base_ticker": "LAB",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LAB"
+    },
+    {
+      "base_ticker": "LADYS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LADYS"
+    },
+    {
+      "base_ticker": "LAT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LAT"
+    },
+    {
+      "base_ticker": "LAVA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LAVA"
+    },
+    {
+      "base_ticker": "LIGHT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LIGHT"
+    },
+    {
+      "base_ticker": "LINGO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LINGO"
+    },
+    {
+      "base_ticker": "LIT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LIT"
+    },
+    {
+      "base_ticker": "LKY",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LKY"
+    },
+    {
+      "base_ticker": "LMTS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LMTS"
+    },
+    {
+      "base_ticker": "LMWR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LMWR"
+    },
+    {
+      "base_ticker": "LOBO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LOBO"
+    },
+    {
+      "base_ticker": "LOT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LOT"
+    },
+    {
+      "base_ticker": "LRC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LRC"
+    },
+    {
+      "base_ticker": "LYX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/LYX"
+    },
+    {
+      "base_ticker": "M",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/M"
+    },
+    {
+      "base_ticker": "MAGMA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MAGMA"
+    },
+    {
+      "base_ticker": "MAJOR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MAJOR"
+    },
+    {
+      "base_ticker": "MAN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MAN"
+    },
+    {
+      "base_ticker": "MAT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MAT"
+    },
+    {
+      "base_ticker": "MATH",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MATH"
+    },
+    {
+      "base_ticker": "MBX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MBX"
+    },
+    {
+      "base_ticker": "MDAO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MDAO"
+    },
+    {
+      "base_ticker": "MELANIA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MELANIA"
+    },
+    {
+      "base_ticker": "MENGO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MENGO"
+    },
+    {
+      "base_ticker": "MERL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MERL"
+    },
+    {
+      "base_ticker": "MEW",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MEW"
+    },
+    {
+      "base_ticker": "MGO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MGO"
+    },
+    {
+      "base_ticker": "ML",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ML"
+    },
+    {
+      "base_ticker": "MLN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MLN"
+    },
+    {
+      "base_ticker": "MOCA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MOCA"
+    },
+    {
+      "base_ticker": "MOG",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MOG"
+    },
+    {
+      "base_ticker": "MON",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MON"
+    },
+    {
+      "base_ticker": "MOODENG",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MOODENG"
+    },
+    {
+      "base_ticker": "MYRO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MYRO"
+    },
+    {
+      "base_ticker": "MYX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/MYX"
+    },
+    {
+      "base_ticker": "NAKA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NAKA"
+    },
+    {
+      "base_ticker": "NAORIS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NAORIS"
+    },
+    {
+      "base_ticker": "NAP",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NAP"
+    },
+    {
+      "base_ticker": "NATIX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NATIX"
+    },
+    {
+      "base_ticker": "NAVX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NAVX"
+    },
+    {
+      "base_ticker": "NCT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NCT"
+    },
+    {
+      "base_ticker": "NEON",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NEON"
+    },
+    {
+      "base_ticker": "NFT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NFT"
+    },
+    {
+      "base_ticker": "NIM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NIM"
+    },
+    {
+      "base_ticker": "NKN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NKN"
+    },
+    {
+      "base_ticker": "NODE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NODE"
+    },
+    {
+      "base_ticker": "NODL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NODL"
+    },
+    {
+      "base_ticker": "NOS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NOS"
+    },
+    {
+      "base_ticker": "NPC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NPC"
+    },
+    {
+      "base_ticker": "NS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NS"
+    },
+    {
+      "base_ticker": "NUM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NUM"
+    },
+    {
+      "base_ticker": "NVDAX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NVDAX"
+    },
+    {
+      "base_ticker": "NYM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/NYM"
+    },
+    {
+      "base_ticker": "OAS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/OAS"
+    },
+    {
+      "base_ticker": "OBOL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/OBOL"
+    },
+    {
+      "base_ticker": "OCTA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/OCTA"
+    },
+    {
+      "base_ticker": "OFC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/OFC"
+    },
+    {
+      "base_ticker": "OGPU",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/OGPU"
+    },
+    {
+      "base_ticker": "OL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/OL"
+    },
+    {
+      "base_ticker": "OMI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/OMI"
+    },
+    {
+      "base_ticker": "ON",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ON"
+    },
+    {
+      "base_ticker": "OORT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/OORT"
+    },
+    {
+      "base_ticker": "ORAI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ORAI"
+    },
+    {
+      "base_ticker": "ORDER",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ORDER"
+    },
+    {
+      "base_ticker": "OVR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/OVR"
+    },
+    {
+      "base_ticker": "OWL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/OWL"
+    },
+    {
+      "base_ticker": "OXT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/OXT"
+    },
+    {
+      "base_ticker": "PAAL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PAAL"
+    },
+    {
+      "base_ticker": "PACK",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PACK"
+    },
+    {
+      "base_ticker": "PEAQ",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PEAQ"
+    },
+    {
+      "base_ticker": "PEIPEI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PEIPEI"
+    },
+    {
+      "base_ticker": "PEPECOIN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PEPECOIN"
+    },
+    {
+      "base_ticker": "PERP",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PERP"
+    },
+    {
+      "base_ticker": "PI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PI"
+    },
+    {
+      "base_ticker": "PIEVERSE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PIEVERSE"
+    },
+    {
+      "base_ticker": "PIGGY",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PIGGY"
+    },
+    {
+      "base_ticker": "PIPPIN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PIPPIN"
+    },
+    {
+      "base_ticker": "PIT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PIT"
+    },
+    {
+      "base_ticker": "PNG",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PNG"
+    },
+    {
+      "base_ticker": "POKT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/POKT"
+    },
+    {
+      "base_ticker": "POLS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/POLS"
+    },
+    {
+      "base_ticker": "PONKE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PONKE"
+    },
+    {
+      "base_ticker": "POPCAT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/POPCAT"
+    },
+    {
+      "base_ticker": "POR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/POR"
+    },
+    {
+      "base_ticker": "POWER",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/POWER"
+    },
+    {
+      "base_ticker": "PRL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PRL"
+    },
+    {
+      "base_ticker": "PRO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PRO"
+    },
+    {
+      "base_ticker": "PROMPT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PROMPT"
+    },
+    {
+      "base_ticker": "PROPC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PROPC"
+    },
+    {
+      "base_ticker": "PROPS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PROPS"
+    },
+    {
+      "base_ticker": "PUBLIC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PUBLIC"
+    },
+    {
+      "base_ticker": "PUFFER",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PUFFER"
+    },
+    {
+      "base_ticker": "PURR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PURR"
+    },
+    {
+      "base_ticker": "PUSH",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/PUSH"
+    },
+    {
+      "base_ticker": "Q",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/Q"
+    },
+    {
+      "base_ticker": "QORPO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/QORPO"
+    },
+    {
+      "base_ticker": "QQQON",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/QQQON"
+    },
+    {
+      "base_ticker": "QUBIC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/QUBIC"
+    },
+    {
+      "base_ticker": "RACA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/RACA"
+    },
+    {
+      "base_ticker": "RBC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/RBC"
+    },
+    {
+      "base_ticker": "RBNT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/RBNT"
+    },
+    {
+      "base_ticker": "REACT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/REACT"
+    },
+    {
+      "base_ticker": "READY",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/READY"
+    },
+    {
+      "base_ticker": "RECALL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/RECALL"
+    },
+    {
+      "base_ticker": "REEF",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/REEF"
+    },
+    {
+      "base_ticker": "RION",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/RION"
+    },
+    {
+      "base_ticker": "RLS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/RLS"
+    },
+    {
+      "base_ticker": "ROAM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ROAM"
+    },
+    {
+      "base_ticker": "RON",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/RON"
+    },
+    {
+      "base_ticker": "RSC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/RSC"
+    },
+    {
+      "base_ticker": "RSS3",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/RSS3"
+    },
+    {
+      "base_ticker": "RWA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/RWA"
+    },
+    {
+      "base_ticker": "SAFE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SAFE"
+    },
+    {
+      "base_ticker": "SATS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SATS"
+    },
+    {
+      "base_ticker": "SAUBER",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SAUBER"
+    },
+    {
+      "base_ticker": "SAUCE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SAUCE"
+    },
+    {
+      "base_ticker": "SCA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SCA"
+    },
+    {
+      "base_ticker": "SD",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SD"
+    },
+    {
+      "base_ticker": "SEND",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SEND"
+    },
+    {
+      "base_ticker": "SHM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SHM"
+    },
+    {
+      "base_ticker": "SHX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SHX"
+    },
+    {
+      "base_ticker": "SIREN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SIREN"
+    },
+    {
+      "base_ticker": "SIS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SIS"
+    },
+    {
+      "base_ticker": "SIX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SIX"
+    },
+    {
+      "base_ticker": "SKR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SKR"
+    },
+    {
+      "base_ticker": "SKYAI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SKYAI"
+    },
+    {
+      "base_ticker": "SLC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SLC"
+    },
+    {
+      "base_ticker": "SLX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SLX"
+    },
+    {
+      "base_ticker": "SNEK",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SNEK"
+    },
+    {
+      "base_ticker": "SNT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SNT"
+    },
+    {
+      "base_ticker": "SOIL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SOIL"
+    },
+    {
+      "base_ticker": "SONIC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SONIC"
+    },
+    {
+      "base_ticker": "SOSO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SOSO"
+    },
+    {
+      "base_ticker": "SPA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SPA"
+    },
+    {
+      "base_ticker": "SPARKLET",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SPARKLET"
+    },
+    {
+      "base_ticker": "SPEC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SPEC"
+    },
+    {
+      "base_ticker": "SPX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SPX"
+    },
+    {
+      "base_ticker": "SPYON",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SPYON"
+    },
+    {
+      "base_ticker": "SPYX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SPYX"
+    },
+    {
+      "base_ticker": "SQD",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SQD"
+    },
+    {
+      "base_ticker": "SQT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SQT"
+    },
+    {
+      "base_ticker": "STBL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/STBL"
+    },
+    {
+      "base_ticker": "STREAM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/STREAM"
+    },
+    {
+      "base_ticker": "SUNDOG",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SUNDOG"
+    },
+    {
+      "base_ticker": "SUPRA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SUPRA"
+    },
+    {
+      "base_ticker": "SWARMS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SWARMS"
+    },
+    {
+      "base_ticker": "SWFTC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/SWFTC"
+    },
+    {
+      "base_ticker": "TA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TA"
+    },
+    {
+      "base_ticker": "TAG",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TAG"
+    },
+    {
+      "base_ticker": "TAI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TAI"
+    },
+    {
+      "base_ticker": "TAIKO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TAIKO"
+    },
+    {
+      "base_ticker": "TAKE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TAKE"
+    },
+    {
+      "base_ticker": "TCOM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TCOM"
+    },
+    {
+      "base_ticker": "TET",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TET"
+    },
+    {
+      "base_ticker": "TLOS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TLOS"
+    },
+    {
+      "base_ticker": "TOKEN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TOKEN"
+    },
+    {
+      "base_ticker": "TOSHI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TOSHI"
+    },
+    {
+      "base_ticker": "TRAC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TRAC"
+    },
+    {
+      "base_ticker": "TRADE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TRADE"
+    },
+    {
+      "base_ticker": "TRADOOR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TRADOOR"
+    },
+    {
+      "base_ticker": "TRCL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TRCL"
+    },
+    {
+      "base_ticker": "TROLL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TROLL"
+    },
+    {
+      "base_ticker": "TRUST",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TRUST"
+    },
+    {
+      "base_ticker": "TRVL",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TRVL"
+    },
+    {
+      "base_ticker": "TSLAX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/TSLAX"
+    },
+    {
+      "base_ticker": "U2U",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/U2U"
+    },
+    {
+      "base_ticker": "UAI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/UAI"
+    },
+    {
+      "base_ticker": "UB",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/UB"
+    },
+    {
+      "base_ticker": "UDS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/UDS"
+    },
+    {
+      "base_ticker": "ULTIMA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ULTIMA"
+    },
+    {
+      "base_ticker": "UP",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/UP"
+    },
+    {
+      "base_ticker": "USAT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/USAT"
+    },
+    {
+      "base_ticker": "USELESS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/USELESS"
+    },
+    {
+      "base_ticker": "VAI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VAI"
+    },
+    {
+      "base_ticker": "VELO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VELO"
+    },
+    {
+      "base_ticker": "VELVET",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VELVET"
+    },
+    {
+      "base_ticker": "VENOM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VENOM"
+    },
+    {
+      "base_ticker": "VERT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VERT"
+    },
+    {
+      "base_ticker": "VINE",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VINE"
+    },
+    {
+      "base_ticker": "VINU",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VINU"
+    },
+    {
+      "base_ticker": "VOLT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VOLT"
+    },
+    {
+      "base_ticker": "VON",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VON"
+    },
+    {
+      "base_ticker": "VOOI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VOOI"
+    },
+    {
+      "base_ticker": "VR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VR"
+    },
+    {
+      "base_ticker": "VSN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VSN"
+    },
+    {
+      "base_ticker": "VVV",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/VVV"
+    },
+    {
+      "base_ticker": "WAVES",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/WAVES"
+    },
+    {
+      "base_ticker": "WBAI",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/WBAI"
+    },
+    {
+      "base_ticker": "WEMIX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/WEMIX"
+    },
+    {
+      "base_ticker": "WET",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/WET"
+    },
+    {
+      "base_ticker": "WILD",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/WILD"
+    },
+    {
+      "base_ticker": "WMTX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/WMTX"
+    },
+    {
+      "base_ticker": "WOD",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/WOD"
+    },
+    {
+      "base_ticker": "WXT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/WXT"
+    },
+    {
+      "base_ticker": "XAN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XAN"
+    },
+    {
+      "base_ticker": "XAVA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XAVA"
+    },
+    {
+      "base_ticker": "XCH",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XCH"
+    },
+    {
+      "base_ticker": "XCN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XCN"
+    },
+    {
+      "base_ticker": "XCX",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XCX"
+    },
+    {
+      "base_ticker": "XDB",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XDB"
+    },
+    {
+      "base_ticker": "XDC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XDC"
+    },
+    {
+      "base_ticker": "XNA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XNA"
+    },
+    {
+      "base_ticker": "XNY",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XNY"
+    },
+    {
+      "base_ticker": "XPIN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XPIN"
+    },
+    {
+      "base_ticker": "XPR",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XPR"
+    },
+    {
+      "base_ticker": "XRD",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XRD"
+    },
+    {
+      "base_ticker": "XTER",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XTER"
+    },
+    {
+      "base_ticker": "XYM",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XYM"
+    },
+    {
+      "base_ticker": "XYO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/XYO"
+    },
+    {
+      "base_ticker": "ZBCN",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ZBCN"
+    },
+    {
+      "base_ticker": "ZENT",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ZENT"
+    },
+    {
+      "base_ticker": "ZEREBRO",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ZEREBRO"
+    },
+    {
+      "base_ticker": "ZEST",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ZEST"
+    },
+    {
+      "base_ticker": "ZETA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ZETA"
+    },
+    {
+      "base_ticker": "ZEUS",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ZEUS"
+    },
+    {
+      "base_ticker": "ZIG",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ZIG"
+    },
+    {
+      "base_ticker": "ZKJ",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ZKJ"
+    },
+    {
+      "base_ticker": "ZORA",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ZORA"
+    },
+    {
+      "base_ticker": "ZRC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ZRC"
+    },
+    {
+      "base_ticker": "ZTC",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/ZTC"
+    },
+    {
+      "base_ticker": "龙虾",
+      "currency_url": "https://api.gateio.ws/api/v4/spot/currencies/龙虾"
+    }
+  ],
+  "frozen_html_consumer_not_reused": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260815-spot-v2.json",
+    "file_sha256": "43b30ac5faeba2a13ab4ef97f7e5b757eb97436c94f59c2f16d091d3c66ef3b8",
+    "manifest_hash": "bc726311f22b81608da2de86ee0b997fdbfb5545f9675deaecb5df25a245a416",
+    "reused": false
+  },
+  "still_forbidden": [
+    "INVENT_OFFICIAL_PAGE_URLS",
+    "REOPEN_LISTING_FIRST_NAME_DISCOVERY",
+    "REUSE_SPOT_V2_HTML_CONSUMER",
+    "OHLCV_COLLECT",
+    "IDENTITY_VERDICT",
+    "RETRY_R1_R4",
+    "BING_OR_SITEMAP",
+    "REPLAY_OR_GRID",
+    "EVALUATOR_OR_OOS",
+    "PAPER_OR_LIVE",
+    "20260815-V7"
+  ],
+  "approval_request": {
+    "exact_user_text_template": "Разрешаю один видимый public read-only запуск slow_liquidity_calendar_first_gate_currency_json_20260816 через tools\\start_exact_approved_slow_liquidity_calendar_first_gate_currency_json_visible.ps1 по plan_hash=<PLAN_HASH> и plan_file_sha256=<PLAN_FILE_SHA256>: official identity для accepted calendar-first 407 — только Gate GET /spot/currencies/BASE без ключа, MEXC unsigned JSON нет, не HTML pages, не invent URL, не identity verdict, не OHLCV. Не reopen listing-first, не reuse spot v2 consumer, не replay, не v7. STOPPED_INCOMPLETE не повторять. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи.",
+    "text_normalization": "normalize CRLF/CR to LF, then trim outer whitespace; all internal text must match exactly"
+  },
+  "authorized_scope_after_exact_approval": {
+    "one_visible_public_read_only_gate_currency_json": true,
+    "html_official_page_discovery": false,
+    "identity_verdict": false,
+    "ohlcv_collect": false,
+    "invent_url": false,
+    "reopen_listing_first_name_discovery": false,
+    "spot_v2_runtime_reuse": false,
+    "evaluator_or_oos": false,
+    "paper_or_live": false,
+    "private_api": false
+  },
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "actual_network_run_allowed": false,
+    "identity_execution_allowed": false,
+    "identity_verdict_allowed": false,
+    "ohlcv_collect_allowed": false,
+    "replay_allowed": false,
+    "exact_user_approval_required": true
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "388d81d40e866eb7ccfd93cc439c27a9c220e3f5167eb62cc92d6bbc1983f756"
+}

@@ -1,0 +1,163 @@
+{
+  "schema": "trading_mvp_slow_liquidity_spot_v2_request_plan_bindings_v1",
+  "plan_id": "slow_liquidity_spot_v2_request_plan_bindings_20260815",
+  "mode": "PlanOnly",
+  "status": "FROZEN_INSTRUMENT_BINDINGS_AWAIT_OFFICIAL_PAGE_DISCOVERY",
+  "generated_at_utc": "2026-08-15T17:43:25.547Z",
+  "research_only": true,
+  "identity_evidence": false,
+  "execution_authorized": false,
+  "network_authorized": false,
+  "not_substitutable_for_execution_request_plan_sha256": true,
+  "consumer_runtime": "slow_liquidity_official_asset_identity_verification_20260815_spot_v2",
+  "source_history_run_id": "slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6",
+  "market": "SPOT_USDT",
+  "required_pair_count": 18,
+  "collision_fail_closed_bases": [
+    "EDGE",
+    "RAIN"
+  ],
+  "collision_ambiguity_disposition": "REJECT_EXCLUDE_FAIL_CLOSED",
+  "source_bindings": {
+    "spot_v2_proposal": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\drafts\\slow-liquidity-official-asset-identity-verification-proposal-20260815-spot-v2.json",
+      "file_sha256": "64bedf76b55a1bdada04c9b627f0df5c93cc47a329a709783cad16aa1ba02d48",
+      "proposal_hash": "4ff5732fed76dd70ab1208253dfdf617aa33ac9d55580dffe5d08d4f5cae86bf"
+    },
+    "spot_v2_runtime": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260815-spot-v2.json",
+      "file_sha256": "43b30ac5faeba2a13ab4ef97f7e5b757eb97436c94f59c2f16d091d3c66ef3b8",
+      "manifest_hash": "bc726311f22b81608da2de86ee0b997fdbfb5545f9675deaecb5df25a245a416"
+    }
+  },
+  "pairs": [
+    {
+      "venue": "mexc",
+      "base_ticker": "STETH",
+      "instrument_id": "STETHUSDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "STETH",
+      "instrument_id": "STETH_USDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "WEETH",
+      "instrument_id": "WEETHUSDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "WEETH",
+      "instrument_id": "WEETH_USDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "CC",
+      "instrument_id": "CCUSDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "CC",
+      "instrument_id": "CC_USDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "OKB",
+      "instrument_id": "OKBUSDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "OKB",
+      "instrument_id": "OKB_USDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "RAIN",
+      "instrument_id": "RAINUSDT",
+      "collision_fail_closed": true,
+      "official_source_bound": false
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "RAIN",
+      "instrument_id": "RAIN_USDT",
+      "collision_fail_closed": true,
+      "official_source_bound": false
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "MNT",
+      "instrument_id": "MNTUSDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "MNT",
+      "instrument_id": "MNT_USDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "USDD",
+      "instrument_id": "USDDUSDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "USDD",
+      "instrument_id": "USDD_USDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "BDX",
+      "instrument_id": "BDXUSDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "BDX",
+      "instrument_id": "BDX_USDT",
+      "collision_fail_closed": false,
+      "official_source_bound": false
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "EDGE",
+      "instrument_id": "EDGEUSDT",
+      "collision_fail_closed": true,
+      "official_source_bound": false
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "EDGE",
+      "instrument_id": "EDGE_USDT",
+      "collision_fail_closed": true,
+      "official_source_bound": false
+    }
+  ],
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "6f3eb75bd23303ee8c5123dbcdb53c70000ae414629f8734d970fe5e111b0d07"
+}

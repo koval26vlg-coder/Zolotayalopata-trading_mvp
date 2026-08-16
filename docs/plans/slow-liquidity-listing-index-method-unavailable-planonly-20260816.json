@@ -1,0 +1,109 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_index_method_planonly_v1",
+  "plan_id": "slow_liquidity_listing_index_method_unavailable_20260816",
+  "mode": "PlanOnly",
+  "status": "NO_GROUNDED_SECOND_LISTING_INDEX_AWAIT_UNIVERSE_OR_CLOSE",
+  "generated_at_utc": "2026-08-16T07:45:23.156Z",
+  "research_only": true,
+  "identity_evidence": false,
+  "identity_execution_authorized": false,
+  "ohlcv_collect_authorized": false,
+  "network_authorized": false,
+  "execution_authorized": false,
+  "replay_allowed": false,
+  "spot_v2_runtime_reuse": false,
+  "close_listing_first_authorized": false,
+  "new_universe_authorized": false,
+  "parent_retry_forbidden": true,
+  "market": "SPOT_USDT",
+  "evidence_class": "LISTING_INDEX_METHOD_UNAVAILABLE",
+  "selected_bases": [],
+  "invented_ticker_count": 0,
+  "invented_index_url_count": 0,
+  "excluded_bases": [
+    "STETH",
+    "WEETH",
+    "CC",
+    "OKB",
+    "RAIN",
+    "MNT",
+    "USDD",
+    "BDX",
+    "EDGE"
+  ],
+  "identity_before_ohlcv_collect": true,
+  "seed_items": [],
+  "exhausted_official_indexes": [
+    {
+      "venue": "mexc",
+      "index_url": "https://www.mexc.com/announcements"
+    },
+    {
+      "venue": "gateio",
+      "index_url": "https://www.gate.com/announcements"
+    }
+  ],
+  "prefix_evidence": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\funding-forward\\funding_forward_identity_evidence_20260810_v1.json",
+    "file_sha256": "0b7efae62d5c284ac59bfb003178eb9879af8ca694b40e0502a7b89dca577b81",
+    "role": "PATH_PREFIX_AND_ARTICLE_EXAMPLES_NOT_INDEX_NOT_SELECTED",
+    "selected_asset": false
+  },
+  "goal": "Record that a new listing-index method cannot start: the only grounded official announcement indexes were already read, and no second official listing-category URL exists in-repo. Do not invent an index URL or ticker.",
+  "parent_listing_first_universe": {
+    "plan_id": "slow_liquidity_listing_first_universe_20260815",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-first-universe-planonly-20260815.json",
+    "plan_hash": "748b0777e3f628483fcf00212dc130a8608ca85684d5aca57c286cebe6341771",
+    "parent_plan_file_sha256": "375ab9eb16f8d67b1d1b3ac51fc6237ceb0da9b6a8e4acddc5a40db375c7ecfc",
+    "status": "ACCEPTED_LISTING_FIRST_UNIVERSE_NO_NETWORK",
+    "close_authorized": false
+  },
+  "parent_listing_announcement_gap": {
+    "plan_id": "slow_liquidity_listing_announcement_gap_20260816",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-announcement-gap-planonly-20260816.json",
+    "plan_hash": "e3b504d5ff912b2a9f201511a3afd738cd43cb79b6025d697d4db6c80c0b8a5a",
+    "parent_plan_file_sha256": "73c21bbae89aea042d9fda2898b665273239dcca0839610c5dc9629308059b73",
+    "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-listing-announcement-gap-approval.json",
+    "receipt_hash": "8bc7888a5f8ad4eb9868b2fac25eb3a2bff5793d825385822cc6ee55dc597b33",
+    "receipt_file_sha256": "8cd34dffaaa23d973ce64ca5dfe5d483069b676b9654477cd595a4ed62618aa6",
+    "status": "ACCEPTED_LISTING_ANNOUNCEMENT_GAP_NO_RESCOPE"
+  },
+  "frozen_html_consumer_not_reused": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260815-spot-v2.json",
+    "file_sha256": "43b30ac5faeba2a13ab4ef97f7e5b757eb97436c94f59c2f16d091d3c66ef3b8",
+    "manifest_hash": "bc726311f22b81608da2de86ee0b997fdbfb5545f9675deaecb5df25a245a416",
+    "reused": false
+  },
+  "unauthorized_next_actions": [
+    "INVENT_INDEX_URL",
+    "INVENT_TICKER",
+    "IDENTITY_EXECUTION",
+    "OHLCV_COLLECT",
+    "REUSE_SPOT_V2_CONSUMER",
+    "RETRY_DISCOVERY",
+    "RETRY_ARTICLE",
+    "RETRY_R1_R4",
+    "CLOSE_LISTING_FIRST",
+    "NEW_UNIVERSE",
+    "20260815-V7"
+  ],
+  "checkpoint_options_not_authorized": [
+    "CLOSE_LISTING_FIRST_AS_UNREACHABLE",
+    "NEW_UNIVERSE",
+    "USER_SUPPLIED_GROUNDED_OFFICIAL_LISTING_INDEX_URL"
+  ],
+  "approval_request": {
+    "exact_user_text_template": "Принимаю PlanOnly slow_liquidity_listing_index_method_unavailable_20260816 по plan_hash=<PLAN_HASH> и plan_file_sha256=<PLAN_FILE_SHA256>: второго grounded official listing-index URL нет, не invent index или ticker, не identity, не OHLCV, не reuse spot v2 consumer. Не retry discovery/article/r1-r4, не close listing-first, не новый universe этой фразой, не v7. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи."
+  },
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "actual_network_run_allowed": false,
+    "identity_execution_allowed": false,
+    "ohlcv_collect_allowed": false,
+    "close_listing_first_allowed": false,
+    "new_universe_allowed": false,
+    "exact_user_approval_required": true
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "ab38823d404fa546608ed8c42db2b716194fbccacefa16e514bc917c83700d55"
+}

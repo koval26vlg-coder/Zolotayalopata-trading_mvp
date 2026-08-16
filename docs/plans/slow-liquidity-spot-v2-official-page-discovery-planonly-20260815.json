@@ -1,0 +1,289 @@
+{
+  "schema": "trading_mvp_slow_liquidity_spot_v2_official_page_discovery_planonly_v1",
+  "plan_id": "slow_liquidity_spot_v2_official_page_discovery_20260815",
+  "mode": "PlanOnly",
+  "status": "AWAIT_EXACT_HASH_BOUND_DISCOVERY_APPROVAL",
+  "generated_at_utc": "2026-08-15T17:47:45.632Z",
+  "research_only": true,
+  "identity_evidence": false,
+  "network_authorized": false,
+  "execution_authorized": false,
+  "consumer_runtime": "slow_liquidity_official_asset_identity_verification_20260815_spot_v2",
+  "market": "SPOT_USDT",
+  "required_pair_count": 18,
+  "collision_fail_closed_bases": [
+    "EDGE",
+    "RAIN"
+  ],
+  "collision_ambiguity_disposition": "REJECT_EXCLUDE_FAIL_CLOSED",
+  "goal": "Discover official public pages for the frozen 18 collected spot instruments. This is not an identity verdict.",
+  "source_bindings": {
+    "instrument_bindings": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-spot-v2-request-plan-bindings-20260815.json",
+      "plan_id": "slow_liquidity_spot_v2_request_plan_bindings_20260815",
+      "file_sha256": "bf68d7f87dad8495145a1e35e1ceaa319387db43f67fffaa648d59dead9b4061",
+      "plan_hash": "6f3eb75bd23303ee8c5123dbcdb53c70000ae414629f8734d970fe5e111b0d07"
+    },
+    "spot_v2_proposal": {
+      "proposal_hash": "4ff5732fed76dd70ab1208253dfdf617aa33ac9d55580dffe5d08d4f5cae86bf",
+      "file_sha256": "64bedf76b55a1bdada04c9b627f0df5c93cc47a329a709783cad16aa1ba02d48"
+    },
+    "spot_v2_runtime": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260815-spot-v2.json",
+      "file_sha256": "43b30ac5faeba2a13ab4ef97f7e5b757eb97436c94f59c2f16d091d3c66ef3b8",
+      "manifest_hash": "bc726311f22b81608da2de86ee0b997fdbfb5545f9675deaecb5df25a245a416"
+    }
+  },
+  "compatibility_contract": {
+    "consumer_runtime": "slow_liquidity_official_asset_identity_verification_20260815_spot_v2",
+    "required_pair_count": 18,
+    "instrument_rule": "collected_spot_instrument(venue, base)",
+    "perp_template_forbidden": true,
+    "v7_runtime_forbidden": true,
+    "request_plan_items_must_pass_spot_v2_consumer": true
+  },
+  "navigation_contract": {
+    "provider": "BING_RSS",
+    "scheme": "https",
+    "host": "www.bing.com",
+    "path": "/search",
+    "role": "NAVIGATION_ONLY_NOT_IDENTITY_EVIDENCE",
+    "search_result_title_is_identity_evidence": false,
+    "search_result_snippet_is_identity_evidence": false,
+    "search_result_persistence_allowed": false,
+    "redirect_following_allowed": false
+  },
+  "official_source_contract": {
+    "metadata_endpoints": {
+      "mexc": "https://api.mexc.com/api/v3/exchangeInfo",
+      "gateio": "https://api.gateio.ws/api/v4/spot/currency_pairs"
+    },
+    "evidence_hosts": {
+      "mexc": {
+        "host": "www.mexc.com",
+        "allowed_path_prefix": "/support/articles/"
+      },
+      "gateio": {
+        "host": "www.gate.com",
+        "allowed_path_prefix": "/announcements/article/"
+      }
+    },
+    "only_allowlisted_official_page_content_is_identity_evidence": true,
+    "ticker_or_name_match_alone_is_identity_evidence": false,
+    "exact_active_spot_metadata_required": true,
+    "exact_unique_canonical_identifier_required": true
+  },
+  "limits": {
+    "maximum_total_http_requests": 40,
+    "maximum_attempts_per_url": 2,
+    "maximum_response_bytes_per_request": 1000000,
+    "max_runtime_sec": 600,
+    "hard_output_cap_bytes": 20000000
+  },
+  "seed_items": [
+    {
+      "venue": "mexc",
+      "base_ticker": "STETH",
+      "instrument_id": "STETHUSDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22STETH%22+%22STETHUSDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"STETH\" \"STETHUSDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "STETH",
+      "instrument_id": "STETH_USDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22STETH%22+%22STETH_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"STETH\" \"STETH_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "WEETH",
+      "instrument_id": "WEETHUSDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22WEETH%22+%22WEETHUSDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"WEETH\" \"WEETHUSDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "WEETH",
+      "instrument_id": "WEETH_USDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22WEETH%22+%22WEETH_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"WEETH\" \"WEETH_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "CC",
+      "instrument_id": "CCUSDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22CC%22+%22CCUSDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"CC\" \"CCUSDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "CC",
+      "instrument_id": "CC_USDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22CC%22+%22CC_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"CC\" \"CC_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "OKB",
+      "instrument_id": "OKBUSDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22OKB%22+%22OKBUSDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"OKB\" \"OKBUSDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "OKB",
+      "instrument_id": "OKB_USDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22OKB%22+%22OKB_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"OKB\" \"OKB_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "RAIN",
+      "instrument_id": "RAINUSDT",
+      "collision_fail_closed": true,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22RAIN%22+%22RAINUSDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"RAIN\" \"RAINUSDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "RAIN",
+      "instrument_id": "RAIN_USDT",
+      "collision_fail_closed": true,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22RAIN%22+%22RAIN_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"RAIN\" \"RAIN_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "MNT",
+      "instrument_id": "MNTUSDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22MNT%22+%22MNTUSDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"MNT\" \"MNTUSDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "MNT",
+      "instrument_id": "MNT_USDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22MNT%22+%22MNT_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"MNT\" \"MNT_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "USDD",
+      "instrument_id": "USDDUSDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22USDD%22+%22USDDUSDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"USDD\" \"USDDUSDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "USDD",
+      "instrument_id": "USDD_USDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22USDD%22+%22USDD_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"USDD\" \"USDD_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "BDX",
+      "instrument_id": "BDXUSDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22BDX%22+%22BDXUSDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"BDX\" \"BDXUSDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "BDX",
+      "instrument_id": "BDX_USDT",
+      "collision_fail_closed": false,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22BDX%22+%22BDX_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"BDX\" \"BDX_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    },
+    {
+      "venue": "mexc",
+      "base_ticker": "EDGE",
+      "instrument_id": "EDGEUSDT",
+      "collision_fail_closed": true,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.mexc.com%2Fsupport%2Farticles%2F+%22EDGE%22+%22EDGEUSDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.mexc.com/support/articles/ \"EDGE\" \"EDGEUSDT\" \"Contract Address\"",
+      "expected_official_host": "www.mexc.com",
+      "allowed_official_path_prefix": "/support/articles/"
+    },
+    {
+      "venue": "gateio",
+      "base_ticker": "EDGE",
+      "instrument_id": "EDGE_USDT",
+      "collision_fail_closed": true,
+      "search_url": "https://www.bing.com/search?format=rss&q=site%3Awww.gate.com%2Fannouncements%2Farticle%2F+%22EDGE%22+%22EDGE_USDT%22+%22Contract+Address%22",
+      "navigation_query": "site:www.gate.com/announcements/article/ \"EDGE\" \"EDGE_USDT\" \"Contract Address\"",
+      "expected_official_host": "www.gate.com",
+      "allowed_official_path_prefix": "/announcements/article/"
+    }
+  ],
+  "approval_request": {
+    "exact_user_text_template": "Разрешаю один видимый public read-only запуск slow_liquidity_spot_v2_official_page_discovery_20260815 через tools\\start_exact_approved_slow_liquidity_spot_v2_official_page_discovery_visible.ps1 по plan_hash=<PLAN_HASH> и plan_file_sha256=<PLAN_FILE_SHA256>: MEXC и Gate SPOT_USDT, 18 пар из frozen instrument bindings, MEXC BASEUSDT / Gate BASE_USDT, EDGE и RAIN fail-closed. Bing navigation только для поиска страниц. Официальные страницы — не identity verdict. Не v7 и не MEXC perp underscore ticker. STOPPED_INCOMPLETE не повторять. Без evaluator, OOS, returns/PnL, grid/retune, execution probe, paper/live, private API, реальных денег, плеча или маржи.",
+    "text_normalization": "normalize CRLF/CR to LF, then trim outer whitespace; all internal text must match exactly"
+  },
+  "authorized_scope_after_exact_approval": {
+    "one_visible_public_read_only_official_page_discovery": true,
+    "official_source_content_read": true,
+    "request_plan_output": true,
+    "identity_verdict": false,
+    "evaluator_or_oos": false,
+    "returns_or_pnl": false,
+    "grid_or_retune": false,
+    "execution_probe": false,
+    "paper_or_live": false
+  },
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "actual_network_run_allowed": false,
+    "official_source_content_read_allowed": false,
+    "identity_verdict_allowed": false,
+    "exact_user_approval_required": true
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "becfd2d04871b435614f8a0785ac9e6f90c79cc3537b9868745508bc73e45d20"
+}

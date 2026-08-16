@@ -1,0 +1,85 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_first_close_planonly_v1",
+  "plan_id": "slow_liquidity_listing_first_close_20260816",
+  "mode": "PlanOnly",
+  "status": "AWAIT_EXACT_HASH_BOUND_CLOSE_ACCEPTANCE",
+  "prepared_checkpoint": "CLOSE_LISTING_FIRST_AS_UNREACHABLE",
+  "generated_at_utc": "2026-08-16T12:24:09.273Z",
+  "research_only": true,
+  "listing_first_name_discovery_unreachable": true,
+  "selected_bases": [],
+  "invented_ticker_count": 0,
+  "excluded_bases": [
+    "STETH",
+    "WEETH",
+    "CC",
+    "OKB",
+    "RAIN",
+    "MNT",
+    "USDD",
+    "BDX",
+    "EDGE"
+  ],
+  "identity_before_ohlcv_collect": true,
+  "identity_execution_authorized": false,
+  "ohlcv_collect_authorized": false,
+  "network_authorized": false,
+  "execution_authorized": false,
+  "replay_allowed": false,
+  "spot_v2_runtime_reuse": false,
+  "new_universe_authorized": false,
+  "close_listing_first_authorized": false,
+  "parent_retry_forbidden": true,
+  "market": "SPOT_USDT",
+  "evidence_class": "LISTING_FIRST_CLOSE_PACKET",
+  "goal": "Prepare close of listing-first name discovery because official indexes and the one article did not yield selected_bases, and no second grounded listing-index URL exists. Do not accept close, invent tickers, or open a new universe here.",
+  "parent_listing_first_universe": {
+    "plan_id": "slow_liquidity_listing_first_universe_20260815",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-first-universe-planonly-20260815.json",
+    "plan_hash": "748b0777e3f628483fcf00212dc130a8608ca85684d5aca57c286cebe6341771",
+    "parent_plan_file_sha256": "375ab9eb16f8d67b1d1b3ac51fc6237ceb0da9b6a8e4acddc5a40db375c7ecfc",
+    "status": "ACCEPTED_LISTING_FIRST_UNIVERSE_NO_NETWORK",
+    "close_authorized": false
+  },
+  "parent_listing_index_method": {
+    "plan_id": "slow_liquidity_listing_index_method_unavailable_20260816",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-index-method-unavailable-planonly-20260816.json",
+    "plan_hash": "ab38823d404fa546608ed8c42db2b716194fbccacefa16e514bc917c83700d55",
+    "parent_plan_file_sha256": "e825860938d9eaf96c9b7432375debc95787f775fac3c18431424fa30becc896",
+    "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-listing-index-method-unavailable-approval.json",
+    "receipt_hash": "d246caa0effec75143474734ee60526b951d10ed60bcafbe8b47fb2fe2f81d55",
+    "receipt_file_sha256": "7c277a39e25955865c5b706f4e5ed4ea28365294c08353c3270d0b4fd37303de",
+    "status": "ACCEPTED_LISTING_INDEX_METHOD_UNAVAILABLE_NO_RESCOPE"
+  },
+  "frozen_html_consumer_not_reused": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260815-spot-v2.json",
+    "file_sha256": "43b30ac5faeba2a13ab4ef97f7e5b757eb97436c94f59c2f16d091d3c66ef3b8",
+    "manifest_hash": "bc726311f22b81608da2de86ee0b997fdbfb5545f9675deaecb5df25a245a416",
+    "reused": false
+  },
+  "unauthorized_next_actions": [
+    "INVENT_TICKER",
+    "IDENTITY_EXECUTION",
+    "OHLCV_COLLECT",
+    "REUSE_SPOT_V2_CONSUMER",
+    "RETRY_DISCOVERY",
+    "RETRY_ARTICLE",
+    "RETRY_R1_R4",
+    "NEW_UNIVERSE",
+    "20260815-V7"
+  ],
+  "approval_request": {
+    "exact_user_text_template": "CLOSE_LISTING_FIRST_AS_UNREACHABLE — принимаю PlanOnly slow_liquidity_listing_first_close_20260816 по plan_hash=<PLAN_HASH> и plan_file_sha256=<PLAN_FILE_SHA256>: закрыть listing-first name discovery как unreachable, selected_bases=[], не invent tickers, не identity, не OHLCV, не reuse spot v2 consumer, не новый universe, не retry discovery/article/r1-r4, не v7. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи."
+  },
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "actual_network_run_allowed": false,
+    "identity_execution_allowed": false,
+    "ohlcv_collect_allowed": false,
+    "close_listing_first_allowed": false,
+    "new_universe_allowed": false,
+    "exact_user_approval_required": true
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "c0830512db1fef2e012262bcd6f7ad624437062a11712b09f4718ac0b261fc0f"
+}

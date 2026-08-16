@@ -1,0 +1,72 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_announcement_discovery_planonly_v1",
+  "plan_id": "slow_liquidity_listing_announcement_discovery_20260816",
+  "mode": "PlanOnly",
+  "status": "AWAIT_EXACT_HASH_BOUND_DISCOVERY_APPROVAL",
+  "generated_at_utc": "2026-08-16T06:46:27.841Z",
+  "research_only": true,
+  "identity_evidence": false,
+  "identity_execution_authorized": false,
+  "network_authorized": false,
+  "execution_authorized": false,
+  "replay_allowed": false,
+  "spot_v2_runtime_reuse": false,
+  "market": "SPOT_USDT",
+  "selected_bases": [],
+  "invented_ticker_count": 0,
+  "excluded_bases": [
+    "STETH",
+    "WEETH",
+    "CC",
+    "OKB",
+    "RAIN",
+    "MNT",
+    "USDD",
+    "BDX",
+    "EDGE"
+  ],
+  "identity_before_ohlcv_collect": true,
+  "article_path_prefix": "/announcements/article/",
+  "goal": "Read official MEXC and Gate announcement indexes and collect article URLs. Do not invent tickers, reuse the closed 9 bases, or open identity/OHLCV/replay.",
+  "parent_listing_first_universe": {
+    "plan_id": "slow_liquidity_listing_first_universe_20260815",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-first-universe-planonly-20260815.json",
+    "plan_hash": "748b0777e3f628483fcf00212dc130a8608ca85684d5aca57c286cebe6341771",
+    "parent_plan_file_sha256": "375ab9eb16f8d67b1d1b3ac51fc6237ceb0da9b6a8e4acddc5a40db375c7ecfc",
+    "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-15-slow-liquidity-listing-first-universe-approval.json",
+    "receipt_hash": "95fe56f9b378d5165ea20aada5fbfa98220ee29948610e87d11ec5fffa6201f9",
+    "receipt_file_sha256": "4c3bf08a7f3f95bc6c3bfab9d3ac57573aa4c41cdf4da6913fedbbd74285eeda",
+    "status": "ACCEPTED_LISTING_FIRST_UNIVERSE_NO_NETWORK"
+  },
+  "seed_items": [
+    {
+      "venue": "mexc",
+      "index_url": "https://www.mexc.com/announcements",
+      "article_host": "www.mexc.com"
+    },
+    {
+      "venue": "gateio",
+      "index_url": "https://www.gate.com/announcements",
+      "article_host": "www.gate.com"
+    }
+  ],
+  "limits": {
+    "maximum_total_http_requests": 2,
+    "maximum_attempts_per_url": 1,
+    "maximum_response_bytes_per_request": 1000000,
+    "max_runtime_sec": 180,
+    "hard_output_cap_bytes": 5000000
+  },
+  "approval_request": {
+    "exact_user_text_template": "Разрешаю один видимый public read-only запуск slow_liquidity_listing_announcement_discovery_20260816 через tools\\start_exact_approved_slow_liquidity_listing_announcement_discovery_visible.ps1 по plan_hash=<PLAN_HASH> и plan_file_sha256=<PLAN_FILE_SHA256>: official listing announcement indexes only, exclude closed 9, no invented tickers, identity before OHLCV collect. Не Bing, не sitemap, не retry r1-r4, не reuse spot v2 consumer. Не v7. STOPPED_INCOMPLETE не повторять. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи."
+  },
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "actual_network_run_allowed": false,
+    "identity_execution_allowed": false,
+    "replay_allowed": false,
+    "ohlcv_collect_allowed": false
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "1a7e4505e611b505e23c98cd89be015dc04d14b2da7cf3df12085a21db9ec8db"
+}

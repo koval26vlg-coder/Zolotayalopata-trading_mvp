@@ -1,0 +1,249 @@
+{
+  "schema": "trading_mvp_slow_liquidity_official_identity_proposal_v1",
+  "proposal_id": "slow_liquidity_official_asset_identity_verification_20260815_spot_v2",
+  "mode": "PlanOnlyReviewProposal",
+  "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
+  "generated_at_utc": "2026-08-15T16:50:00Z",
+  "research_only": true,
+  "supersedes": {
+    "proposal_id": "slow_liquidity_official_asset_identity_verification_20260813_v1",
+    "reason": "Identity must bind the collected USDT spot OHLCV instruments, not perpetual contracts. EDGE and RAIN are fail-closed on any ticker ambiguity."
+  },
+  "objective": "Verify whether each exact collected MEXC and Gate USDT spot pair refers to the same canonical asset, using official public sources only. EDGE and RAIN are fail-closed on any ticker ambiguity.",
+  "source_bindings": {
+    "recollect_plan": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-history-recollect-planonly-20260813-pagecap-provenance-slotintegrity-v6.json",
+      "file_sha256": "d649f61fb7adbd333ff5b979be8a9bcc3e0373beed6bcbe04c29583e34b03e94",
+      "plan_hash": "b7b2104eaad9404dbf97699d777276acbb187edaa03327dea8f8329f3e084632"
+    },
+    "approval_receipt": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-13-slow-liquidity-history-recollect-pagecap-provenance-slotintegrity-v6-approval.json",
+      "file_sha256": "32574a85c6ee02cc36da4bab50822ec801a182e6eff048056a404cd38128798c",
+      "receipt_hash": "51cfe506960c814c1caaf23671aaaf359d408fe4ffc6c75c627f773283685e26"
+    },
+    "completed_launch": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6.launch.json",
+      "file_sha256": "d57e002caf89ded3f21e1ed88829cdb1074bfd6936b112c9edca908f01ebe1e8",
+      "run_id": "slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6",
+      "status": "COMPLETE"
+    },
+    "collection_manifest": {
+      "path": "E:\\trading_mvp\\slow-liquidity-history\\slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6\\manifest.json",
+      "file_sha256": "b4a45a66030cfdef957268053814372d40659a6c0202c8268ec9cb284731ef37",
+      "run_id": "slow_liquidity_history_recollect_20260813_pagecap_provenance_slotintegrity_v6",
+      "final": true
+    },
+    "technical_quality": {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\analysis\\slow_liquidity_history_recollect_quality_20260813_pagecap_provenance_slotintegrity_v6.json",
+      "file_sha256": "9f240efe9a300f4e1a57c6c8438eab63c9169bdf4bb9ff47f6cc50175e7e6a9e",
+      "decision": "SLOW_LIQUIDITY_HISTORY_RECOLLECT_QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL",
+      "accepted": true
+    }
+  },
+  "verification_scope": {
+    "venues": [
+      "mexc",
+      "gateio"
+    ],
+    "market": "SPOT_USDT",
+    "collected_history_market": "SPOT_USDT",
+    "identity_must_match_collected_ohlcv_instruments": true,
+    "bases": [
+      "STETH",
+      "WEETH",
+      "CC",
+      "OKB",
+      "RAIN",
+      "MNT",
+      "USDD",
+      "BDX",
+      "EDGE"
+    ],
+    "base_count": 9,
+    "quote": "USDT",
+    "all_bases_must_be_reviewed": true,
+    "category_exclusions_allowed": false,
+    "symbol_blacklist_allowed": false,
+    "minimum_verified_bases_after_exclusions": 8
+  },
+  "official_source_contract": {
+    "metadata_endpoints": [
+      {
+        "venue": "mexc",
+        "url": "https://api.mexc.com/api/v3/exchangeInfo",
+        "method": "GET"
+      },
+      {
+        "venue": "gateio",
+        "url": "https://api.gateio.ws/api/v4/spot/currency_pairs",
+        "method": "GET"
+      }
+    ],
+    "evidence_hosts": [
+      {
+        "venue": "mexc",
+        "scheme": "https",
+        "host": "www.mexc.com",
+        "allowed_path_prefix": "/support/articles/"
+      },
+      {
+        "venue": "gateio",
+        "scheme": "https",
+        "host": "www.gate.com",
+        "allowed_path_prefix": "/announcements/article/"
+      }
+    ],
+    "search_or_navigation_output_is_identity_evidence": false,
+    "only_content_on_allowlisted_official_hosts_is_evidence": true,
+    "http_redirect_following_allowed": false,
+    "request_body_allowed": false,
+    "private_or_auth_headers_allowed": false,
+    "environment_proxies_allowed": false,
+    "maximum_total_http_requests": 40,
+    "maximum_attempts_per_url": 2,
+    "maximum_response_bytes_per_request": 1000000,
+    "max_runtime_sec": 600,
+    "hard_output_cap_bytes": 20000000,
+    "raw_response_persistence_allowed": false,
+    "prices_or_funding_rates_persisted_allowed": false,
+    "market_values_may_affect_identity_decision": false,
+    "response_body_sha256_required": true,
+    "evidence_locator_required": true,
+    "evidence_fragment_sha256_required": true,
+    "sanitized_evidence_fragment_required": true,
+    "sanitized_evidence_fragment_max_bytes": 512,
+    "free_form_evidence_text_allowed": false
+  },
+  "identity_contract": {
+    "ticker_match_is_identity_evidence": false,
+    "asset_name_match_is_identity_evidence": false,
+    "source_coin_id_is_identity_evidence": false,
+    "economic_or_wrapped_asset_equivalence_allowed": false,
+    "required_per_venue": [
+      "official_source_url",
+      "response_body_sha256",
+      "instrument_id",
+      "base_ticker",
+      "canonical_asset_identifier_namespace",
+      "canonical_asset_identifier_value",
+      "canonical_asset_identifier_label",
+      "evidence_locator_type",
+      "evidence_locator_value",
+      "evidence_fragment_sha256",
+      "sanitized_evidence_fragment"
+    ],
+    "collected_spot_instruments": {
+      "mexc": {
+        "STETH": "STETHUSDT",
+        "WEETH": "WEETHUSDT",
+        "CC": "CCUSDT",
+        "OKB": "OKBUSDT",
+        "RAIN": "RAINUSDT",
+        "MNT": "MNTUSDT",
+        "USDD": "USDDUSDT",
+        "BDX": "BDXUSDT",
+        "EDGE": "EDGEUSDT"
+      },
+      "gateio": {
+        "STETH": "STETH_USDT",
+        "WEETH": "WEETH_USDT",
+        "CC": "CC_USDT",
+        "OKB": "OKB_USDT",
+        "RAIN": "RAIN_USDT",
+        "MNT": "MNT_USDT",
+        "USDD": "USDD_USDT",
+        "BDX": "BDX_USDT",
+        "EDGE": "EDGE_USDT"
+      }
+    },
+    "collision_fail_closed_bases": [
+      "EDGE",
+      "RAIN"
+    ],
+    "collision_ambiguity_disposition": "REJECT_EXCLUDE_FAIL_CLOSED",
+    "same_underlying_acceptance": "Both venues independently publish the same canonical asset identifier for the exact collected USDT spot instrument.",
+    "evm_identifier_comparison": "ASCII_CASE_INSENSITIVE",
+    "non_evm_identifier_comparison": "EXACT",
+    "missing_identifier_disposition": "UNRESOLVED_EXCLUDE_FAIL_CLOSED",
+    "conflicting_identifier_disposition": "REJECT_EXCLUDE_FAIL_CLOSED",
+    "verified_bases_below_minimum_disposition": "INSUFFICIENT_IDENTITY_VERIFIED_UNIVERSE_NO_RESCOPE_WITHOUT_NEW_APPROVAL"
+  },
+  "output_contract": {
+    "run_id": "slow_liquidity_official_asset_identity_verification_20260815_spot_v2",
+    "root": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-official-identity",
+    "run_output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\slow-liquidity-official-identity\\slow_liquidity_official_asset_identity_verification_20260815_spot_v2",
+    "required_files": [
+      "identity-evidence.json",
+      "manifest.json"
+    ],
+    "immutable_exclusive_create": true,
+    "overwrite_allowed": false,
+    "raw_payload_files_allowed": false,
+    "manifest_must_bind_source_files_and_response_hashes": true,
+    "manifest_must_bind_sanitized_identifier_evidence": true
+  },
+  "runtime_contract_after_approval": {
+    "runtime_module": "trading_mvp\\src\\slow_liquidity_official_identity_verification.py",
+    "synthetic_tests": "trading_mvp\\tests\\test_slow_liquidity_official_identity_verification.py",
+    "top_level_visible_launcher": "tools\\start_exact_approved_slow_liquidity_official_identity_visible.ps1",
+    "preflight_only_required": true,
+    "visible_terminal_required": true,
+    "single_use": true,
+    "global_writer_claim_required": true,
+    "active_run_gate_must_not_be_running": true,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "authorized_scope_after_exact_approval": {
+    "offline_runtime_implementation": true,
+    "offline_synthetic_tests": true,
+    "immutable_approval_receipt_and_runtime_manifest": true,
+    "preflight_only": true,
+    "one_visible_public_read_only_identity_run": false,
+    "official_source_content_read": false,
+    "technical_identity_output_validation": false,
+    "automatic_fixed_signal_or_evaluator_after_success": false,
+    "automatic_oos_or_data_collection_after_success": false,
+    "separate_exact_code_bound_execution_approval_required": true
+  },
+  "authorization_now": {
+    "proposal_freeze_allowed": true,
+    "offline_runtime_implementation_allowed": false,
+    "synthetic_runtime_tests_allowed": false,
+    "official_source_content_read_allowed": false,
+    "actual_network_run_allowed": false,
+    "identity_claim_allowed": false,
+    "candidate_planonly_creation_allowed": false,
+    "evaluator_or_oos_allowed": false,
+    "returns_or_pnl_allowed": false,
+    "grid_or_retune_allowed": false,
+    "execution_probe_allowed": false,
+    "paper_or_live_allowed": false,
+    "private_api_keys_allowed": false,
+    "real_capital_allowed": false,
+    "leverage_or_margin_allowed": false,
+    "exact_user_approval_required": true
+  },
+  "next_checkpoint": {
+    "required_action": "REQUEST_EXACT_HASH_BOUND_IDENTITY_APPROVAL",
+    "approval_phrase_template": "Разрешаю slow liquidity official identity offline implementation and refreeze spot v2 по proposal_hash=<proposal_hash> и proposal_file_sha256=<proposal_file_sha256>: реализовать runtime и synthetic tests, создать immutable code-bound runtime manifest для спот-пар собранного v6 датасета. EDGE и RAIN fail-closed при любой двусмысленности. Без сети и identity output.",
+    "after_offline_implementation": "Request a separate exact code-bound execution approval before any official source read or identity output."
+  },
+  "safety": {
+    "network_accessed_while_freezing": false,
+    "official_source_content_read_while_freezing": false,
+    "identity_output_created_while_freezing": false,
+    "global_writer_claim_created_while_freezing": false,
+    "identity_claimed_while_freezing": false,
+    "market_rows_read": false,
+    "prices_or_funding_rates_read": false,
+    "returns_or_pnl_read": false,
+    "oos_run": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api_keys": false,
+    "real_capital": false,
+    "leverage_or_margin": false
+  },
+  "proposal_hash_method": "sha256_canonical_json_excluding_proposal_hash",
+  "proposal_hash": "4ff5732fed76dd70ab1208253dfdf617aa33ac9d55580dffe5d08d4f5cae86bf"
+}

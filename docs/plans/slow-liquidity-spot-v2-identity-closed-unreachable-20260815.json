@@ -1,0 +1,80 @@
+{
+  "schema": "trading_mvp_slow_liquidity_spot_v2_identity_closed_planonly_v1",
+  "plan_id": "slow_liquidity_spot_v2_identity_closed_unreachable_20260815",
+  "mode": "PlanOnly",
+  "status": "IDENTITY_CLOSED_AS_UNREACHABLE",
+  "selected_checkpoint": "CLOSE_IDENTITY_AS_UNREACHABLE",
+  "generated_at_utc": "2026-08-15T20:38:30.419Z",
+  "research_only": true,
+  "identity_evidence": false,
+  "identity_verdict_allowed": false,
+  "identity_execution_authorized": false,
+  "network_authorized": false,
+  "execution_authorized": false,
+  "replay_allowed": false,
+  "rescope_authorized": false,
+  "ohlcv_dataset_retained": true,
+  "frozen_html_consumer_unchanged": true,
+  "consumer_runtime": "slow_liquidity_official_asset_identity_verification_20260815_spot_v2",
+  "market": "SPOT_USDT",
+  "closed_bases": [
+    "STETH",
+    "WEETH",
+    "CC",
+    "OKB",
+    "RAIN",
+    "MNT",
+    "USDD",
+    "BDX",
+    "EDGE"
+  ],
+  "closed_venues": [
+    "mexc",
+    "gateio"
+  ],
+  "closed_pair_count": 18,
+  "fail_closed_bases": [
+    "EDGE",
+    "RAIN"
+  ],
+  "collision_ambiguity_disposition": "REJECT_EXCLUDE_FAIL_CLOSED",
+  "user_close_text": "CLOSE_IDENTITY_AS_UNREACHABLE — закрыть identity для этих 9 two-venue bases",
+  "goal": "Close official-identity execution for the 9 collected two-venue spot bases because the 18-item official-page request plan is unreachable. Do not retry locators, rescope, or open replay.",
+  "parent_identity_gap": {
+    "plan_id": "slow_liquidity_spot_v2_identity_gap_20260815",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-spot-v2-identity-gap-planonly-20260815.json",
+    "plan_hash": "df92867aa836c6a03092d49895207ffac5260674bdcbf2b1d17a3912d0b58973",
+    "parent_plan_file_sha256": "bdea19b374e845064513fa1261265a2922666c456ad2cb9ffaef1d02cc5c3279",
+    "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-15-slow-liquidity-spot-v2-identity-gap-approval.json",
+    "receipt_hash": "c1147f7ac6703e4ee3f6f8dd03b49825de63e8c70397effee0a00f0a63f00ff8",
+    "receipt_file_sha256": "6ec97dbb77afdf75d59677d9ad29d20d69da86758981c3bc6f1c37aec26e2140",
+    "status": "ACCEPTED_IDENTITY_GAP_NO_RESCOPE"
+  },
+  "frozen_html_consumer": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260815-spot-v2.json",
+    "file_sha256": "43b30ac5faeba2a13ab4ef97f7e5b757eb97436c94f59c2f16d091d3c66ef3b8",
+    "manifest_hash": "bc726311f22b81608da2de86ee0b997fdbfb5545f9675deaecb5df25a245a416",
+    "silently_edited": false
+  },
+  "still_forbidden": [
+    "RETRY_CURRENCY_JSON",
+    "PAGE_LOCATOR_R5",
+    "BING_OR_SITEMAP_SEARCH",
+    "SILENT_HTML_CONSUMER_EDIT",
+    "SILENT_UNIVERSE_RESCOPE",
+    "IDENTITY_EXECUTION",
+    "EVALUATOR_OR_OOS",
+    "REPLAY_OR_GRID",
+    "PAPER_OR_LIVE"
+  ],
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "actual_network_run_allowed": false,
+    "identity_verdict_allowed": false,
+    "identity_execution_allowed": false,
+    "replay_allowed": false,
+    "rescope_authorized": false
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "328dbf53f2bb2191e07d8b048d313dd4a9a7dee8fc67930cb5e106a892929d28"
+}

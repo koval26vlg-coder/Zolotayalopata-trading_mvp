@@ -1,0 +1,98 @@
+{
+  "schema": "trading_mvp_slow_liquidity_calendar_first_identity_close_planonly_v1",
+  "plan_id": "slow_liquidity_calendar_first_identity_close_20260816",
+  "mode": "PlanOnly",
+  "status": "AWAIT_EXACT_HASH_BOUND_CLOSE_ACCEPTANCE",
+  "prepared_checkpoint": "CLOSE_TWO_VENUE_OFFICIAL_IDENTITY_AS_INCOMPLETE",
+  "generated_at_utc": "2026-08-16T15:40:45.781Z",
+  "research_only": true,
+  "identity_evidence": false,
+  "identity_verdict_allowed": false,
+  "identity_execution_authorized": false,
+  "ohlcv_collect_authorized": false,
+  "network_authorized": false,
+  "execution_authorized": false,
+  "replay_allowed": false,
+  "spot_v2_runtime_reuse": false,
+  "listing_first_name_discovery_reopened": false,
+  "parent_retry_forbidden": true,
+  "close_two_venue_identity_authorized": false,
+  "documented_second_venue_method_unavailable": true,
+  "market": "SPOT_USDT",
+  "venues": [
+    "mexc",
+    "gateio"
+  ],
+  "excluded_bases": [
+    "STETH",
+    "WEETH",
+    "CC",
+    "OKB",
+    "RAIN",
+    "MNT",
+    "USDD",
+    "BDX",
+    "EDGE"
+  ],
+  "selected_base_count": 407,
+  "selected_bases_sha256": "3b5c44955f309041867763e89731f074e0a9721e0d184537d253b48fbde56322",
+  "unique_gate_evm_base_count": 244,
+  "unresolved_count": 163,
+  "two_venue_verified_base_count": 0,
+  "records_sha256": "e073a9b3d2aba7b29b3b90a0004431d33cc97ce63d8b37694fb7689ade407430",
+  "invented_ticker_count": 0,
+  "evidence_class": "TWO_VENUE_OFFICIAL_IDENTITY_CLOSE_PACKET",
+  "identity_before_ohlcv_collect": true,
+  "two_venue_official_identity_complete": false,
+  "goal": "Prepare close of two-venue official identity as incomplete: Gate unsigned currency JSON ran 407/244/163, and no documented unsigned MEXC contract JSON exists in-repo. This is not an identity verdict and not OHLCV collect.",
+  "parent_calendar_first_identity_gap": {
+    "plan_id": "slow_liquidity_calendar_first_identity_gap_20260816",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-calendar-first-identity-gap-planonly-20260816.json",
+    "plan_hash": "3593627c4be1f6a84ecf45d20adff6af9aea0945a986728d1bcd99d608b32f6d",
+    "parent_plan_file_sha256": "80e02872e313a632c85f6b1dc11a9cc9bf6af56a8d3e5ddfbe8b7643070bcd3d",
+    "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-calendar-first-identity-gap-approval.json",
+    "receipt_hash": "8b91ad1e1ce967be6cf2b4b5e9008e3bea4c1bd47d1c6ad618d9c1e634270fda",
+    "receipt_file_sha256": "2aad825a6a0c0e00ffdf5d2906a5bd6285c4dc774c032900f840393463993fe1",
+    "status": "ACCEPTED_CALENDAR_FIRST_IDENTITY_GAP_NO_NETWORK"
+  },
+  "mexc_public_contract_json": {
+    "documented_unsigned_endpoint": false,
+    "capital_config_getall_requires_api_key": true,
+    "invented_undocumented_endpoint_forbidden": true
+  },
+  "frozen_html_consumer_not_reused": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260815-spot-v2.json",
+    "file_sha256": "43b30ac5faeba2a13ab4ef97f7e5b757eb97436c94f59c2f16d091d3c66ef3b8",
+    "manifest_hash": "bc726311f22b81608da2de86ee0b997fdbfb5545f9675deaecb5df25a245a416",
+    "reused": false
+  },
+  "still_forbidden": [
+    "RETRY_CURRENCY_JSON",
+    "INVENT_OFFICIAL_PAGE_URLS",
+    "INVENT_MEXC_UNSIGNED_JSON",
+    "REOPEN_LISTING_FIRST_NAME_DISCOVERY",
+    "REUSE_SPOT_V2_HTML_CONSUMER",
+    "OHLCV_COLLECT",
+    "IDENTITY_VERDICT",
+    "BING_OR_SITEMAP",
+    "REPLAY_OR_GRID",
+    "EVALUATOR_OR_OOS",
+    "PAPER_OR_LIVE",
+    "20260815-V7"
+  ],
+  "approval_request": {
+    "exact_user_text_template": "CLOSE_CALENDAR_FIRST_TWO_VENUE_IDENTITY_AS_INCOMPLETE — принимаю PlanOnly slow_liquidity_calendar_first_identity_close_20260816 по plan_hash=<PLAN_HASH> и plan_file_sha256=<PLAN_FILE_SHA256>: закрыть two-venue official identity как incomplete, Gate JSON 407/244/163, MEXC unsigned JSON нет, не invent URL, не identity verdict, не OHLCV, не retry currency JSON, не reopen listing-first, не reuse spot v2 consumer, не replay, не v7. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи."
+  },
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "actual_network_run_allowed": false,
+    "identity_execution_allowed": false,
+    "identity_verdict_allowed": false,
+    "ohlcv_collect_allowed": false,
+    "retry_parent_allowed": false,
+    "close_two_venue_identity_allowed": false,
+    "replay_allowed": false
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "55b764789af94652e59471ecf8a8916680d7159744e05456274265f4a6ec0407"
+}

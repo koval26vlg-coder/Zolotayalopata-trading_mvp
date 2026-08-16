@@ -1,0 +1,95 @@
+{
+  "schema": "trading_mvp_slow_liquidity_calendar_first_universe_planonly_v1",
+  "plan_id": "slow_liquidity_calendar_first_universe_20260816",
+  "mode": "PlanOnly",
+  "status": "AWAIT_EXACT_HASH_BOUND_UNIVERSE_ACCEPTANCE",
+  "generated_at_utc": "2026-08-16T12:30:12.649Z",
+  "research_only": true,
+  "universe_selection": "FROZEN_LOCAL_TWO_VENUE_LISTING_CALENDAR",
+  "market": "SPOT_USDT",
+  "venues": [
+    "mexc",
+    "gateio"
+  ],
+  "excluded_bases": [
+    "STETH",
+    "WEETH",
+    "CC",
+    "OKB",
+    "RAIN",
+    "MNT",
+    "USDD",
+    "BDX",
+    "EDGE"
+  ],
+  "selected_bases": [],
+  "invented_ticker_count": 0,
+  "two_venue_candidate_count": 407,
+  "identity_before_ohlcv_collect": true,
+  "listing_first_name_discovery_reopened": false,
+  "spot_v2_runtime_reuse": false,
+  "identity_execution_authorized": false,
+  "ohlcv_collect_authorized": false,
+  "network_authorized": false,
+  "execution_authorized": false,
+  "replay_allowed": false,
+  "user_universe_text": "новый universe, и для него нужен метод отбора, не список тикеров.",
+  "selection_method": {
+    "id": "two_venue_usdt_spot_from_frozen_local_listing_calendar",
+    "calendar_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\listings\\non_binance_listing_events.csv",
+    "calendar_file_sha256": "d01f86646eaebfd4df5a738a754f021bb3a7b0dcd192cfa104057eb29a3f4abb",
+    "calendar_summary_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\listings\\non_binance_listing_events.summary.json",
+    "calendar_summary_file_sha256": "84a626e572b5cdee49e3e9ec01d4506b4d8f950eaa7eef72e689beba7b6f8a8d",
+    "source_class": "PUBLIC_API_CURRENT_SNAPSHOT_NOT_OFFICIAL_ANNOUNCEMENT",
+    "rules": [
+      "venue in mexc and gateio",
+      "quote USDT",
+      "not delisted in frozen calendar",
+      "exclude closed 9 bases",
+      "keep selected_bases empty until a later apply phrase"
+    ],
+    "names_materialized": false
+  },
+  "goal": "Define a new two-venue spot universe by method: intersection of the frozen local listing calendar. Do not invent a ticker list, reopen listing-first name discovery, or open identity/OHLCV here.",
+  "parent_listing_first_close": {
+    "plan_id": "slow_liquidity_listing_first_close_20260816",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-first-close-planonly-20260816.json",
+    "plan_hash": "c0830512db1fef2e012262bcd6f7ad624437062a11712b09f4718ac0b261fc0f",
+    "parent_plan_file_sha256": "d1ce9ceadfe4803de5719c666e3a55c5e998f535f9083e00e64426a34c13bba2",
+    "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-listing-first-close-approval.json",
+    "receipt_hash": "b68971465243bcb070969f2773eb792a9722e9fa88d44278e1eb75d01aea582c",
+    "receipt_file_sha256": "8f388635d3eea8f531dbb6cfa8ba9a4351456686ec360233b0a33883bc81662b",
+    "status": "LISTING_FIRST_CLOSED_AS_UNREACHABLE"
+  },
+  "frozen_html_consumer_not_reused": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-official-identity-runtime-manifest-20260815-spot-v2.json",
+    "file_sha256": "43b30ac5faeba2a13ab4ef97f7e5b757eb97436c94f59c2f16d091d3c66ef3b8",
+    "manifest_hash": "bc726311f22b81608da2de86ee0b997fdbfb5545f9675deaecb5df25a245a416",
+    "reused": false
+  },
+  "still_forbidden": [
+    "INVENT_TICKERS",
+    "REOPEN_LISTING_FIRST_NAME_DISCOVERY",
+    "REUSE_CLOSED_NINE_BASES",
+    "REUSE_SPOT_V2_HTML_CONSUMER",
+    "IDENTITY_EXECUTION",
+    "OHLCV_COLLECT",
+    "REPLAY_OR_GRID",
+    "EVALUATOR_OR_OOS",
+    "PAPER_OR_LIVE",
+    "20260815-V7"
+  ],
+  "approval_request": {
+    "exact_user_text_template": "Принимаю PlanOnly slow_liquidity_calendar_first_universe_20260816 по plan_hash=<PLAN_HASH> и plan_file_sha256=<PLAN_FILE_SHA256>: новый universe — frozen local two-venue listing calendar method, не список тикеров, exclude closed 9, identity до OHLCV collect. Не reopen listing-first name discovery, не invent tickers, не reuse spot v2 consumer, не replay, не v7. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи."
+  },
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "actual_network_run_allowed": false,
+    "identity_execution_allowed": false,
+    "ohlcv_collect_allowed": false,
+    "name_materialization_allowed": false,
+    "replay_allowed": false
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "6608a2b2f13de4f33db89d13813cd9563b191f20a04fbd18604d37d8e4816c77"
+}

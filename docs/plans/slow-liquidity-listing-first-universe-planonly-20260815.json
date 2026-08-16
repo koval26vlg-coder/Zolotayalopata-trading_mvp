@@ -1,0 +1,75 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_first_universe_planonly_v1",
+  "plan_id": "slow_liquidity_listing_first_universe_20260815",
+  "mode": "PlanOnly",
+  "status": "AWAIT_EXACT_HASH_BOUND_UNIVERSE_ACCEPTANCE",
+  "generated_at_utc": "2026-08-15T20:54:43.408Z",
+  "research_only": true,
+  "universe_selection": "OFFICIAL_LISTING_ANNOUNCEMENT_FIRST",
+  "market": "SPOT_USDT",
+  "venues": [
+    "mexc",
+    "gateio"
+  ],
+  "excluded_bases": [
+    "STETH",
+    "WEETH",
+    "CC",
+    "OKB",
+    "RAIN",
+    "MNT",
+    "USDD",
+    "BDX",
+    "EDGE"
+  ],
+  "selected_bases": [],
+  "invented_ticker_count": 0,
+  "identity_before_ohlcv_collect": true,
+  "spot_v2_runtime_reuse": false,
+  "identity_execution_authorized": false,
+  "network_authorized": false,
+  "execution_authorized": false,
+  "replay_allowed": false,
+  "user_universe_text": "новый universe",
+  "official_listing_path_prefixes": {
+    "mexc": "/announcements/article/",
+    "gateio": "/announcements/article/"
+  },
+  "prefix_evidence": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\funding-forward\\funding_forward_identity_evidence_20260810_v1.json",
+    "file_sha256": "0b7efae62d5c284ac59bfb003178eb9879af8ca694b40e0502a7b89dca577b81",
+    "role": "PATH_PREFIX_ONLY_NOT_SELECTED_UNIVERSE",
+    "selected_asset": false
+  },
+  "goal": "Define a new two-venue spot universe selected from official listing announcements, excluding the closed 9 bases. Tickers are not invented here. Identity comes before OHLCV collect.",
+  "parent_identity_closed": {
+    "plan_id": "slow_liquidity_spot_v2_identity_closed_unreachable_20260815",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-spot-v2-identity-closed-unreachable-20260815.json",
+    "plan_hash": "328dbf53f2bb2191e07d8b048d313dd4a9a7dee8fc67930cb5e106a892929d28",
+    "parent_plan_file_sha256": "d3205e3e2d5d5b2cb962cc04c53501bd1d4affd07ad3bdb8a4985106f463fe40",
+    "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-15-slow-liquidity-spot-v2-identity-closed-unreachable-approval.json",
+    "receipt_hash": "2807af970511f3a2f1c7e8f99be09ca426a58e1ef8e5b0c0f15180819ed06beb",
+    "receipt_file_sha256": "b16860ff38e24a14ee158c7889cbaa6b2d43bdde82638b907c4427c0cfb2d4f7",
+    "status": "IDENTITY_CLOSED_AS_UNREACHABLE"
+  },
+  "still_forbidden": [
+    "REUSE_CLOSED_NINE_BASES",
+    "INVENT_TICKERS",
+    "REUSE_SPOT_V2_HTML_CONSUMER",
+    "IDENTITY_EXECUTION",
+    "OHLCV_COLLECT",
+    "REPLAY_OR_GRID",
+    "EVALUATOR_OR_OOS",
+    "PAPER_OR_LIVE",
+    "20260815-V7"
+  ],
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "actual_network_run_allowed": false,
+    "identity_execution_allowed": false,
+    "replay_allowed": false,
+    "ohlcv_collect_allowed": false
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "748b0777e3f628483fcf00212dc130a8608ca85684d5aca57c286cebe6341771"
+}
