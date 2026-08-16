@@ -1,0 +1,60 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_momentum_forward_evaluator_plan_v1",
+  "plan_id": "slow_liquidity_listing_momentum_forward_evaluator_20260816",
+  "mode": "PlanOnly",
+  "status": "PREREGISTERED_AWAITING_SAMPLE",
+  "generated_at_utc": "2026-08-16T20:39:15.273Z",
+  "research_only": true,
+  "public_data_only": true,
+  "network_authorized": false,
+  "private_api": false,
+  "objective": "Pre-register the evaluation contract for the survivorship-clean forward listing-momentum sample BEFORE the data accrues. The evaluator computes metrics only when the pre-registered minimum is reached; no peeking below the threshold.",
+  "preregistration": {
+    "evaluation_class": "PROXY_DATE_FORWARD_PREREGISTERED",
+    "first_read_min_complete_windows": 30,
+    "terminal_min_complete_windows": 100,
+    "metrics_frozen": [
+      "ret_24h",
+      "ret_72h",
+      "max_runup",
+      "max_drawdown"
+    ],
+    "strategy_proxy_frozen": {
+      "rule": "long at first in-window 1h open, exit at window end",
+      "hold_bars": 72,
+      "normal_cost_bps": 120.0,
+      "stress_cost_bps": 245.0,
+      "economic_metrics": [
+        "net_ret_72h_after_normal_cost",
+        "net_ret_72h_after_stress_cost",
+        "share_net_positive_normal"
+      ]
+    },
+    "peeking_guard": "while complete windows < first_read minimum, the evaluator reports ONLY the accrual count; no metric is computed",
+    "decision_policy": "evaluation output carries acceptance_decision=NONE; any ACCEPT/REJECT of the strategy requires a separate user-checkpointed plan per the forward monitor contract",
+    "limitations_inherited": [
+      "TRADING_START_NOT_ANNOUNCEMENT",
+      "SAME_TICKER_STRING_PAIRING",
+      "NO_IDENTITY_VERDICT",
+      "SPOT_LONG_ONLY_PROXY"
+    ]
+  },
+  "bindings": {
+    "forward_state_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_listing_momentum_forward_state_20260816.json",
+    "forward_monitor_plan": "slow-liquidity-listing-momentum-forward-monitor-planonly-20260816.json"
+  },
+  "forbidden": [
+    "COMPUTE_METRICS_BELOW_FIRST_READ_MINIMUM",
+    "GRID_OR_RETUNE",
+    "EVALUATOR_OR_OOS_ON_OTHER_BRANCHES_WITH_THIS_PLAN",
+    "ACCEPT_WITHOUT_SEPARATE_PLAN",
+    "PRIVATE_API",
+    "PAPER_OR_LIVE"
+  ],
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "evaluation_when_sample_ready": true
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "d23b0386604249b1851eef737baeafaa8a9141c90cce6193113988b3b12687f3"
+}
