@@ -56,6 +56,117 @@ def _load_json(path: Path) -> dict[str, Any]:
     return value
 
 
+STANDING_RESEARCH_REQUIRED_ACTIONS = {
+    "technical_quality",
+    "public_identity_discovery",
+    "public_request_plan_discovery",
+    "public_topology_discovery",
+    "synthetic_tests",
+    "immutable_manifest_refreeze",
+    "preflight_only",
+}
+STANDING_RESEARCH_REQUIRED_GUARDS = {
+    "fresh_authoritative_guard",
+    "active_run_gate_must_be_ready_for_postprocess",
+    "single_global_market_data_writer",
+    "visible_terminal_for_network_writers",
+    "exact_hash_and_schema_binding",
+    "public_read_only_only",
+    "no_redirects_proxies_or_retries",
+    "no_private_api_or_real_capital",
+}
+STANDING_RESEARCH_REQUIRED_CHECKPOINTS = {
+    "hypothesis_change",
+    "venue_change",
+    "universe_change",
+    "signal_cost_risk_or_acceptance_contract_change",
+    "stopped_incomplete_resume",
+    "integrity_conflict",
+    "evaluator_oos_returns_pnl_grid_retune",
+    "paper_live_private_api_real_capital_leverage_margin_or_withdrawal",
+}
+
+
+def _standing_research_scope_matches(
+    policy: dict[str, Any],
+    *,
+    current_readiness: dict[str, Any],
+    required_action: str,
+) -> bool:
+    authorization = policy.get("standing_research_authorization")
+    if not isinstance(authorization, dict):
+        return False
+    if (
+        authorization.get("schema")
+        != "trading_mvp_standing_same_scope_public_research_authorization_v1"
+        or authorization.get("enabled") is not True
+        or authorization.get("same_scope_auto_continue") is not True
+    ):
+        return False
+    if current_readiness.get("status") != "READY":
+        return False
+
+    authorized_actions = {
+        str(value) for value in authorization.get("authorized_actions") or []
+    }
+    if required_action not in authorized_actions:
+        return False
+    if not STANDING_RESEARCH_REQUIRED_ACTIONS.issubset(authorized_actions):
+        return False
+    if not STANDING_RESEARCH_REQUIRED_GUARDS.issubset(
+        {str(value) for value in authorization.get("technical_guards") or []}
+    ):
+        return False
+    if not STANDING_RESEARCH_REQUIRED_CHECKPOINTS.issubset(
+        {
+            str(value)
+            for value in authorization.get("user_checkpoint_required_for") or []
+        }
+    ):
+        return False
+
+    binding = policy.get("slow_liquidity_history_recollect")
+    scope = authorization.get("scope_binding")
+    if not isinstance(binding, dict) or not isinstance(scope, dict):
+        return False
+    plan_path_value = str(binding.get("plan_path") or "").strip()
+    expected_file_sha = str(binding.get("plan_file_sha256") or "").lower()
+    expected_plan_hash = str(binding.get("plan_hash") or "").lower()
+    if not plan_path_value or len(expected_file_sha) != 64 or len(expected_plan_hash) != 64:
+        return False
+
+    plan_path = Path(plan_path_value).expanduser().resolve()
+    if not plan_path.is_file() or _sha256(plan_path) != expected_file_sha:
+        return False
+    try:
+        plan = _load_json(plan_path)
+    except (OSError, ValueError, json.JSONDecodeError):
+        return False
+    if str(plan.get("plan_hash") or "").lower() != expected_plan_hash:
+        return False
+    execution = plan.get("execution")
+    universe = plan.get("universe")
+    if not isinstance(execution, dict) or not isinstance(universe, dict):
+        return False
+
+    if str(scope.get("strategy_branch") or "") != str(
+        plan.get("strategy_branch") or ""
+    ):
+        return False
+    if list(scope.get("exchanges") or []) != list(execution.get("exchanges") or []):
+        return False
+    if list(scope.get("bases") or []) != list(universe.get("bases") or []):
+        return False
+    if list(scope.get("timeframes") or []) != list(execution.get("timeframes") or []):
+        return False
+    try:
+        if int(scope.get("history_days")) != int(execution.get("history_days")):
+            return False
+    except (TypeError, ValueError):
+        return False
+    return True
+
+
 def _write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temp = path.with_name(f"{path.name}.tmp.{os.getpid()}")
@@ -1946,6 +2057,8 @@ def evaluate_autopilot_state(
     transitioned_to_pause = False
     run_approval_notification_required = False
     critical_checkpoint_notification_required = False
+    standing_research_authorized = False
+    standing_research_scope_binding_valid = False
     dense_ws_postrun_state = (
         dense_ws_postrun
         if isinstance(dense_ws_postrun, dict)
@@ -2171,6 +2284,8 @@ def evaluate_autopilot_state(
             readiness_execution_authorized = (
                 current_readiness.get("execution_authorized") is True
             )
+            standing_auto_continue = False
+            standing_next_action = "continue_next_bounded_same_scope_public_research"
             if (
                 readiness_source_status
                 == (
@@ -2190,10 +2305,20 @@ def evaluate_autopilot_state(
                 )
                 and not readiness_execution_authorized
             ):
-                decision = (
-                    "AWAIT_EXACT_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_"
-                    "DISCOVERY_V3_EXECUTION_APPROVAL"
+                standing_research_scope_binding_valid = _standing_research_scope_matches(
+                    policy,
+                    current_readiness=current_readiness,
+                    required_action="public_request_plan_discovery",
                 )
+                if standing_research_scope_binding_valid:
+                    decision = "CONTINUE_STANDING_PUBLIC_RESEARCH"
+                    standing_research_authorized = True
+                    standing_auto_continue = True
+                else:
+                    decision = (
+                        "AWAIT_EXACT_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_"
+                        "DISCOVERY_V3_EXECUTION_APPROVAL"
+                    )
             elif (
                 readiness_source_status
                 == "TOPOLOGY_RUNTIME_FROZEN_WITH_EXACT_EXECUTION_APPROVAL"
@@ -2229,37 +2354,77 @@ def evaluate_autopilot_state(
                 )
                 and not readiness_execution_authorized
             ):
-                decision = (
-                    "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
-                    "TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL"
+                standing_research_scope_binding_valid = _standing_research_scope_matches(
+                    policy,
+                    current_readiness=current_readiness,
+                    required_action="immutable_manifest_refreeze",
                 )
+                if standing_research_scope_binding_valid:
+                    decision = "CONTINUE_STANDING_PUBLIC_RESEARCH"
+                    standing_research_authorized = True
+                    standing_auto_continue = True
+                else:
+                    decision = (
+                        "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
+                        "TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL"
+                    )
             elif (
                 readiness_source_status
                 == "TOPOLOGY_V4_RUNTIME_FROZEN_AWAIT_EXACT_EXECUTION_APPROVAL"
                 and not readiness_execution_authorized
             ):
-                decision = (
-                    "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
-                    "TOPOLOGY_V4_EXECUTION_APPROVAL"
+                standing_research_scope_binding_valid = _standing_research_scope_matches(
+                    policy,
+                    current_readiness=current_readiness,
+                    required_action="public_topology_discovery",
                 )
+                if standing_research_scope_binding_valid:
+                    decision = "CONTINUE_STANDING_PUBLIC_RESEARCH"
+                    standing_research_authorized = True
+                    standing_auto_continue = True
+                else:
+                    decision = (
+                        "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
+                        "TOPOLOGY_V4_EXECUTION_APPROVAL"
+                    )
             elif (
                 readiness_source_status
                 == "TOPOLOGY_V3_RUNTIME_FROZEN_AWAIT_EXACT_EXECUTION_APPROVAL"
                 and not readiness_execution_authorized
             ):
-                decision = (
-                    "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
-                    "TOPOLOGY_V3_EXECUTION_APPROVAL"
+                standing_research_scope_binding_valid = _standing_research_scope_matches(
+                    policy,
+                    current_readiness=current_readiness,
+                    required_action="public_topology_discovery",
                 )
+                if standing_research_scope_binding_valid:
+                    decision = "CONTINUE_STANDING_PUBLIC_RESEARCH"
+                    standing_research_authorized = True
+                    standing_auto_continue = True
+                else:
+                    decision = (
+                        "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
+                        "TOPOLOGY_V3_EXECUTION_APPROVAL"
+                    )
             elif (
                 readiness_source_status
                 == "TOPOLOGY_V2_RUNTIME_FROZEN_AWAIT_EXACT_EXECUTION_APPROVAL"
                 and not readiness_execution_authorized
             ):
-                decision = (
-                    "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
-                    "TOPOLOGY_V2_EXECUTION_APPROVAL"
+                standing_research_scope_binding_valid = _standing_research_scope_matches(
+                    policy,
+                    current_readiness=current_readiness,
+                    required_action="public_topology_discovery",
                 )
+                if standing_research_scope_binding_valid:
+                    decision = "CONTINUE_STANDING_PUBLIC_RESEARCH"
+                    standing_research_authorized = True
+                    standing_auto_continue = True
+                else:
+                    decision = (
+                        "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_"
+                        "TOPOLOGY_V2_EXECUTION_APPROVAL"
+                    )
             elif (
                 readiness_source_status
                 == "IDENTITY_RUNTIME_FROZEN_WITH_EXACT_CODE_BOUND_EXECUTION_APPROVAL"
@@ -2270,10 +2435,20 @@ def evaluate_autopilot_state(
                 readiness_source_status
                 == "IDENTITY_RUNTIME_FROZEN_AWAIT_EXACT_CODE_BOUND_EXECUTION_APPROVAL"
             ):
-                decision = (
-                    "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_IDENTITY_"
-                    "EXECUTION_APPROVAL"
+                standing_research_scope_binding_valid = _standing_research_scope_matches(
+                    policy,
+                    current_readiness=current_readiness,
+                    required_action="public_identity_discovery",
                 )
+                if standing_research_scope_binding_valid:
+                    decision = "CONTINUE_STANDING_PUBLIC_RESEARCH"
+                    standing_research_authorized = True
+                    standing_auto_continue = True
+                else:
+                    decision = (
+                        "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_IDENTITY_"
+                        "EXECUTION_APPROVAL"
+                    )
             else:
                 decision = "AWAIT_EXACT_ONE_WEEK_EDGE_SPRINT_APPROVAL_CHECKPOINT"
             stop_new_actions = False
@@ -2283,16 +2458,20 @@ def evaluate_autopilot_state(
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V3",
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V4",
                 "RUN_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V3",
+                "CONTINUE_STANDING_PUBLIC_RESEARCH",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_IDENTITY_REQUEST_PLAN_DISCOVERY_V3_EXECUTION_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V4_EXECUTION_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V3_EXECUTION_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V2_EXECUTION_APPROVAL",
             }
-            next_action = str(
-                current_readiness.get("next_safe_action")
-                or "await_one_exact_approval_checkpoint"
-            )
+            if standing_auto_continue:
+                next_action = standing_next_action
+            else:
+                next_action = str(
+                    current_readiness.get("next_safe_action")
+                    or "await_one_exact_approval_checkpoint"
+                )
             if decision in {
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY",
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY_V3",
@@ -2847,6 +3026,8 @@ def evaluate_autopilot_state(
         "critical_checkpoint_notification_required": (
             critical_checkpoint_notification_required
         ),
+        "standing_research_authorized": standing_research_authorized,
+        "standing_research_scope_binding_valid": standing_research_scope_binding_valid,
         "next_action": next_action,
         "schedule_window": schedule_window,
         "campaign_window": campaign_window,

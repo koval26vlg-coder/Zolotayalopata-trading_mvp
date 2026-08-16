@@ -227,6 +227,7 @@ $slowLiquidityExactRecollectCheckpointGate = [bool]$slowLiquidityExactRecollectS
 $slowLiquidityExactRecollectPhase = [string]$slowLiquidityExactRecollectStatus.phase
 $slowLiquidityExactRecollectAwaitingApprovalGate = [bool]$slowLiquidityExactRecollectStatus.awaiting_approval
 $slowLiquidityExactRecollectIntegrityBlockedGate = [bool]$slowLiquidityExactRecollectStatus.integrity_blocked
+$slowLiquidityExactRecollectStandingResearchGate = [bool]$slowLiquidityExactRecollectStatus.standing_research_authorized
 
 if ($slowLiquidityExactRecollectCheckpointGate) {
     $phase = $slowLiquidityExactRecollectPhase
@@ -239,6 +240,7 @@ if ($slowLiquidityExactRecollectCheckpointGate) {
         "READY_FOR_TECHNICAL_QUALITY" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_RUN_TECHNICAL_QUALITY_ONLY"; break }
         "TECHNICAL_QUALITY_COMMITTING" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_TECHNICAL_QUALITY_COMMITTING_STATUS_ONLY"; break }
         "STOPPED_INCOMPLETE_NO_RETRY" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_STOPPED_INCOMPLETE_NO_RETRY"; break }
+        "QUALITY_ACCEPTED_CONTINUE_STANDING_PUBLIC_RESEARCH" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_CONTINUE_STANDING_PUBLIC_RESEARCH"; break }
         "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL"; break }
         "QUALITY_REJECTED_TERMINAL_NO_RETRY" { "SLOW_LIQUIDITY_EXACT_RECOLLECT_QUALITY_REJECTED_TERMINAL_NO_RETRY"; break }
         default { "SLOW_LIQUIDITY_EXACT_RECOLLECT_INTEGRITY_BLOCKED" }
@@ -252,6 +254,7 @@ if ($slowLiquidityExactRecollectCheckpointGate) {
         "READY_FOR_TECHNICAL_QUALITY" { @("run_exact_technical_quality_preflight", "run_exact_technical_quality"); break }
         "TECHNICAL_QUALITY_COMMITTING" { @("exact_status_check"); break }
         "STOPPED_INCOMPLETE_NO_RETRY" { @("exact_status_check"); break }
+        "QUALITY_ACCEPTED_CONTINUE_STANDING_PUBLIC_RESEARCH" { @("continue_same_scope_public_research", "run_next_bounded_public_research_step", "official_identity_discovery", "exact_status_check"); break }
         "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL" { @("await_exact_official_asset_identity_verification_approval", "exact_status_check"); break }
         "QUALITY_REJECTED_TERMINAL_NO_RETRY" { @("exact_status_check"); break }
         default { @("exact_status_check") }
@@ -266,10 +269,13 @@ if ($slowLiquidityExactRecollectCheckpointGate) {
         "paper_or_live",
         "private_api_or_real_capital",
         "leverage_or_margin",
-        "official_identity_without_separate_exact_approval"
+        "identity_scope_change_without_new_checkpoint"
     )
     if ($phase -eq "AWAITING_EXACT_APPROVAL") {
         $blockedActions += @("collector_before_exact_approval", "launch_record_or_output_before_exact_approval")
+    }
+    if ($phase -eq "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL") {
+        $blockedActions += "official_identity_without_separate_exact_approval"
     }
     if ($phase -in @("VISIBLE_LAUNCH_STARTING", "RUNNING")) {
         $blockedActions += @("duplicate_owner", "second_writer", "consumer_of_incomplete_output")
@@ -309,6 +315,10 @@ if ($slowLiquidityExactRecollectCheckpointGate) {
         requires_user_approval = [bool]$slowLiquidityExactRecollectStatus.requires_user_approval
         requires_user_approval_for_actual_collect = $slowLiquidityExactRecollectAwaitingApprovalGate
         required_user_input = [string]$slowLiquidityExactRecollectStatus.required_user_input
+        standing_research_authorized = [bool]$slowLiquidityExactRecollectStatus.standing_research_authorized
+        standing_research_scope_binding_valid = [bool]$slowLiquidityExactRecollectStatus.standing_research_scope_binding_valid
+        standing_research_continue_allowed = [bool]$slowLiquidityExactRecollectStatus.standing_research_continue_allowed
+        standing_research_policy_file_sha256 = [string]$slowLiquidityExactRecollectStatus.standing_research_policy_file_sha256
         primary_command = $primaryCommand
         state = [ordered]@{
             gate_status = [string]$gate.status
@@ -322,6 +332,9 @@ if ($slowLiquidityExactRecollectCheckpointGate) {
             slow_liquidity_exact_recollect_phase = $phase
             slow_liquidity_exact_recollect_awaiting_approval_gate = $slowLiquidityExactRecollectAwaitingApprovalGate
             slow_liquidity_exact_recollect_integrity_blocked_gate = $slowLiquidityExactRecollectIntegrityBlockedGate
+            slow_liquidity_exact_recollect_standing_research_authorized = $slowLiquidityExactRecollectStandingResearchGate
+            slow_liquidity_exact_recollect_standing_research_scope_binding_valid = [bool]$slowLiquidityExactRecollectStatus.standing_research_scope_binding_valid
+            slow_liquidity_exact_recollect_standing_research_policy_file_sha256 = [string]$slowLiquidityExactRecollectStatus.standing_research_policy_file_sha256
             slow_liquidity_exact_recollect_receipt_present = [bool]$slowLiquidityExactRecollectStatus.receipt_present
             slow_liquidity_exact_recollect_launch_record_present = [bool]$slowLiquidityExactRecollectStatus.launch_record_present
             slow_liquidity_exact_recollect_output_present = [bool]$slowLiquidityExactRecollectStatus.output_present

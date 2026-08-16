@@ -196,7 +196,7 @@ if ([bool]$slowLiquidityExactRecollectStatus.checkpoint_relevant) {
         "paper_or_live",
         "private_api_or_real_capital",
         "leverage_or_margin",
-        "official_identity_without_separate_exact_approval"
+        "identity_scope_change_without_new_checkpoint"
     )
     switch ([string]$slowLiquidityExactRecollectStatus.phase) {
         "INTEGRITY_BLOCKED" {
@@ -260,6 +260,16 @@ if ([bool]$slowLiquidityExactRecollectStatus.checkpoint_relevant) {
             $blockedActions += @("official_identity_without_separate_exact_approval", "fixed_signal_before_identity")
             break
         }
+        "QUALITY_ACCEPTED_CONTINUE_STANDING_PUBLIC_RESEARCH" {
+            $status = "EXACT_SLOW_LIQUIDITY_RECOLLECT_CONTINUE_STANDING_PUBLIC_RESEARCH"
+            $allowedActions = @(
+                "continue_same_scope_public_research",
+                "official_identity_discovery",
+                "exact_status_check"
+            )
+            $blockedActions += "fixed_signal_before_identity"
+            break
+        }
         "QUALITY_REJECTED_TERMINAL_NO_RETRY" {
             $status = "EXACT_SLOW_LIQUIDITY_RECOLLECT_QUALITY_REJECTED_TERMINAL_NO_RETRY"
             $allowedActions = @("exact_status_check")
@@ -317,6 +327,10 @@ $result = [ordered]@{
     next_goal_decision = [string]$gate.next_goal_decision
     requires_explicit_user_approval_for_actual_collect = $requiresApproval
     required_user_input = $requiredInput
+    standing_research_authorized = [bool]$slowLiquidityExactRecollectStatus.standing_research_authorized
+    standing_research_scope_binding_valid = [bool]$slowLiquidityExactRecollectStatus.standing_research_scope_binding_valid
+    standing_research_continue_allowed = [bool]$slowLiquidityExactRecollectStatus.standing_research_continue_allowed
+    standing_research_policy_file_sha256 = [string]$slowLiquidityExactRecollectStatus.standing_research_policy_file_sha256
     next_action = $nextAction
     allowed_actions = $allowedActions
     blocked_actions = $blockedActions

@@ -66,6 +66,7 @@ class ExactLifecycleFixture:
             "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
             "actual_collection_allowed": False,
             "plan_hash": self.plan_hash,
+            "strategy_branch": "slow_liquidity_regime_breakout_retest",
             "universe": {"bases": self.bases},
             "execution": {
                 "run_id": self.run_id,
@@ -210,9 +211,53 @@ class ExactLifecycleFixture:
             "actual_collection_allowed": True,
             "stop_incomplete_retry_authorized": False,
         }
+        standing_research_authorization = {
+            "schema": "trading_mvp_standing_same_scope_public_research_authorization_v1",
+            "enabled": True,
+            "same_scope_auto_continue": True,
+            "scope_binding": {
+                "strategy_branch": "slow_liquidity_regime_breakout_retest",
+                "exchanges": self.exchanges,
+                "bases": self.bases,
+                "timeframes": self.timeframes,
+                "history_days": 56,
+            },
+            "authorized_actions": [
+                "technical_quality",
+                "public_identity_discovery",
+                "public_request_plan_discovery",
+                "public_topology_discovery",
+                "synthetic_tests",
+                "immutable_manifest_refreeze",
+                "preflight_only",
+            ],
+            "technical_guards": [
+                "fresh_authoritative_guard",
+                "active_run_gate_must_be_ready_for_postprocess",
+                "single_global_market_data_writer",
+                "visible_terminal_for_network_writers",
+                "exact_hash_and_schema_binding",
+                "public_read_only_only",
+                "no_redirects_proxies_or_retries",
+                "no_private_api_or_real_capital",
+            ],
+            "user_checkpoint_required_for": [
+                "hypothesis_change",
+                "venue_change",
+                "universe_change",
+                "signal_cost_risk_or_acceptance_contract_change",
+                "stopped_incomplete_resume",
+                "integrity_conflict",
+                "evaluator_oos_returns_pnl_grid_retune",
+                "paper_live_private_api_real_capital_leverage_margin_or_withdrawal",
+            ],
+        }
         write_json(
             self.policy_path,
-            {"slow_liquidity_history_recollect": rebind},
+            {
+                "slow_liquidity_history_recollect": rebind,
+                "standing_research_authorization": standing_research_authorization,
+            },
         )
         self.write_gate(
             status="READY_FOR_POSTPROCESS",
@@ -488,13 +533,12 @@ class SlowLiquidityExactLifecycleStatusTests(unittest.TestCase):
             payload = self.run_helper(fixture)
             self.assertEqual(
                 payload["phase"],
-                "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL",
+                "QUALITY_ACCEPTED_CONTINUE_STANDING_PUBLIC_RESEARCH",
             )
-            self.assertTrue(payload["requires_user_approval"])
-            self.assertEqual(
-                payload["required_user_input"],
-                "exact_official_asset_identity_verification_approval",
-            )
+            self.assertFalse(payload["requires_user_approval"])
+            self.assertEqual(payload["required_user_input"], "")
+            self.assertTrue(payload["standing_research_authorized"])
+            self.assertTrue(payload["standing_research_continue_allowed"])
 
             tampered_quality = json.loads(
                 fixture.quality_path.read_text(encoding="utf-8")
@@ -522,6 +566,39 @@ class SlowLiquidityExactLifecycleStatusTests(unittest.TestCase):
             payload = self.run_helper(fixture)
             self.assertEqual(payload["phase"], "QUALITY_REJECTED_TERMINAL_NO_RETRY")
             self.assertTrue(payload["quality_rejected_terminal_no_retry"])
+
+    def test_helper_keeps_identity_approval_when_standing_scope_is_missing(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fixture = ExactLifecycleFixture(Path(temp_dir))
+            fixture.freeze_approval()
+            fixture.write_complete_output()
+            fixture.write_launch("COMPLETE")
+            accepted = (
+                "SLOW_LIQUIDITY_HISTORY_RECOLLECT_QUALITY_ACCEPTED_"
+                "AWAIT_OFFICIAL_IDENTITY_APPROVAL"
+            )
+            fixture.write_quality(accepted)
+            fixture.write_gate(
+                status="READY_FOR_POSTPROCESS",
+                decision=accepted,
+                quality_committed=True,
+            )
+            policy = json.loads(fixture.policy_path.read_text(encoding="utf-8"))
+            policy.pop("standing_research_authorization")
+            write_json(fixture.policy_path, policy)
+
+            payload = self.run_helper(fixture)
+
+            self.assertEqual(
+                payload["phase"],
+                "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL",
+            )
+            self.assertTrue(payload["requires_user_approval"])
+            self.assertEqual(
+                payload["required_user_input"],
+                "exact_official_asset_identity_verification_approval",
+            )
+            self.assertFalse(payload["standing_research_continue_allowed"])
 
             fixture.write_launch("STOPPED_INCOMPLETE")
             fixture.write_gate(
@@ -653,6 +730,44 @@ class SlowLiquidityExactLifecycleStatusTests(unittest.TestCase):
                 next_step["fast_path"]["reason"],
                 "exact_slow_liquidity_lifecycle_is_current",
             )
+
+    def test_quick_and_next_continue_same_scope_after_accepted_quality(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            fixture = ExactLifecycleFixture(Path(temporary))
+            fixture.freeze_approval()
+            fixture.write_complete_output()
+            fixture.write_launch("COMPLETE")
+            accepted = (
+                "SLOW_LIQUIDITY_HISTORY_RECOLLECT_QUALITY_ACCEPTED_"
+                "AWAIT_OFFICIAL_IDENTITY_APPROVAL"
+            )
+            fixture.write_quality(accepted)
+            fixture.write_gate(
+                status="READY_FOR_POSTPROCESS",
+                decision=accepted,
+                quality_committed=True,
+            )
+
+            quick = self.run_router(QUICK_STATUS, fixture, skip_swarm=True)
+            self.assertEqual(
+                quick["status"],
+                "EXACT_SLOW_LIQUIDITY_RECOLLECT_CONTINUE_STANDING_PUBLIC_RESEARCH",
+            )
+            self.assertFalse(quick["requires_explicit_user_approval_for_actual_collect"])
+            self.assertTrue(quick["standing_research_continue_allowed"])
+            self.assertIn("official_identity_discovery", quick["allowed_actions"])
+            self.assertNotIn(
+                "official_identity_without_separate_exact_approval",
+                quick["blocked_actions"],
+            )
+
+            next_step = self.run_router(NEXT_STEP, fixture)
+            self.assertEqual(
+                next_step["decision"],
+                "SLOW_LIQUIDITY_EXACT_RECOLLECT_CONTINUE_STANDING_PUBLIC_RESEARCH",
+            )
+            self.assertFalse(next_step["requires_user_approval"])
+            self.assertTrue(next_step["standing_research_continue_allowed"])
 
     def test_goal_status_source_routes_exact_checkpoint_before_generic_gate(self) -> None:
         text = GOAL_STATUS.read_text(encoding="utf-8")

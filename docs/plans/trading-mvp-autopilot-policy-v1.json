@@ -30,7 +30,9 @@
     "deterministic train, OOS, walk-forward, stress, economics and capacity evaluation when authorized by the frozen evidence chain",
     "paper-only state reconciliation after PAPER_READY",
     "bounded safe recovery preflight for the same immutable run",
-    "bounded same-scope public GET compatibility probes under hash-bound standing authorization"
+    "bounded same-scope public GET compatibility probes under hash-bound standing authorization",
+    "same-scope public identity, request-plan and topology discovery under hash-bound standing authorization",
+    "same-scope deterministic research continuation after accepted technical quality"
   ],
   "critical_user_checkpoints": [
     "materially new or changed hypothesis",
@@ -39,6 +41,63 @@
     "irreversible data-integrity or safety conflict",
     "live orders, private API keys, real capital, leverage, margin or withdrawal capability"
   ],
+  "standing_research_authorization": {
+    "schema": "trading_mvp_standing_same_scope_public_research_authorization_v1",
+    "enabled": true,
+    "same_scope_auto_continue": true,
+    "scope_binding": {
+      "strategy_branch": "slow_liquidity_regime_breakout_retest",
+      "exchanges": [
+        "mexc",
+        "gateio"
+      ],
+      "bases": [
+        "STETH",
+        "WEETH",
+        "CC",
+        "OKB",
+        "RAIN",
+        "MNT",
+        "USDD",
+        "BDX",
+        "EDGE"
+      ],
+      "timeframes": [
+        "1h",
+        "4h"
+      ],
+      "history_days": 56
+    },
+    "authorized_actions": [
+      "technical_quality",
+      "public_identity_discovery",
+      "public_request_plan_discovery",
+      "public_topology_discovery",
+      "synthetic_tests",
+      "immutable_manifest_refreeze",
+      "preflight_only"
+    ],
+    "technical_guards": [
+      "fresh_authoritative_guard",
+      "active_run_gate_must_be_ready_for_postprocess",
+      "single_global_market_data_writer",
+      "visible_terminal_for_network_writers",
+      "exact_hash_and_schema_binding",
+      "public_read_only_only",
+      "no_redirects_proxies_or_retries",
+      "no_private_api_or_real_capital"
+    ],
+    "user_checkpoint_required_for": [
+      "hypothesis_change",
+      "venue_change",
+      "universe_change",
+      "signal_cost_risk_or_acceptance_contract_change",
+      "stopped_incomplete_resume",
+      "integrity_conflict",
+      "evaluator_oos_returns_pnl_grid_retune",
+      "paper_live_private_api_real_capital_leverage_margin_or_withdrawal"
+    ]
+  },
   "communication_policy": {
     "language": "Russian",
     "audience": "first-time beginner",

@@ -46,6 +46,103 @@ function Get-SlowLiquidityExactRecollectStatus {
         return $true
     }
 
+    function Test-StandingResearchAuthorization {
+        param(
+            $Policy,
+            $Plan
+        )
+
+        $authorization = if ($null -ne $Policy) {
+            $Policy.standing_research_authorization
+        } else {
+            $null
+        }
+        $scope = if ($null -ne $authorization) {
+            $authorization.scope_binding
+        } else {
+            $null
+        }
+        if ($null -eq $authorization -or $null -eq $scope) {
+            return $false
+        }
+        if ([string]$authorization.schema -ne
+            "trading_mvp_standing_same_scope_public_research_authorization_v1" -or
+            -not [bool]$authorization.enabled -or
+            -not [bool]$authorization.same_scope_auto_continue) {
+            return $false
+        }
+
+        $authorizedActions = @($authorization.authorized_actions | ForEach-Object { [string]$_ })
+        foreach ($requiredAction in @(
+            "technical_quality",
+            "public_identity_discovery",
+            "public_request_plan_discovery",
+            "public_topology_discovery",
+            "synthetic_tests",
+            "immutable_manifest_refreeze",
+            "preflight_only"
+        )) {
+            if ($authorizedActions -notcontains $requiredAction) {
+                return $false
+            }
+        }
+
+        $requiredGuards = @(
+            "fresh_authoritative_guard",
+            "active_run_gate_must_be_ready_for_postprocess",
+            "single_global_market_data_writer",
+            "visible_terminal_for_network_writers",
+            "exact_hash_and_schema_binding",
+            "public_read_only_only",
+            "no_redirects_proxies_or_retries",
+            "no_private_api_or_real_capital"
+        )
+        $technicalGuards = @($authorization.technical_guards | ForEach-Object { [string]$_ })
+        foreach ($requiredGuard in $requiredGuards) {
+            if ($technicalGuards -notcontains $requiredGuard) {
+                return $false
+            }
+        }
+
+        $requiredCheckpoints = @(
+            "hypothesis_change",
+            "venue_change",
+            "universe_change",
+            "signal_cost_risk_or_acceptance_contract_change",
+            "stopped_incomplete_resume",
+            "integrity_conflict",
+            "evaluator_oos_returns_pnl_grid_retune",
+            "paper_live_private_api_real_capital_leverage_margin_or_withdrawal"
+        )
+        $checkpoints = @($authorization.user_checkpoint_required_for | ForEach-Object { [string]$_ })
+        foreach ($requiredCheckpoint in $requiredCheckpoints) {
+            if ($checkpoints -notcontains $requiredCheckpoint) {
+                return $false
+            }
+        }
+
+        if ([string]$scope.strategy_branch -cne [string]$Plan.strategy_branch) {
+            return $false
+        }
+        if (-not (Test-ExactSequence $scope.exchanges $Plan.execution.exchanges)) {
+            return $false
+        }
+        if (-not (Test-ExactSequence $scope.bases $Plan.universe.bases)) {
+            return $false
+        }
+        if (-not (Test-ExactSequence $scope.timeframes $Plan.execution.timeframes)) {
+            return $false
+        }
+        try {
+            if ([int]$scope.history_days -ne [int]$Plan.execution.history_days) {
+                return $false
+            }
+        } catch {
+            return $false
+        }
+        return $true
+    }
+
     function Expand-ExactCommand {
         param(
             $Template,
@@ -72,6 +169,7 @@ function Get-SlowLiquidityExactRecollectStatus {
     $stoppedDecision = "SLOW_LIQUIDITY_HISTORY_RECOLLECT_STOPPED_INCOMPLETE_NO_RETRY"
     $qualityAcceptedDecision = "SLOW_LIQUIDITY_HISTORY_RECOLLECT_QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL"
     $qualityRejectedDecision = "TERMINAL_DATA_QUALITY_REJECT_NO_RETRY_WITHOUT_NEW_EXACT_APPROVAL"
+    $qualityAcceptedStandingDecision = "QUALITY_ACCEPTED_CONTINUE_STANDING_PUBLIC_RESEARCH"
 
     $result = [ordered]@{
         checkpoint_relevant = $false
@@ -85,6 +183,10 @@ function Get-SlowLiquidityExactRecollectStatus {
         technical_quality_committing = $false
         stopped_incomplete_no_retry = $false
         quality_accepted_awaiting_identity_approval = $false
+        standing_research_continue_allowed = $false
+        standing_research_authorized = $false
+        standing_research_scope_binding_valid = $false
+        standing_research_policy_file_sha256 = $null
         quality_rejected_terminal_no_retry = $false
         integrity_blocked = $false
         plan_valid = $false
@@ -136,6 +238,7 @@ function Get-SlowLiquidityExactRecollectStatus {
         $readyForQualityDecision,
         $stoppedDecision,
         $qualityAcceptedDecision,
+        $qualityAcceptedStandingDecision,
         $qualityRejectedDecision
     )
     if ($gateDecision -notin $knownDecisions) {
@@ -150,6 +253,7 @@ function Get-SlowLiquidityExactRecollectStatus {
         $readyForQualityDecision { "READY_FOR_TECHNICAL_QUALITY"; break }
         $stoppedDecision { "STOPPED_INCOMPLETE_NO_RETRY"; break }
         $qualityAcceptedDecision { "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL"; break }
+        $qualityAcceptedStandingDecision { "QUALITY_ACCEPTED_CONTINUE_STANDING_PUBLIC_RESEARCH"; break }
         $qualityRejectedDecision { "QUALITY_REJECTED_TERMINAL_NO_RETRY"; break }
         default { "IRRELEVANT" }
     }
@@ -216,6 +320,23 @@ function Get-SlowLiquidityExactRecollectStatus {
         $result.policy_present = [bool](
             -not [string]::IsNullOrWhiteSpace([string]$result.policy_path) -and
             (Test-Path -LiteralPath ([string]$result.policy_path) -PathType Leaf)
+        )
+        $policy = $null
+        if ($result.policy_present) {
+            try {
+                $policy = Get-Content -Raw -LiteralPath ([string]$result.policy_path) |
+                    ConvertFrom-Json -DateKind String
+                $result.standing_research_policy_file_sha256 = Get-ExactSha256 ([string]$result.policy_path)
+            } catch {
+                $policy = $null
+            }
+        }
+        $result.standing_research_scope_binding_valid = [bool](
+            $policy -and (Test-StandingResearchAuthorization -Policy $policy -Plan $plan)
+        )
+        $result.standing_research_authorized = [bool](
+            $result.standing_research_scope_binding_valid -and
+            [string]$Gate.status -eq "READY_FOR_POSTPROCESS"
         )
 
         if ($observedPhase -eq "APPROVED_AWAITING_VISIBLE_LAUNCH" -and $result.launch_record_present) {
@@ -657,7 +778,10 @@ function Get-SlowLiquidityExactRecollectStatus {
                         [bool]$quality.evaluator_or_oos_authorized) {
                         $validationErrors.Add("exact quality terminal safety boundary mismatch")
                     }
-                    if ($observedPhase -eq "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL") {
+                    if ($observedPhase -in @(
+                        "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL",
+                        "QUALITY_ACCEPTED_CONTINUE_STANDING_PUBLIC_RESEARCH"
+                    )) {
                         if ([bool]$quality.terminal -or -not [bool]$quality.identity_verification_required -or
                             [bool]$quality.identity_verification_authorized) {
                             $validationErrors.Add("accepted exact quality identity checkpoint mismatch")
@@ -681,6 +805,18 @@ function Get-SlowLiquidityExactRecollectStatus {
                 $result.quality_output_valid = $validationErrors.Count -eq 0
             }
         }
+
+        if (
+            $observedPhase -eq "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL" -and
+            [bool]$result.standing_research_authorized
+        ) {
+            $observedPhase = $qualityAcceptedStandingDecision
+            $result.observed_phase = $observedPhase
+        }
+        $result.standing_research_continue_allowed = [bool](
+            $observedPhase -eq $qualityAcceptedStandingDecision -and
+            $result.standing_research_authorized
+        )
 
         $result.errors = @($validationErrors)
         $result.plan_valid = $validationErrors.Count -eq 0
@@ -754,8 +890,18 @@ function Get-SlowLiquidityExactRecollectStatus {
                 $result.next_action = "Terminal incomplete stop; retry and resume are not authorized."
                 break
             }
+            "QUALITY_ACCEPTED_CONTINUE_STANDING_PUBLIC_RESEARCH" {
+                $result.quality_accepted_awaiting_identity_approval = $true
+                $result.standing_research_continue_allowed = $true
+                $result.requires_user_approval = $false
+                $result.required_user_input = ""
+                $result.primary_command = $result.status_command
+                $result.next_action = "Technical quality passed; continue the next bounded same-scope public research step under standing policy."
+                break
+            }
             "QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL" {
                 $result.quality_accepted_awaiting_identity_approval = $true
+                $result.standing_research_continue_allowed = $false
                 $result.requires_user_approval = $true
                 $result.required_user_input = "exact_official_asset_identity_verification_approval"
                 $result.primary_command = $result.status_command

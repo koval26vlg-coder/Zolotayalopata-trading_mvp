@@ -2562,9 +2562,14 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
             return
         if payload["state"].get("slow_liquidity_exact_recollect_checkpoint_gate"):
             phase = payload["state"]["slow_liquidity_exact_recollect_phase"]
+            expected_decision = (
+                "SLOW_LIQUIDITY_EXACT_RECOLLECT_CONTINUE_STANDING_PUBLIC_RESEARCH"
+                if phase == "QUALITY_ACCEPTED_CONTINUE_STANDING_PUBLIC_RESEARCH"
+                else f"SLOW_LIQUIDITY_EXACT_RECOLLECT_{phase}"
+            )
             self.assertEqual(
                 payload["decision"],
-                f"SLOW_LIQUIDITY_EXACT_RECOLLECT_{phase}",
+                expected_decision,
             )
             self.assertEqual(
                 commands["visible_collect_legacy_resolution"],

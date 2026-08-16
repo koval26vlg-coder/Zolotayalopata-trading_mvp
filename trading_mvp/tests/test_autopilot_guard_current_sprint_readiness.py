@@ -645,6 +645,106 @@ class CurrentSprintReadinessTests(unittest.TestCase):
         self.assertFalse(result["action_due"])
         self.assertFalse(result["stop_new_actions"])
 
+    def test_standing_research_authorization_continues_same_scope_identity_step(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            plan_path = Path(temp_dir) / "slow-plan.json"
+            plan_hash = "c" * 64
+            _write_json(
+                plan_path,
+                {
+                    "plan_hash": plan_hash,
+                    "strategy_branch": "slow_liquidity_regime_breakout_retest",
+                    "universe": {
+                        "bases": ["STETH", "WEETH", "CC", "OKB", "RAIN", "MNT", "USDD", "BDX", "EDGE"],
+                    },
+                    "execution": {
+                        "exchanges": ["mexc", "gateio"],
+                        "timeframes": ["1h", "4h"],
+                        "history_days": 56,
+                    },
+                },
+            )
+            policy = {
+                "policy_id": "policy",
+                "thread_id": "thread",
+                "slow_liquidity_history_recollect": {
+                    "plan_path": str(plan_path),
+                    "plan_file_sha256": _sha256(plan_path),
+                    "plan_hash": plan_hash,
+                },
+                "standing_research_authorization": {
+                    "schema": "trading_mvp_standing_same_scope_public_research_authorization_v1",
+                    "enabled": True,
+                    "same_scope_auto_continue": True,
+                    "scope_binding": {
+                        "strategy_branch": "slow_liquidity_regime_breakout_retest",
+                        "exchanges": ["mexc", "gateio"],
+                        "bases": ["STETH", "WEETH", "CC", "OKB", "RAIN", "MNT", "USDD", "BDX", "EDGE"],
+                        "timeframes": ["1h", "4h"],
+                        "history_days": 56,
+                    },
+                    "authorized_actions": [
+                        "technical_quality",
+                        "public_identity_discovery",
+                        "public_request_plan_discovery",
+                        "public_topology_discovery",
+                        "synthetic_tests",
+                        "immutable_manifest_refreeze",
+                        "preflight_only",
+                    ],
+                    "technical_guards": [
+                        "fresh_authoritative_guard",
+                        "active_run_gate_must_be_ready_for_postprocess",
+                        "single_global_market_data_writer",
+                        "visible_terminal_for_network_writers",
+                        "exact_hash_and_schema_binding",
+                        "public_read_only_only",
+                        "no_redirects_proxies_or_retries",
+                        "no_private_api_or_real_capital",
+                    ],
+                    "user_checkpoint_required_for": [
+                        "hypothesis_change",
+                        "venue_change",
+                        "universe_change",
+                        "signal_cost_risk_or_acceptance_contract_change",
+                        "stopped_incomplete_resume",
+                        "integrity_conflict",
+                        "evaluator_oos_returns_pnl_grid_retune",
+                        "paper_live_private_api_real_capital_leverage_margin_or_withdrawal",
+                    ],
+                },
+            }
+
+            result = evaluate_autopilot_state(
+                policy=policy,
+                policy_hash="a" * 64,
+                gate={"status": "READY_FOR_POSTPROCESS", "run_id": "ready"},
+                usage={"decision": "CONTINUE", "remaining_percent": 100.0},
+                prior_state=None,
+                observed_at_utc="2026-08-13T11:30:00Z",
+                current_sprint_readiness={
+                    "status": "READY",
+                    "source_status": (
+                        "IDENTITY_RUNTIME_FROZEN_AWAIT_EXACT_CODE_BOUND_"
+                        "EXECUTION_APPROVAL"
+                    ),
+                    "execution_authorized": False,
+                    "next_safe_action": (
+                        "await_exact_code_bound_identity_execution_approval"
+                    ),
+                },
+            )
+
+        self.assertEqual(result["decision"], "CONTINUE_STANDING_PUBLIC_RESEARCH")
+        self.assertTrue(result["action_due"])
+        self.assertFalse(result["stop_new_actions"])
+        self.assertEqual(
+            result["next_action"],
+            "continue_next_bounded_same_scope_public_research",
+        )
+        self.assertTrue(result["standing_research_authorized"])
+        self.assertTrue(result["standing_research_scope_binding_valid"])
+
     def test_topology_v2_integrity_defect_waits_for_v3_offline_refreeze(self) -> None:
         result = evaluate_autopilot_state(
             policy={"policy_id": "policy", "thread_id": "thread"},
