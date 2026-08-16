@@ -1,0 +1,177 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_momentum_proxy_date_acceptance_planonly_v1",
+  "plan_id": "slow_liquidity_listing_momentum_proxy_date_acceptance_20260816",
+  "mode": "PlanOnly",
+  "status": "AWAIT_PROXY_LISTING_DATE_ACCEPTANCE_RECEIPT",
+  "prepared_checkpoint": "ACCEPT_PROXY_LISTING_DATE_SOURCE_USER_CONTRACT_DECISION",
+  "generated_at_utc": "2026-08-16T18:01:28.117Z",
+  "research_only": true,
+  "identity_evidence": false,
+  "identity_verdict_allowed": false,
+  "identity_execution_authorized": false,
+  "network_authorized": false,
+  "execution_authorized": false,
+  "replay_allowed": false,
+  "ohlcv_collect_authorized": false,
+  "proxy_date_materialization_authorized": false,
+  "proxy_treated_as_official_announcement": false,
+  "spot_v2_runtime_reuse": false,
+  "listing_first_name_discovery_reopened": false,
+  "closed_nine_reopened": false,
+  "listing_event_closed_branch_reopened": false,
+  "market": "SPOT_USDT",
+  "venues": [
+    "mexc",
+    "gateio"
+  ],
+  "excluded_bases": [
+    "STETH",
+    "WEETH",
+    "CC",
+    "OKB",
+    "RAIN",
+    "MNT",
+    "USDD",
+    "BDX",
+    "EDGE"
+  ],
+  "selected_base_count": 407,
+  "selected_bases_sha256": "3b5c44955f309041867763e89731f074e0a9721e0d184537d253b48fbde56322",
+  "invented_ticker_count": 0,
+  "proxy_listing_date_source": {
+    "source_class": "PROXY_TRADING_START_NOT_OFFICIAL_ANNOUNCEMENT",
+    "primary": {
+      "artifact": "frozen listing calendar",
+      "file_sha256": "d01f86646eaebfd4df5a738a754f021bb3a7b0dcd192cfa104057eb29a3f4abb",
+      "mexc_field": "listed_ts (firstOpenTime)",
+      "gateio_field": "listed_ts (min_nonzero_buy_start_sell_start)",
+      "fallback_field": "first_trade_ts_utc"
+    },
+    "corroboration_at_collect": "earliest available 1h kline open time per venue; flags history_truncated when earliest bar is materially after proxy_event_ts and proxy_ts_after_first_bar when earlier",
+    "selection_rule": "min non-null listed_ts across both venues",
+    "usable_as_official_announcement_date": false
+  },
+  "proxy_first_days_semantics": {
+    "live_first_days_sample_as_of_now": 0,
+    "redefined_sample": "retrospective first-days event windows",
+    "window_sec": 259200,
+    "retrospective_window_available_count": 407
+  },
+  "acceptance_contract_change": {
+    "contract_field": "listing_date_evidence_class",
+    "previous": "OFFICIAL_ANNOUNCEMENT_DATE_REQUIRED",
+    "accepted_via_user_decision": "PROXY_TRADING_START_NOT_OFFICIAL_ANNOUNCEMENT",
+    "user_decision_text_expected": "принять proxy-источник даты листинга",
+    "two_venue_official_identity_complete": false,
+    "ticker_pairing_class": "SAME_TICKER_STRING_TWO_VENUE_ASSUMPTION",
+    "announcement_lead_time_available": false
+  },
+  "limitations": [
+    "SURVIVORSHIP_BIAS_CURRENT_SNAPSHOT: universe from current public API snapshot; assets delisted before the snapshot are absent",
+    "TRADING_START_NOT_ANNOUNCEMENT: proxy t0 is first trade time; no announcement lead time exists in this evidence class",
+    "HISTORY_DEPTH_TRUNCATION: exchange 1h history may not reach back to proxy_event_ts; affected windows must be flagged, not silently used",
+    "SAME_TICKER_STRING_PAIRING: two-venue identity remains formally incomplete; pairing uses identical base ticker strings",
+    "PRIOR_LISTING_EVENT_BRANCH_REJECTED: proxy-dated evidence alone cannot overturn the prior listing_event rejection without materially different data or method"
+  ],
+  "acceptance_gate_implication": "Any ACCEPT on proxy-dated evidence is capped at evidence class PROXY_DATE; terminal ACCEPT additionally requires a forward or announcement-grounded sample",
+  "parent_first_days_close": {
+    "plan_id": "slow_liquidity_listing_momentum_first_days_close_20260816",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-first-days-close-planonly-20260816.json",
+    "plan_hash": "fbb7c535941c672ee65a11d1bbb868626263a5d59c84a028bcc793a05385c5ae",
+    "parent_plan_file_sha256": "f54399987d98ef76e7917e88eef327dc2ba8d2af87b4f9a5bcb53fe7576d861b",
+    "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-listing-momentum-first-days-close-approval.json",
+    "receipt_hash": "4be62cb7281420eb49678fb96f05c3ab32367b8d39c6a9a6bf676669bf7ea7db",
+    "receipt_file_sha256": "07cc19f86d57a87e6f15d7499606ad9d832d7f3cf553676eb8fbab5e6087e2cf",
+    "status": "LISTING_MOMENTUM_FIRST_DAYS_CLOSED_AS_INCOMPLETE"
+  },
+  "parent_listing_momentum_scope": {
+    "plan_hash": "4c89ce8e9a6d1065da4f6987ebee04ae8357481a4596084239796f78197a848b",
+    "parent_plan_file_sha256": "a31cc2850f4ba38443ac328f4014c62407e24fab0b106918ce9ecfa01c64b178",
+    "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-listing-momentum-scope-approval.json",
+    "receipt_hash": "9e11996cd01adde63f603b56afc2030825476120b55e3aea61a879f4e6772be9",
+    "receipt_file_sha256": "ed65d308d64e671969ff66eeb52f618d1b7ed9f9f3fa41f343c51b71d9a8c771"
+  },
+  "frozen_calendar": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\listings\\non_binance_listing_events.csv",
+    "file_sha256": "d01f86646eaebfd4df5a738a754f021bb3a7b0dcd192cfa104057eb29a3f4abb",
+    "source_class": "PUBLIC_API_CURRENT_SNAPSHOT_NOT_OFFICIAL_ANNOUNCEMENT"
+  },
+  "calendar_census": {
+    "as_of_utc": "2026-08-16T00:00:00Z",
+    "first_days_sec": 259200,
+    "calendar_usdt_rows": 1239,
+    "calendar_delisted_rows": 37,
+    "two_venue_base_count": 407,
+    "two_venue_event_rows": 814,
+    "two_venue_with_timestamp_count": 407,
+    "source_type_counts": {
+      "public_api_currency_pairs_current_snapshot": 607,
+      "public_api_exchange_info_current_snapshot": 632
+    },
+    "official_announcement_row_count": 0,
+    "age_buckets_as_of": {
+      "missing_ts": 0,
+      "future_or_after_as_of": 0,
+      "0_3d": 0,
+      "4_7d": 0,
+      "8_30d": 0,
+      "31_90d": 1,
+      "gt_90d": 406
+    },
+    "first_days_sample_count": 0,
+    "closed_nine_present_in_calendar_count": 6,
+    "calendar_source_class": "PUBLIC_API_CURRENT_SNAPSHOT_NOT_OFFICIAL_ANNOUNCEMENT"
+  },
+  "proxy_date_census": {
+    "two_venue_base_count": 407,
+    "timestamp_source_counts": {
+      "firstOpenTime": 393,
+      "min_nonzero_buy_start_sell_start": 402
+    },
+    "agreement_buckets": {
+      "both_venues_le_1h": 9,
+      "both_venues_le_24h": 5,
+      "both_venues_gt_24h": 374,
+      "one_venue_only": 19,
+      "missing": 0
+    },
+    "proxy_event_available_count": 407
+  },
+  "collector_prerequisites": [
+    "SEPARATE_HASH_BOUND_COLLECTOR_PLANONLY",
+    "VISIBLE_LAUNCHER",
+    "SYNTHETIC_AND_REGRESSION_TESTS",
+    "PAGE_AND_RATE_LIMIT_CAPS",
+    "NO_PRIVATE_API"
+  ],
+  "still_forbidden": [
+    "TREAT_PROXY_DATE_AS_OFFICIAL_ANNOUNCEMENT",
+    "CLAIM_ANNOUNCEMENT_LEAD_TIME",
+    "INVENT_ANNOUNCEMENT_API_URL",
+    "REOPEN_CLOSED_NINE",
+    "REOPEN_LISTING_FIRST_NAME_DISCOVERY",
+    "REUSE_SPOT_V2_HTML_CONSUMER",
+    "IDENTITY_VERDICT",
+    "V6_POSTPROCESS_AS_LISTING_MOMENTUM",
+    "BING_OR_SITEMAP",
+    "REPLAY_OR_GRID",
+    "EVALUATOR_OR_OOS",
+    "PAPER_OR_LIVE",
+    "20260815-V7"
+  ],
+  "approval_request": {
+    "exact_user_text_template": "Принимаю PlanOnly slow_liquidity_listing_momentum_proxy_date_acceptance_20260816 по plan_hash=<PLAN_HASH> и plan_file_sha256=<PLAN_FILE_SHA256>: принять proxy-источник даты листинга (класс PROXY_TRADING_START_NOT_OFFICIAL_ANNOUNCEMENT: замороженный calendar listed_ts firstOpenTime / min_nonzero_buy_start_sell_start, корроборация earliest available 1h open time при сборе), limitations в acceptance contract, retrospective event windows для 407 имён, не official announcement, не identity verdict, не invent URL, не reopen closed 9, не reuse spot v2 consumer, не v7. Сбор first-days OHLCV — отдельный PlanOnly + видимый запуск. Без evaluator, OOS, returns/PnL, grid/retune, paper/live, private API, реальных денег, плеча или маржи.",
+    "user_decision_binding": "per standing policy the already-given user contract decision binds this plan via receipt without a second approval phrase"
+  },
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "proxy_date_materialization_allowed": false,
+    "proxy_first_days_collector_plan_preparation_allowed": false,
+    "actual_network_run_allowed": false,
+    "ohlcv_collect_allowed": false,
+    "replay_allowed": false,
+    "evaluator_or_oos_allowed": false
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "d78ff507d5e53e7cccf78a6ecf676cf85dbb70ab3b67f4dced1fec1cef86be31"
+}
