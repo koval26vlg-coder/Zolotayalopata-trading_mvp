@@ -101,6 +101,7 @@ $qualityAccepted = [bool]$quality.accepted
 $gateAllowsFixedSignal = [bool](
     ([string]$gate.next_goal_decision -eq "SLOW_LIQUIDITY_HISTORY_DATA_QUALITY_ACCEPTED_READY_FOR_FIXED_SIGNAL_PLANONLY") -or
     ([string]$quality.decision -eq "SLOW_LIQUIDITY_HISTORY_DATA_QUALITY_ACCEPTED_READY_FOR_FIXED_SIGNAL_PLANONLY") -or
+    ([string]$quality.decision -eq "SLOW_LIQUIDITY_HISTORY_RECOLLECT_QUALITY_ACCEPTED_IDENTITY_ACCEPTED_READY_FOR_FIXED_SIGNAL_PLANONLY") -or
     (
         $gateDoc -and
         $gateDoc.strategy_branch_status -and

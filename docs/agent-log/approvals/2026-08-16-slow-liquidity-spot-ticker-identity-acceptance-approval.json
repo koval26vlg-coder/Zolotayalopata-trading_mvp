@@ -1,0 +1,40 @@
+{
+  "schema": "trading_mvp_slow_liquidity_spot_ticker_identity_acceptance_receipt_v1",
+  "status": "SPOT_TICKER_IDENTITY_ACCEPTED",
+  "approved_at_utc": "2026-08-16T20:17:13.019Z",
+  "user_decision_text": "Принять спот-тикер identity (аналог proxy-дат) — разблокирует fixed-signal → replay исходной slow-liquidity гипотезы на готовых данных;",
+  "user_decision_context": "Пользователь выбрал вариант 1 из предложенных: принять спот-тикер identity (аналог proxy-дат) вместо сохранения v6 замороженным. Контрактное решение по acceptance contract; по standing policy привязывает план receipt-ом без повторной approval-фразы.",
+  "plan_id": "slow_liquidity_spot_ticker_identity_acceptance_20260816",
+  "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-spot-ticker-identity-acceptance-planonly-20260816.json",
+  "plan_hash": "47d6ddaa0d50a6b1572056141e966994e313d7c6bc169e13153ca17742e0ad33",
+  "plan_file_sha256": "321f07afd702b68f20e31dc61fe42385b84eade57a35a8c241e66bcd3fef2459",
+  "identity_class": "SPOT_TICKER_MATCH_BOTH_VENUES_COLLECTED",
+  "accepted_base_count": 7,
+  "fail_closed_bases": [
+    "EDGE",
+    "RAIN"
+  ],
+  "official_identity_claim": false,
+  "network_authorized": false,
+  "authorized_scope": {
+    "identity_verdict_materialization": true,
+    "v6_quality_decision_rebind": true,
+    "fixed_signal_planonly": true,
+    "actual_network_run": false,
+    "canonical_or_official_identity_claim": false,
+    "replay_direct": false,
+    "evaluator_or_oos": false,
+    "grid_or_retune": false,
+    "paper_or_live": false,
+    "private_api": false
+  },
+  "limitations_acknowledged": true,
+  "limitations_acknowledged_list": [
+    "SAME_TICKER_STRING_PAIRING: identity is ticker-string equality witnessed by simultaneous clean two-venue trading, not a canonical-asset verification",
+    "COLLISION_FAIL_CLOSED: EDGE and RAIN are excluded from the identity verdict and from downstream primary statistics",
+    "SCOPE_V6_ONLY: this acceptance binds the exact v6 recollect universe (9 bases) and does not authorize identity claims for any other universe",
+    "NO_OFFICIAL_IDENTITY_CLAIM: the official two-venue identity branch remains closed as incomplete; this acceptance supersedes its blocking effect only"
+  ],
+  "receipt_hash_method": "sha256_canonical_json_excluding_receipt_hash",
+  "receipt_hash": "4df0ff0dd537669b6b3c38a25ba56445894a9a99f3967f2e46893bd3b2be854d"
+}

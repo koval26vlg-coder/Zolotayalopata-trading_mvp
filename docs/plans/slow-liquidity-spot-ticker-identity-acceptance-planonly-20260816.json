@@ -1,0 +1,88 @@
+{
+  "schema": "trading_mvp_slow_liquidity_spot_ticker_identity_acceptance_planonly_v1",
+  "plan_id": "slow_liquidity_spot_ticker_identity_acceptance_20260816",
+  "mode": "PlanOnly",
+  "status": "AWAIT_SPOT_TICKER_IDENTITY_ACCEPTANCE_RECEIPT",
+  "prepared_checkpoint": "ACCEPT_SPOT_TICKER_IDENTITY_USER_CONTRACT_DECISION",
+  "generated_at_utc": "2026-08-16T20:17:01.261Z",
+  "research_only": true,
+  "network_authorized": false,
+  "private_api": false,
+  "execution_authorized": false,
+  "replay_allowed": false,
+  "identity_verdict_authorized": false,
+  "quality_decision_rebind_authorized": false,
+  "official_identity_claim": false,
+  "user_decision_text_expected": "Принять спот-тикер identity (аналог proxy-дат) — разблокирует fixed-signal → replay исходной slow-liquidity гипотезы на готовых данных;",
+  "goal": "Accept spot-ticker identity for the closed v6 nine so the original slow-liquidity hypothesis can proceed to fixed-signal and replay on the already-collected data. This is a user contract decision analogous to the proxy listing-date acceptance; it is NOT a canonical-asset or official identity claim.",
+  "identity_contract": {
+    "identity_class": "SPOT_TICKER_MATCH_BOTH_VENUES_COLLECTED",
+    "rule": "same base ticker string collected as clean 1h4h spot USDT history on both MEXC and Gate in the exact v6 recollect",
+    "evidence": {
+      "kind": "v6 exact recollect clean two-venue full-coverage 1h4h bases",
+      "quality_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\analysis\\slow_liquidity_history_recollect_quality_20260813_pagecap_provenance_slotintegrity_v6.json",
+      "quality_file_sha256": "9f240efe9a300f4e1a57c6c8438eab63c9169bdf4bb9ff47f6cc50175e7e6a9e"
+    },
+    "fail_closed_bases": [
+      "EDGE",
+      "RAIN"
+    ],
+    "accepted_bases": [
+      "BDX",
+      "CC",
+      "MNT",
+      "OKB",
+      "STETH",
+      "USDD",
+      "WEETH"
+    ],
+    "excluded_bases": [
+      {
+        "base": "EDGE",
+        "reason": "COLLISION_FAIL_CLOSED_TICKER"
+      },
+      {
+        "base": "RAIN",
+        "reason": "COLLISION_FAIL_CLOSED_TICKER"
+      }
+    ]
+  },
+  "unblocks": {
+    "identity_verdict_materialization": true,
+    "v6_quality_decision_rebind": true,
+    "fixed_signal_planonly": true,
+    "feature_normalizer_and_replay_via_existing_plans": true
+  },
+  "limitations": [
+    "SAME_TICKER_STRING_PAIRING: identity is ticker-string equality witnessed by simultaneous clean two-venue trading, not a canonical-asset verification",
+    "COLLISION_FAIL_CLOSED: EDGE and RAIN are excluded from the identity verdict and from downstream primary statistics",
+    "SCOPE_V6_ONLY: this acceptance binds the exact v6 recollect universe (9 bases) and does not authorize identity claims for any other universe",
+    "NO_OFFICIAL_IDENTITY_CLAIM: the official two-venue identity branch remains closed as incomplete; this acceptance supersedes its blocking effect only"
+  ],
+  "still_forbidden": [
+    "CANONICAL_ASSET_OR_OFFICIAL_IDENTITY_CLAIM",
+    "REPLAY_OR_GRID_WITHOUT_SEPARATE_PLANS",
+    "EVALUATOR_OR_OOS_WITHOUT_SEPARATE_PLANS",
+    "PRIVATE_API",
+    "PAPER_OR_LIVE",
+    "REAL_CAPITAL_LEVERAGE_MARGIN"
+  ],
+  "v6_quality_binding": {
+    "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\analysis\\slow_liquidity_history_recollect_quality_20260813_pagecap_provenance_slotintegrity_v6.json",
+    "file_sha256": "9f240efe9a300f4e1a57c6c8438eab63c9169bdf4bb9ff47f6cc50175e7e6a9e",
+    "decision_before": "SLOW_LIQUIDITY_HISTORY_RECOLLECT_QUALITY_ACCEPTED_AWAIT_OFFICIAL_IDENTITY_APPROVAL",
+    "decision_after_rebind": "SLOW_LIQUIDITY_HISTORY_RECOLLECT_QUALITY_ACCEPTED_IDENTITY_ACCEPTED_READY_FOR_FIXED_SIGNAL_PLANONLY"
+  },
+  "approval_request": {
+    "exact_user_text_template": "Принимаю PlanOnly slow_liquidity_spot_ticker_identity_acceptance_20260816 по plan_hash=<PLAN_HASH> и plan_file_sha256=<PLAN_FILE_SHA256>: принять спот-тикер identity (аналог proxy-дат) — identity = совпадающий спот-тикер на обоих venue, свидетельство = собранные v6 clean two-venue 1h4h данные; EDGE и RAIN fail-closed исключены; разблокирует fixed-signal → replay исходной slow-liquidity гипотезы на готовых данных; не canonical asset claim, не official identity, не private API, не grid/retune, не paper/live, не реальные деньги, плечо или маржа.",
+    "user_decision_binding": "per standing policy the already-given user contract decision binds this plan via receipt without a second approval phrase"
+  },
+  "authorization_now": {
+    "plan_freeze_allowed": true,
+    "identity_verdict_allowed": false,
+    "quality_decision_rebind_allowed": false,
+    "replay_allowed": false
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "47d6ddaa0d50a6b1572056141e966994e313d7c6bc169e13153ca17742e0ad33"
+}
