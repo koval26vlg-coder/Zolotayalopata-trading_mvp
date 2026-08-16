@@ -146,6 +146,9 @@ IDENTITY_PHASE1_STATUS = (
 )
 IDENTITY_PHASE2_STATUS = "FROZEN_WITH_EXACT_CODE_BOUND_EXECUTION_APPROVAL"
 IDENTITY_PHASE2_CHECKPOINT_ID = "slow_liquidity_identity_execution_phase_2"
+FORWARD_ACCRUAL_READINESS_STATUS = (
+    "SLOW_LIQUIDITY_LISTING_MOMENTUM_FORWARD_ACCRUAL_STANDING_RESEARCH"
+)
 CURRENT_READINESS_STATUSES = (
     CURRENT_READINESS_STATUS,
     IDENTITY_PHASE1_READINESS_STATUS,
@@ -160,6 +163,7 @@ CURRENT_READINESS_STATUSES = (
     REQUEST_PLAN_V3_EXECUTION_READINESS_STATUS,
     REQUEST_PLAN_V4_REFREEZE_READINESS_STATUS,
     TOPOLOGY_V3_OFFLINE_REFREEZE_APPROVAL_READINESS_STATUS,
+    FORWARD_ACCRUAL_READINESS_STATUS,
 )
 CURRENT_PERMISSION_FIELDS = (
     "global_writer_present",
@@ -3392,6 +3396,17 @@ def resolve_current_sprint_readiness(
             gate_file=gate_file,
             writer_claim_file=writer_claim_file,
         )
+    if source_status == FORWARD_ACCRUAL_READINESS_STATUS:
+        return _resolve_forward_accrual_readiness(
+            report,
+            pointer_file=pointer_file,
+            pointer_sha=pointer_sha,
+            readiness_path=readiness_path,
+            report_sha=report_sha,
+            gate_file=gate_file,
+            writer_claim_file=writer_claim_file,
+            repo_root=pointer_file.parents[2],
+        )
     if source_status == REQUEST_PLAN_V4_REFREEZE_READINESS_STATUS:
         return _resolve_request_plan_v4_readiness(
             report,
@@ -4814,6 +4829,231 @@ def _validate_dense_proposal(
     }
 
 
+_FORWARD_ACCRUAL_INPUTS = {
+    "identity_acceptance_plan": (
+        "docs/plans/slow-liquidity-spot-ticker-identity-acceptance-planonly-20260816.json"
+    ),
+    "identity_acceptance_receipt": (
+        "docs/agent-log/approvals/"
+        "2026-08-16-slow-liquidity-spot-ticker-identity-acceptance-approval.json"
+    ),
+    "replay_volatility_expansion": (
+        "exports/trading-mvp/analysis/"
+        "slow_liquidity_exploratory_replay_v1_20260816.json"
+    ),
+    "replay_liquidity_shock": (
+        "exports/trading-mvp/analysis/"
+        "slow_liquidity_exploratory_replay_v1_liquidity_shock_20260816.json"
+    ),
+    "forward_monitor_plan": (
+        "docs/plans/"
+        "slow-liquidity-listing-momentum-forward-monitor-planonly-20260816.json"
+    ),
+    "forward_evaluator_plan": (
+        "docs/plans/"
+        "slow-liquidity-listing-momentum-forward-evaluator-planonly-20260816.json"
+    ),
+    "forward_state": (
+        "exports/trading-mvp/analysis/"
+        "slow_liquidity_listing_momentum_forward_state_20260816.json"
+    ),
+}
+_FORWARD_ACCRUAL_REPLAY_DECISION = (
+    "SLOW_LIQUIDITY_FIXED_V1_REPLAY_PLANONLY_REJECTED_NO_ROBUST_EDGE"
+)
+
+
+def _forward_accrual_era_inputs(
+    repo_root: Path,
+) -> dict[str, dict[str, Any]] | None:
+    refs: dict[str, dict[str, Any]] = {}
+    for key, relative in _FORWARD_ACCRUAL_INPUTS.items():
+        path = repo_root / relative
+        if not path.is_file():
+            return None
+        refs[key] = {
+            "path": str(path),
+            "file_sha256": _sha256(path),
+        }
+    receipt = json.loads(
+        (repo_root / _FORWARD_ACCRUAL_INPUTS["identity_acceptance_receipt"])
+        .read_text(encoding="utf-8")
+    )
+    if str(receipt.get("status") or "") != "SPOT_TICKER_IDENTITY_ACCEPTED":
+        return None
+    for key in ("replay_volatility_expansion", "replay_liquidity_shock"):
+        artifact = json.loads(
+            (repo_root / _FORWARD_ACCRUAL_INPUTS[key]).read_text(encoding="utf-8")
+        )
+        if str(artifact.get("decision") or "") != _FORWARD_ACCRUAL_REPLAY_DECISION:
+            return None
+    refs["identity_acceptance_receipt"]["receipt_hash"] = receipt.get(
+        "receipt_hash"
+    )
+    refs["identity_acceptance_receipt"]["accepted_base_count"] = receipt.get(
+        "accepted_base_count"
+    )
+    for key in ("replay_volatility_expansion", "replay_liquidity_shock"):
+        artifact = json.loads(
+            (repo_root / _FORWARD_ACCRUAL_INPUTS[key]).read_text(encoding="utf-8")
+        )
+        refs[key]["decision"] = artifact.get("decision")
+    state = json.loads(
+        (repo_root / _FORWARD_ACCRUAL_INPUTS["forward_state"]).read_text(
+            encoding="utf-8"
+        )
+    )
+    refs["forward_state"]["tick_count"] = state.get("tick_count")
+    refs["forward_state"]["complete_window_count"] = state.get(
+        "complete_window_count"
+    )
+    refs["forward_state"]["state_hash"] = state.get("state_hash")
+    return refs
+
+
+def _build_forward_accrual_readiness(
+    *,
+    generated_at_utc: str,
+    repo_root: Path,
+) -> dict[str, Any]:
+    refs = _forward_accrual_era_inputs(repo_root)
+    if refs is None:
+        raise ReadinessError("forward accrual era inputs are not present")
+    report: dict[str, Any] = {
+        "schema": READINESS_SCHEMA,
+        "status": FORWARD_ACCRUAL_READINESS_STATUS,
+        "generated_at_utc": generated_at_utc,
+        "project": "trading_mvp",
+        "goal": "One-Week Historical Edge Sprint",
+        "research_only": True,
+        "primary_frozen_basis_terminal": True,
+        "slow_liquidity": {
+            "era": "spot_ticker_identity_accepted_retrospective_exhausted",
+            "identity_acceptance": refs["identity_acceptance_plan"],
+            "identity_acceptance_receipt": refs["identity_acceptance_receipt"],
+            "retrospective_replays": {
+                "volatility_expansion_continuation_v1": refs[
+                    "replay_volatility_expansion"
+                ],
+                "liquidity_shock_reclaim_long_v1": refs["replay_liquidity_shock"],
+            },
+            "retrospective_verdict": "both_families_rejected_no_robust_edge",
+            "identity_verification_required": False,
+            "identity_verification_authorized": True,
+            "evaluator_or_oos_authorized": False,
+            "replay_allowed": False,
+            "grid_allowed": False,
+            "paper_forward_allowed": False,
+            "live_orders": False,
+            "api_keys": False,
+            "leverage_or_margin": False,
+        },
+        "forward_accrual": {
+            "monitor_plan": refs["forward_monitor_plan"],
+            "evaluator_plan": refs["forward_evaluator_plan"],
+            "state": refs["forward_state"],
+            "scheduler": (
+                "user-authorized visible tick every 6 hours "
+                "(automation-66009175), evaluator runs after each tick; "
+                "pre-registered first read at >=30 complete windows"
+            ),
+        },
+        "permissions": {field: False for field in CURRENT_PERMISSION_FIELDS},
+        "approval_checkpoints": [],
+        "next_safe_action": (
+            "wait_forward_sample_and_run_scheduled_ticks_no_peeking_below_30"
+        ),
+        "readiness_hash_method": READINESS_HASH_METHOD,
+    }
+    report["readiness_hash"] = canonical_hash_without(report, "readiness_hash")
+    return report
+
+
+def _resolve_forward_accrual_readiness(
+    report: Mapping[str, Any],
+    *,
+    pointer_file: Path,
+    pointer_sha: str,
+    readiness_path: Path,
+    report_sha: str,
+    gate_file: Path,
+    writer_claim_file: Path,
+    repo_root: Path,
+) -> dict[str, Any]:
+    permissions = report.get("permissions")
+    _current_require(
+        isinstance(permissions, dict)
+        and set(permissions) == set(CURRENT_PERMISSION_FIELDS),
+        "forward accrual readiness permissions mismatch",
+    )
+    for field in CURRENT_PERMISSION_FIELDS:
+        _current_require(
+            permissions.get(field) is False,
+            f"forward accrual readiness illegally enables {field}",
+        )
+    _current_require(
+        report.get("next_safe_action")
+        == "wait_forward_sample_and_run_scheduled_ticks_no_peeking_below_30",
+        "forward accrual readiness next action changed",
+    )
+    slow = report.get("slow_liquidity") or {}
+    _current_require(
+        slow.get("retrospective_verdict")
+        == "both_families_rejected_no_robust_edge",
+        "forward accrual readiness retrospective verdict mismatch",
+    )
+    _current_require(
+        slow.get("identity_verification_authorized") is True
+        and slow.get("identity_verification_required") is False,
+        "forward accrual readiness identity flags mismatch",
+    )
+    refs = _forward_accrual_era_inputs(repo_root)
+    _current_require(refs is not None, "forward accrual era inputs missing")
+    if refs is not None:
+        _current_require(
+            slow.get("identity_acceptance_receipt", {}).get("receipt_hash")
+            == refs["identity_acceptance_receipt"]["receipt_hash"],
+            "identity acceptance receipt binding mismatch",
+        )
+        replay_family_keys = {
+            "replay_volatility_expansion": "volatility_expansion_continuation_v1",
+            "replay_liquidity_shock": "liquidity_shock_reclaim_long_v1",
+        }
+        for key, family_key in replay_family_keys.items():
+            _current_require(
+                (slow.get("retrospective_replays") or {})
+                .get(family_key, {})
+                .get("file_sha256")
+                == refs[key]["file_sha256"],
+                f"{key} binding mismatch",
+            )
+    gate = _load_json(gate_file, "active run gate")
+    _current_require(
+        str(gate.get("status") or "") == "READY_FOR_POSTPROCESS",
+        "gate is not open for forward accrual",
+    )
+    _current_require(
+        not writer_claim_file.exists(), "global writer claim exists"
+    )
+    return {
+        "status": "READY",
+        "pointer_path": str(pointer_file),
+        "pointer_file_sha256": pointer_sha,
+        "readiness_path": str(readiness_path),
+        "readiness_file_sha256": report_sha,
+        "readiness_hash": report["readiness_hash"],
+        "generated_at_utc": report["generated_at_utc"],
+        "source_status": report["status"],
+        "execution_authorized": False,
+        "next_safe_action": report["next_safe_action"],
+        "approval_checkpoints": [],
+        "primary_frozen_basis_terminal": report.get(
+            "primary_frozen_basis_terminal"
+        ),
+        "forward_accrual": report.get("forward_accrual"),
+    }
+
+
 def build_readiness(
     *,
     gate_path: str | Path,
@@ -4835,6 +5075,22 @@ def build_readiness(
     identity_execution_manifest_path: str | Path | None = None,
     generated_at_utc: str | None = None,
 ) -> dict[str, Any]:
+    repo_root = Path(__file__).resolve().parents[2]
+    era_gate_decisions = {
+        "SLOW_LIQUIDITY_FIXED_SIGNAL_PLANONLY_READY_FOR_FEATURE_NORMALIZER",
+        "SLOW_LIQUIDITY_FEATURE_NORMALIZER_PLANONLY_REJECTED_INSUFFICIENT_EVENTS",
+        "SLOW_LIQUIDITY_FIXED_V1_PLANONLY_READY_FOR_REPLAY_VALIDATION",
+    }
+    gate_doc = _load_json(_resolve(gate_path), "active run gate")
+    forward_era = (
+        str(gate_doc.get("next_goal_decision") or "") in era_gate_decisions
+        and _forward_accrual_era_inputs(repo_root) is not None
+    )
+    if forward_era:
+        observed_at = generated_at_utc or datetime.now(timezone.utc).isoformat()
+        return _build_forward_accrual_readiness(
+            generated_at_utc=observed_at, repo_root=repo_root
+        )
     gate = _resolve(gate_path)
     writer_claim = _resolve(writer_claim_path)
     _require(not writer_claim.exists(), "global market-data writer claim is present")
