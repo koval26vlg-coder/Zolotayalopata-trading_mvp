@@ -23,6 +23,18 @@ OUTPUT_PATH = (
     / "slow_liquidity_exploratory_fixed_v1_packet_20260816.json"
 )
 TOP_FAMILY = "volatility_expansion_continuation_v1"
+ALLOWED_FAMILIES = (
+    "volatility_expansion_continuation_v1",
+    "liquidity_shock_reclaim_long_v1",
+)
+FAMILY_NAMES = {
+    "volatility_expansion_continuation_v1": (
+        "slow_liquidity_volatility_expansion_continuation_v1"
+    ),
+    "liquidity_shock_reclaim_long_v1": (
+        "slow_liquidity_liquidity_shock_reclaim_long_v1"
+    ),
+}
 
 
 class ExploratoryPacketError(ValueError):
@@ -38,11 +50,12 @@ def _sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def build_packet(generated_at_utc: str) -> dict[str, Any]:
+def build_packet(generated_at_utc: str, family: str = TOP_FAMILY) -> dict[str, Any]:
     census = json.loads(CENSUS_PATH.read_text(encoding="utf-8"))
     families = census.get("event_census", {}).get("family_summaries") or {}
-    top = families.get(TOP_FAMILY) or {}
-    _require(bool(top), "top family missing from census")
+    top = families.get(family) or {}
+    _require(family in ALLOWED_FAMILIES, f"family not allowed: {family}")
+    _require(bool(top), "family missing from census")
     _require(
         census.get("data_scope", {}).get("clean_bases")
         == ["BDX", "CC", "MNT", "OKB", "STETH", "USDD", "WEETH"],
@@ -71,8 +84,8 @@ def build_packet(generated_at_utc: str) -> dict[str, Any]:
         "event_census_path": str(CENSUS_PATH),
         "event_census_file_sha256": _sha256_file(CENSUS_PATH),
         "fixed_signal_v1": {
-            "name": "slow_liquidity_volatility_expansion_continuation_v1",
-            "family": TOP_FAMILY,
+            "name": FAMILY_NAMES[family],
+            "family": family,
             "direction": "long_only_spot",
             "primary_timeframe": "1h",
             "context_timeframe": "4h",
@@ -93,7 +106,7 @@ def build_packet(generated_at_utc: str) -> dict[str, Any]:
             "no_grid": True,
         },
         "event_base_rate": {
-            "top_family": TOP_FAMILY,
+            "top_family": family,
             "top_family_independent_events": int(top.get("independent_events") or 0),
             "top_family_event_bases": int(top.get("event_bases") or 0),
             "top_family_event_exchanges": int(top.get("event_exchanges") or 0),
@@ -129,6 +142,7 @@ def build_packet(generated_at_utc: str) -> dict[str, Any]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--write-packet", action="store_true")
+    parser.add_argument("--family", default=TOP_FAMILY)
     args = parser.parse_args(argv)
     if not args.write_packet:
         raise SystemExit("no authorized action requested")
@@ -137,22 +151,29 @@ def main(argv: list[str] | None = None) -> int:
         .isoformat(timespec="milliseconds")
         .replace("+00:00", "Z")
     )
-    packet = build_packet(generated)
+    packet = build_packet(generated, family=args.family)
+    output_path = (
+        OUTPUT_PATH
+        if args.family == TOP_FAMILY
+        else OUTPUT_PATH.with_name(
+            OUTPUT_PATH.stem + "_" + args.family.split("_")[0] + OUTPUT_PATH.suffix
+        )
+    )
     content = json.dumps(packet, indent=2, ensure_ascii=False) + "\n"
-    if OUTPUT_PATH.exists():
+    if output_path.exists():
         _require(
-            OUTPUT_PATH.read_text(encoding="utf-8") == content,
-            f"immutable artifact mismatch: {OUTPUT_PATH}",
+            output_path.read_text(encoding="utf-8") == content,
+            f"immutable artifact mismatch: {output_path}",
         )
     else:
-        OUTPUT_PATH.write_text(content, encoding="utf-8")
+        output_path.write_text(content, encoding="utf-8")
     print(
         json.dumps(
             {
                 "status": "PACKET_WRITTEN",
-                "path": str(OUTPUT_PATH),
+                "path": str(output_path),
                 "packet_hash": packet["packet_hash"],
-                "family": TOP_FAMILY,
+                "family": args.family,
                 "missed_criteria": packet["acceptance_missed_criteria"],
             },
             ensure_ascii=False,

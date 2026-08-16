@@ -48,8 +48,11 @@ winrate 10%; продолжения движений нет. Это фактич
 **robust edge отсутствует**. Терминальное REJECT-решение по ветке — за
 пользователем; по экономике данных оснований для продолжения ветки нет.
 
-Мелкая семья `liquidity_shock_reclaim_long_v1` (33 события) не
-реплеилась: ещё более underpowered, вывод не изменит.
+Дополнено (23:40): семья `liquidity_shock_reclaim_long_v1` (33 события)
+тоже зареплеена: winrate 24.2%, expectancy −571 bps/сделку, PF 0.16,
+OOS −635 bps, walk-forward 0/4. Обе семьи census-ветки отрицательны —
+ретроспектива v6 исчерпана полностью
+(`slow_liquidity_exploratory_replay_v1_liquidity_shock_20260816.json`).
 
 ## Статус веток
 
