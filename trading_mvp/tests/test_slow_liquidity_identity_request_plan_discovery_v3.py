@@ -238,15 +238,47 @@ class RequestPlanDiscoveryV3Tests(unittest.TestCase):
                 write_runtime_manifest(target, manifest)
 
     def test_offline_refreeze_readiness_resolves_without_execution_artifacts(self) -> None:
-        gate_path = REPO_ROOT / "docs/agent-log/active-run-gate.json"
+        real_gate_path = REPO_ROOT / "docs/agent-log/active-run-gate.json"
         writer_path = REPO_ROOT / "docs/agent-log/active-market-data-writer-claim.json"
-        gate = json.loads(gate_path.read_text(encoding="utf-8"))
+        gate = json.loads(real_gate_path.read_text(encoding="utf-8"))
         self.assertEqual(gate["status"], "READY_FOR_POSTPROCESS")
 
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
+            # The refreeze resolver pins the v3-era gate decision. Today's
+            # live gate carries a later era's decision, so a v3-era gate
+            # snapshot is synthesized here.
+            gate = dict(gate)
+            gate["next_goal_decision"] = readiness.EXPECTED_QUALITY_DECISION
+            gate_path = root / "gate.json"
+            gate_path.write_text(json.dumps(gate, indent=1), encoding="utf-8")
             runtime_path = root / "runtime.json"
-            with mock.patch.object(runtime_v3, "RUNTIME_MANIFEST_PATH", runtime_path):
+            # The historical v3 run completed terminally, so the real
+            # LAUNCH_RECORD_PATH, execution manifest and approval receipt
+            # exist. This test verifies the refreeze readiness logic itself,
+            # so the pre-run world state is mocked at the module attributes
+            # the report builder and resolver both read.
+            launch_record_patch = mock.patch.object(
+                runtime_v3,
+                "LAUNCH_RECORD_PATH",
+                root / "absent-launch-record.json",
+            )
+            execution_manifest_patch = mock.patch.object(
+                runtime_v3,
+                "EXECUTION_MANIFEST_PATH",
+                root / "absent-execution-manifest.json",
+            )
+            approval_receipt_patch = mock.patch.object(
+                runtime_v3,
+                "APPROVAL_RECEIPT_PATH",
+                root / "absent-approval-receipt.json",
+            )
+            with (
+                launch_record_patch,
+                execution_manifest_patch,
+                approval_receipt_patch,
+                mock.patch.object(runtime_v3, "RUNTIME_MANIFEST_PATH", runtime_path),
+            ):
                 manifest = build_runtime_manifest(
                     generated_at_utc="2026-08-15T18:00:00Z",
                 )

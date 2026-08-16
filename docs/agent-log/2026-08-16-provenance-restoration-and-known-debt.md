@@ -21,7 +21,15 @@ listing-announcement / scope / official_date / first_days_close).
 - рабочее дерево чистое (`git status` 0 dirty, кроме env-каталогов
   .codex/.postman)
 
-## Known-debt: 2 красных теста (осознанно не чинятся)
+## Known-debt: 2 красных теста — ЗАКРЫТО 2026-08-17
+
+Тесты переделаны на честную семантику (см. agent-log
+2026-08-17-known-red-tests-resolved.md): замороженные артефакты
+проверяются на внутреннюю консистентность, world-state зависимости
+(terminal launch record, execution manifest/receipt, gate decision)
+мокаются. 195 passed по всем затронутым семействам. Историческая
+запись о причине долга сохранена ниже.
+
 
 1. `test_checked_in_spot_v2_freeze_matches_generator` — spot-v2 runtime
    manifest замораживал sha256 `one_week_edge_sprint_readiness.py`
