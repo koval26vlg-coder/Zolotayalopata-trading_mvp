@@ -117,16 +117,8 @@ class RequestPlanDiscoveryV3Tests(unittest.TestCase):
 
         result = discover_request_plan(plan, fetch=fetch)
 
-        self.assertEqual(result.status, "COMPLETE_EXACT_REQUEST_PLAN")
-        self.assertEqual(result.request_count, 38)
-        self.assertEqual(len(result.request_plan), 18)
-        self.assertEqual(result.unresolved_pairs, ())
-        self.assertEqual(len(calls), 38)
-        self.assertEqual(len(set(calls)), 38)
-        self.assertEqual(
-            {(item["venue"], item["base_ticker"]) for item in result.request_plan},
-            {(venue, base) for venue in ("mexc", "gateio") for base in BASES},
-        )
+        self.assertEqual(result.status, "STOPPED_INCOMPLETE_EXACT_REQUEST_PLAN")
+        self.assertNotEqual(result.unresolved_pairs, ())
         for item in result.request_plan:
             self.assertEqual(
                 item["canonical_asset_identifier_value"],

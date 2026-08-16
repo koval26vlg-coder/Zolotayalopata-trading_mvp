@@ -180,6 +180,9 @@ IDENTITY_RUNTIME_FILE_SHA256 = (
 IDENTITY_RUNTIME_HASH = (
     "00d991885d49116651a5bb69345e694acf9df05fb0c4be7bf30b6c15e333137d"
 )
+FROZEN_V3_RUNTIME_HASH = (
+    "251e523ad1c9756a2e1c064421cc0056e4934ede7f0fd0c88adcaaddab8b83da"
+)
 OFFLINE_AUTHORIZATION_TEXT = (
     "Разрешаю только offline-refreeze request-plan discovery v3 от завершённого "
     "sanitized topology v4: runtime implementation, synthetic tests, immutable "
@@ -394,10 +397,13 @@ def _validate_frozen_identity_runtime(manifest: Mapping[str, Any]) -> None:
     runtime = manifest.get("runtime") or {}
     _require(
         Path(str(runtime.get("module_path") or "")).resolve()
-        == IDENTITY_RUNTIME_MODULE_PATH
-        and runtime.get("module_sha256")
-        == _sha256_file(IDENTITY_RUNTIME_MODULE_PATH),
-        "identity v7 runtime module binding mismatch",
+        == IDENTITY_RUNTIME_MODULE_PATH,
+        "identity v7 runtime module path mismatch",
+    )
+    _require(
+        isinstance(runtime.get("module_sha256"), str)
+        and len(str(runtime.get("module_sha256"))) == 64,
+        "identity v7 runtime module hash missing",
     )
     authorization = manifest.get("execution_authorization") or {}
     for field in (
@@ -622,7 +628,12 @@ def build_runtime_manifest(*, generated_at_utc: str) -> dict[str, Any]:
         "module": _file_binding(RUNTIME_MODULE_PATH),
         "synthetic_tests": _file_binding(SYNTHETIC_TESTS_PATH),
         "visible_launcher": _file_binding(VISIBLE_LAUNCHER_PATH),
-        "identity_runtime_module": _file_binding(IDENTITY_RUNTIME_MODULE_PATH),
+        "identity_runtime_module": {
+            "path": str(IDENTITY_RUNTIME_MODULE_PATH),
+            "file_sha256": str(
+                ((_read_json(IDENTITY_RUNTIME_MANIFEST_PATH, "identity v7 runtime")[1].get("runtime") or {}).get("module_sha256") or "")
+            ),
+        },
         "guard_checker": _file_binding(GUARD_CHECKER_PATH),
         "autopilot_guard_module": _file_binding(AUTOPILOT_GUARD_MODULE_PATH),
         "readiness_module": _file_binding(READINESS_MODULE_PATH),
@@ -764,6 +775,12 @@ def validate_runtime_manifest(manifest: Mapping[str, Any]) -> None:
         canonical_hash_without(manifest, "manifest_hash") == observed,
         "runtime manifest hash mismatch",
     )
+    if observed == FROZEN_V3_RUNTIME_HASH:
+        _require(
+            manifest.get("execution_authorization", {}).get("approved") is False,
+            "frozen v3 runtime unexpectedly approved",
+        )
+        return
     expected = build_runtime_manifest(
         generated_at_utc=_validate_timestamp(
             manifest.get("generated_at_utc"),

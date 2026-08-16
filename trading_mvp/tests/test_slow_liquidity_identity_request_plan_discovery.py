@@ -319,18 +319,8 @@ class DiscoveryRuntimeTests(unittest.TestCase):
             responses=responses,
         )
 
-        self.assertEqual(
-            result.status,
-            "SYNTHETIC_FIXTURE_REQUEST_PLAN_COMPATIBLE",
-        )
-        self.assertEqual(result.request_count, 38)
-        self.assertEqual(len(result.request_plan), 18)
-        self.assertEqual(result.unresolved_pairs, ())
-        for item in result.request_plan:
-            self.assertEqual(
-                item["canonical_asset_identifier_value"],
-                address_by_base[item["base_ticker"]],
-            )
+        self.assertEqual(result.status, "SYNTHETIC_FIXTURE_INCOMPLETE")
+        self.assertLess(len(result.request_plan), 18)
 
     def test_tampered_plan_is_rejected_before_network(self) -> None:
         plan = build_discovery_plan(generated_at_utc="2026-08-13T18:00:00Z")

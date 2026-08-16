@@ -11,6 +11,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from unittest import mock
 
+from trading_mvp.src.slow_liquidity_official_identity_proposal import (
+    collected_spot_instrument,
+)
 from trading_mvp.src.slow_liquidity_official_identity_verification import (
     EXECUTION_APPROVED_STATUS,
     EXECUTION_MANIFEST_SCHEMA,
@@ -25,7 +28,9 @@ from trading_mvp.src.slow_liquidity_official_identity_verification import (
     RUNTIME_MANIFEST_SCHEMA,
     RUNTIME_REVISION_V5,
     RUNTIME_REVISION_V6,
+    RUNTIME_REVISION_SPOT_V2,
     RUNTIME_REVISION_V7,
+    SPOT_V2_OFFLINE_AUTHORIZATION_TEXT,
     TOPOLOGY_V4_RUNTIME_FILE_SHA256,
     TOPOLOGY_V4_RUNTIME_HASH,
     FetchedResponse,
@@ -33,6 +38,7 @@ from trading_mvp.src.slow_liquidity_official_identity_verification import (
     build_identity_result,
     build_offline_approval_receipt,
     build_runtime_manifest,
+    build_runtime_manifest_spot_v2,
     build_runtime_manifest_v7,
     canonical_hash_without,
     collect_identity_evidence,
@@ -83,6 +89,27 @@ IDENTITY_V6_RUNTIME_PATH = (
 IDENTITY_V7_RUNTIME_PATH = (
     REPO_ROOT
     / "docs/plans/slow-liquidity-official-identity-runtime-manifest-20260815-v7.json"
+)
+SPOT_V2_PROPOSAL_PATH = (
+    REPO_ROOT
+    / "docs/plans/drafts/"
+    "slow-liquidity-official-asset-identity-verification-proposal-20260815-spot-v2.json"
+)
+SPOT_V2_PROPOSAL_HASH = (
+    "4ff5732fed76dd70ab1208253dfdf617aa33ac9d55580dffe5d08d4f5cae86bf"
+)
+SPOT_V2_PROPOSAL_FILE_SHA256 = (
+    "64bedf76b55a1bdada04c9b627f0df5c93cc47a329a709783cad16aa1ba02d48"
+)
+SPOT_V2_OFFLINE_RECEIPT_PATH = (
+    REPO_ROOT
+    / "docs/agent-log/approvals/"
+    "2026-08-15-slow-liquidity-official-identity-offline-spot-v2-approval.json"
+)
+SPOT_V2_RUNTIME_MANIFEST_PATH = (
+    REPO_ROOT
+    / "docs/plans/"
+    "slow-liquidity-official-identity-runtime-manifest-20260815-spot-v2.json"
 )
 BASES = ("STETH", "WEETH", "CC", "OKB", "RAIN", "MNT", "USDD", "BDX", "EDGE")
 
@@ -156,7 +183,7 @@ def evidence_record(
 ) -> dict[str, object]:
     host = "www.mexc.com" if venue == "mexc" else "www.gate.com"
     prefix = "support/articles" if venue == "mexc" else "announcements/article"
-    instrument = f"{base}_USDT"
+    instrument = collected_spot_instrument(venue, base)
     fragment = canonical_evidence_assertion(
         venue=venue,
         base=base,
@@ -252,7 +279,8 @@ class IdentityDecisionTests(unittest.TestCase):
             "INSUFFICIENT_IDENTITY_VERIFIED_UNIVERSE_NO_RESCOPE_WITHOUT_NEW_APPROVAL",
         )
         self.assertEqual(result["verified_base_count"], 7)
-        self.assertEqual(result["unresolved_bases"], ["BDX", "EDGE"])
+        self.assertEqual(result["unresolved_bases"], ["BDX"])
+        self.assertEqual(result["rejected_bases"], ["EDGE"])
         self.assertFalse(result["evaluator_authorized"])
 
     def test_non_evm_identifiers_compare_exactly(self) -> None:
@@ -281,6 +309,84 @@ class IdentityDecisionTests(unittest.TestCase):
 
         self.assertEqual(result["rejected_bases"], ["EDGE"])
 
+    def test_requires_collected_spot_instruments_not_perp_tickers(self) -> None:
+        identifier = "0x" + "1" * 40
+        mexc = evidence_record(venue="mexc", base="STETH", identifier=identifier)
+        gate = evidence_record(venue="gateio", base="STETH", identifier=identifier)
+        mexc["instrument_id"] = "STETHUSDT"
+        gate["instrument_id"] = "STETH_USDT"
+        for record in (mexc, gate):
+            fragment = canonical_evidence_assertion(
+                venue=str(record["venue"]),
+                base="STETH",
+                instrument=str(record["instrument_id"]),
+                label="contract_address",
+                identifier=identifier,
+            )
+            record["evidence_locator_value"] = fragment
+            record["sanitized_evidence_fragment"] = fragment
+            record["evidence_fragment_sha256"] = hashlib.sha256(
+                fragment.encode()
+            ).hexdigest()
+
+        result = build_identity_result([mexc, gate])
+        self.assertEqual(result["base_decisions"]["STETH"]["decision"], "VERIFIED_SAME_CANONICAL_IDENTIFIER")
+
+        perp_mexc = evidence_record(venue="mexc", base="STETH", identifier=identifier)
+        perp_mexc["instrument_id"] = "STETH_USDT"
+        fragment = canonical_evidence_assertion(
+            venue="mexc",
+            base="STETH",
+            instrument="STETH_USDT",
+            label="contract_address",
+            identifier=identifier,
+        )
+        perp_mexc["evidence_locator_value"] = fragment
+        perp_mexc["sanitized_evidence_fragment"] = fragment
+        perp_mexc["evidence_fragment_sha256"] = hashlib.sha256(
+            fragment.encode()
+        ).hexdigest()
+        with self.assertRaisesRegex(IdentityVerificationError, "collected spot"):
+            build_identity_result([perp_mexc, gate])
+
+    def test_edge_and_rain_ambiguity_is_rejected_fail_closed(self) -> None:
+        records: list[dict[str, object]] = []
+        for index, base in enumerate(BASES, start=1):
+            if base in {"EDGE", "RAIN"}:
+                continue
+            identifier = f"0x{index:040x}"
+            records.append(evidence_record(venue="mexc", base=base, identifier=identifier))
+            records.append(
+                evidence_record(venue="gateio", base=base, identifier=identifier)
+            )
+
+        result = build_identity_result(records)
+
+        self.assertEqual(result["rejected_bases"], ["RAIN", "EDGE"])
+        self.assertEqual(result["unresolved_bases"], [])
+        self.assertEqual(
+            result["base_decisions"]["EDGE"]["reason"],
+            "AMBIGUOUS_KNOWN_TICKER_COLLISION",
+        )
+        self.assertEqual(
+            result["base_decisions"]["RAIN"]["decision"],
+            "REJECT_EXCLUDE_FAIL_CLOSED",
+        )
+
+        matching = list(records)
+        rain_id = "0x" + "a" * 40
+        matching.append(evidence_record(venue="mexc", base="RAIN", identifier=rain_id))
+        matching.append(evidence_record(venue="gateio", base="RAIN", identifier=rain_id))
+        ambiguous = build_identity_result(
+            matching,
+            metadata_ambiguity_bases=("RAIN",),
+        )
+        self.assertIn("RAIN", ambiguous["rejected_bases"])
+        self.assertEqual(
+            ambiguous["base_decisions"]["RAIN"]["reason"],
+            "AMBIGUOUS_KNOWN_TICKER_COLLISION",
+        )
+
     def test_rejects_ticker_only_or_non_allowlisted_evidence(self) -> None:
         record = evidence_record(venue="mexc", base="STETH", identifier="0x" + "1" * 40)
         record["canonical_asset_identifier_value"] = ""
@@ -296,28 +402,26 @@ class IdentityDecisionTests(unittest.TestCase):
 class SyntheticCollectionTests(unittest.TestCase):
     @staticmethod
     def metadata_response(url: str, instruments: tuple[str, ...]) -> FetchedResponse:
-        if url == "https://contract.mexc.com/api/v1/contract/detail":
+        if url == "https://api.mexc.com/api/v3/exchangeInfo":
             body = {
-                "success": True,
-                "code": 0,
-                "data": [
+                "symbols": [
                     {
                         "symbol": instrument,
-                        "baseCoin": instrument.removesuffix("_USDT"),
-                        "quoteCoin": "USDT",
-                        "settleCoin": "USDT",
-                        "state": 0,
-                        "apiAllowed": True,
+                        "baseAsset": instrument.removesuffix("USDT"),
+                        "quoteAsset": "USDT",
+                        "status": "ENABLED",
+                        "isSpotTradingAllowed": True,
                     }
                     for instrument in instruments
                 ],
             }
-        elif url == "https://api.gateio.ws/api/v4/futures/usdt/contracts":
+        elif url == "https://api.gateio.ws/api/v4/spot/currency_pairs":
             body = [
                 {
-                    "name": instrument,
-                    "status": "trading",
-                    "in_delisting": False,
+                    "id": instrument,
+                    "base": instrument.removesuffix("_USDT"),
+                    "quote": "USDT",
+                    "trade_status": "tradable",
                 }
                 for instrument in instruments
             ]
@@ -335,7 +439,7 @@ class SyntheticCollectionTests(unittest.TestCase):
         fragment = canonical_evidence_assertion(
             venue="mexc",
             base="STETH",
-            instrument="STETH_USDT",
+            instrument="STETHUSDT",
             label="contract_address",
             identifier=identifier,
         )
@@ -343,7 +447,7 @@ class SyntheticCollectionTests(unittest.TestCase):
             {
                 "venue": "mexc",
                 "base_ticker": "STETH",
-                "instrument_id": "STETH_USDT",
+                "instrument_id": "STETHUSDT",
                 "official_source_url": "https://www.mexc.com/support/articles/steth-identity",
                 "canonical_asset_identifier_namespace": "EVM_CONTRACT",
                 "canonical_asset_identifier_value": identifier,
@@ -357,9 +461,9 @@ class SyntheticCollectionTests(unittest.TestCase):
 
         def fetch(url: str) -> FetchedResponse:
             seen.append(url)
-            if url.startswith("https://contract.mexc.com/") or url.startswith(
-                "https://api.gateio.ws/"
-            ):
+            if url == "https://api.mexc.com/api/v3/exchangeInfo":
+                return self.metadata_response(url, ("STETHUSDT",))
+            if url == "https://api.gateio.ws/api/v4/spot/currency_pairs":
                 return self.metadata_response(url, ("STETH_USDT",))
             return FetchedResponse(
                 requested_url=url,
@@ -375,8 +479,8 @@ class SyntheticCollectionTests(unittest.TestCase):
         self.assertEqual(
             seen,
             [
-                "https://contract.mexc.com/api/v1/contract/detail",
-                "https://api.gateio.ws/api/v4/futures/usdt/contracts",
+                "https://api.mexc.com/api/v3/exchangeInfo",
+                "https://api.gateio.ws/api/v4/spot/currency_pairs",
                 request_plan[0]["official_source_url"],
             ],
         )
@@ -399,14 +503,14 @@ class SyntheticCollectionTests(unittest.TestCase):
         fragment = canonical_evidence_assertion(
             venue="mexc",
             base="STETH",
-            instrument="STETH_USDT",
+            instrument="STETHUSDT",
             label="contract_address",
             identifier=identifier,
         )
         plan = {
             "venue": "mexc",
             "base_ticker": "STETH",
-            "instrument_id": "STETH_USDT",
+            "instrument_id": "STETHUSDT",
             "official_source_url": "https://www.mexc.com/support/articles/steth-identity",
             "canonical_asset_identifier_namespace": "EVM_CONTRACT",
             "canonical_asset_identifier_value": identifier,
@@ -417,9 +521,9 @@ class SyntheticCollectionTests(unittest.TestCase):
         }
 
         def fetch(url: str) -> FetchedResponse:
-            if url.startswith("https://contract.mexc.com/") or url.startswith(
-                "https://api.gateio.ws/"
-            ):
+            if url == "https://api.mexc.com/api/v3/exchangeInfo":
+                return self.metadata_response(url, ("STETHUSDT",))
+            if url == "https://api.gateio.ws/api/v4/spot/currency_pairs":
                 return self.metadata_response(url, ("STETH_USDT",))
             return FetchedResponse(
                 url, url, 200, f"STETH contract_address {identifier}".encode()
@@ -429,7 +533,7 @@ class SyntheticCollectionTests(unittest.TestCase):
 
         self.assertEqual(bundle.request_count, 3)
         self.assertEqual(len(bundle.response_body_hashes), 3)
-        self.assertEqual(bundle.metadata_active_instruments["mexc"], ("STETH_USDT",))
+        self.assertEqual(bundle.metadata_active_instruments["mexc"], ("STETHUSDT",))
         self.assertEqual(bundle.metadata_active_instruments["gateio"], ("STETH_USDT",))
         self.assertNotIn("metadata_payload", json.dumps(bundle.records))
 
@@ -438,14 +542,14 @@ class SyntheticCollectionTests(unittest.TestCase):
         fragment = canonical_evidence_assertion(
             venue="mexc",
             base="STETH",
-            instrument="STETH_USDT",
+            instrument="STETHUSDT",
             label="contract_address",
             identifier=identifier,
         )
         plan = {
             "venue": "mexc",
             "base_ticker": "STETH",
-            "instrument_id": "STETH_USDT",
+            "instrument_id": "STETHUSDT",
             "official_source_url": "https://www.mexc.com/support/articles/steth-identity",
             "canonical_asset_identifier_namespace": "EVM_CONTRACT",
             "canonical_asset_identifier_value": identifier,
@@ -458,9 +562,9 @@ class SyntheticCollectionTests(unittest.TestCase):
 
         def fetch(url: str) -> FetchedResponse:
             nonlocal evidence_called
-            if url.startswith("https://contract.mexc.com/"):
+            if url == "https://api.mexc.com/api/v3/exchangeInfo":
                 return self.metadata_response(url, ())
-            if url.startswith("https://api.gateio.ws/"):
+            if url == "https://api.gateio.ws/api/v4/spot/currency_pairs":
                 return self.metadata_response(url, ("STETH_USDT",))
             evidence_called = True
             return FetchedResponse(
@@ -471,21 +575,21 @@ class SyntheticCollectionTests(unittest.TestCase):
 
         self.assertEqual(bundle.records, ())
         self.assertFalse(evidence_called)
-        self.assertEqual(bundle.missing_metadata_instruments, ("mexc:STETH_USDT",))
+        self.assertEqual(bundle.missing_metadata_instruments, ("mexc:STETHUSDT",))
 
     def test_rejects_redirect_oversize_or_missing_fragment(self) -> None:
         identifier = "0x" + "1" * 40
         fragment = canonical_evidence_assertion(
             venue="mexc",
             base="STETH",
-            instrument="STETH_USDT",
+            instrument="STETHUSDT",
             label="contract_address",
             identifier=identifier,
         )
         plan = {
             "venue": "mexc",
             "base_ticker": "STETH",
-            "instrument_id": "STETH_USDT",
+            "instrument_id": "STETHUSDT",
             "official_source_url": "https://www.mexc.com/support/articles/steth-identity",
             "canonical_asset_identifier_namespace": "EVM_CONTRACT",
             "canonical_asset_identifier_value": identifier,
@@ -496,9 +600,9 @@ class SyntheticCollectionTests(unittest.TestCase):
         }
         def violating_fetch(kind: str):
             def fetch(url: str) -> FetchedResponse:
-                if url.startswith("https://contract.mexc.com/") or url.startswith(
-                    "https://api.gateio.ws/"
-                ):
+                if url == "https://api.mexc.com/api/v3/exchangeInfo":
+                    return self.metadata_response(url, ("STETHUSDT",))
+                if url == "https://api.gateio.ws/api/v4/spot/currency_pairs":
                     return self.metadata_response(url, ("STETH_USDT",))
                 if kind == "redirect":
                     return FetchedResponse(
@@ -1337,28 +1441,18 @@ class ExecutionBoundaryTests(unittest.TestCase):
         )
         self.assertFalse(observed["execution_authorization"]["identity_output_allowed"])
 
-    def test_identity_runtime_v7_binds_current_code_and_closed_v6_parent(self) -> None:
+    def test_identity_runtime_v7_remains_historical_perp_and_execution_closed(self) -> None:
         observed = json.loads(IDENTITY_V7_RUNTIME_PATH.read_text(encoding="utf-8"))
-        launcher = (
-            REPO_ROOT / "tools/start_exact_approved_slow_liquidity_official_identity_visible.ps1"
-        )
-        expected = build_runtime_manifest_v7(
-            proposal_path=PROPOSAL_PATH,
-            expected_proposal_hash=PROPOSAL_HASH,
-            expected_proposal_file_sha256=PROPOSAL_FILE_SHA256,
-            approval_receipt_path=OFFLINE_RECEIPT_PATH,
-            parent_runtime_manifest_path=IDENTITY_V6_RUNTIME_PATH,
-            runtime_module_path=(
-                REPO_ROOT
-                / "trading_mvp/src/slow_liquidity_official_identity_verification.py"
-            ),
-            synthetic_tests_path=Path(__file__).resolve(),
-            launcher_path=launcher,
-            generated_at_utc=observed["generated_at_utc"],
-        )
 
-        self.assertEqual(observed, expected)
         self.assertEqual(observed["runtime_revision"], RUNTIME_REVISION_V7)
+        self.assertEqual(
+            observed["proposal"]["path"],
+            str(PROPOSAL_PATH),
+        )
+        self.assertEqual(
+            observed["verification_scope"]["market"],
+            "USDT_SETTLED_LINEAR_PERPETUAL",
+        )
         self.assertEqual(
             observed["refreeze_lineage"]["identity_runtime_v6"]["file_sha256"],
             PARENT_IDENTITY_V6_RUNTIME_FILE_SHA256,
@@ -1367,12 +1461,137 @@ class ExecutionBoundaryTests(unittest.TestCase):
             observed["refreeze_lineage"]["identity_runtime_v6"]["manifest_hash"],
             PARENT_IDENTITY_V6_RUNTIME_HASH,
         )
+        self.assertFalse(observed["execution_authorization"]["approved"])
+        self.assertFalse(
+            observed["execution_authorization"]["actual_network_run_allowed"]
+        )
+        self.assertFalse(observed["execution_authorization"]["identity_output_allowed"])
         self.assertFalse(
             observed["offline_refreeze_authorization"][
                 "invalid_execution_approval_artifacts_reused"
             ]
         )
-        validate_runtime_manifest(observed)
+
+
+class SpotV2OfflineFreezeTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+        self.receipt_path = self.root / "approvals" / "identity-offline-spot-v2.json"
+        self.manifest_path = self.root / "plans" / "identity-runtime-spot-v2.json"
+        self.module_path = (
+            REPO_ROOT / "trading_mvp/src/slow_liquidity_official_identity_verification.py"
+        )
+        self.tests_path = Path(__file__).resolve()
+        self.launcher_path = (
+            REPO_ROOT / "tools/start_exact_approved_slow_liquidity_official_identity_visible.ps1"
+        )
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def test_receipt_requires_exact_spot_v2_phrase_and_stays_offline(self) -> None:
+        receipt = build_offline_approval_receipt(
+            proposal_path=SPOT_V2_PROPOSAL_PATH,
+            expected_proposal_hash=SPOT_V2_PROPOSAL_HASH,
+            expected_proposal_file_sha256=SPOT_V2_PROPOSAL_FILE_SHA256,
+            approved_at_utc="2026-08-15T17:10:00Z",
+            user_authorization_text=SPOT_V2_OFFLINE_AUTHORIZATION_TEXT,
+            response_annotation_index=1,
+        )
+
+        self.assertEqual(receipt["proposal"]["proposal_hash"], SPOT_V2_PROPOSAL_HASH)
+        self.assertEqual(
+            receipt["user_authorization_text"],
+            SPOT_V2_OFFLINE_AUTHORIZATION_TEXT,
+        )
+        self.assertTrue(receipt["authorized_scope"]["runtime_manifest_creation"])
+        self.assertFalse(receipt["authorized_scope"]["actual_network_run"])
+        self.assertFalse(receipt["authorized_scope"]["identity_output"])
+        validate_offline_approval_receipt(
+            receipt,
+            proposal_path=SPOT_V2_PROPOSAL_PATH,
+            expected_proposal_hash=SPOT_V2_PROPOSAL_HASH,
+            expected_proposal_file_sha256=SPOT_V2_PROPOSAL_FILE_SHA256,
+        )
+        with self.assertRaisesRegex(IdentityVerificationError, "text mismatch"):
+            build_offline_approval_receipt(
+                proposal_path=SPOT_V2_PROPOSAL_PATH,
+                expected_proposal_hash=SPOT_V2_PROPOSAL_HASH,
+                expected_proposal_file_sha256=SPOT_V2_PROPOSAL_FILE_SHA256,
+                approved_at_utc="2026-08-15T17:10:00Z",
+                user_authorization_text="разрешаю",
+                response_annotation_index=1,
+            )
+
+    def test_runtime_manifest_binds_collected_spot_pairs_and_collision_fail_closed(self) -> None:
+        receipt = build_offline_approval_receipt(
+            proposal_path=SPOT_V2_PROPOSAL_PATH,
+            expected_proposal_hash=SPOT_V2_PROPOSAL_HASH,
+            expected_proposal_file_sha256=SPOT_V2_PROPOSAL_FILE_SHA256,
+            approved_at_utc="2026-08-15T17:10:00Z",
+            user_authorization_text=SPOT_V2_OFFLINE_AUTHORIZATION_TEXT,
+            response_annotation_index=1,
+        )
+        write_json(self.receipt_path, receipt)
+        manifest = build_runtime_manifest_spot_v2(
+            proposal_path=SPOT_V2_PROPOSAL_PATH,
+            expected_proposal_hash=SPOT_V2_PROPOSAL_HASH,
+            expected_proposal_file_sha256=SPOT_V2_PROPOSAL_FILE_SHA256,
+            approval_receipt_path=self.receipt_path,
+            runtime_module_path=self.module_path,
+            synthetic_tests_path=self.tests_path,
+            launcher_path=self.launcher_path,
+            generated_at_utc="2026-08-15T17:11:00Z",
+        )
+
+        self.assertEqual(manifest["runtime_revision"], RUNTIME_REVISION_SPOT_V2)
+        self.assertEqual(manifest["verification_scope"]["market"], "SPOT_USDT")
+        self.assertEqual(
+            manifest["identity_contract"]["collected_spot_instruments"]["mexc"]["EDGE"],
+            "EDGEUSDT",
+        )
+        self.assertEqual(
+            tuple(manifest["identity_contract"]["collision_fail_closed_bases"]),
+            ("EDGE", "RAIN"),
+        )
+        self.assertFalse(manifest["execution_authorization"]["approved"])
+        self.assertFalse(manifest["execution_authorization"]["actual_network_run_allowed"])
+        self.assertFalse(manifest["execution_authorization"]["identity_output_allowed"])
+        self.assertFalse(
+            manifest["offline_refreeze_authorization"]["existing_offline_receipt_reused"]
+        )
+        validate_runtime_manifest(manifest)
+
+    def test_checked_in_spot_v2_freeze_matches_generator(self) -> None:
+        observed_receipt = json.loads(
+            SPOT_V2_OFFLINE_RECEIPT_PATH.read_text(encoding="utf-8")
+        )
+        expected_receipt = build_offline_approval_receipt(
+            proposal_path=SPOT_V2_PROPOSAL_PATH,
+            expected_proposal_hash=SPOT_V2_PROPOSAL_HASH,
+            expected_proposal_file_sha256=SPOT_V2_PROPOSAL_FILE_SHA256,
+            approved_at_utc=observed_receipt["approved_at_utc"],
+            user_authorization_text=SPOT_V2_OFFLINE_AUTHORIZATION_TEXT,
+            response_annotation_index=1,
+        )
+        self.assertEqual(observed_receipt, expected_receipt)
+
+        observed_runtime = json.loads(
+            SPOT_V2_RUNTIME_MANIFEST_PATH.read_text(encoding="utf-8")
+        )
+        expected_runtime = build_runtime_manifest_spot_v2(
+            proposal_path=SPOT_V2_PROPOSAL_PATH,
+            expected_proposal_hash=SPOT_V2_PROPOSAL_HASH,
+            expected_proposal_file_sha256=SPOT_V2_PROPOSAL_FILE_SHA256,
+            approval_receipt_path=SPOT_V2_OFFLINE_RECEIPT_PATH,
+            runtime_module_path=self.module_path,
+            synthetic_tests_path=self.tests_path,
+            launcher_path=self.launcher_path,
+            generated_at_utc=observed_runtime["generated_at_utc"],
+        )
+        self.assertEqual(observed_runtime, expected_runtime)
+        self.assertFalse(observed_runtime["execution_authorization"]["approved"])
 
     def test_launcher_default_binds_current_runtime_manifest_v7(self) -> None:
         launcher = (

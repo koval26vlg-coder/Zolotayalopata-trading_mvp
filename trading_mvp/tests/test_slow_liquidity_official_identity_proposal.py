@@ -13,10 +13,12 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from slow_liquidity_official_identity_proposal import (  # noqa: E402
+    COLLISION_FAIL_CLOSED_BASES,
     EXPECTED_BASES,
     IdentityProposalError,
     build_proposal,
     canonical_hash,
+    collected_spot_instrument,
     validate_proposal,
 )
 
@@ -190,11 +192,79 @@ class SlowLiquidityOfficialIdentityProposalTests(unittest.TestCase):
         with self.assertRaisesRegex(IdentityProposalError, "search output"):
             validate_proposal(proposal, ROOT)
 
+    def test_identity_is_bound_to_collected_spot_pairs_not_perps(self) -> None:
+        proposal = copy.deepcopy(self.proposal)
+        scope = proposal["verification_scope"]
+        instruments = proposal["identity_contract"]["collected_spot_instruments"]
+
+        self.assertEqual(scope["market"], "SPOT_USDT")
+        self.assertTrue(scope["identity_must_match_collected_ohlcv_instruments"])
+        self.assertEqual(
+            proposal["official_source_contract"]["metadata_endpoints"],
+            [
+                {
+                    "venue": "mexc",
+                    "url": "https://api.mexc.com/api/v3/exchangeInfo",
+                    "method": "GET",
+                },
+                {
+                    "venue": "gateio",
+                    "url": "https://api.gateio.ws/api/v4/spot/currency_pairs",
+                    "method": "GET",
+                },
+            ],
+        )
+        self.assertEqual(
+            instruments["mexc"]["STETH"],
+            collected_spot_instrument("mexc", "STETH"),
+        )
+        self.assertEqual(instruments["mexc"]["STETH"], "STETHUSDT")
+        self.assertEqual(instruments["gateio"]["STETH"], "STETH_USDT")
+        self.assertNotIn(
+            "perpetual",
+            proposal["objective"].lower(),
+        )
+        self.assertNotIn(
+            "perpetual",
+            proposal["identity_contract"]["same_underlying_acceptance"].lower(),
+        )
+
+    def test_perp_market_or_futures_endpoints_are_rejected(self) -> None:
+        proposal = copy.deepcopy(self.proposal)
+        proposal["verification_scope"]["market"] = "USDT_SETTLED_LINEAR_PERPETUAL"
+        proposal["proposal_hash"] = canonical_hash(proposal)
+        with self.assertRaisesRegex(IdentityProposalError, "market"):
+            validate_proposal(proposal, ROOT)
+
+        proposal = copy.deepcopy(self.proposal)
+        proposal["official_source_contract"]["metadata_endpoints"][0]["url"] = (
+            "https://contract.mexc.com/api/v1/contract/detail"
+        )
+        proposal["proposal_hash"] = canonical_hash(proposal)
+        with self.assertRaisesRegex(IdentityProposalError, "metadata endpoints"):
+            validate_proposal(proposal, ROOT)
+
+    def test_edge_and_rain_are_fail_closed_on_any_ambiguity(self) -> None:
+        proposal = copy.deepcopy(self.proposal)
+        identity = proposal["identity_contract"]
+
+        self.assertEqual(tuple(identity["collision_fail_closed_bases"]), COLLISION_FAIL_CLOSED_BASES)
+        self.assertEqual(COLLISION_FAIL_CLOSED_BASES, ("EDGE", "RAIN"))
+        self.assertEqual(
+            identity["collision_ambiguity_disposition"],
+            "REJECT_EXCLUDE_FAIL_CLOSED",
+        )
+
+        identity["collision_fail_closed_bases"] = ["EDGE"]
+        proposal["proposal_hash"] = canonical_hash(proposal)
+        with self.assertRaisesRegex(IdentityProposalError, "collision"):
+            validate_proposal(proposal, ROOT)
+
     def test_checked_in_draft_matches_generator(self) -> None:
         path = (
             ROOT
             / "docs/plans/drafts/slow-liquidity-official-asset-identity-"
-            "verification-proposal-20260813-v1.json"
+            "verification-proposal-20260815-spot-v2.json"
         )
         checked_in = json.loads(path.read_text(encoding="utf-8"))
         generated = build_proposal(ROOT, checked_in["generated_at_utc"])

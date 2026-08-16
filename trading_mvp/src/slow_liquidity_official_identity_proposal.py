@@ -10,7 +10,7 @@ from typing import Any, Mapping, Sequence
 
 
 SCHEMA = "trading_mvp_slow_liquidity_official_identity_proposal_v1"
-PROPOSAL_ID = "slow_liquidity_official_asset_identity_verification_20260813_v1"
+PROPOSAL_ID = "slow_liquidity_official_asset_identity_verification_20260815_spot_v2"
 SOURCE_RUN_ID = (
     "slow_liquidity_history_recollect_20260813_"
     "pagecap_provenance_slotintegrity_v6"
@@ -40,9 +40,29 @@ QUALITY_DECISION = (
     "SLOW_LIQUIDITY_HISTORY_RECOLLECT_QUALITY_ACCEPTED_"
     "AWAIT_OFFICIAL_IDENTITY_APPROVAL"
 )
-MEXC_METADATA_ENDPOINT = "https://contract.mexc.com/api/v1/contract/detail"
-GATE_METADATA_ENDPOINT = "https://api.gateio.ws/api/v4/futures/usdt/contracts"
+MEXC_METADATA_ENDPOINT = "https://api.mexc.com/api/v3/exchangeInfo"
+GATE_METADATA_ENDPOINT = "https://api.gateio.ws/api/v4/spot/currency_pairs"
+SPOT_MARKET = "SPOT_USDT"
+COLLISION_FAIL_CLOSED_BASES = ("EDGE", "RAIN")
 HASH_PATTERN = re.compile(r"^[0-9a-f]{64}$")
+
+
+def collected_spot_instrument(venue: str, base: str, quote: str = "USDT") -> str:
+    if venue == "gateio":
+        return f"{base}_{quote}"
+    if venue == "mexc":
+        return f"{base}{quote}"
+    raise IdentityProposalError(f"unsupported collected spot venue: {venue}")
+
+
+def collected_spot_instruments(
+    venues: Sequence[str] = EXPECTED_VENUES,
+    bases: Sequence[str] = EXPECTED_BASES,
+) -> dict[str, dict[str, str]]:
+    return {
+        venue: {base: collected_spot_instrument(venue, base) for base in bases}
+        for venue in venues
+    }
 
 
 class IdentityProposalError(ValueError):
@@ -211,9 +231,20 @@ def build_proposal(repo_root: str | Path, generated_at_utc: str) -> dict[str, An
         "status": "AWAIT_EXACT_HASH_BOUND_APPROVAL",
         "generated_at_utc": generated_at_utc,
         "research_only": True,
+        "supersedes": {
+            "proposal_id": (
+                "slow_liquidity_official_asset_identity_verification_20260813_v1"
+            ),
+            "reason": (
+                "Identity must bind the collected USDT spot OHLCV instruments, "
+                "not perpetual contracts. EDGE and RAIN are fail-closed on any "
+                "ticker ambiguity."
+            ),
+        },
         "objective": (
-            "Verify whether each exact MEXC and Gate perpetual instrument refers "
-            "to the same canonical asset, using official public sources only."
+            "Verify whether each exact collected MEXC and Gate USDT spot pair "
+            "refers to the same canonical asset, using official public sources "
+            "only. EDGE and RAIN are fail-closed on any ticker ambiguity."
         ),
         "source_bindings": {
             "recollect_plan": _binding(
@@ -242,7 +273,9 @@ def build_proposal(repo_root: str | Path, generated_at_utc: str) -> dict[str, An
         },
         "verification_scope": {
             "venues": list(EXPECTED_VENUES),
-            "market": "USDT_SETTLED_LINEAR_PERPETUAL",
+            "market": SPOT_MARKET,
+            "collected_history_market": SPOT_MARKET,
+            "identity_must_match_collected_ohlcv_instruments": True,
             "bases": list(EXPECTED_BASES),
             "base_count": len(EXPECTED_BASES),
             "quote": "USDT",
@@ -317,9 +350,12 @@ def build_proposal(repo_root: str | Path, generated_at_utc: str) -> dict[str, An
                 "evidence_fragment_sha256",
                 "sanitized_evidence_fragment",
             ],
+            "collected_spot_instruments": collected_spot_instruments(),
+            "collision_fail_closed_bases": list(COLLISION_FAIL_CLOSED_BASES),
+            "collision_ambiguity_disposition": "REJECT_EXCLUDE_FAIL_CLOSED",
             "same_underlying_acceptance": (
                 "Both venues independently publish the same canonical asset "
-                "identifier for the exact perpetual base."
+                "identifier for the exact collected USDT spot instrument."
             ),
             "evm_identifier_comparison": "ASCII_CASE_INSENSITIVE",
             "non_evm_identifier_comparison": "EXACT",
@@ -402,11 +438,12 @@ def build_proposal(repo_root: str | Path, generated_at_utc: str) -> dict[str, An
             "required_action": "REQUEST_EXACT_HASH_BOUND_IDENTITY_APPROVAL",
             "approval_phrase_template": (
                 "Разрешаю slow liquidity official identity offline implementation "
-                "and refreeze v1 "
+                "and refreeze spot v2 "
                 "по proposal_hash=<proposal_hash> и "
                 "proposal_file_sha256=<proposal_file_sha256>: реализовать runtime "
-                "и synthetic tests, создать immutable code-bound runtime manifest. "
-                "Без сети и identity output."
+                "и synthetic tests, создать immutable code-bound runtime manifest "
+                "для спот-пар собранного v6 датасета. EDGE и RAIN fail-closed "
+                "при любой двусмысленности. Без сети и identity output."
             ),
             "after_offline_implementation": (
                 "Request a separate exact code-bound execution approval before any "
@@ -454,7 +491,12 @@ def validate_proposal(
     _require(isinstance(scope, dict), "verification scope is missing")
     _require(tuple(scope.get("bases", [])) == EXPECTED_BASES, "proposal bases changed")
     _require(tuple(scope.get("venues", [])) == EXPECTED_VENUES, "proposal venues changed")
-    _require(scope.get("market") == "USDT_SETTLED_LINEAR_PERPETUAL", "market changed")
+    _require(scope.get("market") == SPOT_MARKET, "market changed")
+    _require(scope.get("collected_history_market") == SPOT_MARKET, "collected history market changed")
+    _require(
+        scope.get("identity_must_match_collected_ohlcv_instruments") is True,
+        "collected OHLCV instrument binding disabled",
+    )
     _require(scope.get("base_count") == len(EXPECTED_BASES), "base count changed")
     _require(scope.get("quote") == "USDT", "quote changed")
     _require(scope.get("all_bases_must_be_reviewed") is True, "partial review enabled")
@@ -575,9 +617,23 @@ def validate_proposal(
         identity.get("same_underlying_acceptance")
         == (
             "Both venues independently publish the same canonical asset "
-            "identifier for the exact perpetual base."
+            "identifier for the exact collected USDT spot instrument."
         ),
         "same-underlying rule changed",
+    )
+    _require(
+        identity.get("collected_spot_instruments") == collected_spot_instruments(),
+        "collected spot instruments changed",
+    )
+    _require(
+        tuple(identity.get("collision_fail_closed_bases") or ())
+        == COLLISION_FAIL_CLOSED_BASES,
+        "collision fail-closed bases changed",
+    )
+    _require(
+        identity.get("collision_ambiguity_disposition")
+        == "REJECT_EXCLUDE_FAIL_CLOSED",
+        "collision ambiguity disposition changed",
     )
     _require(
         identity.get("evm_identifier_comparison") == "ASCII_CASE_INSENSITIVE",

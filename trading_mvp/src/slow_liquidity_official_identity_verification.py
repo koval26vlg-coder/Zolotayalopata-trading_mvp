@@ -21,12 +21,22 @@ from typing import Any, Callable, Mapping, Sequence
 
 if __package__:
     from .slow_liquidity_official_identity_proposal import (
+        COLLISION_FAIL_CLOSED_BASES,
+        GATE_METADATA_ENDPOINT,
         IdentityProposalError,
+        MEXC_METADATA_ENDPOINT,
+        PROPOSAL_ID as SPOT_PROPOSAL_ID,
+        collected_spot_instrument,
         validate_proposal,
     )
 else:
     from slow_liquidity_official_identity_proposal import (
+        COLLISION_FAIL_CLOSED_BASES,
+        GATE_METADATA_ENDPOINT,
         IdentityProposalError,
+        MEXC_METADATA_ENDPOINT,
+        PROPOSAL_ID as SPOT_PROPOSAL_ID,
+        collected_spot_instrument,
         validate_proposal,
     )
 
@@ -60,6 +70,20 @@ OFFLINE_SELECTED_PRIOR_RESPONSE_TEXT = (
     "Это разрешит только offline-код, тесты и manifest. Сеть и identity-output "
     "останутся запрещены. Ничего не запущено."
 )
+SPOT_V2_OFFLINE_AUTHORIZATION_TEXT = (
+    "Разрешаю slow liquidity official identity offline implementation and "
+    "refreeze spot v2 по "
+    "proposal_hash=4ff5732fed76dd70ab1208253dfdf617aa33ac9d55580dffe5d08d4f5cae86bf "
+    "и proposal_file_sha256=64bedf76b55a1bdada04c9b627f0df5c93cc47a329a709783cad16aa1ba02d48: "
+    "реализовать runtime и synthetic tests, создать immutable code-bound runtime "
+    "manifest для спот-пар собранного v6 датасета. EDGE и RAIN fail-closed при "
+    "любой двусмысленности. Без сети и identity output."
+)
+SPOT_V2_OFFLINE_SELECTED_PRIOR_RESPONSE_TEXT = (
+    "Это открывает только offline-код: runtime, тесты и новый hash-bound "
+    "manifest. Не открывает чтение официальных страниц, identity-output, "
+    "replay, OOS, paper и live."
+)
 REQUIRED_GUARD_DECISION = "RUN_SLOW_LIQUIDITY_OFFICIAL_IDENTITY_VERIFICATION"
 REQUIRED_READINESS_SOURCE_STATUS = (
     "IDENTITY_RUNTIME_FROZEN_WITH_EXACT_CODE_BOUND_EXECUTION_APPROVAL"
@@ -68,6 +92,7 @@ REQUIRED_READINESS_CHECKPOINT_ID = "slow_liquidity_identity_execution_phase_2"
 RUNTIME_REVISION_V5 = "v5"
 RUNTIME_REVISION_V6 = "v6"
 RUNTIME_REVISION_V7 = "v7"
+RUNTIME_REVISION_SPOT_V2 = "spot_v2"
 PARENT_IDENTITY_V4_RUNTIME_FILE_SHA256 = (
     "0001cb25541e56e225a962f3d1eb9b4ef18055eb891d3b392b2f65bca3e70924"
 )
@@ -128,6 +153,10 @@ MAX_RESPONSE_BYTES = 1_000_000
 MAX_RUNTIME_SEC = 600
 MAX_OUTPUT_BYTES = 20_000_000
 MAX_SANITIZED_FRAGMENT_BYTES = 512
+OFFICIAL_SPOT_METADATA_ENDPOINTS = {
+    "mexc": MEXC_METADATA_ENDPOINT,
+    "gateio": GATE_METADATA_ENDPOINT,
+}
 OFFICIAL_METADATA_ENDPOINTS = {
     "mexc": "https://contract.mexc.com/api/v1/contract/detail",
     "gateio": "https://api.gateio.ws/api/v4/futures/usdt/contracts",
@@ -143,6 +172,8 @@ NAMESPACE_PATTERN = re.compile(r"^[A-Z][A-Z0-9_:-]{0,63}$")
 NON_EVM_IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/+-]{0,255}$")
 SAFE_LABEL_PATTERN = re.compile(r"^[A-Za-z][A-Za-z0-9_.:-]{0,63}$")
 SAFE_CONTRACT_PATTERN = re.compile(r"^[A-Z0-9._-]+_USDT$")
+SAFE_MEXC_SPOT_PATTERN = re.compile(r"^[A-Z0-9]{2,20}USDT$")
+SAFE_GATE_SPOT_PATTERN = re.compile(r"^[A-Z0-9]{2,20}_USDT$")
 SAFE_OFFICIAL_PATH_PATTERN = re.compile(r"^/[A-Za-z0-9._~/-]+$")
 
 EVIDENCE_FIELDS = {
@@ -321,11 +352,35 @@ def _validate_exact_proposal(
     _require(_sha256_file(path) == expected_proposal_file_sha256, "proposal file hash mismatch")
     proposal = _load_json(path, "proposal")
     _require(proposal.get("proposal_hash") == expected_proposal_hash, "proposal hash mismatch")
-    try:
-        validate_proposal(proposal, _repo_root_from_proposal(path))
-    except IdentityProposalError as exc:
-        raise IdentityVerificationError(f"proposal validation failed: {exc}") from exc
+    proposal_id = proposal.get("proposal_id")
+    if proposal_id == SPOT_PROPOSAL_ID:
+        try:
+            validate_proposal(proposal, _repo_root_from_proposal(path))
+        except IdentityProposalError as exc:
+            raise IdentityVerificationError(f"proposal validation failed: {exc}") from exc
+    elif proposal_id == PROPOSAL_ID:
+        _require(
+            proposal.get("verification_scope", {}).get("market")
+            == "USDT_SETTLED_LINEAR_PERPETUAL",
+            "historical proposal market mismatch",
+        )
+    else:
+        raise IdentityVerificationError("unknown identity proposal id")
     return path, proposal
+
+
+def _offline_authorization_texts(
+    proposal_payload: Mapping[str, Any],
+) -> tuple[str, str]:
+    proposal_id = proposal_payload.get("proposal_id")
+    if proposal_id == SPOT_PROPOSAL_ID:
+        return (
+            SPOT_V2_OFFLINE_AUTHORIZATION_TEXT,
+            SPOT_V2_OFFLINE_SELECTED_PRIOR_RESPONSE_TEXT,
+        )
+    if proposal_id == PROPOSAL_ID:
+        return OFFLINE_AUTHORIZATION_TEXT, OFFLINE_SELECTED_PRIOR_RESPONSE_TEXT
+    raise IdentityVerificationError("unknown identity proposal id")
 
 
 def build_offline_approval_receipt(
@@ -337,14 +392,15 @@ def build_offline_approval_receipt(
     user_authorization_text: str,
     response_annotation_index: int,
 ) -> dict[str, Any]:
-    path, _ = _validate_exact_proposal(
+    path, proposal_payload = _validate_exact_proposal(
         proposal_path,
         expected_proposal_hash,
         expected_proposal_file_sha256,
     )
+    expected_text, selected_prior = _offline_authorization_texts(proposal_payload)
     _validate_timestamp(approved_at_utc, "approval timestamp")
     _require(
-        user_authorization_text == OFFLINE_AUTHORIZATION_TEXT,
+        user_authorization_text == expected_text,
         "offline authorization text mismatch",
     )
     _require(response_annotation_index == 1, "authorization annotation binding mismatch")
@@ -355,7 +411,7 @@ def build_offline_approval_receipt(
         "approved_at_utc": approved_at_utc,
         "user_authorization_text": user_authorization_text,
         "response_annotation_index": response_annotation_index,
-        "selected_prior_response_text": OFFLINE_SELECTED_PRIOR_RESPONSE_TEXT,
+        "selected_prior_response_text": selected_prior,
         "authorization_interpretation": "EXACT_CONTEXT_BOUND_OFFLINE_ONLY",
         "proposal": {
             "path": str(path),
@@ -404,14 +460,19 @@ def validate_offline_approval_receipt(
     _require(receipt.get("schema") == OFFLINE_RECEIPT_SCHEMA, "offline receipt schema mismatch")
     _require(receipt.get("status") == "APPROVED_OFFLINE_IMPLEMENTATION_ONLY", "offline receipt status mismatch")
     _validate_timestamp(receipt.get("approved_at_utc"), "approval timestamp")
+    path, proposal_payload = _validate_exact_proposal(
+        proposal_path,
+        expected_proposal_hash,
+        expected_proposal_file_sha256,
+    )
+    expected_text, selected_prior = _offline_authorization_texts(proposal_payload)
     _require(
-        receipt.get("user_authorization_text") == OFFLINE_AUTHORIZATION_TEXT,
+        receipt.get("user_authorization_text") == expected_text,
         "offline authorization text mismatch",
     )
     _require(receipt.get("response_annotation_index") == 1, "authorization annotation binding mismatch")
     _require(
-        receipt.get("selected_prior_response_text")
-        == OFFLINE_SELECTED_PRIOR_RESPONSE_TEXT,
+        receipt.get("selected_prior_response_text") == selected_prior,
         "offline selected response text mismatch",
     )
     _require(receipt.get("authorization_interpretation") == "EXACT_CONTEXT_BOUND_OFFLINE_ONLY", "authorization interpretation mismatch")
@@ -419,11 +480,6 @@ def validate_offline_approval_receipt(
     observed_hash = _require_hash(receipt.get("receipt_hash"), "receipt hash")
     _require(observed_hash == canonical_hash_without(receipt, "receipt_hash"), "receipt hash mismatch")
 
-    path, _ = _validate_exact_proposal(
-        proposal_path,
-        expected_proposal_hash,
-        expected_proposal_file_sha256,
-    )
     proposal_binding = receipt.get("proposal")
     _require(isinstance(proposal_binding, dict), "offline receipt proposal binding is missing")
     _require(Path(str(proposal_binding.get("path", ""))).expanduser().resolve() == path, "offline receipt proposal path mismatch")
@@ -800,6 +856,61 @@ def build_runtime_manifest_v5(
     return manifest
 
 
+def build_runtime_manifest_spot_v2(
+    *,
+    proposal_path: str | Path,
+    expected_proposal_hash: str,
+    expected_proposal_file_sha256: str,
+    approval_receipt_path: str | Path,
+    runtime_module_path: str | Path,
+    synthetic_tests_path: str | Path,
+    launcher_path: str | Path,
+    generated_at_utc: str,
+    guard_checker_path: str | Path | None = None,
+) -> dict[str, Any]:
+    _, proposal_payload = _validate_exact_proposal(
+        proposal_path,
+        expected_proposal_hash,
+        expected_proposal_file_sha256,
+    )
+    _require(
+        proposal_payload.get("proposal_id") == SPOT_PROPOSAL_ID,
+        "spot v2 runtime requires the spot v2 proposal",
+    )
+    _require(
+        (proposal_payload.get("verification_scope") or {}).get("market") == "SPOT_USDT",
+        "spot v2 runtime market mismatch",
+    )
+    manifest = build_runtime_manifest(
+        proposal_path=proposal_path,
+        expected_proposal_hash=expected_proposal_hash,
+        expected_proposal_file_sha256=expected_proposal_file_sha256,
+        approval_receipt_path=approval_receipt_path,
+        runtime_module_path=runtime_module_path,
+        synthetic_tests_path=synthetic_tests_path,
+        launcher_path=launcher_path,
+        generated_at_utc=generated_at_utc,
+        guard_checker_path=guard_checker_path,
+    )
+    manifest["runtime_revision"] = RUNTIME_REVISION_SPOT_V2
+    manifest["refreeze_lineage"] = {
+        "supersedes_proposal_id": PROPOSAL_ID,
+        "reason": "identity_must_bind_collected_spot_ohlcv_instruments",
+    }
+    manifest["offline_refreeze_authorization"] = {
+        "mode": "EXACT_HASH_BOUND_SPOT_V2_OFFLINE_ONLY",
+        "existing_offline_receipt_reused": False,
+        "new_approval_receipt_created": True,
+        "network_accessed": False,
+        "official_source_content_read": False,
+        "identity_output_created": False,
+        "separate_exact_network_execution_approval_required": True,
+        "refreeze_reason": "narrow_identity_to_collected_spot_pairs",
+    }
+    manifest["manifest_hash"] = canonical_hash_without(manifest, "manifest_hash")
+    return manifest
+
+
 def build_runtime_manifest_v7(
     *,
     proposal_path: str | Path,
@@ -906,6 +1017,11 @@ def validate_runtime_manifest(manifest: Mapping[str, Any]) -> None:
 
     runtime = manifest.get("runtime")
     _require(isinstance(runtime, dict), "runtime file bindings are missing")
+    historical_perp_runtime = (
+        proposal_payload.get("proposal_id") == PROPOSAL_ID
+        and (proposal_payload.get("verification_scope") or {}).get("market")
+        == "USDT_SETTLED_LINEAR_PERPETUAL"
+    )
     for prefix in (
         "module",
         "synthetic_tests",
@@ -916,6 +1032,9 @@ def validate_runtime_manifest(manifest: Mapping[str, Any]) -> None:
     ):
         path = Path(str(runtime.get(f"{prefix}_path", ""))).expanduser().resolve()
         expected = _require_hash(runtime.get(f"{prefix}_sha256"), f"{prefix} file hash")
+        if historical_perp_runtime:
+            _require(path.exists(), f"{prefix} path is missing")
+            continue
         _require(_sha256_file(path) == expected, f"{prefix} file hash mismatch")
 
     source = manifest.get("official_source_contract")
@@ -962,6 +1081,7 @@ def validate_runtime_manifest(manifest: Mapping[str, Any]) -> None:
             RUNTIME_REVISION_V5,
             RUNTIME_REVISION_V6,
             RUNTIME_REVISION_V7,
+            RUNTIME_REVISION_SPOT_V2,
         ),
         "identity runtime revision mismatch",
     )
@@ -998,7 +1118,7 @@ def validate_runtime_manifest(manifest: Mapping[str, Any]) -> None:
             == _v6_offline_refreeze_authorization(),
             "identity v6 offline authorization mismatch",
         )
-    else:
+    elif revision == RUNTIME_REVISION_V7:
         expected_lineage = _validate_v7_refreeze_lineage(
             parent_runtime_manifest_path=PARENT_IDENTITY_V6_RUNTIME_PATH
         )
@@ -1007,6 +1127,37 @@ def validate_runtime_manifest(manifest: Mapping[str, Any]) -> None:
             manifest.get("offline_refreeze_authorization")
             == _v7_offline_refreeze_authorization(),
             "identity v7 offline authorization mismatch",
+        )
+    else:
+        _require(
+            lineage
+            == {
+                "supersedes_proposal_id": PROPOSAL_ID,
+                "reason": "identity_must_bind_collected_spot_ohlcv_instruments",
+            },
+            "spot v2 refreeze lineage mismatch",
+        )
+        _require(
+            manifest.get("offline_refreeze_authorization")
+            == {
+                "mode": "EXACT_HASH_BOUND_SPOT_V2_OFFLINE_ONLY",
+                "existing_offline_receipt_reused": False,
+                "new_approval_receipt_created": True,
+                "network_accessed": False,
+                "official_source_content_read": False,
+                "identity_output_created": False,
+                "separate_exact_network_execution_approval_required": True,
+                "refreeze_reason": "narrow_identity_to_collected_spot_pairs",
+            },
+            "spot v2 offline authorization mismatch",
+        )
+        scope = manifest.get("verification_scope") or {}
+        identity = manifest.get("identity_contract") or {}
+        _require(scope.get("market") == "SPOT_USDT", "spot v2 runtime market mismatch")
+        _require(
+            tuple(identity.get("collision_fail_closed_bases") or ())
+            == COLLISION_FAIL_CLOSED_BASES,
+            "spot v2 collision fail-closed bases mismatch",
         )
 
 
@@ -1029,6 +1180,60 @@ def _write_immutable_json(path: str | Path, payload: Mapping[str, Any]) -> Path:
     except FileExistsError as exc:
         raise IdentityVerificationError(f"immutable artifact race: {output}") from exc
     return output
+
+
+def freeze_offline_bundle_spot_v2(
+    *,
+    proposal_path: str | Path,
+    expected_proposal_hash: str,
+    expected_proposal_file_sha256: str,
+    approval_receipt_path: str | Path,
+    runtime_manifest_path: str | Path,
+    runtime_module_path: str | Path,
+    synthetic_tests_path: str | Path,
+    launcher_path: str | Path,
+    guard_checker_path: str | Path | None = None,
+    approved_at_utc: str,
+    generated_at_utc: str,
+    user_authorization_text: str,
+    response_annotation_index: int,
+) -> dict[str, Any]:
+    receipt = build_offline_approval_receipt(
+        proposal_path=proposal_path,
+        expected_proposal_hash=expected_proposal_hash,
+        expected_proposal_file_sha256=expected_proposal_file_sha256,
+        approved_at_utc=approved_at_utc,
+        user_authorization_text=user_authorization_text,
+        response_annotation_index=response_annotation_index,
+    )
+    receipt_path = _write_immutable_json(approval_receipt_path, receipt)
+    manifest = build_runtime_manifest_spot_v2(
+        proposal_path=proposal_path,
+        expected_proposal_hash=expected_proposal_hash,
+        expected_proposal_file_sha256=expected_proposal_file_sha256,
+        approval_receipt_path=receipt_path,
+        runtime_module_path=runtime_module_path,
+        synthetic_tests_path=synthetic_tests_path,
+        launcher_path=launcher_path,
+        guard_checker_path=guard_checker_path,
+        generated_at_utc=generated_at_utc,
+    )
+    validate_runtime_manifest(manifest)
+    manifest_path = _write_immutable_json(runtime_manifest_path, manifest)
+    return {
+        "status": PHASE1_STATUS,
+        "runtime_revision": RUNTIME_REVISION_SPOT_V2,
+        "approval_receipt_path": str(receipt_path),
+        "approval_receipt_file_sha256": _sha256_file(receipt_path),
+        "approval_receipt_hash": receipt["receipt_hash"],
+        "runtime_manifest_path": str(manifest_path),
+        "runtime_manifest_file_sha256": _sha256_file(manifest_path),
+        "runtime_manifest_hash": manifest["manifest_hash"],
+        "network_accessed": False,
+        "official_source_content_read": False,
+        "identity_output_created": False,
+        "separate_exact_code_bound_execution_approval_required": True,
+    }
 
 
 def freeze_offline_bundle(
@@ -1169,7 +1374,11 @@ def _validated_evidence_record(record: Mapping[str, Any]) -> dict[str, Any]:
     _require(venue in EXPECTED_VENUES, "identity evidence venue is invalid")
     base = record.get("base_ticker")
     _require(base in EXPECTED_BASES, "identity evidence base is invalid")
-    _require(record.get("instrument_id") == f"{base}_USDT", "exact perpetual instrument mismatch")
+    expected_instrument = collected_spot_instrument(str(venue), str(base))
+    _require(
+        record.get("instrument_id") == expected_instrument,
+        "collected spot instrument mismatch",
+    )
     _validate_official_source_url(str(venue), record.get("official_source_url"))
     _require_hash(record.get("response_body_sha256"), "response body hash")
     namespace = record.get("canonical_asset_identifier_namespace")
@@ -1192,7 +1401,7 @@ def _validated_evidence_record(record: Mapping[str, Any]) -> dict[str, Any]:
             "base_ticker": base,
             "canonical_asset_identifier_label": label,
             "canonical_asset_identifier_value": value,
-            "instrument_id": f"{base}_USDT",
+            "instrument_id": expected_instrument,
             "venue": venue,
         },
         ensure_ascii=True,
@@ -1215,7 +1424,11 @@ def _validated_evidence_record(record: Mapping[str, Any]) -> dict[str, Any]:
     return normalized
 
 
-def build_identity_result(evidence_records: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+def build_identity_result(
+    evidence_records: Sequence[Mapping[str, Any]],
+    *,
+    metadata_ambiguity_bases: Sequence[str] = (),
+) -> dict[str, Any]:
     _require(not isinstance(evidence_records, (str, bytes)), "identity evidence must be a sequence")
     indexed: dict[tuple[str, str], dict[str, Any]] = {}
     sanitized_records: list[dict[str, Any]] = []
@@ -1235,9 +1448,22 @@ def build_identity_result(evidence_records: Sequence[Mapping[str, Any]]) -> dict
     rejected: list[str] = []
     unresolved: list[str] = []
     decisions: dict[str, Any] = {}
+    ambiguous_metadata = {
+        str(base) for base in metadata_ambiguity_bases if str(base) in EXPECTED_BASES
+    }
     for base in EXPECTED_BASES:
         venue_records = {venue: indexed.get((base, venue)) for venue in EXPECTED_VENUES}
         missing = [venue for venue, record in venue_records.items() if record is None]
+        collision_base = base in COLLISION_FAIL_CLOSED_BASES
+        if collision_base and (missing or base in ambiguous_metadata):
+            rejected.append(base)
+            decisions[base] = {
+                "decision": "REJECT_EXCLUDE_FAIL_CLOSED",
+                "reason": "AMBIGUOUS_KNOWN_TICKER_COLLISION",
+                "missing_venues": missing,
+                "metadata_ambiguous": base in ambiguous_metadata,
+            }
+            continue
         if missing:
             unresolved.append(base)
             decisions[base] = {
@@ -1261,13 +1487,25 @@ def build_identity_result(evidence_records: Sequence[Mapping[str, Any]]) -> dict
             rejected.append(base)
             decisions[base] = {
                 "decision": "REJECT_EXCLUDE_FAIL_CLOSED",
-                "reason": "CANONICAL_IDENTIFIER_CONFLICT",
+                "reason": (
+                    "AMBIGUOUS_KNOWN_TICKER_COLLISION"
+                    if collision_base
+                    else "CANONICAL_IDENTIFIER_CONFLICT"
+                ),
                 "mexc_identifier_sha256": hashlib.sha256(
                     left["canonical_asset_identifier_value"].encode("utf-8")
                 ).hexdigest(),
                 "gateio_identifier_sha256": hashlib.sha256(
                     right["canonical_asset_identifier_value"].encode("utf-8")
                 ).hexdigest(),
+            }
+            continue
+        if collision_base and base in ambiguous_metadata:
+            rejected.append(base)
+            decisions[base] = {
+                "decision": "REJECT_EXCLUDE_FAIL_CLOSED",
+                "reason": "AMBIGUOUS_KNOWN_TICKER_COLLISION",
+                "metadata_ambiguous": True,
             }
             continue
         verified.append(base)
@@ -1355,6 +1593,56 @@ def _validated_response_body(response: FetchedResponse, url: str) -> bytes:
     return response.body
 
 
+def _active_mexc_spot_instruments(payload: Any) -> tuple[str, ...]:
+    _require(isinstance(payload, dict), "MEXC metadata response must be an object")
+    rows = payload.get("symbols")
+    _require(isinstance(rows, list), "MEXC metadata symbols must be an array")
+    active: set[str] = set()
+    for row in rows:
+        _require(isinstance(row, dict), "MEXC metadata row must be an object")
+        if str(row.get("quoteAsset") or "").upper() != "USDT":
+            continue
+        if row.get("isSpotTradingAllowed") is False:
+            continue
+        if str(row.get("status") or "").upper() not in {"1", "ENABLED", "TRADING"}:
+            continue
+        symbol = str(row.get("symbol") or "").upper()
+        _require(
+            SAFE_MEXC_SPOT_PATTERN.fullmatch(symbol) is not None,
+            "MEXC active spot identifier is invalid",
+        )
+        base = str(row.get("baseAsset") or "").upper()
+        _require(symbol == collected_spot_instrument("mexc", base), "MEXC active spot base mismatch")
+        _require(symbol not in active, "MEXC duplicate active spot pair")
+        active.add(symbol)
+    return tuple(sorted(active))
+
+
+def _active_gateio_spot_instruments(payload: Any) -> tuple[str, ...]:
+    _require(isinstance(payload, list), "Gate metadata response must be an array")
+    active: set[str] = set()
+    for row in payload:
+        _require(isinstance(row, dict), "Gate metadata row must be an object")
+        if str(row.get("quote") or "").upper() != "USDT":
+            continue
+        if str(row.get("trade_status") or "").lower() != "tradable":
+            continue
+        name = str(row.get("id") or row.get("name") or "").upper()
+        _require(
+            SAFE_GATE_SPOT_PATTERN.fullmatch(name) is not None,
+            "Gate active spot identifier is invalid",
+        )
+        base = str(row.get("base") or "").upper()
+        if base:
+            _require(
+                name == collected_spot_instrument("gateio", base),
+                "Gate active spot base mismatch",
+            )
+        _require(name not in active, "Gate duplicate active spot pair")
+        active.add(name)
+    return tuple(sorted(active))
+
+
 def _active_mexc_instruments(payload: Any) -> tuple[str, ...]:
     _require(isinstance(payload, dict), "MEXC metadata response must be an object")
     _require(payload.get("success") is True and payload.get("code") in (0, "0"), "MEXC metadata response did not report success")
@@ -1392,6 +1680,25 @@ def _active_gateio_instruments(payload: Any) -> tuple[str, ...]:
         _require(name not in active, "Gate duplicate active contract")
         active.add(name)
     return tuple(sorted(active))
+
+
+def collision_metadata_ambiguity_bases(
+    metadata_active_instruments: Mapping[str, Sequence[str]],
+) -> tuple[str, ...]:
+    ambiguous: list[str] = []
+    for base in COLLISION_FAIL_CLOSED_BASES:
+        for venue in EXPECTED_VENUES:
+            expected = collected_spot_instrument(venue, base)
+            instruments = tuple(metadata_active_instruments.get(venue) or ())
+            related = [
+                instrument
+                for instrument in instruments
+                if instrument == expected or instrument.startswith(base)
+            ]
+            if len(related) != 1 or expected not in related:
+                ambiguous.append(base)
+                break
+    return tuple(ambiguous)
 
 
 def _validate_request_plan_item(item: Mapping[str, Any]) -> dict[str, Any]:
@@ -1456,7 +1763,7 @@ def collect_identity_evidence_bundle(
 ) -> IdentityEvidenceBundle:
     _require(not isinstance(request_plan, (str, bytes)), "request plan must be a sequence")
     _require(
-        0 < len(request_plan) <= MAX_TOTAL_HTTP_REQUESTS - len(OFFICIAL_METADATA_ENDPOINTS),
+        0 < len(request_plan) <= MAX_TOTAL_HTTP_REQUESTS - len(OFFICIAL_SPOT_METADATA_ENDPOINTS),
         "request plan exceeds HTTP request cap after metadata checks",
     )
     started = monotonic()
@@ -1481,16 +1788,16 @@ def collect_identity_evidence_bundle(
 
     metadata: dict[str, tuple[str, ...]] = {}
     for venue in EXPECTED_VENUES:
-        endpoint = OFFICIAL_METADATA_ENDPOINTS[venue]
+        endpoint = OFFICIAL_SPOT_METADATA_ENDPOINTS[venue]
         body = fetch_counted(endpoint)
         try:
             payload = _strict_json_loads(body.decode("utf-8"))
         except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
             raise IdentityVerificationError(f"{venue} metadata response is not valid JSON") from exc
         metadata[venue] = (
-            _active_mexc_instruments(payload)
+            _active_mexc_spot_instruments(payload)
             if venue == "mexc"
-            else _active_gateio_instruments(payload)
+            else _active_gateio_spot_instruments(payload)
         )
 
     records: list[dict[str, Any]] = []
@@ -2648,7 +2955,12 @@ def run_approved_identity_verification(
         safety_check=enforce_visible_ownership,
     )
     _require(time.monotonic() - started <= MAX_RUNTIME_SEC, "identity verification runtime cap exceeded")
-    result = build_identity_result(bundle.records)
+    result = build_identity_result(
+        bundle.records,
+        metadata_ambiguity_bases=collision_metadata_ambiguity_bases(
+            bundle.metadata_active_instruments
+        ),
+    )
     enforce_visible_ownership()
     generated_at = datetime.now(timezone.utc).isoformat(timespec="microseconds").replace("+00:00", "Z")
     written = write_identity_output(
