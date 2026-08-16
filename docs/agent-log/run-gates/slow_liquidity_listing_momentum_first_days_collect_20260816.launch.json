@@ -1,0 +1,20 @@
+{
+  "schema": "trading_mvp_listing_momentum_first_days_collect_launch_v1",
+  "status": "COMPLETE",
+  "run_id": "slow_liquidity_listing_momentum_first_days_collect_20260816",
+  "visible_terminal_pid": 22688,
+  "terminal_ownership_verified": true,
+  "writer_pid": null,
+  "started_at_utc": "2026-08-16T18:42:13.7443929Z",
+  "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-first-days-collect-planonly-20260816.json",
+  "plan_hash": "c48349500731708b7afa33f7c88c32c75ea2731bf285f7f9d434782b87621134",
+  "plan_file_sha256": "e086052aeeb230c9d325569337f40d7ed489f816dbbd5b45a71624bea9bb9574",
+  "proxy_receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-listing-momentum-proxy-date-acceptance-approval.json",
+  "proxy_receipt_sha256": "6e534e910c02f796b839fc73c3497d51dcd8ca102218995f105f502f58f18b36",
+  "output_root": "E:\\trading_mvp\\listing-momentum-first-days\\slow_liquidity_listing_momentum_first_days_collect_20260816",
+  "manifest_path": "E:\\trading_mvp\\listing-momentum-first-days\\slow_liquidity_listing_momentum_first_days_collect_20260816\\manifest.json",
+  "research_only": true,
+  "public_data_only": true,
+  "finished_at_utc": "2026-08-16T18:54:53.6218510Z",
+  "collector_exit_code": 0
+}

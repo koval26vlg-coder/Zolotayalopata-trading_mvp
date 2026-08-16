@@ -1,0 +1,161 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_momentum_first_days_collect_planonly_v1",
+  "plan_id": "slow_liquidity_listing_momentum_first_days_collect_20260816",
+  "strategy_branch": "slow_liquidity_listing_momentum",
+  "mode": "PlanOnly",
+  "status": "AWAIT_GUARD_GREEN_VISIBLE_COLLECT",
+  "generated_at_utc": "2026-08-16T18:41:59.706Z",
+  "research_only": true,
+  "public_data_only": true,
+  "private_api": false,
+  "live_orders": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "actual_collection_allowed": false,
+  "replay_allowed": false,
+  "evaluator_or_oos_allowed": false,
+  "objective": "Collect per-venue first-days 1h OHLCV event windows for the two-venue universe using accepted proxy trading-start dates. One visible public read-only run; deterministic flag census in the manifest. No replay, evaluator, or identity verdict.",
+  "source_bindings": {
+    "proxy_acceptance_plan": {
+      "plan_id": "slow_liquidity_listing_momentum_proxy_date_acceptance_20260816",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-proxy-date-acceptance-planonly-20260816.json",
+      "plan_hash": "d78ff507d5e53e7cccf78a6ecf676cf85dbb70ab3b67f4dced1fec1cef86be31",
+      "plan_file_sha256": "90084296cec1ec3ed739c00d21f32981b2bcb93e00dd32d303429ecaeffcd43f"
+    },
+    "proxy_acceptance_receipt": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-listing-momentum-proxy-date-acceptance-approval.json",
+      "receipt_hash": "6ef9ea95f94bfb4f58f7b972ecf47877a68ae98c6329c86ca78b20368eb8da18",
+      "receipt_file_sha256": "6e534e910c02f796b839fc73c3497d51dcd8ca102218995f105f502f58f18b36",
+      "status": "PROXY_LISTING_DATE_SOURCE_ACCEPTED"
+    },
+    "materialization": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_listing_momentum_proxy_date_materialization_20260816.json",
+      "materialization_hash": "2a8e8d870a9250488d7851204c246b407afe1fc56fd3226ef6aa92fe43c5bc13",
+      "file_sha256": "99c75845340570a47be8cbb00a821a4e2a0f6ac143b0ed69e823e0e1e33c0f91",
+      "content_hash_recomputed_ok": true
+    }
+  },
+  "universe": {
+    "source": "proxy date materialization records",
+    "two_venue_base_count": 407,
+    "job_count": 795,
+    "jobs_by_venue": {
+      "mexc": 393,
+      "gateio": 402
+    },
+    "jobs_sha256": "f4bc088d3fedf22f18fae13a6a62f9316ebd4ae0f56be28c6cb7c1b011301138",
+    "window_sec": 259200,
+    "granularity": "1h"
+  },
+  "implementation": {
+    "files": [
+      {
+        "role": "collector",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_listing_momentum_first_days_collector.py",
+        "sha256": "b24cbc368082b0a8ade446fc906052629f8edfc2f65783d33cfe276c4c8f1941"
+      },
+      {
+        "role": "public_ohlcv_clients",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_event_history_collector.py",
+        "sha256": "a6ce0cc800953ede3a31bbad8881e8a2733a84a7fb07d7c69b80652efc39cbed"
+      },
+      {
+        "role": "interval_contract",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_event_history_collect_plan.py",
+        "sha256": "00e725b02b21cac159ca61904ce2223cd89bf0b39f056dd7a1da5899215b6acc"
+      },
+      {
+        "role": "global_writer_claim",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\global_market_writer_claim.py",
+        "sha256": "6c57b5612d8dc972ebb94941c514bae7333c1cb21b13dd4487e2fe6a2569ea2e"
+      },
+      {
+        "role": "visible_launcher",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_listing_momentum_first_days_collect_visible.ps1",
+        "sha256": "67d8749369ff3fadb1cef0d8fed7ab9edf7a88d1172ac98d900b5a0316042873"
+      }
+    ],
+    "page_caps": {
+      "mexc_max_candles_per_request": 500,
+      "gateio_max_candles_per_request": 1000,
+      "probe_window_before_proxy_sec": 1209600,
+      "epoch_aligned_page_boundaries": true
+    },
+    "corroboration_and_flags": {
+      "history_truncated": "first in-window 1h bar opens more than 7200s after proxy_event_ts",
+      "proxy_ts_after_first_bar": "bars exist at least 14400s before proxy_event_ts (venue traded earlier than the snapshot field)",
+      "short_window": "fewer than 70 in-window bars",
+      "no_data": "no bars returned for the probe+window range"
+    }
+  },
+  "execution": {
+    "run_id": "slow_liquidity_listing_momentum_first_days_collect_20260816",
+    "output_root": "E:\\trading_mvp\\listing-momentum-first-days\\slow_liquidity_listing_momentum_first_days_collect_20260816",
+    "output_jsonl": "E:\\trading_mvp\\listing-momentum-first-days\\slow_liquidity_listing_momentum_first_days_collect_20260816\\ohlcv.jsonl",
+    "manifest_path": "E:\\trading_mvp\\listing-momentum-first-days\\slow_liquidity_listing_momentum_first_days_collect_20260816\\manifest.json",
+    "stdout_path": "E:\\trading_mvp\\listing-momentum-first-days\\slow_liquidity_listing_momentum_first_days_collect_20260816\\stdout.log",
+    "stderr_path": "E:\\trading_mvp\\listing-momentum-first-days\\slow_liquidity_listing_momentum_first_days_collect_20260816\\stderr.log",
+    "claim_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\active-market-data-writer-claim.json",
+    "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\slow_liquidity_listing_momentum_first_days_collect_20260816.launch.json",
+    "exchanges": [
+      "mexc",
+      "gateio"
+    ],
+    "timeframes": [
+      "1h"
+    ],
+    "jobs_by_venue": {
+      "mexc": 393,
+      "gateio": 402
+    },
+    "effective_page_sizes": {
+      "mexc": 500,
+      "gateio": 1000
+    },
+    "logical_requests": 795,
+    "maximum_http_attempts": 1590,
+    "max_retries": 1,
+    "timeout_sec": 15,
+    "sleep_sec": 0.25,
+    "max_runtime_sec": 1800,
+    "hard_output_cap_bytes": 100000000,
+    "jobs_sha256": "f4bc088d3fedf22f18fae13a6a62f9316ebd4ae0f56be28c6cb7c1b011301138"
+  },
+  "guard_contract": {
+    "active_gate_must_not_be_running": true,
+    "global_writer_claim_must_be_absent": true,
+    "proxy_acceptance_receipt_must_be_valid": true,
+    "plan_hash_must_match": true,
+    "output_namespace_must_be_empty": true,
+    "visible_terminal_launch_required": true,
+    "single_writer_single_run": true
+  },
+  "authorized_after_guards": [
+    "run one visible public read-only first-days OHLCV collect",
+    "write the collect manifest with flag census",
+    "read post-collect status"
+  ],
+  "forbidden": [
+    "second market-data writer",
+    "resume or retry after STOPPED_INCOMPLETE without a new exact plan",
+    "evaluator",
+    "OOS",
+    "returns or PnL conclusions from flags alone",
+    "grid or retune",
+    "execution probe",
+    "paper or live trading",
+    "private API keys",
+    "real capital",
+    "leverage or margin",
+    "treat proxy dates as official announcements",
+    "identity verdict",
+    "reopen closed nine as listing momentum"
+  ],
+  "commands": {
+    "preflight": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_listing_momentum_first_days_collect_visible.ps1\" -PreflightOnly -Json",
+    "status": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_listing_momentum_first_days_collect_visible.ps1\" -Status -Json",
+    "visible_start": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_listing_momentum_first_days_collect_visible.ps1\""
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "c48349500731708b7afa33f7c88c32c75ea2731bf285f7f9d434782b87621134"
+}
