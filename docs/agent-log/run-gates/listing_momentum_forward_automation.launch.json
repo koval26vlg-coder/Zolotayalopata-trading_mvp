@@ -1,0 +1,23 @@
+{
+  "schema": "trading_mvp_listing_momentum_forward_automation_launch_v1",
+  "status": "COMPLETE",
+  "automation_id": "zolotyaylopata-listing-momentum-monitor",
+  "attempt_id": "listing_momentum_automation_20260817T210350Z",
+  "visible_terminal_pid": 16828,
+  "started_at_utc": "2026-08-17T21:03:50.9599412Z",
+  "cadence_hours": 6,
+  "v2_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-monitor-planonly-20260817-v2.json",
+  "expansion_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-expansion-planonly-20260817.json",
+  "research_only": true,
+  "public_data_only": true,
+  "retry_policy": "failed_or_deferred_track_retries_on_next_scheduled_interval",
+  "finished_at_utc": "2026-08-17T21:04:10.7473809Z",
+  "outcomes": {
+    "mexc_gate_v2": "COMPLETE",
+    "binance_bybit_okx_bitget_expansion": "COMPLETE"
+  },
+  "errors": [],
+  "pending_retry": false,
+  "next_interval_at_utc": "2026-08-18T03:00:00.0000000Z",
+  "exit_code": 0
+}
