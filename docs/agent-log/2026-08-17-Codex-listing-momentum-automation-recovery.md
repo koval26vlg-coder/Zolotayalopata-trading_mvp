@@ -33,9 +33,9 @@ Orchestrator последовательно запускает MEXC + Gate v2 и
 
 ## Immutable bindings
 
-- expansion PlanOnly hash: `f4a7c0a9dfe955f65064ad5effc28918262e3564bc52b6f69cedd1b614ae9de6`
-- expansion PlanOnly file SHA-256: `5ed7b8533162a18f8938a2b4ed7e6dd03690c16886ef294fb88d24ce3f294507`
-- automation launcher SHA-256: `9931f4a6969134b969e8bfc2ede76041dc185320ada33e1e876dad3b07f4847b`
+- expansion PlanOnly hash: `64bf88540d53cf4b9a9f37b38dc80cff3d3f6a8c2fd7ee40251ff2c84f79d516`
+- expansion PlanOnly file SHA-256: `335361a0753ba8184cfc184e27c99edb91a74d96c241dec5c25e4af92e28ea9e`
+- automation launcher SHA-256: `2de27403c4f7affaa95b56809c5f5fbaa5e10ad1c72761a030d9044b4a4f5c55`
 - v2 PlanOnly hash: `d98d402fb08065bef58859522b938ec064b2bc4a223f269aa0218cce502e5afb`
 - expansion preflight receipt hash: `fb4be6e1d02a2a276f52d518004c6396d6ae4e7bb706e5bda3f759f09f2aa8b9`
 

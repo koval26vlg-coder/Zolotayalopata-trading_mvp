@@ -4,7 +4,7 @@
   "strategy_branch": "slow_liquidity_listing_momentum_forward_expansion",
   "mode": "PlanOnly",
   "status": "READY_FOR_VISIBLE_EXPANSION_TICKS",
-  "generated_at_utc": "2026-08-17T15:16:11Z",
+  "generated_at_utc": "2026-08-17T15:18:47Z",
   "research_only": true,
   "public_data_only": true,
   "private_api": false,
@@ -134,7 +134,7 @@
       {
         "role": "automation_launcher",
         "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_listing_momentum_forward_automation_visible.ps1",
-        "sha256": "9931f4a6969134b969e8bfc2ede76041dc185320ada33e1e876dad3b07f4847b"
+        "sha256": "2de27403c4f7affaa95b56809c5f5fbaa5e10ad1c72761a030d9044b4a4f5c55"
       },
       {
         "role": "expansion_plan_generator",
@@ -202,5 +202,5 @@
     "visible_tick": "python trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_monitor.py --tick --confirmed-visible-tick"
   },
   "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
-  "plan_hash": "f4a7c0a9dfe955f65064ad5effc28918262e3564bc52b6f69cedd1b614ae9de6"
+  "plan_hash": "64bf88540d53cf4b9a9f37b38dc80cff3d3f6a8c2fd7ee40251ff2c84f79d516"
 }

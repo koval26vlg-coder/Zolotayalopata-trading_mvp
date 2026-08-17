@@ -14,7 +14,7 @@
   },
   "orchestrator": {
     "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_listing_momentum_forward_automation_visible.ps1",
-    "sha256": "9931f4a6969134b969e8bfc2ede76041dc185320ada33e1e876dad3b07f4847b",
+    "sha256": "2de27403c4f7affaa95b56809c5f5fbaa5e10ad1c72761a030d9044b4a4f5c55",
     "max_track_runtime_sec": 600,
     "sequential_tracks": [
       "mexc_gate_v2",
@@ -31,8 +31,8 @@
     "ledger_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\listing_momentum_forward_automation_attempts.jsonl"
   },
   "verification": {
-    "expansion_plan_hash": "f4a7c0a9dfe955f65064ad5effc28918262e3564bc52b6f69cedd1b614ae9de6",
-    "expansion_plan_file_sha256": "5ed7b8533162a18f8938a2b4ed7e6dd03690c16886ef294fb88d24ce3f294507",
+    "expansion_plan_hash": "64bf88540d53cf4b9a9f37b38dc80cff3d3f6a8c2fd7ee40251ff2c84f79d516",
+    "expansion_plan_file_sha256": "335361a0753ba8184cfc184e27c99edb91a74d96c241dec5c25e4af92e28ea9e",
     "v2_plan_hash": "d98d402fb08065bef58859522b938ec064b2bc4a223f269aa0218cce502e5afb",
     "preflight": "PASS_BOTH_TRACKS",
     "tests_passed": 29,

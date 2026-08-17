@@ -93,7 +93,7 @@ function Test-ProcessAlive([Nullable[int]]$ProcessId) {
 function Get-DefaultState {
     return [ordered]@{
         schema = "trading_mvp_listing_momentum_forward_automation_state_v1"
-        automation_id = "automation-66009175-62c6-4dbc-8631-bae668b9cad9"
+        automation_id = "zolotyaylopata-listing-momentum-monitor"
         cadence_hours = $cadenceHours
         status = "IDLE"
         pending_retry = $false
@@ -144,7 +144,7 @@ function Acquire-SchedulerClaim {
             schema = "trading_mvp_listing_momentum_forward_automation_claim_v1"
             pid = $PID
             claimed_at_utc = Get-UtcIso
-            automation_id = "automation-66009175-62c6-4dbc-8631-bae668b9cad9"
+            automation_id = "zolotyaylopata-listing-momentum-monitor"
         }
         $bytes = [System.Text.Encoding]::UTF8.GetBytes(($payload | ConvertTo-Json -Compress))
         $stream.Write($bytes, 0, $bytes.Length)

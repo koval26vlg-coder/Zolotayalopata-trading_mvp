@@ -24,7 +24,7 @@ class ListingMomentumAutomationTests(unittest.TestCase):
             "RETRY_NEXT_INTERVAL",
             "pending_retry",
             "next_interval_at_utc",
-            "automation-66009175-62c6-4dbc-8631-bae668b9cad9",
+            "zolotyaylopata-listing-momentum-monitor",
             "WindowStyle Normal",
             "-VisibleWorker",
             "failed_or_deferred_track_retries_on_next_scheduled_interval",
