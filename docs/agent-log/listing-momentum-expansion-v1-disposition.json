@@ -1,0 +1,39 @@
+{
+  "schema": "trading_mvp_listing_momentum_expansion_disposition_v1",
+  "status": "COMPATIBILITY_PASS_PLANONLY_READY",
+  "generated_at_utc": "2026-08-17T14:35:00Z",
+  "user_scope_decision": "ADD_BINANCE_BYBIT_OKX_BITGET_AS_SEPARATE_EXPANSION_TRACK",
+  "venues": [
+    "binance",
+    "bybit",
+    "okx",
+    "bitget"
+  ],
+  "preflight": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\listing_momentum_exchange_expansion_preflight_20260817.json",
+    "status": "PASS",
+    "receipt_hash": "fb4be6e1d02a2a276f52d518004c6396d6ae4e7bb706e5bda3f759f09f2aa8b9",
+    "file_sha256": "85fb8f0c56c88060a0eb0e185bb2e109704f97634ff5ee99efef4e65ee41179c",
+    "request_count": 8,
+    "raw_payload_persisted": false
+  },
+  "plan": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-expansion-planonly-20260817.json",
+    "plan_id": "slow_liquidity_listing_momentum_forward_expansion_20260817_v1",
+    "plan_hash": "5c52d2d637d97280ba03204cc9da35fa024063ae3d13b4697b163d8ea5c00084",
+    "file_sha256": "5b5f32f807e107cefd00d500a7dec6d1497763a6786ec713f57d0d3cd7c58e6a",
+    "status": "READY_FOR_VISIBLE_EXPANSION_TICKS",
+    "replay_allowed": false,
+    "evaluator_or_oos_allowed": false,
+    "separate_namespace_from_v2": true
+  },
+  "v2_preserved": {
+    "plan_hash": "d98d402fb08065bef58859522b938ec064b2bc4a223f269aa0218cce502e5afb",
+    "plan_file_sha256": "33da4a8bc9ece1f43055dbb833afa49f068328f4c192bdcad690a7421968c0ee"
+  },
+  "gate": {
+    "status": "READY_FOR_POSTPROCESS",
+    "writer_pid_present": false
+  },
+  "next_safe_action": "run_one_bounded_visible_expansion_tick_when explicitly scheduled; do not mix with v2 state"
+}
