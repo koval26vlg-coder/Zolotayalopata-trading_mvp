@@ -212,6 +212,12 @@ function Convert-RowSummary {
 
 $gate = Invoke-JsonScript -Path $gateChecker
 $rawGate = Read-JsonFileOrNull -Path $gatePath
+$featureNormalizerArtifact = if ($rawGate -and [string]$rawGate.last_slow_liquidity_feature_normalizer_output_path) {
+    Read-JsonFileOrNull -Path ([string]$rawGate.last_slow_liquidity_feature_normalizer_output_path)
+} else {
+    $null
+}
+$slowLiquidityFeatureNormalizerArtifactIsV1 = [bool]($featureNormalizerArtifact -and $featureNormalizerArtifact.fixed_contract -and $featureNormalizerArtifact.fixed_contract.signal -and [string]$featureNormalizerArtifact.fixed_contract.signal.compression_metric -eq "range_width_over_atr_sqrt_lookback")
 $forwardOosApprovalReadyFastPath = [string]$gate.next_goal_decision -eq "PIT_LINEAR_PERP_FORWARD_OOS_COLLECT_APPROVAL_PACKET_READY_AWAITING_EXPLICIT_CONFIRMATION"
 if ($forwardOosApprovalReadyFastPath) {
     $command = if ($gate.command_after_explicit_approval) {
@@ -680,7 +686,7 @@ $slowLiquidityFeatureNormalizerRejectedGate = (
     (
         $gate.strategy_branch_status -and
         [string]$gate.strategy_branch_status.branch -eq "slow_liquidity_regime_breakout_retest" -and
-        [string]$gate.strategy_branch_status.verdict -eq "feature_normalizer_rejected_insufficient_events"
+        [string]$gate.strategy_branch_status.verdict -in @("feature_normalizer_rejected_insufficient_events", "feature_normalizer_v1_rejected_insufficient_events")
     )
 )
 $spotPerpBasisRejectedVerdicts = @(
@@ -883,6 +889,8 @@ if ([string]$gate.status -eq "RUNNING") {
 } elseif ($slowLiquiditySelectedGate) {
     $decision = if ($slowLiquidityFeatureNormalizerReadyGate) {
         "SLOW_LIQUIDITY_FEATURE_NORMALIZER_READY_FOR_FIXED_REPLAY_VALIDATION"
+    } elseif ($slowLiquidityFeatureNormalizerRejectedGate -and $slowLiquidityFeatureNormalizerArtifactIsV1) {
+        "SLOW_LIQUIDITY_FEATURE_NORMALIZER_V1_REJECTED_SELECT_NEXT_BRANCH"
     } elseif ($slowLiquidityFeatureNormalizerRejectedGate) {
         "SLOW_LIQUIDITY_FEATURE_NORMALIZER_REJECTED_RESCOPE_OR_LARGER_HISTORY"
     } elseif ($slowLiquidityFixedSignalReadyGate) {
@@ -901,6 +909,8 @@ if ([string]$gate.status -eq "RUNNING") {
     $selectedBranch = "slow_liquidity_regime_breakout_retest"
     $reason = if ($slowLiquidityFeatureNormalizerReadyGate) {
         "slow_liquidity_regime_breakout_retest feature normalizer is ready. Next work is fixed-parameter replay-validation PlanOnly; no grid, live, API keys, leverage or paper-forward."
+    } elseif ($slowLiquidityFeatureNormalizerRejectedGate -and $slowLiquidityFeatureNormalizerArtifactIsV1) {
+        "slow_liquidity scaled-compression v1 is rejected for insufficient independent events. A materially new structural hypothesis needs an explicit user checkpoint; do not retune or recollect under v1."
     } elseif ($slowLiquidityFeatureNormalizerRejectedGate) {
         "slow_liquidity_regime_breakout_retest feature normalizer rejected the fixed v0 event set as insufficient. Do not replay/grid; rescope/reject branch or plan larger independent history."
     } elseif ($slowLiquidityFixedSignalReadyGate) {
@@ -916,13 +926,17 @@ if ([string]$gate.status -eq "RUNNING") {
     } else {
         "slow_liquidity_regime_breakout_retest is selected after spot/perp public-probe rejection. Next work is a read-only PlanOnly data availability preflight and fixed-v0 signal contract; no collect, grid, replay, live, API keys, leverage or paper-forward."
     }
-    $requiresUserApproval = [bool]$slowLiquidityHistoryDataPlanReadyGate
+    $requiresUserApproval = [bool](
+        $slowLiquidityHistoryDataPlanReadyGate -or
+        ($slowLiquidityFeatureNormalizerRejectedGate -and $slowLiquidityFeatureNormalizerArtifactIsV1)
+    )
     $requiresUserApprovalForActualCollect = [bool]$slowLiquidityHistoryDataPlanReadyGate
     $allowedImmediateWork = @(
         "run_slow_liquidity_regime_breakout_retest_planonly",
         "run_slow_liquidity_data_availability_preflight_planonly",
         "run_slow_liquidity_fixed_signal_planonly",
         "run_slow_liquidity_feature_normalizer_planonly",
+        "await_explicit_user_approval_for_new_structural_hypothesis",
         "run_fixed_slow_liquidity_replay_validation_planonly_when_normalizer_allows",
         "build_slow_liquidity_feature_normalizer_planonly",
         "build_slow_liquidity_data_availability_preflight_planonly",
@@ -1259,6 +1273,11 @@ $result = [ordered]@{
     slow_liquidity_fixed_signal_ready_gate = $slowLiquidityFixedSignalReadyGate
     slow_liquidity_feature_normalizer_ready_gate = $slowLiquidityFeatureNormalizerReadyGate
     slow_liquidity_feature_normalizer_rejected_gate = $slowLiquidityFeatureNormalizerRejectedGate
+    slow_liquidity_feature_normalizer_artifact_is_v1 = $slowLiquidityFeatureNormalizerArtifactIsV1
+    slow_liquidity_new_structural_hypothesis_requires_user_approval = [bool](
+        $slowLiquidityFeatureNormalizerRejectedGate -and
+        $slowLiquidityFeatureNormalizerArtifactIsV1
+    )
     gate_status = $gate.status
     acceptance_stage = $acceptance.stage
     research_accepted = $acceptance.accepted

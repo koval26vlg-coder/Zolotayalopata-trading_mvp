@@ -102,6 +102,9 @@ if (-not $HistoryJsonlPath -and $gateDoc -and [string]$gateDoc.last_slow_liquidi
 if (-not $HistoryManifestPath -and $gateDoc -and [string]$gateDoc.last_slow_liquidity_history_collect_manifest_path) {
     $HistoryManifestPath = [string]$gateDoc.last_slow_liquidity_history_collect_manifest_path
 }
+if (-not $FixedSignalPath -and $gateDoc -and [string]$gateDoc.last_slow_liquidity_fixed_compression_v1_plan_output_path) {
+    $FixedSignalPath = [string]$gateDoc.last_slow_liquidity_fixed_compression_v1_plan_output_path
+}
 if (-not $FixedSignalPath -and $gateDoc -and [string]$gateDoc.last_slow_liquidity_fixed_signal_plan_output_path) {
     $FixedSignalPath = [string]$gateDoc.last_slow_liquidity_fixed_signal_plan_output_path
 }
@@ -123,12 +126,13 @@ foreach ($requiredPath in @($HistoryJsonlPath, $HistoryManifestPath, $FixedSigna
 
 $gateAllowsNormalizer = [bool](
     ([string]$gate.next_goal_decision -eq "SLOW_LIQUIDITY_FIXED_SIGNAL_PLANONLY_READY_FOR_FEATURE_NORMALIZER") -or
+    ([string]$gate.next_goal_decision -eq "SLOW_LIQUIDITY_FIXED_V1_COMPRESSION_PLANONLY_READY_FOR_FEATURE_NORMALIZER") -or
     ([string]$gate.next_goal_decision -eq $rejectedDecision) -or
     (
         $gateDoc -and
         $gateDoc.strategy_branch_status -and
         [string]$gateDoc.strategy_branch_status.branch -eq "slow_liquidity_regime_breakout_retest" -and
-        [string]$gateDoc.strategy_branch_status.verdict -in @("fixed_signal_planonly_ready_for_feature_normalizer", "feature_normalizer_rejected_insufficient_events")
+        [string]$gateDoc.strategy_branch_status.verdict -in @("fixed_signal_planonly_ready_for_feature_normalizer", "fixed_compression_v1_planonly_ready_for_feature_normalizer", "feature_normalizer_rejected_insufficient_events")
     )
 )
 if (-not $gateAllowsNormalizer) {
@@ -176,15 +180,20 @@ if ($UpdateGate) {
     $gateDoc = Get-Content -Raw -LiteralPath $gatePath | ConvertFrom-Json
     $decision = [string]$result.decision
     $ready = [bool]$result.replay_allowed_now
+    $isScaledCompressionV1 = [string]$result.fixed_contract.signal.compression_metric -eq "range_width_over_atr_sqrt_lookback"
     $nextStep = if ($ready) {
-        "Run fixed slow-liquidity replay-validation PlanOnly from feature normalizer artifact. No grid/live/API/paper-forward; keep parameters frozen."
+        "Run one fixed slow-liquidity replay-validation PlanOnly from the feature normalizer artifact. No grid/live/API/paper-forward; keep parameters frozen."
     } else {
-        "Do not replay/grid. Reject or rescope slow-liquidity fixed v0, or collect a larger independent 1h/4h history sample before retesting."
+        if ($isScaledCompressionV1) {
+            "Do not replay/grid. Reject the scaled-compression v1 contract or define a materially new hypothesis; do not tune its threshold from this sample."
+        } else {
+            "Do not replay/grid. Reject or rescope slow-liquidity fixed v0, or collect a larger independent 1h/4h history sample before retesting."
+        }
     }
     $verdict = if ($ready) {
         "feature_normalizer_ready_for_fixed_replay_validation"
     } else {
-        "feature_normalizer_rejected_insufficient_events"
+        if ($isScaledCompressionV1) { "feature_normalizer_v1_rejected_insufficient_events" } else { "feature_normalizer_rejected_insufficient_events" }
     }
     $events = [int]$result.event_set.independent_events
     $eventBases = [int]$result.event_set.event_bases
@@ -215,6 +224,7 @@ if ($UpdateGate) {
         grid_allowed = $false
         paper_forward_allowed = $false
         strategy_accepted = $false
+        signal_version = if ($isScaledCompressionV1) { "scaled_compression_v1" } else { "fixed_v0" }
         independent_events = $events
         event_bases = $eventBases
         event_exchanges = $eventExchanges

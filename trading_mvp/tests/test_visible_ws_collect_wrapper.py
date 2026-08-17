@@ -2206,6 +2206,19 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
             self.assertIn("-Json", payload["visible_collect_command"])
             return
         if payload.get("slow_liquidity_regime_selected_gate"):
+            if payload.get("slow_liquidity_feature_normalizer_rejected_gate") and payload.get("slow_liquidity_feature_normalizer_artifact_is_v1"):
+                self.assertEqual(
+                    payload["primary_edge_status"],
+                    "slow_liquidity_fixed_compression_v1_rejected_select_new_hypothesis",
+                )
+                self.assertEqual(
+                    payload["primary_edge_candidate"],
+                    "Slow liquidity scaled-compression v1 rejected; choose a new structural hypothesis",
+                )
+                self.assertTrue(payload["requires_user_approval"])
+                self.assertFalse(payload["requires_user_approval_for_actual_collect"])
+                self.assertIn("trading_structural_branch_planonly.ps1", payload["visible_collect_command"])
+                return
             if payload.get("slow_liquidity_history_data_plan_ready_gate"):
                 self.assertEqual(
                     payload["primary_edge_status"],
@@ -2600,6 +2613,15 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
             self.assertIn("start_pit_universe_snapshot_collect_visible.ps1", commands["pit_universe_visible_collect"])
             self.assertIn("-PlanOnly", commands["pit_universe_visible_collect"])
         elif payload["state"].get("slow_liquidity_regime_selected_gate"):
+            if payload["state"].get("slow_liquidity_feature_normalizer_rejected_gate") and payload["state"].get("slow_liquidity_feature_normalizer_artifact_is_v1"):
+                self.assertEqual(
+                    payload["decision"],
+                    "SLOW_LIQUIDITY_FEATURE_NORMALIZER_V1_REJECTED_SELECT_NEXT_BRANCH",
+                )
+                self.assertTrue(payload["requires_user_approval"])
+                self.assertFalse(payload["requires_user_approval_for_actual_collect"])
+                self.assertIn("trading_structural_branch_planonly.ps1", payload["primary_command"])
+                return
             if payload["state"].get("slow_liquidity_history_data_plan_ready_gate"):
                 self.assertEqual(
                     payload["decision"],
@@ -2930,6 +2952,20 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
             self.assertIn("grid_search", payload["blocked_work"])
             return
         elif payload.get("slow_liquidity_regime_selected_gate"):
+            if payload.get("slow_liquidity_feature_normalizer_rejected_gate") and payload.get("slow_liquidity_feature_normalizer_artifact_is_v1"):
+                self.assertEqual(
+                    payload["decision"],
+                    "SLOW_LIQUIDITY_FEATURE_NORMALIZER_V1_REJECTED_SELECT_NEXT_BRANCH",
+                )
+                self.assertEqual(payload["selected_branch"], "slow_liquidity_regime_breakout_retest")
+                self.assertTrue(payload["requires_user_approval"])
+                self.assertTrue(payload["requires_user_approval_for_immediate_work"])
+                self.assertFalse(payload["requires_user_approval_for_actual_collect"])
+                self.assertIn(
+                    "await_explicit_user_approval_for_new_structural_hypothesis",
+                    payload["allowed_immediate_work"],
+                )
+                return
             if payload.get("slow_liquidity_history_data_plan_ready_gate"):
                 self.assertEqual(
                     payload["decision"],

@@ -38,6 +38,7 @@ $slowLiquidityDataAvailabilityPreflightScript = Join-Path $repoRoot "tools\tradi
 $slowLiquidityHistoryDataPlanScript = Join-Path $repoRoot "tools\trading_slow_liquidity_history_data_plan.ps1"
 $slowLiquidityFixedSignalPlanScript = Join-Path $repoRoot "tools\trading_slow_liquidity_fixed_signal_planonly.ps1"
 $slowLiquidityFeatureNormalizerScript = Join-Path $repoRoot "tools\trading_slow_liquidity_feature_normalizer_planonly.ps1"
+$slowLiquidityFixedCompressionV1PlanScript = Join-Path $repoRoot "tools\trading_slow_liquidity_fixed_compression_v1_planonly.ps1"
 $slowLiquidityRescopePlanOnlyScript = Join-Path $repoRoot "tools\trading_slow_liquidity_rescope_planonly.ps1"
 $slowLiquidityEventCensusScript = Join-Path $repoRoot "tools\trading_slow_liquidity_event_census_planonly.ps1"
 $slowLiquidityFixedV1PlanScript = Join-Path $repoRoot "tools\trading_slow_liquidity_fixed_v1_planonly.ps1"
@@ -1295,6 +1296,13 @@ $acceptance = Invoke-JsonScript -Path $acceptanceGateScript
 $goalStatus = Invoke-JsonScript -Path $goalStatusScript
 $sweepReversalGate = Invoke-JsonScript -Path $sweepReversalGateScript
 $gateHistory = if ($rawGate) { $rawGate } else { $gate }
+$slowLiquidityFeatureNormalizerArtifact = $null
+if ($gateHistory.PSObject.Properties.Name -contains "last_slow_liquidity_feature_normalizer_output_path") {
+    $slowLiquidityFeatureNormalizerArtifact = Read-JsonFileOrNull -Path ([string]$gateHistory.last_slow_liquidity_feature_normalizer_output_path)
+}
+$slowLiquidityFeatureNormalizerArtifactReady = [bool]($slowLiquidityFeatureNormalizerArtifact -and [string]$slowLiquidityFeatureNormalizerArtifact.decision -eq "SLOW_LIQUIDITY_FEATURE_NORMALIZER_PLANONLY_READY_FOR_FIXED_REPLAY_VALIDATION")
+$slowLiquidityFeatureNormalizerArtifactRejected = [bool]($slowLiquidityFeatureNormalizerArtifact -and [string]$slowLiquidityFeatureNormalizerArtifact.decision -eq "SLOW_LIQUIDITY_FEATURE_NORMALIZER_PLANONLY_REJECTED_INSUFFICIENT_EVENTS")
+$slowLiquidityFeatureNormalizerArtifactIsV1 = [bool]($slowLiquidityFeatureNormalizerArtifact -and [string]$slowLiquidityFeatureNormalizerArtifact.fixed_contract.signal.compression_metric -eq "range_width_over_atr_sqrt_lookback")
 $crossVenueFullResult = Read-JsonFileOrNull -Path $crossVenueFullOutputPath
 if (-not $crossVenueFullResult -and $gateHistory.PSObject.Properties.Name -contains "last_cross_venue_dislocation_full_output_path") {
     $crossVenueFullResult = Read-JsonFileOrNull -Path ([string]$gateHistory.last_cross_venue_dislocation_full_output_path)
@@ -1389,6 +1397,7 @@ $slowLiquiditySelectedGate = (
     ([string]$gate.next_goal_decision -like "SLOW_LIQUIDITY_HISTORY_DATA_QUALITY*") -or
     ([string]$gate.next_goal_decision -like "SLOW_LIQUIDITY_FIXED_SIGNAL*") -or
     ([string]$gate.next_goal_decision -like "SLOW_LIQUIDITY_FEATURE_NORMALIZER*") -or
+    ([string]$gate.next_goal_decision -like "SLOW_LIQUIDITY_FIXED_V1_COMPRESSION*") -or
     ([string]$gate.next_goal_decision -like "SLOW_LIQUIDITY_FIXED_V0*") -or
     ([string]$gate.next_goal_decision -like "SLOW_LIQUIDITY_EVENT_CENSUS*") -or
     ([string]$gate.next_goal_decision -like "SLOW_LIQUIDITY_FIXED_V1*") -or
@@ -1445,7 +1454,17 @@ $slowLiquidityFixedSignalReadyGate = (
         [string]$gate.strategy_branch_status.verdict -eq "fixed_signal_planonly_ready_for_feature_normalizer"
     )
 )
+$slowLiquidityFixedCompressionV1ReadyGate = (
+    ([string]$gate.next_goal_decision -eq "SLOW_LIQUIDITY_FIXED_V1_COMPRESSION_PLANONLY_READY_FOR_FEATURE_NORMALIZER") -or
+    (
+        $gate.strategy_branch_status -and
+        [string]$gate.strategy_branch_status.branch -eq "slow_liquidity_regime_breakout_retest" -and
+        [string]$gate.strategy_branch_status.verdict -eq "fixed_compression_v1_planonly_ready_for_feature_normalizer"
+    )
+)
 $slowLiquidityFeatureNormalizerReadyGate = (
+    ([string]$gate.next_goal_decision -eq "SLOW_LIQUIDITY_FEATURE_NORMALIZER_PLANONLY_READY_FOR_FIXED_REPLAY_VALIDATION") -or
+    $slowLiquidityFeatureNormalizerArtifactReady -or
     ([string]$gate.next_goal_decision -eq "SLOW_LIQUIDITY_FEATURE_NORMALIZER_PLANONLY_READY_FOR_FIXED_REPLAY_VALIDATION") -or
     (
         $gate.strategy_branch_status -and
@@ -1455,6 +1474,7 @@ $slowLiquidityFeatureNormalizerReadyGate = (
 )
 $slowLiquidityFeatureNormalizerRejectedGate = (
     ([string]$gate.next_goal_decision -eq "SLOW_LIQUIDITY_FEATURE_NORMALIZER_PLANONLY_REJECTED_INSUFFICIENT_EVENTS") -or
+    $slowLiquidityFeatureNormalizerArtifactRejected -or
     (
         $gate.strategy_branch_status -and
         [string]$gate.strategy_branch_status.branch -eq "slow_liquidity_regime_breakout_retest" -and
@@ -1705,6 +1725,8 @@ $slowLiquidityHistoryPlanUpdateGateCommand = "pwsh -NoProfile -ExecutionPolicy B
 $slowLiquidityHistoryAwaitApprovalCommand = "await explicit user approval: подтверждаю visible slow-liquidity OHLCV history collect"
 $slowLiquidityFixedSignalPlanCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File $slowLiquidityFixedSignalPlanScript -Json"
 $slowLiquidityFixedSignalPlanUpdateGateCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File $slowLiquidityFixedSignalPlanScript -UpdateGate -Json"
+$slowLiquidityFixedCompressionV1PlanCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File $slowLiquidityFixedCompressionV1PlanScript -Json"
+$slowLiquidityFixedCompressionV1PlanUpdateGateCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File $slowLiquidityFixedCompressionV1PlanScript -UpdateGate -Json"
 $slowLiquidityFeatureNormalizerCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File $slowLiquidityFeatureNormalizerScript -Json"
 $slowLiquidityFeatureNormalizerUpdateGateCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File $slowLiquidityFeatureNormalizerScript -UpdateGate -Json"
 $slowLiquidityRescopePlanOnlyCommand = "pwsh -NoProfile -ExecutionPolicy Bypass -File $slowLiquidityRescopePlanOnlyScript -Json"
@@ -1719,7 +1741,7 @@ $slowLiquidityFixedReplayValidationCommand = "manual PlanOnly implementation: ru
 $slowLiquidityFixedV1ReplayValidationCommand = $slowLiquidityReplayV1UpdateGateCommand
 $slowLiquidityIndependentReviewCommand = "manual independent review: send fixed slow-liquidity v1 replay artifact to Rой/reviewer; no paper-forward/live/API/grid"
 $slowLiquidityRejectedSelectNextBranchCommand = $structuralBranchPlanOnlyCommand
-$slowLiquidityActivePlanOnlyCommand = if ($slowLiquidityReplayV1CandidateGate) { $slowLiquidityIndependentReviewCommand } elseif ($slowLiquidityReplayV1RejectedGate) { $slowLiquidityRejectedSelectNextBranchCommand } elseif ($slowLiquidityFixedV1ReadyGate) { $slowLiquidityFixedV1ReplayValidationCommand } elseif ($slowLiquidityEventCensusAcceptedGate) { $slowLiquidityFixedV1PlanUpdateGateCommand } elseif ($slowLiquidityEventCensusRejectedGate) { $slowLiquidityRejectedSelectNextBranchCommand } elseif ($slowLiquidityV0RejectedReadyForCensusGate) { $slowLiquidityEventCensusUpdateGateCommand } elseif ($slowLiquidityFeatureNormalizerReadyGate) { $slowLiquidityFixedReplayValidationCommand } elseif ($slowLiquidityFeatureNormalizerRejectedGate) { $slowLiquidityRescopePlanOnlyUpdateGateCommand } elseif ($slowLiquidityFixedSignalReadyGate) { $slowLiquidityFeatureNormalizerUpdateGateCommand } elseif ($slowLiquidityHistoryQualityAcceptedGate) { $slowLiquidityFixedSignalPlanUpdateGateCommand } elseif ($slowLiquidityHistoryDataPlanReadyGate) { $slowLiquidityHistoryAwaitApprovalCommand } elseif ($slowLiquidityDataAvailabilityReadyGate) { $slowLiquidityDataAvailabilityPreflightUpdateGateCommand } elseif ($slowLiquidityDataAvailabilityRejectedGate) { $slowLiquidityHistoryPlanUpdateGateCommand } elseif ($slowLiquidityDataAvailabilityAcceptedGate) { $slowLiquidityFixedSignalPlanUpdateGateCommand } else { $slowLiquidityPlanOnlyCommand }
+$slowLiquidityActivePlanOnlyCommand = if ($slowLiquidityReplayV1CandidateGate) { $slowLiquidityIndependentReviewCommand } elseif ($slowLiquidityReplayV1RejectedGate) { $slowLiquidityRejectedSelectNextBranchCommand } elseif ($slowLiquidityFixedV1ReadyGate) { $slowLiquidityFixedV1ReplayValidationCommand } elseif ($slowLiquidityEventCensusAcceptedGate) { $slowLiquidityFixedV1PlanUpdateGateCommand } elseif ($slowLiquidityEventCensusRejectedGate) { $slowLiquidityRejectedSelectNextBranchCommand } elseif ($slowLiquidityV0RejectedReadyForCensusGate) { $slowLiquidityEventCensusUpdateGateCommand } elseif ($slowLiquidityFeatureNormalizerReadyGate) { $slowLiquidityFixedReplayValidationCommand } elseif ($slowLiquidityFeatureNormalizerRejectedGate -and $slowLiquidityFeatureNormalizerArtifactIsV1) { $slowLiquidityRescopePlanOnlyUpdateGateCommand } elseif ($slowLiquidityFeatureNormalizerRejectedGate) { $slowLiquidityFixedCompressionV1PlanUpdateGateCommand } elseif ($slowLiquidityFixedCompressionV1ReadyGate) { $slowLiquidityFeatureNormalizerUpdateGateCommand } elseif ($slowLiquidityFixedSignalReadyGate) { $slowLiquidityFixedCompressionV1PlanUpdateGateCommand } elseif ($slowLiquidityHistoryQualityAcceptedGate) { $slowLiquidityFixedSignalPlanUpdateGateCommand } elseif ($slowLiquidityHistoryDataPlanReadyGate) { $slowLiquidityHistoryAwaitApprovalCommand } elseif ($slowLiquidityDataAvailabilityReadyGate) { $slowLiquidityDataAvailabilityPreflightUpdateGateCommand } elseif ($slowLiquidityDataAvailabilityRejectedGate) { $slowLiquidityHistoryPlanUpdateGateCommand } elseif ($slowLiquidityDataAvailabilityAcceptedGate) { $slowLiquidityFixedSignalPlanUpdateGateCommand } else { $slowLiquidityPlanOnlyCommand }
 $slowLiquidityExactRecollectPreflightCommand = if ($slowLiquidityExactRecollectAwaitingApprovalGate) { [string]$slowLiquidityExactRecollectStatus.preflight_command } else { "blocked: repair exact slow-liquidity recollect PlanOnly/readiness binding" }
 $slowLiquidityExactRecollectApprovalPacketCommand = if ($slowLiquidityExactRecollectAwaitingApprovalGate) { [string]$slowLiquidityExactRecollectStatus.approval_packet_command } else { "blocked: exact slow-liquidity approval packet is not the current lifecycle action" }
 $visibleWsCollectCommandResolution = Resolve-WsCollectCommands -ScriptPath $visibleWsCollectScript -PlanPreviewPath $visibleWsPlanPreviewLatest
@@ -1859,6 +1881,10 @@ if ([string]$gate.status -eq "RUNNING") {
             "SLOW_LIQUIDITY_FIXED_V0_REJECTED_RUN_EVENT_CENSUS_V1_PLANONLY"
         } elseif ($slowLiquidityFeatureNormalizerReadyGate) {
             "SLOW_LIQUIDITY_FEATURE_NORMALIZER_READY_FOR_FIXED_REPLAY_VALIDATION"
+        } elseif ($slowLiquidityFixedCompressionV1ReadyGate) {
+            "SLOW_LIQUIDITY_FIXED_V1_COMPRESSION_READY_BUILD_FEATURE_NORMALIZER"
+        } elseif ($slowLiquidityFeatureNormalizerRejectedGate -and $slowLiquidityFeatureNormalizerArtifactIsV1) {
+            "SLOW_LIQUIDITY_FEATURE_NORMALIZER_V1_REJECTED_SELECT_NEXT_BRANCH"
         } elseif ($slowLiquidityFeatureNormalizerRejectedGate) {
             "SLOW_LIQUIDITY_FEATURE_NORMALIZER_REJECTED_RESCOPE_V0_PLANONLY"
         } elseif ($slowLiquidityFixedSignalReadyGate) {
@@ -1882,6 +1908,7 @@ if ([string]$gate.status -eq "RUNNING") {
             "run_slow_liquidity_rescope_planonly",
             "run_slow_liquidity_event_census_v1_planonly",
             "run_slow_liquidity_fixed_v1_planonly",
+            "await_explicit_user_approval_for_new_structural_hypothesis",
             "run_fixed_slow_liquidity_replay_validation_planonly_when_normalizer_allows",
             "run_fixed_slow_liquidity_v1_replay_validation_planonly_when_contract_allows",
             "independent_review_before_paper_forward",
@@ -1894,9 +1921,20 @@ if ([string]$gate.status -eq "RUNNING") {
             "retry_swarm_at_next_major_branch_decision",
             "continue_manual_codex_when_swarm_limited"
         )
-        $requiresUserApproval = [bool]$slowLiquidityHistoryDataPlanReadyGate
+        $newStructuralHypothesisApprovalRequired = [bool](
+            $slowLiquidityFeatureNormalizerRejectedGate -and
+            $slowLiquidityFeatureNormalizerArtifactIsV1
+        )
+        $requiresUserApproval = [bool](
+            $slowLiquidityHistoryDataPlanReadyGate -or
+            $newStructuralHypothesisApprovalRequired
+        )
         $requiresUserApprovalForActualCollect = [bool]$slowLiquidityHistoryDataPlanReadyGate
-        $primaryCommand = $slowLiquidityActivePlanOnlyCommand
+        $primaryCommand = if ($newStructuralHypothesisApprovalRequired) {
+            $structuralBranchPlanOnlyCommand
+        } else {
+            $slowLiquidityActivePlanOnlyCommand
+        }
         $reason = if ($slowLiquidityReplayV1CandidateGate) {
             "slow_liquidity fixed v1 replay is a candidate, not an accepted strategy. Next valid work is independent review; no paper-forward/live/API/grid."
         } elseif ($slowLiquidityReplayV1RejectedGate) {
@@ -1911,8 +1949,12 @@ if ([string]$gate.status -eq "RUNNING") {
             "slow_liquidity fixed v0 is rejected for no event base-rate. Next valid work is event-census v1 PlanOnly on existing 56d 1h/4h history; no replay/grid/live/API/paper-forward and no larger v0 collect."
         } elseif ($slowLiquidityFeatureNormalizerReadyGate) {
             "slow_liquidity_regime_breakout_retest feature normalizer is ready. Next valid work is one fixed-parameter replay-validation PlanOnly from the normalizer artifact; no grid, live orders, API keys, leverage, margin or paper-forward."
+        } elseif ($slowLiquidityFixedCompressionV1ReadyGate) {
+            "slow_liquidity fixed scaled-compression v1 PlanOnly is ready. Run the feature normalizer once on this immutable contract; do not tune the threshold."
+        } elseif ($slowLiquidityFeatureNormalizerRejectedGate -and $slowLiquidityFeatureNormalizerArtifactIsV1) {
+            "slow_liquidity scaled-compression v1 still has insufficient independent events. Reject this contract and select a new structural hypothesis; do not retune or recollect under it."
         } elseif ($slowLiquidityFeatureNormalizerRejectedGate) {
-            "slow_liquidity_regime_breakout_retest feature normalizer rejected the fixed v0 event set as insufficient. Next valid work is formal v0 rescope PlanOnly; do not replay/grid or collect larger history under v0."
+            "slow_liquidity fixed v0 is rejected as degenerate. Build the frozen scaled-compression v1 PlanOnly on the same clean history; do not tune v0 or collect a larger v0 sample."
         } elseif ($slowLiquidityFixedSignalReadyGate) {
             "slow_liquidity_regime_breakout_retest fixed v0 signal PlanOnly is ready. Next valid work is feature normalizer PlanOnly on clean 1h/4h two-venue slice; no grid, live orders, API keys, leverage, margin or paper-forward, and replay only after normalizer artifact exists."
         } elseif ($slowLiquidityHistoryQualityAcceptedGate) {
@@ -2289,8 +2331,10 @@ $result = [ordered]@{
             slow_liquidity_history_data_plan_ready_gate = $slowLiquidityHistoryDataPlanReadyGate
             slow_liquidity_history_quality_accepted_gate = $slowLiquidityHistoryQualityAcceptedGate
             slow_liquidity_fixed_signal_ready_gate = $slowLiquidityFixedSignalReadyGate
+            slow_liquidity_fixed_compression_v1_ready_gate = $slowLiquidityFixedCompressionV1ReadyGate
             slow_liquidity_feature_normalizer_ready_gate = $slowLiquidityFeatureNormalizerReadyGate
             slow_liquidity_feature_normalizer_rejected_gate = $slowLiquidityFeatureNormalizerRejectedGate
+            slow_liquidity_feature_normalizer_artifact_is_v1 = $slowLiquidityFeatureNormalizerArtifactIsV1
             slow_liquidity_v0_rejected_ready_for_census_gate = $slowLiquidityV0RejectedReadyForCensusGate
             slow_liquidity_event_census_accepted_gate = $slowLiquidityEventCensusAcceptedGate
             slow_liquidity_event_census_rejected_gate = $slowLiquidityEventCensusRejectedGate
@@ -2326,6 +2370,8 @@ $result = [ordered]@{
         slow_liquidity_history_data_plan_update_gate = $slowLiquidityHistoryPlanUpdateGateCommand
         slow_liquidity_fixed_signal_plan = $slowLiquidityFixedSignalPlanCommand
         slow_liquidity_fixed_signal_plan_update_gate = $slowLiquidityFixedSignalPlanUpdateGateCommand
+        slow_liquidity_fixed_compression_v1_planonly = $slowLiquidityFixedCompressionV1PlanCommand
+        slow_liquidity_fixed_compression_v1_planonly_update_gate = $slowLiquidityFixedCompressionV1PlanUpdateGateCommand
         slow_liquidity_feature_normalizer = $slowLiquidityFeatureNormalizerCommand
         slow_liquidity_feature_normalizer_update_gate = $slowLiquidityFeatureNormalizerUpdateGateCommand
         slow_liquidity_rescope_planonly = $slowLiquidityRescopePlanOnlyCommand

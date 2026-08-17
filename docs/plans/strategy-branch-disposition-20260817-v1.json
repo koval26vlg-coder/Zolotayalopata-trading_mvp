@@ -1,0 +1,56 @@
+{
+  "schema": "trading_mvp_strategy_branch_disposition_v1",
+  "generated_at": "2026-08-17",
+  "objective": "prove_or_reject_trading_edge_high_winrate_scheme",
+  "scope": "current_chat_excludes_listing_momentum_monitor_project",
+  "branches": [
+    {
+      "branch": "slow_liquidity_fixed_v0",
+      "status": "REJECTED_AS_DEGENERATE",
+      "reopen_allowed": false,
+      "reason": "The 96h range was compared with unscaled one-bar ATR; the compression gate had zero events and must not be threshold-tuned from observed data."
+    },
+    {
+      "branch": "slow_liquidity_compression_v1",
+      "status": "REJECTED_INSUFFICIENT_EVENTS",
+      "reopen_allowed": false,
+      "contract": "range_width_96h / (ATR_96h * sqrt(96)) <= inherited_threshold_1_2",
+      "reason": "The fixed scaled-compression contract produced only 20 raw candidates, 14 independent events and 6 event bases; it fails the 100-event, 8-base, 2-venue gate.",
+      "next_step": "A materially new structural hypothesis requires an explicit user checkpoint; do not retune or recollect under v1."
+    },
+    {
+      "branch": "funding_basis",
+      "status": "WATCHLIST_ONLY",
+      "reopen_allowed": false,
+      "reason": "No independent fee-tier evidence and no new structural evidence in the current checkpoint."
+    },
+    {
+      "branch": "spot_perp_cross_venue",
+      "status": "CLOSED_REJECTED",
+      "reopen_allowed": false,
+      "reason": "Do not rerun the same data or retune a rejected branch."
+    },
+    {
+      "branch": "dense_ws_and_pit_legacy",
+      "status": "CLOSED_STALE_PLAN",
+      "reopen_allowed": false,
+      "reason": "Old Dense/PIT plans and approvals are not current evidence for this goal."
+    },
+    {
+      "branch": "listing_momentum_monitor",
+      "status": "EXTERNAL_PROJECT_NOT_THIS_CHAT",
+      "project_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-monitor",
+      "reopen_allowed": false,
+      "reason": "This chat must not spend work or tokens on the separate listing-momentum project."
+    }
+  ],
+  "global_constraints": {
+    "no_grid": true,
+    "no_retune_after_observation": true,
+    "no_private_api": true,
+    "no_live_orders": true,
+    "no_real_capital": true,
+    "no_leverage_or_margin": true,
+    "long_collector_requires_new_contract": true
+  }
+}

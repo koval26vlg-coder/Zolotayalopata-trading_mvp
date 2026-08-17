@@ -16,6 +16,7 @@ from slow_liquidity_feature_normalizer import (  # noqa: E402
     SlowLiquidityFeatureConfig,
     normalize_slow_liquidity_features_planonly,
 )
+from slow_liquidity_provenance import state_hash_from_rows  # noqa: E402
 
 
 def candle(
@@ -116,6 +117,14 @@ def fixed_plan() -> dict[str, object]:
 
 
 class SlowLiquidityFeatureNormalizerTests(unittest.TestCase):
+    def test_state_hash_changes_when_same_count_has_different_market_state(self) -> None:
+        rows = fixture_rows_for_event("mexc")
+        changed = [dict(row) for row in rows]
+        changed[0]["close"] = float(changed[0]["close"]) + 0.25
+
+        self.assertEqual(len(rows), len(changed))
+        self.assertNotEqual(state_hash_from_rows(rows), state_hash_from_rows(changed))
+
     def test_normalizer_builds_fixed_signal_event_and_allows_replay_when_thresholds_are_relaxed(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -151,6 +160,52 @@ class SlowLiquidityFeatureNormalizerTests(unittest.TestCase):
         self.assertEqual(result["event_set"]["raw_candidate_events"], 2)
         self.assertEqual(result["event_set"]["independent_events"], 1)
         self.assertEqual(result["event_set"]["event_bases"], 1)
+        self.assertIn("state_hash", result["input_binding"])
+        self.assertEqual(result["state_hash"], result["input_binding"]["state_hash"])
+        self.assertEqual(
+            result["event_set"]["sample_events"][0]["compression_metric"],
+            "range_width_over_atr",
+        )
+
+    def test_scaled_compression_v1_uses_frozen_metric_without_changing_threshold(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            history = root / "history.jsonl"
+            manifest = root / "manifest.json"
+            plan = root / "fixed_signal_v1.json"
+            quality = root / "quality.json"
+            output = root / "normalizer.json"
+            rows = fixture_rows_for_event("mexc") + fixture_rows_for_event("gateio")
+            history.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
+            manifest.write_text(json.dumps({"final": True, "run_id": "fixture-v1"}), encoding="utf-8")
+            v1 = fixed_plan()
+            v1["decision"] = "SLOW_LIQUIDITY_FIXED_V1_COMPRESSION_PLANONLY_READY_FOR_FEATURE_NORMALIZER"
+            v1["fixed_signal_v1"] = dict(v1.pop("fixed_signal_v0"))
+            v1["fixed_signal_v1"]["compression_metric"] = "range_width_over_atr_sqrt_lookback"
+            v1["fixed_signal_v1"]["name"] = "slow_liquidity_regime_breakout_retest_v1_scaled_compression"
+            plan.write_text(json.dumps(v1), encoding="utf-8")
+            quality.write_text(json.dumps({"accepted": True}), encoding="utf-8")
+
+            result = normalize_slow_liquidity_features_planonly(
+                history_jsonl_path=history,
+                history_manifest_path=manifest,
+                fixed_signal_path=plan,
+                quality_path=quality,
+                output_path=output,
+                config=SlowLiquidityFeatureConfig(
+                    min_independent_events=1,
+                    min_event_bases=1,
+                    min_event_exchanges=1,
+                    max_single_base_event_fraction=1.0,
+                ),
+            )
+
+        self.assertEqual(result["fixed_contract"]["signal"]["compression_metric"], "range_width_over_atr_sqrt_lookback")
+        self.assertEqual(result["event_set"]["raw_candidate_events"], 2)
+        self.assertEqual(
+            result["event_set"]["sample_events"][0]["compression_metric"],
+            "range_width_over_atr_sqrt_lookback",
+        )
 
     def test_normalizer_rejects_when_fixed_events_are_too_few(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

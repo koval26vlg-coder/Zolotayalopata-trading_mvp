@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
+from slow_liquidity_provenance import build_input_binding, state_hash_from_rows
+
 
 INTERVAL_SECONDS = {
     "1h": 3600,
@@ -223,6 +225,22 @@ def _event_score(event: dict[str, Any]) -> float:
     return float(event["volume_percentile"]) + compression_score + min(context_score, 1.0)
 
 
+def _compression_value(
+    *,
+    range_width: float,
+    atr: float,
+    lookback: int,
+    signal: dict[str, Any],
+) -> tuple[float, float, str]:
+    metric = str(signal.get("compression_metric") or "range_width_over_atr")
+    if metric == "range_width_over_atr_sqrt_lookback":
+        scale = math.sqrt(lookback)
+        return range_width / (atr * scale), scale, metric
+    if metric != "range_width_over_atr":
+        raise ValueError(f"unsupported compression_metric={metric}")
+    return range_width / atr, 1.0, metric
+
+
 def _candidate_events_for_market(
     *,
     one_hour: list[Candle],
@@ -281,7 +299,12 @@ def _candidate_events_for_market(
         if atr <= 0:
             continue
         range_width = range_high - range_low
-        range_width_atr = range_width / atr
+        range_width_atr, compression_scale, compression_metric = _compression_value(
+            range_width=range_width,
+            atr=atr,
+            lookback=lookback,
+            signal=signal,
+        )
         if range_width_atr > compression_threshold:
             diagnostics["compression_failed"] += 1
             continue
@@ -341,6 +364,9 @@ def _candidate_events_for_market(
                 "range_midpoint": range_midpoint,
                 "range_width_bps": _safe_div(range_width, range_midpoint) * 1e4,
                 "range_width_atr": range_width_atr,
+                "range_width_atr_raw": range_width / atr,
+                "compression_metric": compression_metric,
+                "compression_scale": compression_scale,
                 "compression_threshold_atr": compression_threshold,
                 "atr_1h": atr,
                 "breakout_close": breakout.close,
@@ -433,7 +459,7 @@ def normalize_slow_liquidity_features_planonly(
     quality = load_json(quality_path)
     clean_bases = set(_as_list((fixed_plan.get("clean_slice") or {}).get("clean_bases")))
     required_timeframes = set(_as_list((fixed_plan.get("clean_slice") or {}).get("required_timeframes")) or ["1h", "4h"])
-    signal = fixed_plan.get("fixed_signal_v0") or {}
+    signal = fixed_plan.get("fixed_signal_v1") or fixed_plan.get("fixed_signal_v0") or {}
     cost_model = fixed_plan.get("base_fee_cost_model") or {}
 
     rows = load_jsonl(history_jsonl_path)
@@ -532,7 +558,10 @@ def normalize_slow_liquidity_features_planonly(
     warnings: list[str] = []
     if manifest.get("final") is not True:
         reasons.append("history_manifest_not_final")
-    if fixed_plan.get("decision") != "SLOW_LIQUIDITY_FIXED_SIGNAL_PLANONLY_READY_FOR_FEATURE_NORMALIZER":
+    if fixed_plan.get("decision") not in {
+        "SLOW_LIQUIDITY_FIXED_SIGNAL_PLANONLY_READY_FOR_FEATURE_NORMALIZER",
+        "SLOW_LIQUIDITY_FIXED_V1_COMPRESSION_PLANONLY_READY_FOR_FEATURE_NORMALIZER",
+    }:
         reasons.append("fixed_signal_plan_not_ready_for_feature_normalizer")
     if quality.get("accepted") is not True:
         reasons.append("history_quality_not_accepted")
@@ -567,6 +596,15 @@ def normalize_slow_liquidity_features_planonly(
         else "reject_or_rescope_slow_liquidity_fixed_v0_or_collect_larger_independent_history_sample"
     )
 
+    input_binding = build_input_binding(
+        {
+            "history_jsonl": history_jsonl_path,
+            "history_manifest": history_manifest_path,
+            "fixed_signal_plan": fixed_signal_path,
+            "quality": quality_path,
+        },
+        state_hash=state_hash_from_rows(rows),
+    )
     result: dict[str, Any] = {
         "mode": "slow_liquidity_feature_normalizer_planonly",
         "generated_at": utc_now_iso(),
@@ -592,6 +630,8 @@ def normalize_slow_liquidity_features_planonly(
             "quality_path": str(quality_path),
             "history_run_id": manifest.get("run_id"),
         },
+        "input_binding": input_binding,
+        "state_hash": input_binding["state_hash"],
         "fixed_contract": {
             "signal": signal,
             "cost_model": cost_model,

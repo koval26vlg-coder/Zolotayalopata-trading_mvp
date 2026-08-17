@@ -9,6 +9,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from slow_liquidity_provenance import (
+    build_input_binding,
+    canonical_plan_hash,
+    compare_input_binding,
+    state_hash_from_rows,
+)
+
 from slow_liquidity_feature_normalizer import _counter_dict, _parse_candle, load_json, load_jsonl
 
 
@@ -241,6 +248,22 @@ def replay_slow_liquidity_v1_planonly(
         raise ValueError("event-census artifact does not reference existing history jsonl/manifest")
     history_rows = load_jsonl(history_path)
     manifest = load_json(manifest_path)
+    source_paths = {
+        "history_jsonl": history_path,
+        "history_manifest": manifest_path,
+        "event_census": census_path,
+        "fixed_v1": fixed_v1_path,
+    }
+    for artifact_name, artifact in (("event_census", census), ("fixed_v1", fixed)):
+        binding = artifact.get("input_binding")
+        if isinstance(binding, dict):
+            mismatches = compare_input_binding(binding, source_paths)
+            if mismatches:
+                raise ValueError(
+                    "stale input binding for "
+                    f"{artifact_name}: {', '.join(mismatches)}"
+                )
+    state_hash = state_hash_from_rows(history_rows)
     candles_by_market = _build_candle_index(history_rows)
     signal = fixed.get("fixed_signal_v1") or {}
     family = str(signal.get("family") or "")
@@ -341,6 +364,12 @@ def replay_slow_liquidity_v1_planonly(
         "event_census_path": str(census_path),
         "history_jsonl_path": str(history_path),
         "history_manifest_path": str(manifest_path),
+        "input_binding": build_input_binding(
+            source_paths,
+            state_hash=state_hash,
+            plan_hash=str(fixed.get("plan_hash") or canonical_plan_hash(fixed)),
+        ),
+        "state_hash": state_hash,
         "history_manifest": {
             "run_id": manifest.get("run_id"),
             "final": bool(manifest.get("final")),

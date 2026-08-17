@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from slow_liquidity_replay_v1 import ReplayV1Config, replay_slow_liquidity_v1_planonly  # noqa: E402
+from slow_liquidity_provenance import build_input_binding  # noqa: E402
 
 
 def candle(
@@ -63,6 +64,50 @@ def event(exchange: str, base: str, symbol: str, ts: int) -> dict[str, object]:
 
 
 class SlowLiquidityReplayV1Tests(unittest.TestCase):
+    def test_replay_rejects_stale_census_binding_even_when_row_count_is_unchanged(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            history = root / "history.jsonl"
+            manifest = root / "manifest.json"
+            census = root / "census.json"
+            fixed = root / "fixed_v1.json"
+            output = root / "replay.json"
+            row = candle("mexc", "AAA", "AAAUSDT", 3600, 100.0, 104.0, 99.0, 103.0)
+            history.write_text(json.dumps(row) + "\n", encoding="utf-8")
+            manifest.write_text(json.dumps({"final": True, "run_id": "fixture", "rows": 1, "ohlcv_rows": 1}), encoding="utf-8")
+            census.write_text(
+                json.dumps(
+                    {
+                        "inputs": {
+                            "history_jsonl_path": str(history),
+                            "history_manifest_path": str(manifest),
+                        },
+                        "input_binding": build_input_binding(
+                            {"history_jsonl": history, "history_manifest": manifest}
+                        ),
+                        "event_census": {"normalized_events": [event("mexc", "AAA", "AAAUSDT", 3600)]},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            fixed.write_text(
+                json.dumps(
+                    {
+                        "event_census_path": str(census),
+                        "fixed_signal_v1": {"family": "volatility_expansion_continuation_v1", "max_hold_bars": 2},
+                        "cost_model": {"normal_total_cost_bps": 120.0, "stress_total_cost_bps": 245.0},
+                        "validation_contract": {"min_trades": 1, "min_oos_trades": 0, "min_event_bases": 1, "min_event_exchanges": 1, "max_single_base_net_pnl_share": 1.0},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            changed = dict(row)
+            changed["close"] = 102.5
+            history.write_text(json.dumps(changed) + "\n", encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "stale input binding"):
+                replay_slow_liquidity_v1_planonly(fixed_v1_path=fixed, output_path=output)
+
     def test_replay_accepts_profitable_fixed_fixture_and_keeps_live_blocked(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

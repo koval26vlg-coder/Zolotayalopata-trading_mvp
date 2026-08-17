@@ -136,6 +136,7 @@ function Get-TestFileShard {
         "test_perp_report.py",
         "test_slow_liquidity_event_census.py",
         "test_slow_liquidity_feature_normalizer.py",
+        "test_slow_liquidity_fixed_compression_v1_plan.py",
         "test_slow_liquidity_fixed_signal_plan.py",
         "test_slow_liquidity_replay_v1.py",
         "test_spot_perp_basis_mean_reversion.py",
