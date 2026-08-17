@@ -1,0 +1,41 @@
+{
+  "schema": "trading_mvp_listing_momentum_automation_recovery_disposition_v1",
+  "status": "ACTIVE_RECURRING_AUTOMATION_WITH_NEXT_INTERVAL_RECOVERY",
+  "generated_at_utc": "2026-08-17T15:12:00Z",
+  "automation": {
+    "id": "zolotyaylopata-listing-momentum-monitor",
+    "name": "ZolotyayLopata Listing Momentum Monitor",
+    "kind": "heartbeat",
+    "status": "ACTIVE",
+    "cadence": "00:00/06:00/12:00/18:00 local",
+    "rrule": "RRULE:FREQ=DAILY;BYHOUR=0,6,12,18;BYMINUTE=0",
+    "target_thread_id": "01a00fb6-6f6e-7b62-88f3-7f0e5c829962",
+    "readback_path": "C:\\Users\\koval\\.codex\\automations\\zolotyaylopata-listing-momentum-monitor\\automation.toml"
+  },
+  "orchestrator": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_listing_momentum_forward_automation_visible.ps1",
+    "sha256": "9931f4a6969134b969e8bfc2ede76041dc185320ada33e1e876dad3b07f4847b",
+    "max_track_runtime_sec": 600,
+    "sequential_tracks": [
+      "mexc_gate_v2",
+      "binance_bybit_okx_bitget_expansion"
+    ]
+  },
+  "recovery": {
+    "failure_status": "RETRY_NEXT_INTERVAL",
+    "partial_failure_status": "PARTIAL_RETRY_NEXT_INTERVAL",
+    "pending_retry_field": true,
+    "immediate_retry": false,
+    "busy_loop": false,
+    "automation_auto_pause": false,
+    "ledger_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\listing_momentum_forward_automation_attempts.jsonl"
+  },
+  "verification": {
+    "expansion_plan_hash": "f4a7c0a9dfe955f65064ad5effc28918262e3564bc52b6f69cedd1b614ae9de6",
+    "expansion_plan_file_sha256": "5ed7b8533162a18f8938a2b4ed7e6dd03690c16886ef294fb88d24ce3f294507",
+    "v2_plan_hash": "d98d402fb08065bef58859522b938ec064b2bc4a223f269aa0218cce502e5afb",
+    "preflight": "PASS_BOTH_TRACKS",
+    "tests_passed": 29,
+    "synthetic_recovery_test": "RECOVERY_DEFERRED_NEXT_INTERVAL_OK"
+  }
+}

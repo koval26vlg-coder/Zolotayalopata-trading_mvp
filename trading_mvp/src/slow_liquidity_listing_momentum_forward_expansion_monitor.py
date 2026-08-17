@@ -107,6 +107,7 @@ def _validate_plan(plan: Mapping[str, Any], plan_path: Path) -> None:
         "expansion_monitor": Path(__file__).resolve(),
         "preflight_launcher": REPO_ROOT / "tools/start_listing_momentum_exchange_expansion_preflight_visible.ps1",
         "visible_tick_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_expansion_tick_visible.ps1",
+        "automation_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_automation_visible.ps1",
         "expansion_plan_generator": REPO_ROOT / "trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_plan.py",
     }
     by_role = {str(item.get("role")): item for item in implementation if isinstance(item, Mapping)}

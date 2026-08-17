@@ -4,7 +4,7 @@
   "strategy_branch": "slow_liquidity_listing_momentum_forward_expansion",
   "mode": "PlanOnly",
   "status": "READY_FOR_VISIBLE_EXPANSION_TICKS",
-  "generated_at_utc": "2026-08-17T14:48:17Z",
+  "generated_at_utc": "2026-08-17T15:16:11Z",
   "research_only": true,
   "public_data_only": true,
   "private_api": false,
@@ -119,7 +119,7 @@
       {
         "role": "expansion_monitor",
         "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_listing_momentum_forward_expansion_monitor.py",
-        "sha256": "163ea7f0f1b8a9868aceadf9cf4ed60a353b0ea6e957f72cb0f6ea403f67072f"
+        "sha256": "5d182cc58dace25b25764a142ce81553591bda1c0bea13b7298ec30d8030dff6"
       },
       {
         "role": "preflight_launcher",
@@ -132,9 +132,14 @@
         "sha256": "2b7e5f437c0b89f57226b31b5073a9a0c94c563436e9c3516bea1272761dfb81"
       },
       {
+        "role": "automation_launcher",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_listing_momentum_forward_automation_visible.ps1",
+        "sha256": "9931f4a6969134b969e8bfc2ede76041dc185320ada33e1e876dad3b07f4847b"
+      },
+      {
         "role": "expansion_plan_generator",
         "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_listing_momentum_forward_expansion_plan.py",
-        "sha256": "71b72e9322b9090e02602909609e3b5172c4b7e6489c74811399d42351ad413f"
+        "sha256": "32682ca7b3c69670eb800736ce0a01d39fef1e4aea766624f7ce287072584160"
       }
     ]
   },
@@ -197,5 +202,5 @@
     "visible_tick": "python trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_monitor.py --tick --confirmed-visible-tick"
   },
   "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
-  "plan_hash": "b0bb8641e92ff64cbc513f448348a3e113d436a52fbc0338ba95c385c2113d07"
+  "plan_hash": "f4a7c0a9dfe955f65064ad5effc28918262e3564bc52b6f69cedd1b614ae9de6"
 }
