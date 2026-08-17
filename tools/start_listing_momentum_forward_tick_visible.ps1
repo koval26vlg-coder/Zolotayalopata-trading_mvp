@@ -15,6 +15,24 @@ $gateChecker = Join-Path $repoRoot "tools\check_active_run_gate.ps1"
 $claimPath = Join-Path $repoRoot "docs\agent-log\active-market-data-writer-claim.json"
 $monitorPy = Join-Path $repoRoot "trading_mvp\src\slow_liquidity_listing_momentum_forward_monitor.py"
 
+function Resolve-PythonExecutable {
+    $candidates = [System.Collections.Generic.List[string]]::new()
+    if ($env:PYTHON_EXE) { $candidates.Add($env:PYTHON_EXE) }
+    foreach ($commandName in @("python.exe", "python", "py.exe")) {
+        $command = Get-Command $commandName -ErrorAction SilentlyContinue |
+            Select-Object -First 1
+        if ($command -and $command.Source) { $candidates.Add($command.Source) }
+    }
+    $candidates.Add("C:\Program Files\Python313\python.exe")
+    $candidates.Add("C:\Users\koval\AppData\Local\Programs\Python\Python313\python.exe")
+    foreach ($candidate in $candidates | Select-Object -Unique) {
+        if ($candidate -and (Test-Path -LiteralPath $candidate)) {
+            return $candidate
+        }
+    }
+    throw "Python executable not found; set PYTHON_EXE or install Python 3.13"
+}
+
 function Get-FileSha256([string]$Path) {
     return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant()
 }
@@ -56,10 +74,11 @@ function Invoke-Preflight {
 }
 
 if ($Status) {
-    $status = & python $monitorPy --status 2>&1 | Out-String
-    if ($Json) { $status } else {
+    $pythonExe = Resolve-PythonExecutable
+    $statusOutput = & $pythonExe $monitorPy --status 2>&1 | Out-String
+    if ($Json) { $statusOutput } else {
         Write-Host "=== forward monitor status ===" -ForegroundColor Cyan
-        Write-Host $status
+        Write-Host $statusOutput
     }
     exit 0
 }
@@ -99,11 +118,30 @@ if ($VisibleWorker) {
         Write-Host "plan_hash: $($plan.plan_hash)"
         $env:PYTHONIOENCODING = "utf-8"
         $env:PYTHONUTF8 = "1"
-        & python $monitorPy --plan $PlanPath --tick --confirmed-visible-tick
+        $pythonExe = Resolve-PythonExecutable
+        & $pythonExe $monitorPy --plan $PlanPath --tick --confirmed-visible-tick
         $exitCode = $LASTEXITCODE
     } catch {
         ("worker failed at " + (Get-Date).ToUniversalTime().ToString("o") + "`n" +
             ($_ | Out-String)) | Set-Content -LiteralPath $workerErrorLog -Encoding UTF8
+        try {
+            $pointer = Read-JsonFile -Path $pointerPath
+            $pointer.status = "STOPPED_INCOMPLETE"
+            $pointer.updated_at = (Get-Date).ToString("o")
+            $pointer.monitor_pid = $null
+            $pointer.process_ids = @()
+            $pointer | Add-Member -NotePropertyName error_log -NotePropertyValue $workerErrorLog -Force
+            Write-JsonFile -Path $pointerPath -Payload $pointer
+            $launch = Read-JsonFile -Path $launchRecordPath
+            $launch.status = "FAILED"
+            $launch | Add-Member -NotePropertyName finished_at_utc -NotePropertyValue (Get-Date).ToUniversalTime().ToString("o") -Force
+            $launch | Add-Member -NotePropertyName tick_exit_code -NotePropertyValue 1 -Force
+            $launch | Add-Member -NotePropertyName error_log -NotePropertyValue $workerErrorLog -Force
+            Write-JsonFile -Path $launchRecordPath -Payload $launch
+        } catch {
+            ("failed to persist worker failure state: " + ($_ | Out-String)) |
+                Add-Content -LiteralPath $workerErrorLog -Encoding UTF8
+        }
         Write-Host "worker failed; see $workerErrorLog" -ForegroundColor Red
         Start-Sleep -Seconds 10
         exit 1
@@ -127,8 +165,9 @@ if ($VisibleWorker) {
     $launch | Add-Member -NotePropertyName finished_at_utc -NotePropertyValue (Get-Date).ToUniversalTime().ToString("o") -Force
     $launch | Add-Member -NotePropertyName tick_exit_code -NotePropertyValue $exitCode -Force
     Write-JsonFile -Path $launchRecordPath -Payload $launch
-    $state = & python $monitorPy --status 2>&1 | Out-String
-    Write-Host $state
+    $pythonExe = Resolve-PythonExecutable
+    $statusOutput = & $pythonExe $monitorPy --status 2>&1 | Out-String
+    Write-Host $statusOutput
     Write-Host "tick exit code: $exitCode" -ForegroundColor Green
     Start-Sleep -Seconds 5
     exit $exitCode
