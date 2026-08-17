@@ -80,6 +80,7 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
         "expansion_adapter": REPO_ROOT / "trading_mvp/src/listing_momentum_exchange_expansion.py",
         "expansion_monitor": REPO_ROOT / "trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_monitor.py",
         "preflight_launcher": REPO_ROOT / "tools/start_listing_momentum_exchange_expansion_preflight_visible.ps1",
+        "visible_tick_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_expansion_tick_visible.ps1",
         "expansion_plan_generator": Path(__file__).resolve(),
     }
     implementation = [

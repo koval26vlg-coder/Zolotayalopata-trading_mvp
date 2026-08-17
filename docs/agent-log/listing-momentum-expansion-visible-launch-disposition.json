@@ -1,0 +1,32 @@
+{
+  "schema": "trading_mvp_listing_momentum_expansion_visible_launch_disposition_v1",
+  "status": "VISIBLE_LAUNCH_READY",
+  "generated_at_utc": "2026-08-17T14:48:17Z",
+  "user_scope_decision": "ADD_BINANCE_BYBIT_OKX_BITGET_AS_SEPARATE_EXPANSION_TRACK",
+  "plan": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-expansion-planonly-20260817.json",
+    "plan_id": "slow_liquidity_listing_momentum_forward_expansion_20260817_v1",
+    "plan_hash": "b0bb8641e92ff64cbc513f448348a3e113d436a52fbc0338ba95c385c2113d07",
+    "file_sha256": "f6c3cd59990f828553c8a6aa8085ae1d536a6b0dfc00223e3797274e57512fbf",
+    "replay_allowed": false,
+    "evaluator_or_oos_allowed": false,
+    "separate_namespace_from_v2": true
+  },
+  "visible_tick_launcher": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_listing_momentum_forward_expansion_tick_visible.ps1",
+    "sha256": "2b7e5f437c0b89f57226b31b5073a9a0c94c563436e9c3516bea1272761dfb81",
+    "max_runtime_sec": 600,
+    "expected_mode": "visible_worker"
+  },
+  "preflight": {
+    "status": "PASS",
+    "receipt_hash": "fb4be6e1d02a2a276f52d518004c6396d6ae4e7bb706e5bda3f759f09f2aa8b9",
+    "request_count": 8,
+    "raw_payload_persisted": false
+  },
+  "gate": {
+    "status": "READY_FOR_POSTPROCESS",
+    "writer_pid_present": false
+  },
+  "next_safe_action": "launch_one_visible_bounded_expansion_tick_and_read_back_launch_record"
+}
