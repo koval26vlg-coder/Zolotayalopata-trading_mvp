@@ -24,24 +24,25 @@ PLAN_ID = monitor.PLAN_ID
 HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 FORWARD_PLAN_PATH = monitor.FORWARD_PLAN_PATH
-LAUNCHER_PATH = (
+PREVIOUS_PLAN_PATH = (
     REPO_ROOT
-    / "tools"
-    / "start_listing_momentum_forward_tick_visible.ps1"
+    / "docs/plans"
+    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260816.json"
 )
+PREVIOUS_PLAN_HASH = "bc55d56faea5e456426757e5d8e3f724a37fd4eedea12fae4dc6857cc102d2c9"
+PREVIOUS_PLAN_FILE_SHA256 = (
+    "70e06b75b444922313e55cbc6b868fcba0cf0d35918a7cabb4c6569c1adb3b25"
+)
+LAUNCHER_PATH = monitor.EXPECTED_IMPLEMENTATION_PATHS["visible_launcher"]
 PROXY_RECEIPT_PATH = (
     REPO_ROOT
     / "docs/agent-log/approvals"
     / "2026-08-16-slow-liquidity-listing-momentum-proxy-date-acceptance-approval.json"
 )
-BOUND_FILES = (
-    ("forward_monitor", REPO_ROOT / "trading_mvp/src/slow_liquidity_listing_momentum_forward_monitor.py"),
-    ("event_window_collector", REPO_ROOT / "trading_mvp/src/slow_liquidity_listing_momentum_first_days_collector.py"),
-    ("snapshot_parsers", REPO_ROOT / "trading_mvp/src/listing_calendar.py"),
-    ("public_ohlcv_clients", REPO_ROOT / "trading_mvp/src/listing_event_history_collector.py"),
-    ("interval_contract", REPO_ROOT / "trading_mvp/src/listing_event_history_collect_plan.py"),
-    ("global_writer_claim", REPO_ROOT / "trading_mvp/src/global_market_writer_claim.py"),
-    ("census_stats", REPO_ROOT / "trading_mvp/src/slow_liquidity_listing_momentum_first_days_census.py"),
+BOUND_FILES = tuple(
+    (role, path)
+    for role, path in monitor.EXPECTED_IMPLEMENTATION_PATHS.items()
+    if role != "visible_launcher"
 )
 CADENCE_RECOMMENDATION = "manual 'продолжай' или scheduler; не чаще 1 тика в 3 часа"
 
@@ -60,6 +61,20 @@ def _sha256_file(path: Path) -> str:
 
 
 def build_forward_monitor_plan(generated_at_utc: str) -> dict[str, Any]:
+    _require(PREVIOUS_PLAN_PATH.is_file(), "previous immutable plan missing")
+    _require(
+        _sha256_file(PREVIOUS_PLAN_PATH) == PREVIOUS_PLAN_FILE_SHA256,
+        "previous immutable plan file sha256 mismatch",
+    )
+    previous_plan = json.loads(PREVIOUS_PLAN_PATH.read_text(encoding="utf-8"))
+    _require(
+        previous_plan.get("plan_hash") == PREVIOUS_PLAN_HASH,
+        "previous immutable plan hash mismatch",
+    )
+    _require(
+        previous_plan.get("plan_hash") == canonical_hash(previous_plan),
+        "previous immutable plan is not internally consistent",
+    )
     proxy_plan = json.loads(PROXY_PLAN_PATH.read_text(encoding="utf-8"))
     _require(
         proxy_plan.get("plan_id") == PARENT_PLAN_ID,
@@ -113,6 +128,20 @@ def build_forward_monitor_plan(generated_at_utc: str) -> dict[str, Any]:
             "state rebuild. Descriptive accrual only - no acceptance."
         ),
         "source_bindings": {
+            "technical_rebind": {
+                "kind": "verified_visible_launcher_python_resolution_bugfix",
+                "supersedes_plan_id": previous_plan["plan_id"],
+                "supersedes_plan_hash": PREVIOUS_PLAN_HASH,
+                "supersedes_plan_file_sha256": PREVIOUS_PLAN_FILE_SHA256,
+                "research_scope_changed": False,
+                "reason": (
+                    "The visible worker previously invoked bare python and "
+                    "failed when the scheduler environment had no Python on "
+                    "PATH. The launcher now resolves an existing executable "
+                    "before the tick; venue, universe, signal, cost, risk, "
+                    "acceptance and cadence contracts are unchanged."
+                ),
+            },
             "proxy_acceptance_plan": {
                 "plan_id": PARENT_PLAN_ID,
                 "plan_hash": proxy_plan["plan_hash"],
@@ -249,6 +278,37 @@ def validate_forward_monitor_plan(plan: dict[str, Any]) -> None:
         == monitor.BASELINE_AS_OF_TS,
         "baseline as-of mismatch",
     )
+    rebind = (plan.get("source_bindings") or {}).get("technical_rebind") or {}
+    _require(
+        rebind.get("supersedes_plan_hash") == PREVIOUS_PLAN_HASH,
+        "technical rebind previous plan hash mismatch",
+    )
+    _require(
+        rebind.get("supersedes_plan_file_sha256")
+        == PREVIOUS_PLAN_FILE_SHA256,
+        "technical rebind previous plan file mismatch",
+    )
+    _require(
+        rebind.get("research_scope_changed") is False,
+        "technical rebind changed research scope",
+    )
+    implementation = plan.get("implementation") or {}
+    bound_files = implementation.get("files") or []
+    by_role = {str(item.get("role") or ""): item for item in bound_files}
+    _require(
+        set(by_role) == set(monitor.EXPECTED_IMPLEMENTATION_PATHS),
+        "implementation role set mismatch",
+    )
+    for role, path in monitor.EXPECTED_IMPLEMENTATION_PATHS.items():
+        item = by_role[role]
+        _require(
+            Path(str(item.get("path") or "")).resolve() == path.resolve(),
+            f"implementation path mismatch: {role}",
+        )
+        _require(
+            item.get("sha256") == _sha256_file(path),
+            f"implementation sha256 mismatch: {role}",
+        )
     _require(plan.get("plan_hash") == canonical_hash(plan), "plan hash mismatch")
 
 

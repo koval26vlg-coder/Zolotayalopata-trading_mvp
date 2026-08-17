@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 import tempfile
@@ -244,6 +245,54 @@ class PlanModuleTests(unittest.TestCase):
             checked_in["generated_at_utc"]
         )
         self.assertEqual(checked_in, rebuilt)
+
+    def test_technical_rebind_preserves_previous_immutable_plan(self) -> None:
+        previous_path = (
+            ROOT
+            / "docs/plans"
+            / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260816.json"
+        )
+        previous = json.loads(previous_path.read_text(encoding="utf-8"))
+        plan = plan_module.build_forward_monitor_plan("2026-08-17T12:45:00Z")
+        rebind = plan["source_bindings"]["technical_rebind"]
+        self.assertEqual(
+            rebind["supersedes_plan_hash"],
+            previous["plan_hash"],
+        )
+        self.assertEqual(
+            rebind["supersedes_plan_file_sha256"],
+            hashlib.sha256(previous_path.read_bytes()).hexdigest(),
+        )
+        self.assertEqual(rebind["research_scope_changed"], False)
+
+    def test_monitor_rejects_stale_implementation_binding(self) -> None:
+        plan = plan_module.build_forward_monitor_plan("2026-08-17T12:45:00Z")
+        launcher = next(
+            item
+            for item in plan["implementation"]["files"]
+            if item["role"] == "visible_launcher"
+        )
+        launcher["sha256"] = "0" * 64
+        plan["plan_hash"] = canonical_hash(plan)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            plan_path = Path(temp_dir) / "stale-plan.json"
+            plan_path.write_text(
+                json.dumps(plan, indent=2, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(
+                monitor.ForwardMonitorError,
+                "implementation sha256 mismatch",
+            ):
+                monitor.load_and_validate_forward_plan(plan_path)
+
+    def test_launcher_preflight_runs_hash_bound_plan_check(self) -> None:
+        launcher_path = (
+            ROOT / "tools" / "start_listing_momentum_forward_tick_visible.ps1"
+        )
+        launcher = launcher_path.read_text(encoding="utf-8-sig")
+        self.assertIn("--plan-check", launcher)
+        self.assertIn("plan_check_status", launcher)
 
     def test_monitor_accepts_frozen_plan(self) -> None:
         if not plan_module.FORWARD_PLAN_PATH.is_file():

@@ -745,6 +745,167 @@ class CurrentSprintReadinessTests(unittest.TestCase):
         self.assertTrue(result["standing_research_authorized"])
         self.assertTrue(result["standing_research_scope_binding_valid"])
 
+    def test_listing_momentum_forward_accrual_accepts_exact_v2_binding(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            plan_path = root / "forward-monitor-v2.json"
+            baseline_sha = "d" * 64
+            plan = {
+                "schema": (
+                    "trading_mvp_slow_liquidity_listing_momentum_"
+                    "forward_monitor_planonly_v2"
+                ),
+                "plan_id": "slow_liquidity_listing_momentum_forward_v2_test",
+                "strategy_branch": "slow_liquidity_listing_momentum_forward",
+                "mode": "PlanOnly",
+                "objective": "Accrue NEW MEXC/Gate USDT listings.",
+                "research_only": True,
+                "public_data_only": True,
+                "private_api": False,
+                "live_orders": False,
+                "real_capital": False,
+                "leverage_or_margin": False,
+                "replay_allowed": False,
+                "evaluator_or_oos_allowed": False,
+                "source_bindings": {
+                    "technical_rebind": {
+                        "research_scope_changed": False,
+                    },
+                    "baseline_calendar": {
+                        "file_sha256": baseline_sha,
+                    },
+                },
+                "tick": {
+                    "effective_page_sizes": {"mexc": 500, "gateio": 1000},
+                    "granularity": "1h",
+                    "window_sec": 259200,
+                    "max_runtime_sec": 600,
+                },
+            }
+            plan["plan_hash"] = _canonical_hash_without(plan, "plan_hash")
+            _write_json(plan_path, plan)
+            policy = {
+                "policy_id": "policy",
+                "thread_id": "thread",
+                "listing_momentum_forward_accrual": {
+                    "schema": (
+                        "trading_mvp_listing_momentum_forward_accrual_"
+                        "policy_rebind_v1"
+                    ),
+                    "status": (
+                        "STANDING_RESEARCH_SAME_SCOPE_TECHNICAL_REBIND_V2"
+                    ),
+                    "plan_id": plan["plan_id"],
+                    "plan_path": str(plan_path),
+                    "plan_file_sha256": _sha256(plan_path),
+                    "plan_hash": plan["plan_hash"],
+                    "research_scope_changed": False,
+                    "scope_binding": {
+                        "strategy_branch": (
+                            "slow_liquidity_listing_momentum_forward"
+                        ),
+                        "exchanges": ["mexc", "gateio"],
+                        "quote": "USDT",
+                        "granularity": "1h",
+                        "window_sec": 259200,
+                        "baseline_calendar_file_sha256": baseline_sha,
+                    },
+                    "scheduler": {
+                        "automation_id": "automation-66009175",
+                        "cadence_hours": 6,
+                        "visible_terminal_required": True,
+                        "max_runtime_sec": 600,
+                        "evaluator_minimum_complete_windows": 30,
+                    },
+                },
+                "standing_research_authorization": {
+                    "schema": (
+                        "trading_mvp_standing_same_scope_public_"
+                        "research_authorization_v1"
+                    ),
+                    "enabled": True,
+                    "same_scope_auto_continue": True,
+                    "authorized_actions": [
+                        "technical_quality",
+                        "public_identity_discovery",
+                        "public_request_plan_discovery",
+                        "public_topology_discovery",
+                        "public_forward_accrual_tick",
+                        "synthetic_tests",
+                        "immutable_manifest_refreeze",
+                        "preflight_only",
+                    ],
+                    "technical_guards": [
+                        "fresh_authoritative_guard",
+                        "active_run_gate_must_be_ready_for_postprocess",
+                        "single_global_market_data_writer",
+                        "visible_terminal_for_network_writers",
+                        "exact_hash_and_schema_binding",
+                        "public_read_only_only",
+                        "no_redirects_proxies_or_retries",
+                        "no_private_api_or_real_capital",
+                    ],
+                    "user_checkpoint_required_for": [
+                        "hypothesis_change",
+                        "venue_change",
+                        "universe_change",
+                        "signal_cost_risk_or_acceptance_contract_change",
+                        "stopped_incomplete_resume",
+                        "integrity_conflict",
+                        "evaluator_oos_returns_pnl_grid_retune",
+                        (
+                            "paper_live_private_api_real_capital_leverage_"
+                            "margin_or_withdrawal"
+                        ),
+                    ],
+                },
+            }
+
+            result = evaluate_autopilot_state(
+                policy=policy,
+                policy_hash="a" * 64,
+                gate={"status": "READY_FOR_POSTPROCESS", "run_id": "ready"},
+                usage={"decision": "CONTINUE", "remaining_percent": 100.0},
+                prior_state=None,
+                observed_at_utc="2026-08-17T12:00:00Z",
+                current_sprint_readiness={
+                    "status": "READY",
+                    "source_status": (
+                        "SLOW_LIQUIDITY_LISTING_MOMENTUM_FORWARD_ACCRUAL_"
+                        "STANDING_RESEARCH"
+                    ),
+                    "execution_authorized": False,
+                    "next_safe_action": (
+                        "wait_forward_sample_and_run_scheduled_ticks_"
+                        "no_peeking_below_30"
+                    ),
+                    "forward_accrual": {
+                        "monitor_plan": {
+                            "path": str(plan_path),
+                            "file_sha256": _sha256(plan_path),
+                            "plan_id": plan["plan_id"],
+                            "plan_hash": plan["plan_hash"],
+                            "schema": plan["schema"],
+                        },
+                    },
+                },
+            )
+
+        self.assertEqual(
+            result["decision"],
+            "LISTING_MOMENTUM_FORWARD_ACCRUAL_STANDING_RESEARCH",
+        )
+        self.assertFalse(result["action_due"])
+        self.assertFalse(result["stop_new_actions"])
+        self.assertEqual(
+            result["next_action"],
+            "wait_forward_sample_and_run_scheduled_ticks_no_peeking_below_30",
+        )
+        self.assertTrue(result["standing_research_authorized"])
+        self.assertTrue(result["standing_research_scope_binding_valid"])
+
     def test_topology_v2_integrity_defect_waits_for_v3_offline_refreeze(self) -> None:
         result = evaluate_autopilot_state(
             policy={"policy_id": "policy", "thread_id": "thread"},

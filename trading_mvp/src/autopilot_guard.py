@@ -85,6 +85,48 @@ STANDING_RESEARCH_REQUIRED_CHECKPOINTS = {
     "evaluator_oos_returns_pnl_grid_retune",
     "paper_live_private_api_real_capital_leverage_margin_or_withdrawal",
 }
+FORWARD_ACCRUAL_READINESS_STATUS = (
+    "SLOW_LIQUIDITY_LISTING_MOMENTUM_FORWARD_ACCRUAL_STANDING_RESEARCH"
+)
+
+
+def _standing_research_authorization_allows(
+    policy: dict[str, Any],
+    *,
+    current_readiness: dict[str, Any],
+    required_action: str,
+) -> dict[str, Any] | None:
+    authorization = policy.get("standing_research_authorization")
+    if not isinstance(authorization, dict):
+        return None
+    if (
+        authorization.get("schema")
+        != "trading_mvp_standing_same_scope_public_research_authorization_v1"
+        or authorization.get("enabled") is not True
+        or authorization.get("same_scope_auto_continue") is not True
+        or current_readiness.get("status") != "READY"
+    ):
+        return None
+
+    authorized_actions = {
+        str(value) for value in authorization.get("authorized_actions") or []
+    }
+    if (
+        required_action not in authorized_actions
+        or not STANDING_RESEARCH_REQUIRED_ACTIONS.issubset(authorized_actions)
+        or not STANDING_RESEARCH_REQUIRED_GUARDS.issubset(
+            {str(value) for value in authorization.get("technical_guards") or []}
+        )
+        or not STANDING_RESEARCH_REQUIRED_CHECKPOINTS.issubset(
+            {
+                str(value)
+                for value in authorization.get("user_checkpoint_required_for")
+                or []
+            }
+        )
+    ):
+        return None
+    return authorization
 
 
 def _standing_research_scope_matches(
@@ -93,36 +135,12 @@ def _standing_research_scope_matches(
     current_readiness: dict[str, Any],
     required_action: str,
 ) -> bool:
-    authorization = policy.get("standing_research_authorization")
-    if not isinstance(authorization, dict):
-        return False
-    if (
-        authorization.get("schema")
-        != "trading_mvp_standing_same_scope_public_research_authorization_v1"
-        or authorization.get("enabled") is not True
-        or authorization.get("same_scope_auto_continue") is not True
-    ):
-        return False
-    if current_readiness.get("status") != "READY":
-        return False
-
-    authorized_actions = {
-        str(value) for value in authorization.get("authorized_actions") or []
-    }
-    if required_action not in authorized_actions:
-        return False
-    if not STANDING_RESEARCH_REQUIRED_ACTIONS.issubset(authorized_actions):
-        return False
-    if not STANDING_RESEARCH_REQUIRED_GUARDS.issubset(
-        {str(value) for value in authorization.get("technical_guards") or []}
-    ):
-        return False
-    if not STANDING_RESEARCH_REQUIRED_CHECKPOINTS.issubset(
-        {
-            str(value)
-            for value in authorization.get("user_checkpoint_required_for") or []
-        }
-    ):
+    authorization = _standing_research_authorization_allows(
+        policy,
+        current_readiness=current_readiness,
+        required_action=required_action,
+    )
+    if authorization is None:
         return False
 
     binding = policy.get("slow_liquidity_history_recollect")
@@ -165,6 +183,141 @@ def _standing_research_scope_matches(
     except (TypeError, ValueError):
         return False
     return True
+
+
+def _listing_momentum_forward_scope_matches(
+    policy: dict[str, Any],
+    *,
+    current_readiness: dict[str, Any],
+) -> bool:
+    if (
+        _standing_research_authorization_allows(
+            policy,
+            current_readiness=current_readiness,
+            required_action="public_forward_accrual_tick",
+        )
+        is None
+    ):
+        return False
+
+    binding = policy.get("listing_momentum_forward_accrual")
+    if not isinstance(binding, dict):
+        return False
+    if (
+        binding.get("schema")
+        != "trading_mvp_listing_momentum_forward_accrual_policy_rebind_v1"
+        or binding.get("status")
+        != "STANDING_RESEARCH_SAME_SCOPE_TECHNICAL_REBIND_V2"
+        or binding.get("research_scope_changed") is not False
+    ):
+        return False
+
+    plan_path_value = str(binding.get("plan_path") or "").strip()
+    expected_file_sha = str(binding.get("plan_file_sha256") or "").lower()
+    expected_plan_hash = str(binding.get("plan_hash") or "").lower()
+    expected_plan_id = str(binding.get("plan_id") or "")
+    if (
+        not plan_path_value
+        or len(expected_file_sha) != 64
+        or len(expected_plan_hash) != 64
+        or not expected_plan_id
+    ):
+        return False
+
+    plan_path = Path(plan_path_value).expanduser().resolve()
+    if not plan_path.is_file() or _sha256(plan_path) != expected_file_sha:
+        return False
+    try:
+        plan = _load_json(plan_path)
+    except (OSError, ValueError, json.JSONDecodeError):
+        return False
+    canonical_plan = dict(plan)
+    canonical_plan.pop("plan_hash", None)
+    if (
+        plan.get("schema")
+        != (
+            "trading_mvp_slow_liquidity_listing_momentum_"
+            "forward_monitor_planonly_v2"
+        )
+        or str(plan.get("plan_id") or "") != expected_plan_id
+        or str(plan.get("plan_hash") or "").lower() != expected_plan_hash
+        or _sha256_json(canonical_plan) != expected_plan_hash
+        or plan.get("mode") != "PlanOnly"
+        or plan.get("research_only") is not True
+        or plan.get("public_data_only") is not True
+        or plan.get("private_api") is not False
+        or plan.get("live_orders") is not False
+        or plan.get("real_capital") is not False
+        or plan.get("leverage_or_margin") is not False
+        or plan.get("replay_allowed") is not False
+        or plan.get("evaluator_or_oos_allowed") is not False
+    ):
+        return False
+
+    source_bindings = plan.get("source_bindings")
+    tick = plan.get("tick")
+    scope = binding.get("scope_binding")
+    scheduler = binding.get("scheduler")
+    if (
+        not isinstance(source_bindings, dict)
+        or not isinstance(tick, dict)
+        or not isinstance(scope, dict)
+        or not isinstance(scheduler, dict)
+        or source_bindings.get("technical_rebind", {}).get(
+            "research_scope_changed"
+        )
+        is not False
+    ):
+        return False
+    baseline = source_bindings.get("baseline_calendar") or {}
+    effective_page_sizes = tick.get("effective_page_sizes") or {}
+    if (
+        str(scope.get("strategy_branch") or "")
+        != str(plan.get("strategy_branch") or "")
+        or list(scope.get("exchanges") or [])
+        != list(effective_page_sizes.keys())
+        or str(scope.get("quote") or "") != "USDT"
+        or "USDT" not in str(plan.get("objective") or "")
+        or str(scope.get("granularity") or "")
+        != str(tick.get("granularity") or "")
+        or str(scope.get("baseline_calendar_file_sha256") or "").lower()
+        != str(baseline.get("file_sha256") or "").lower()
+    ):
+        return False
+    try:
+        if (
+            int(scope.get("window_sec")) != int(tick.get("window_sec"))
+            or int(scheduler.get("cadence_hours")) != 6
+            or int(scheduler.get("max_runtime_sec"))
+            != int(tick.get("max_runtime_sec"))
+            or int(scheduler.get("evaluator_minimum_complete_windows")) != 30
+        ):
+            return False
+    except (TypeError, ValueError):
+        return False
+    if (
+        scheduler.get("automation_id") != "automation-66009175"
+        or scheduler.get("visible_terminal_required") is not True
+    ):
+        return False
+
+    readiness_forward = current_readiness.get("forward_accrual") or {}
+    readiness_plan = readiness_forward.get("monitor_plan") or {}
+    try:
+        readiness_plan_path = Path(
+            str(readiness_plan.get("path") or "")
+        ).expanduser().resolve()
+    except (OSError, RuntimeError):
+        return False
+    return (
+        readiness_plan_path == plan_path
+        and str(readiness_plan.get("file_sha256") or "").lower()
+        == expected_file_sha
+        and str(readiness_plan.get("plan_hash") or "").lower()
+        == expected_plan_hash
+        and str(readiness_plan.get("plan_id") or "") == expected_plan_id
+        and readiness_plan.get("schema") == plan.get("schema")
+    )
 
 
 def _write_json_atomic(path: Path, payload: dict[str, Any]) -> None:
@@ -2287,6 +2440,25 @@ def evaluate_autopilot_state(
             standing_auto_continue = False
             standing_next_action = "continue_next_bounded_same_scope_public_research"
             if (
+                readiness_source_status == FORWARD_ACCRUAL_READINESS_STATUS
+                and not readiness_execution_authorized
+            ):
+                standing_research_scope_binding_valid = (
+                    _listing_momentum_forward_scope_matches(
+                        policy,
+                        current_readiness=current_readiness,
+                    )
+                )
+                if standing_research_scope_binding_valid:
+                    decision = (
+                        "LISTING_MOMENTUM_FORWARD_ACCRUAL_STANDING_RESEARCH"
+                    )
+                    standing_research_authorized = True
+                else:
+                    decision = (
+                        "LISTING_MOMENTUM_FORWARD_ACCRUAL_SCOPE_BINDING_INVALID"
+                    )
+            elif (
                 readiness_source_status
                 == (
                     "REQUEST_PLAN_DISCOVERY_V3_RUNTIME_FROZEN_WITH_"
@@ -2475,7 +2647,10 @@ def evaluate_autopilot_state(
                     )
             else:
                 decision = "AWAIT_EXACT_ONE_WEEK_EDGE_SPRINT_APPROVAL_CHECKPOINT"
-            stop_new_actions = False
+            stop_new_actions = (
+                decision
+                == "LISTING_MOMENTUM_FORWARD_ACCRUAL_SCOPE_BINDING_INVALID"
+            )
             action_due = decision in {
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_IDENTITY_VERIFICATION",
                 "RUN_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_DISCOVERY",
@@ -2490,8 +2665,14 @@ def evaluate_autopilot_state(
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V4_EXECUTION_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V3_EXECUTION_APPROVAL",
                 "AWAIT_EXACT_SLOW_LIQUIDITY_OFFICIAL_CURRENTNESS_TOPOLOGY_V2_EXECUTION_APPROVAL",
+                "LISTING_MOMENTUM_FORWARD_ACCRUAL_SCOPE_BINDING_INVALID",
             }
-            if standing_auto_continue:
+            if (
+                decision
+                == "LISTING_MOMENTUM_FORWARD_ACCRUAL_SCOPE_BINDING_INVALID"
+            ):
+                next_action = "repair_listing_momentum_forward_scope_binding"
+            elif standing_auto_continue:
                 next_action = standing_next_action
             else:
                 next_action = str(

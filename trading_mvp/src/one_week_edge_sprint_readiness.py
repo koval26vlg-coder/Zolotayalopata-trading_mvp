@@ -4847,7 +4847,7 @@ _FORWARD_ACCRUAL_INPUTS = {
     ),
     "forward_monitor_plan": (
         "docs/plans/"
-        "slow-liquidity-listing-momentum-forward-monitor-planonly-20260816.json"
+        "slow-liquidity-listing-momentum-forward-monitor-planonly-20260817-v2.json"
     ),
     "forward_evaluator_plan": (
         "docs/plans/"
@@ -4898,6 +4898,42 @@ def _forward_accrual_era_inputs(
             (repo_root / _FORWARD_ACCRUAL_INPUTS[key]).read_text(encoding="utf-8")
         )
         refs[key]["decision"] = artifact.get("decision")
+    monitor_plan = json.loads(
+        (repo_root / _FORWARD_ACCRUAL_INPUTS["forward_monitor_plan"]).read_text(
+            encoding="utf-8"
+        )
+    )
+    monitor_plan_hash = str(monitor_plan.get("plan_hash") or "").lower()
+    if (
+        monitor_plan.get("schema")
+        != (
+            "trading_mvp_slow_liquidity_listing_momentum_"
+            "forward_monitor_planonly_v2"
+        )
+        or not str(monitor_plan.get("plan_id") or "")
+        or len(monitor_plan_hash) != 64
+        or monitor_plan_hash
+        != canonical_hash_without(monitor_plan, "plan_hash")
+        or monitor_plan.get("research_only") is not True
+        or monitor_plan.get("public_data_only") is not True
+        or monitor_plan.get("private_api") is not False
+        or monitor_plan.get("live_orders") is not False
+        or monitor_plan.get("real_capital") is not False
+        or (
+            (monitor_plan.get("source_bindings") or {})
+            .get("technical_rebind", {})
+            .get("research_scope_changed")
+            is not False
+        )
+    ):
+        return None
+    refs["forward_monitor_plan"].update(
+        {
+            "schema": monitor_plan["schema"],
+            "plan_id": monitor_plan["plan_id"],
+            "plan_hash": monitor_plan_hash,
+        }
+    )
     state = json.loads(
         (repo_root / _FORWARD_ACCRUAL_INPUTS["forward_state"]).read_text(
             encoding="utf-8"
@@ -5026,6 +5062,41 @@ def _resolve_forward_accrual_readiness(
                 .get("file_sha256")
                 == refs[key]["file_sha256"],
                 f"{key} binding mismatch",
+            )
+        forward = report.get("forward_accrual") or {}
+        binding_fields = {
+            "monitor_plan": (
+                "forward_monitor_plan",
+                ("path", "file_sha256", "schema", "plan_id", "plan_hash"),
+                "forward monitor plan binding mismatch",
+            ),
+            "evaluator_plan": (
+                "forward_evaluator_plan",
+                ("path", "file_sha256"),
+                "forward evaluator plan binding mismatch",
+            ),
+            "state": (
+                "forward_state",
+                (
+                    "path",
+                    "file_sha256",
+                    "tick_count",
+                    "complete_window_count",
+                    "state_hash",
+                ),
+                "forward state binding mismatch",
+            ),
+        }
+        for report_key, (ref_key, fields, error) in binding_fields.items():
+            report_ref = forward.get(report_key) or {}
+            current_ref = refs[ref_key]
+            _current_require(
+                isinstance(report_ref, dict)
+                and all(
+                    report_ref.get(field) == current_ref.get(field)
+                    for field in fields
+                ),
+                error,
             )
     gate = _load_json(gate_file, "active run gate")
     _current_require(

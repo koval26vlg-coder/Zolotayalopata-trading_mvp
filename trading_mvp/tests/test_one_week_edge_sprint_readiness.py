@@ -893,6 +893,127 @@ class OneWeekEdgeSprintReadinessTests(unittest.TestCase):
                 with fixture.trust_anchor_patch(current_files=True):
                     build_readiness(**fixture.kwargs())
 
+    def test_forward_accrual_inputs_bind_v2_monitor_plan(self) -> None:
+        refs = readiness_module._forward_accrual_era_inputs(REPO_ROOT)
+
+        self.assertIsNotNone(refs)
+        assert refs is not None
+        expected_path = (
+            REPO_ROOT
+            / "docs"
+            / "plans"
+            / (
+                "slow-liquidity-listing-momentum-forward-monitor-"
+                "planonly-20260817-v2.json"
+            )
+        ).resolve()
+        monitor_plan = json.loads(expected_path.read_text(encoding="utf-8"))
+        monitor_ref = refs["forward_monitor_plan"]
+
+        self.assertEqual(Path(monitor_ref["path"]).resolve(), expected_path)
+        self.assertEqual(monitor_ref["plan_id"], monitor_plan["plan_id"])
+        self.assertEqual(monitor_ref["plan_hash"], monitor_plan["plan_hash"])
+        self.assertEqual(monitor_ref["schema"], monitor_plan["schema"])
+
+    def test_forward_accrual_resolver_rejects_stale_monitor_plan_binding(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            gate_path = root / "gate.json"
+            write_json(gate_path, {"status": "READY_FOR_POSTPROCESS"})
+            refs = {
+                "identity_acceptance_receipt": {
+                    "receipt_hash": "receipt-hash",
+                },
+                "replay_volatility_expansion": {
+                    "file_sha256": "1" * 64,
+                },
+                "replay_liquidity_shock": {
+                    "file_sha256": "2" * 64,
+                },
+                "forward_monitor_plan": {
+                    "path": str(root / "v2-plan.json"),
+                    "file_sha256": "3" * 64,
+                    "plan_id": "forward-v2",
+                    "plan_hash": "4" * 64,
+                    "schema": (
+                        "trading_mvp_slow_liquidity_listing_momentum_"
+                        "forward_monitor_planonly_v2"
+                    ),
+                },
+                "forward_evaluator_plan": {
+                    "path": str(root / "evaluator.json"),
+                    "file_sha256": "5" * 64,
+                },
+                "forward_state": {
+                    "path": str(root / "state.json"),
+                    "file_sha256": "6" * 64,
+                    "tick_count": 4,
+                    "complete_window_count": 0,
+                    "state_hash": "7" * 64,
+                },
+            }
+            report = {
+                "permissions": {
+                    field: False
+                    for field in readiness_module.CURRENT_PERMISSION_FIELDS
+                },
+                "next_safe_action": (
+                    "wait_forward_sample_and_run_scheduled_ticks_"
+                    "no_peeking_below_30"
+                ),
+                "slow_liquidity": {
+                    "retrospective_verdict": (
+                        "both_families_rejected_no_robust_edge"
+                    ),
+                    "identity_verification_authorized": True,
+                    "identity_verification_required": False,
+                    "identity_acceptance_receipt": {
+                        "receipt_hash": "receipt-hash",
+                    },
+                    "retrospective_replays": {
+                        "volatility_expansion_continuation_v1": {
+                            "file_sha256": "1" * 64,
+                        },
+                        "liquidity_shock_reclaim_long_v1": {
+                            "file_sha256": "2" * 64,
+                        },
+                    },
+                },
+                "forward_accrual": {
+                    "monitor_plan": {
+                        "path": str(root / "stale-v1-plan.json"),
+                        "file_sha256": "8" * 64,
+                    },
+                    "evaluator_plan": refs["forward_evaluator_plan"],
+                    "state": refs["forward_state"],
+                },
+                "readiness_hash": "9" * 64,
+                "generated_at_utc": "2026-08-17T12:00:00Z",
+                "status": readiness_module.FORWARD_ACCRUAL_READINESS_STATUS,
+            }
+
+            with mock.patch.object(
+                readiness_module,
+                "_forward_accrual_era_inputs",
+                return_value=refs,
+            ):
+                with self.assertRaisesRegex(
+                    readiness_module.CurrentSprintReadinessError,
+                    "forward monitor plan binding mismatch",
+                ):
+                    readiness_module._resolve_forward_accrual_readiness(
+                        report,
+                        pointer_file=root / "pointer.json",
+                        pointer_sha="a" * 64,
+                        readiness_path=root / "readiness.json",
+                        report_sha="b" * 64,
+                        gate_file=gate_path,
+                        writer_claim_file=root / "writer-claim.json",
+                        repo_root=root,
+                    )
+
     def test_writes_immutable_report_and_pointer_last(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             fixture = ReadinessFixture(Path(temporary))

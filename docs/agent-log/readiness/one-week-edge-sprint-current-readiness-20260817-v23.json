@@ -1,0 +1,85 @@
+{
+  "schema": "trading_mvp_one_week_edge_sprint_current_readiness_v2",
+  "status": "SLOW_LIQUIDITY_LISTING_MOMENTUM_FORWARD_ACCRUAL_STANDING_RESEARCH",
+  "generated_at_utc": "2026-08-17T13:47:36.6880102Z",
+  "project": "trading_mvp",
+  "goal": "One-Week Historical Edge Sprint",
+  "research_only": true,
+  "primary_frozen_basis_terminal": true,
+  "slow_liquidity": {
+    "era": "spot_ticker_identity_accepted_retrospective_exhausted",
+    "identity_acceptance": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-spot-ticker-identity-acceptance-planonly-20260816.json",
+      "file_sha256": "321f07afd702b68f20e31dc61fe42385b84eade57a35a8c241e66bcd3fef2459"
+    },
+    "identity_acceptance_receipt": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\approvals\\2026-08-16-slow-liquidity-spot-ticker-identity-acceptance-approval.json",
+      "file_sha256": "9497786aa400fe14f991b6259c2b697fef81370c971ccbb1fae5bd1a1a61d1af",
+      "receipt_hash": "4df0ff0dd537669b6b3c38a25ba56445894a9a99f3967f2e46893bd3b2be854d",
+      "accepted_base_count": 7
+    },
+    "retrospective_replays": {
+      "volatility_expansion_continuation_v1": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_exploratory_replay_v1_20260816.json",
+        "file_sha256": "82c803a8921a90428f5b3ecc6eaab58437e91145cef15354ec48076d15bda864",
+        "decision": "SLOW_LIQUIDITY_FIXED_V1_REPLAY_PLANONLY_REJECTED_NO_ROBUST_EDGE"
+      },
+      "liquidity_shock_reclaim_long_v1": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_exploratory_replay_v1_liquidity_shock_20260816.json",
+        "file_sha256": "b167274960423cc77abf85717ee37a07ba87aa7defb3f7d47b8141c7d6d1d35a",
+        "decision": "SLOW_LIQUIDITY_FIXED_V1_REPLAY_PLANONLY_REJECTED_NO_ROBUST_EDGE"
+      }
+    },
+    "retrospective_verdict": "both_families_rejected_no_robust_edge",
+    "identity_verification_required": false,
+    "identity_verification_authorized": true,
+    "evaluator_or_oos_authorized": false,
+    "replay_allowed": false,
+    "grid_allowed": false,
+    "paper_forward_allowed": false,
+    "live_orders": false,
+    "api_keys": false,
+    "leverage_or_margin": false
+  },
+  "forward_accrual": {
+    "monitor_plan": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-monitor-planonly-20260817-v2.json",
+      "file_sha256": "33da4a8bc9ece1f43055dbb833afa49f068328f4c192bdcad690a7421968c0ee",
+      "schema": "trading_mvp_slow_liquidity_listing_momentum_forward_monitor_planonly_v2",
+      "plan_id": "slow_liquidity_listing_momentum_forward_monitor_20260817_v2",
+      "plan_hash": "d98d402fb08065bef58859522b938ec064b2bc4a223f269aa0218cce502e5afb"
+    },
+    "evaluator_plan": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-evaluator-planonly-20260816.json",
+      "file_sha256": "06a831256be5aa3bddfddcdb57f227db84a7b69299fb456839b401753e388a7f"
+    },
+    "state": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_listing_momentum_forward_state_20260816.json",
+      "file_sha256": "98161ca9b81678f937d8097cd894a4c49fa2392237aa67839b431d3436a4e871",
+      "tick_count": 4,
+      "complete_window_count": 0,
+      "state_hash": "61a824fdcec3510265cff98443b4057e7549f5de061c2a5c9a74488184716e3e"
+    },
+    "scheduler": "user-authorized visible tick every 6 hours (automation-66009175), evaluator runs after each tick; pre-registered first read at >=30 complete windows"
+  },
+  "permissions": {
+    "global_writer_present": false,
+    "identity_offline_implementation_authorized": false,
+    "identity_verification_authorized": false,
+    "pit_extension_activation_authorized": false,
+    "dense_refreeze_implementation_authorized": false,
+    "collector_launch_authorized": false,
+    "evaluator_or_oos_authorized": false,
+    "returns_or_pnl_authorized": false,
+    "grid_or_retune_authorized": false,
+    "execution_probe_authorized": false,
+    "paper_or_live_authorized": false,
+    "private_api_or_real_capital_authorized": false,
+    "leverage_or_margin_authorized": false,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "approval_checkpoints": [],
+  "next_safe_action": "wait_forward_sample_and_run_scheduled_ticks_no_peeking_below_30",
+  "readiness_hash_method": "sha256_canonical_json_excluding_readiness_hash",
+  "readiness_hash": "20035ae927091dc6468339f6be072c489e391131569d389e2281543ad880976b"
+}

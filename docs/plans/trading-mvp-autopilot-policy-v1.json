@@ -73,6 +73,7 @@
       "public_identity_discovery",
       "public_request_plan_discovery",
       "public_topology_discovery",
+      "public_forward_accrual_tick",
       "synthetic_tests",
       "immutable_manifest_refreeze",
       "preflight_only"
@@ -775,6 +776,41 @@
     "official_identity_verification_authorized": false,
     "evaluator_or_oos_authorized": false,
     "paper_or_live_authorized": false
+  },
+  "listing_momentum_forward_accrual": {
+    "schema": "trading_mvp_listing_momentum_forward_accrual_policy_rebind_v1",
+    "status": "STANDING_RESEARCH_SAME_SCOPE_TECHNICAL_REBIND_V2",
+    "plan_id": "slow_liquidity_listing_momentum_forward_monitor_20260817_v2",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-monitor-planonly-20260817-v2.json",
+    "plan_file_sha256": "33da4a8bc9ece1f43055dbb833afa49f068328f4c192bdcad690a7421968c0ee",
+    "plan_hash": "d98d402fb08065bef58859522b938ec064b2bc4a223f269aa0218cce502e5afb",
+    "research_scope_changed": false,
+    "supersedes": {
+      "plan_id": "slow_liquidity_listing_momentum_forward_monitor_20260816",
+      "plan_file_sha256": "70e06b75b444922313e55cbc6b868fcba0cf0d35918a7cabb4c6569c1adb3b25",
+      "plan_hash": "bc55d56faea5e456426757e5d8e3f724a37fd4eedea12fae4dc6857cc102d2c9"
+    },
+    "scope_binding": {
+      "strategy_branch": "slow_liquidity_listing_momentum_forward",
+      "exchanges": [
+        "mexc",
+        "gateio"
+      ],
+      "quote": "USDT",
+      "granularity": "1h",
+      "window_sec": 259200,
+      "baseline_calendar_file_sha256": "d01f86646eaebfd4df5a738a754f021bb3a7b0dcd192cfa104057eb29a3f4abb"
+    },
+    "scheduler": {
+      "automation_id": "automation-66009175",
+      "cadence_hours": 6,
+      "visible_terminal_required": true,
+      "max_runtime_sec": 600,
+      "evaluator_minimum_complete_windows": 30
+    },
+    "state_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_listing_momentum_forward_state_20260816.json",
+    "evaluator_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-evaluator-planonly-20260816.json",
+    "evaluator_allowed": false
   },
   "slow_liquidity_official_currentness_topology": {
     "schema": "trading_mvp_slow_liquidity_official_currentness_topology_policy_rebind_v7_execution_approved_v1",

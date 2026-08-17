@@ -32,21 +32,22 @@ from slow_liquidity_calendar_first_universe import CALENDAR_PATH
 from slow_liquidity_spot_v2_official_page_discovery import canonical_hash
 
 
-SCHEMA = "trading_mvp_slow_liquidity_listing_momentum_forward_monitor_planonly_v1"
-PLAN_ID = "slow_liquidity_listing_momentum_forward_monitor_20260816"
+SCHEMA = "trading_mvp_slow_liquidity_listing_momentum_forward_monitor_planonly_v2"
+PLAN_ID = "slow_liquidity_listing_momentum_forward_monitor_20260817_v2"
+REPO_ROOT = Path(__file__).resolve().parents[2]
 FORWARD_PLAN_PATH = (
-    Path(__file__).resolve().parents[2]
+    REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260816.json"
+    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260817-v2.json"
 )
 FORWARD_ROOT = Path("E:/trading_mvp/listing-momentum-forward")
 TICKS_DIR = FORWARD_ROOT / "ticks"
 CLAIM_PATH = (
-    Path(__file__).resolve().parents[2]
+    REPO_ROOT
     / "docs/agent-log/active-market-data-writer-claim.json"
 )
 FORWARD_STATE_PATH = (
-    Path(__file__).resolve().parents[2]
+    REPO_ROOT
     / "exports/trading-mvp/analysis"
     / "slow_liquidity_listing_momentum_forward_state_20260816.json"
 )
@@ -59,6 +60,22 @@ TIMEOUT_SEC = 20
 SLEEP_SEC = 0.25
 EFFECTIVE_PAGE_SIZES = {"mexc": 500, "gateio": 1000}
 BASELINE_SNAPSHOT_REQUESTS = 2
+EXPECTED_IMPLEMENTATION_PATHS = {
+    "forward_monitor": Path(__file__).resolve(),
+    "event_window_collector": REPO_ROOT
+    / "trading_mvp/src/slow_liquidity_listing_momentum_first_days_collector.py",
+    "snapshot_parsers": REPO_ROOT / "trading_mvp/src/listing_calendar.py",
+    "public_ohlcv_clients": REPO_ROOT
+    / "trading_mvp/src/listing_event_history_collector.py",
+    "interval_contract": REPO_ROOT
+    / "trading_mvp/src/listing_event_history_collect_plan.py",
+    "global_writer_claim": REPO_ROOT
+    / "trading_mvp/src/global_market_writer_claim.py",
+    "census_stats": REPO_ROOT
+    / "trading_mvp/src/slow_liquidity_listing_momentum_first_days_census.py",
+    "visible_launcher": REPO_ROOT
+    / "tools/start_listing_momentum_forward_tick_visible.ps1",
+}
 
 
 class ForwardMonitorError(ValueError):
@@ -72,6 +89,37 @@ def _require(value: bool, message: str) -> None:
 
 def _sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _normalized_path(path: Path) -> str:
+    return os.path.normcase(str(path.resolve()))
+
+
+def _validate_implementation_bindings(plan: Mapping[str, Any]) -> None:
+    raw_files = (plan.get("implementation") or {}).get("files") or []
+    _require(isinstance(raw_files, list), "implementation files missing")
+    by_role: dict[str, Mapping[str, Any]] = {}
+    for item in raw_files:
+        _require(isinstance(item, Mapping), "implementation entry invalid")
+        role = str(item.get("role") or "")
+        _require(role and role not in by_role, "implementation role invalid")
+        by_role[role] = item
+    _require(
+        set(by_role) == set(EXPECTED_IMPLEMENTATION_PATHS),
+        "implementation role set mismatch",
+    )
+    for role, expected_path in EXPECTED_IMPLEMENTATION_PATHS.items():
+        item = by_role[role]
+        bound_path = Path(str(item.get("path") or ""))
+        _require(
+            _normalized_path(bound_path) == _normalized_path(expected_path),
+            f"implementation path mismatch: {role}",
+        )
+        _require(expected_path.is_file(), f"implementation file missing: {role}")
+        _require(
+            str(item.get("sha256") or "") == _sha256_file(expected_path),
+            f"implementation sha256 mismatch: {role}",
+        )
 
 
 def utc_now_iso() -> str:
@@ -92,6 +140,17 @@ def load_and_validate_forward_plan(plan_path: Path) -> dict[str, Any]:
         plan.get("tick", {}).get("max_runtime_sec") == MAX_RUNTIME_SEC,
         "tick runtime bound mismatch",
     )
+    baseline = (plan.get("source_bindings") or {}).get("baseline_calendar") or {}
+    _require(
+        _normalized_path(Path(str(baseline.get("path") or "")))
+        == _normalized_path(CALENDAR_PATH),
+        "baseline calendar path mismatch",
+    )
+    _require(
+        str(baseline.get("file_sha256") or "") == _sha256_file(CALENDAR_PATH),
+        "baseline calendar sha256 mismatch",
+    )
+    _validate_implementation_bindings(plan)
     return plan
 
 

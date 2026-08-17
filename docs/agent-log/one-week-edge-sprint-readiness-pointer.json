@@ -2,8 +2,8 @@
   "schema": "trading_mvp_one_week_edge_sprint_readiness_pointer_v1",
   "status": "ACTIVE",
   "project": "trading_mvp",
-  "readiness_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\one-week-edge-sprint-current-readiness-20260816-v22.json",
-  "readiness_file_sha256": "c5d0f8413fb2fb5ff4bf02b175f4cacdea0d8273cc06610e6e116dd8289cfa0e",
-  "readiness_hash": "4c0e4007540beb59a8330dabb995a1b7fd8f2e6380e6a7825accb1d7de2b7766",
-  "updated_at_utc": "2026-08-16T20:51:44.720565+00:00"
+  "readiness_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\one-week-edge-sprint-current-readiness-20260817-v23.json",
+  "readiness_file_sha256": "010c717855efc39bed519b002bdcbc4127ef334f99570a97c27e1b16419b69d8",
+  "readiness_hash": "20035ae927091dc6468339f6be072c489e391131569d389e2281543ad880976b",
+  "updated_at_utc": "2026-08-17T13:47:36.6880102Z"
 }

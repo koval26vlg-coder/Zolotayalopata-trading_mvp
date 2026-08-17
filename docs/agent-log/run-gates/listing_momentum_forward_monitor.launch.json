@@ -1,14 +1,14 @@
 {
   "schema": "trading_mvp_listing_momentum_forward_monitor_launch_v1",
   "status": "COMPLETE",
-  "run_id": "slow_liquidity_listing_momentum_forward_monitor_20260816",
-  "visible_terminal_pid": 12680,
-  "started_at_utc": "2026-08-16T19:49:11.1962352Z",
-  "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-monitor-planonly-20260816.json",
-  "plan_hash": "bc55d56faea5e456426757e5d8e3f724a37fd4eedea12fae4dc6857cc102d2c9",
-  "plan_file_sha256": "70e06b75b444922313e55cbc6b868fcba0cf0d35918a7cabb4c6569c1adb3b25",
+  "run_id": "slow_liquidity_listing_momentum_forward_monitor_20260817_v2",
+  "visible_terminal_pid": 15136,
+  "started_at_utc": "2026-08-17T12:43:43.598223Z",
+  "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-monitor-planonly-20260817-v2.json",
+  "plan_hash": "d98d402fb08065bef58859522b938ec064b2bc4a223f269aa0218cce502e5afb",
+  "plan_file_sha256": "33da4a8bc9ece1f43055dbb833afa49f068328f4c192bdcad690a7421968c0ee",
   "research_only": true,
   "public_data_only": true,
-  "finished_at_utc": "2026-08-16T19:49:19.8996844Z",
+  "finished_at_utc": "2026-08-17T12:43:51.7155329Z",
   "tick_exit_code": 0
 }

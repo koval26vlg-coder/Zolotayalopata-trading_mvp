@@ -9,7 +9,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$defaultPlanPath = Join-Path $repoRoot "docs\plans\slow-liquidity-listing-momentum-forward-monitor-planonly-20260816.json"
+$defaultPlanPath = Join-Path $repoRoot "docs\plans\slow-liquidity-listing-momentum-forward-monitor-planonly-20260817-v2.json"
 if (-not $PlanPath) { $PlanPath = $defaultPlanPath }
 $gateChecker = Join-Path $repoRoot "tools\check_active_run_gate.ps1"
 $claimPath = Join-Path $repoRoot "docs\agent-log\active-market-data-writer-claim.json"
@@ -55,6 +55,22 @@ function Invoke-Preflight {
         throw "Plan file not found: $PlanPath"
     }
     $plan = Read-JsonFile -Path $PlanPath
+    $planCheckStatus = "FAILED"
+    try {
+        $pythonExe = Resolve-PythonExecutable
+        $planCheckOutput = & $pythonExe $monitorPy --plan $PlanPath --plan-check 2>&1 | Out-String
+        if ($LASTEXITCODE -ne 0) {
+            $reasons.Add("plan_check_failed")
+        } else {
+            $planCheck = $planCheckOutput | ConvertFrom-Json
+            $planCheckStatus = [string]$planCheck.status
+            if ($planCheckStatus -ne "PLAN_OK") {
+                $reasons.Add("plan_check_not_ok")
+            }
+        }
+    } catch {
+        $reasons.Add("plan_check_failed")
+    }
     $gate = & pwsh -NoProfile -ExecutionPolicy Bypass -File $gateChecker -Json | ConvertFrom-Json
     if ([string]$gate.gate_status -in @("RUNNING", "STOPPED_INCOMPLETE")) {
         $reasons.Add("active_run_gate_$($gate.gate_status)")
@@ -65,8 +81,10 @@ function Invoke-Preflight {
     return [ordered]@{
         ok = ($reasons.Count -eq 0)
         reasons = $reasons
+        plan_id = [string]$plan.plan_id
         plan_hash = [string]$plan.plan_hash
         plan_file_sha256 = Get-FileSha256 $PlanPath
+        plan_check_status = $planCheckStatus
         gate_status = [string]$gate.gate_status
         max_runtime_sec = [int]$plan.tick.max_runtime_sec
         tick_output_root = [string]$plan.tick.tick_output_root
@@ -85,6 +103,7 @@ if ($Status) {
 
 if ($VisibleWorker) {
     $plan = Read-JsonFile -Path $PlanPath
+    $runId = [string]$plan.plan_id
     $launchRecordPath = Join-Path $repoRoot "docs\agent-log\run-gates\listing_momentum_forward_monitor.launch.json"
     $pointerPath = Join-Path $repoRoot "docs\agent-log\current-run.json"
     $workerErrorLog = Join-Path $repoRoot "docs\agent-log\run-gates\listing_momentum_forward_monitor.worker-error.log"
@@ -92,7 +111,7 @@ if ($VisibleWorker) {
         Write-JsonFile -Path $launchRecordPath -Payload ([ordered]@{
             schema = "trading_mvp_listing_momentum_forward_monitor_launch_v1"
             status = "RUNNING"
-            run_id = "slow_liquidity_listing_momentum_forward_monitor_20260816"
+            run_id = $runId
             visible_terminal_pid = $PID
             started_at_utc = (Get-Date).ToUniversalTime().ToString("o")
             plan_path = $PlanPath
@@ -104,7 +123,7 @@ if ($VisibleWorker) {
         Write-JsonFile -Path $pointerPath -Payload ([ordered]@{
             schema = "active_run_pointer_v1"
             project = "trading_mvp"
-            run_id = "slow_liquidity_listing_momentum_forward_monitor_20260816"
+            run_id = $runId
             status = "RUNNING"
             updated_at = (Get-Date).ToString("o")
             manifest_path = [string]$plan.tick.state_path
@@ -150,7 +169,7 @@ if ($VisibleWorker) {
     Write-JsonFile -Path $pointerPath -Payload ([ordered]@{
         schema = "active_run_pointer_v1"
         project = "trading_mvp"
-        run_id = "slow_liquidity_listing_momentum_forward_monitor_20260816"
+        run_id = $runId
         status = $pointerStatus
         updated_at = (Get-Date).ToString("o")
         manifest_path = [string]$plan.tick.state_path
@@ -200,7 +219,7 @@ $childArgs = @(
 $terminal = Start-Process -FilePath $pwshExe -ArgumentList $childArgs -WorkingDirectory $repoRoot -WindowStyle Normal -PassThru
 $payload = [ordered]@{
     status = "VISIBLE_TERMINAL_LAUNCHED"
-    run_id = "slow_liquidity_listing_momentum_forward_monitor_20260816"
+    run_id = $preflight.plan_id
     visible_terminal_pid = $terminal.Id
     plan_hash = $preflight.plan_hash
     status_command = "pwsh -NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -Status"
