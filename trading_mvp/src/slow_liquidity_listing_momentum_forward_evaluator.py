@@ -24,10 +24,22 @@ FORWARD_STATE_PATH = (
     / "exports/trading-mvp/analysis"
     / "slow_liquidity_listing_momentum_forward_state_20260816.json"
 )
+FORWARD_MONITOR_PLAN_PATH = (
+    REPO_ROOT
+    / "docs/plans"
+    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260816.json"
+)
+FORWARD_TICKS_ROOT = Path("E:/trading_mvp/listing-momentum-forward/ticks")
 EVALUATION_PATH = (
     REPO_ROOT
     / "exports/trading-mvp/analysis"
     / "slow_liquidity_listing_momentum_forward_evaluation_20260816.json"
+)
+EVALUATOR_PLAN_FILE_SHA256 = (
+    "06a831256be5aa3bddfddcdb57f227db84a7b69299fb456839b401753e388a7f"
+)
+FORWARD_MONITOR_PLAN_FILE_SHA256 = (
+    "70e06b75b444922313e55cbc6b868fcba0cf0d35918a7cabb4c6569c1adb3b25"
 )
 FIRST_READ_MIN_COMPLETE_WINDOWS = 30
 TERMINAL_MIN_COMPLETE_WINDOWS = 100
@@ -44,6 +56,150 @@ class ForwardEvaluatorError(ValueError):
 def _require(value: bool, message: str) -> None:
     if not value:
         raise ForwardEvaluatorError(message)
+
+
+def _canonical_hash_without(payload: Mapping[str, Any], excluded_key: str) -> str:
+    normalized = {
+        key: value for key, value in dict(payload).items() if key != excluded_key
+    }
+    encoded = json.dumps(
+        normalized,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
+
+
+def _sha256_file(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _read_json_object(path: Path, label: str) -> dict[str, Any]:
+    _require(path.is_file(), f"{label} missing: {path}")
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ForwardEvaluatorError(f"{label} unreadable: {path}: {exc}") from exc
+    _require(isinstance(payload, dict), f"{label} must be an object: {path}")
+    return payload
+
+
+def _load_frozen_evaluator_plan() -> dict[str, Any]:
+    plan = _read_json_object(PLAN_PATH, "evaluator plan")
+    _validate_plan(plan)
+    _require(
+        _sha256_file(PLAN_PATH).lower() == EVALUATOR_PLAN_FILE_SHA256,
+        "evaluator plan file hash mismatch",
+    )
+    return plan
+
+
+def _load_frozen_monitor_plan() -> dict[str, Any]:
+    plan = _read_json_object(FORWARD_MONITOR_PLAN_PATH, "forward monitor plan")
+    _require(
+        plan.get("plan_id") == "slow_liquidity_listing_momentum_forward_monitor_20260816",
+        "forward monitor plan id mismatch",
+    )
+    _require(
+        plan.get("plan_hash") == canonical_hash(plan),
+        "forward monitor plan hash mismatch",
+    )
+    _require(
+        _sha256_file(FORWARD_MONITOR_PLAN_PATH).lower()
+        == FORWARD_MONITOR_PLAN_FILE_SHA256,
+        "forward monitor plan file hash mismatch",
+    )
+    return plan
+
+
+def _validated_state_hash(state: Mapping[str, Any]) -> str:
+    recorded = str(state.get("state_hash") or "").lower()
+    _require(len(recorded) == 64, "forward state hash missing")
+    _require(
+        recorded == _canonical_hash_without(state, "state_hash"),
+        "forward state hash mismatch",
+    )
+    return recorded
+
+
+def _build_input_manifest(
+    state: Mapping[str, Any],
+    evaluator_plan: Mapping[str, Any],
+    monitor_plan: Mapping[str, Any],
+    state_hash: str,
+) -> dict[str, Any]:
+    tick_manifests: list[dict[str, Any]] = []
+    for tick in state.get("ticks") or []:
+        tick_id = str(tick.get("tick_id") or "")
+        _require(tick_id != "", "forward state tick id missing")
+        manifest_path = FORWARD_TICKS_ROOT / tick_id / "manifest.json"
+        manifest = _read_json_object(manifest_path, f"tick manifest {tick_id}")
+        _require(
+            manifest.get("tick_id") == tick_id,
+            f"tick manifest id mismatch: {tick_id}",
+        )
+        tick_manifests.append(
+            {
+                "tick_id": tick_id,
+                "status": manifest.get("status"),
+                "file_sha256": _sha256_file(manifest_path),
+            }
+        )
+
+    source_bindings = monitor_plan.get("source_bindings") or {}
+    baseline = source_bindings.get("baseline_calendar") or {}
+    return {
+        "schema": "trading_mvp_slow_liquidity_listing_momentum_forward_input_manifest_v1",
+        "state_path": str(FORWARD_STATE_PATH),
+        "state_hash": state_hash,
+        "evaluator_plan": {
+            "path": str(PLAN_PATH),
+            "plan_hash": evaluator_plan["plan_hash"],
+            "file_sha256": EVALUATOR_PLAN_FILE_SHA256,
+        },
+        "forward_monitor_plan": {
+            "path": str(FORWARD_MONITOR_PLAN_PATH),
+            "plan_hash": monitor_plan["plan_hash"],
+            "file_sha256": FORWARD_MONITOR_PLAN_FILE_SHA256,
+        },
+        "baseline_calendar": baseline,
+        "tick_manifests": tick_manifests,
+    }
+
+
+def _build_input_binding(
+    state: Mapping[str, Any],
+    evaluator_plan: Mapping[str, Any],
+    monitor_plan: Mapping[str, Any],
+) -> dict[str, str]:
+    state_hash = _validated_state_hash(state)
+    input_manifest = _build_input_manifest(
+        state,
+        evaluator_plan,
+        monitor_plan,
+        state_hash,
+    )
+    return {
+        "state_hash": state_hash,
+        "plan_hash": str(evaluator_plan["plan_hash"]),
+        "input_manifest_hash": _canonical_hash_without(
+            input_manifest, "input_manifest_hash"
+        ),
+        "plan_file_sha256": EVALUATOR_PLAN_FILE_SHA256,
+        "forward_monitor_plan_file_sha256": FORWARD_MONITOR_PLAN_FILE_SHA256,
+    }
+
+
+def _evaluation_hash(result: Mapping[str, Any]) -> str:
+    return _canonical_hash_without(result, "evaluation_hash")
+
+
+def _cache_matches(
+    candidate: Mapping[str, Any], expected: Mapping[str, Any]
+) -> bool:
+    return dict(candidate) == dict(expected)
 
 
 def _pct(values: Sequence[float], quantile: float) -> float:
@@ -178,7 +334,11 @@ def write_plan(generated_at_utc: str) -> Path:
     return PLAN_PATH
 
 
-def evaluate_forward_state(state: Mapping[str, Any]) -> dict[str, Any]:
+def evaluate_forward_state(
+    state: Mapping[str, Any],
+    *,
+    input_binding: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
     windows = [
         window
         for window in state.get("windows") or []
@@ -198,6 +358,8 @@ def evaluate_forward_state(state: Mapping[str, Any]) -> dict[str, Any]:
             "peeking guard: metrics frozen until the pre-registered minimum "
             "is reached"
         )
+        if input_binding is not None:
+            accrual["input_binding"] = dict(input_binding)
         return accrual
     ret24 = [
         float(window["stats"]["ret_24h"])
@@ -248,6 +410,8 @@ def evaluate_forward_state(state: Mapping[str, Any]) -> dict[str, Any]:
             },
         }
     )
+    if input_binding is not None:
+        accrual["input_binding"] = dict(input_binding)
     return accrual
 
 
@@ -276,19 +440,24 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 0
     if args.evaluate:
-        _require(FORWARD_STATE_PATH.is_file(), "forward state not present")
-        state = json.loads(FORWARD_STATE_PATH.read_text(encoding="utf-8"))
-        result = evaluate_forward_state(state)
+        evaluator_plan = _load_frozen_evaluator_plan()
+        monitor_plan = _load_frozen_monitor_plan()
+        state = _read_json_object(FORWARD_STATE_PATH, "forward state")
+        input_binding = _build_input_binding(state, evaluator_plan, monitor_plan)
+        result = evaluate_forward_state(state, input_binding=input_binding)
+        result["evaluation_hash"] = _evaluation_hash(result)
         if EVALUATION_PATH.exists():
-            on_disk = json.loads(EVALUATION_PATH.read_text(encoding="utf-8"))
-            if on_disk.get("complete_windows") == result["complete_windows"]:
+            on_disk = _read_json_object(EVALUATION_PATH, "evaluation cache")
+            if _cache_matches(on_disk, result):
                 result = on_disk
             else:
+                EVALUATION_PATH.parent.mkdir(parents=True, exist_ok=True)
                 EVALUATION_PATH.write_text(
                     json.dumps(result, indent=2, ensure_ascii=False) + "\n",
                     encoding="utf-8",
                 )
         else:
+            EVALUATION_PATH.parent.mkdir(parents=True, exist_ok=True)
             EVALUATION_PATH.write_text(
                 json.dumps(result, indent=2, ensure_ascii=False) + "\n",
                 encoding="utf-8",

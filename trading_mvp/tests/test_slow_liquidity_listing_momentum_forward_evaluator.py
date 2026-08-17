@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -109,6 +111,63 @@ class ForwardEvaluatorTests(unittest.TestCase):
             result["complete_windows"],
             state.get("complete_window_count", 0),
         )
+
+    def test_evaluate_recomputes_when_same_window_count_has_new_state(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            state_path = root / "state.json"
+            evaluation_path = root / "evaluation.json"
+            ticks_root = root / "ticks"
+            tick_dir = ticks_root / "tick_a"
+            tick_dir.mkdir(parents=True)
+            (tick_dir / "manifest.json").write_text(
+                json.dumps({"tick_id": "tick_a", "status": "COMPLETED"}),
+                encoding="utf-8",
+            )
+
+            def write_state(ret_72h: float) -> None:
+                state = synthetic_state(30, in_progress=0)
+                state["ticks"] = [{"tick_id": "tick_a", "status": "COMPLETED"}]
+                for window in state["windows"]:
+                    window["stats"]["ret_72h"] = ret_72h
+                state["state_hash"] = ev._canonical_hash_without(state, "state_hash")
+                state_path.write_text(json.dumps(state), encoding="utf-8")
+
+            with mock.patch.object(ev, "FORWARD_STATE_PATH", state_path), mock.patch.object(
+                ev, "EVALUATION_PATH", evaluation_path
+            ), mock.patch.object(ev, "FORWARD_TICKS_ROOT", ticks_root):
+                write_state(0.2)
+                self.assertEqual(ev.main(["--evaluate"]), 0)
+                first = json.loads(evaluation_path.read_text(encoding="utf-8"))
+
+                tampered = dict(first)
+                tampered["metrics"] = dict(first["metrics"])
+                tampered["metrics"]["ret_72h"] = dict(first["metrics"]["ret_72h"])
+                tampered["metrics"]["ret_72h"]["median"] = 999.0
+                tampered["evaluation_hash"] = ev._evaluation_hash(tampered)
+                evaluation_path.write_text(
+                    json.dumps(tampered), encoding="utf-8"
+                )
+                self.assertEqual(ev.main(["--evaluate"]), 0)
+                repaired = json.loads(evaluation_path.read_text(encoding="utf-8"))
+                self.assertEqual(repaired, first)
+
+                write_state(0.9)
+                self.assertEqual(ev.main(["--evaluate"]), 0)
+                second = json.loads(evaluation_path.read_text(encoding="utf-8"))
+
+            self.assertEqual(first["complete_windows"], second["complete_windows"])
+            self.assertEqual(first["metrics"]["ret_72h"]["median"], 0.2)
+            self.assertEqual(second["metrics"]["ret_72h"]["median"], 0.9)
+            self.assertNotEqual(
+                first["input_binding"]["state_hash"],
+                second["input_binding"]["state_hash"],
+            )
+            self.assertNotEqual(
+                first["input_binding"]["input_manifest_hash"],
+                second["input_binding"]["input_manifest_hash"],
+            )
+            self.assertNotEqual(first["evaluation_hash"], second["evaluation_hash"])
 
 
 if __name__ == "__main__":
