@@ -5,16 +5,16 @@
   "status": "COMPLETE",
   "pending_retry": false,
   "retry_count": 0,
-  "attempt_count": 1,
-  "next_interval_at_utc": "2026-08-18T03:00:00.0000000Z",
-  "last_attempt_id": "listing_momentum_automation_20260817T210350Z",
-  "last_started_at_utc": "2026-08-17T21:03:50.9599412Z",
-  "last_finished_at_utc": "2026-08-17T21:04:10.7473809Z",
+  "attempt_count": 2,
+  "next_interval_at_utc": "2026-08-18T09:00:00.0000000Z",
+  "last_attempt_id": "listing_momentum_automation_20260818T030157Z",
+  "last_started_at_utc": "2026-08-18T03:01:57.7715870Z",
+  "last_finished_at_utc": "2026-08-18T03:02:18.0189270Z",
   "worker_pid": null,
   "outcomes": {
     "mexc_gate_v2": "COMPLETE",
     "binance_bybit_okx_bitget_expansion": "COMPLETE"
   },
   "last_error": null,
-  "updated_at_utc": "2026-08-17T21:04:10.7827501Z"
+  "updated_at_utc": "2026-08-18T03:02:18.0383391Z"
 }

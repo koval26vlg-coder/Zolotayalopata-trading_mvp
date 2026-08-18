@@ -2,8 +2,8 @@
   "schema": "trading_mvp_listing_momentum_forward_expansion_launch_v1",
   "status": "COMPLETE",
   "run_id": "slow_liquidity_listing_momentum_forward_expansion_20260817_v1",
-  "visible_terminal_pid": 16828,
-  "started_at_utc": "2026-08-17T21:04:05.6809987Z",
+  "visible_terminal_pid": 19576,
+  "started_at_utc": "2026-08-18T03:02:12.9623247Z",
   "command": "python trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_monitor.py --plan \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-expansion-planonly-20260817.json\" --tick --confirmed-visible-tick",
   "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
   "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-expansion-planonly-20260817.json",
@@ -14,6 +14,6 @@
   "expected_duration_sec": 600,
   "research_only": true,
   "public_data_only": true,
-  "finished_at_utc": "2026-08-17T21:04:10.6808880Z",
+  "finished_at_utc": "2026-08-18T03:02:18.0096217Z",
   "tick_exit_code": 0
 }

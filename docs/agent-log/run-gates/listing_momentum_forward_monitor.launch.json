@@ -2,13 +2,13 @@
   "schema": "trading_mvp_listing_momentum_forward_monitor_launch_v1",
   "status": "COMPLETE",
   "run_id": "slow_liquidity_listing_momentum_forward_monitor_20260817_v2",
-  "visible_terminal_pid": 16828,
-  "started_at_utc": "2026-08-17T21:03:52.0829176Z",
+  "visible_terminal_pid": 19576,
+  "started_at_utc": "2026-08-18T03:01:58.9142666Z",
   "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-monitor-planonly-20260817-v2.json",
   "plan_hash": "d98d402fb08065bef58859522b938ec064b2bc4a223f269aa0218cce502e5afb",
   "plan_file_sha256": "33da4a8bc9ece1f43055dbb833afa49f068328f4c192bdcad690a7421968c0ee",
   "research_only": true,
   "public_data_only": true,
-  "finished_at_utc": "2026-08-17T21:03:59.4211714Z",
+  "finished_at_utc": "2026-08-18T03:02:06.6963135Z",
   "tick_exit_code": 0
 }
