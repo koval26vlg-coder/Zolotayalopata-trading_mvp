@@ -1,0 +1,220 @@
+{
+  "schema": "trading_mvp_premarket_perp_listing_impulse_planonly_v2",
+  "plan_id": "premarket_perp_listing_impulse_20260821_v2",
+  "strategy_branch": "premarket_perp_listing_impulse",
+  "mode": "PlanOnly",
+  "status": "READY_FOR_VISIBLE_PUBLIC_PAPER_RESEARCH",
+  "generated_at_utc": "2026-08-21T05:15:23Z",
+  "research_only": true,
+  "public_data_only": true,
+  "private_api": false,
+  "live_orders": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "replay_allowed": true,
+  "evaluator_or_oos_allowed": false,
+  "venues": [
+    "bybit",
+    "okx",
+    "gate"
+  ],
+  "objective": "Test whether a public-data paper LONG entered on a pre-market perpetual can be exited at t0, t0+5s, t0+15s or t0+60s around the official spot listing with executable net economics.",
+  "adaptive_cadence": {
+    "policy_version": "adaptive_event_proximity_v1",
+    "scheduler_wake_interval_sec": 300,
+    "search_interval_sec": 21600,
+    "soon_interval_sec": 10800,
+    "confirmed_interval_sec": 3600,
+    "scheduled_interval_sec": 300,
+    "soon_horizon_sec": 259200,
+    "scheduled_horizon_sec": 86400,
+    "exact_timestamp_required_for_scheduled": true,
+    "proxy_cannot_escalate_to_confirmed": true,
+    "collector_runs_only_when_due": true,
+    "terminal_event_returns_to_search": true
+  },
+  "hypothesis": "Pre-market perpetual LONG before spot listing may capture listing impulse, but only if causal fill, queue, fees, funding, basis and mark-price liquidation stress remain acceptable.",
+  "lifecycle_statuses": [
+    "scheduled",
+    "call_auction",
+    "continuous",
+    "spot_listing_pending",
+    "transitioned",
+    "cancelled",
+    "delisted",
+    "expired"
+  ],
+  "entry_phases": [
+    "call_auction",
+    "continuous"
+  ],
+  "entry_cohorts": [
+    "first_tradable",
+    "last_1_4h"
+  ],
+  "exit_offsets_sec": [
+    0,
+    5,
+    15,
+    60
+  ],
+  "primary_exit_policy": "event_relative_only_no_hindsight",
+  "official_timestamp_policy": "official_and_proxy_separate",
+  "proxy_acceptance_allowed": false,
+  "risk_contract": {
+    "paper_notional_quote": 25.0,
+    "primary_leverage": 1,
+    "stress_leverage": [
+      2,
+      5
+    ],
+    "liquidation_model": "mark_price_linear_long_maintenance_margin_proxy",
+    "missing_liquidation_model": "not_acceptance_grade",
+    "max_concurrent_positions_per_contract_and_cohort": 1
+  },
+  "cost_contract": {
+    "primary_execution": "taker_like_public_fee",
+    "maker_queue": "sensitivity_only",
+    "includes": [
+      "fee",
+      "spread",
+      "observed_slippage",
+      "funding",
+      "partial_fill"
+    ],
+    "one_leg_fill_profit_credit": false
+  },
+  "collection_contract": {
+    "discovery_cadence_sec": 21600,
+    "scheduler_wake_interval_sec": 300,
+    "cadence_escalation": "search_6h_to_soon_3h_to_confirmed_1h_to_scheduled_5m",
+    "active_capture": "public_websocket",
+    "rest_snapshot_fallback": true,
+    "max_contracts_per_venue_per_tick": 25,
+    "max_tick_runtime_sec": 180,
+    "no_background_daemon": true
+  },
+  "acceptance_gates": {
+    "minimum_complete_events": 30,
+    "minimum_official_events": 30,
+    "minimum_normal_fill_rate": 0.8,
+    "minimum_stress_fill_rate": 0.7,
+    "minimum_net_expectancy_quote": 0.0,
+    "minimum_profit_factor": 1.2,
+    "maximum_drawdown_fraction": 0.1,
+    "maximum_positive_event_share": 0.25,
+    "below_minimum_status": "INSUFFICIENT_DATA_NOT_REJECTED"
+  },
+  "implementation": [
+    {
+      "role": "premarket_contract_and_replay",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_perp.py",
+      "sha256": "776337181f5007490a8d8a87ab44c32d99f579c3abf417e4dfcec44c10897bca",
+      "provenance": {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": "776337181f5007490a8d8a87ab44c32d99f579c3abf417e4dfcec44c10897bca",
+        "superseded_plan_hash": "89e11554f6c3c458187477e25a5ffd3b06554d32d023e621ff9fc1775b9b2d2e",
+        "superseded_plan_file_sha256": "2f07a9b9621081b7f638042be0dadbd97a938d0741bc6fefe7c5fc1f25b13625",
+        "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+      }
+    },
+    {
+      "role": "official_listing_t0_resolver_and_materializer",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_listing_resolver.py",
+      "sha256": "6e3675da7ac03b0f1535b15680d7fb0d96bf91123cd44ee2937f9f63182ee637",
+      "provenance": {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": "6e3675da7ac03b0f1535b15680d7fb0d96bf91123cd44ee2937f9f63182ee637",
+        "superseded_plan_hash": "89e11554f6c3c458187477e25a5ffd3b06554d32d023e621ff9fc1775b9b2d2e",
+        "superseded_plan_file_sha256": "2f07a9b9621081b7f638042be0dadbd97a938d0741bc6fefe7c5fc1f25b13625",
+        "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+      }
+    },
+    {
+      "role": "public_adapters_and_automation_worker",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_automation.py",
+      "sha256": "d4ad97a4ef61f57ecad73e8272411e9cb35f770149e6e6d6f939c3701607e240",
+      "provenance": {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": "adf36095be719dc1712f18bcc4be53c75f96c04990f99dbe690569fbc0eb2762",
+        "superseded_plan_hash": "89e11554f6c3c458187477e25a5ffd3b06554d32d023e621ff9fc1775b9b2d2e",
+        "superseded_plan_file_sha256": "2f07a9b9621081b7f638042be0dadbd97a938d0741bc6fefe7c5fc1f25b13625",
+        "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+      }
+    },
+    {
+      "role": "plan_validator",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_plan.py",
+      "sha256": "b13a8330584349f0e02693d2f39c0681c39fe6b1c6c0ed15b0f1ba5aae8e60df",
+      "provenance": {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": "7cb3c16f0e21b6a194f69b9c3698ae774ecf60165f92ba06939ebfbc892c97e6",
+        "superseded_plan_hash": "89e11554f6c3c458187477e25a5ffd3b06554d32d023e621ff9fc1775b9b2d2e",
+        "superseded_plan_file_sha256": "2f07a9b9621081b7f638042be0dadbd97a938d0741bc6fefe7c5fc1f25b13625",
+        "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+      }
+    },
+    {
+      "role": "visible_orchestrator",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_premarket_perp_listing_automation_visible.ps1",
+      "sha256": "8e4f9dd582be5866b26dd2c43e0ce78a1e028debfe106d8a1c00e644586b8f07",
+      "provenance": {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": "565a63520693a23ff1bd8a4dc3300b53e1cb7c0ff44d6080f10a02069e6eac59",
+        "superseded_plan_hash": "89e11554f6c3c458187477e25a5ffd3b06554d32d023e621ff9fc1775b9b2d2e",
+        "superseded_plan_file_sha256": "2f07a9b9621081b7f638042be0dadbd97a938d0741bc6fefe7c5fc1f25b13625",
+        "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+      }
+    }
+  ],
+  "state": {
+    "state_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\premarket_perp_listing_automation_state.json",
+    "attempts_ledger_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\premarket_perp_listing_automation_attempts.jsonl",
+    "claim_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\premarket_perp_listing_automation.claim.json",
+    "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\premarket_perp_listing_automation.launch.json",
+    "manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\premarket-perp\\manifest.json",
+    "events_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\premarket-perp\\raw_events.jsonl"
+  },
+  "guard_contract": {
+    "active_run_gate_must_not_be_running": true,
+    "one_writer_at_a_time": true,
+    "visible_terminal_required": true,
+    "inline_worker_no_terminal_allowed": false,
+    "exact_plan_hash_required": true,
+    "public_only_required": true,
+    "spot_listing_momentum_namespace_untouched": true
+  },
+  "recovery_contract": {
+    "failure_status": "RETRY_NEXT_INTERVAL",
+    "partial_failure_status": "PARTIAL_RETRY_NEXT_INTERVAL",
+    "pending_retry": true,
+    "interval_sec": 21600,
+    "scheduler_wake_interval_sec": 300,
+    "no_tight_loop": true,
+    "preserve_failed_track": true,
+    "skip_duplicate_worker": true
+  },
+  "commands": {
+    "plan_check": "python trading_mvp/src/premarket_plan.py --plan docs/plans/premarket-perp-listing-impulse-planonly-20260821-v2.json",
+    "status": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/start_premarket_perp_listing_automation_visible.ps1 -Status -Json",
+    "visible_tick": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/start_premarket_perp_listing_automation_visible.ps1 -ScheduledTick -Json"
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "e6019d6dfd86f924230f730e8df9751216467496a86957812d7e9fba524ee659",
+  "source_bindings": {
+    "technical_rebind": {
+      "kind": "listing_strategy_control_plane_batch2_hash_rebind",
+      "supersedes_plan_id": "premarket_perp_listing_impulse_20260818_v1",
+      "supersedes_plan_hash": "89e11554f6c3c458187477e25a5ffd3b06554d32d023e621ff9fc1775b9b2d2e",
+      "supersedes_plan_file_sha256": "2f07a9b9621081b7f638042be0dadbd97a938d0741bc6fefe7c5fc1f25b13625",
+      "supersedes_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-perp-listing-impulse-planonly-20260818-v1.json",
+      "research_scope_changed": false,
+      "reason": "Rebind current fail-closed launchers, retry recovery and canonical writer controls without changing venue, universe, signal, cost, risk, cadence or acceptance contracts."
+    },
+    "control_plane_readiness_receipt": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\listing-strategy-control-plane-batch1-readiness-20260821.json",
+      "file_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56",
+      "status": "READY_FOR_PLANONLY_REBIND_NOT_ACTIVATED"
+    }
+  }
+}

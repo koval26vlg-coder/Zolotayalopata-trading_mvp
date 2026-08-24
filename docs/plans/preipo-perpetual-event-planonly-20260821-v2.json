@@ -1,0 +1,279 @@
+{
+  "schema": "trading_mvp_preipo_perpetual_event_planonly_v2",
+  "plan_id": "preipo_perpetual_event_20260821_v2",
+  "strategy_branch": "preipo_perpetual_event",
+  "mode": "PlanOnly",
+  "status": "READY_FOR_BOUNDED_PUBLIC_PAPER_RESEARCH",
+  "generated_at_utc": "2026-08-21T05:15:23Z",
+  "research_only": true,
+  "public_data_only": true,
+  "private_api": false,
+  "live_orders": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "asset_class": "preipo_equity",
+  "crypto_listing_mix_allowed": false,
+  "replay_allowed": true,
+  "evaluator_or_oos_allowed": false,
+  "venues": [
+    "okx",
+    "gate"
+  ],
+  "candidate_venues": [
+    "bybit"
+  ],
+  "bybit_extension_condition": "Activate Bybit only after an official pre-IPO contract and an official timestamp method are bound to the immutable plan.",
+  "objective": "Test whether a paper LONG or SHORT entered on a pre-IPO perpetual can produce executable net economics around an official equity IPO or conversion event.",
+  "adaptive_cadence": {
+    "policy_version": "adaptive_event_proximity_v1",
+    "scheduler_wake_interval_sec": 300,
+    "search_interval_sec": 21600,
+    "soon_interval_sec": 10800,
+    "confirmed_interval_sec": 3600,
+    "scheduled_interval_sec": 300,
+    "soon_horizon_sec": 259200,
+    "scheduled_horizon_sec": 86400,
+    "exact_timestamp_required_for_scheduled": true,
+    "proxy_cannot_escalate_to_confirmed": true,
+    "collector_runs_only_when_due": true,
+    "terminal_event_returns_to_search": true
+  },
+  "hypothesis": "A pre-IPO perpetual may offer an executable event-relative LONG or SHORT before IPO price discovery, but basis, rebase, funding, queue and conversion risk can erase the apparent edge.",
+  "sides": [
+    "long",
+    "short"
+  ],
+  "lifecycle_statuses": [
+    "scheduled",
+    "preipo_continuous",
+    "s1_disclosed",
+    "rebase",
+    "ipo_pending",
+    "ipo_open",
+    "converted",
+    "postponed",
+    "cancelled",
+    "delisted",
+    "expired"
+  ],
+  "entry_cohorts": [
+    "first_tradable",
+    "last_1_4h"
+  ],
+  "event_relative_exits": [
+    "ipo_open",
+    "ipo_open_plus_5s",
+    "ipo_open_plus_15s",
+    "ipo_open_plus_60s",
+    "conversion"
+  ],
+  "primary_exit_policy": "event_relative_only_no_hindsight",
+  "official_timestamp_policy": "exact_first_trade_t0_required_for_acceptance_proxy_separate",
+  "proxy_acceptance_allowed": false,
+  "rebase_policy": {
+    "value_neutral": true,
+    "price_quantity_inverse_ratio": true,
+    "pnl_credit": false,
+    "record_as_event": true
+  },
+  "risk_contract": {
+    "paper_notional_quote": 25.0,
+    "primary_leverage_equivalent": 1,
+    "stress_leverage_equivalent": [
+      2,
+      5
+    ],
+    "real_leverage_or_margin": false,
+    "liquidation_model": "paper_only_mark_index_maintenance_margin_when_official_parameters_exist",
+    "missing_liquidation_model": "liquidation_model_missing_not_acceptance_grade",
+    "max_concurrent_positions_per_contract_side_cohort": 1
+  },
+  "cost_contract": {
+    "primary_execution": "public_taker_like_fee",
+    "maker_queue": "sensitivity_only",
+    "includes": [
+      "fee",
+      "spread",
+      "observed_slippage",
+      "funding",
+      "partial_fill",
+      "queue_ahead",
+      "order_ttl"
+    ],
+    "one_leg_or_zero_fill_profit_credit": false,
+    "rebase_profit_credit": false
+  },
+  "data_contract": {
+    "public_sources": [
+      "OKX official pre-IPO announcements and public market data",
+      "Gate official pre-IPO announcements and public market data"
+    ],
+    "source_classes": [
+      "official",
+      "proxy"
+    ],
+    "official_first_trade_required_for_acceptance": true,
+    "expected_date_only_is_descriptive_proxy": true,
+    "equity_ipo_and_crypto_listing_are_separate": true,
+    "official_and_received_timestamps_separate": true
+  },
+  "acceptance_gates": {
+    "minimum_complete_events": 30,
+    "minimum_official_events": 30,
+    "minimum_venue_events_preferred": 5,
+    "minimum_normal_fill_rate": 0.8,
+    "minimum_stress_fill_rate": 0.7,
+    "minimum_net_expectancy_quote": 0.0,
+    "minimum_profit_factor": 1.2,
+    "maximum_drawdown_fraction": 0.1,
+    "maximum_positive_event_share": 0.25,
+    "below_minimum_status": "INSUFFICIENT_DATA_NOT_REJECTED",
+    "final_acceptance_requires": [
+      "oos",
+      "walk_forward",
+      "stress",
+      "economics",
+      "paper_forward"
+    ],
+    "live_trading_authorized": false
+  },
+  "automation": {
+    "status": "READY_FOR_VISIBLE_PUBLIC_PAPER_RESEARCH",
+    "schedule_interval_sec": 21600,
+    "discovery_interval_sec": 21600,
+    "scheduler_wake_interval_sec": 300,
+    "cadence_escalation": "search_6h_to_soon_3h_to_confirmed_1h_to_scheduled_5m",
+    "capture_duration_sec": 300,
+    "active_capture": "public_websocket_with_rest_fallback",
+    "visible_terminal_required": true,
+    "one_writer_at_a_time": true,
+    "does_not_launch_crypto_listing_automation": true,
+    "future_state_namespace": "docs/agent-log/run-gates/preipo_perpetual_event_automation_state.json",
+    "network_tick_launch": "not launched in this bounded implementation turn"
+  },
+  "implementation": [
+    {
+      "role": "preipo_event_lifecycle_and_causal_paper_replay",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_perp_event.py",
+      "sha256": "19696460d6a0a4b7470d76fdc8a779154385053be70c3c2522d502ad25c3eb62",
+      "provenance": {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": "19696460d6a0a4b7470d76fdc8a779154385053be70c3c2522d502ad25c3eb62",
+        "superseded_plan_hash": "3779e26adde5bdb1227940bcd2a7d3d8481a41b414df68aa6c82e4e5c13c44b0",
+        "superseded_plan_file_sha256": "6f8dd54c3d0666c5f8507103c194ce8ea546b57018d8a85aaf6f8f38104abd1c",
+        "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+      }
+    },
+    {
+      "role": "preipo_public_okx_gate_adapters",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_adapters.py",
+      "sha256": "848093f92da5106b75f1e937115b01b3241dfdc159ec26a630f07a9120a1a79c",
+      "provenance": {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": "848093f92da5106b75f1e937115b01b3241dfdc159ec26a630f07a9120a1a79c",
+        "superseded_plan_hash": "3779e26adde5bdb1227940bcd2a7d3d8481a41b414df68aa6c82e4e5c13c44b0",
+        "superseded_plan_file_sha256": "6f8dd54c3d0666c5f8507103c194ce8ea546b57018d8a85aaf6f8f38104abd1c",
+        "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+      }
+    },
+    {
+      "role": "preipo_append_only_raw_event_store",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_raw_event_store.py",
+      "sha256": "11438f8257bd1bfbd2e7239647c32f23290aabb094cbaa21ba05479274469ab1",
+      "provenance": {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": "11438f8257bd1bfbd2e7239647c32f23290aabb094cbaa21ba05479274469ab1",
+        "superseded_plan_hash": "3779e26adde5bdb1227940bcd2a7d3d8481a41b414df68aa6c82e4e5c13c44b0",
+        "superseded_plan_file_sha256": "6f8dd54c3d0666c5f8507103c194ce8ea546b57018d8a85aaf6f8f38104abd1c",
+        "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+      }
+    },
+    {
+      "role": "preipo_retry_state_and_tick_worker",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_automation.py",
+      "sha256": "91972a409279e8e6c5fec9fbdd1113ed1c432d76965df946aebd043a54a30534",
+      "provenance": {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": "21cd3450bb037d065f1e34e734dd1ce4cfc4b49add664d20ebac951a3728367d",
+        "superseded_plan_hash": "3779e26adde5bdb1227940bcd2a7d3d8481a41b414df68aa6c82e4e5c13c44b0",
+        "superseded_plan_file_sha256": "6f8dd54c3d0666c5f8507103c194ce8ea546b57018d8a85aaf6f8f38104abd1c",
+        "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+      }
+    },
+    {
+      "role": "preipo_plan_validator",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_plan.py",
+      "sha256": "24d2480574c5dd9b010e5c82d1105f10de46edcf95751e3356b565da2818d7db",
+      "provenance": {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": "ee47ff88d34d4a51b819a59bf487d501661eff7168a32fe4092c55c11ac4b40f",
+        "superseded_plan_hash": "3779e26adde5bdb1227940bcd2a7d3d8481a41b414df68aa6c82e4e5c13c44b0",
+        "superseded_plan_file_sha256": "6f8dd54c3d0666c5f8507103c194ce8ea546b57018d8a85aaf6f8f38104abd1c",
+        "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+      }
+    },
+    {
+      "role": "preipo_visible_orchestrator",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_preipo_perpetual_event_automation_visible.ps1",
+      "sha256": "dd51dbd87fed921be89513fef9fa188995077c92ebc81ec7e6f7b4cb1ea42dae",
+      "provenance": {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": "565fa6e99885897956a4b7f176461f75584fa9cc2c8cbb1026635f3e5aadb082",
+        "superseded_plan_hash": "3779e26adde5bdb1227940bcd2a7d3d8481a41b414df68aa6c82e4e5c13c44b0",
+        "superseded_plan_file_sha256": "6f8dd54c3d0666c5f8507103c194ce8ea546b57018d8a85aaf6f8f38104abd1c",
+        "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+      }
+    }
+  ],
+  "state": {
+    "state_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\preipo_perpetual_event_automation_state.json",
+    "attempts_ledger_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\preipo_perpetual_event_automation_attempts.jsonl",
+    "claim_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\preipo_perpetual_event_automation.claim.json",
+    "manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\preipo-perp\\manifest.json",
+    "events_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\preipo-perp\\raw_events.jsonl"
+  },
+  "guard_contract": {
+    "active_run_gate_must_not_be_running": true,
+    "one_writer_at_a_time": true,
+    "visible_terminal_required": true,
+    "exact_plan_hash_required": true,
+    "public_only_required": true,
+    "crypto_premarket_listing_namespace_untouched": true,
+    "spot_listing_momentum_namespace_untouched": true,
+    "inline_worker_no_terminal_allowed": false
+  },
+  "recovery_contract": {
+    "failure_status": "RETRY_NEXT_INTERVAL",
+    "partial_failure_status": "PARTIAL_RETRY_NEXT_INTERVAL",
+    "pending_retry": true,
+    "interval_sec": 21600,
+    "scheduler_wake_interval_sec": 300,
+    "capture_duration_sec": 300,
+    "no_tight_loop": true,
+    "preserve_failed_track": true,
+    "skip_duplicate_worker": true
+  },
+  "commands": {
+    "plan_check": "python trading_mvp/src/preipo_plan.py --plan docs/plans/preipo-perpetual-event-planonly-20260821-v2.json --json",
+    "automation": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/start_preipo_perpetual_event_automation_visible.ps1 -ScheduledTick -Json",
+    "status": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/start_preipo_perpetual_event_automation_visible.ps1 -Status -Json"
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "f1e1a6fef1adcbc076aa6398f39f4e8b458800a48b924d895aef943f39c1d29f",
+  "source_bindings": {
+    "technical_rebind": {
+      "kind": "listing_strategy_control_plane_batch2_hash_rebind",
+      "supersedes_plan_id": "preipo_perpetual_event_20260818_v1",
+      "supersedes_plan_hash": "3779e26adde5bdb1227940bcd2a7d3d8481a41b414df68aa6c82e4e5c13c44b0",
+      "supersedes_plan_file_sha256": "6f8dd54c3d0666c5f8507103c194ce8ea546b57018d8a85aaf6f8f38104abd1c",
+      "supersedes_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\preipo-perpetual-event-planonly-20260818-v1.json",
+      "research_scope_changed": false,
+      "reason": "Rebind current fail-closed launchers, retry recovery and canonical writer controls without changing venue, universe, signal, cost, risk, cadence or acceptance contracts."
+    },
+    "control_plane_readiness_receipt": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\listing-strategy-control-plane-batch1-readiness-20260821.json",
+      "file_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56",
+      "status": "READY_FOR_PLANONLY_REBIND_NOT_ACTIVATED"
+    }
+  }
+}

@@ -591,8 +591,8 @@
   "bounded_research_backlog": {
     "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\trading-mvp-autopilot-research-backlog.json",
     "auto_refill": true,
-    "catalog_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-research-catalog-v11-dense-preparation-20260809.json",
-    "catalog_file_sha256": "d40d3e7a58371f5ee7cac64277335e3db5f0adfb802cfdd99d53e19eb4151869",
+    "catalog_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\catalogs\\funding-directional-momentum-catalog-v1.json",
+    "catalog_file_sha256": "b4a88a708d3cc3ca55ca7f0e2eeffb921f75bb89b194000bc86a38b8ba9fdf78",
     "run_when": "the approved schedule is waiting and the productive fallback queue is exhausted",
     "max_runtime_sec_per_task": 1800,
     "one_task_at_a_time": true,
@@ -641,8 +641,8 @@
     ]
   },
   "recovery": {
-    "same_immutable_run_auto_recovery": false,
-    "requires_explicit_recovery_approval": true,
+    "same_immutable_run_auto_recovery": true,
+    "requires_explicit_recovery_approval": false,
     "maximum_transient_recovery_attempts": 1,
     "requires_dead_writer_pids": true,
     "requires_matching_plan_code_config_and_input_hashes": true,

@@ -1,0 +1,60 @@
+{
+  "plan_hash": "bbd211208335ac8bbdd385ceb8045279e819b36f206daac6fcc3b61df11170fc",
+  "schema": "trading_mvp_slow_regime_gated_spot_perp_basis_planonly_v1",
+  "branch": "slow_regime_gated_spot_perp_basis_v1",
+  "join_rule": "AND",
+  "not_or_portfolio": true,
+  "thesis": "Enter long-spot/short-perp basis mean-reversion only when the same non-Binance base is already in a frozen 1h compression or valid 1h retest regime against a 4h context. Funding is a blocking filter, never PnL. Negative basis stays blocked because it needs a spot short.",
+  "parents": [
+    "spot_perp_basis_mean_reversion_no_funding",
+    "slow_liquidity_regime_breakout_retest"
+  ],
+  "new_hypothesis": true,
+  "regime": {
+    "direction": "long_only_spot_context",
+    "primary_timeframe": "1h",
+    "context_timeframe": "4h",
+    "disabled_timeframe": "15m",
+    "lookback_1h_bars": 96,
+    "context_4h_bars": 42,
+    "compression_range_width_max_atr": 1.2,
+    "compression_min_bars": 24,
+    "breakout_close_buffer_bps": 60.0,
+    "volume_percentile_min": 0.7,
+    "retest_window_bars": 12,
+    "retest_tolerance_atr": 0.35,
+    "allowed_regime_states": [
+      "compression",
+      "valid_retest"
+    ]
+  },
+  "basis": {
+    "formula": "(perp_mid_or_mark - spot_mid) / spot_mid * 10000",
+    "positive_entry": "long_spot_short_perp",
+    "negative_entry": "blocked_without_spot_short",
+    "spot_fee_bps_per_side": 10.0,
+    "perp_fee_bps_per_side": 10.0,
+    "spot_slippage_bps_per_side": 5.0,
+    "perp_slippage_bps_per_side": 5.0,
+    "adverse_basis_buffer_bps": 20.0,
+    "max_spot_spread_bps": 20.0,
+    "max_perp_spread_bps": 20.0,
+    "max_adverse_funding_rate": -0.0003,
+    "allow_spot_short": false,
+    "funding_counted_as_pnl": false
+  },
+  "feasibility": {
+    "min_bases": 10,
+    "min_independent_events": 100,
+    "min_venues": 2,
+    "max_single_base_event_fraction": 0.25,
+    "min_profit_factor": 1.2,
+    "min_positive_walk_forward_ratio": 0.6
+  },
+  "blocked_evidence": [
+    "rejected_incomplete_collect_not_evidence",
+    "slow_liquidity_14_event_sample_not_retunable",
+    "or_union_of_parent_universes",
+    "grid_or_post_hoc_threshold_fit"
+  ]
+}

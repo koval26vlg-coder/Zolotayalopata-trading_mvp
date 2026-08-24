@@ -1,0 +1,263 @@
+{
+  "schema": "trading_mvp_premarket_perp_listing_impulse_planonly_v2",
+  "plan_id": "premarket_perp_listing_impulse_20260824_v4",
+  "strategy_branch": "premarket_perp_listing_impulse",
+  "mode": "PlanOnly",
+  "status": "READY_FOR_VISIBLE_PUBLIC_PAPER_RESEARCH",
+  "generated_at_utc": "2026-08-24T13:09:38.499Z",
+  "research_only": true,
+  "public_data_only": true,
+  "private_api": false,
+  "live_orders": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "replay_allowed": true,
+  "evaluator_or_oos_allowed": false,
+  "venues": [
+    "bybit",
+    "okx",
+    "gate"
+  ],
+  "objective": "Test whether a public-data paper LONG entered on a pre-market perpetual can be exited at t0, t0+5s, t0+15s or t0+60s around the official spot listing with executable net economics.",
+  "adaptive_cadence": {
+    "policy_version": "adaptive_event_proximity_v2",
+    "scheduler_wake_interval_sec": 300,
+    "search_interval_sec": 21600,
+    "soon_interval_sec": 10800,
+    "confirmed_interval_sec": 3600,
+    "scheduled_interval_sec": 300,
+    "soon_horizon_sec": 259200,
+    "scheduled_horizon_sec": 86400,
+    "exact_timestamp_required_for_scheduled": true,
+    "proxy_cannot_escalate_to_confirmed": true,
+    "collector_runs_only_when_due": true,
+    "terminal_event_returns_to_search": true,
+    "event_spent_after_sec": 259200,
+    "spent_anchor_returns_to_search": true
+  },
+  "hypothesis": "Pre-market perpetual LONG before spot listing may capture listing impulse, but only if causal fill, queue, fees, funding, basis and mark-price liquidation stress remain acceptable.",
+  "lifecycle_statuses": [
+    "scheduled",
+    "call_auction",
+    "continuous",
+    "spot_listing_pending",
+    "transitioned",
+    "cancelled",
+    "delisted",
+    "expired"
+  ],
+  "entry_phases": [
+    "call_auction",
+    "continuous"
+  ],
+  "entry_cohorts": [
+    "first_tradable",
+    "last_1_4h"
+  ],
+  "exit_offsets_sec": [
+    0,
+    5,
+    15,
+    60
+  ],
+  "primary_exit_policy": "event_relative_only_no_hindsight",
+  "official_timestamp_policy": "official_and_proxy_separate",
+  "proxy_acceptance_allowed": false,
+  "risk_contract": {
+    "paper_notional_quote": 25.0,
+    "primary_leverage": 1,
+    "stress_leverage": [
+      2,
+      5
+    ],
+    "liquidation_model": "mark_price_linear_long_maintenance_margin_proxy",
+    "missing_liquidation_model": "not_acceptance_grade",
+    "max_concurrent_positions_per_contract_and_cohort": 1
+  },
+  "cost_contract": {
+    "primary_execution": "taker_like_public_fee",
+    "maker_queue": "sensitivity_only",
+    "includes": [
+      "fee",
+      "spread",
+      "observed_slippage",
+      "funding",
+      "partial_fill"
+    ],
+    "one_leg_fill_profit_credit": false
+  },
+  "collection_contract": {
+    "discovery_cadence_sec": 21600,
+    "scheduler_wake_interval_sec": 300,
+    "cadence_escalation": "search_6h_to_soon_3h_to_confirmed_1h_to_scheduled_5m",
+    "active_capture": "public_websocket",
+    "rest_snapshot_fallback": true,
+    "max_contracts_per_venue_per_tick": 25,
+    "max_tick_runtime_sec": 180,
+    "no_background_daemon": true
+  },
+  "acceptance_gates": {
+    "minimum_complete_events": 30,
+    "minimum_official_events": 30,
+    "minimum_normal_fill_rate": 0.8,
+    "minimum_stress_fill_rate": 0.7,
+    "minimum_net_expectancy_quote": 0.0,
+    "minimum_profit_factor": 1.2,
+    "maximum_drawdown_fraction": 0.1,
+    "maximum_positive_event_share": 0.25,
+    "below_minimum_status": "INSUFFICIENT_DATA_NOT_REJECTED"
+  },
+  "implementation": [
+    {
+      "role": "premarket_contract_and_replay",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_perp.py",
+      "sha256": "b57f0c6ff8995f7a9fa00f8fe78fd112e8195704c14deae25cecd325e4df3b67",
+      "provenance": {
+        "kind": "asset_class_acceptance_gate",
+        "superseded_sha256": "776337181f5007490a8d8a87ab44c32d99f579c3abf417e4dfcec44c10897bca",
+        "superseded_plan_hash": "e6019d6dfd86f924230f730e8df9751216467496a86957812d7e9fba524ee659",
+        "reason": "normalise_contract now refuses instruments outside the requested acceptance asset class; the launcher points at this plan"
+      }
+    },
+    {
+      "role": "official_listing_t0_resolver_and_materializer",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_listing_resolver.py",
+      "sha256": "6e3675da7ac03b0f1535b15680d7fb0d96bf91123cd44ee2937f9f63182ee637",
+      "provenance": {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": "6e3675da7ac03b0f1535b15680d7fb0d96bf91123cd44ee2937f9f63182ee637",
+        "superseded_plan_hash": "89e11554f6c3c458187477e25a5ffd3b06554d32d023e621ff9fc1775b9b2d2e",
+        "superseded_plan_file_sha256": "2f07a9b9621081b7f638042be0dadbd97a938d0741bc6fefe7c5fc1f25b13625",
+        "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+      }
+    },
+    {
+      "role": "public_adapters_and_automation_worker",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_automation.py",
+      "sha256": "995e29c632df0da717e24f83cc9498720ebf8e95c83a0f97fa93d244529a7369",
+      "provenance": {
+        "kind": "temporal_anchor_separation",
+        "superseded_sha256": "d4ad97a4ef61f57ecad73e8272411e9cb35f770149e6e6d6f939c3701607e240",
+        "superseded_plan_hash": "0338083509cf8ad448962c0cc6d76431261d99d21c714780250d11b9a469a15c",
+        "reason": "Temporal anchors separated. The collectors collapsed an announced spot t0, a transition and a contract launch into one event_eta_utc with an or-chain, then asserted exact_timestamp from the contract record's source_class alone - dropping the second half of the test the model already carried in has_official_listing_time. Anchor selection filtered only on a timestamp being present, called the result 'upcoming', sorted ascending and took the first, which on a set holding past events pins the stalest one permanently. official_confirmed and exact_timestamp were any() across the batch, attaching one contract's official source to another contract's timestamp. And decide_cadence had no time check on its CONFIRMED branch, so a confirmed anchor held the hourly cadence forever. Measured 2026-08-24: the crypto track reported CONFIRMED against an event_eta of 2025-09-01 and the pre-IPO track against 2026-05-07, both asserting official_confirmation=True. The plan already required official_and_proxy_separate and proxy_cannot_escalate_to_confirmed; the code did not honour it."
+      }
+    },
+    {
+      "role": "plan_validator",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_plan.py",
+      "sha256": "3af01326721535d881c09588865babfc7523dc3626c325e292b1dcdfbefab8bc",
+      "provenance": {
+        "kind": "temporal_anchor_separation",
+        "superseded_sha256": "b13a8330584349f0e02693d2f39c0681c39fe6b1c6c0ed15b0f1ba5aae8e60df",
+        "superseded_plan_hash": "0338083509cf8ad448962c0cc6d76431261d99d21c714780250d11b9a469a15c",
+        "reason": "Temporal anchors separated. The collectors collapsed an announced spot t0, a transition and a contract launch into one event_eta_utc with an or-chain, then asserted exact_timestamp from the contract record's source_class alone - dropping the second half of the test the model already carried in has_official_listing_time. Anchor selection filtered only on a timestamp being present, called the result 'upcoming', sorted ascending and took the first, which on a set holding past events pins the stalest one permanently. official_confirmed and exact_timestamp were any() across the batch, attaching one contract's official source to another contract's timestamp. And decide_cadence had no time check on its CONFIRMED branch, so a confirmed anchor held the hourly cadence forever. Measured 2026-08-24: the crypto track reported CONFIRMED against an event_eta of 2025-09-01 and the pre-IPO track against 2026-05-07, both asserting official_confirmation=True. The plan already required official_and_proxy_separate and proxy_cannot_escalate_to_confirmed; the code did not honour it."
+      }
+    },
+    {
+      "role": "visible_orchestrator",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_premarket_perp_listing_automation_visible.ps1",
+      "sha256": "7bd5efe9de43ec4e54ae0957e9242c88b5a2db4829924290845229c45ea18a19",
+      "provenance": {
+        "kind": "temporal_anchor_separation",
+        "superseded_sha256": "9b99796ef5aff37bcc82cf89a7638455c104fd19e88a032575284335cd7226b0",
+        "superseded_plan_hash": "0338083509cf8ad448962c0cc6d76431261d99d21c714780250d11b9a469a15c",
+        "reason": "Temporal anchors separated. The collectors collapsed an announced spot t0, a transition and a contract launch into one event_eta_utc with an or-chain, then asserted exact_timestamp from the contract record's source_class alone - dropping the second half of the test the model already carried in has_official_listing_time. Anchor selection filtered only on a timestamp being present, called the result 'upcoming', sorted ascending and took the first, which on a set holding past events pins the stalest one permanently. official_confirmed and exact_timestamp were any() across the batch, attaching one contract's official source to another contract's timestamp. And decide_cadence had no time check on its CONFIRMED branch, so a confirmed anchor held the hourly cadence forever. Measured 2026-08-24: the crypto track reported CONFIRMED against an event_eta of 2025-09-01 and the pre-IPO track against 2026-05-07, both asserting official_confirmation=True. The plan already required official_and_proxy_separate and proxy_cannot_escalate_to_confirmed; the code did not honour it."
+      }
+    },
+    {
+      "role": "cadence_policy",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\adaptive_cadence.py",
+      "sha256": "066d7991c0e223be02b5073911c43efda4888d8efd6b62a8845dd4bf7ee4afaa",
+      "provenance": {
+        "kind": "temporal_anchor_separation",
+        "reason": "newly bound: this module decides the cadence the plan specifies and was previously unbound, so it could change without invalidating the plan"
+      }
+    },
+    {
+      "role": "temporal_anchor_taxonomy",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_temporal_anchor.py",
+      "sha256": "b897eac8faa71e91a0f980842e4300f64ba6c30919c8b4e7f65d1050e0f53c98",
+      "provenance": {
+        "kind": "temporal_anchor_separation",
+        "reason": "newly bound: this module decides the cadence the plan specifies and was previously unbound, so it could change without invalidating the plan"
+      }
+    }
+  ],
+  "state": {
+    "state_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\premarket_perp_listing_automation_state.json",
+    "attempts_ledger_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\premarket_perp_listing_automation_attempts.jsonl",
+    "claim_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\premarket_perp_listing_automation.claim.json",
+    "launch_record_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\premarket_perp_listing_automation.launch.json",
+    "manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\premarket-perp\\manifest.json",
+    "events_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\premarket-perp\\raw_events.jsonl"
+  },
+  "guard_contract": {
+    "active_run_gate_must_not_be_running": true,
+    "one_writer_at_a_time": true,
+    "visible_terminal_required": true,
+    "inline_worker_no_terminal_allowed": false,
+    "exact_plan_hash_required": true,
+    "public_only_required": true,
+    "spot_listing_momentum_namespace_untouched": true
+  },
+  "recovery_contract": {
+    "failure_status": "RETRY_NEXT_INTERVAL",
+    "partial_failure_status": "PARTIAL_RETRY_NEXT_INTERVAL",
+    "pending_retry": true,
+    "interval_sec": 21600,
+    "scheduler_wake_interval_sec": 300,
+    "no_tight_loop": true,
+    "preserve_failed_track": true,
+    "skip_duplicate_worker": true
+  },
+  "commands": {
+    "plan_check": "python trading_mvp/src/premarket_plan.py --plan docs/plans/premarket-perp-listing-impulse-planonly-20260821-v2.json",
+    "status": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/start_premarket_perp_listing_automation_visible.ps1 -Status -Json",
+    "visible_tick": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/start_premarket_perp_listing_automation_visible.ps1 -ScheduledTick -Json"
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "e20e347b5f2facf8b0598164a1f619a9e2b6360ed87089b3b05032acd251ecd6",
+  "source_bindings": {
+    "technical_rebind": {
+      "kind": "listing_strategy_control_plane_batch2_hash_rebind",
+      "supersedes_plan_id": "premarket_perp_listing_impulse_20260818_v1",
+      "supersedes_plan_hash": "89e11554f6c3c458187477e25a5ffd3b06554d32d023e621ff9fc1775b9b2d2e",
+      "supersedes_plan_file_sha256": "2f07a9b9621081b7f638042be0dadbd97a938d0741bc6fefe7c5fc1f25b13625",
+      "supersedes_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-perp-listing-impulse-planonly-20260818-v1.json",
+      "research_scope_changed": false,
+      "reason": "Rebind current fail-closed launchers, retry recovery and canonical writer controls without changing venue, universe, signal, cost, risk, cadence or acceptance contracts."
+    },
+    "control_plane_readiness_receipt": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\listing-strategy-control-plane-batch1-readiness-20260821.json",
+      "file_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56",
+      "status": "READY_FOR_PLANONLY_REBIND_NOT_ACTIVATED"
+    }
+  },
+  "supersedes_plan_id": "premarket_perp_listing_impulse_20260824_v3",
+  "supersedes_plan_hash": "0338083509cf8ad448962c0cc6d76431261d99d21c714780250d11b9a469a15c",
+  "supersedes_plan_path": "docs/plans/premarket-perp-listing-impulse-planonly-20260824-v3.json",
+  "asset_class_contract": {
+    "module": "trading_mvp/src/premarket_asset_class.py",
+    "acceptance_class": "crypto_token",
+    "rule": "an instrument enters an acceptance universe only when positively classified; unclassified is its own answer and never a synonym for crypto",
+    "measured": "2026-08-24: Gate exposes no asset-class field at all - its nine pre-market contracts and BTC_USDT alike report type 'direct'; Bybit isPreListing and OKX ruleType=pre_market mark equity exactly as crypto",
+    "consequence": "with no crypto-token pre-market perpetual currently listed on bybit, okx or gate, the crypto acceptance universe is legitimately empty"
+  },
+  "temporal_anchor_contract": {
+    "module": "trading_mvp/src/premarket_temporal_anchor.py",
+    "kinds": [
+      "official_spot_t0",
+      "transition_ts",
+      "first_trade_ts",
+      "premarket_contract_launch_ts"
+    ],
+    "official_anchor_kinds": [
+      "official_spot_t0"
+    ],
+    "rule": "the kind of moment stays attached to the moment; only an official_spot_t0 published by an official source may claim an exact official time, and every other kind is a proxy that the cadence policy already refuses to escalate",
+    "source_class_is_not_timestamp_class": "source_class describes where the contract record came from, not where its timestamp came from; the two were conflated",
+    "anchor_selection": "the earliest still-future anchor among live contracts; with nothing ahead, the freshest past anchor, which the cadence policy then retires on its own age",
+    "confirmation_scope": "official_confirmed and exact_timestamp are properties of the selected anchor, never any() across the batch",
+    "measured": "2026-08-24: preipo official_conversion_ts is read from Bybit preMktSwTime and OKX conversion_time, which the hardened capture repo maps to transition_ts and refuses official_spot_t0 without an OFFICIAL_ANNOUNCEMENT; no venue endpoint feeding the pre-IPO track publishes a spot t0, so that track carries no exact official time at all"
+  }
+}

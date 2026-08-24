@@ -1,10 +1,10 @@
 {
-  "schema": "trading_mvp_slow_liquidity_listing_momentum_forward_monitor_planonly_v2",
-  "plan_id": "slow_liquidity_listing_momentum_forward_monitor_20260817_v2",
+  "schema": "trading_mvp_slow_liquidity_listing_momentum_forward_monitor_planonly_v3",
+  "plan_id": "slow_liquidity_listing_momentum_forward_monitor_20260821_v3",
   "strategy_branch": "slow_liquidity_listing_momentum_forward",
   "mode": "PlanOnly",
   "status": "AWAIT_GUARD_GREEN_VISIBLE_TICKS",
-  "generated_at_utc": "2026-08-17T12:42:58.037Z",
+  "generated_at_utc": "2026-08-21T05:15:23Z",
   "research_only": true,
   "public_data_only": true,
   "private_api": false,
@@ -30,12 +30,17 @@
   },
   "source_bindings": {
     "technical_rebind": {
-      "kind": "verified_visible_launcher_python_resolution_bugfix",
-      "supersedes_plan_id": "slow_liquidity_listing_momentum_forward_monitor_20260816",
-      "supersedes_plan_hash": "bc55d56faea5e456426757e5d8e3f724a37fd4eedea12fae4dc6857cc102d2c9",
-      "supersedes_plan_file_sha256": "70e06b75b444922313e55cbc6b868fcba0cf0d35918a7cabb4c6569c1adb3b25",
+      "kind": "listing_strategy_control_plane_batch2_hash_rebind",
+      "supersedes_plan_id": "slow_liquidity_listing_momentum_forward_monitor_20260817_v2",
+      "supersedes_plan_hash": "5251ea3ec5620a13a9740b314331e2e3e97e7e2d3dd45202562e5c16aec53189",
+      "supersedes_plan_file_sha256": "ceb2850bca4b2cca0141730b71c17181840d386085c3f5762f1cfaedc71b63aa",
       "research_scope_changed": false,
-      "reason": "The visible worker previously invoked bare python and failed when the scheduler environment had no Python on PATH. The launcher now resolves an existing executable before the tick; venue, universe, signal, cost, risk, acceptance and cadence contracts are unchanged."
+      "reason": "Rebind current fail-closed launchers, retry recovery and canonical writer controls without changing venue, universe, signal, cost, risk, cadence or acceptance contracts."
+    },
+    "control_plane_readiness_receipt": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\listing-strategy-control-plane-batch1-readiness-20260821.json",
+      "file_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56",
+      "status": "READY_FOR_PLANONLY_REBIND_NOT_ACTIVATED"
     },
     "proxy_acceptance_plan": {
       "plan_id": "slow_liquidity_listing_momentum_proxy_date_acceptance_20260816",
@@ -64,42 +69,98 @@
       {
         "role": "forward_monitor",
         "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_listing_momentum_forward_monitor.py",
-        "sha256": "ae69e4ea61f0dbd248145cc28714a28d7dbf72d79a27c195cb4167722cd7bf35"
+        "sha256": "235e788871a7507c9bcd2b39e547afc7806f9c6876188546852cc17b2599e3f0",
+        "provenance": {
+          "kind": "technical_rebind_from_superseded_plan_row",
+          "superseded_sha256": "ae69e4ea61f0dbd248145cc28714a28d7dbf72d79a27c195cb4167722cd7bf35",
+          "superseded_plan_hash": "5251ea3ec5620a13a9740b314331e2e3e97e7e2d3dd45202562e5c16aec53189",
+          "superseded_plan_file_sha256": "ceb2850bca4b2cca0141730b71c17181840d386085c3f5762f1cfaedc71b63aa",
+          "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+        }
       },
       {
         "role": "event_window_collector",
         "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_listing_momentum_first_days_collector.py",
-        "sha256": "b24cbc368082b0a8ade446fc906052629f8edfc2f65783d33cfe276c4c8f1941"
+        "sha256": "b24cbc368082b0a8ade446fc906052629f8edfc2f65783d33cfe276c4c8f1941",
+        "provenance": {
+          "kind": "technical_rebind_from_superseded_plan_row",
+          "superseded_sha256": "b24cbc368082b0a8ade446fc906052629f8edfc2f65783d33cfe276c4c8f1941",
+          "superseded_plan_hash": "5251ea3ec5620a13a9740b314331e2e3e97e7e2d3dd45202562e5c16aec53189",
+          "superseded_plan_file_sha256": "ceb2850bca4b2cca0141730b71c17181840d386085c3f5762f1cfaedc71b63aa",
+          "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+        }
       },
       {
         "role": "snapshot_parsers",
         "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_calendar.py",
-        "sha256": "c59ff73736f2bb0ce18d409a38c2c0ed4176b3599d8e4f7bbbd2570194f1af7d"
+        "sha256": "c59ff73736f2bb0ce18d409a38c2c0ed4176b3599d8e4f7bbbd2570194f1af7d",
+        "provenance": {
+          "kind": "technical_rebind_from_superseded_plan_row",
+          "superseded_sha256": "c59ff73736f2bb0ce18d409a38c2c0ed4176b3599d8e4f7bbbd2570194f1af7d",
+          "superseded_plan_hash": "5251ea3ec5620a13a9740b314331e2e3e97e7e2d3dd45202562e5c16aec53189",
+          "superseded_plan_file_sha256": "ceb2850bca4b2cca0141730b71c17181840d386085c3f5762f1cfaedc71b63aa",
+          "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+        }
       },
       {
         "role": "public_ohlcv_clients",
         "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_event_history_collector.py",
-        "sha256": "a6ce0cc800953ede3a31bbad8881e8a2733a84a7fb07d7c69b80652efc39cbed"
+        "sha256": "a6ce0cc800953ede3a31bbad8881e8a2733a84a7fb07d7c69b80652efc39cbed",
+        "provenance": {
+          "kind": "technical_rebind_from_superseded_plan_row",
+          "superseded_sha256": "a6ce0cc800953ede3a31bbad8881e8a2733a84a7fb07d7c69b80652efc39cbed",
+          "superseded_plan_hash": "5251ea3ec5620a13a9740b314331e2e3e97e7e2d3dd45202562e5c16aec53189",
+          "superseded_plan_file_sha256": "ceb2850bca4b2cca0141730b71c17181840d386085c3f5762f1cfaedc71b63aa",
+          "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+        }
       },
       {
         "role": "interval_contract",
         "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_event_history_collect_plan.py",
-        "sha256": "00e725b02b21cac159ca61904ce2223cd89bf0b39f056dd7a1da5899215b6acc"
+        "sha256": "00e725b02b21cac159ca61904ce2223cd89bf0b39f056dd7a1da5899215b6acc",
+        "provenance": {
+          "kind": "technical_rebind_from_superseded_plan_row",
+          "superseded_sha256": "00e725b02b21cac159ca61904ce2223cd89bf0b39f056dd7a1da5899215b6acc",
+          "superseded_plan_hash": "5251ea3ec5620a13a9740b314331e2e3e97e7e2d3dd45202562e5c16aec53189",
+          "superseded_plan_file_sha256": "ceb2850bca4b2cca0141730b71c17181840d386085c3f5762f1cfaedc71b63aa",
+          "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+        }
       },
       {
         "role": "global_writer_claim",
         "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\global_market_writer_claim.py",
-        "sha256": "6c57b5612d8dc972ebb94941c514bae7333c1cb21b13dd4487e2fe6a2569ea2e"
+        "sha256": "bc0604267c9d709a17188eb9daf317417d2633bf4c31266f73db33ac2f5066d2",
+        "provenance": {
+          "kind": "technical_rebind_from_superseded_plan_row",
+          "superseded_sha256": "6c57b5612d8dc972ebb94941c514bae7333c1cb21b13dd4487e2fe6a2569ea2e",
+          "superseded_plan_hash": "5251ea3ec5620a13a9740b314331e2e3e97e7e2d3dd45202562e5c16aec53189",
+          "superseded_plan_file_sha256": "ceb2850bca4b2cca0141730b71c17181840d386085c3f5762f1cfaedc71b63aa",
+          "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+        }
       },
       {
         "role": "census_stats",
         "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_listing_momentum_first_days_census.py",
-        "sha256": "7726e75198401a575167132c8f69c622d6d5f16809279b0ff10f85cc27b27564"
+        "sha256": "7726e75198401a575167132c8f69c622d6d5f16809279b0ff10f85cc27b27564",
+        "provenance": {
+          "kind": "technical_rebind_from_superseded_plan_row",
+          "superseded_sha256": "7726e75198401a575167132c8f69c622d6d5f16809279b0ff10f85cc27b27564",
+          "superseded_plan_hash": "5251ea3ec5620a13a9740b314331e2e3e97e7e2d3dd45202562e5c16aec53189",
+          "superseded_plan_file_sha256": "ceb2850bca4b2cca0141730b71c17181840d386085c3f5762f1cfaedc71b63aa",
+          "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+        }
       },
       {
         "role": "visible_launcher",
         "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_listing_momentum_forward_tick_visible.ps1",
-        "sha256": "0758a30d2947f42183ab22b1f771237112edb8e1c5c28f73109a1e0538e8601d"
+        "sha256": "9b3e0deed41a3965b5fa904637c6496b226bc8c624822657ca50bf4ce8720369",
+        "provenance": {
+          "kind": "technical_rebind_from_superseded_plan_row",
+          "superseded_sha256": "0758a30d2947f42183ab22b1f771237112edb8e1c5c28f73109a1e0538e8601d",
+          "superseded_plan_hash": "5251ea3ec5620a13a9740b314331e2e3e97e7e2d3dd45202562e5c16aec53189",
+          "superseded_plan_file_sha256": "ceb2850bca4b2cca0141730b71c17181840d386085c3f5762f1cfaedc71b63aa",
+          "batch1_readiness_receipt_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+        }
       }
     ]
   },
@@ -163,5 +224,5 @@
     "visible_tick": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_listing_momentum_forward_tick_visible.ps1\""
   },
   "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
-  "plan_hash": "5251ea3ec5620a13a9740b314331e2e3e97e7e2d3dd45202562e5c16aec53189"
+  "plan_hash": "2b41fd407a758e68340c0bba000f48fa87b1fc1e4a7e1c41b0e21a439bfc4dc0"
 }
