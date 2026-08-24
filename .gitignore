@@ -19,3 +19,28 @@ trading_mvp/tests/__pycache__/
 .audit-tmp/
 tmp*/
 .serena/
+
+# Tooling environment directories. Recognised as expected-untracked in
+# docs/agent-log/2026-08-16-provenance-restoration-and-known-debt.md; listed
+# here so they stop counting as a dirty working tree.
+.codex/
+.postman/
+postman/
+.mimosa/
+
+# Volatile run-gate state: rewritten or appended on every five-minute
+# scheduler tick. Launch records and archived writer claims are evidence and
+# stay tracked, as do the momentum state and attempts files, which the
+# repository committed deliberately in "Record listing momentum automation
+# fire". Named individually rather than by wildcard so that decision holds.
+docs/agent-log/run-gates/*.transaction.lock
+docs/agent-log/run-gates/*.claim.json.mutex
+docs/agent-log/run-gates/preipo_perpetual_event_automation_state.json
+docs/agent-log/run-gates/premarket_perp_listing_automation_state.json
+docs/agent-log/run-gates/preipo_perpetual_event_automation_attempts.jsonl
+docs/agent-log/run-gates/premarket_perp_listing_automation_attempts.jsonl
+docs/agent-log/run-gates/listing_strategy_due_coordinator_state.json
+docs/agent-log/run-gates/listing_strategy_due_coordinator_attempts.jsonl
+docs/agent-log/run-gates/listing_strategy_due_coordinator_claim_archive/
+docs/agent-log/run-gates/python-worker-handoffs/
+docs/agent-log/run-gates/terminal-receipts/
