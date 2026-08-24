@@ -1,0 +1,21 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "slow_liquidity_listing_momentum_forward_expansion_20260817_v1__expansion_tick_20260819T030050Z",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": null,
+  "owner_kind": "listing_momentum_forward_expansion_monitor_tick",
+  "ownership_token": "6e7946563dcd47cf8af47229f0702fd9",
+  "plan_hash": "64bf88540d53cf4b9a9f37b38dc80cff3d3f6a8c2fd7ee40251ff2c84f79d516",
+  "output_namespace": "E:\\trading_mvp\\listing-momentum-forward-expansion\\ticks\\expansion_tick_20260819T030050Z",
+  "claimed_at_utc": "2026-08-19T03:00:50.087132+00:00",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "final_status": "completed",
+  "released_at_utc": "2026-08-19T03:01:01.694779+00:00"
+}

@@ -1,0 +1,238 @@
+{
+  "schema": "trading_mvp_listing_strategy_control_plane_batch2_readiness_v1",
+  "project": "trading_mvp",
+  "batch": "listing_strategy_control_plane_batch2",
+  "generated_at_utc": "2026-08-21T08:40:58.6677540Z",
+  "status": "READY_TO_INSTALL_NOT_ACTIVATED",
+  "scope": {
+    "kind": "bounded_offline_control_plane_hardening",
+    "research_scope_changed": false,
+    "network_used": false,
+    "collector_started": false,
+    "replay_started": false,
+    "evaluator_or_oos_started": false,
+    "scheduled_task_registered": false,
+    "runtime_activated": false,
+    "live_orders": false,
+    "private_api": false,
+    "real_capital": false
+  },
+  "closed_findings": {
+    "batch1_p2": [
+      {
+        "id": "P2_DERIVATIVE_RETRY_STALE_TRACK_STATE",
+        "result": "CLOSED",
+        "evidence": "A derivative launcher clears worker identity only when PID and process-start identity match the current worker; foreign or corrupt ownership remains fail-closed."
+      },
+      {
+        "id": "P2_EMPTY_VISIBLE_CADENCE_DISPLAY",
+        "result": "CLOSED",
+        "evidence": "The visible spot orchestrator reads cadence stage and interval from persisted state instead of emitting an empty display row."
+      },
+      {
+        "id": "P2_LEGACY_AUTOMATIONS_ONLY_CHECKED_AT_INSTALL",
+        "result": "CLOSED",
+        "evidence": "Installer and every coordinator wake validate exact UTF-8 TOML, exact case-sensitive automation id and exact case-sensitive PAUSED status before due-state, claims or launch."
+      }
+    ],
+    "independent_p1": [
+      {
+        "id": "P1_CASE_INSENSITIVE_LEGACY_TOPOLOGY_COMPARE",
+        "result": "CLOSED",
+        "evidence": "PowerShell comparisons use -cne and negative case variants are covered for both scheduled tick and installer dry-run."
+      },
+      {
+        "id": "P1_CONTROLLER_RECONCILIATION_FINAL_WINDOW_TOCTOU",
+        "result": "CLOSED",
+        "evidence": "The reconciler and the reachable Batch 2 canonical current-run writer share a path-keyed transaction mutex from final re-read/CAS through the terminal pointer commit."
+      }
+    ],
+    "remaining_p0_p1": []
+  },
+  "final_planonly": [
+    {
+      "track": "spot_listing_momentum_mexc_gate",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-monitor-planonly-20260821-v4.json",
+      "plan_id": "slow_liquidity_listing_momentum_forward_monitor_20260821_v4",
+      "plan_hash": "0a6b50d1d1d8b4b7454e1f1c2dd993a1d6abe413dd9baaab796c361323baed20",
+      "file_sha256": "6861db5b32a134b9bd2961df2073ffa1441bdda987af8f973728858b53cf196f",
+      "supersedes_plan_hash": "2b41fd407a758e68340c0bba000f48fa87b1fc1e4a7e1c41b0e21a439bfc4dc0",
+      "supersedes_file_sha256": "b4e6b085c40e10c91cc235f186e46f52e56fc6f6d913b79f0b707172d4bc99f4"
+    },
+    {
+      "track": "spot_listing_momentum_expansion",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-expansion-planonly-20260821-v3.json",
+      "plan_id": "slow_liquidity_listing_momentum_forward_expansion_20260821_v3",
+      "plan_hash": "79628a83ccfd6d912b37d11e3857570eaa7180a45ad13f248894ab7a4a145457",
+      "file_sha256": "641f07a17e347de5041faec0b50ed37ffb58e8f27d02475d153a530b27fac5b8",
+      "parent_spot_plan_hash": "0a6b50d1d1d8b4b7454e1f1c2dd993a1d6abe413dd9baaab796c361323baed20",
+      "parent_spot_file_sha256": "6861db5b32a134b9bd2961df2073ffa1441bdda987af8f973728858b53cf196f",
+      "supersedes_plan_hash": "3e3d7ffe8a58bf70263b349644663054893d77e6b7a02c4e5b4fca04208a0b0c",
+      "supersedes_file_sha256": "0becc5ef47cfe03d5f2fcea94ef30a24668354fc238c3864db3f8b011ed40128"
+    },
+    {
+      "track": "crypto_premarket_perpetual",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-perp-listing-impulse-planonly-20260821-v2.json",
+      "plan_id": "premarket_perp_listing_impulse_20260821_v2",
+      "plan_hash": "e6019d6dfd86f924230f730e8df9751216467496a86957812d7e9fba524ee659",
+      "file_sha256": "89be986f5887b309fa195609cd3ccb7c08157c3a07983a26a9514f5dddd40d03",
+      "supersedes_plan_hash": "89e11554f6c3c458187477e25a5ffd3b06554d32d023e621ff9fc1775b9b2d2e",
+      "supersedes_file_sha256": "2f07a9b9621081b7f638042be0dadbd97a938d0741bc6fefe7c5fc1f25b13625"
+    },
+    {
+      "track": "preipo_equity_perpetual",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\preipo-perpetual-event-planonly-20260821-v2.json",
+      "plan_id": "preipo_perpetual_event_20260821_v2",
+      "plan_hash": "f1e1a6fef1adcbc076aa6398f39f4e8b458800a48b924d895aef943f39c1d29f",
+      "file_sha256": "4a32c2ba47aaf05cfacaab35cb1112f30fb1984fe16f2bef5ca05159d7335fc8",
+      "supersedes_plan_hash": "3779e26adde5bdb1227940bcd2a7d3d8481a41b414df68aa6c82e4e5c13c44b0",
+      "supersedes_file_sha256": "6f8dd54c3d0666c5f8507103c194ce8ea546b57018d8a85aaf6f8f38104abd1c"
+    }
+  ],
+  "immutable_plan_preservation": [
+    {
+      "path": "docs/plans/slow-liquidity-listing-momentum-forward-monitor-planonly-20260817-v2.json",
+      "file_sha256": "ceb2850bca4b2cca0141730b71c17181840d386085c3f5762f1cfaedc71b63aa"
+    },
+    {
+      "path": "docs/plans/slow-liquidity-listing-momentum-forward-monitor-planonly-20260821-v3.json",
+      "file_sha256": "b4e6b085c40e10c91cc235f186e46f52e56fc6f6d913b79f0b707172d4bc99f4"
+    },
+    {
+      "path": "docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260817.json",
+      "file_sha256": "8a92bd3b18b8629d53bf6d70616090bf61de199f97b0235355e3781a9d82488a"
+    },
+    {
+      "path": "docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260821-v2.json",
+      "file_sha256": "0becc5ef47cfe03d5f2fcea94ef30a24668354fc238c3864db3f8b011ed40128"
+    },
+    {
+      "path": "docs/plans/premarket-perp-listing-impulse-planonly-20260818-v1.json",
+      "file_sha256": "2f07a9b9621081b7f638042be0dadbd97a938d0741bc6fefe7c5fc1f25b13625"
+    },
+    {
+      "path": "docs/plans/preipo-perpetual-event-planonly-20260818-v1.json",
+      "file_sha256": "6f8dd54c3d0666c5f8507103c194ce8ea546b57018d8a85aaf6f8f38104abd1c"
+    }
+  ],
+  "control_plane_hashes": {
+    "tools/invoke_listing_strategy_due_coordinator.ps1": "f074805f1a8aa8423e4cee3a7ff5ed4429a98237bd53cbc04922c58cd31293e0",
+    "tools/install_listing_strategy_due_coordinator_task.ps1": "ea74278ec5d3cd221b685805d9cdb67caaad43deab7e87d6619906c057afe63f",
+    "tools/start_listing_momentum_forward_automation_visible.ps1": "88a0ca65ebdf0bbcdccc6b95b96c4418449de68fc261720640f3058b73e37c18",
+    "tools/start_listing_momentum_forward_tick_visible.ps1": "8daecdec2f9fd30364afc5b5a4f7537ae31333350b0c82db48890c7c51a87d40",
+    "tools/start_listing_momentum_forward_expansion_tick_visible.ps1": "76f069565d78a209c6bf22a37e78c6e95a97360397be90377b84a7185df1924f",
+    "tools/start_premarket_perp_listing_automation_visible.ps1": "8e4f9dd582be5866b26dd2c43e0ce78a1e028debfe106d8a1c00e644586b8f07",
+    "tools/start_preipo_perpetual_event_automation_visible.ps1": "dd51dbd87fed921be89513fef9fa188995077c92ebc81ec7e6f7b4cb1ea42dae",
+    "tools/reconcile_listing_strategy_controller.ps1": "11e8668ec6a8349665249f737c66a19d4ff837fee2991b1d5b65b5454f2db0c7",
+    "trading_mvp/src/listing_strategy_plan_rebind.py": "2ad37167e191089b409929f5a13090a5672c444065bdc7d05142e1813baf1f2b"
+  },
+  "controller_reconciliation": {
+    "receipt_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\listing-strategy-controller-reconciliation-20260821.json",
+    "receipt_file_sha256": "67303da559c4759aaeb02c668a8f5a9c1200545808a753eb224a960470df73e6",
+    "deterministic_result_hash": "f2236266e2407cc6a1032beac69d81d359565212bee900c51c54f4e7f6d3bf96",
+    "disposition": "INCOMPLETE_ATTEMPT_REJECTED_ACCRUAL_PRESERVED",
+    "stopped_run_id": "slow_liquidity_listing_momentum_forward_monitor_20260817_v2",
+    "neutral_run_id": "resolved_incomplete_20260819_094844395",
+    "archived_stopped_pointer": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\archived-gates\\current-run.slow_liquidity_listing_momentum_forward_monitor_20260817_v2.20260821T052555603Z.json",
+    "accrual": {
+      "tick_count": 13,
+      "window_count": 6,
+      "complete_window_count": 1,
+      "classification": "DESCRIPTIVE_ACCRUAL_ONLY"
+    },
+    "acceptance_authorized": false,
+    "replay_authorized": false,
+    "evaluator_or_oos_authorized": false,
+    "runtime_activated": false
+  },
+  "active_run_gate": {
+    "checked_at_local": "2026-08-21T11:36:50+03:00",
+    "status": "READY_FOR_POSTPROCESS",
+    "gate_source": "current_run_pointer",
+    "run_id": "resolved_incomplete_20260819_094844395",
+    "current_run_pointer_sha256": "7f2575cfd7ed1d6d1c123be72d8699c4c06466db1aca1a0626dfe50fa5c71a23",
+    "active_run_gate_sha256": "4670c02f1423da9f537c835f7a4c0df8979c6dec299f416f8e2d96719888f586",
+    "final": false,
+    "replay_allowed": false
+  },
+  "runtime_readiness": {
+    "installer_dry_run_status": "READY_TO_INSTALL",
+    "task_name": "ZolotyayLopata Listing Strategy Due Coordinator",
+    "scheduled_task_present": false,
+    "wake_interval_minutes": 5,
+    "hidden": true,
+    "model_invocation": false,
+    "worker_exit_timeout_sec": 1800,
+    "registration_attempted": false,
+    "legacy_automations": [
+      {
+        "id": "zolotyaylopata-listing-momentum-monitor",
+        "status": "PAUSED",
+        "config_sha256": "4f1e7c34b78647ed776de81194bb83d5e87becc1b43f7ea6ab0853b74b31de71",
+        "verified": true
+      },
+      {
+        "id": "zolotyaylopata-pre-market-perpetual-listing-impulse-monitor",
+        "status": "PAUSED",
+        "config_sha256": "c4fd699e1c1ba79280be66084684a5bbf61e43ddd128b2a195f0f37573accdb8",
+        "verified": true
+      },
+      {
+        "id": "zolotyaylopata-pre-ipo-perpetual-event-monitor",
+        "status": "PAUSED",
+        "config_sha256": "76174a17d67057bb5b4fe6916a2b0057b61bf378e3eba3cd7c780126c64c34bb",
+        "verified": true
+      }
+    ],
+    "claims_present": []
+  },
+  "verification": {
+    "functional_linked_suite": {
+      "passed": 143,
+      "failed": 0,
+      "duration_sec": 11.36
+    },
+    "spot_launcher_guard_suite": {
+      "passed": 42,
+      "failed": 0,
+      "duration_sec": 140.06
+    },
+    "derivative_launcher_guard_suite": {
+      "passed": 32,
+      "failed": 0,
+      "duration_sec": 156.10
+    },
+    "coordinator_powershell_suite": {
+      "passed": 45,
+      "failed": 0
+    },
+    "plan_validators": {
+      "validated": 4,
+      "failed": 0
+    },
+    "syntax": {
+      "powershell_files": 9,
+      "powershell_errors": 0,
+      "python_files": 9,
+      "python_errors": 0
+    },
+    "scoped_git_diff_check_exit_code": 0,
+    "independent_review": {
+      "result": "NO_P0_P1",
+      "controller_tests_passed": 8,
+      "plan_rebind_tests_passed": 8
+    }
+  },
+  "remaining_boundaries": [
+    "Official event registry with exact source, received timestamp, asset class and official t0 is not implemented in Batch 2.",
+    "Continuous event-window capture around confirmed events is not implemented or activated in Batch 2.",
+    "Causal execution replay and acceptance-grade fill, cost, funding, mark/index and liquidation accounting are not implemented in Batch 2.",
+    "The literal event-count and economics acceptance gates are not implemented in Batch 2.",
+    "The shared current-run transaction mutex covers the reachable Batch 2 coordinator topology. Historical or manual writers outside that topology must adopt the same mutex before they are made reachable."
+  ],
+  "next_safe_action": {
+    "step": "Install the verified no-model due coordinator only as a separate runtime activation step, then build the official event registry and continuous event-window capture package.",
+    "does_not_prove_strategy": true,
+    "must_not_start_collectors_from_this_receipt": true
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "active_run_pointer_v1",
+  "project": "trading_mvp",
+  "run_id": "resolved_incomplete_20260819_094844395",
+  "status": "READY_FOR_POSTPROCESS",
+  "updated_at": "2026-08-19T09:48:44.3955872+03:00",
+  "manifest_path": null,
+  "output": null,
+  "collector_pid": null,
+  "monitor_pid": null,
+  "process_ids": [],
+  "launch_record_path": null
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "active_run_pointer_v1",
+  "project": "trading_mvp",
+  "run_id": "spot_perp_basis_collect_20260819_083140",
+  "status": "REJECTED_INCOMPLETE",
+  "updated_at": "2026-08-19T09:48:37.0961471+03:00",
+  "manifest_path": "E:\\trading_mvp\\spot-perp-basis-snapshots\\spot_perp_basis_collect_20260819_083140\\manifest.json",
+  "output": {
+    "path": "E:\\trading_mvp\\spot-perp-basis-snapshots\\spot_perp_basis_collect_20260819_083140\\snapshots.jsonl",
+    "kind": "jsonl"
+  },
+  "collector_pid": null,
+  "monitor_pid": null,
+  "process_ids": [],
+  "launch_record_path": null,
+  "original_status": "STOPPED_INCOMPLETE",
+  "rejected_at": "2026-08-19T09:48:44.3955872+03:00",
+  "rejection_reason": "User explicitly chose explicitly_mark_dataset_incomplete for spot_perp_basis_collect_20260819_083140. Dataset is incomplete: 12/864 cycles, 72 rows, 5 errors, stop_reason=auto_stale_lock_clear. Preserve for diagnostics only. Do not resume this collect. New collector requires a separate visible-run approval."
+}

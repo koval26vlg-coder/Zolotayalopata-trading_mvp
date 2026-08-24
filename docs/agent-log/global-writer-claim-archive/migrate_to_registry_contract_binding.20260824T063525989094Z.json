@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "migrate_to_registry_contract_binding",
+  "owner_pid": null,
+  "owner_host": "LAPTOP-UN546M00",
+  "writer_pid": null,
+  "terminal_pid": null,
+  "owner_kind": "registry_quarantine",
+  "ownership_token": "42054b8f6491d730c0bb6b9a89bfe4b9",
+  "plan_hash": "6359c390ad8ab74a18ab27d24c5f99ee89d059e1a93693e65a6803cdfd07dbc0",
+  "output_namespace": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture\\docs\\registry\\quarantine",
+  "claimed_at_utc": "2026-08-24T06:35:25.968481+00:00",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "final_status": "REGISTRY_QUARANTINED",
+  "released_at_utc": "2026-08-24T06:35:25.989094+00:00"
+}

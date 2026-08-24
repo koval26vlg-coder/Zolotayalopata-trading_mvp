@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "premarket_outer_20260824T1213473052685Z_16d40533",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": 27200,
+  "owner_kind": "premarket_perp_visible_worker",
+  "ownership_token": "9ea42648928465fe8fb5dc47ce34fc80",
+  "plan_hash": "e6019d6dfd86f924230f730e8df9751216467496a86957812d7e9fba524ee659",
+  "output_namespace": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\premarket-perp",
+  "claimed_at_utc": "2026-08-24T12:13:53.389049+00:00",
+  "owner_process_started_at_utc": "2026-08-24T12:13:47.4502397Z",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "final_status": "COMPLETE",
+  "released_at_utc": "2026-08-24T12:15:31.883610+00:00"
+}

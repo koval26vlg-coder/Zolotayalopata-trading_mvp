@@ -19,6 +19,19 @@
   },
   "tasks": [
     {
+      "id": "funding_directional_momentum_hypothesis_v1",
+      "max_runtime_sec": 1800,
+      "output_path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\autopilot\\research\\funding-directional-momentum-hypothesis-v1.json",
+      "objective": "Define a directional momentum hypothesis using extreme funding rates as a signal. Naked positions only (no spot hedging). Explore thresholds like 15 bps or 20 bps and holding periods like 12h or 24h.",
+      "allowed_inputs": [
+        "docs/agent-log/trading-mvp-autopilot-state.json",
+        "trading_mvp/src/funding_directional_momentum_v1.py"
+      ],
+      "status": "COMPLETED",
+      "owner": null,
+      "started_at_utc": "2026-08-18T14:39:37.247820Z"
+    },
+    {
       "id": "paper_product_gap_audit_v1",
       "status": "COMPLETED",
       "max_runtime_sec": 1800,
@@ -1023,6 +1036,6 @@
       "artifact_sha256": "b10776703fe795b798c307be00f5dad97dc6f349c845068b323ad41e6bea2e67"
     }
   ],
-  "updated_at_utc": "2026-08-09T18:17:25.368689Z",
-  "last_refill_at_utc": "2026-08-09T18:17:25.368689Z"
+  "updated_at_utc": "2026-08-18T14:40:21.919561Z",
+  "last_refill_at_utc": "2026-08-18T14:40:21.919561Z"
 }
