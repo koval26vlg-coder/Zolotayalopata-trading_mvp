@@ -910,7 +910,7 @@ class ActiveRunGateTests(unittest.TestCase):
 
     def test_pit_visible_wrapper_has_resume_and_failure_safe_gate_contract(self) -> None:
         wrapper = REPO_ROOT / "tools" / "start_pit_universe_snapshot_collect_visible.ps1"
-        text = wrapper.read_text(encoding="utf-8")
+        text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(wrapper)
 
         for needle in (
             "ResumeIncomplete",

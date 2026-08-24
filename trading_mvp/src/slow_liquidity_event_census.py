@@ -447,6 +447,61 @@ def _family_summary(events: list[dict[str, Any]], cfg: EventCensusConfig) -> dic
     }
 
 
+def _normalize_path_key(path: Path) -> str:
+    return str(path).replace("\\", "/").rstrip("/").casefold()
+
+
+def paths_equivalent(left: Path, right: Path) -> bool:
+    try:
+        if left.exists() and right.exists():
+            return left.resolve() == right.resolve()
+    except OSError:
+        pass
+    return _normalize_path_key(left) == _normalize_path_key(right)
+
+
+def quality_bound_history_jsonl(quality: dict[str, Any]) -> Path | None:
+    provenance = quality.get("exact_recollect_provenance") or {}
+    for candidate in (
+        quality.get("input_jsonl"),
+        quality.get("output_jsonl_path"),
+        provenance.get("output_jsonl_path"),
+    ):
+        text = str(candidate or "").strip()
+        if text:
+            return Path(text)
+    return None
+
+
+def quality_bound_manifest(quality: dict[str, Any]) -> Path | None:
+    provenance = quality.get("exact_recollect_provenance") or {}
+    for candidate in (quality.get("manifest_path"), provenance.get("manifest_path")):
+        text = str(candidate or "").strip()
+        if text:
+            return Path(text)
+    return None
+
+
+def assert_history_matches_quality(
+    *,
+    history_jsonl_path: Path,
+    history_manifest_path: Path,
+    quality: dict[str, Any],
+) -> None:
+    bound_jsonl = quality_bound_history_jsonl(quality)
+    bound_manifest = quality_bound_manifest(quality)
+    if bound_jsonl is not None and not paths_equivalent(Path(history_jsonl_path), bound_jsonl):
+        raise ValueError(
+            "history jsonl is not the quality-bound recollect: "
+            f"got={history_jsonl_path} bound={bound_jsonl}"
+        )
+    if bound_manifest is not None and not paths_equivalent(Path(history_manifest_path), bound_manifest):
+        raise ValueError(
+            "history manifest is not the quality-bound recollect: "
+            f"got={history_manifest_path} bound={bound_manifest}"
+        )
+
+
 def run_slow_liquidity_event_census_planonly(
     *,
     history_jsonl_path: Path,
@@ -460,6 +515,11 @@ def run_slow_liquidity_event_census_planonly(
     manifest = load_json(history_manifest_path)
     rescope = load_json(rescope_path)
     quality = load_json(quality_path)
+    assert_history_matches_quality(
+        history_jsonl_path=history_jsonl_path,
+        history_manifest_path=history_manifest_path,
+        quality=quality,
+    )
     clean_bases = set(str(base).upper() for base in ((rescope.get("v1_event_census_plan") or {}).get("clean_bases") or []))
     if not clean_bases:
         clean_bases = set(str(base).upper() for base in ((quality.get("clean_markets") or {}).get("two_exchange_full_coverage_1h4h_bases") or []))

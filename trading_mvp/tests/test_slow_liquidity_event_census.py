@@ -154,6 +154,88 @@ class SlowLiquidityEventCensusTests(unittest.TestCase):
         self.assertGreaterEqual(result["event_census"]["independent_events"], 1)
         self.assertTrue(result["event_census"]["accepted_families"])
 
+    def test_rejects_history_that_is_not_quality_bound_recollect(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bound = root / "v6" / "ohlcv.jsonl"
+            wrong = root / "old" / "ohlcv.jsonl"
+            bound_manifest = root / "v6" / "manifest.json"
+            wrong_manifest = root / "old" / "manifest.json"
+            bound.parent.mkdir(parents=True)
+            wrong.parent.mkdir(parents=True)
+            bound.write_text("{}\n", encoding="utf-8")
+            wrong.write_text("{}\n", encoding="utf-8")
+            bound_manifest.write_text(json.dumps({"final": True, "run_id": "v6"}), encoding="utf-8")
+            wrong_manifest.write_text(json.dumps({"final": True, "run_id": "old"}), encoding="utf-8")
+            rescope = root / "rescope.json"
+            quality = root / "quality.json"
+            rescope.write_text(json.dumps(rescope_plan()), encoding="utf-8")
+            quality.write_text(
+                json.dumps(
+                    {
+                        "accepted": True,
+                        "input_jsonl": str(bound),
+                        "manifest_path": str(bound_manifest),
+                        "exact_recollect_provenance": {
+                            "output_jsonl_path": str(bound),
+                            "manifest_path": str(bound_manifest),
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "quality-bound recollect"):
+                run_slow_liquidity_event_census_planonly(
+                    history_jsonl_path=wrong,
+                    history_manifest_path=wrong_manifest,
+                    rescope_path=rescope,
+                    quality_path=quality,
+                    output_path=root / "out.json",
+                )
+
+    def test_shipped_default_config_keeps_300bps_geometry_and_blocks_replay(self) -> None:
+        self.assertGreaterEqual(EventCensusConfig.min_target_geometry_bps, 300.0)
+        self.assertGreaterEqual(EventCensusConfig.min_independent_events, 100)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            history = root / "history.jsonl"
+            manifest = root / "manifest.json"
+            rescope = root / "rescope.json"
+            quality = root / "quality.json"
+            output = root / "event_census.json"
+            rows = fixture_rows_with_census_events("mexc") + fixture_rows_with_census_events("gateio")
+            history.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
+            manifest.write_text(json.dumps({"final": True, "run_id": "fixture"}), encoding="utf-8")
+            rescope.write_text(json.dumps(rescope_plan()), encoding="utf-8")
+            quality.write_text(
+                json.dumps(
+                    {
+                        "accepted": True,
+                        "clean_markets": {"two_exchange_full_coverage_1h4h_bases": ["AAA"]},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            result = run_slow_liquidity_event_census_planonly(
+                history_jsonl_path=history,
+                history_manifest_path=manifest,
+                rescope_path=rescope,
+                quality_path=quality,
+                output_path=output,
+            )
+        self.assertEqual(result["config"]["min_target_geometry_bps"], EventCensusConfig.min_target_geometry_bps)
+        self.assertGreaterEqual(result["config"]["min_target_geometry_bps"], 300.0)
+        self.assertFalse(result["would_start"])
+        self.assertFalse(result["replay_allowed_now"])
+        self.assertFalse(result["grid_allowed_now"])
+        self.assertFalse(result["paper_forward_allowed"])
+        self.assertFalse(result["live_orders"])
+        self.assertIsInstance(result["event_census"]["independent_events"], int)
+        self.assertEqual(
+            result["decision"],
+            "SLOW_LIQUIDITY_EVENT_CENSUS_V1_REJECTED_INSUFFICIENT_EVENT_BASE_RATE",
+        )
+
     def test_event_census_cli_writes_output(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -190,6 +272,8 @@ class SlowLiquidityEventCensusTests(unittest.TestCase):
                     "1",
                     "--max-single-base-event-fraction",
                     "1.0",
+                    "--min-target-geometry-bps",
+                    "300",
                 ],
                 text=True,
                 capture_output=True,
@@ -201,6 +285,8 @@ class SlowLiquidityEventCensusTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, msg=result.stderr + result.stdout)
         payload = json.loads(result.stdout)
         self.assertFalse(payload["replay_allowed_now"])
+        self.assertGreaterEqual(payload["config"]["min_target_geometry_bps"], 300.0)
+        self.assertIsInstance(payload["event_census"]["independent_events"], int)
 
     def test_wrappers_are_guarded_and_non_live(self) -> None:
         for script_name in (

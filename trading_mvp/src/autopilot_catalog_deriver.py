@@ -18,11 +18,65 @@ AUDIT_SCHEMA_V5 = "trading_mvp_paper_product_readiness_audit_v5"
 AUDIT_SCHEMA_V6 = "trading_mvp_paper_product_readiness_audit_v6"
 AUDIT_SCHEMA_V8 = "trading_mvp_paper_product_readiness_audit_v8"
 AUDIT_SCHEMA_V10 = "trading_mvp_paper_product_readiness_audit_v10"
+AUDIT_SCHEMA_V11 = "trading_mvp_paper_product_readiness_audit_v11"
+AUDIT_SCHEMA_V12 = "fast_first_paper_product_readiness_audit_v12"
 POLICY_SCHEMA = "trading_mvp_autopilot_policy_v1"
 BACKLOG_SCHEMA = "trading_mvp_autopilot_research_backlog_v1"
 RESEARCH_ROOT = (
     r"E:\ZolotyayLopata-data\exports\trading-mvp\autopilot\research"
 )
+
+TASK_TEMPLATES_V12: dict[str, dict[str, Any]] = {
+    "funding_directional_momentum_hypothesis_v1": {
+        "output_path": rf"{RESEARCH_ROOT}\funding-directional-momentum-hypothesis-v1.json",
+        "objective": (
+            "Define a directional momentum hypothesis using extreme funding rates "
+            "as a signal. Naked positions only (no spot hedging). Explore thresholds "
+            "like 15 bps or 20 bps and holding periods like 12h or 24h."
+        ),
+        "allowed_inputs": [
+            "docs/agent-log/trading-mvp-autopilot-state.json",
+            "trading_mvp/src/funding_directional_momentum_v1.py"
+        ],
+    },
+    "paper_code_provenance_merkle_v10": {
+        "output_path": rf"{RESEARCH_ROOT}\paper-code-provenance-merkle-v10.json",
+        "objective": (
+            "Freeze the code provenance for funding directional momentum."
+        ),
+        "allowed_inputs": [
+            "trading_mvp/src",
+        ],
+    },
+}
+
+TASK_TEMPLATES_V11: dict[str, dict[str, Any]] = {
+    "aggressive_momentum_hypothesis_v1": {
+        "output_path": rf"{RESEARCH_ROOT}\aggressive-momentum-hypothesis-v1.json",
+        "objective": (
+            "Define a high-frequency impulse breakout hypothesis with short lookback, "
+            "aggressive trailing stops, and early breakout entries for slow liquidity."
+        ),
+        "allowed_inputs": [
+            "docs/agent-log/trading-mvp-autopilot-state.json",
+            "trading_mvp/src/slow_liquidity_feature_normalizer.py"
+        ],
+    },
+    "paper_code_provenance_merkle_v9": {
+        "output_path": rf"{RESEARCH_ROOT}\paper-code-provenance-merkle-v9.json",
+        "objective": (
+            "Freeze the corrected dynamic readiness and same-scope census code "
+            "in a deterministic code-only Merkle baseline. No data artifacts "
+            "or network access."
+        ),
+        "allowed_inputs": [
+            "trading_mvp/src",
+            "trading_mvp/tests",
+            "trading_mvp/run_mvp.ps1",
+            "tools",
+        ],
+    },
+}
 
 
 TASK_TEMPLATES: dict[str, dict[str, Any]] = {
@@ -482,6 +536,16 @@ def derive_catalog(
         templates = TASK_TEMPLATES_V10
         expected_action = (
             "derive_and_install_catalog_v10_then_continue_bounded_offline_work"
+        )
+    elif audit_schema == AUDIT_SCHEMA_V12:
+        templates = TASK_TEMPLATES_V12
+        expected_action = (
+            "derive_and_install_catalog_v12_then_continue_bounded_offline_work"
+        )
+    elif audit_schema == AUDIT_SCHEMA_V11:
+        templates = TASK_TEMPLATES_V11
+        expected_action = (
+            "derive_and_install_catalog_v11_then_continue_bounded_offline_work"
         )
     else:
         raise ValueError("unsupported readiness audit schema")

@@ -305,7 +305,7 @@ class GateHistoricalMembershipParsingTests(unittest.TestCase):
 class GateHistoricalMembershipWrapperTests(unittest.TestCase):
     def test_run_mvp_exposes_plan_and_probe_actions(self) -> None:
         wrapper = Path(__file__).resolve().parents[1] / "run_mvp.ps1"
-        text = wrapper.read_text(encoding="utf-8")
+        text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(wrapper)
 
         self.assertIn('"fast-edge-membership-plan"', text)
         self.assertIn('"fast-edge-membership-probe"', text)

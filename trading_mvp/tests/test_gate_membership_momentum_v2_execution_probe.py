@@ -237,7 +237,7 @@ class GateMembershipMomentumV2ExecutionProbeTests(unittest.TestCase):
                 )
 
     def test_run_mvp_exposes_plan_and_validate_actions(self) -> None:
-        script = (TRADING_ROOT / "run_mvp.ps1").read_text(encoding="utf-8-sig")
+        script = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))((TRADING_ROOT / "run_mvp.ps1"))
 
         self.assertIn('"fast-edge-membership-momentum-v2-execution-probe-plan"', script)
         self.assertIn('"fast-edge-membership-momentum-v2-execution-probe-validate"', script)

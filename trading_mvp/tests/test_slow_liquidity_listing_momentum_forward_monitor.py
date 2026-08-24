@@ -4,6 +4,7 @@ import hashlib
 import json
 import sys
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -15,6 +16,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from listing_event_history_collector import Candle  # noqa: E402
+from global_market_writer_claim import GlobalMarketWriterClaimError  # noqa: E402
 from slow_liquidity_spot_v2_official_page_discovery import (  # noqa: E402
     canonical_hash,
 )
@@ -108,6 +110,14 @@ class DiffNewListingsTests(unittest.TestCase):
 
 
 class RunTickTests(unittest.TestCase):
+    def test_direct_cli_tick_flag_cannot_bypass_launcher_handoff(self) -> None:
+        with mock.patch.object(
+            monitor, "load_and_validate_forward_plan", return_value={"plan_hash": "a" * 64}
+        ), mock.patch.object(monitor, "run_tick") as run_tick_mock:
+            with self.assertRaises(SystemExit):
+                monitor.main(["--tick", "--confirmed-visible-tick"])
+            run_tick_mock.assert_not_called()
+
     def _run(self, tick_id: str, rows: list[dict], bars: dict[str, list[Candle]], now_ts: int):
         tmp = Path(tempfile.mkdtemp())
         with mock.patch.object(monitor, "TICKS_DIR", tmp / "ticks"), mock.patch.object(
@@ -134,6 +144,301 @@ class RunTickTests(unittest.TestCase):
             encoding="utf-8",
         )
         return baseline
+
+    def _run_with_collector(
+        self,
+        tick_id: str,
+        rows: list[dict],
+        collector: object,
+        now_ts: int,
+    ) -> tuple[dict, Path]:
+        tmp = Path(tempfile.mkdtemp())
+        with mock.patch.object(monitor, "TICKS_DIR", tmp / "ticks"), mock.patch.object(
+            monitor, "FORWARD_STATE_PATH", tmp / "state.json"
+        ), mock.patch.object(monitor, "CLAIM_PATH", tmp / "claim.json"), mock.patch.object(
+            monitor, "CALENDAR_PATH", self._baseline_csv(tmp)
+        ), mock.patch.object(monitor, "collect_window_bars", side_effect=collector):
+            manifest = monitor.run_tick(
+                {"plan_hash": "forward-plan-hash"},
+                tick_id=tick_id,
+                clients={"mexc": object(), "gateio": object()},
+                fetcher=lambda: (rows, 2),
+                now_ts=now_ts,
+            )
+        return manifest, tmp
+
+    def _assert_cli_nonzero(self, manifest: dict) -> None:
+        factory = lambda **_kwargs: object()  # noqa: E731
+        tick_id = "fixture_cli_tick"
+        with mock.patch.object(
+            monitor, "load_and_validate_forward_plan", return_value={"plan_hash": "fixture"}
+        ), mock.patch.object(monitor, "run_tick", return_value=manifest), mock.patch.object(
+            monitor, "tick_status", return_value={"status": "fixture"}
+        ), mock.patch.object(
+            monitor,
+            "consume_worker_handoff_receipt",
+            return_value={
+                "claim_run_id": f"{monitor.PLAN_ID}__{tick_id}",
+                "claim_output_namespace": str((monitor.TICKS_DIR / tick_id).resolve()),
+                "claim_ownership_token_sha256": hashlib.sha256(b"1" * 32).hexdigest(),
+            },
+        ), mock.patch.dict(
+            "listing_event_history_collector.CLIENTS",
+            {"mexc": factory, "gateio": factory},
+            clear=True,
+        ), mock.patch("builtins.print"):
+            self.assertEqual(
+                monitor.main([
+                    "--tick",
+                    "--confirmed-visible-tick",
+                    "--tick-id",
+                    tick_id,
+                    "--worker-handoff-token",
+                    "2" * 32,
+                    "--claim-ownership-token",
+                    "1" * 32,
+                    "--plan-hash",
+                    "fixture",
+                ]),
+                1,
+            )
+
+    def _assert_failed_claim_archive(self, root: Path, reason: str) -> None:
+        self.assertFalse((root / "claim.json").exists())
+        archives = list((root / "global-writer-claim-archive").glob("*.json"))
+        self.assertEqual(len(archives), 1)
+        archived = json.loads(archives[0].read_text(encoding="utf-8"))
+        final_status = str(archived["final_status"])
+        self.assertNotEqual(final_status.lower(), "completed")
+        self.assertIn("STOPPED_INCOMPLETE", final_status)
+        self.assertIn("RETRY_NEXT_INTERVAL", final_status)
+        self.assertIn(reason, final_status)
+
+    def test_fetcher_exception_releases_incomplete_claim_and_release_error_does_not_mask(self) -> None:
+        tmp = Path(tempfile.mkdtemp())
+        actual_release = monitor.release_global_market_writer
+
+        def fail_fetcher():
+            running_path = tmp / "ticks" / "tick_fetcher_exception" / "manifest.json"
+            self.assertTrue(running_path.is_file(), "RUNNING manifest is missing before fetcher")
+            running = json.loads(running_path.read_text(encoding="utf-8"))
+            self.assertEqual(running["status"], "RUNNING")
+            self.assertEqual(running["evidence_stage"], "CLAIMED_PRE_FETCH")
+            self.assertEqual(running["attempt_id"], "tick_fetcher_exception")
+            self.assertTrue(running["ownership_token"])
+            raise ValueError("fixture fetcher failed")
+
+        def release_then_raise(*args, **kwargs):
+            actual_release(*args, **kwargs)
+            raise RuntimeError("fixture release failed after archive")
+
+        with mock.patch.object(monitor, "TICKS_DIR", tmp / "ticks"), mock.patch.object(
+            monitor, "FORWARD_STATE_PATH", tmp / "state.json"
+        ), mock.patch.object(monitor, "CLAIM_PATH", tmp / "claim.json"), mock.patch.object(
+            monitor, "release_global_market_writer", side_effect=release_then_raise
+        ):
+            with self.assertRaisesRegex(ValueError, "fixture fetcher failed"):
+                monitor.run_tick(
+                    {"plan_hash": "forward-plan-hash"},
+                    tick_id="tick_fetcher_exception",
+                    clients={},
+                    fetcher=fail_fetcher,
+                )
+        self._assert_failed_claim_archive(tmp, "fetch_or_prepare_exception")
+        failure_manifest = json.loads(
+            (tmp / "ticks" / "tick_fetcher_exception" / "manifest.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(failure_manifest["status"], "STOPPED_INCOMPLETE")
+        self.assertTrue(failure_manifest["pending_retry"])
+        self.assertEqual(failure_manifest["stop_reason"], "fetch_or_prepare_exception")
+
+    def test_blocking_fetcher_has_durable_running_evidence_before_release(self) -> None:
+        tmp = Path(tempfile.mkdtemp())
+        fetch_entered = threading.Event()
+        release_fetcher = threading.Event()
+        errors: list[BaseException] = []
+
+        def blocking_fetcher():
+            fetch_entered.set()
+            if not release_fetcher.wait(5):
+                raise TimeoutError("fixture blocking fetcher release timed out")
+            raise TimeoutError("fixture simulated fetch hang")
+
+        def invoke_tick() -> None:
+            try:
+                monitor.run_tick(
+                    {"plan_hash": "forward-plan-hash"},
+                    tick_id="tick_blocking_fetcher",
+                    clients={},
+                    fetcher=blocking_fetcher,
+                )
+            except BaseException as exc:
+                errors.append(exc)
+
+        with mock.patch.object(monitor, "TICKS_DIR", tmp / "ticks"), mock.patch.object(
+            monitor, "FORWARD_STATE_PATH", tmp / "state.json"
+        ), mock.patch.object(monitor, "CLAIM_PATH", tmp / "claim.json"):
+            worker = threading.Thread(target=invoke_tick, daemon=True)
+            worker.start()
+            try:
+                self.assertTrue(fetch_entered.wait(2), "fetcher was not entered")
+                manifest_path = tmp / "ticks" / "tick_blocking_fetcher" / "manifest.json"
+                self.assertTrue(manifest_path.is_file(), "blocked fetch has no durable RUNNING manifest")
+                running = json.loads(manifest_path.read_text(encoding="utf-8"))
+                self.assertEqual(running["status"], "RUNNING")
+                self.assertEqual(running["evidence_stage"], "CLAIMED_PRE_FETCH")
+                self.assertTrue((tmp / "claim.json").is_file(), "claim disappeared while fetcher was blocked")
+            finally:
+                release_fetcher.set()
+                worker.join(5)
+
+        self.assertFalse(worker.is_alive(), "blocking fetcher test leaked its worker thread")
+        self.assertEqual(len(errors), 1)
+        self.assertIsInstance(errors[0], TimeoutError)
+        final_manifest = json.loads(
+            (tmp / "ticks" / "tick_blocking_fetcher" / "manifest.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(final_manifest["status"], "STOPPED_INCOMPLETE")
+        self.assertTrue(final_manifest["pending_retry"])
+
+    def test_release_rejects_mutated_plan_hash_or_owner_process_start(self) -> None:
+        cases = (
+            ("plan_hash", "mutated-plan-hash", "plan_hash mismatch"),
+            (
+                "owner_process_started_at_utc",
+                "2000-01-01T00:00:00+00:00",
+                "owner process start mismatch",
+            ),
+        )
+        for field, mutated_value, error_pattern in cases:
+            with self.subTest(field=field):
+                tmp = Path(tempfile.mkdtemp())
+                claim_path = tmp / "claim.json"
+
+                def mutate_claim_before_release():
+                    claim = json.loads(claim_path.read_text(encoding="utf-8"))
+                    claim[field] = mutated_value
+                    claim_path.write_text(json.dumps(claim), encoding="utf-8")
+                    return [], 0
+
+                with mock.patch.object(
+                    monitor, "TICKS_DIR", tmp / "ticks"
+                ), mock.patch.object(
+                    monitor, "FORWARD_STATE_PATH", tmp / "state.json"
+                ), mock.patch.object(
+                    monitor, "CLAIM_PATH", claim_path
+                ), mock.patch.object(
+                    monitor, "CALENDAR_PATH", self._baseline_csv(tmp)
+                ):
+                    with self.assertRaisesRegex(
+                        GlobalMarketWriterClaimError, error_pattern
+                    ):
+                        monitor.run_tick(
+                            {"plan_hash": "forward-plan-hash"},
+                            tick_id=f"tick_release_identity_{field}",
+                            clients={},
+                            fetcher=mutate_claim_before_release,
+                            now_ts=AS_OF + DAY,
+                        )
+                preserved = json.loads(claim_path.read_text(encoding="utf-8"))
+                self.assertEqual(preserved[field], mutated_value)
+                self.assertEqual(preserved["status"], "CLAIMED")
+
+    def test_terminal_manifest_persistence_exception_releases_incomplete_claim(self) -> None:
+        import listing_event_history_collector as collector_module
+
+        tmp = Path(tempfile.mkdtemp())
+        actual_write_manifest = collector_module.write_manifest
+        write_calls = 0
+
+        def fail_terminal_manifest(path, payload):
+            nonlocal write_calls
+            write_calls += 1
+            if write_calls == 1:
+                raise OSError("fixture terminal manifest persistence failed")
+            return actual_write_manifest(path, payload)
+
+        with mock.patch.object(monitor, "TICKS_DIR", tmp / "ticks"), mock.patch.object(
+            monitor, "FORWARD_STATE_PATH", tmp / "state.json"
+        ), mock.patch.object(monitor, "CLAIM_PATH", tmp / "claim.json"), mock.patch.object(
+            monitor, "CALENDAR_PATH", self._baseline_csv(tmp)
+        ), mock.patch.object(
+            collector_module, "write_manifest", side_effect=fail_terminal_manifest
+        ):
+            with self.assertRaisesRegex(
+                OSError, "fixture terminal manifest persistence failed"
+            ):
+                monitor.run_tick(
+                    {"plan_hash": "forward-plan-hash"},
+                    tick_id="tick_manifest_exception",
+                    clients={},
+                    fetcher=lambda: ([], 2),
+                    now_ts=AS_OF + DAY,
+                )
+        self.assertEqual(write_calls, 1)
+        self._assert_failed_claim_archive(tmp, "terminal_manifest_persistence_exception")
+        failure_manifest = json.loads(
+            (tmp / "ticks" / "tick_manifest_exception" / "manifest.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(failure_manifest["status"], "STOPPED_INCOMPLETE")
+        self.assertTrue(failure_manifest["pending_retry"])
+        self.assertEqual(
+            failure_manifest["stop_reason"],
+            "terminal_manifest_persistence_exception",
+        )
+
+    def test_startup_reconciles_orphan_running_manifest_to_retry(self) -> None:
+        tmp = Path(tempfile.mkdtemp())
+        tick_dir = tmp / "ticks" / "orphan_running"
+        tick_dir.mkdir(parents=True)
+        (tick_dir / "manifest.json").write_text(
+            json.dumps(
+                {
+                    "schema": "trading_mvp_slow_liquidity_listing_momentum_forward_tick_manifest_v1",
+                    "tick_id": "orphan_running",
+                    "status": "RUNNING",
+                    "started_at_utc": "2026-08-20T00:00:00Z",
+                    "plan_hash": "forward-plan-hash",
+                }
+            ),
+            encoding="utf-8",
+        )
+        with mock.patch.object(monitor, "TICKS_DIR", tmp / "ticks"):
+            result = monitor.reconcile_running_tick_manifests()
+        self.assertEqual(result["reconciled"], 1)
+        durable = json.loads((tick_dir / "manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(durable["status"], "STOPPED_INCOMPLETE")
+        self.assertEqual(durable["stop_reason"], "interrupted_running_manifest")
+        self.assertTrue(durable["pending_retry"])
+
+    def test_state_rebuild_exception_releases_incomplete_claim(self) -> None:
+        tmp = Path(tempfile.mkdtemp())
+
+        def fail_rebuild_while_claim_is_held():
+            self.assertTrue(
+                (tmp / "claim.json").is_file(),
+                "canonical claim was released before state rebuild",
+            )
+            raise RuntimeError("fixture state rebuild failed")
+
+        with mock.patch.object(monitor, "TICKS_DIR", tmp / "ticks"), mock.patch.object(
+            monitor, "FORWARD_STATE_PATH", tmp / "state.json"
+        ), mock.patch.object(monitor, "CLAIM_PATH", tmp / "claim.json"), mock.patch.object(
+            monitor, "CALENDAR_PATH", self._baseline_csv(tmp)
+        ), mock.patch.object(
+            monitor,
+            "rebuild_forward_state",
+            side_effect=fail_rebuild_while_claim_is_held,
+        ):
+            with self.assertRaisesRegex(RuntimeError, "fixture state rebuild failed"):
+                monitor.run_tick(
+                    {"plan_hash": "forward-plan-hash"},
+                    tick_id="tick_rebuild_exception",
+                    clients={},
+                    fetcher=lambda: ([], 2),
+                    now_ts=AS_OF + DAY,
+                )
+        self._assert_failed_claim_archive(tmp, "state_rebuild_exception")
 
     def test_tick_collects_new_listing_and_writes_state(self) -> None:
         now = AS_OF + 10 * DAY
@@ -172,6 +477,102 @@ class RunTickTests(unittest.TestCase):
         self.assertIn("window_in_progress", job["flags"])
         state = json.loads((tmp / "state.json").read_text(encoding="utf-8"))
         self.assertFalse(state["windows"][0]["window_complete"])
+
+    def test_all_request_errors_are_durable_retry_and_nonzero(self) -> None:
+        now = AS_OF + 10 * DAY
+        proxy_ts = ((AS_OF + DAY) // HOUR) * HOUR
+        rows = [
+            {
+                "exchange": "mexc",
+                "base": "FAIL",
+                "symbol": "FAILUSDT",
+                "listed_ts": proxy_ts,
+                "is_delisted": "false",
+            }
+        ]
+
+        def fail_collection(*_args, **_kwargs):
+            raise RuntimeError("fixture request failed")
+
+        manifest, tmp = self._run_with_collector(
+            "tick_all_error", rows, fail_collection, now
+        )
+        self.assertEqual(manifest["status"], "STOPPED_INCOMPLETE")
+        self.assertEqual(manifest["stop_reason"], "all_jobs_request_error")
+        self.assertEqual(manifest["retry_disposition"], "RETRY_NEXT_INTERVAL")
+        self.assertTrue(manifest["pending_retry"])
+        self.assertEqual(manifest["jobs_total"], 1)
+        self.assertEqual(manifest["jobs_attempted"], 1)
+        self.assertEqual(manifest["jobs_succeeded"], 0)
+        self.assertEqual(manifest["jobs_failed"], 1)
+        self.assertEqual(manifest["jobs_pending_retry"], 1)
+        self.assertEqual(manifest["jobs"][0]["job_status"], "FAILED_RETRY_NEXT_INTERVAL")
+        self.assertEqual(manifest["retry_queue"][0]["symbol"], "FAILUSDT")
+        self.assertEqual(
+            manifest["retry_queue"][0]["retry_disposition"],
+            "RETRY_NEXT_INTERVAL",
+        )
+        durable = json.loads(
+            (tmp / "ticks" / "tick_all_error" / "manifest.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(durable["retry_queue"], manifest["retry_queue"])
+        self.assertEqual((tmp / "ticks" / "tick_all_error" / "ohlcv.jsonl").read_text(), "")
+        self.assertFalse((tmp / "claim.json").exists())
+        self._assert_cli_nonzero(manifest)
+
+    def test_mixed_request_error_preserves_rows_and_retains_failed_job(self) -> None:
+        now = AS_OF + 10 * DAY
+        proxy_ts = ((AS_OF + DAY) // HOUR) * HOUR
+        rows = [
+            {
+                "exchange": "mexc",
+                "base": "GOOD",
+                "symbol": "GOODUSDT",
+                "listed_ts": proxy_ts,
+                "is_delisted": "false",
+            },
+            {
+                "exchange": "mexc",
+                "base": "FAIL",
+                "symbol": "FAILUSDT",
+                "listed_ts": proxy_ts,
+                "is_delisted": "false",
+            },
+        ]
+
+        def mixed_collection(_client, job, **_kwargs):
+            if job["symbol"] == "FAILUSDT":
+                raise RuntimeError("fixture request failed")
+            return make_bars(proxy_ts, proxy_ts + 71 * HOUR), 1
+
+        manifest, tmp = self._run_with_collector(
+            "tick_mixed_error", rows, mixed_collection, now
+        )
+        self.assertEqual(manifest["status"], "PARTIAL_RETRY_NEXT_INTERVAL")
+        self.assertEqual(manifest["stop_reason"], "partial_job_request_error")
+        self.assertEqual(manifest["retry_disposition"], "RETRY_NEXT_INTERVAL")
+        self.assertTrue(manifest["pending_retry"])
+        self.assertEqual(manifest["jobs_total"], 2)
+        self.assertEqual(manifest["jobs_attempted"], 2)
+        self.assertEqual(manifest["jobs_succeeded"], 1)
+        self.assertEqual(manifest["jobs_failed"], 1)
+        self.assertEqual(manifest["jobs_pending_retry"], 1)
+        self.assertEqual(manifest["rows_written"], 72)
+        self.assertEqual([row["symbol"] for row in manifest["retry_queue"]], ["FAILUSDT"])
+        durable_rows = (
+            tmp / "ticks" / "tick_mixed_error" / "ohlcv.jsonl"
+        ).read_text(encoding="utf-8").splitlines()
+        self.assertEqual(len(durable_rows), 72)
+        self.assertTrue(all(json.loads(row)["symbol"] == "GOODUSDT" for row in durable_rows))
+        durable_manifest = json.loads(
+            (tmp / "ticks" / "tick_mixed_error" / "manifest.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(durable_manifest["retry_queue"], manifest["retry_queue"])
+        self._assert_cli_nonzero(manifest)
 
     def test_tick_refuses_duplicate_id(self) -> None:
         now = AS_OF + 10 * DAY
@@ -250,7 +651,11 @@ class PlanModuleTests(unittest.TestCase):
         previous_path = (
             ROOT
             / "docs/plans"
-            / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260816.json"
+            / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260821-v3.json"
+        )
+        self.assertEqual(
+            hashlib.sha256(previous_path.read_bytes()).hexdigest(),
+            "b4e6b085c40e10c91cc235f186e46f52e56fc6f6d913b79f0b707172d4bc99f4",
         )
         previous = json.loads(previous_path.read_text(encoding="utf-8"))
         plan = plan_module.build_forward_monitor_plan("2026-08-17T12:45:00Z")
@@ -263,6 +668,7 @@ class PlanModuleTests(unittest.TestCase):
             rebind["supersedes_plan_file_sha256"],
             hashlib.sha256(previous_path.read_bytes()).hexdigest(),
         )
+        self.assertEqual(rebind["supersedes_plan_path"], str(previous_path))
         self.assertEqual(rebind["research_scope_changed"], False)
 
     def test_monitor_rejects_stale_implementation_binding(self) -> None:

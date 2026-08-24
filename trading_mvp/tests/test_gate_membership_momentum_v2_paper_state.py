@@ -1235,7 +1235,7 @@ class GateMembershipMomentumV2PaperStateTests(unittest.TestCase):
                 )
 
     def test_run_mvp_exposes_paper_state_routes(self) -> None:
-        wrapper = (TRADING_ROOT / "run_mvp.ps1").read_text(encoding="utf-8-sig")
+        wrapper = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))((TRADING_ROOT / "run_mvp.ps1"))
         for action in (
             "fast-edge-membership-momentum-v2-paper-approve",
             "fast-edge-membership-momentum-v2-paper-init",

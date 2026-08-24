@@ -270,7 +270,7 @@ class WeekendLiquidityWindowPlanTests(unittest.TestCase):
     def test_wrapper_is_bounded_visible_and_checks_active_gate(self) -> None:
         wrapper = Path(__file__).resolve().parents[2] / "tools" / "build_fast_first_v6_planonly.ps1"
         self.assertTrue(wrapper.exists())
-        content = wrapper.read_text(encoding="utf-8")
+        content = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(wrapper)
         self.assertIn("[int]$MaxRuntimeSec = 1200", content)
         self.assertIn("check_active_run_gate.ps1", content)
         self.assertIn("weekend_liquidity_window.py", content)

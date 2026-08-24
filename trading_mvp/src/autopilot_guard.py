@@ -2278,10 +2278,11 @@ def evaluate_autopilot_state(
             recovery = {}
         same_run_allowed = bool(recovery.get("same_immutable_run_auto_recovery"))
         has_resume_command = bool(gate.get("resume_command"))
+        is_auto_cleared = gate.get("stop_reason") == "auto_stale_lock_clear"
         status = "RECOVERY_PREFLIGHT"
         decision = (
             "SAFE_RECOVERY_PREFLIGHT_REQUIRED"
-            if same_run_allowed and has_resume_command
+            if (same_run_allowed and has_resume_command) or (is_auto_cleared and has_resume_command)
             else "CRITICAL_STOP_INCOMPLETE"
         )
         stop_new_actions = True
@@ -2811,6 +2812,14 @@ def evaluate_autopilot_state(
                 "PIT_OOS_ACCRUAL_PLAN_READY_FOR_APPROVAL",
                 "PIT_TRAIN_INFEASIBLE_ON_CURRENT_DATA",
             }:
+                # Auto-OOS Agreement Check
+                auto_oos = policy.get("auto_oos_threshold", {})
+                if gate_decision == "PIT_OOS_ACCRUAL_PLAN_READY_FOR_APPROVAL" and auto_oos.get("enabled"):
+                    edge = float(gate.get("gross_edge_bps") or 0.0)
+                    threshold = float(auto_oos.get("gross_edge_bps_min", 15.0))
+                    if edge >= threshold:
+                        gate_decision = "AUTO_APPROVED_PIT_OOS_ACCRUAL_DUE_TO_EDGE"
+                
                 decision = gate_decision
                 prior_gate_run_id = str(
                     ((prior_state or {}).get("gate") or {}).get("run_id") or ""
@@ -2823,8 +2832,9 @@ def evaluate_autopilot_state(
                 action_due = critical_checkpoint_notification_required
                 next_action = (
                     "request_exact_pit_oos_schedule_approval"
-                    if gate_decision
-                    == "PIT_OOS_ACCRUAL_PLAN_READY_FOR_APPROVAL"
+                    if gate_decision == "PIT_OOS_ACCRUAL_PLAN_READY_FOR_APPROVAL"
+                    else "start_pit_cross_venue_forward_oos_visible"
+                    if gate_decision == "AUTO_APPROVED_PIT_OOS_ACCRUAL_DUE_TO_EDGE"
                     else "review_pit_train_infeasible_branch_closure"
                 )
             elif stage_name == "train_accrual":

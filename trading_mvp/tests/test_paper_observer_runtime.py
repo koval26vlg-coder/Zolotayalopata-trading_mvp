@@ -531,9 +531,7 @@ class PaperObserverRuntimeTests(unittest.TestCase):
             self.assertFalse((root / "paper-ledger.jsonl").exists())
 
     def test_run_mvp_exposes_fixture_only_routes(self) -> None:
-        source = (REPO_ROOT / "trading_mvp" / "run_mvp.ps1").read_text(
-            encoding="utf-8-sig"
-        )
+        source = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))((REPO_ROOT / "trading_mvp" / "run_mvp.ps1"))
         self.assertIn('"fast-edge-basis-v2-paper-observer-fixture-plan"', source)
         self.assertIn('"fast-edge-basis-v2-paper-observer-fixture-run"', source)
         self.assertIn('"fast-edge-basis-v2-paper-observer-fixture-sink"', source)

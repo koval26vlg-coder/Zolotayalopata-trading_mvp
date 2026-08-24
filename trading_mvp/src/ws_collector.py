@@ -322,9 +322,140 @@ class GateWsAdapter(WsAdapter):
         return super().message_hint(stored_payload)
 
 
+class KucoinWsAdapter(WsAdapter):
+    exchange_id = "kucoin"
+    display_name = "Kucoin"
+    max_channels_per_connection = 300
+
+    @property
+    def ws_url(self) -> str:
+        import urllib.request
+        import json
+        req = urllib.request.Request("https://api.kucoin.com/api/v1/bullet-public", method="POST")
+        with urllib.request.urlopen(req, timeout=10) as response:
+            data = json.loads(response.read().decode("utf-8"))
+            token = data["data"]["token"]
+            endpoint = data["data"]["instanceServers"][0]["endpoint"]
+            return f"{endpoint}?token={token}"
+
+    def subscription_messages(
+        self,
+        symbols: list[str],
+        update_interval: str = "100ms",
+        depth_levels: int = 20,
+    ) -> list[dict[str, Any]]:
+        now = int(time.time() * 1000)
+        formatted_symbols = [f"{s.replace('_', '-')}" for s in symbols]
+        sym_str = ",".join(formatted_symbols)
+        return [
+            {
+                "id": now,
+                "type": "subscribe",
+                "topic": f"/market/ticker:{sym_str}",
+                "privateChannel": False,
+                "response": True
+            },
+            {
+                "id": now + 1,
+                "type": "subscribe",
+                "topic": f"/market/level2:{sym_str}",
+                "privateChannel": False,
+                "response": True
+            },
+            {
+                "id": now + 2,
+                "type": "subscribe",
+                "topic": f"/market/match:{sym_str}",
+                "privateChannel": False,
+                "response": True
+            }
+        ]
+
+    def heartbeat_message(self) -> dict[str, Any] | None:
+        return {"id": int(time.time() * 1000), "type": "ping"}
+
+    def message_hint(self, stored_payload: dict[str, Any]) -> dict[str, Any]:
+        data = stored_payload.get("data")
+        if isinstance(data, dict):
+            topic = str(data.get("topic") or "")
+            subject = str(data.get("subject") or "")
+            event_type = subject or data.get("type") or "json"
+            symbol = None
+            if ":" in topic:
+                symbol = topic.split(":", 1)[1].replace("-", "_")
+            return {
+                "event_type": event_type,
+                "channel": topic,
+                "symbol": symbol,
+            }
+        return super().message_hint(stored_payload)
+
+
+class BingxWsAdapter(WsAdapter):
+    exchange_id = "bingx"
+    display_name = "BingX"
+    ws_url = "wss://open-api-ws.bingx.com/market"
+
+    def subscription_messages(
+        self,
+        symbols: list[str],
+        update_interval: str = "100ms",
+        depth_levels: int = 20,
+    ) -> list[dict[str, Any]]:
+        messages = []
+        for symbol in symbols:
+            s = symbol.replace("_", "-")
+            messages.append({"id": str(time.time()), "reqType": "sub", "dataType": f"{s}@trade"})
+            messages.append({"id": str(time.time()), "reqType": "sub", "dataType": f"{s}@bookTicker"})
+            messages.append({"id": str(time.time()), "reqType": "sub", "dataType": f"{s}@depth20"})
+        return messages
+
+    def heartbeat_message(self) -> dict[str, Any] | None:
+        # BingX requires Ping/Pong. Usually sent as "Ping", responding with "Pong".
+        # But this works for json pings.
+        return None
+
+    def message_hint(self, stored_payload: dict[str, Any]) -> dict[str, Any]:
+        import gzip
+        data = stored_payload.get("data")
+        if stored_payload.get("encoding") == "base64":
+            try:
+                import base64
+                raw = base64.b64decode(data)
+                unzipped = gzip.decompress(raw)
+                payload = json.loads(unzipped.decode('utf-8'))
+                if payload.get("ping"):
+                    return {"event_type": "ping", "channel": None, "symbol": None}
+                datatype = str(payload.get("dataType") or "")
+                symbol = None
+                if "@" in datatype:
+                    symbol = datatype.split("@")[0].replace("-", "_")
+                return {
+                    "event_type": payload.get("reqType", "json"),
+                    "channel": datatype,
+                    "symbol": symbol,
+                }
+            except Exception:
+                pass
+        if isinstance(data, dict):
+            datatype = str(data.get("dataType") or "")
+            event_type = "json"
+            symbol = None
+            if "@" in datatype:
+                symbol = datatype.split("@")[0].replace("-", "_")
+            return {
+                "event_type": event_type,
+                "channel": datatype,
+                "symbol": symbol,
+            }
+        return super().message_hint(stored_payload)
+
+
 WS_ADAPTERS: dict[str, type[WsAdapter]] = {
     MexcWsAdapter.exchange_id: MexcWsAdapter,
     GateWsAdapter.exchange_id: GateWsAdapter,
+    KucoinWsAdapter.exchange_id: KucoinWsAdapter,
+    BingxWsAdapter.exchange_id: BingxWsAdapter,
 }
 
 

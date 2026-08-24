@@ -349,6 +349,7 @@ def run_ws_gap_audit(
 def run_ws_gap_audit_file(
     input_path: str | Path,
     output_path: str | Path,
+    auto_backfill: bool = False,
     **kwargs: Any,
 ) -> dict[str, Any]:
     result = run_ws_gap_audit(input_path, **kwargs)
@@ -356,6 +357,34 @@ def run_ws_gap_audit_file(
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
     result["output"] = str(target)
+    
+    if auto_backfill:
+        import subprocess
+        import sys
+        
+        # Determine paths
+        script_dir = Path(__file__).parent
+        backfiller_script = script_dir / "rest_backfiller.py"
+        backfilled_output = target.with_name(target.stem + "_backfilled.jsonl")
+        
+        print(f"Triggering auto-backfill via REST to {backfilled_output}...")
+        
+        try:
+            cmd = [
+                sys.executable,
+                str(backfiller_script),
+                "--audit-report", str(target),
+                "--output", str(backfilled_output)
+            ]
+            proc = subprocess.run(cmd, check=True, capture_output=True, text=True)
+            try:
+                backfill_result = json.loads(proc.stdout.strip().split("\n")[-1])
+                result["backfill"] = backfill_result
+            except json.JSONDecodeError:
+                result["backfill"] = {"status": "error", "message": "Could not parse backfiller output"}
+        except subprocess.CalledProcessError as e:
+            result["backfill"] = {"status": "error", "error": str(e), "stderr": e.stderr}
+
     return result
 
 
@@ -372,6 +401,7 @@ def main() -> None:
     parser.add_argument("--progress-every-lines", type=int, default=1_000_000)
     parser.add_argument("--progress-file")
     parser.add_argument("--no-progress", action="store_true")
+    parser.add_argument("--auto-backfill", action="store_true", help="Automatically download missing trades via REST")
     args = parser.parse_args()
     result = run_ws_gap_audit_file(
         args.input,
@@ -385,6 +415,7 @@ def main() -> None:
         progress_every_lines=args.progress_every_lines,
         progress=not args.no_progress,
         progress_file=args.progress_file,
+        auto_backfill=args.auto_backfill,
     )
     print(
         json.dumps(

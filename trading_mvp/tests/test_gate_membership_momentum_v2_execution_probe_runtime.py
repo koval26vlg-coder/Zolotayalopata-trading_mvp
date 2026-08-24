@@ -333,7 +333,7 @@ class GateMembershipMomentumV2ExecutionProbeRuntimeTests(unittest.TestCase):
 
     def test_run_mvp_exposes_visible_collect_and_offline_evaluate_routes(self) -> None:
         root = Path(__file__).resolve().parents[2]
-        wrapper = (root / "trading_mvp" / "run_mvp.ps1").read_text(encoding="utf-8-sig")
+        wrapper = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))((root / "trading_mvp" / "run_mvp.ps1"))
         visible = root / "tools" / "start_gate_membership_momentum_v2_execution_probe_visible.ps1"
         self.assertIn('"fast-edge-membership-momentum-v2-execution-probe-window-plan"', wrapper)
         self.assertIn('"fast-edge-membership-momentum-v2-execution-probe-collect"', wrapper)

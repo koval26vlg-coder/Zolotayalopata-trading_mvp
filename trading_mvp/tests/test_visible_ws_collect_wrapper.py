@@ -1233,7 +1233,7 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
         )
 
     def test_run_mvp_ws_collect_forwards_universe_input_path(self) -> None:
-        text = (REPO_ROOT / "trading_mvp" / "run_mvp.ps1").read_text(encoding="utf-8")
+        text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))((REPO_ROOT / "trading_mvp" / "run_mvp.ps1"))
 
         ws_collect_start = text.index('"ws-collect" {')
         ws_collect_end = text.index('"ws-normalize" {', ws_collect_start)
@@ -1243,7 +1243,7 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
         self.assertIn('"--universe", $InputPath', ws_collect_block)
 
     def test_run_mvp_python_cli_exit_codes_are_propagated(self) -> None:
-        text = (REPO_ROOT / "trading_mvp" / "run_mvp.ps1").read_text(encoding="utf-8")
+        text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))((REPO_ROOT / "trading_mvp" / "run_mvp.ps1"))
 
         for needle in (
             "function Invoke-TradingMvpCli",
@@ -2262,6 +2262,32 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
                 "trading_slow_liquidity_data_availability_preflight.ps1",
                 payload["slow_liquidity_data_availability_preflight_command"],
             )
+        elif payload.get("spot_perp_basis_collect_awaiting_approval_gate"):
+            self.assertEqual(
+                payload["primary_edge_status"],
+                "spot_perp_basis_collect_awaiting_explicit_user_approval",
+            )
+            self.assertEqual(
+                payload["primary_edge_candidate"],
+                "Spot/perp basis snapshot collect awaiting explicit user approval",
+            )
+            self.assertTrue(payload["spot_perp_basis_selected_gate"])
+            self.assertTrue(payload["requires_user_approval_for_actual_collect"])
+        elif payload.get("spot_perp_basis_probe_accepted_gate"):
+            self.assertEqual(
+                payload["primary_edge_status"],
+                "spot_perp_basis_public_probe_accepted_ready_for_collect_approval_packet",
+            )
+            self.assertEqual(
+                payload["primary_edge_candidate"],
+                "Spot/perp basis public probe accepted; build collect approval packet",
+            )
+            self.assertTrue(payload["spot_perp_basis_selected_gate"])
+            self.assertFalse(payload["requires_user_approval_for_actual_collect"])
+            self.assertIn(
+                "trading_spot_perp_basis_public_probe.ps1",
+                payload["spot_perp_basis_public_probe_after_confirmation_command"],
+            )
         elif payload.get("listing_event_history_data_quality_rejected_gate"):
             self.assertEqual(
                 payload["primary_edge_status"],
@@ -2662,6 +2688,27 @@ class VisibleWsCollectWrapperTests(unittest.TestCase):
             self.assertEqual(
                 commands["visible_collect_legacy_resolution"],
                 "slow_liquidity_regime_breakout_retest_planonly_selected_no_collect",
+            )
+        elif payload["state"].get("spot_perp_basis_collect_awaiting_approval_gate"):
+            self.assertEqual(
+                payload["decision"],
+                "SPOT_PERP_BASIS_COLLECT_AWAITING_EXPLICIT_USER_APPROVAL",
+            )
+            self.assertTrue(payload["requires_user_approval"])
+            self.assertTrue(payload["requires_user_approval_for_actual_collect"])
+            self.assertTrue(payload["state"]["spot_perp_basis_selected_gate"])
+        elif payload["state"].get("spot_perp_basis_probe_accepted_gate"):
+            self.assertEqual(
+                payload["decision"],
+                "SPOT_PERP_BASIS_PUBLIC_PROBE_ACCEPTED_READY_FOR_COLLECT_APPROVAL_PACKET",
+            )
+            self.assertTrue(payload["state"]["spot_perp_basis_selected_gate"])
+            self.assertFalse(payload["requires_user_approval"])
+            self.assertFalse(payload["requires_user_approval_for_actual_collect"])
+            self.assertIn("build_spot_perp_basis_collect_approval_packet", payload["allowed_actions"])
+            self.assertIn(
+                "trading_spot_perp_basis_public_probe.ps1",
+                commands["spot_perp_basis_public_probe_after_confirmation"],
             )
         elif payload["state"].get("spot_perp_basis_availability_awaiting_probe_gate"):
             self.assertEqual(

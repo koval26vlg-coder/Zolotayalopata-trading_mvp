@@ -522,12 +522,168 @@ def _normalize_gate_row(raw_row: dict[str, Any]) -> list[dict[str, Any]]:
     return [event]
 
 
+def _normalize_kucoin_row(raw_row: dict[str, Any]) -> list[dict[str, Any]]:
+    payload = raw_row.get("payload")
+    if not isinstance(payload, dict) or payload.get("encoding") != "json":
+        raise MarketDataClassificationError("Kucoin payload is not JSON")
+    message = payload.get("data", {})
+    if message.get("type") != "message":
+        raise MarketDataClassificationError("Kucoin data is not a data message")
+    topic = str(message.get("topic") or "")
+    data = message.get("data")
+    if not isinstance(data, dict):
+        raise MarketDataClassificationError("Kucoin data body is missing or invalid")
+    
+    symbol_dash = ""
+    if ":" in topic:
+        symbol_dash = topic.split(":", 1)[1]
+    symbol = symbol_dash.replace("-", "_").upper()
+    if not symbol:
+        raise MarketDataClassificationError("Kucoin symbol missing")
+    
+    exchange_ts = _epoch_seconds(data.get("time"))
+    
+    if topic.startswith("/market/ticker:"):
+        bid = _positive_float(data.get("bestBid"), label="Kucoin bid")
+        bid_qty = _positive_float(data.get("bestBidSize"), label="Kucoin bid_qty")
+        ask = _positive_float(data.get("bestAsk"), label="Kucoin ask")
+        ask_qty = _positive_float(data.get("bestAskSize"), label="Kucoin ask_qty")
+        if ask < bid:
+            raise MarketDataClassificationError("Kucoin ask < bid")
+        event = _base_event(raw_row, symbol, "bbo", exchange_ts)
+        event.update({
+            "channel": topic,
+            "bid_price": bid,
+            "bid_qty": bid_qty,
+            "ask_price": ask,
+            "ask_qty": ask_qty,
+            "spread_bps": _spread_bps(bid, ask),
+            "sequence": data.get("sequence"),
+        })
+        return [event]
+    
+    if topic.startswith("/market/level2:"):
+        bids = _validated_levels(data.get("bids"), label="Kucoin bids")
+        asks = _validated_levels(data.get("asks"), label="Kucoin asks")
+        event = _base_event(raw_row, symbol, "depth", exchange_ts)
+        event.update({
+            "channel": topic,
+            "depth_type": "delta",
+            "bids": bids,
+            "asks": asks,
+        })
+        return [event]
+        
+    if topic.startswith("/market/match:"):
+        price = _positive_float(data.get("price"), label="Kucoin trade price")
+        qty = _positive_float(data.get("size"), label="Kucoin trade size")
+        side = data.get("side")
+        if side not in {"buy", "sell"}:
+            raise MarketDataClassificationError("Kucoin invalid side")
+        event = _base_event(raw_row, symbol, "trade", _epoch_seconds(data.get("time")))
+        event.update({
+            "channel": topic,
+            "trade_id": data.get("tradeId"),
+            "price": price,
+            "qty": qty,
+            "side": side,
+        })
+        return [event]
+        
+    raise MarketDataClassificationError("unsupported Kucoin channel")
+
+def _normalize_bingx_row(raw_row: dict[str, Any]) -> list[dict[str, Any]]:
+    import gzip, base64
+    payload = raw_row.get("payload")
+    data_dict = None
+    if isinstance(payload, dict) and payload.get("encoding") == "base64":
+        try:
+            raw = base64.b64decode(payload["data"])
+            unzipped = gzip.decompress(raw)
+            data_dict = json.loads(unzipped.decode('utf-8'))
+        except Exception:
+            pass
+    if data_dict is None and isinstance(payload, dict) and payload.get("encoding") == "json":
+        data_dict = payload.get("data")
+    
+    if not isinstance(data_dict, dict):
+        raise MarketDataClassificationError("BingX payload not parseable")
+    
+    datatype = str(data_dict.get("dataType") or "")
+    if "@" not in datatype:
+        raise MarketDataClassificationError("BingX missing datatype")
+        
+    symbol_dash, channel = datatype.split("@", 1)
+    symbol = symbol_dash.replace("-", "_").upper()
+    data = data_dict.get("data")
+    
+    if channel == "bookTicker":
+        if not isinstance(data, dict):
+            raise MarketDataClassificationError("BingX bbo missing data object")
+        exchange_ts = _epoch_seconds(data.get("T"))
+        bid = _positive_float(data.get("b"), label="Bingx bid")
+        bid_qty = _positive_float(data.get("B"), label="Bingx bid qty")
+        ask = _positive_float(data.get("a"), label="Bingx ask")
+        ask_qty = _positive_float(data.get("A"), label="Bingx ask qty")
+        if ask < bid:
+            raise MarketDataClassificationError("Bingx ask < bid")
+        event = _base_event(raw_row, symbol, "bbo", exchange_ts)
+        event.update({
+            "channel": datatype,
+            "bid_price": bid,
+            "bid_qty": bid_qty,
+            "ask_price": ask,
+            "ask_qty": ask_qty,
+            "spread_bps": _spread_bps(bid, ask),
+        })
+        return [event]
+        
+    if channel.startswith("depth"):
+        if not isinstance(data, dict):
+            raise MarketDataClassificationError("BingX depth missing data object")
+        bids = _validated_levels(data.get("bids"), label="BingX bids")
+        asks = _validated_levels(data.get("asks"), label="BingX asks")
+        exchange_ts = _epoch_seconds(data_dict.get("timestamp"))
+        event = _base_event(raw_row, symbol, "depth", exchange_ts)
+        event.update({
+            "channel": datatype,
+            "depth_type": "snapshot",
+            "bids": bids,
+            "asks": asks,
+        })
+        return [event]
+        
+    if channel == "trade":
+        if not isinstance(data, list):
+            raise MarketDataClassificationError("BingX trade missing data list")
+        events = []
+        for item in data:
+            price = _positive_float(item.get("p"), label="BingX trade p")
+            qty = _positive_float(item.get("q"), label="BingX trade q")
+            side = "sell" if item.get("m") else "buy"
+            event = _base_event(raw_row, symbol, "trade", _epoch_seconds(item.get("T")))
+            event.update({
+                "channel": datatype,
+                "trade_id": item.get("t") or item.get("id"),
+                "price": price,
+                "qty": qty,
+                "side": side,
+            })
+            events.append(event)
+        return events
+
+    raise MarketDataClassificationError(f"unsupported BingX channel {channel}")
+
 def normalize_ws_row(raw_row: dict[str, Any]) -> list[dict[str, Any]]:
     exchange = str(raw_row.get("exchange") or "").lower()
     if exchange == "mexc":
         return _normalize_mexc_row(raw_row)
     if exchange == "gateio":
         return _normalize_gate_row(raw_row)
+    if exchange == "kucoin":
+        return _normalize_kucoin_row(raw_row)
+    if exchange == "bingx":
+        return _normalize_bingx_row(raw_row)
     return []
 
 

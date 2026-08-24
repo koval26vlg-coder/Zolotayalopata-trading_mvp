@@ -25,10 +25,37 @@ FORWARD_PLAN_PATH = monitor.PLAN_PATH
 PREVIOUS_V2_PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260817-v2.json"
+    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260824-v5.json"
 )
-PREVIOUS_V2_PLAN_HASH = "d98d402fb08065bef58859522b938ec064b2bc4a223f269aa0218cce502e5afb"
-PREVIOUS_V2_PLAN_FILE_SHA256 = "33da4a8bc9ece1f43055dbb833afa49f068328f4c192bdcad690a7421968c0ee"
+PREVIOUS_V2_PLAN_HASH = "8face1d1ad40043782dafdbdfe7a9bc162248c701bcc9eedb2c4a4a15f5fd8eb"
+PREVIOUS_V2_PLAN_FILE_SHA256 = "b801918d9dbb63c8d3635dc0a38b885dad8b0125e234dfbd1ad9a49fe604bcd6"
+PREVIOUS_EXPANSION_PLAN_PATH = (
+    REPO_ROOT
+    / "docs/plans"
+    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260821-v2.json"
+)
+PREVIOUS_EXPANSION_PLAN_HASH = "3e3d7ffe8a58bf70263b349644663054893d77e6b7a02c4e5b4fca04208a0b0c"
+PREVIOUS_EXPANSION_PLAN_FILE_SHA256 = "0becc5ef47cfe03d5f2fcea94ef30a24668354fc238c3864db3f8b011ed40128"
+BATCH1_RECEIPT_PATH = (
+    REPO_ROOT
+    / "docs/agent-log"
+    / "listing-strategy-control-plane-batch1-readiness-20260821.json"
+)
+BATCH1_RECEIPT_FILE_SHA256 = "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+ADAPTIVE_CADENCE = {
+    "policy_version": "adaptive_event_proximity_v1",
+    "scheduler_wake_interval_sec": 300,
+    "search_interval_sec": 21600,
+    "soon_interval_sec": 10800,
+    "confirmed_interval_sec": 3600,
+    "scheduled_interval_sec": 300,
+    "soon_horizon_sec": 259200,
+    "scheduled_horizon_sec": 86400,
+    "exact_timestamp_required_for_scheduled": True,
+    "proxy_cannot_escalate_to_confirmed": True,
+    "collector_runs_only_when_due": True,
+    "terminal_event_returns_to_search": True,
+}
 
 
 class ExpansionPlanError(ValueError):
@@ -76,6 +103,25 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
     _require(all(item.get("status") == "PASS" for item in preflight.get("venues") or []), "not all expansion venues passed preflight")
     _require(preflight.get("receipt_hash") == preflight_hash(preflight), "preflight receipt hash mismatch")
     parent_v2 = _validate_parent_v2()
+    _require(PREVIOUS_EXPANSION_PLAN_PATH.is_file(), "previous expansion plan missing")
+    _require(
+        _sha256_file(PREVIOUS_EXPANSION_PLAN_PATH)
+        == PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
+        "previous expansion plan file sha mismatch",
+    )
+    previous_expansion = json.loads(
+        PREVIOUS_EXPANSION_PLAN_PATH.read_text(encoding="utf-8")
+    )
+    _require(
+        previous_expansion.get("plan_hash") == PREVIOUS_EXPANSION_PLAN_HASH
+        and previous_expansion.get("plan_hash") == canonical_hash(previous_expansion),
+        "previous expansion plan hash mismatch",
+    )
+    _require(BATCH1_RECEIPT_PATH.is_file(), "Batch 1 readiness receipt missing")
+    _require(
+        _sha256_file(BATCH1_RECEIPT_PATH) == BATCH1_RECEIPT_FILE_SHA256,
+        "Batch 1 readiness receipt sha mismatch",
+    )
     implementation_paths = {
         "expansion_adapter": REPO_ROOT / "trading_mvp/src/listing_momentum_exchange_expansion.py",
         "expansion_monitor": REPO_ROOT / "trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_monitor.py",
@@ -84,8 +130,23 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
         "automation_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_automation_visible.ps1",
         "expansion_plan_generator": Path(__file__).resolve(),
     }
+    previous_rows = {
+        str(item.get("role") or ""): item
+        for item in (previous_expansion.get("implementation") or {}).get("files") or []
+    }
     implementation = [
-        {"role": role, "path": str(path), "sha256": _sha256_file(path)}
+        {
+            "role": role,
+            "path": str(path),
+            "sha256": _sha256_file(path),
+            "provenance": {
+                "kind": "technical_rebind_from_superseded_plan_row",
+                "superseded_sha256": previous_rows[role]["sha256"],
+                "superseded_plan_hash": PREVIOUS_EXPANSION_PLAN_HASH,
+                "superseded_plan_file_sha256": PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
+                "batch1_readiness_receipt_sha256": BATCH1_RECEIPT_FILE_SHA256,
+            },
+        }
         for role, path in implementation_paths.items()
     ]
     baseline_ts = _baseline_ts(preflight["generated_at_utc"])
@@ -126,7 +187,26 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
             "does not expose a trustworthy listing timestamp. Do not mix "
             "this namespace with the immutable MEXC/Gate v2 sample."
         ),
+        "adaptive_cadence": ADAPTIVE_CADENCE,
         "source_bindings": {
+            "technical_rebind": {
+                "kind": "listing_strategy_control_plane_batch2_p1_mutex_hash_rebind",
+                "supersedes_plan_id": previous_expansion.get("plan_id"),
+                "supersedes_plan_hash": PREVIOUS_EXPANSION_PLAN_HASH,
+                "supersedes_plan_file_sha256": PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
+                "supersedes_plan_path": str(PREVIOUS_EXPANSION_PLAN_PATH),
+                "research_scope_changed": False,
+                "reason": (
+                    "Rebind the current-run transaction mutex fix and current "
+                    "launcher identities without changing venue, universe, "
+                    "signal, cost, risk, cadence or acceptance contracts."
+                ),
+            },
+            "control_plane_readiness_receipt": {
+                "path": str(BATCH1_RECEIPT_PATH),
+                "file_sha256": BATCH1_RECEIPT_FILE_SHA256,
+                "status": "READY_FOR_PLANONLY_REBIND_NOT_ACTIVATED",
+            },
             "preflight": {
                 "path": str(DEFAULT_PREFLIGHT_PATH),
                 "file_sha256": _sha256_file(DEFAULT_PREFLIGHT_PATH),
@@ -143,7 +223,7 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
         "implementation": {"files": implementation},
         "tick": {
             "run_kind": "repeatable_bounded_visible_tick",
-            "cadence_recommendation": "manual 'продолжай' или scheduler; не чаще 1 тика в 3 часа",
+            "cadence_recommendation": "adaptive: search 6h, candidate 3h, official confirmation 1h, exact official time within 24h 5m; scheduler wake 5m and no-op when not due",
             "max_runtime_sec": monitor.MAX_RUNTIME_SEC,
             "max_new_listings_per_tick": monitor.MAX_NEW_LISTINGS_PER_TICK,
             "effective_page_sizes": dict(monitor.EFFECTIVE_PAGE_SIZES),
@@ -218,6 +298,57 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
     _require(plan.get("source_bindings", {}).get("parent_v2", {}).get("parallel_immutable") is True, "v2 parallel binding")
     _require(plan.get("guard_contract", {}).get("v2_namespace_must_remain_untouched") is True, "v2 isolation guard")
     _require(plan.get("acceptance_policy", {}).get("acceptance_decision") == "NONE_ACCRUAL_ONLY", "acceptance policy")
+    rebind = (plan.get("source_bindings") or {}).get("technical_rebind") or {}
+    _require(
+        rebind.get("supersedes_plan_hash") == PREVIOUS_EXPANSION_PLAN_HASH
+        and rebind.get("supersedes_plan_file_sha256")
+        == PREVIOUS_EXPANSION_PLAN_FILE_SHA256
+        and rebind.get("research_scope_changed") is False,
+        "technical rebind provenance",
+    )
+    receipt = (plan.get("source_bindings") or {}).get(
+        "control_plane_readiness_receipt"
+    ) or {}
+    _require(
+        BATCH1_RECEIPT_PATH.is_file()
+        and _sha256_file(BATCH1_RECEIPT_PATH) == BATCH1_RECEIPT_FILE_SHA256,
+        "Batch 1 readiness receipt",
+    )
+    _require(
+        receipt.get("path") == str(BATCH1_RECEIPT_PATH)
+        and receipt.get("file_sha256") == BATCH1_RECEIPT_FILE_SHA256
+        and receipt.get("status") == "READY_FOR_PLANONLY_REBIND_NOT_ACTIVATED",
+        "Batch 1 readiness receipt binding",
+    )
+    expected_paths = {
+        "expansion_adapter": REPO_ROOT / "trading_mvp/src/listing_momentum_exchange_expansion.py",
+        "expansion_monitor": REPO_ROOT / "trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_monitor.py",
+        "preflight_launcher": REPO_ROOT / "tools/start_listing_momentum_exchange_expansion_preflight_visible.ps1",
+        "visible_tick_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_expansion_tick_visible.ps1",
+        "automation_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_automation_visible.ps1",
+        "expansion_plan_generator": Path(__file__).resolve(),
+    }
+    current_rows = {
+        str(item.get("role") or ""): item
+        for item in (plan.get("implementation") or {}).get("files") or []
+    }
+    previous_payload = json.loads(
+        PREVIOUS_EXPANSION_PLAN_PATH.read_text(encoding="utf-8")
+    )
+    previous_rows = {
+        str(item.get("role") or ""): item
+        for item in (previous_payload.get("implementation") or {}).get("files") or []
+    }
+    _require(set(current_rows) == set(expected_paths), "implementation role set")
+    for role, path in expected_paths.items():
+        row = current_rows[role]
+        _require(Path(str(row.get("path") or "")).resolve() == path.resolve(), f"implementation path: {role}")
+        _require(row.get("sha256") == _sha256_file(path), f"implementation sha256: {role}")
+        _require(
+            (row.get("provenance") or {}).get("superseded_sha256")
+            == previous_rows[role]["sha256"],
+            f"implementation provenance: {role}",
+        )
 
 
 def main(argv: list[str] | None = None) -> int:

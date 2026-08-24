@@ -72,7 +72,7 @@ class SlowLiquidityReplayV1Tests(unittest.TestCase):
             census = root / "census.json"
             fixed = root / "fixed_v1.json"
             output = root / "replay.json"
-            row = candle("mexc", "AAA", "AAAUSDT", 3600, 100.0, 104.0, 99.0, 103.0)
+            row = candle("mexc", "AAA", "AAAUSDT", 3600, 100.0, 104.0, 99.5, 103.0)
             history.write_text(json.dumps(row) + "\n", encoding="utf-8")
             manifest.write_text(json.dumps({"final": True, "run_id": "fixture", "rows": 1, "ohlcv_rows": 1}), encoding="utf-8")
             census.write_text(
@@ -117,8 +117,8 @@ class SlowLiquidityReplayV1Tests(unittest.TestCase):
             fixed = root / "fixed_v1.json"
             output = root / "replay.json"
             rows = [
-                candle("mexc", "AAA", "AAAUSDT", 3600, 100.0, 104.0, 99.0, 103.0),
-                candle("gateio", "BBB", "BBB_USDT", 7200, 100.0, 104.0, 99.0, 103.0),
+                candle("mexc", "AAA", "AAAUSDT", 3600, 100.0, 104.0, 99.5, 103.0),
+                candle("gateio", "BBB", "BBB_USDT", 7200, 100.0, 104.0, 99.5, 103.0),
             ]
             history.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
             manifest.write_text(json.dumps({"final": True, "run_id": "fixture", "rows": len(rows), "ohlcv_rows": len(rows)}), encoding="utf-8")
@@ -188,7 +188,7 @@ class SlowLiquidityReplayV1Tests(unittest.TestCase):
             census = root / "census.json"
             fixed = root / "fixed_v1.json"
             output = root / "replay.json"
-            row = candle("mexc", "AAA", "AAAUSDT", 3600, 100.0, 104.0, 99.0, 103.0)
+            row = candle("mexc", "AAA", "AAAUSDT", 3600, 100.0, 104.0, 99.5, 103.0)
             history.write_text(json.dumps(row) + "\n", encoding="utf-8")
             manifest.write_text(json.dumps({"final": True, "run_id": "fixture", "rows": 1, "ohlcv_rows": 1}), encoding="utf-8")
             census.write_text(
@@ -242,7 +242,7 @@ class SlowLiquidityReplayV1Tests(unittest.TestCase):
         router = REPO_ROOT / "tools" / "trading_next_goal_step.ps1"
         for path in (wrapper, router):
             self.assertTrue(path.exists())
-        wrapper_text = wrapper.read_text(encoding="utf-8")
+        wrapper_text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(wrapper)
         for needle in (
             "check_active_run_gate.ps1",
             "BLOCKED_BY_ACTIVE_RUN_GATE",

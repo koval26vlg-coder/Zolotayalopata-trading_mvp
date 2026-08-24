@@ -225,7 +225,7 @@ class GateHistoricalMembershipV3Tests(unittest.TestCase):
 class GateHistoricalMembershipV3WrapperTests(unittest.TestCase):
     def test_run_mvp_exposes_plan_and_fail_closed_visible_probe_route(self) -> None:
         wrapper = Path(__file__).resolve().parents[1] / "run_mvp.ps1"
-        text = wrapper.read_text(encoding="utf-8-sig")
+        text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(wrapper)
         plan_start = text.index('"fast-edge-membership-v3-source-plan" {')
         probe_start = text.index('"fast-edge-membership-v3-source-probe" {', plan_start)
         history_start = text.index('"fast-edge-membership-history-plan" {', probe_start)

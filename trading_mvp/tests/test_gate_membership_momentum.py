@@ -296,7 +296,7 @@ class GateMembershipMomentumTrainTests(unittest.TestCase):
 
 class GateMembershipMomentumPowerShellWiringTests(unittest.TestCase):
     def test_run_mvp_wires_bounded_offline_train_plan_and_evaluator(self) -> None:
-        script = (REPO_ROOT / "trading_mvp" / "run_mvp.ps1").read_text(encoding="utf-8-sig")
+        script = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))((REPO_ROOT / "trading_mvp" / "run_mvp.ps1"))
 
         self.assertIn('"fast-edge-membership-momentum-train-plan"', script)
         self.assertIn('"fast-edge-membership-momentum-train"', script)

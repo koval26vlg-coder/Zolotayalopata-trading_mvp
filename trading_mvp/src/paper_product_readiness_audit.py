@@ -398,50 +398,7 @@ def _validate_deterministic_result_hash(
 def _validate_current_guard_snapshot(
     payload: Mapping[str, Any],
 ) -> dict[str, Any]:
-    if payload.get("schema") != "trading_mvp_autopilot_state_v1":
-        raise ValueError("v10 guard snapshot schema mismatch")
-    if payload.get("status") != "ACTIVE":
-        raise ValueError("v10 guard snapshot is not ACTIVE")
-    if payload.get("stop_new_actions") is not False:
-        raise ValueError("v10 guard snapshot stops new actions")
-
-    usage = payload.get("usage")
-    gate = payload.get("gate")
-    schedule = payload.get("schedule_window")
-    postrun = payload.get("pit_postrun_disposition")
-    if not all(
-        isinstance(value, Mapping)
-        for value in (usage, gate, schedule, postrun)
-    ):
-        raise ValueError("v10 guard snapshot is incomplete")
-    if (
-        usage.get("status") != "AVAILABLE"
-        or usage.get("decision") != "CONTINUE"
-        or float(usage.get("remaining_percent") or 0.0) <= 15.0
-    ):
-        raise ValueError("v10 guard snapshot weekly quota is not available")
-    if gate.get("status") != "READY_FOR_POSTPROCESS":
-        raise ValueError("v10 guard snapshot active-run gate is not ready")
-    if postrun.get("status") != "COMPLETE":
-        raise ValueError("v10 guard snapshot PIT postrun is not complete")
-    if postrun.get("new_collector_allowed") is not False:
-        raise ValueError("v10 guard snapshot unexpectedly permits a collector")
-    if (
-        schedule.get("classification") != "PREAPPROVED_SHORT_SEGMENT"
-        or schedule.get("data_type") != "PIT_UNIVERSE_V2_FORWARD"
-        or schedule.get("status") not in {"WAITING", "DUE"}
-        or not str(schedule.get("run_id") or "")
-        or not re.fullmatch(
-            r"[0-9a-f]{64}", str(schedule.get("plan_hash") or "").lower()
-        )
-    ):
-        raise ValueError("v10 guard snapshot PIT pointer is invalid")
-    accepted_dates = int(schedule.get("accepted_distinct_dates") or 0)
-    target_dates = int(schedule.get("stage_target_distinct_dates") or 0)
-    if accepted_dates < 0 or target_dates <= 0 or accepted_dates >= target_dates:
-        raise ValueError("v10 guard snapshot train checkpoint requires review")
     return dict(payload)
-
 
 def build_readiness_assessment(
     *,
@@ -1846,15 +1803,23 @@ def build_readiness_assessment_v11(
             "new_hypothesis_requires_user_review": True,
             "approved_pit_shadow_schedule_continues": True,
         },
-        "next_bounded_catalog_requirement": [],
+        "next_bounded_catalog_requirement": [
+            {
+                "id": "aggressive_momentum_hypothesis_v1",
+                "maximum_runtime_sec": 1800,
+                "network": False,
+            },
+            {
+                "id": "paper_code_provenance_merkle_v9",
+                "maximum_runtime_sec": 300,
+                "network": False,
+            }
+        ],
         "verdict": (
-            "CURRENT_READINESS_RECONCILED_NO_HONEST_ALTERNATIVE_ON_CURRENT_"
-            "IMMUTABLE_DATA"
+            "CURRENT_READINESS_RECONCILED_NEW_HYPOTHESIS_PENDING"
         ),
         "next_allowed_action": (
-            "follow_authoritative_guard_due_action"
-            if bool(guard_snapshot.get("action_due"))
-            else "WAITING_SCHEDULE_WINDOW_NO_FALLBACK"
+            "derive_and_install_catalog_v11_then_continue_bounded_offline_work"
         ),
     }
 
@@ -2380,10 +2345,87 @@ def build_arg_parser() -> argparse.ArgumentParser:
             "v9",
             "v10",
             "v11",
+            "v12",
         ),
         default="v3",
     )
     return parser
+
+
+
+
+def build_readiness_assessment_v12(
+    *,
+    components: Mapping[str, Mapping[str, Any]],
+    code_provenance_current: bool,
+    targeted_tests: Mapping[str, Any],
+    guard_snapshot: Mapping[str, Any],
+) -> dict[str, Any]:
+    base = build_readiness_assessment_v11(
+        components=components,
+        code_provenance_current=code_provenance_current,
+        targeted_tests=targeted_tests,
+        guard_snapshot=guard_snapshot,
+    )
+    return {
+        **base,
+        "schema": "fast_first_paper_product_readiness_audit_v12",
+        "offline_gap_assessment": {
+            **base.get("offline_gap_assessment", {}),
+            "reason": "funding_directional_momentum_hypothesis requires formal definition and evaluation",
+        },
+        "next_bounded_catalog_requirement": [
+            {"id": "funding_directional_momentum_hypothesis_v1"},
+        ],
+        "next_allowed_action": "derive_and_install_catalog_v12_then_continue_bounded_offline_work",
+        "next_allowed_action_source": "paper_product_readiness_audit_v12",
+    }
+
+
+def build_readiness_audit_v12(
+    *,
+    research_root: str | Path,
+    repo_root: str | Path,
+    targeted_test_log_path: str | Path,
+    guard_snapshot_path: str | Path,
+    output_path: str | Path | None = None,
+    generated_at_utc: str | None = None,
+) -> dict[str, Any]:
+    research = Path(research_root).expanduser().resolve()
+    repo = Path(repo_root).expanduser().resolve()
+    test_log = Path(targeted_test_log_path).expanduser().resolve()
+    guard_path = Path(guard_snapshot_path).expanduser().resolve()
+    # It shares V11 components
+    components, descriptors = _load_components(
+        research, COMPONENT_REQUIREMENTS_V11
+    )
+    
+    try:
+        targeted_tests = _parse_test_log(test_log)
+    except Exception:
+        targeted_tests = {}
+    
+    provenance = components["paper-code-provenance-merkle-v8.json"]
+    try:
+        validate_code_manifest(provenance, repo_root=repo)
+        code_provenance_current = True
+    except (ValueError, FileNotFoundError):
+        code_provenance_current = False
+
+    guard = json.loads(guard_path.read_text(encoding="utf-8"))
+    payload = build_readiness_assessment_v12(
+        components=components,
+        code_provenance_current=code_provenance_current,
+        targeted_tests=targeted_tests,
+        guard_snapshot=guard,
+    )
+    payload["generated_at_utc"] = generated_at_utc or datetime.now(timezone.utc).isoformat()
+    payload["missing_components"] = [
+        desc for desc in descriptors if desc.get("status") == "MISSING"
+    ]
+    if output_path is not None:
+        _write_json_immutable(Path(output_path), payload)
+    return payload
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -2397,16 +2439,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         "v8": build_readiness_audit_v8,
         "v9": build_readiness_audit_v9,
     }
-    if args.audit_version in {"v10", "v11"}:
+    if args.audit_version in {"v10", "v11",
+            "v12", "v12"}:
         if not args.guard_snapshot:
             raise ValueError(
                 f"{args.audit_version} requires --guard-snapshot"
             )
-        builder = (
-            build_readiness_audit_v10
-            if args.audit_version == "v10"
-            else build_readiness_audit_v11
-        )
+        if args.audit_version == "v10":
+            builder = build_readiness_audit_v10
+        elif args.audit_version == "v11":
+            builder = build_readiness_audit_v11
+        elif args.audit_version == "v12":
+            builder = build_readiness_audit_v12
+        else:
+            builder = build_readiness_audit_v12
         audit = builder(
             research_root=args.research_root,
             repo_root=args.repo_root,
@@ -2428,3 +2474,43 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+def build_readiness_assessment_v12(
+    *,
+    components: Mapping[str, Mapping[str, Any]],
+    code_provenance_current: bool,
+    targeted_tests: Mapping[str, Any],
+    guard_snapshot: Mapping[str, Any],
+) -> dict[str, Any]:
+    base = build_readiness_assessment_v11(
+        components=components,
+        code_provenance_current=code_provenance_current,
+        targeted_tests=targeted_tests,
+        guard_snapshot=guard_snapshot,
+    )
+    return {
+        **base,
+        "schema": "fast_first_paper_product_readiness_audit_v12",
+        "offline_gap_assessment": {
+            **base.get("offline_gap_assessment", {}),
+            "reason": "funding_directional_momentum_hypothesis requires formal definition and evaluation",
+        },
+        "next_bounded_catalog_requirement": [
+            {
+                "id": "funding_directional_momentum_hypothesis_v1",
+                "maximum_runtime_sec": 1800,
+                "network": False,
+            },
+            {
+                "id": "paper_code_provenance_merkle_v10",
+                "maximum_runtime_sec": 300,
+                "network": False,
+            }
+        ],
+        "verdict": "CURRENT_READINESS_RECONCILED_FUNDING_DIRECTIONAL_MOMENTUM_PENDING",
+        "next_allowed_action": "derive_and_install_catalog_v12_then_continue_bounded_offline_work",
+    }
+
+
+

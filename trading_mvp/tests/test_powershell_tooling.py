@@ -10,9 +10,12 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 class RunMvpVenueCostsWiringTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.script = (REPO_ROOT / "trading_mvp" / "run_mvp.ps1").read_text(
-            encoding="utf-8-sig"
-        )
+        run_mvp = (REPO_ROOT / "trading_mvp" / "run_mvp.ps1").read_text(encoding="utf-8-sig")
+        ws = (REPO_ROOT / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig")
+        signals = (REPO_ROOT / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig")
+        funding = (REPO_ROOT / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig")
+        gate = (REPO_ROOT / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig")
+        cls.script = ws + "\n" + signals + "\n" + funding + "\n" + run_mvp + "\n" + gate
 
     def _case(self, name: str, next_name: str) -> str:
         start = self.script.index(f'"{name}" {{')

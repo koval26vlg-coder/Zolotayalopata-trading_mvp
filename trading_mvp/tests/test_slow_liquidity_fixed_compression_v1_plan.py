@@ -88,7 +88,7 @@ class SlowLiquidityFixedCompressionV1PlanTests(unittest.TestCase):
 
     def test_wrapper_is_visible_gate_bound_and_non_live(self) -> None:
         wrapper = REPO_ROOT / "tools" / "trading_slow_liquidity_fixed_compression_v1_planonly.ps1"
-        text = wrapper.read_text(encoding="utf-8")
+        text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(wrapper)
         for needle in (
             "check_active_run_gate.ps1",
             "BLOCKED_BY_ACTIVE_RUN_GATE",

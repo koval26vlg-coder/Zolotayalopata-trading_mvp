@@ -24,6 +24,9 @@ class EventSliceConfig:
     max_pre_spread_bps: tuple[float, ...] = (0.0, 1.0, 3.0, 6.0)
     max_abs_basis_bps: tuple[float, ...] = (0.0, 5.0, 10.0, 25.0, 100.0)
     min_trade_notional_quote: tuple[float, ...] = (0.0, 2500.0, 5000.0, 10000.0)
+    min_orderbook_imbalance: tuple[float, ...] = (-1.0, -0.5, 0.0, 0.5, 1.0)
+    max_trade_flow_imbalance_1m: tuple[float, ...] = (0.0, 1.0, 5.0)
+    funding_alignment: tuple[str, ...] = ("any", "aligned", "contrarian")
     top_n: int = 50
 
 
@@ -92,49 +95,60 @@ def _generate_slices(
     sides: list[str],
     cfg: EventSliceConfig,
 ) -> list[dict[str, Any]]:
+    import itertools
     results: list[dict[str, Any]] = []
     indexed_events = list(enumerate(events))
     seen: set[tuple[Any, ...]] = set()
     market_options: list[str | None] = [None, *markets]
     side_options: list[str | None] = [None, *sides]
-    for market in market_options:
-        for side in side_options:
-            for min_sweep in _unique_floats(cfg.min_sweep_intensity_bps):
-                for max_reclaim in _unique_floats(cfg.max_time_to_reclaim_sec):
-                    for max_spread in _unique_floats(cfg.max_pre_spread_bps):
-                        for max_basis in _unique_floats(cfg.max_abs_basis_bps):
-                            for min_notional in _unique_floats(cfg.min_trade_notional_quote):
-                                key = (market, side, min_sweep, max_reclaim, max_spread, max_basis, min_notional)
-                                if key in seen:
-                                    continue
-                                seen.add(key)
-                                filtered_pairs = [
-                                    (idx, event)
-                                    for idx, event in indexed_events
-                                    if _event_matches(event, market, side, min_sweep, max_reclaim, max_spread, max_basis, min_notional)
-                                ]
-                                if not filtered_pairs:
-                                    continue
-                                filtered = [event for _, event in filtered_pairs]
-                                event_signature = tuple(idx for idx, _ in filtered_pairs)
-                                results.append(
-                                    _summarize_slice(
-                                        filtered,
-                                        cfg,
-                                        {
-                                            "market": market or "*",
-                                            "expected_side": side or "*",
-                                            "min_sweep_intensity_bps": min_sweep,
-                                            "max_time_to_reclaim_sec": max_reclaim,
-                                            "max_pre_spread_bps": max_spread,
-                                            "max_abs_basis_bps": max_basis,
-                                            "min_trade_notional_quote": min_notional,
-                                        },
-                                        event_signature,
-                                    )
-                                )
+    
+    param_grid = itertools.product(
+        market_options,
+        side_options,
+        _unique_floats(cfg.min_sweep_intensity_bps),
+        _unique_floats(cfg.max_time_to_reclaim_sec),
+        _unique_floats(cfg.max_pre_spread_bps),
+        _unique_floats(cfg.max_abs_basis_bps),
+        _unique_floats(cfg.min_trade_notional_quote),
+        _unique_floats(cfg.min_orderbook_imbalance),
+        _unique_floats(cfg.max_trade_flow_imbalance_1m),
+        cfg.funding_alignment,
+    )
+    
+    for (market, side, min_sweep, max_reclaim, max_spread, max_basis, min_notional, min_ob_imb, max_flow_imb, f_align) in param_grid:
+        key = (market, side, min_sweep, max_reclaim, max_spread, max_basis, min_notional, min_ob_imb, max_flow_imb, f_align)
+        if key in seen:
+            continue
+        seen.add(key)
+        filtered_pairs = [
+            (idx, event)
+            for idx, event in indexed_events
+            if _event_matches(event, market, side, min_sweep, max_reclaim, max_spread, max_basis, min_notional, min_ob_imb, max_flow_imb, f_align)
+        ]
+        if not filtered_pairs:
+            continue
+        filtered = [event for _, event in filtered_pairs]
+        event_signature = tuple(idx for idx, _ in filtered_pairs)
+        results.append(
+            _summarize_slice(
+                filtered,
+                cfg,
+                {
+                    "market": market or "*",
+                    "expected_side": side or "*",
+                    "min_sweep_intensity_bps": min_sweep,
+                    "max_time_to_reclaim_sec": max_reclaim,
+                    "max_pre_spread_bps": max_spread,
+                    "max_abs_basis_bps": max_basis,
+                    "min_trade_notional_quote": min_notional,
+                    "min_orderbook_imbalance": min_ob_imb,
+                    "max_trade_flow_imbalance_1m": max_flow_imb,
+                    "funding_alignment": f_align,
+                },
+                event_signature,
+            )
+        )
     return results
-
 
 def _event_matches(
     event: dict[str, Any],
@@ -145,6 +159,9 @@ def _event_matches(
     max_spread: float,
     max_basis: float,
     min_notional: float,
+    min_ob_imb: float,
+    max_flow_imb: float,
+    f_align: str,
 ) -> bool:
     if market is not None and event.get("market") != market:
         return False
@@ -166,6 +183,28 @@ def _event_matches(
             return False
     if min_notional > 0 and (_as_float(event.get("trade_notional_quote")) or 0.0) < min_notional:
         return False
+    if min_ob_imb > -1.0:
+        ob_imb = _as_float(event.get("orderbook_imbalance"))
+        if ob_imb is None or ob_imb < min_ob_imb:
+            return False
+    if max_flow_imb > 0.0:
+        flow_imb = _as_float(event.get("trade_flow_imbalance_1m"))
+        if flow_imb is None or abs(flow_imb) > max_flow_imb:
+            return False
+            
+    if f_align != "any":
+        fr = _as_float(event.get("funding_rate"))
+        if fr is None or fr == 0.0:
+            return False
+        expected_side = event.get("expected_side")
+        # Positive funding: longs pay shorts -> crowd is long.
+        # Aligned: go long when funding > 0, short when funding < 0
+        is_aligned = (fr > 0 and str(expected_side).lower() == "long") or (fr < 0 and str(expected_side).lower() == "short")
+        if f_align == "aligned" and not is_aligned:
+            return False
+        if f_align == "contrarian" and is_aligned:
+            return False
+            
     return True
 
 
@@ -251,7 +290,7 @@ def _dedupe_equivalent_slices(slices: list[dict[str, Any]]) -> list[dict[str, An
 
 
 def _dedupe_preference(filters: dict[str, Any]) -> int:
-    category_specificity = int(filters.get("market") != "*") + int(filters.get("expected_side") != "*")
+    category_specificity = int(filters.get("market") != "*") + int(filters.get("expected_side") != "*") + int(filters.get("funding_alignment") != "any")
     numeric_active = sum(
         1
         for key in (

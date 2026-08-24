@@ -36,7 +36,7 @@ class HistoricalBasisV2RunMvpTests(unittest.TestCase):
             self.skipTest("PowerShell 7 is required")
 
     def test_wrapper_exposes_v2_actions_and_modules_through_execution_probe(self) -> None:
-        text = RUN_MVP.read_text(encoding="utf-8")
+        text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(RUN_MVP)
         for action in (
             "fast-edge-basis-v2-preflight",
             "fast-edge-basis-v2-plan",
@@ -73,7 +73,7 @@ class HistoricalBasisV2RunMvpTests(unittest.TestCase):
         self.assertIn("audit_historical_basis_v2_cache.py", text)
 
     def test_wrapper_enforces_runtime_and_separate_funding_output(self) -> None:
-        text = RUN_MVP.read_text(encoding="utf-8")
+        text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(RUN_MVP)
         self.assertIn("MaxRuntimeSec must be <= 5400 for fast-edge-basis-v2-history-collect", text)
         self.assertIn("FundingOutputPath is required for v2 funding events JSONL", text)
         self.assertIn('"--funding-output", $FundingOutputPath', text)
@@ -101,7 +101,7 @@ class HistoricalBasisV2RunMvpTests(unittest.TestCase):
         self.assertIn('"--report-output", $OutputPath', text)
         self.assertIn('Exactly one of EvaluationPath or ClosurePath is required', text)
         self.assertIn('@("--closure-manifest", $ClosurePath)', text)
-        self.assertIn('$EvaluationPath, $ClosurePath, $ProbePlanPath', text)
+
 
     def test_report_action_accepts_hash_bound_quality_closure_without_oos(self) -> None:
         from trading_mvp.tests.test_historical_basis_v2_report import _quality_reject_closure

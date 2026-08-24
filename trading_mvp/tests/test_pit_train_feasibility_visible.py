@@ -136,7 +136,7 @@ class PitTrainFeasibilityVisibleTests(unittest.TestCase):
 
     def test_owned_child_actions_are_bound_to_visible_run_gate(self) -> None:
         wrapper = SCRIPT.read_text(encoding="utf-8")
-        run_mvp = RUN_MVP.read_text(encoding="utf-8")
+        run_mvp = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(RUN_MVP)
 
         self.assertGreaterEqual(wrapper.count('"-RunId", $RunId'), 4)
         self.assertIn("$ownedPitTrainFeasibilityRun", run_mvp)

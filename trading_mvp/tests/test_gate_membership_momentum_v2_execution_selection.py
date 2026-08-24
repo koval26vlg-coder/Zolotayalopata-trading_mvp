@@ -122,9 +122,7 @@ def _snapshot(
 
 class GateMembershipMomentumV2ExecutionSelectionTests(unittest.TestCase):
     def test_run_mvp_exposes_selection_routes(self) -> None:
-        wrapper = (Path(__file__).resolve().parents[1] / "run_mvp.ps1").read_text(
-            encoding="utf-8-sig"
-        )
+        wrapper = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))((Path(__file__).resolve().parents[1] / "run_mvp.ps1"))
         self.assertIn('"fast-edge-membership-momentum-v2-execution-selection"', wrapper)
         self.assertIn('"fast-edge-membership-momentum-v2-execution-selection-validate"', wrapper)
         self.assertIn("gate_membership_momentum_v2_execution_selection.py", wrapper)

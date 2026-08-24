@@ -138,7 +138,7 @@ class PitMembershipDriftExecutionProbeVisibleTests(unittest.TestCase):
     def test_wrapper_and_run_mvp_enforce_owned_visible_probe_scope(self) -> None:
         self.assertTrue(SCRIPT.is_file(), f"missing visible execution-probe wrapper: {SCRIPT}")
         source = SCRIPT.read_text(encoding="utf-8")
-        run_mvp = RUN_MVP.read_text(encoding="utf-8")
+        run_mvp = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(RUN_MVP)
 
         self.assertIn("ConfirmedExecutionProbe", source)
         self.assertIn("Start-Process", source)

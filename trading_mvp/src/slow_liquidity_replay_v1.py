@@ -145,17 +145,18 @@ def _concentration(trades: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def _build_candle_index(rows: list[dict[str, Any]]) -> dict[tuple[str, str], list[Any]]:
-    candles_by_market: dict[tuple[str, str], list[Any]] = defaultdict(list)
+def _build_candle_index(rows: list[dict[str, Any]]) -> dict[tuple[str, str, str], list[Any]]:
+    candles_by_market_gran: dict[tuple[str, str, str], list[Any]] = defaultdict(list)
     for row in rows:
-        if str(row.get("granularity") or "") != "1h":
+        gran = str(row.get("granularity") or "")
+        if gran not in ("1h", "1m"):
             continue
         candle = _parse_candle(row)
         if candle:
-            candles_by_market[(candle.exchange, candle.symbol)].append(candle)
-    for candles in candles_by_market.values():
+            candles_by_market_gran[(candle.exchange, candle.symbol, gran)].append(candle)
+    for candles in candles_by_market_gran.values():
         candles.sort(key=lambda candle: candle.ts)
-    return candles_by_market
+    return candles_by_market_gran
 
 
 def _simulate_trade(
@@ -166,6 +167,7 @@ def _simulate_trade(
     stress_cost_bps: float,
     max_hold_bars: int,
     notional_quote: float,
+    candles_1m: list[Any] | None = None,
 ) -> dict[str, Any]:
     entry_ts = int(_safe_float(event.get("entry_ts")))
     entry_price = _safe_float(event.get("entry_price"))
@@ -188,10 +190,34 @@ def _simulate_trade(
         hit_stop = candle.low <= stop_price
         hit_target = candle.high >= target_price
         if hit_stop and hit_target:
-            exit_reason = "both_hit_stop_first"
-            exit_price = stop_price
-            exit_ts = candle.ts
-            exit_iso = candle.iso
+            # Zoom-in to 1m candles to resolve collision
+            resolved = False
+            if candles_1m:
+                hour_start = candle.ts
+                hour_end = hour_start + 3600
+                m1_segment = [c for c in candles_1m if hour_start <= c.ts < hour_end]
+                for m1 in m1_segment:
+                    m1_hit_stop = m1.low <= stop_price
+                    m1_hit_target = m1.high >= target_price
+                    if m1_hit_target and not m1_hit_stop:
+                        exit_reason = "target"
+                        exit_price = target_price
+                        exit_ts = m1.ts
+                        exit_iso = m1.iso
+                        resolved = True
+                        break
+                    if m1_hit_stop:
+                        exit_reason = "stop"
+                        exit_price = stop_price
+                        exit_ts = m1.ts
+                        exit_iso = m1.iso
+                        resolved = True
+                        break
+            if not resolved:
+                exit_reason = "both_hit_stop_first"
+                exit_price = stop_price
+                exit_ts = candle.ts
+                exit_iso = candle.iso
             break
         if hit_stop:
             exit_reason = "stop"
@@ -280,8 +306,10 @@ def replay_slow_liquidity_v1_planonly(
     results: list[dict[str, Any]] = []
     skipped: Counter[str] = Counter()
     for event in events:
-        key = (str(event.get("exchange") or ""), str(event.get("symbol") or ""))
-        candles = candles_by_market.get(key, [])
+        key_1h = (str(event.get("exchange") or ""), str(event.get("symbol") or ""), "1h")
+        key_1m = (str(event.get("exchange") or ""), str(event.get("symbol") or ""), "1m")
+        candles = candles_by_market.get(key_1h, [])
+        candles_1m = candles_by_market.get(key_1m, [])
         if not candles:
             skipped["missing_market_candles"] += 1
             results.append({**event, "executed": False, "exit_reason": "missing_market_candles"})
@@ -289,6 +317,7 @@ def replay_slow_liquidity_v1_planonly(
         trade = _simulate_trade(
             event=event,
             candles=candles,
+            candles_1m=candles_1m,
             normal_cost_bps=normal_cost_bps,
             stress_cost_bps=stress_cost_bps,
             max_hold_bars=max_hold_bars,

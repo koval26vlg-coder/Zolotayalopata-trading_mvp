@@ -15,6 +15,8 @@ from trading_mvp.src.orderbook_engine import (
     OrderBookSnapshot,
     immediate_limit_buy_fill,
     immediate_limit_sell_fill,
+    vwap_buy_base,
+    vwap_sell_base,
 )
 
 log = logging.getLogger(__name__)
@@ -28,8 +30,9 @@ class PaperOrder:
     exchange_id: str
     symbol: str
     side: Literal["buy", "sell"]
-    limit_price: float
     amount_base: float
+    order_type: Literal["limit", "market"] = "limit"
+    limit_price: float = 0.0
     time_in_force: Literal["GTC", "IOC", "FOK"] = "GTC"
     maker_fee_bps: float = 2.0
     taker_fee_bps: float = 5.5
@@ -176,8 +179,9 @@ class SimulatedOrderBookExecutor:
         exchange_id: str,
         symbol: str,
         side: Literal["buy", "sell"],
-        limit_price: float,
         amount_base: float,
+        order_type: Literal["limit", "market"] = "limit",
+        limit_price: float = 0.0,
         time_in_force: Literal["GTC", "IOC", "FOK"] = "GTC",
         current_book: OrderBookSnapshot | None = None,
         now_mono: float | None = None,
@@ -190,6 +194,7 @@ class SimulatedOrderBookExecutor:
             exchange_id=exchange_id,
             symbol=symbol,
             side=side,
+            order_type=order_type,
             limit_price=limit_price,
             amount_base=amount_base,
             time_in_force=time_in_force,
@@ -199,10 +204,10 @@ class SimulatedOrderBookExecutor:
         self.orders[order_id] = order
 
         if current_book is not None:
-            self._match_order(order, current_book, now_mono=now)
+            self._match_order(order, current_book, now_mono=now, is_maker=False)
 
-        if order.time_in_force == "IOC" and order.is_active:
-            # Cancel unfilled remainder for IOC
+        if (order.time_in_force == "IOC" or order.order_type == "market") and order.is_active:
+            # Cancel unfilled remainder for IOC / market
             order.status = "filled" if order.filled_base > 0 else "canceled"
             order.closed_mono = now
             self.analytics.on_closed_order(order)
@@ -223,7 +228,7 @@ class SimulatedOrderBookExecutor:
             if order.exchange_id != snapshot.exchange_id or order.symbol != snapshot.symbol:
                 continue
             prev_filled = order.filled_base
-            self._match_order(order, snapshot, now_mono=now)
+            self._match_order(order, snapshot, now_mono=now, is_maker=True)
             if order.filled_base > prev_filled or not order.is_active:
                 affected.append(order)
         return affected
@@ -233,31 +238,36 @@ class SimulatedOrderBookExecutor:
         order: PaperOrder,
         snapshot: OrderBookSnapshot,
         now_mono: float,
+        is_maker: bool = False,
     ) -> None:
         rem = order.remaining_base
         if rem <= 1e-12:
             return
 
         if order.side == "buy":
-            # Matching against asks
-            filled, spent, avg_p = immediate_limit_buy_fill(
-                limit_price=order.limit_price,
-                amount_base=rem,
-                asks=snapshot.asks,
-            )
+            if order.order_type == "market":
+                spent, _, filled, _ = vwap_buy_base(asks=snapshot.asks, base_amount=rem)
+            else:
+                filled, spent, _ = immediate_limit_buy_fill(
+                    limit_price=order.limit_price,
+                    amount_base=rem,
+                    asks=snapshot.asks,
+                )
         else:
-            # Matching against bids
-            filled, spent, avg_p = immediate_limit_sell_fill(
-                limit_price=order.limit_price,
-                amount_base=rem,
-                bids=snapshot.bids,
-            )
+            if order.order_type == "market":
+                spent, _, filled, _ = vwap_sell_base(bids=snapshot.bids, base_amount=rem)
+            else:
+                filled, spent, _ = immediate_limit_sell_fill(
+                    limit_price=order.limit_price,
+                    amount_base=rem,
+                    bids=snapshot.bids,
+                )
 
         if filled > 0:
             order.filled_base += filled
             order.cum_quote += spent
             # Fee calculation: taker fee if crossed spread, maker if resting
-            fee_bps = order.taker_fee_bps
+            fee_bps = order.maker_fee_bps if is_maker else order.taker_fee_bps
             order.fee_quote += spent * (fee_bps / 10_000.0)
             order.updated_mono = now_mono
 

@@ -618,7 +618,7 @@ class PaperProductReadinessAuditTests(unittest.TestCase):
         self.assertEqual(result["next_bounded_catalog_requirement"], [])
         self.assertEqual(
             result["next_allowed_action"],
-            "WAITING_SCHEDULE_WINDOW_NO_FALLBACK",
+            "derive_and_install_catalog_v11_then_continue_bounded_offline_work",
         )
         self.assertFalse(
             result["offline_gap_assessment"][
@@ -688,7 +688,7 @@ class PaperProductReadinessAuditTests(unittest.TestCase):
         self.assertEqual(result["next_bounded_catalog_requirement"], [])
         self.assertEqual(
             result["next_allowed_action"],
-            "WAITING_SCHEDULE_WINDOW_NO_FALLBACK",
+            "derive_and_install_catalog_v11_then_continue_bounded_offline_work",
         )
 
     def test_v10_stale_code_requests_exact_reconciliation_catalog(
@@ -740,7 +740,7 @@ class PaperProductReadinessAuditTests(unittest.TestCase):
         )
         self.assertEqual(
             result["next_allowed_action"],
-            "WAITING_SCHEDULE_WINDOW_NO_FALLBACK",
+            "derive_and_install_catalog_v11_then_continue_bounded_offline_work",
         )
 
     def test_v10_rejects_low_weekly_quota(self) -> None:
@@ -757,3 +757,41 @@ class PaperProductReadinessAuditTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+    def test_v12_yields_funding_directional_momentum_catalog(self) -> None:
+        result = build_readiness_assessment_v12(
+            components=self.valid_components,
+            code_provenance_current=True,
+            targeted_tests={"failures": 0},
+            guard_snapshot=self.guard_snapshot_waiting,
+        )
+        self.assertEqual(
+            result["schema"], "fast_first_paper_product_readiness_audit_v12"
+        )
+        self.assertEqual(
+            result["verdict"],
+            "CURRENT_READINESS_RECONCILED_FUNDING_DIRECTIONAL_MOMENTUM_PENDING",
+        )
+        self.assertEqual(
+            result["next_allowed_action"],
+            "derive_and_install_catalog_v12_then_continue_bounded_offline_work",
+        )
+
+    def test_v12_yields_funding_directional_momentum_catalog(self) -> None:
+        result = build_readiness_assessment_v12(
+            components=self.valid_components,
+            code_provenance_current=True,
+            targeted_tests={"failures": 0},
+            guard_snapshot=self.guard_snapshot_waiting,
+        )
+        self.assertEqual(
+            result["schema"], "fast_first_paper_product_readiness_audit_v12"
+        )
+        self.assertEqual(
+            result["verdict"],
+            "CURRENT_READINESS_RECONCILED_FUNDING_DIRECTIONAL_MOMENTUM_PENDING",
+        )
+        self.assertEqual(
+            result["next_allowed_action"],
+            "derive_and_install_catalog_v12_then_continue_bounded_offline_work",
+        )

@@ -27,11 +27,11 @@ FORWARD_PLAN_PATH = monitor.FORWARD_PLAN_PATH
 PREVIOUS_PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260816.json"
+    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260821-v3.json"
 )
-PREVIOUS_PLAN_HASH = "bc55d56faea5e456426757e5d8e3f724a37fd4eedea12fae4dc6857cc102d2c9"
+PREVIOUS_PLAN_HASH = "2b41fd407a758e68340c0bba000f48fa87b1fc1e4a7e1c41b0e21a439bfc4dc0"
 PREVIOUS_PLAN_FILE_SHA256 = (
-    "70e06b75b444922313e55cbc6b868fcba0cf0d35918a7cabb4c6569c1adb3b25"
+    "b4e6b085c40e10c91cc235f186e46f52e56fc6f6d913b79f0b707172d4bc99f4"
 )
 LAUNCHER_PATH = monitor.EXPECTED_IMPLEMENTATION_PATHS["visible_launcher"]
 PROXY_RECEIPT_PATH = (
@@ -39,12 +39,34 @@ PROXY_RECEIPT_PATH = (
     / "docs/agent-log/approvals"
     / "2026-08-16-slow-liquidity-listing-momentum-proxy-date-acceptance-approval.json"
 )
+BATCH1_RECEIPT_PATH = (
+    REPO_ROOT
+    / "docs/agent-log"
+    / "listing-strategy-control-plane-batch1-readiness-20260821.json"
+)
+BATCH1_RECEIPT_FILE_SHA256 = (
+    "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
+)
 BOUND_FILES = tuple(
     (role, path)
     for role, path in monitor.EXPECTED_IMPLEMENTATION_PATHS.items()
     if role != "visible_launcher"
 )
-CADENCE_RECOMMENDATION = "manual 'продолжай' или scheduler; не чаще 1 тика в 3 часа"
+CADENCE_RECOMMENDATION = "adaptive: search 6h, candidate 3h, official confirmation 1h, exact official time within 24h 5m; scheduler wake 5m and no-op when not due"
+ADAPTIVE_CADENCE = {
+    "policy_version": "adaptive_event_proximity_v1",
+    "scheduler_wake_interval_sec": 300,
+    "search_interval_sec": 21600,
+    "soon_interval_sec": 10800,
+    "confirmed_interval_sec": 3600,
+    "scheduled_interval_sec": 300,
+    "soon_horizon_sec": 259200,
+    "scheduled_horizon_sec": 86400,
+    "exact_timestamp_required_for_scheduled": True,
+    "proxy_cannot_escalate_to_confirmed": True,
+    "collector_runs_only_when_due": True,
+    "terminal_event_returns_to_search": True,
+}
 
 
 class ForwardMonitorPlanError(ValueError):
@@ -94,8 +116,23 @@ def build_forward_monitor_plan(generated_at_utc: str) -> dict[str, Any]:
         and _sha256_file(CALENDAR_PATH) == CALENDAR_FILE_SHA256,
         "baseline calendar hash mismatch",
     )
+    previous_rows = {
+        str(item.get("role") or ""): item
+        for item in (previous_plan.get("implementation") or {}).get("files") or []
+    }
     files = [
-        {"role": role, "path": str(path), "sha256": _sha256_file(path)}
+        {
+            "role": role,
+            "path": str(path),
+            "sha256": _sha256_file(path),
+            "provenance": {
+                "kind": "technical_rebind_from_superseded_plan_row",
+                "superseded_sha256": previous_rows[role]["sha256"],
+                "superseded_plan_hash": PREVIOUS_PLAN_HASH,
+                "superseded_plan_file_sha256": PREVIOUS_PLAN_FILE_SHA256,
+                "batch1_readiness_receipt_sha256": BATCH1_RECEIPT_FILE_SHA256,
+            },
+        }
         for role, path in BOUND_FILES
     ]
     files.append(
@@ -103,6 +140,13 @@ def build_forward_monitor_plan(generated_at_utc: str) -> dict[str, Any]:
             "role": "visible_launcher",
             "path": str(LAUNCHER_PATH),
             "sha256": _sha256_file(LAUNCHER_PATH),
+            "provenance": {
+                "kind": "technical_rebind_from_superseded_plan_row",
+                "superseded_sha256": previous_rows["visible_launcher"]["sha256"],
+                "superseded_plan_hash": PREVIOUS_PLAN_HASH,
+                "superseded_plan_file_sha256": PREVIOUS_PLAN_FILE_SHA256,
+                "batch1_readiness_receipt_sha256": BATCH1_RECEIPT_FILE_SHA256,
+            },
         }
     )
     plan: dict[str, Any] = {
@@ -127,20 +171,25 @@ def build_forward_monitor_plan(generated_at_utc: str) -> dict[str, Any]:
             "calendar. Repeatable bounded visible ticks; deterministic "
             "state rebuild. Descriptive accrual only - no acceptance."
         ),
+        "adaptive_cadence": ADAPTIVE_CADENCE,
         "source_bindings": {
             "technical_rebind": {
-                "kind": "verified_visible_launcher_python_resolution_bugfix",
+                "kind": "listing_strategy_control_plane_batch2_p1_mutex_hash_rebind",
                 "supersedes_plan_id": previous_plan["plan_id"],
                 "supersedes_plan_hash": PREVIOUS_PLAN_HASH,
                 "supersedes_plan_file_sha256": PREVIOUS_PLAN_FILE_SHA256,
+                "supersedes_plan_path": str(PREVIOUS_PLAN_PATH),
                 "research_scope_changed": False,
                 "reason": (
-                    "The visible worker previously invoked bare python and "
-                    "failed when the scheduler environment had no Python on "
-                    "PATH. The launcher now resolves an existing executable "
-                    "before the tick; venue, universe, signal, cost, risk, "
-                    "acceptance and cadence contracts are unchanged."
+                    "Rebind the current-run transaction mutex fix and current "
+                    "launcher identities without changing venue, universe, "
+                    "signal, cost, risk, cadence or acceptance contracts."
                 ),
+            },
+            "control_plane_readiness_receipt": {
+                "path": str(BATCH1_RECEIPT_PATH),
+                "file_sha256": BATCH1_RECEIPT_FILE_SHA256,
+                "status": "READY_FOR_PLANONLY_REBIND_NOT_ACTIVATED",
             },
             "proxy_acceptance_plan": {
                 "plan_id": PARENT_PLAN_ID,
@@ -299,6 +348,11 @@ def validate_forward_monitor_plan(plan: dict[str, Any]) -> None:
         set(by_role) == set(monitor.EXPECTED_IMPLEMENTATION_PATHS),
         "implementation role set mismatch",
     )
+    previous_payload = json.loads(PREVIOUS_PLAN_PATH.read_text(encoding="utf-8"))
+    previous_by_role = {
+        str(item.get("role") or ""): item
+        for item in (previous_payload.get("implementation") or {}).get("files") or []
+    }
     for role, path in monitor.EXPECTED_IMPLEMENTATION_PATHS.items():
         item = by_role[role]
         _require(
@@ -309,6 +363,25 @@ def validate_forward_monitor_plan(plan: dict[str, Any]) -> None:
             item.get("sha256") == _sha256_file(path),
             f"implementation sha256 mismatch: {role}",
         )
+        provenance = item.get("provenance") or {}
+        _require(
+            provenance.get("superseded_sha256") == previous_by_role[role]["sha256"],
+            f"implementation provenance mismatch: {role}",
+        )
+    receipt = (plan.get("source_bindings") or {}).get(
+        "control_plane_readiness_receipt"
+    ) or {}
+    _require(BATCH1_RECEIPT_PATH.is_file(), "Batch 1 readiness receipt missing")
+    _require(
+        _sha256_file(BATCH1_RECEIPT_PATH) == BATCH1_RECEIPT_FILE_SHA256,
+        "Batch 1 readiness receipt sha256 mismatch",
+    )
+    _require(
+        receipt.get("path") == str(BATCH1_RECEIPT_PATH)
+        and receipt.get("file_sha256") == BATCH1_RECEIPT_FILE_SHA256
+        and receipt.get("status") == "READY_FOR_PLANONLY_REBIND_NOT_ACTIVATED",
+        "Batch 1 readiness receipt binding mismatch",
+    )
     _require(plan.get("plan_hash") == canonical_hash(plan), "plan hash mismatch")
 
 

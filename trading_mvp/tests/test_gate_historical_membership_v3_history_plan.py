@@ -675,7 +675,7 @@ class GateMembershipV3HistoryQualityTests(unittest.TestCase):
 class GateMembershipV3HistoryWrapperTests(unittest.TestCase):
     def test_run_mvp_exposes_v3_history_plan_and_visible_collect_route(self) -> None:
         root = Path(__file__).resolve().parents[2]
-        wrapper = (root / "trading_mvp" / "run_mvp.ps1").read_text(encoding="utf-8-sig")
+        wrapper = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))((root / "trading_mvp" / "run_mvp.ps1"))
 
         self.assertIn('"fast-edge-membership-v3-history-plan"', wrapper)
         self.assertIn("gate_historical_membership_v3_history_plan.py", wrapper)

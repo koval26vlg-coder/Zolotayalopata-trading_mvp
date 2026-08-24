@@ -209,10 +209,11 @@ def _label_market_events(
     if not bbo_samples or not trade_samples:
         return []
     bbo_ts = [sample.ts for sample in bbo_samples]
+    trade_ts_list = [t.ts for t in trade_samples]
     labels: list[dict[str, Any]] = []
     last_event_ts_by_side: dict[str, float] = {}
 
-    for trade in trade_samples:
+    for trade_idx, trade in enumerate(trade_samples):
         if trade.notional_quote < cfg.min_sweep_notional_quote:
             continue
         prior_start = bisect.bisect_left(bbo_ts, trade.ts - cfg.lookback_sec)
@@ -223,7 +224,15 @@ def _label_market_events(
         last_prior = prior[-1]
         if cfg.max_pre_spread_bps > 0 and last_prior.spread_bps is not None and last_prior.spread_bps > cfg.max_pre_spread_bps:
             continue
-        candidate = _sweep_candidate(market, trade, prior, last_prior)
+            
+        # compute trade flow imbalance 1m
+        flow_start = bisect.bisect_left(trade_ts_list, trade.ts - 60.0)
+        buy_vol = sum(t.notional_quote for t in trade_samples[flow_start:trade_idx] if t.side == "buy")
+        sell_vol = sum(t.notional_quote for t in trade_samples[flow_start:trade_idx] if t.side == "sell")
+        total_vol = buy_vol + sell_vol
+        trade_flow_imbalance = (buy_vol - sell_vol) / total_vol if total_vol > 0 else 0.0
+
+        candidate = _sweep_candidate(market, trade, prior, last_prior, trade_flow_imbalance)
         if candidate is None:
             continue
         last_ts = last_event_ts_by_side.get(str(candidate["sweep_side"]))
@@ -240,6 +249,7 @@ def _sweep_candidate(
     trade: TradeSample,
     prior: list[BboSample],
     last_prior: BboSample,
+    trade_flow_imbalance: float,
 ) -> dict[str, Any] | None:
     if trade.side == "sell":
         level = min(sample.bid for sample in prior)
@@ -255,6 +265,10 @@ def _sweep_candidate(
         sweep_intensity_bps = (trade.price - level) / level * 1e4
         expected_side = "SHORT"
         direction = -1
+        
+    total_ob_qty = last_prior.bid_qty + last_prior.ask_qty
+    orderbook_imbalance = (last_prior.bid_qty - last_prior.ask_qty) / total_ob_qty if total_ob_qty > 0 else 0.0
+
     return {
         "market": market,
         "exchange": trade.exchange,
@@ -270,10 +284,11 @@ def _sweep_candidate(
         "pre_bid": last_prior.bid,
         "pre_ask": last_prior.ask,
         "pre_spread_bps": last_prior.spread_bps,
+        "orderbook_imbalance": orderbook_imbalance,
+        "trade_flow_imbalance_1m": trade_flow_imbalance,
         "funding_rate": trade.funding_rate,
         "mark_index_basis_bps": _basis_bps(trade.mark_price, trade.index_price),
     }
-
 
 def _score_candidate(candidate: dict[str, Any], bbo_samples: list[BboSample], bbo_ts: list[float], cfg: EventQualityConfig) -> dict[str, Any]:
     start = bisect.bisect_left(bbo_ts, float(candidate["sweep_ts"]))

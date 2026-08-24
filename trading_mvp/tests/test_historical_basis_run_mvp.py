@@ -18,7 +18,7 @@ class HistoricalBasisRunMvpTests(unittest.TestCase):
             self.skipTest("PowerShell 7 is required")
 
     def test_wrapper_exposes_all_seven_basis_actions(self) -> None:
-        text = RUN_MVP.read_text(encoding="utf-8")
+        text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(RUN_MVP)
         for action in (
             "fast-edge-basis-plan",
             "fast-edge-basis-history-collect",
@@ -39,7 +39,7 @@ class HistoricalBasisRunMvpTests(unittest.TestCase):
             self.assertIn(module, text)
 
     def test_wrapper_exposes_paper_only_oms_actions(self) -> None:
-        text = RUN_MVP.read_text(encoding="utf-8")
+        text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(RUN_MVP)
         for action in (
             "fast-edge-basis-paper-init",
             "fast-edge-basis-paper-observe",
@@ -49,13 +49,13 @@ class HistoricalBasisRunMvpTests(unittest.TestCase):
         self.assertIn("basis_paper_oms.py", text)
 
     def test_wrapper_exposes_bounded_universe_availability_builder(self) -> None:
-        text = RUN_MVP.read_text(encoding="utf-8")
+        text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(RUN_MVP)
         self.assertIn('"fast-edge-basis-universe-build"', text)
         self.assertIn("historical_basis_universe.py", text)
         self.assertIn("MaxRuntimeSec must be <= 600 for fast-edge-basis-universe-build", text)
 
     def test_full_frozen_pipeline_executes_from_content_addressed_code_snapshot(self) -> None:
-        text = RUN_MVP.read_text(encoding="utf-8")
+        text = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(RUN_MVP)
         self.assertIn("historical_basis_code_snapshot.py", text)
         self.assertIn("New-BasisCodeSnapshot", text)
         self.assertGreaterEqual(text.count("$codeSnapshot = New-BasisCodeSnapshot"), 8)

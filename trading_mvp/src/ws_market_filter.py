@@ -123,6 +123,8 @@ class WsMarketFilterConfig:
     min_accepted_exchanges: int = 1
     min_total_rows: int = 1
     max_market_event_share: float = 1.0
+    min_trade_frequency_hz: float = 0.0
+    max_avg_spread_bps: float = 0.0
 
 
 @dataclass
@@ -137,10 +139,15 @@ class _MarketStats:
     last_ts: float | None = None
     last_seen_ts: float | None = None
     max_gap_sec: float = 0.0
+    sum_spread_bps: float = 0.0
+    spread_samples: int = 0
 
-    def add(self, *, kind: str, ts: float | None) -> None:
+    def add(self, *, kind: str, ts: float | None, spread_bps: float | None = None) -> None:
         self.rows += 1
         self.kinds[kind] += 1
+        if spread_bps is not None and spread_bps > 0:
+            self.sum_spread_bps += spread_bps
+            self.spread_samples += 1
         if ts is None:
             self.timestamp_missing += 1
             return
@@ -207,6 +214,19 @@ def _market_reasons(
         duration_ratio = (stats.span_sec() / source_duration_sec) if source_duration_sec and source_duration_sec > 0 else None
         if duration_ratio is None or duration_ratio < config.min_market_duration_ratio:
             reasons.append("min_market_duration_ratio")
+    
+    if config.min_trade_frequency_hz > 0:
+        trades = stats.kinds.get("trade", 0)
+        span = stats.span_sec()
+        hz = trades / span if span > 0 else 0.0
+        if hz < config.min_trade_frequency_hz:
+            reasons.append("min_trade_frequency")
+            
+    if config.max_avg_spread_bps > 0 and stats.spread_samples > 0:
+        avg_spread = stats.sum_spread_bps / stats.spread_samples
+        if avg_spread > config.max_avg_spread_bps:
+            reasons.append("max_avg_spread")
+            
     return reasons
 
 
@@ -300,7 +320,12 @@ def run_ws_market_filter(
             key = _market_key(exchange, symbol)
             if key not in stats_by_market:
                 stats_by_market[key] = _MarketStats(exchange=exchange, symbol=symbol)
-            stats_by_market[key].add(kind=kind, ts=_as_float(row.get("recv_ts") or row.get("exchange_ts")))
+            spread_bps = _as_float(row.get("spread_bps")) if kind in ("bbo", "depth") else None
+            stats_by_market[key].add(
+                kind=kind, 
+                ts=_as_float(row.get("recv_ts") or row.get("exchange_ts")),
+                spread_bps=spread_bps
+            )
             if progress_every_lines > 0 and parsed_rows % progress_every_lines == 0:
                 _emit_progress(
                     progress_path,
@@ -570,6 +595,8 @@ def main() -> None:
     parser.add_argument("--filter-min-accepted-exchanges", type=int, default=2)
     parser.add_argument("--filter-min-total-rows", type=int, default=5000)
     parser.add_argument("--filter-max-market-event-share", type=float, default=0.50)
+    parser.add_argument("--filter-min-trade-frequency-hz", type=float, default=0.0)
+    parser.add_argument("--filter-max-avg-spread-bps", type=float, default=0.0)
     parser.add_argument("--min-rows", type=int, default=5000)
     parser.add_argument("--min-exchanges", type=int, default=2)
     parser.add_argument("--min-markets", type=int, default=5)
@@ -606,6 +633,8 @@ def main() -> None:
             min_accepted_exchanges=args.filter_min_accepted_exchanges,
             min_total_rows=args.filter_min_total_rows,
             max_market_event_share=args.filter_max_market_event_share,
+            min_trade_frequency_hz=args.filter_min_trade_frequency_hz,
+            max_avg_spread_bps=args.filter_max_avg_spread_bps,
         ),
         quality_config=WsDataQualityConfig(
             min_rows=args.min_rows,

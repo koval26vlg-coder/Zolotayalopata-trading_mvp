@@ -186,7 +186,7 @@ class GateMembershipMomentumV2PaperPlanTests(unittest.TestCase):
                 paper.validate_paper_plan(plan_path, payload["plan_hash"])
 
     def test_run_mvp_exposes_paper_plan_and_validation_routes(self) -> None:
-        wrapper = (TRADING_ROOT / "run_mvp.ps1").read_text(encoding="utf-8-sig")
+        wrapper = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))((TRADING_ROOT / "run_mvp.ps1"))
         self.assertIn('"fast-edge-membership-momentum-v2-paper-plan"', wrapper)
         self.assertIn('"fast-edge-membership-momentum-v2-paper-validate"', wrapper)
         self.assertIn("gate_membership_momentum_v2_paper_plan.py", wrapper)

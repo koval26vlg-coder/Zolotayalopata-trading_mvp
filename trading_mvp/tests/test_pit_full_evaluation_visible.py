@@ -144,7 +144,7 @@ class PitFullEvaluationVisibleTests(unittest.TestCase):
         self.assertNotIn('"paper-forward-segment"', source)
 
     def test_owned_actions_are_scoped_to_full_evaluation_gate(self) -> None:
-        source = RUN_MVP.read_text(encoding="utf-8")
+        source = (lambda p: (p.parent.parent / "tools" / "run_ws_pipeline.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_signals.ps1").read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "run_funding.ps1").read_text(encoding="utf-8-sig") + "\n" + p.read_text(encoding="utf-8-sig") + "\n" + (p.parent.parent / "tools" / "trading_gate_assertions.ps1").read_text(encoding="utf-8-sig"))(RUN_MVP)
         self.assertIn("$ownedPitFullEvaluationRun", source)
         self.assertIn('"fast-edge-pit-input-plan", "fast-edge-pit-evaluate", "fast-edge-pit-execution-probe-plan"', source)
         self.assertIn('"PIT_FULL_EVALUATION_RUNNING"', source)
