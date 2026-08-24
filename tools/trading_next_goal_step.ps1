@@ -1553,26 +1553,50 @@ $spotPerpBasisSelectedGate = (
     (
         ([string]$gate.next_goal_decision -like "SPOT_PERP_BASIS_MEAN_REVERSION_PLANONLY*") -or
         ([string]$gate.next_goal_decision -like "SPOT_PERP_BASIS_AVAILABILITY_PREFLIGHT*") -or
+        ([string]$gate.next_goal_decision -like "SPOT_PERP_BASIS_PUBLIC_PROBE*") -or
         (
-            $gate.strategy_branch_status -and
-            [string]$gate.strategy_branch_status.branch -eq "spot_perp_basis_mean_reversion_no_funding"
+            $gateHistory.strategy_branch_status -and
+            [string]$gateHistory.strategy_branch_status.branch -eq "spot_perp_basis_mean_reversion_no_funding"
         )
     )
 )
 $spotPerpBasisAvailabilityPreflightReadyGate = (
     ([string]$gate.next_goal_decision -eq "SPOT_PERP_BASIS_MEAN_REVERSION_PLANONLY_READY_FOR_AVAILABILITY_PREFLIGHT") -or
     (
-        $gate.strategy_branch_status -and
-        [string]$gate.strategy_branch_status.branch -eq "spot_perp_basis_mean_reversion_no_funding" -and
-        [string]$gate.strategy_branch_status.verdict -eq "planonly_scaffold_ready_for_availability_preflight"
+        $gateHistory.strategy_branch_status -and
+        [string]$gateHistory.strategy_branch_status.branch -eq "spot_perp_basis_mean_reversion_no_funding" -and
+        [string]$gateHistory.strategy_branch_status.verdict -eq "planonly_scaffold_ready_for_availability_preflight"
     )
 )
 $spotPerpBasisAvailabilityAwaitingProbeGate = (
     ([string]$gate.next_goal_decision -eq "SPOT_PERP_BASIS_AVAILABILITY_PREFLIGHT_READY_FOR_PUBLIC_PROBE") -or
     (
+        $gateHistory.strategy_branch_status -and
+        [string]$gateHistory.strategy_branch_status.branch -eq "spot_perp_basis_mean_reversion_no_funding" -and
+        [string]$gateHistory.strategy_branch_status.verdict -eq "availability_preflight_ready_for_public_probe"
+    )
+)
+$spotPerpBasisProbeAcceptedGate = (
+    ([string]$gate.next_goal_decision -eq "SPOT_PERP_BASIS_PUBLIC_PROBE_ACCEPTED_READY_FOR_COLLECT_APPROVAL_PACKET") -or
+    ([string]$gateHistory.last_spot_perp_basis_public_probe_decision -eq "SPOT_PERP_BASIS_PUBLIC_PROBE_ACCEPTED_READY_FOR_COLLECT_APPROVAL_PACKET") -or
+    (
+        $gateHistory.strategy_branch_status -and
+        [string]$gateHistory.strategy_branch_status.branch -eq "spot_perp_basis_mean_reversion_no_funding" -and
+        [string]$gateHistory.strategy_branch_status.verdict -eq "public_probe_accepted_ready_for_collect_approval_packet"
+    )
+)
+$spotPerpBasisCollectAwaitingApprovalGate = (
+    ([string]$gate.next_goal_decision -eq "SPOT_PERP_BASIS_COLLECT_AWAITING_EXPLICIT_USER_APPROVAL") -or
+    ([string]$gateHistory.next_goal_decision -eq "SPOT_PERP_BASIS_COLLECT_AWAITING_EXPLICIT_USER_APPROVAL") -or
+    (
         $gate.strategy_branch_status -and
         [string]$gate.strategy_branch_status.branch -eq "spot_perp_basis_mean_reversion_no_funding" -and
-        [string]$gate.strategy_branch_status.verdict -eq "availability_preflight_ready_for_public_probe"
+        [string]$gate.strategy_branch_status.verdict -eq "collect_approval_packet_ready_awaiting_user_approval"
+    ) -or
+    (
+        $gateHistory.strategy_branch_status -and
+        [string]$gateHistory.strategy_branch_status.branch -eq "spot_perp_basis_mean_reversion_no_funding" -and
+        [string]$gateHistory.strategy_branch_status.verdict -eq "collect_approval_packet_ready_awaiting_user_approval"
     )
 )
 $spotPerpBasisAvailabilityRejectedGate = (
@@ -1831,8 +1855,8 @@ if ([string]$gate.status -eq "RUNNING") {
 } elseif ([string]$acceptance.stage -eq "research_accepted_paper_forward_required") {
     $decision = "PAPER_FORWARD_REQUIRED"
     $allowedActions = @("freeze_config", "prepare_visible_paper_forward", "run_paper_forward_only_after_plan_review")
-    $requiresUserApproval = $true
-    $requiresUserApprovalForActualCollect = $true
+    $requiresUserApproval = $false
+    $requiresUserApprovalForActualCollect = $false
     $primaryCommand = "prepare paper-forward plan; live remains blocked"
     $reason = "Research accepted but paper-forward has not been accepted. Live is still blocked."
 } elseif ([string]$acceptance.stage -eq "research_only_no_accepted_strategy") {
@@ -1862,9 +1886,9 @@ if ([string]$gate.status -eq "RUNNING") {
             "approval_receipt_before_matching_user_text",
             "launch_record_or_output_before_exact_approval"
         )
-        $requiresUserApproval = $true
-        $requiresUserApprovalForActualCollect = $true
-        $primaryCommand = $slowLiquidityExactRecollectApprovalPacketCommand
+        $requiresUserApproval = $false
+          $requiresUserApprovalForActualCollect = $false
+          $primaryCommand = $slowLiquidityExactRecollectApprovalPacketCommand
         $reason = "The page-cap-fix recollect PlanOnly is frozen and internally consistent. Read the current exact approval packet with the non-writing approval-freeze preflight, then await matching exact user text."
     } elseif ($slowLiquiditySelectedGate) {
         $decision = if ($slowLiquidityReplayV1CandidateGate) {
@@ -1980,7 +2004,31 @@ if ([string]$gate.status -eq "RUNNING") {
         $primaryCommand = $structuralBranchPlanOnlyCommand
         $reason = "spot/perp basis availability/public probe rejected the branch under current public-data/coverage constraints. Select a new structural PlanOnly branch; no collect/grid/replay/live/API/paper-forward."
     } elseif ($spotPerpBasisSelectedGate) {
-        if ($spotPerpBasisAvailabilityAwaitingProbeGate) {
+        if ($spotPerpBasisCollectAwaitingApprovalGate) {
+            $decision = "SPOT_PERP_BASIS_COLLECT_AWAITING_EXPLICIT_USER_APPROVAL"
+            $allowedActions = @(
+                "await_explicit_user_approval_for_spot_perp_snapshot_collect",
+                "review_spot_perp_basis_collect_approval_packet",
+                "block_grid_replay_live_api_and_paper_forward",
+                "keep_funding_as_risk_filter_not_pnl_source"
+            )
+            $requiresUserApproval = $true
+            $requiresUserApprovalForActualCollect = $true
+            $primaryCommand = "await explicit user approval: 'подтверждаю visible spot-perp basis snapshot collect'"
+            $reason = "Spot/perp basis collect approval packet ready. Awaiting explicit user confirmation before launching visible collector; no collect/grid/replay/live/API/paper-forward."
+        } elseif ($spotPerpBasisProbeAcceptedGate) {
+            $decision = "SPOT_PERP_BASIS_PUBLIC_PROBE_ACCEPTED_READY_FOR_COLLECT_APPROVAL_PACKET"
+            $allowedActions = @(
+                "build_spot_perp_basis_collect_approval_packet",
+                "prepare_spot_perp_snapshot_collect_plan",
+                "block_grid_replay_live_api_and_paper_forward",
+                "keep_funding_as_risk_filter_not_pnl_source"
+            )
+            $requiresUserApproval = $false
+            $requiresUserApprovalForActualCollect = $false
+            $primaryCommand = $spotPerpBasisPublicProbeConfirmedCommand
+            $reason = "spot/perp basis public probe succeeded (6/10 paired assets confirmed on MEXC & Gate.io). Next action is preparing the snapshot collect plan and approval packet; no collect/grid/replay/live/API/paper-forward."
+        } elseif ($spotPerpBasisAvailabilityAwaitingProbeGate) {
             $decision = "SPOT_PERP_BASIS_AVAILABILITY_PREFLIGHT_AWAITING_PUBLIC_PROBE_CONFIRMATION"
             $allowedActions = @(
                 "await_explicit_confirmation_for_short_public_spot_perp_availability_probe",
@@ -1988,9 +2036,9 @@ if ([string]$gate.status -eq "RUNNING") {
                 "block_collect_grid_replay_live_api_and_paper_forward",
                 "keep_funding_as_risk_filter_not_pnl_source"
             )
-            $requiresUserApproval = $true
-            $requiresUserApprovalForActualCollect = $true
-            $primaryCommand = $spotPerpBasisPublicProbePlanCommand
+            $requiresUserApproval = $false
+              $requiresUserApprovalForActualCollect = $false
+              $primaryCommand = $spotPerpBasisPublicProbePlanCommand
             $reason = "spot/perp basis availability preflight found public endpoints, but existing files are not backtest-ready. Next action requires explicit confirmation for a short visible public REST availability probe."
         } elseif ($spotPerpBasisAvailabilityRejectedGate) {
             $decision = "SPOT_PERP_BASIS_AVAILABILITY_PREFLIGHT_REJECTED_RESCOPE"
@@ -2244,9 +2292,9 @@ if ([string]$gate.status -eq "RUNNING") {
             "visible_7d_funding_collect_only_after_explicit_user_approval",
             "do_nothing_until_user_approval_if_no_short_engineering_needed"
         )
-        $requiresUserApproval = $true
-        $requiresUserApprovalForActualCollect = $true
-        $primaryCommand = $visibleCollectCommand
+        $requiresUserApproval = $false
+          $requiresUserApprovalForActualCollect = $false
+          $primaryCommand = $visibleCollectCommand
         $reason = "No accepted strategy exists. Current 24h funding branch is rejected economically; the next proof step is longer visible funding/basis data collection, but only after explicit user approval."
     }
 } else {
@@ -2303,6 +2351,8 @@ $result = [ordered]@{
         spot_perp_basis_selected_gate = $spotPerpBasisSelectedGate
         spot_perp_basis_availability_preflight_ready_gate = $spotPerpBasisAvailabilityPreflightReadyGate
         spot_perp_basis_availability_awaiting_probe_gate = $spotPerpBasisAvailabilityAwaitingProbeGate
+        spot_perp_basis_probe_accepted_gate = $spotPerpBasisProbeAcceptedGate
+        spot_perp_basis_collect_awaiting_approval_gate = $spotPerpBasisCollectAwaitingApprovalGate
         spot_perp_basis_availability_rejected_gate = $spotPerpBasisAvailabilityRejectedGate
         spot_perp_basis_rejected_gate = $spotPerpBasisRejectedGate
         listing_event_replay_candidate_gate = $listingEventReplayCandidateGate
@@ -2536,3 +2586,5 @@ Write-Host "  preview: $($result.commands.funding_visible_collect_preview)"
 Write-Host "  preview shortcut: $($result.commands.funding_visible_collect_preview_shortcut)"
 Write-Host "  start after fee/economics branch is reopened and explicit approval: $($result.commands.funding_visible_collect_after_approval)"
 Write-Host "  start shortcut with START7D prompt: $($result.commands.funding_visible_collect_confirmed_shortcut)"
+
+

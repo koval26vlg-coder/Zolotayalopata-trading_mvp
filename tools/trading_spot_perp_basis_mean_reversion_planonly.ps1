@@ -119,6 +119,8 @@ if ([string]$gate.status -in @("RUNNING", "STOPPED_INCOMPLETE")) {
 $selectedByGate = [bool](
     ([string]$gate.next_goal_decision -eq "SPOT_PERP_BASIS_MEAN_REVERSION_PLANONLY_RESEARCH") -or
     ([string]$gate.next_goal_decision -like "SPOT_PERP_BASIS_MEAN_REVERSION_PLANONLY_*") -or
+    ([string]$gate.next_goal_decision -like "SPOT_PERP_BASIS_PUBLIC_PROBE*") -or
+    ([string]$gate.next_goal_decision -like "SPOT_PERP_BASIS_AVAILABILITY*") -or
     (
         $gate.strategy_branch_status -and
         [string]$gate.strategy_branch_status.branch -eq "spot_perp_basis_mean_reversion_no_funding"

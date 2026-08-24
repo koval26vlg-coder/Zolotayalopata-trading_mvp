@@ -926,6 +926,18 @@ if ($collectorPidAlive -and -not $final) {
 } elseif ($processAlive) {
     $status = "RUNNING"
     $warning = "Goal gate is closed: run is active. Do not run next goal/postprocess steps; only status checks are allowed."
+} elseif ($gateStatusRaw -eq "RUNNING" -and -not $processAlive) {
+    $status = "STOPPED_INCOMPLETE"
+    $warning = "Stale lock detected: Gate was RUNNING but no active processes found. Auto-cleared to STOPPED_INCOMPLETE."
+    
+    $gate.status = "STOPPED_INCOMPLETE"
+    if ($gate.PSObject.Properties.Match("stop_reason").Count -eq 0) {
+        $gate | Add-Member -NotePropertyName "stop_reason" -NotePropertyValue "auto_stale_lock_clear"
+    } else {
+        $gate.stop_reason = "auto_stale_lock_clear"
+    }
+    # Ensure we write to the original GatePath
+    $gate | ConvertTo-Json -Depth 10 | Set-Content -Path $GatePath -Encoding UTF8
 } else {
     $status = "STOPPED_INCOMPLETE"
     $warning = "Goal gate is closed: run is not active and final=false. Resume visibly or declare this dataset incomplete before proceeding."
