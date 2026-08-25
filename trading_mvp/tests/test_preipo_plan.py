@@ -11,7 +11,7 @@ if str(ROOT) not in sys.path:
 from preipo_plan import canonical_plan_hash, validate_plan  # noqa: E402
 
 
-PLAN = Path(__file__).resolve().parents[2] / "docs" / "plans" / "preipo-perpetual-event-planonly-20260825-v5.json"
+PLAN = Path(__file__).resolve().parents[2] / "docs" / "plans" / "preipo-perpetual-event-planonly-20260825-v6.json"
 
 
 class PreIPOPlanTests(unittest.TestCase):
@@ -63,13 +63,41 @@ class PreIPOPlanTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertIn("acceptance_interim_tier_must_not_authorize", result["reasons"])
 
-    def test_immutable_plan_is_valid_and_uses_only_okx_and_gate(self) -> None:
+    def test_the_plan_is_valid_and_collects_exactly_the_declared_venues(self) -> None:
+        """Pin the plan to its declaration, not to a frozen pair of venue names.
+
+        The old assertion hard-coded {okx, gate}. That made every venue widening look
+        like a test failure and invited fixing it by editing the expected set, which
+        would have checked nothing at all. Comparing against REQUIRED_VENUES asserts the
+        property that matters: the plan collects where the module says it collects."""
+        import preipo_plan
+
         result = validate_plan(PLAN)
 
         self.assertTrue(result["ok"], result)
         self.assertEqual(result["status"], "PLAN_OK")
-        self.assertEqual(set(result["venues"]), {"okx", "gate"})
-        self.assertEqual(result["plan_id"], "preipo_perpetual_event_20260825_v5")
+        self.assertEqual(set(result["venues"]), set(preipo_plan.REQUIRED_VENUES))
+        self.assertEqual(result["plan_id"], "preipo_perpetual_event_20260825_v6")
+
+    def test_every_collected_venue_has_an_adapter(self) -> None:
+        """A venue may be declared without an adapter only while it is a candidate.
+
+        Once it is in `venues` the automation will try to build an adapter for it on the
+        next tick, and a missing one is a hard failure rather than a deferred venue."""
+        import preipo_adapters
+        import preipo_plan
+
+        for venue in preipo_plan.REQUIRED_VENUES:
+            with self.subTest(venue=venue):
+                self.assertIn(venue, preipo_adapters.ADAPTERS)
+
+    def test_candidates_and_collected_venues_do_not_overlap(self) -> None:
+        import preipo_plan
+
+        self.assertEqual(
+            set(preipo_plan.REQUIRED_VENUES) & set(preipo_plan.REQUIRED_CANDIDATE_VENUES),
+            set(),
+        )
 
     def test_plan_hash_is_canonical_and_excludes_stored_hash(self) -> None:
         import json

@@ -10,12 +10,21 @@ from typing import Any, Mapping
 
 
 PLAN_SCHEMA = "trading_mvp_preipo_perpetual_event_planonly_v2"
-REQUIRED_VENUES = {"okx", "gate"}
+# Promoted 2026-08-25: bitmex and kraken have adapters and public unauthenticated
+# instruments endpoints. A failing venue is isolated to its own outcome
+# (RETRY_NEXT_INTERVAL) and cannot break collection from the others, which is what makes
+# promotion safe to do before either venue has ever answered.
+REQUIRED_VENUES = {"okx", "gate", "bitmex", "kraken"}
 # Candidates are venues we have established carry pre-IPO perpetuals on a public,
 # unauthenticated instruments endpoint - verified from their documentation on
 # 2026-08-25 - but from which nothing is collected yet. Writing an adapter says we can
 # collect; being in `venues` says we do. Promotion needs an authorised capture run.
-REQUIRED_CANDIDATE_VENUES = {"bybit", "bitmex", "kraken", "cryptocom", "coinbase_intx"}
+# Still candidates: no adapter, because their instrument response shape could not be
+# confirmed from documentation. Crypto.com publishes symbol/base_ccy/quote_ccy and the
+# decimals but no listing timestamp was found, and Coinbase International's instrument
+# fields could not be read at all. Writing a normaliser against guessed field names
+# would silently mis-map data, which is worse than not collecting.
+REQUIRED_CANDIDATE_VENUES = {"bybit", "cryptocom", "coinbase_intx"}
 
 # Coinbase International's own documentation states that a pre-IPO perpetual's index
 # price "may comprise internal reference prices from trading activity and/or third-party

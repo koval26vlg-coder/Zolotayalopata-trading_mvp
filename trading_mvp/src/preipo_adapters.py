@@ -26,7 +26,7 @@ from preipo_perp_event import PreIPOEvent, PreIPOEventError, parse_announcement
 
 
 ADAPTER_SCHEMA = "trading_mvp_preipo_public_adapter_v1"
-VENUES = ("okx", "gate", "bitmex")
+VENUES = ("okx", "gate", "bitmex", "kraken")
 
 
 def _timestamp(value: Any) -> float | None:
@@ -239,6 +239,64 @@ def normalize_bitmex_contract(item: Mapping[str, Any], *, source_class: str = "o
     )
 
 
+def normalize_kraken_contract(item: Mapping[str, Any], *, source_class: str = "official") -> PreIPOContract | None:
+    """Normalize a Kraken Futures instrument, refusing to guess that it is pre-IPO.
+
+    Like BitMEX, Kraken publishes no pre-IPO marker, so membership comes from the
+    declared equity list and everything else is refused.
+
+    Two Kraken specifics are worth stating because both are easy to get wrong:
+
+      * `type` is "flexible_futures" for a perpetual. The dated and inverse types are
+        different instruments and are not collected here.
+      * `tradeable` is documented as "True if this instrument is, or has ever been, a
+        tradable instrument". It is a history flag, not a liveness flag, so using it to
+        decide whether a contract is live would keep delisted instruments in the sample
+        forever. `isExpired` is the terminal signal.
+
+    `openingDate` is documented as when the instrument became available for trading -
+    a contract launch, like BitMEX's `listing`. It is not the underlying's IPO and not
+    an observed first trade, so it maps to tradable_ts and cannot satisfy the acceptance
+    gate's exact_first_trade_t0 requirement.
+    """
+    from premarket_asset_class import (
+        ASSET_CLASS_EQUITY_PREIPO,
+        classify_underlying,
+        underlying_of,
+    )
+
+    symbol = str(item.get("symbol") or "").strip().upper()
+    if not symbol:
+        return None
+    if _normalise_status(item.get("type")) != "flexible_futures":
+        return None
+    base = str(item.get("base") or item.get("underlying") or "").strip().upper()
+    canonical = underlying_of(base) if base else underlying_of(symbol)
+    if classify_underlying(canonical) != ASSET_CLASS_EQUITY_PREIPO:
+        return None
+
+    lifecycle = "expired" if bool(item.get("isExpired")) else "preipo_continuous"
+    quote = str(item.get("quote") or "USD").strip().upper()
+    margins = item.get("marginLevels") or item.get("retailMarginLevels") or []
+    maintenance = None
+    if isinstance(margins, list) and margins:
+        first = margins[0]
+        if isinstance(first, Mapping):
+            maintenance = _float(first.get("maintenanceMargin"))
+    return PreIPOContract(
+        venue="kraken",
+        contract_id=symbol,
+        underlying_symbol=canonical,
+        quote=quote,
+        lifecycle_status=lifecycle,
+        phase="preipo_continuous" if lifecycle == "preipo_continuous" else "scheduled",
+        source_class=source_class,
+        tradable_ts=_timestamp(item.get("openingDate")),
+        official_conversion_ts=None,
+        maintenance_margin_rate=maintenance,
+    )
+
+
 def normalize_gate_contract(item: Mapping[str, Any], *, source_class: str = "official") -> PreIPOContract | None:
     """Normalize a Gate USDT contract only with an explicit equity pre-IPO marker."""
 
@@ -448,6 +506,9 @@ class GatePreIPOAdapter(PublicPreIPOAdapter):
         ]
 
 
+# Registered after every adapter class below, so VENUES and ADAPTERS cannot drift: a
+# venue named in VENUES but missing here would make build_public_adapters raise the
+# moment anyone called it with the default argument. A test asserts the two agree.
 ADAPTERS: dict[str, type[PublicPreIPOAdapter]] = {"okx": OkxPreIPOAdapter, "gate": GatePreIPOAdapter}
 
 class BitmexPreIPOAdapter(PublicPreIPOAdapter):
@@ -503,3 +564,40 @@ def build_public_adapters(
             raise ValueError(f"unsupported pre-IPO venue: {raw_venue}")
         result[venue] = ADAPTERS[venue](timeout_sec=timeout_sec, session=session_factory())
     return result
+
+
+class KrakenPreIPOAdapter(PublicPreIPOAdapter):
+    """Kraken Futures public market data. /instruments needs no key."""
+
+    venue = "kraken"
+    base_url = "https://futures.kraken.com/derivatives/api/v3"
+    ws_url = "wss://futures.kraken.com/ws/v1"
+
+    def discover_contracts(self) -> list[PreIPOContract]:
+        payload = self._get("/instruments")
+        rows = payload.get("instruments") if isinstance(payload, Mapping) else payload
+        return [
+            contract
+            for item in rows or []
+            if (contract := normalize_kraken_contract(item)) is not None
+        ]
+
+    def snapshot_payloads(self, contract: PreIPOContract) -> list[Mapping[str, Any]]:
+        symbol = contract.contract_id
+        return [
+            {"feed": "book_snapshot", "data": self._get("/orderbook", {"symbol": symbol})},
+            {"feed": "ticker", "data": self._get("/tickers", {"symbol": symbol})},
+        ]
+
+    def websocket_subscriptions(self, contract: PreIPOContract) -> list[dict[str, Any]]:
+        symbol = contract.contract_id
+        return [
+            {"event": "subscribe", "feed": "book", "product_ids": [symbol]},
+            {"event": "subscribe", "feed": "trade", "product_ids": [symbol]},
+            {"event": "subscribe", "feed": "ticker", "product_ids": [symbol]},
+        ]
+
+
+ADAPTERS["bitmex"] = BitmexPreIPOAdapter
+ADAPTERS["kraken"] = KrakenPreIPOAdapter
+assert set(ADAPTERS) == set(VENUES), "every declared venue needs an adapter"
