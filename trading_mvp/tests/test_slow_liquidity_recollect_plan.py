@@ -123,10 +123,21 @@ class SlowLiquidityRecollectPlanTests(unittest.TestCase):
 
         self.assertEqual(plan["universe"]["sha256"], file_sha256(UNIVERSE))
         self.assertEqual(plan["launcher"]["sha256"], file_sha256(LAUNCHER))
+        frozen_runtime_bindings = {
+            "active_run_gate_checker": (
+                "55a9d9c30a7debf1d64cfbe077e26319b5ae522568cf0dc7aec8a221dc8fed7c"
+            ),
+            "global_writer_claim": (
+                "6c57b5612d8dc972ebb94941c514bae7333c1cb21b13dd4487e2fe6a2569ea2e"
+            ),
+        }
         for binding in plan["implementation"]["files"]:
             path = Path(binding["path"])
             self.assertTrue(path.is_file(), binding["path"])
-            if binding["role"] == "active_run_gate_checker":
+            if binding["role"] in frozen_runtime_bindings:
+                self.assertEqual(
+                    binding["sha256"], frozen_runtime_bindings[binding["role"]]
+                )
                 self.assertNotEqual(binding["sha256"], file_sha256(path))
                 continue
             self.assertEqual(binding["sha256"], file_sha256(path))

@@ -11,7 +11,7 @@ if str(ROOT) not in sys.path:
 from preipo_plan import canonical_plan_hash, validate_plan  # noqa: E402
 
 
-PLAN = Path(__file__).resolve().parents[2] / "docs" / "plans" / "preipo-perpetual-event-planonly-20260825-v8.json"
+PLAN = Path(__file__).resolve().parents[2] / "docs" / "plans" / "preipo-perpetual-event-planonly-20260825-v9.json"
 
 
 class PreIPOPlanTests(unittest.TestCase):
@@ -77,7 +77,7 @@ class PreIPOPlanTests(unittest.TestCase):
         self.assertTrue(result["ok"], result)
         self.assertEqual(result["status"], "PLAN_OK")
         self.assertEqual(set(result["venues"]), set(preipo_plan.REQUIRED_VENUES))
-        self.assertEqual(result["plan_id"], "preipo_perpetual_event_20260825_v8")
+        self.assertEqual(result["plan_id"], "preipo_perpetual_event_20260825_v9")
 
     def test_every_collected_venue_has_an_adapter(self) -> None:
         """A venue may be declared without an adapter only while it is a candidate.
@@ -124,18 +124,18 @@ class PreIPOPlanTests(unittest.TestCase):
         self.assertEqual(automation["capture_duration_sec"], 5 * 60)
         self.assertEqual(payload["recovery_contract"]["interval_sec"], 6 * 60 * 60)
 
-    def test_v8_supersedes_v7_without_reusing_its_identity(self) -> None:
+    def test_v9_supersedes_v8_without_reusing_its_identity(self) -> None:
         import json
 
         payload = json.loads(PLAN.read_text(encoding="utf-8"))
-        self.assertEqual(payload["supersedes_plan_id"], "preipo_perpetual_event_20260825_v7")
+        self.assertEqual(payload["supersedes_plan_id"], "preipo_perpetual_event_20260825_v8")
         self.assertEqual(
             payload["supersedes_plan_hash"],
-            "4349a3745af908717972a189df47c55301a5075e48022a92a7d714d8b526349c",
+            "6d3eb3d8fe97d212f1066bfea5cc29167cb823d394cddb3ac5ae065ad7d6ec69",
         )
         self.assertEqual(
             payload["supersedes_plan_file_sha256"],
-            "f9f6ee5b374a21a41820a2344bb6b5dc440a1413e67fb415880b90c4905552b5",
+            "e235832f47fc95e29f51493747df5b43e24139a160d5ed83e76520661248c84e",
         )
 
     def test_implementation_role_cannot_be_substituted_with_an_arbitrary_file(self) -> None:

@@ -44,6 +44,11 @@ def _load_parent_plan() -> dict[str, object]:
     return json.loads(PARENT_DISCOVERY_PLAN_PATH.read_text(encoding="utf-8"))
 
 
+def _load_frozen_lineage() -> dict[str, object]:
+    frozen = json.loads(RUNTIME_MANIFEST_PATH.read_text(encoding="utf-8"))
+    return dict(frozen["lineage"])
+
+
 def _complete_fixture() -> tuple[
     dict[str, object], dict[str, FetchedResponse], dict[str, str]
 ]:
@@ -192,11 +197,15 @@ class RequestPlanDiscoveryV3Tests(unittest.TestCase):
     def test_runtime_manifest_binds_complete_sanitized_topology_and_stays_closed(
         self,
     ) -> None:
-        manifest = build_runtime_manifest(
-            generated_at_utc="2026-08-15T18:00:00Z",
-        )
-
-        validate_runtime_manifest(manifest)
+        with mock.patch.object(
+            runtime_v3,
+            "_validate_lineage",
+            return_value=_load_frozen_lineage(),
+        ):
+            manifest = build_runtime_manifest(
+                generated_at_utc="2026-08-15T18:00:00Z",
+            )
+            validate_runtime_manifest(manifest)
         self.assertEqual(manifest["status"], RUNTIME_MANIFEST_STATUS)
         topology = manifest["lineage"]["topology_v4_output"]
         self.assertEqual(topology["status"], "COMPLETE_SANITIZED_TOPOLOGY_NOT_IDENTITY_EVIDENCE")
@@ -212,30 +221,57 @@ class RequestPlanDiscoveryV3Tests(unittest.TestCase):
         )
 
     def test_runtime_manifest_rejects_resealed_permission_expansion(self) -> None:
-        manifest = build_runtime_manifest(
-            generated_at_utc="2026-08-15T18:00:00Z",
-        )
-        manifest["execution_authorization"]["network_run_allowed"] = True
-        manifest["manifest_hash"] = canonical_hash_without(manifest, "manifest_hash")
-
-        with self.assertRaisesRegex(
-            RequestPlanDiscoveryV3Error,
-            "runtime manifest",
+        with mock.patch.object(
+            runtime_v3,
+            "_validate_lineage",
+            return_value=_load_frozen_lineage(),
         ):
-            validate_runtime_manifest(manifest)
+            manifest = build_runtime_manifest(
+                generated_at_utc="2026-08-15T18:00:00Z",
+            )
+            manifest["execution_authorization"]["network_run_allowed"] = True
+            manifest["manifest_hash"] = canonical_hash_without(
+                manifest,
+                "manifest_hash",
+            )
 
-    def test_runtime_manifest_writer_is_immutable(self) -> None:
-        manifest = build_runtime_manifest(
-            generated_at_utc="2026-08-15T18:00:00Z",
-        )
-        with tempfile.TemporaryDirectory() as temp:
-            target = Path(temp) / "runtime.json"
-            write_runtime_manifest(target, manifest)
             with self.assertRaisesRegex(
                 RequestPlanDiscoveryV3Error,
-                "already exists",
+                "runtime manifest",
             ):
+                validate_runtime_manifest(manifest)
+
+    def test_runtime_manifest_writer_is_immutable(self) -> None:
+        with mock.patch.object(
+            runtime_v3,
+            "_validate_lineage",
+            return_value=_load_frozen_lineage(),
+        ):
+            manifest = build_runtime_manifest(
+                generated_at_utc="2026-08-15T18:00:00Z",
+            )
+            with tempfile.TemporaryDirectory() as temp:
+                target = Path(temp) / "runtime.json"
                 write_runtime_manifest(target, manifest)
+                with self.assertRaisesRegex(
+                    RequestPlanDiscoveryV3Error,
+                    "already exists",
+                ):
+                    write_runtime_manifest(target, manifest)
+
+    def test_missing_historical_topology_output_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            absent = Path(temp) / "absent-manifest.json"
+            with mock.patch.object(
+                runtime_v3,
+                "TOPOLOGY_OUTPUT_MANIFEST_PATH",
+                absent,
+            ):
+                with self.assertRaisesRegex(
+                    RequestPlanDiscoveryV3Error,
+                    "topology v4 output manifest is unavailable",
+                ):
+                    runtime_v3._validate_lineage()
 
     def test_offline_refreeze_readiness_resolves_without_execution_artifacts(self) -> None:
         real_gate_path = REPO_ROOT / "docs/agent-log/active-run-gate.json"
@@ -278,6 +314,11 @@ class RequestPlanDiscoveryV3Tests(unittest.TestCase):
                 execution_manifest_patch,
                 approval_receipt_patch,
                 mock.patch.object(runtime_v3, "RUNTIME_MANIFEST_PATH", runtime_path),
+                mock.patch.object(
+                    runtime_v3,
+                    "_validate_lineage",
+                    return_value=_load_frozen_lineage(),
+                ),
             ):
                 manifest = build_runtime_manifest(
                     generated_at_utc="2026-08-15T18:00:00Z",

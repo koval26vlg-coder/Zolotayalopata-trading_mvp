@@ -101,9 +101,9 @@ class SlowLiquidityRecollectLaunchWindowTests(unittest.TestCase):
         for binding in plan["implementation"]["files"]:
             if binding["role"] == "active_run_gate_checker":
                 binding["path"] = str(ACTIVE_RUN_GATE_CHECKER)
-                binding["sha256"] = _sha256_bytes(
-                    ACTIVE_RUN_GATE_CHECKER.read_bytes()
-                )
+            implementation_path = Path(binding["path"])
+            self.assertTrue(implementation_path.is_file(), binding["path"])
+            binding["sha256"] = _sha256_bytes(implementation_path.read_bytes())
         plan["plan_hash"] = _logical_plan_hash(plan)
 
         plan_bytes = (json.dumps(plan, ensure_ascii=False, indent=2) + "\n").encode("utf-8")

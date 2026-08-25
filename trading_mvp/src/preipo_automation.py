@@ -32,8 +32,9 @@ from adaptive_cadence import (
     SCHEDULED_INTERVAL_SEC,
     decide_cadence,
 )
-from premarket_temporal_anchor import (
+from preipo_temporal_anchor import (
     ANCHOR_CONTRACT_LAUNCH,
+    ANCHOR_OFFICIAL_FIRST_TRADE,
     ANCHOR_TRANSITION,
     anchor_observation,
     resolve_anchor,
@@ -306,6 +307,17 @@ def _contract_metadata(contract: Any, *, received_ts: float) -> dict[str, Any]:
         "lifecycle_status": contract.lifecycle_status,
         "phase": contract.phase,
         "source_class": contract.source_class,
+        "official_first_trade_ts": contract.official_first_trade_ts,
+        "official_first_trade_announcement_ts": (
+            contract.official_first_trade_announcement_ts
+        ),
+        "official_first_trade_source_class": (
+            contract.official_first_trade_source_class
+        ),
+        "official_first_trade_source_url": contract.official_first_trade_source_url,
+        "official_first_trade_source_family": (
+            contract.official_first_trade_source_family
+        ),
         "received_ts": received_ts,
     }
 
@@ -471,18 +483,32 @@ def discover_and_snapshot(
         ws_outcomes: list[dict[str, Any]] = []
         try:
             for contract in selected:
-                # official_conversion_ts is read from Bybit preMktSwTime and OKX
-                # conversion_time. That is a transition, not an official spot t0 - the
-                # hardened capture repo maps the same field to transition_ts and refuses
-                # official_spot_t0 to anything short of an OFFICIAL_ANNOUNCEMENT. No
-                # venue endpoint feeding this track publishes a spot t0, so this track
-                # can carry no exact official time at all, and now says so.
+                # The underlying equity's official first trade is this strategy's t0.
+                # Contract launch and conversion remain descriptive proxies even when
+                # their enclosing metadata row came from an official venue endpoint.
                 anchor = resolve_anchor(
                     {
+                        ANCHOR_OFFICIAL_FIRST_TRADE:
+                            contract.official_first_trade_ts,
                         ANCHOR_TRANSITION: contract.official_conversion_ts,
                         ANCHOR_CONTRACT_LAUNCH: contract.tradable_ts,
                     },
                     source_class=contract.source_class,
+                    source_classes={
+                        ANCHOR_OFFICIAL_FIRST_TRADE:
+                            contract.official_first_trade_source_class,
+                    },
+                    source_urls={
+                        ANCHOR_OFFICIAL_FIRST_TRADE:
+                            contract.official_first_trade_source_url,
+                    },
+                    source_venues={
+                        ANCHOR_OFFICIAL_FIRST_TRADE: contract.venue,
+                    },
+                    announcement_timestamps={
+                        ANCHOR_OFFICIAL_FIRST_TRADE:
+                            contract.official_first_trade_announcement_ts,
+                    },
                 )
                 cadence_contracts.append(
                     {
@@ -497,6 +523,16 @@ def discover_and_snapshot(
                     **_contract_metadata(contract, received_ts=discovery_received_ts),
                     "event_kind": "lifecycle",
                     "exchange_ts": contract.tradable_ts or discovery_received_ts,
+                    "official_first_trade_ts": contract.official_first_trade_ts,
+                    "official_first_trade_source_class": (
+                        contract.official_first_trade_source_class
+                    ),
+                    "official_first_trade_source_url": (
+                        contract.official_first_trade_source_url
+                    ),
+                    "official_first_trade_source_family": (
+                        contract.official_first_trade_source_family
+                    ),
                     "official_conversion_ts": contract.official_conversion_ts,
                     "rebase_ts": contract.rebase_ts,
                     "maintenance_margin_rate": contract.maintenance_margin_rate,

@@ -266,6 +266,7 @@ class PreIPOAdapterTests(unittest.TestCase):
                 "contract_id": "UNITREE_USDT",
                 "underlying_symbol": "UNITREE",
                 "quote": "USDT",
+                "announcement_ts": 1_780_000_000,
                 "official_first_trade_ts": 1_780_010_000,
             }
         )

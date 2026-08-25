@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import re
 from datetime import datetime, timezone
@@ -398,6 +399,57 @@ def _validate_deterministic_result_hash(
 def _validate_current_guard_snapshot(
     payload: Mapping[str, Any],
 ) -> dict[str, Any]:
+    if payload.get("schema") != "trading_mvp_autopilot_state_v1":
+        raise ValueError("v10 guard snapshot schema mismatch")
+    if payload.get("status") != "ACTIVE":
+        raise ValueError("v10 guard snapshot is not ACTIVE")
+    if payload.get("stop_new_actions") is not False:
+        raise ValueError("v10 guard snapshot stops new actions")
+
+    usage = payload.get("usage")
+    gate = payload.get("gate")
+    schedule = payload.get("schedule_window")
+    postrun = payload.get("pit_postrun_disposition")
+    if not all(
+        isinstance(value, Mapping)
+        for value in (usage, gate, schedule, postrun)
+    ):
+        raise ValueError("v10 guard snapshot is incomplete")
+    remaining_percent = usage.get("remaining_percent")
+    if (
+        usage.get("status") != "AVAILABLE"
+        or usage.get("decision") != "CONTINUE"
+        or isinstance(remaining_percent, bool)
+        or not isinstance(remaining_percent, (int, float))
+        or not 0.0 <= remaining_percent <= 100.0
+        or not math.isfinite(remaining_percent)
+        or remaining_percent <= 15.0
+    ):
+        raise ValueError("v10 guard snapshot weekly quota is not available")
+    if gate.get("status") != "READY_FOR_POSTPROCESS":
+        raise ValueError("v10 guard snapshot active-run gate is not ready")
+    if postrun.get("status") != "COMPLETE":
+        raise ValueError("v10 guard snapshot PIT postrun is not complete")
+    if postrun.get("new_collector_allowed") is not False:
+        raise ValueError("v10 guard snapshot unexpectedly permits a collector")
+    if (
+        schedule.get("classification") != "PREAPPROVED_SHORT_SEGMENT"
+        or schedule.get("data_type") != "PIT_UNIVERSE_V2_FORWARD"
+        or schedule.get("status") not in {"WAITING", "DUE"}
+        or not str(schedule.get("run_id") or "")
+        or not re.fullmatch(
+            r"[0-9a-f]{64}", str(schedule.get("plan_hash") or "").lower()
+        )
+    ):
+        raise ValueError("v10 guard snapshot PIT pointer is invalid")
+    accepted_dates = schedule.get("accepted_distinct_dates")
+    target_dates = schedule.get("stage_target_distinct_dates")
+    if type(accepted_dates) is not int or type(target_dates) is not int:
+        raise ValueError(
+            "v10 guard snapshot train checkpoint integer counters are invalid"
+        )
+    if accepted_dates < 0 or target_dates <= 0 or accepted_dates >= target_dates:
+        raise ValueError("v10 guard snapshot train checkpoint requires review")
     return dict(payload)
 
 def build_readiness_assessment(
@@ -1648,8 +1700,8 @@ def build_readiness_assessment_v10(
     guard = _validate_current_guard_snapshot(guard_snapshot)
     schedule = guard["schedule_window"]
     action_due = bool(guard.get("action_due"))
-    accepted_dates = int(schedule["accepted_distinct_dates"])
-    target_dates = int(schedule["stage_target_distinct_dates"])
+    accepted_dates = schedule["accepted_distinct_dates"]
+    target_dates = schedule["stage_target_distinct_dates"]
     provenance_refresh_required = not code_provenance_current
     current_schedule = {
         "decision": guard["decision"],
@@ -2375,8 +2427,21 @@ def build_readiness_assessment_v12(
             "reason": "funding_directional_momentum_hypothesis requires formal definition and evaluation",
         },
         "next_bounded_catalog_requirement": [
-            {"id": "funding_directional_momentum_hypothesis_v1"},
+            {
+                "id": "funding_directional_momentum_hypothesis_v1",
+                "maximum_runtime_sec": 1800,
+                "network": False,
+            },
+            {
+                "id": "paper_code_provenance_merkle_v10",
+                "maximum_runtime_sec": 300,
+                "network": False,
+            },
         ],
+        "verdict": (
+            "CURRENT_READINESS_RECONCILED_"
+            "FUNDING_DIRECTIONAL_MOMENTUM_PENDING"
+        ),
         "next_allowed_action": "derive_and_install_catalog_v12_then_continue_bounded_offline_work",
         "next_allowed_action_source": "paper_product_readiness_audit_v12",
     }
@@ -2474,43 +2539,3 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
-
-def build_readiness_assessment_v12(
-    *,
-    components: Mapping[str, Mapping[str, Any]],
-    code_provenance_current: bool,
-    targeted_tests: Mapping[str, Any],
-    guard_snapshot: Mapping[str, Any],
-) -> dict[str, Any]:
-    base = build_readiness_assessment_v11(
-        components=components,
-        code_provenance_current=code_provenance_current,
-        targeted_tests=targeted_tests,
-        guard_snapshot=guard_snapshot,
-    )
-    return {
-        **base,
-        "schema": "fast_first_paper_product_readiness_audit_v12",
-        "offline_gap_assessment": {
-            **base.get("offline_gap_assessment", {}),
-            "reason": "funding_directional_momentum_hypothesis requires formal definition and evaluation",
-        },
-        "next_bounded_catalog_requirement": [
-            {
-                "id": "funding_directional_momentum_hypothesis_v1",
-                "maximum_runtime_sec": 1800,
-                "network": False,
-            },
-            {
-                "id": "paper_code_provenance_merkle_v10",
-                "maximum_runtime_sec": 300,
-                "network": False,
-            }
-        ],
-        "verdict": "CURRENT_READINESS_RECONCILED_FUNDING_DIRECTIONAL_MOMENTUM_PENDING",
-        "next_allowed_action": "derive_and_install_catalog_v12_then_continue_bounded_offline_work",
-    }
-
-
-

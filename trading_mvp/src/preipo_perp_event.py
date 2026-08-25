@@ -23,7 +23,7 @@ from urllib.parse import urlsplit
 SCHEMA = "trading_mvp_preipo_perpetual_event_v1"
 ASSET_CLASS = "preipo_equity"
 ACTIVE_VENUES = ("okx", "gate", "bitmex", "kraken")
-CANDIDATE_VENUES = ("bybit", "coinbase_intx", "cryptocom")
+CANDIDATE_VENUES = ("binance", "bybit", "coinbase_intx", "cryptocom")
 SOURCE_OFFICIAL = "official"
 SOURCE_PROXY = "proxy"
 
@@ -56,11 +56,14 @@ _EXIT_OFFSETS_SEC = {
     "ipo_open_plus_60s": 60,
 }
 _OFFICIAL_HOSTS = {
+    "binance": ("binance.com",),
     "okx": ("okx.com", "okx-digital.com"),
     "gate": ("gate.com", "gate.io", "gateio.ws"),
     "bybit": ("bybit.com", "bybit-exchange.github.io"),
     "bitmex": ("bitmex.com",),
     "kraken": ("kraken.com",),
+    "coinbase_intx": ("coinbase.com",),
+    "cryptocom": ("crypto.com",),
 }
 _TERMINAL_STATUSES = {"converted", "cancelled", "delisted", "expired"}
 _ALLOWED_TRANSITIONS = {
@@ -159,6 +162,16 @@ def _is_official_url(venue: str, source_url: str) -> bool:
     )
 
 
+def is_official_source_url(venue: str, source_url: str) -> bool:
+    """Return whether a URL belongs to the declared official host for one venue."""
+
+    try:
+        normalised = _normalise_venue(venue)
+    except PreIPOEventError:
+        return False
+    return _is_official_url(normalised, source_url)
+
+
 def _canonical_hash(payload: Any) -> str:
     encoded = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
@@ -213,15 +226,27 @@ class PreIPOEvent:
             raise PreIPOEventError("official event requires source_url")
 
     @property
+    def has_acceptance_grade_t0(self) -> bool:
+        return (
+            self.source_class == SOURCE_OFFICIAL
+            and _is_official_url(self.venue, self.source_url)
+            and self.announcement_ts is not None
+            and math.isfinite(float(self.announcement_ts))
+            and float(self.announcement_ts) > 0
+            and self.official_first_trade_ts is not None
+            and math.isfinite(float(self.official_first_trade_ts))
+            and float(self.official_first_trade_ts) > 0
+        )
+
+    @property
     def proxy_only(self) -> bool:
-        return self.source_class == SOURCE_PROXY or self.official_first_trade_ts is None
+        return not self.has_acceptance_grade_t0
 
     @property
     def acceptance_eligible(self) -> bool:
         return (
             self.venue in ACTIVE_VENUES
-            and self.source_class == SOURCE_OFFICIAL
-            and self.official_first_trade_ts is not None
+            and self.has_acceptance_grade_t0
             and self.lifecycle_status not in {"cancelled", "postponed", "delisted", "expired"}
         )
 
@@ -271,14 +296,10 @@ def parse_announcement(payload: Mapping[str, Any], *, require_official_source: b
     if not contract_id or not underlying:
         raise PreIPOEventError("announcement is missing contract_id or underlying_symbol")
 
-    official_first_trade_ts = _as_timestamp(_find(
-        payload,
-        "official_first_trade_ts",
-        "first_trade_ts",
-        "ipo_open_ts",
-        "ipo_start_ts",
-        "first_trading_ts",
-    ))
+    # This field is an explicitly resolved underlying-equity datum.  Venue contract
+    # labels such as Kraken's "First Trading" and generic IPO aliases are not allowed
+    # to promote themselves into the acceptance t0.
+    official_first_trade_ts = _as_timestamp(_find(payload, "official_first_trade_ts"))
     conversion_start = _as_timestamp(_find(payload, "conversion_window_start_ts", "conversion_start_ts", "conversion_ts"))
     conversion_end = _as_timestamp(_find(payload, "conversion_window_end_ts", "conversion_end_ts"))
     actual_conversion = _as_timestamp(_find(payload, "actual_conversion_ts", "transition_ts"))

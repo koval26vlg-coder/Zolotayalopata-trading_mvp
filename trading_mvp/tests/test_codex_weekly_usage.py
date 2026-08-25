@@ -87,6 +87,27 @@ class CodexWeeklyUsageTests(unittest.TestCase):
         result = evaluate_usage_guard(usage, min_remaining_percent=15.0)
         self.assertEqual(result["decision"], "PAUSE_WEEKLY_LIMIT")
 
+    def test_available_status_rejects_invalid_remaining_percent(self) -> None:
+        invalid_values = (
+            float("nan"),
+            float("inf"),
+            float("-inf"),
+            -0.1,
+            100.1,
+            True,
+            "87.0",
+        )
+        for value in invalid_values:
+            with self.subTest(value=value):
+                with self.assertRaisesRegex(ValueError, "remaining_percent"):
+                    evaluate_usage_guard(
+                        {
+                            "status": "AVAILABLE",
+                            "remaining_percent": value,
+                        },
+                        min_remaining_percent=15.0,
+                    )
+
     def test_collects_freshest_account_wide_event(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)

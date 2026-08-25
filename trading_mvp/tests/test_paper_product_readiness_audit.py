@@ -618,7 +618,7 @@ class PaperProductReadinessAuditTests(unittest.TestCase):
         self.assertEqual(result["next_bounded_catalog_requirement"], [])
         self.assertEqual(
             result["next_allowed_action"],
-            "derive_and_install_catalog_v11_then_continue_bounded_offline_work",
+            "WAITING_SCHEDULE_WINDOW_NO_FALLBACK",
         )
         self.assertFalse(
             result["offline_gap_assessment"][
@@ -688,7 +688,7 @@ class PaperProductReadinessAuditTests(unittest.TestCase):
         self.assertEqual(result["next_bounded_catalog_requirement"], [])
         self.assertEqual(
             result["next_allowed_action"],
-            "derive_and_install_catalog_v11_then_continue_bounded_offline_work",
+            "WAITING_SCHEDULE_WINDOW_NO_FALLBACK",
         )
 
     def test_v10_stale_code_requests_exact_reconciliation_catalog(
@@ -754,44 +754,84 @@ class PaperProductReadinessAuditTests(unittest.TestCase):
                 guard_snapshot=guard,
             )
 
+    def test_v10_rejects_invalid_weekly_quota_numbers(self) -> None:
+        invalid_values = (
+            float("nan"),
+            float("inf"),
+            float("-inf"),
+            -0.1,
+            100.1,
+            True,
+            "87.0",
+        )
+        for value in invalid_values:
+            with self.subTest(value=value):
+                guard = _guard_snapshot()
+                guard["usage"]["remaining_percent"] = value
+                with self.assertRaisesRegex(ValueError, "weekly quota"):
+                    audit_module.build_readiness_assessment_v10(
+                        components=_components_v9(),
+                        code_provenance_current=True,
+                        targeted_tests={"tests_run": 102, "status": "PASS"},
+                        guard_snapshot=guard,
+                    )
+
+    def test_v10_rejects_non_integer_train_counters(self) -> None:
+        invalid_values = (True, 8.0, 8.5, "8")
+        for field in (
+            "accepted_distinct_dates",
+            "stage_target_distinct_dates",
+        ):
+            for value in invalid_values:
+                with self.subTest(field=field, value=value):
+                    guard = _guard_snapshot()
+                    guard["schedule_window"][field] = value
+                    with self.assertRaisesRegex(ValueError, "integer counters"):
+                        audit_module.build_readiness_assessment_v10(
+                            components=_components_v9(),
+                            code_provenance_current=True,
+                            targeted_tests={"tests_run": 102, "status": "PASS"},
+                            guard_snapshot=guard,
+                        )
+
+    def test_v12_yields_funding_directional_momentum_catalog(self) -> None:
+        result = audit_module.build_readiness_assessment_v12(
+            components=_components_v11(),
+            code_provenance_current=True,
+            targeted_tests={"tests_run": 110, "status": "PASS"},
+            guard_snapshot=_guard_snapshot(),
+        )
+        self.assertEqual(
+            result["schema"], "fast_first_paper_product_readiness_audit_v12"
+        )
+        self.assertEqual(
+            result["verdict"],
+            "CURRENT_READINESS_RECONCILED_FUNDING_DIRECTIONAL_MOMENTUM_PENDING",
+        )
+        self.assertEqual(
+            result["next_bounded_catalog_requirement"],
+            [
+                {
+                    "id": "funding_directional_momentum_hypothesis_v1",
+                    "maximum_runtime_sec": 1800,
+                    "network": False,
+                },
+                {
+                    "id": "paper_code_provenance_merkle_v10",
+                    "maximum_runtime_sec": 300,
+                    "network": False,
+                },
+            ],
+        )
+        self.assertEqual(
+            result["next_allowed_action"],
+            "derive_and_install_catalog_v12_then_continue_bounded_offline_work",
+        )
+        self.assertEqual(
+            result["next_allowed_action_source"],
+            "paper_product_readiness_audit_v12",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
-
-    def test_v12_yields_funding_directional_momentum_catalog(self) -> None:
-        result = build_readiness_assessment_v12(
-            components=self.valid_components,
-            code_provenance_current=True,
-            targeted_tests={"failures": 0},
-            guard_snapshot=self.guard_snapshot_waiting,
-        )
-        self.assertEqual(
-            result["schema"], "fast_first_paper_product_readiness_audit_v12"
-        )
-        self.assertEqual(
-            result["verdict"],
-            "CURRENT_READINESS_RECONCILED_FUNDING_DIRECTIONAL_MOMENTUM_PENDING",
-        )
-        self.assertEqual(
-            result["next_allowed_action"],
-            "derive_and_install_catalog_v12_then_continue_bounded_offline_work",
-        )
-
-    def test_v12_yields_funding_directional_momentum_catalog(self) -> None:
-        result = build_readiness_assessment_v12(
-            components=self.valid_components,
-            code_provenance_current=True,
-            targeted_tests={"failures": 0},
-            guard_snapshot=self.guard_snapshot_waiting,
-        )
-        self.assertEqual(
-            result["schema"], "fast_first_paper_product_readiness_audit_v12"
-        )
-        self.assertEqual(
-            result["verdict"],
-            "CURRENT_READINESS_RECONCILED_FUNDING_DIRECTIONAL_MOMENTUM_PENDING",
-        )
-        self.assertEqual(
-            result["next_allowed_action"],
-            "derive_and_install_catalog_v12_then_continue_bounded_offline_work",
-        )

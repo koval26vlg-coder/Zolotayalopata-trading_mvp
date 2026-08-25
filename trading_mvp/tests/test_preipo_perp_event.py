@@ -40,6 +40,7 @@ class PreIPOEventTests(unittest.TestCase):
                         "contract_id": f"TEST-{venue.upper()}-USDT",
                         "underlying_symbol": "TEST",
                         "quote": "USDT",
+                        "announcement_ts": 1_780_000_000,
                         "official_first_trade_ts": 1_780_010_000,
                     }
                 )
@@ -90,6 +91,32 @@ class PreIPOEventTests(unittest.TestCase):
         self.assertEqual(event.conversion_window_end_ts, 1_780_028_000)
         self.assertNotIn("official_spot_listing_ts", event.to_dict())
 
+    def test_acceptance_requires_complete_venue_official_provenance(self) -> None:
+        complete = {
+            "venue": "okx",
+            "contract_id": "SPCX-USDT-SWAP",
+            "underlying_symbol": "SPCX",
+            "quote": "USDT",
+            "announcement_ts": 1_780_000_000,
+            "official_first_trade_ts": 1_780_010_000,
+            "source_url": "https://www.okx.com/help/spcx-pre-ipo-first-trade",
+            "source_class": "official",
+        }
+        self.assertTrue(PreIPOEvent(**complete).acceptance_eligible)
+
+        for override in (
+            {"source_url": "https://example.test/spcx-first-trade"},
+            {"announcement_ts": None},
+        ):
+            with self.subTest(override=override):
+                payload = {**complete, **override}
+                direct = PreIPOEvent(**payload)
+                restored = PreIPOEvent.from_dict(payload)
+                self.assertFalse(direct.acceptance_eligible)
+                self.assertFalse(restored.acceptance_eligible)
+                self.assertTrue(direct.proxy_only)
+                self.assertTrue(restored.proxy_only)
+
     def test_expected_date_without_exact_time_is_proxy_only(self) -> None:
         event = parse_announcement(
             {
@@ -108,6 +135,30 @@ class PreIPOEventTests(unittest.TestCase):
         self.assertTrue(event.proxy_only)
         self.assertFalse(event.acceptance_eligible)
         self.assertIsNone(event.official_first_trade_ts)
+
+    def test_ambiguous_first_trade_aliases_cannot_become_equity_t0(self) -> None:
+        for field in (
+            "first_trade_ts",
+            "ipo_open_ts",
+            "ipo_start_ts",
+            "first_trading_ts",
+        ):
+            with self.subTest(field=field):
+                event = parse_announcement(
+                    {
+                        "venue": "kraken",
+                        "source_url": (
+                            "https://support.kraken.com/articles/"
+                            "pre-ipo-perpetual-futures-faq"
+                        ),
+                        "contract_id": "PF_TESTUSD",
+                        "underlying_symbol": "TEST",
+                        "quote": "USD",
+                        field: 1_780_010_000,
+                    }
+                )
+                self.assertIsNone(event.official_first_trade_ts)
+                self.assertFalse(event.acceptance_eligible)
 
     def test_unofficial_url_is_rejected_for_official_parser(self) -> None:
         with self.assertRaises(PreIPOEventError):

@@ -35,13 +35,13 @@ from adaptive_cadence import decide_cadence
 
 
 SCHEMA = "trading_mvp_slow_liquidity_listing_momentum_forward_monitor_planonly_v4"
-PLAN_ID = "slow_liquidity_listing_momentum_forward_monitor_20260825_v6"
+PLAN_ID = "slow_liquidity_listing_momentum_forward_monitor_20260825_v7"
 AUTOMATION_ID = "zolotyaylopata-listing-momentum-forward-v2"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 FORWARD_PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json"
+    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v7.json"
 )
 FORWARD_ROOT = Path("E:/trading_mvp/listing-momentum-forward")
 TICKS_DIR = FORWARD_ROOT / "ticks"

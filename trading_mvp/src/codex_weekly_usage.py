@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -225,10 +226,46 @@ def collect_weekly_usage(
     return result
 
 
-def evaluate_usage_guard(usage: dict[str, Any], min_remaining_percent: float = 15.0) -> dict[str, Any]:
-    usage["decision"] = "AVAILABLE"
-    usage["remaining_percent"] = 100.0
-    return usage
+def evaluate_usage_guard(
+    usage: dict[str, Any],
+    min_remaining_percent: float = 15.0,
+) -> dict[str, Any]:
+    if (
+        isinstance(min_remaining_percent, bool)
+        or not isinstance(min_remaining_percent, (int, float))
+        or not 0.0 < min_remaining_percent < 100.0
+        or not math.isfinite(min_remaining_percent)
+    ):
+        raise ValueError("min_remaining_percent must be in (0, 100)")
+    status = usage.get("status")
+    if status in {"AVAILABLE", "RESET_INFERRED"}:
+        remaining_value = usage.get("remaining_percent")
+        if (
+            isinstance(remaining_value, bool)
+            or not isinstance(remaining_value, (int, float))
+            or not 0.0 <= remaining_value <= 100.0
+            or not math.isfinite(remaining_value)
+        ):
+            raise ValueError(
+                "remaining_percent must be a finite number in [0, 100]"
+            )
+        remaining = float(remaining_value)
+        decision = (
+            "PAUSE_WEEKLY_LIMIT"
+            if remaining <= min_remaining_percent
+            else "CONTINUE"
+        )
+    elif status == "STALE":
+        decision = "PAUSE_USAGE_TELEMETRY_STALE"
+    else:
+        decision = "PAUSE_USAGE_TELEMETRY_UNAVAILABLE"
+    return {
+        **usage,
+        "decision": decision,
+        "min_remaining_percent": min_remaining_percent,
+        "threshold_inclusive": True,
+        "weekly_window_required": WEEKLY_WINDOW_MINUTES,
+    }
 
 
 def _default_session_root() -> Path:

@@ -544,9 +544,10 @@ $gate = Get-Content -LiteralPath $gatePath -Raw | ConvertFrom-Json -Depth 100
         result = self._run()
 
         self.assertNotEqual(result.returncode, 0)
+        output = " ".join((result.stdout + result.stderr).replace("|", " ").split())
         self.assertIn(
             "Exact quality context is invalid: ValueError: manifest file SHA256 mismatch",
-            result.stdout + result.stderr,
+            output,
         )
         self.assertFalse(self.quality_path.exists())
         self.assertEqual(self.gate_path.read_bytes(), self.original_gate)
@@ -561,9 +562,10 @@ $gate = Get-Content -LiteralPath $gatePath -Raw | ConvertFrom-Json -Depth 100
         result = self._run()
 
         self.assertNotEqual(result.returncode, 0)
+        output = " ".join((result.stdout + result.stderr).replace("|", " ").split())
         self.assertIn(
             "Exact quality context is invalid: ValueError: output file SHA256 mismatch",
-            result.stdout + result.stderr,
+            output,
         )
         self.assertFalse(self.quality_path.exists())
         self.assertEqual(self.gate_path.read_bytes(), self.original_gate)

@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import hashlib
 import json
+import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -382,7 +385,7 @@ class PlanModuleTests(unittest.TestCase):
         ):
             plan_module.validate_first_days_collect_plan(plan)
 
-    def test_checked_in_plan_matches_generator(self) -> None:
+    def test_checked_in_plan_remains_immutable_after_writer_runtime_drift(self) -> None:
         if not plan_module.COLLECT_PLAN_PATH.is_file():
             raise FileNotFoundError(plan_module.COLLECT_PLAN_PATH)
         checked_in = json.loads(
@@ -391,7 +394,148 @@ class PlanModuleTests(unittest.TestCase):
         rebuilt = plan_module.build_first_days_collect_plan(
             checked_in["generated_at_utc"]
         )
-        self.assertEqual(checked_in, rebuilt)
+        checked_bindings = {
+            item["role"]: item for item in checked_in["implementation"]["files"]
+        }
+        rebuilt_bindings = {
+            item["role"]: item for item in rebuilt["implementation"]["files"]
+        }
+        frozen_binding_sha256 = {
+            "collector": (
+                "b24cbc368082b0a8ade446fc906052629f8edfc2f65783d33cfe276c4c8f1941"
+            ),
+            "global_writer_claim": (
+                "6c57b5612d8dc972ebb94941c514bae7333c1cb21b13dd4487e2fe6a2569ea2e"
+            ),
+            "visible_launcher": (
+                "67d8749369ff3fadb1cef0d8fed7ab9edf7a88d1172ac98d900b5a0316042873"
+            ),
+        }
+        for role, frozen_sha256 in frozen_binding_sha256.items():
+            with self.subTest(role=role):
+                self.assertEqual(
+                    checked_bindings[role]["sha256"],
+                    frozen_sha256,
+                )
+                self.assertNotEqual(
+                    rebuilt_bindings[role]["sha256"],
+                    frozen_sha256,
+                )
+
+        normalized_rebuilt = json.loads(json.dumps(rebuilt))
+        for binding in normalized_rebuilt["implementation"]["files"]:
+            frozen_sha256 = frozen_binding_sha256.get(binding["role"])
+            if frozen_sha256:
+                binding["sha256"] = frozen_sha256
+        normalized_rebuilt["plan_hash"] = canonical_hash(normalized_rebuilt)
+        self.assertEqual(checked_in, normalized_rebuilt)
+
+    def test_collector_rejects_frozen_plan_after_writer_runtime_drift(self) -> None:
+        plan = plan_module.build_first_days_collect_plan(
+            "2026-08-16T20:40:00Z"
+        )
+        writer_binding = next(
+            item
+            for item in plan["implementation"]["files"]
+            if item["role"] == "global_writer_claim"
+        )
+        stale_writer_sha256 = (
+            "6c57b5612d8dc972ebb94941c514bae7333c1cb21b13dd4487e2fe6a2569ea2e"
+        )
+        self.assertNotEqual(writer_binding["sha256"], stale_writer_sha256)
+        writer_binding["sha256"] = stale_writer_sha256
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            plan["execution"]["launch_record_path"] = str(
+                root / "absent-launch-record.json"
+            )
+            plan["plan_hash"] = canonical_hash(plan)
+            plan_path = root / "plan.json"
+            plan_path.write_text(
+                json.dumps(plan, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(
+                collector.FirstDaysCollectError,
+                "implementation global_writer_claim sha256 mismatch",
+            ):
+                collector.load_and_validate_plan(plan_path)
+
+    def test_launcher_blocks_completed_stale_plan_when_output_is_absent(
+        self,
+    ) -> None:
+        pwsh = shutil.which("pwsh")
+        if not pwsh:
+            self.skipTest("pwsh is not available")
+
+        checked_in = json.loads(
+            plan_module.COLLECT_PLAN_PATH.read_text(encoding="utf-8")
+        )
+        writer_binding = next(
+            item
+            for item in checked_in["implementation"]["files"]
+            if item["role"] == "global_writer_claim"
+        )
+        current_writer_sha256 = hashlib.sha256(
+            Path(writer_binding["path"]).read_bytes()
+        ).hexdigest()
+        self.assertNotEqual(writer_binding["sha256"], current_writer_sha256)
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            output_root = root / "absent-output"
+            plan_path = root / "plan.json"
+            plan = json.loads(json.dumps(checked_in))
+            execution = plan["execution"]
+            execution["output_root"] = str(output_root)
+            execution["output_jsonl"] = str(output_root / "ohlcv.jsonl")
+            execution["manifest_path"] = str(output_root / "manifest.json")
+            execution["stdout_path"] = str(output_root / "stdout.log")
+            execution["stderr_path"] = str(output_root / "stderr.log")
+            plan["plan_hash"] = canonical_hash(plan)
+            plan_bytes = (
+                json.dumps(plan, ensure_ascii=False, indent=2) + "\n"
+            ).encode("utf-8")
+            plan_path.write_bytes(plan_bytes)
+
+            result = subprocess.run(
+                [
+                    pwsh,
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(plan_module.LAUNCHER_PATH),
+                    "-PlanPath",
+                    str(plan_path),
+                    "-ExpectedPlanHash",
+                    plan["plan_hash"],
+                    "-ExpectedPlanFileSha256",
+                    hashlib.sha256(plan_bytes).hexdigest(),
+                    "-PreflightOnly",
+                    "-Json",
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                timeout=60,
+                check=False,
+            )
+            self.assertFalse(output_root.exists())
+
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+        payload = json.loads(result.stdout)
+        self.assertFalse(payload["ok"])
+        self.assertIn(
+            "implementation_global_writer_claim_sha256_mismatch",
+            payload["reasons"],
+        )
+        self.assertIn(
+            "completed_planonly_cannot_be_relaunched",
+            payload["reasons"],
+        )
 
     def test_plan_execution_covers_collector_contract(self) -> None:
         plan = plan_module.build_first_days_collect_plan("2026-08-16T20:40:00Z")
@@ -414,7 +558,21 @@ class PlanModuleTests(unittest.TestCase):
         )
 
     def test_collector_loads_frozen_plan_and_materialization(self) -> None:
-        plan = collector.load_and_validate_plan(plan_module.COLLECT_PLAN_PATH)
+        generated_plan = plan_module.build_first_days_collect_plan(
+            "2026-08-16T20:40:00Z"
+        )
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            generated_plan["execution"]["launch_record_path"] = str(
+                root / "absent-launch-record.json"
+            )
+            generated_plan["plan_hash"] = canonical_hash(generated_plan)
+            plan_path = root / "plan.json"
+            plan_path.write_text(
+                json.dumps(generated_plan, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            plan = collector.load_and_validate_plan(plan_path)
         materialization = collector.load_and_validate_materialization(
             collector.MATERIALIZATION_PATH, plan
         )

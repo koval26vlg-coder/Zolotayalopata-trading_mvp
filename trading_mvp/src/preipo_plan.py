@@ -11,19 +11,19 @@ from typing import Any, Mapping
 
 
 PLAN_SCHEMA = "trading_mvp_preipo_perpetual_event_planonly_v2"
-PLAN_ID = "preipo_perpetual_event_20260825_v8"
+PLAN_ID = "preipo_perpetual_event_20260825_v9"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PLAN_PATH = (
-    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v8.json"
+    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v9.json"
 )
 SUPERSEDED_PLAN_PATH = (
-    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v7.json"
+    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v8.json"
 )
 SUPERSEDED_PLAN = {
-    "plan_id": "preipo_perpetual_event_20260825_v7",
-    "plan_hash": "4349a3745af908717972a189df47c55301a5075e48022a92a7d714d8b526349c",
-    "plan_file_sha256": "f9f6ee5b374a21a41820a2344bb6b5dc440a1413e67fb415880b90c4905552b5",
-    "plan_path": "docs/plans/preipo-perpetual-event-planonly-20260825-v7.json",
+    "plan_id": "preipo_perpetual_event_20260825_v8",
+    "plan_hash": "6d3eb3d8fe97d212f1066bfea5cc29167cb823d394cddb3ac5ae065ad7d6ec69",
+    "plan_file_sha256": "e235832f47fc95e29f51493747df5b43e24139a160d5ed83e76520661248c84e",
+    "plan_path": "docs/plans/preipo-perpetual-event-planonly-20260825-v8.json",
 }
 # Promoted 2026-08-25: bitmex and kraken have adapters and public unauthenticated
 # instruments endpoints. A failing venue is isolated to its own outcome
@@ -39,7 +39,298 @@ REQUIRED_VENUES = {"okx", "gate", "bitmex", "kraken"}
 # decimals but no listing timestamp was found, and Coinbase International's instrument
 # fields could not be read at all. Writing a normaliser against guessed field names
 # would silently mis-map data, which is worse than not collecting.
-REQUIRED_CANDIDATE_VENUES = {"bybit", "cryptocom", "coinbase_intx"}
+REQUIRED_CANDIDATE_VENUES = {
+    "binance",
+    "bybit",
+    "cryptocom",
+    "coinbase_intx",
+}
+
+PUBLIC_SOURCE_CONTRACTS: dict[str, dict[str, Any]] = {
+    "bitmex": {
+        "instrument_metadata": {
+            "host": "www.bitmex.com",
+            "path": "/api/v1/instrument/active",
+            "timestamp_field": "listing",
+            "timestamp_kind": "premarket_contract_launch_ts",
+        },
+        "official_event_family": {
+            "host": "www.bitmex.com",
+            "path_prefix": "/blog/",
+            "published_semantics": ["contract_launch", "contract_specification"],
+        },
+        "auto_proves_official_first_trade": False,
+        "fail_closed_reason": (
+            "BitMEX instrument listing and blog futures-listing dates describe the "
+            "derivative contract, not the underlying equity's first executed trade."
+        ),
+    },
+    "gate": {
+        "instrument_metadata": {
+            "host": "api.gateio.ws",
+            "path": "/api/v4/futures/usdt/contracts",
+            "timestamp_field": "launch_time",
+            "timestamp_kind": "premarket_contract_launch_ts",
+        },
+        "official_event_family": {
+            "host": "www.gate.com",
+            "perpetual_announcement_path_prefix": "/announcements/article/",
+            "reference_article_id": "50673",
+            "published_semantics": ["contract_launch", "conversion_notice"],
+        },
+        "excluded_product_families": [
+            "mirror_note",
+            "spot_preipo_asset_certificate",
+        ],
+        "auto_proves_official_first_trade": False,
+        "fail_closed_reason": (
+            "Gate pre-IPO perpetual announcements are distinct from Mirror Note and "
+            "spot pre-IPO certificates; none is equity first-trade proof by default."
+        ),
+    },
+    "kraken": {
+        "instrument_metadata": {
+            "host": "futures.kraken.com",
+            "path": "/derivatives/api/v3/instruments",
+            "timestamp_field": "openingDate",
+            "timestamp_kind": "premarket_contract_launch_ts",
+        },
+        "official_event_family": {
+            "host": "support.kraken.com",
+            "path_prefix": "/articles/pre-ipo-perpetual-futures-faq",
+            "published_semantics": [
+                "conversion_notice",
+                "rebase_notice",
+                "contract_first_trading",
+            ],
+        },
+        "auto_proves_official_first_trade": False,
+        "fail_closed_reason": (
+            "Kraken conversion/rebase notices and a contract First Trading field do "
+            "not by themselves prove the underlying equity's first executed trade."
+        ),
+    },
+    "okx": {
+        "instrument_metadata": {
+            "host": "www.okx.com",
+            "path": "/api/v5/public/instruments",
+            "timestamp_field": "listTime",
+            "timestamp_kind": "premarket_contract_launch_ts",
+        },
+        "official_event_family": {
+            "host": "www.okx.com",
+            "path_prefix": "/help/",
+            "published_semantics": ["conversion_window", "rebase_notice"],
+        },
+        "auto_proves_official_first_trade": False,
+        "fail_closed_reason": (
+            "An OKX conversion window depends on the stock's actual first trade but "
+            "remains separate from an explicitly sourced equity first-trade timestamp."
+        ),
+    },
+}
+
+OFFICIAL_FIRST_TRADE_SOURCE_CONTRACT: dict[str, Any] = {
+    "timestamp_kind": "official_first_trade_ts",
+    "meaning": "underlying_equity_first_executed_trade",
+    "resolver": "preipo_perp_event.parse_announcement",
+    "required_source_class": "official",
+    "allowed_source_families": {
+        "bitmex": "bitmex_official_equity_first_trade_notice",
+        "gate": "gate_preipo_perpetual_official_first_trade_notice",
+        "kraken": "kraken_official_equity_first_trade_notice",
+        "okx": "okx_official_equity_first_trade_notice",
+    },
+    "required_fields": [
+        "venue",
+        "contract_id",
+        "underlying_symbol",
+        "quote",
+        "source_url",
+        "announcement_ts",
+        "official_first_trade_ts",
+    ],
+    "required_binding_arguments": ["source_family"],
+    "contract_provenance_fields": [
+        "official_first_trade_ts",
+        "official_first_trade_announcement_ts",
+        "official_first_trade_source_class",
+        "official_first_trade_source_url",
+        "official_first_trade_source_family",
+    ],
+    "source_url_must_match_venue_official_host": True,
+    "disallowed_substitutions": [
+        "premarket_contract_launch_ts",
+        "contract_first_trading_ts",
+        "first_trade_ts",
+        "ipo_open_ts",
+        "ipo_start_ts",
+        "first_trading_ts",
+        "conversion_window_ts",
+        "transition_ts",
+        "rebase_ts",
+        "expected_ipo_date",
+        "first_observed_trade_ts",
+    ],
+    "unresolved_policy": "descriptive_only",
+    "proxy_acceptance_allowed": False,
+}
+
+_COMMON_CANDIDATE_PROMOTION_CONDITIONS = [
+    "official_preipo_perpetual_product_evidence",
+    "public_unauthenticated_instrument_and_lifecycle_api",
+    "public_market_data_adapter",
+    "equity_timestamp_taxonomy",
+    "preipo_equity_asset_class_separation",
+    "adapter_fixtures_and_failure_tests",
+    "https_allow_list_and_provenance_audit",
+]
+
+CANDIDATE_PROMOTION_CONDITIONS: dict[str, dict[str, Any]] = {
+    "binance": {
+        "status": "candidate_only",
+        "automatic_promotion_allowed": False,
+        "promotion_requires_all": [
+            *_COMMON_CANDIDATE_PROMOTION_CONDITIONS,
+            "official_binance_preipo_listing_source",
+        ],
+    },
+    "bybit": {
+        "status": "candidate_only",
+        "automatic_promotion_allowed": False,
+        "promotion_requires_all": [
+            *_COMMON_CANDIDATE_PROMOTION_CONDITIONS,
+            "official_bybit_contract_and_timestamp_method",
+        ],
+    },
+    "coinbase_intx": {
+        "status": "candidate_only",
+        "automatic_promotion_allowed": False,
+        "promotion_requires_all": [
+            *_COMMON_CANDIDATE_PROMOTION_CONDITIONS,
+            "documented_index_methodology_and_internal_index_caveat",
+        ],
+    },
+    "cryptocom": {
+        "status": "candidate_only",
+        "automatic_promotion_allowed": False,
+        "promotion_requires_all": [
+            *_COMMON_CANDIDATE_PROMOTION_CONDITIONS,
+            "documented_contract_listing_and_lifecycle_timestamps",
+        ],
+    },
+}
+
+PREIPO_TEMPORAL_ANCHOR_CONTRACT: dict[str, Any] = {
+    "module": "trading_mvp/src/preipo_temporal_anchor.py",
+    "primary_t0_kind": "official_first_trade_ts",
+    "kinds": [
+        "official_first_trade_ts",
+        "conversion_window_ts",
+        "transition_ts",
+        "premarket_contract_launch_ts",
+    ],
+    "official_anchor_kinds": ["official_first_trade_ts"],
+    "required_exact_provenance": [
+        "active_venue",
+        "positive_finite_official_first_trade_ts",
+        "positive_finite_announcement_ts",
+        "official_source_class",
+        "venue_official_source_url",
+    ],
+    "proxy_anchor_kinds": [
+        "conversion_window_ts",
+        "transition_ts",
+        "premarket_contract_launch_ts",
+    ],
+    "rule": (
+        "Only an official source that explicitly publishes the underlying equity's "
+        "first executed trade may certify the primary t0; contract launch, contract "
+        "First Trading, conversion, transition, rebase and expected dates remain proxy."
+    ),
+    "source_class_is_not_timestamp_class": (
+        "Contract metadata provenance never certifies a timestamp; official-first-trade "
+        "provenance is attached to that field, a positive announcement timestamp, the "
+        "active venue and its venue-official source URL."
+    ),
+    "anchor_selection": (
+        "Use official_first_trade_ts first, otherwise the best still-future descriptive "
+        "proxy; select the earliest future row and retire spent rows by cadence policy."
+    ),
+    "confirmation_scope": (
+        "official_confirmed and exact_timestamp belong only to the selected "
+        "official_first_trade_ts anchor, never any other row or field."
+    ),
+    "measured": (
+        "2026-08-25: active venue metadata and published conversion/rebase notices do "
+        "not automatically prove an underlying equity first-trade t0. Bybit is "
+        "candidate-only and cannot feed this runtime until all promotion conditions pass."
+    ),
+}
+
+VENUE_VERIFICATION: dict[str, Any] = {
+    "verified_at_utc": "2026-08-25",
+    "method": "official vendor documentation; no venue endpoint called in this rebind",
+    "venues": {
+        "bitmex": {
+            "status": "active",
+            "adapter": True,
+            "public_instruments_endpoint": "/api/v1/instrument/active",
+            "timestamp_field": "listing",
+            "timestamp_kind": "premarket_contract_launch_ts",
+            "authentication_required": False,
+        },
+        "gate": {
+            "status": "active",
+            "adapter": True,
+            "public_instruments_endpoint": "/api/v4/futures/usdt/contracts",
+            "timestamp_field": "launch_time",
+            "timestamp_kind": "premarket_contract_launch_ts",
+            "authentication_required": False,
+        },
+        "kraken": {
+            "status": "active",
+            "adapter": True,
+            "public_instruments_endpoint": "/derivatives/api/v3/instruments",
+            "timestamp_field": "openingDate",
+            "timestamp_kind": "premarket_contract_launch_ts",
+            "authentication_required": False,
+        },
+        "okx": {
+            "status": "active",
+            "adapter": True,
+            "public_instruments_endpoint": "/api/v5/public/instruments",
+            "timestamp_field": "listTime",
+            "timestamp_kind": "premarket_contract_launch_ts",
+            "authentication_required": False,
+        },
+        "binance": {
+            "status": "candidate_only",
+            "adapter": False,
+            "public_instruments_endpoint": None,
+            "official_product_evidence": "Binance Academy pre-IPO product documentation",
+            "promotion_contract": "candidate_promotion_conditions.binance",
+        },
+        "bybit": {
+            "status": "candidate_only",
+            "adapter": False,
+            "public_instruments_endpoint": None,
+            "promotion_contract": "candidate_promotion_conditions.bybit",
+        },
+        "coinbase_intx": {
+            "status": "candidate_only",
+            "adapter": False,
+            "public_instruments_endpoint": "public market-data API family not yet bound",
+            "promotion_contract": "candidate_promotion_conditions.coinbase_intx",
+        },
+        "cryptocom": {
+            "status": "candidate_only",
+            "adapter": False,
+            "public_instruments_endpoint": "public/get-instruments",
+            "promotion_contract": "candidate_promotion_conditions.cryptocom",
+        },
+    },
+}
 
 # Coinbase International's own documentation states that a pre-IPO perpetual's index
 # price "may comprise internal reference prices from trading activity and/or third-party
@@ -105,8 +396,11 @@ EXPECTED_IMPLEMENTATION_PATHS = {
         REPO_ROOT / "tools/start_preipo_perpetual_event_automation_visible.ps1"
     ).resolve(),
     "cadence_policy": (REPO_ROOT / "trading_mvp/src/adaptive_cadence.py").resolve(),
-    "temporal_anchor_taxonomy": (
+    "shared_temporal_anchor_selection": (
         REPO_ROOT / "trading_mvp/src/premarket_temporal_anchor.py"
+    ).resolve(),
+    "preipo_temporal_anchor_taxonomy": (
+        REPO_ROOT / "trading_mvp/src/preipo_temporal_anchor.py"
     ).resolve(),
 }
 
@@ -155,6 +449,10 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
         reasons.append("index_price_caveat_missing")
     if set(payload.get("candidate_venues") or []) != REQUIRED_CANDIDATE_VENUES:
         reasons.append("candidate_venue_contract_invalid")
+    if payload.get("candidate_promotion_conditions") != CANDIDATE_PROMOTION_CONDITIONS:
+        reasons.append("candidate_promotion_conditions_invalid")
+    if payload.get("venue_verification") != VENUE_VERIFICATION:
+        reasons.append("venue_verification_invalid")
     if set(payload.get("venues") or []) & set(payload.get("candidate_venues") or []):
         reasons.append("venue_candidate_overlap")
     if "official pre-IPO contract" not in str(payload.get("bybit_extension_condition") or ""):
@@ -173,6 +471,17 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
         reasons.append("official_timestamp_policy_invalid")
     if payload.get("adaptive_cadence") != ADAPTIVE_CADENCE:
         reasons.append("adaptive_cadence_contract_invalid")
+    if payload.get("temporal_anchor_contract") != PREIPO_TEMPORAL_ANCHOR_CONTRACT:
+        reasons.append("preipo_temporal_anchor_contract_invalid")
+
+    data = payload.get("data_contract") or {}
+    if data.get("public_source_contracts") != PUBLIC_SOURCE_CONTRACTS:
+        reasons.append("public_source_contracts_invalid")
+    if (
+        data.get("official_first_trade_source_contract")
+        != OFFICIAL_FIRST_TRADE_SOURCE_CONTRACT
+    ):
+        reasons.append("official_first_trade_source_contract_invalid")
 
     automation = payload.get("automation") or {}
     if automation.get("schedule_interval_sec") != 6 * 60 * 60:
@@ -240,6 +549,24 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
     ):
         reasons.append("supersedes_binding_invalid")
 
+    rebind = ((payload.get("source_bindings") or {}).get("technical_rebind") or {})
+    if (
+        rebind.get("research_scope_changed") is not True
+        or rebind.get("baseline_active_venues") != ["gate", "okx"]
+        or rebind.get("baseline_candidate_venues") != ["bybit"]
+        or set(rebind.get("current_active_venues") or []) != REQUIRED_VENUES
+        or set(rebind.get("current_candidate_venues") or [])
+        != REQUIRED_CANDIDATE_VENUES
+        or set(rebind.get("changed_dimensions") or [])
+        != {
+            "active_venues",
+            "candidate_venues",
+            "official_timestamp_contract",
+            "public_source_contracts",
+        }
+    ):
+        reasons.append("research_scope_change_binding_invalid")
+
     implementation = payload.get("implementation") or []
     if not isinstance(implementation, list):
         implementation = []
@@ -287,7 +614,7 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
 def build_rebound_plan(source_path: str | Path, generated_at_utc: str) -> dict[str, Any]:
     source = Path(source_path)
     if source.resolve() != SUPERSEDED_PLAN_PATH.resolve():
-        raise ValueError("source_plan_must_be_immutable_v6")
+        raise ValueError("source_plan_must_be_immutable_v8")
     if file_sha256(source) != SUPERSEDED_PLAN["plan_file_sha256"]:
         raise ValueError("source_plan_file_sha256_mismatch")
     source_payload = json.loads(source.read_text(encoding="utf-8"))
@@ -302,20 +629,39 @@ def build_rebound_plan(source_path: str | Path, generated_at_utc: str) -> dict[s
     payload["plan_id"] = PLAN_ID
     payload["status"] = "READY_FOR_BOUNDED_PUBLIC_PAPER_RESEARCH_NOT_SCHEDULER_ACTIVATED"
     payload["generated_at_utc"] = generated_at_utc
+    payload["candidate_venues"] = sorted(REQUIRED_CANDIDATE_VENUES)
+    payload["candidate_promotion_conditions"] = copy.deepcopy(
+        CANDIDATE_PROMOTION_CONDITIONS
+    )
+    payload["temporal_anchor_contract"] = copy.deepcopy(
+        PREIPO_TEMPORAL_ANCHOR_CONTRACT
+    )
+    payload["venue_verification"] = copy.deepcopy(VENUE_VERIFICATION)
+    payload.setdefault("data_contract", {})["public_sources"] = [
+        "BitMEX public instruments and official blog contract notices",
+        "Gate public perpetual instruments and official perpetual announcements",
+        "Kraken public futures instruments and official pre-IPO FAQ/notices",
+        "OKX public instruments and official pre-market futures notices",
+    ]
+    payload["data_contract"]["public_source_contracts"] = copy.deepcopy(
+        PUBLIC_SOURCE_CONTRACTS
+    )
+    payload["data_contract"]["official_first_trade_source_contract"] = copy.deepcopy(
+        OFFICIAL_FIRST_TRADE_SOURCE_CONTRACT
+    )
     payload["implementation"] = [
         {
             "role": role,
             "path": str(path),
             "sha256": file_sha256(path),
             "change": {
-                "kind": "runtime_hardening_rebind_v7",
+                "kind": "preipo_scope_and_equity_t0_contract_v9",
                 "superseded_plan_hash": SUPERSEDED_PLAN["plan_hash"],
                 "superseded_plan_file_sha256": SUPERSEDED_PLAN["plan_file_sha256"],
                 "reason": (
-                    "Bind venue parity, causal ordering, stateful market-data normalization, "
-                    "per-response receive timestamps, retry provenance, HTTPS allow-list, "
-                    "strict implementation roles, cadence-policy migration and the "
-                    "immutable production launcher."
+                    "Bind the honestly widened venue/candidate scope, exact per-venue "
+                    "public source families, explicit candidate promotion conditions, "
+                    "and an equity-specific official-first-trade cadence taxonomy."
                 ),
             },
         }
@@ -325,10 +671,33 @@ def build_rebound_plan(source_path: str | Path, generated_at_utc: str) -> dict[s
     payload["supersedes_plan_hash"] = SUPERSEDED_PLAN["plan_hash"]
     payload["supersedes_plan_file_sha256"] = SUPERSEDED_PLAN["plan_file_sha256"]
     payload["supersedes_plan_path"] = SUPERSEDED_PLAN["plan_path"]
+    payload.setdefault("source_bindings", {})["technical_rebind"] = {
+        "kind": "preipo_research_scope_correction_v9",
+        "supersedes_plan_id": SUPERSEDED_PLAN["plan_id"],
+        "supersedes_plan_hash": SUPERSEDED_PLAN["plan_hash"],
+        "supersedes_plan_file_sha256": SUPERSEDED_PLAN["plan_file_sha256"],
+        "supersedes_plan_path": SUPERSEDED_PLAN["plan_path"],
+        "research_scope_changed": True,
+        "baseline_active_venues": ["gate", "okx"],
+        "baseline_candidate_venues": ["bybit"],
+        "current_active_venues": sorted(REQUIRED_VENUES),
+        "current_candidate_venues": sorted(REQUIRED_CANDIDATE_VENUES),
+        "changed_dimensions": [
+            "active_venues",
+            "candidate_venues",
+            "official_timestamp_contract",
+            "public_source_contracts",
+        ],
+        "reason": (
+            "Correct the historical scope record: active venues widened from OKX/Gate "
+            "to BitMEX/Gate/Kraken/OKX, candidates widened beyond Bybit, and equity "
+            "official-first-trade provenance is now a distinct fail-closed contract."
+        ),
+    }
     payload["commands"] = {
         "plan_check": (
             "python trading_mvp/src/preipo_plan.py --plan "
-            "docs/plans/preipo-perpetual-event-planonly-20260825-v8.json --json"
+            "docs/plans/preipo-perpetual-event-planonly-20260825-v9.json --json"
         ),
         "automation": (
             "pwsh -NoProfile -ExecutionPolicy Bypass -File "

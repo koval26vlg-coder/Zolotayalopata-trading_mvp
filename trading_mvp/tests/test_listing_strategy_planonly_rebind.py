@@ -39,7 +39,8 @@ OLD_PREMARKET = PLANS / "premarket-perp-listing-impulse-planonly-20260818-v1.jso
 OLD_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260818-v1.json"
 BATCH2_SPOT = PLANS / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260821-v3.json"
 BATCH2_EXPANSION = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260821-v2.json"
-NEW_SPOT = PLANS / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json"
+SPOT_V6 = PLANS / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json"
+NEW_SPOT = PLANS / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v7.json"
 EXPANSION_V6 = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v6.json"
 EXPANSION_V7 = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v7.json"
 NEW_EXPANSION = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v8.json"
@@ -51,7 +52,7 @@ BATCH4_PREMARKET = PLANS / "premarket-perp-listing-impulse-planonly-20260824-v3.
 BATCH3_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260821-v2.json"
 NEW_PREMARKET = PLANS / "premarket-perp-listing-impulse-planonly-20260825-v5.json"
 PREIPO_V7 = PLANS / "preipo-perpetual-event-planonly-20260825-v7.json"
-NEW_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260825-v8.json"
+NEW_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260825-v9.json"
 CANONICAL_PRIMARY_SPOT = Path(
     r"C:\Users\koval\Documents\ZolotyayLopata-listing-momentum-monitor\docs\plans\listing-momentum-forward-monitor-planonly-20260822-v2.json"
 )
@@ -94,6 +95,7 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
             EXPANSION_V6: "687a8a3e8212d942a58ebc3b41ebc1347bfc0c059e4c6487f7a332e1466ca83a",
             EXPANSION_V7: "86d6d8f76db247b693ff044570bfd7498d36b6afb0bd058baee3eb13a0f923aa",
             PREIPO_V7: "f9f6ee5b374a21a41820a2344bb6b5dc440a1413e67fb415880b90c4905552b5",
+            SPOT_V6: "cdb69cdb2514035592122f0b93e97f2f95c6787040802a7addb9ce1186ae7dfd",
         }
         self.assertEqual(
             file_sha256(RECEIPT),
@@ -134,14 +136,14 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
                 self.assertIn(expected_plan_name, source)
 
     def test_spot_and_expansion_rebind_sources_are_exact_batch2_artifacts(self) -> None:
-        self.assertEqual(spot_plan.PREVIOUS_PLAN_PATH, BATCH2_SPOT)
+        self.assertEqual(spot_plan.PREVIOUS_PLAN_PATH, SPOT_V6)
         self.assertEqual(
             spot_plan.PREVIOUS_PLAN_HASH,
-            "2b41fd407a758e68340c0bba000f48fa87b1fc1e4a7e1c41b0e21a439bfc4dc0",
+            "e841a0dc9368f1c05fd29c37ff93f7090158fe5155964a0e9e0639351a71c69a",
         )
         self.assertEqual(
             spot_plan.PREVIOUS_PLAN_FILE_SHA256,
-            "b4e6b085c40e10c91cc235f186e46f52e56fc6f6d913b79f0b707172d4bc99f4",
+            "cdb69cdb2514035592122f0b93e97f2f95c6787040802a7addb9ce1186ae7dfd",
         )
         self.assertEqual(expansion_plan.PREVIOUS_EXPANSION_PLAN_PATH, EXPANSION_V7)
         self.assertEqual(
@@ -164,14 +166,14 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
 
     def test_checked_in_spot_and_expansion_rebinds_are_current_and_scope_stable(self) -> None:
         spot = json.loads(NEW_SPOT.read_text(encoding="utf-8"))
-        old_spot = json.loads(BATCH2_SPOT.read_text(encoding="utf-8"))
+        old_spot = json.loads(SPOT_V6.read_text(encoding="utf-8"))
         self.assertEqual(
             spot["schema"],
             "trading_mvp_slow_liquidity_listing_momentum_forward_monitor_planonly_v4",
         )
         self.assertEqual(
             spot["plan_id"],
-            "slow_liquidity_listing_momentum_forward_monitor_20260825_v6",
+            "slow_liquidity_listing_momentum_forward_monitor_20260825_v7",
         )
         spot_plan.validate_forward_monitor_plan(spot)
         # The technical-rebind invariant - same research contract, fresh hashes -
@@ -181,10 +183,10 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
         if spot["source_bindings"]["technical_rebind"]["research_scope_changed"] is False:
             validate_rebind_semantics("spot", old_spot, spot)
         spot_rebind = spot["source_bindings"]["technical_rebind"]
-        self.assertEqual(spot_rebind["supersedes_plan_path"], str(BATCH2_SPOT))
+        self.assertEqual(spot_rebind["supersedes_plan_path"], str(SPOT_V6))
         self.assertEqual(spot_rebind["supersedes_plan_hash"], old_spot["plan_hash"])
         self.assertEqual(
-            spot_rebind["supersedes_plan_file_sha256"], file_sha256(BATCH2_SPOT)
+            spot_rebind["supersedes_plan_file_sha256"], file_sha256(SPOT_V6)
         )
         assert_scope_change_is_declared_or_absent(self, spot_rebind)
 
@@ -247,7 +249,7 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
                 OLD_PREIPO,
                 BATCH3_PREIPO,
                 NEW_PREIPO,
-                "preipo_perpetual_event_20260825_v8",
+                "preipo_perpetual_event_20260825_v9",
                 preipo_plan.validate_plan,
             ),
         )

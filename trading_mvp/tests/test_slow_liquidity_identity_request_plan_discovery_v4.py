@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import hashlib
-import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -12,7 +11,6 @@ from trading_mvp.src.slow_liquidity_identity_request_plan_discovery_v4 import (
     BASES,
     FetchedResponse,
     MAX_RESPONSE_BYTES,
-    MAX_TOTAL_RESPONSE_BYTES,
     ResponseCapExceeded,
     TotalResponseCapExceeded,
     fetch_public_response,
@@ -124,6 +122,11 @@ def _complete_fixture() -> tuple[dict[str, object], dict[str, FetchedResponse]]:
             official_url, official_url, 200, page
         )
     return plan, responses
+
+
+def _load_frozen_lineage() -> dict[str, object]:
+    frozen = json.loads(runtime.RUNTIME_MANIFEST_PATH.read_text(encoding="utf-8"))
+    return dict(frozen["lineage"])
 
 
 class RequestPlanDiscoveryV4Tests(unittest.TestCase):
@@ -265,10 +268,15 @@ class RequestPlanDiscoveryV4Tests(unittest.TestCase):
         )
 
     def test_standing_capability_uses_runtime_binding_without_receipt(self) -> None:
-        manifest = runtime.build_runtime_manifest(
-            generated_at_utc="2026-08-16T12:00:00+00:00"
-        )
-        capability = runtime.build_standing_execution_capability(manifest)
+        with mock.patch.object(
+            runtime,
+            "_validate_lineage",
+            return_value=_load_frozen_lineage(),
+        ):
+            manifest = runtime.build_runtime_manifest(
+                generated_at_utc="2026-08-16T12:00:00+00:00"
+            )
+            capability = runtime.build_standing_execution_capability(manifest)
         self.assertEqual(capability.run_id, runtime.RUN_ID)
         self.assertEqual(
             capability.runtime_manifest_hash,

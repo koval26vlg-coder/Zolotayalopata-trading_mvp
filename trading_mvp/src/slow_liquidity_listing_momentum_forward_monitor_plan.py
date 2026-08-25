@@ -27,11 +27,11 @@ FORWARD_PLAN_PATH = monitor.FORWARD_PLAN_PATH
 PREVIOUS_PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260821-v3.json"
+    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json"
 )
-PREVIOUS_PLAN_HASH = "2b41fd407a758e68340c0bba000f48fa87b1fc1e4a7e1c41b0e21a439bfc4dc0"
+PREVIOUS_PLAN_HASH = "e841a0dc9368f1c05fd29c37ff93f7090158fe5155964a0e9e0639351a71c69a"
 PREVIOUS_PLAN_FILE_SHA256 = (
-    "b4e6b085c40e10c91cc235f186e46f52e56fc6f6d913b79f0b707172d4bc99f4"
+    "cdb69cdb2514035592122f0b93e97f2f95c6787040802a7addb9ce1186ae7dfd"
 )
 LAUNCHER_PATH = monitor.EXPECTED_IMPLEMENTATION_PATHS["visible_launcher"]
 PROXY_RECEIPT_PATH = (
@@ -57,26 +57,7 @@ FIRST_BINDING_KIND = "first_binding_of_role_absent_from_superseded_plan"
 # human re-approves it. That is the intended price of changing scope, not an obstacle:
 # the listing tracks run under tools/invoke_listing_strategy_due_coordinator.ps1, which
 # never consults autopilot_guard, so nothing operational depends on it.
-RESEARCH_SCOPE_CHANGE: dict[str, Any] | None = {
-    "changed_fields": [
-        "adaptive_cadence.policy_version",
-        "adaptive_cadence.event_spent_after_sec",
-        "adaptive_cadence.spent_anchor_returns_to_search",
-        "implementation.files[cadence_policy]",
-    ],
-    "reason": (
-        "adaptive_cadence.py implements adaptive_event_proximity_v2: an anchor whose own "
-        "event has already passed returns to SEARCH instead of holding the CONFIRMED "
-        "cadence indefinitely. Both momentum monitors call decide_cadence from that "
-        "module, which no plan had ever bound, so the declared policy could drift from "
-        "the running code without invalidating anything; it is bound here as the "
-        "cadence_policy role. Measured 2026-08-24: this track's cadence observation "
-        "carries no timestamp at all, so the new clause is unreachable here and nothing "
-        "about what is collected changes. The declared contract does change, and a "
-        "changed contract is declared rather than quietly rebound."
-    ),
-    "autopilot_authority": "WITHDRAWN_UNTIL_REVIEWED",
-}
+RESEARCH_SCOPE_CHANGE: dict[str, Any] | None = None
 
 BOUND_FILES = tuple(
     (role, path)
@@ -263,9 +244,9 @@ def build_forward_monitor_plan(generated_at_utc: str) -> dict[str, Any]:
                     RESEARCH_SCOPE_CHANGE["reason"]
                     if RESEARCH_SCOPE_CHANGE
                     else (
-                        "Rebind the current-run transaction mutex fix and current "
-                        "launcher identities without changing venue, universe, "
-                        "signal, cost, risk, cadence or acceptance contracts."
+                        "Rebind the fail-closed event-window collector and current "
+                        "launcher identity without changing venue, universe, signal, "
+                        "cost, risk, cadence or acceptance contracts."
                     )
                 ),
             },

@@ -16,7 +16,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$defaultV2PlanPath = Join-Path $repoRoot "docs\plans\slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json"
+$defaultV2PlanPath = Join-Path $repoRoot "docs\plans\slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v7.json"
 $defaultExpansionPlanPath = Join-Path $repoRoot "docs\plans\slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v6.json"
 if (-not $V2PlanPath) { $V2PlanPath = $defaultV2PlanPath }
 if (-not $ExpansionPlanPath) { $ExpansionPlanPath = $defaultExpansionPlanPath }

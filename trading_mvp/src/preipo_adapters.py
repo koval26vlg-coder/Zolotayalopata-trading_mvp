@@ -16,18 +16,29 @@ from __future__ import annotations
 import math
 import re
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timezone
 from typing import Any, Iterable, Mapping, Sequence
 from urllib.parse import urlsplit
 
 import requests
 
-from preipo_perp_event import PreIPOEvent, PreIPOEventError, parse_announcement
+from preipo_perp_event import (
+    PreIPOEvent,
+    PreIPOEventError,
+    is_official_source_url,
+    parse_announcement,
+)
 
 
 ADAPTER_SCHEMA = "trading_mvp_preipo_public_adapter_v1"
 VENUES = ("okx", "gate", "bitmex", "kraken")
+OFFICIAL_FIRST_TRADE_SOURCE_FAMILIES = {
+    "bitmex": "bitmex_official_equity_first_trade_notice",
+    "gate": "gate_preipo_perpetual_official_first_trade_notice",
+    "kraken": "kraken_official_equity_first_trade_notice",
+    "okx": "okx_official_equity_first_trade_notice",
+}
 
 
 def _timestamp(value: Any) -> float | None:
@@ -376,6 +387,11 @@ class PreIPOContract:
     tradable_ts: float | None = None
     rebase_ts: float | None = None
     official_conversion_ts: float | None = None
+    official_first_trade_ts: float | None = None
+    official_first_trade_announcement_ts: float | None = None
+    official_first_trade_source_class: str = ""
+    official_first_trade_source_url: str = ""
+    official_first_trade_source_family: str = ""
     maintenance_margin_rate: float | None = None
     taker_fee_bps: float | None = None
     maker_fee_bps: float | None = None
@@ -392,6 +408,37 @@ class PreIPOContract:
             raise ValueError("pre-IPO adapter cannot emit crypto contracts")
         if not self.contract_id.strip() or not self.underlying_symbol.strip() or not self.quote.strip():
             raise ValueError("contract identity is incomplete")
+        proof_present = any(
+            value not in (None, "")
+            for value in (
+                self.official_first_trade_ts,
+                self.official_first_trade_announcement_ts,
+                self.official_first_trade_source_class,
+                self.official_first_trade_source_url,
+                self.official_first_trade_source_family,
+            )
+        )
+        if proof_present:
+            if (
+                self.official_first_trade_ts is None
+                or not math.isfinite(float(self.official_first_trade_ts))
+                or float(self.official_first_trade_ts) <= 0
+                or self.official_first_trade_announcement_ts is None
+                or not math.isfinite(
+                    float(self.official_first_trade_announcement_ts)
+                )
+                or float(self.official_first_trade_announcement_ts) <= 0
+                or self.official_first_trade_source_class != "official"
+                or self.official_first_trade_source_family.strip()
+                != OFFICIAL_FIRST_TRADE_SOURCE_FAMILIES[venue]
+                or not is_official_source_url(
+                    venue,
+                    self.official_first_trade_source_url,
+                )
+            ):
+                raise ValueError(
+                    "official first trade requires complete venue-official provenance"
+                )
 
     def to_dict(self) -> dict[str, Any]:
         payload = asdict(self)
@@ -721,6 +768,61 @@ def parse_official_announcement(payload: Mapping[str, Any]) -> PreIPOEvent:
     if event.venue not in VENUES:
         raise PreIPOEventError(f"unsupported active pre-IPO venue: {event.venue}")
     return event
+
+
+def bind_official_first_trade(
+    contract: PreIPOContract,
+    payload: Mapping[str, Any],
+    *,
+    source_family: str,
+) -> PreIPOContract:
+    """Attach a validated official equity first-trade event to one contract.
+
+    The binding is identity-strict.  A notice about another contract or underlying can
+    never lend its timestamp to this row, and a generic venue metadata timestamp never
+    enters this function.
+    """
+
+    required_fields = (
+        "venue",
+        "contract_id",
+        "underlying_symbol",
+        "quote",
+        "source_url",
+        "announcement_ts",
+        "official_first_trade_ts",
+    )
+    missing = [field for field in required_fields if payload.get(field) in (None, "")]
+    if missing:
+        raise PreIPOEventError(
+            "official first-trade binding is missing exact fields: "
+            + ",".join(missing)
+        )
+    family = str(source_family or "").strip()
+    event = parse_official_announcement(payload)
+    if family != OFFICIAL_FIRST_TRADE_SOURCE_FAMILIES.get(event.venue):
+        raise PreIPOEventError("unregistered official first-trade source family")
+    if (
+        event.venue != contract.venue
+        or event.contract_id != contract.contract_id.strip().upper()
+        or event.underlying_symbol != contract.underlying_symbol.strip().upper()
+        or event.quote != contract.quote.strip().upper()
+    ):
+        raise PreIPOEventError("official first-trade announcement identity mismatch")
+    if (
+        not event.acceptance_eligible
+        or event.official_first_trade_ts is None
+        or event.announcement_ts is None
+    ):
+        raise PreIPOEventError("announcement lacks acceptance-grade official first trade")
+    return replace(
+        contract,
+        official_first_trade_ts=event.official_first_trade_ts,
+        official_first_trade_announcement_ts=event.announcement_ts,
+        official_first_trade_source_class=event.source_class,
+        official_first_trade_source_url=event.source_url,
+        official_first_trade_source_family=family,
+    )
 
 
 class PublicPreIPOAdapter:

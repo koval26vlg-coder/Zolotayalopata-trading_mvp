@@ -203,7 +203,10 @@ class NightSchedulePointerRestoreTests(unittest.TestCase):
             completed = self._restore(pwsh, plan, plan_hash, gate, approval, run_id)
 
             self.assertNotEqual(completed.returncode, 0)
-            self.assertIn("does not authorize run_id", completed.stderr)
+            self.assertIn(
+                "does not authorize run_id",
+                " ".join(completed.stderr.replace("|", " ").split()),
+            )
             self.assertEqual(hashlib.sha256(gate.read_bytes()).hexdigest(), gate_sha_before)
 
     def test_refuses_restore_while_gate_is_running(self) -> None:

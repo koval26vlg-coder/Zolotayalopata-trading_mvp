@@ -47,6 +47,78 @@ function Invoke-Preflight {
     if ($ExpectedPlanHash -and [string]$plan.plan_hash -ne $ExpectedPlanHash.ToLowerInvariant()) {
         $reasons.Add("plan_hash_mismatch")
     }
+    $implementationFiles = @($plan.implementation.files)
+    if ($implementationFiles.Count -eq 0) {
+        $reasons.Add("implementation_files_missing")
+    }
+    $implementationRoles = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::Ordinal
+    )
+    foreach ($binding in $implementationFiles) {
+        $role = [string]$binding.role
+        $roleToken = ($role -replace '[^A-Za-z0-9_]', '_').ToLowerInvariant()
+        if (-not $roleToken) { $roleToken = "unknown" }
+        if (-not $role) {
+            $reasons.Add("implementation_role_missing")
+            continue
+        }
+        if (-not $implementationRoles.Add($role)) {
+            $reasons.Add("implementation_${roleToken}_binding_duplicated")
+            continue
+        }
+        $implementationPath = [string]$binding.path
+        $expectedImplementationSha = [string]$binding.sha256
+        if (-not $implementationPath) {
+            $reasons.Add("implementation_${roleToken}_path_missing")
+            continue
+        }
+        if ($expectedImplementationSha -cnotmatch '^[0-9a-f]{64}$') {
+            $reasons.Add("implementation_${roleToken}_sha256_invalid")
+            continue
+        }
+        if (-not (Test-Path -LiteralPath $implementationPath -PathType Leaf)) {
+            $reasons.Add("implementation_${roleToken}_file_missing")
+            continue
+        }
+        try {
+            $currentImplementationSha = Get-FileSha256 $implementationPath
+        } catch {
+            $reasons.Add("implementation_${roleToken}_file_unreadable")
+            continue
+        }
+        if ($currentImplementationSha -ne $expectedImplementationSha) {
+            $reasons.Add("implementation_${roleToken}_sha256_mismatch")
+        }
+    }
+    foreach ($requiredRole in @(
+        "collector",
+        "public_ohlcv_clients",
+        "interval_contract",
+        "global_writer_claim",
+        "visible_launcher"
+    )) {
+        if (-not $implementationRoles.Contains($requiredRole)) {
+            $reasons.Add("implementation_${requiredRole}_binding_missing")
+        }
+    }
+    $launchRecordPath = [string]$plan.execution.launch_record_path
+    if ([string]::IsNullOrWhiteSpace($launchRecordPath)) {
+        $reasons.Add("launch_record_path_missing")
+    } elseif (Test-Path -LiteralPath $launchRecordPath -PathType Leaf) {
+        $launchRecord = $null
+        try {
+            $launchRecord = Read-JsonFile -Path $launchRecordPath
+        } catch {
+            $reasons.Add("launch_record_invalid")
+        }
+        if ($null -ne $launchRecord) {
+            if ([string]$launchRecord.run_id -ne [string]$plan.plan_id) {
+                $reasons.Add("launch_record_run_id_mismatch")
+            } elseif ([string]$launchRecord.status -in @("COMPLETE", "COMPLETED")) {
+                $reasons.Add("completed_planonly_cannot_be_relaunched")
+            }
+        }
+    }
     $receiptPath = [string]$plan.source_bindings.proxy_acceptance_receipt.path
     if (-not (Test-Path -LiteralPath $receiptPath)) {
         $reasons.Add("proxy_receipt_missing")
@@ -108,6 +180,14 @@ if ($Status) {
 }
 
 if ($VisibleWorker) {
+    $workerPreflight = Invoke-Preflight
+    if (-not $workerPreflight.ok) {
+        if ($Json) { $workerPreflight | ConvertTo-Json -Depth 8 } else {
+            Write-Host "worker preflight failed:" -ForegroundColor Red
+            Write-Host ($workerPreflight.reasons -join ", ")
+        }
+        exit 1
+    }
     $plan = Read-JsonFile -Path $PlanPath
     $outputRoot = [string]$plan.execution.output_root
     $stdoutLog = Join-Path $outputRoot "stdout.log"
@@ -231,7 +311,9 @@ if (-not $preflight.ok) {
 $pwshExe = (Get-Process -Id $PID).Path
 $childArgs = @(
     "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $PSCommandPath,
-    "-VisibleWorker", "-PlanPath", $PlanPath
+    "-VisibleWorker", "-PlanPath", $PlanPath,
+    "-ExpectedPlanHash", $preflight.plan_hash,
+    "-ExpectedPlanFileSha256", $preflight.plan_file_sha256
 )
 $terminal = Start-Process -FilePath $pwshExe -ArgumentList $childArgs -WorkingDirectory $repoRoot -WindowStyle Normal -PassThru
 $payload = [ordered]@{

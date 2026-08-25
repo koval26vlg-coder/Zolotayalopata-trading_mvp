@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from global_market_writer_claim import (
-    GlobalMarketWriterClaimError,
     claim_global_market_writer,
     release_global_market_writer,
 )
@@ -59,12 +58,22 @@ FLAG_KEYS = (
 REQUIRED_EXECUTION_KEYS = (
     "output_root",
     "claim_path",
+    "launch_record_path",
     "jobs_sha256",
     "max_runtime_sec",
     "timeout_sec",
     "max_retries",
     "sleep_sec",
     "effective_page_sizes",
+)
+REQUIRED_IMPLEMENTATION_ROLES = frozenset(
+    {
+        "collector",
+        "public_ohlcv_clients",
+        "interval_contract",
+        "global_writer_claim",
+        "visible_launcher",
+    }
 )
 
 
@@ -139,15 +148,108 @@ def load_and_validate_plan(plan_path: Path) -> dict[str, Any]:
         plan.get("public_data_only") is True and plan.get("private_api") is False,
         "plan is not public-data-only",
     )
+    execution = plan.get("execution")
+    _require(isinstance(execution, Mapping), "plan execution is invalid")
     missing_keys = [
         key
         for key in REQUIRED_EXECUTION_KEYS
-        if key not in (plan.get("execution") or {})
+        if key not in execution
     ]
     _require(
         not missing_keys,
         f"plan execution is missing collector keys: {missing_keys}",
     )
+
+    implementation = plan.get("implementation")
+    _require(
+        isinstance(implementation, Mapping),
+        "plan implementation is invalid",
+    )
+    implementation_files = implementation.get("files")
+    _require(
+        isinstance(implementation_files, list) and bool(implementation_files),
+        "plan implementation files are invalid",
+    )
+    seen_roles: set[str] = set()
+    for binding in implementation_files:
+        _require(
+            isinstance(binding, Mapping),
+            "plan implementation file binding is invalid",
+        )
+        role = binding.get("role")
+        path_value = binding.get("path")
+        expected_sha256 = binding.get("sha256")
+        _require(
+            isinstance(role, str) and bool(role),
+            "plan implementation file role is invalid",
+        )
+        _require(
+            role not in seen_roles,
+            f"implementation {role} binding is duplicated",
+        )
+        seen_roles.add(role)
+        _require(
+            isinstance(path_value, str) and bool(path_value),
+            f"implementation {role} path is invalid",
+        )
+        _require(
+            isinstance(expected_sha256, str)
+            and len(expected_sha256) == 64
+            and expected_sha256 == expected_sha256.lower()
+            and all(
+                character in "0123456789abcdef"
+                for character in expected_sha256
+            ),
+            f"implementation {role} sha256 is invalid",
+        )
+        implementation_path = Path(path_value)
+        _require(
+            implementation_path.is_file(),
+            f"implementation {role} file is missing",
+        )
+        try:
+            current_sha256 = _sha256_file(implementation_path)
+        except OSError as exc:
+            raise FirstDaysCollectError(
+                f"implementation {role} file is unreadable"
+            ) from exc
+        _require(
+            current_sha256 == expected_sha256,
+            f"implementation {role} sha256 mismatch",
+        )
+    missing_roles = sorted(REQUIRED_IMPLEMENTATION_ROLES - seen_roles)
+    _require(
+        not missing_roles,
+        f"plan implementation roles are missing: {missing_roles}",
+    )
+
+    launch_record_path_value = execution["launch_record_path"]
+    _require(
+        isinstance(launch_record_path_value, str)
+        and bool(launch_record_path_value.strip()),
+        "launch record path is invalid",
+    )
+    launch_record_path = Path(launch_record_path_value)
+    if launch_record_path.exists():
+        try:
+            launch_record = json.loads(
+                launch_record_path.read_text(encoding="utf-8")
+            )
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+            raise FirstDaysCollectError("launch record is invalid") from exc
+        _require(
+            isinstance(launch_record, Mapping),
+            "launch record is invalid",
+        )
+        _require(
+            launch_record.get("run_id") == plan["plan_id"],
+            "launch record run id mismatch",
+        )
+        _require(
+            str(launch_record.get("status") or "").upper()
+            not in {"COMPLETE", "COMPLETED"},
+            "completed PlanOnly cannot be relaunched",
+        )
     return plan
 
 

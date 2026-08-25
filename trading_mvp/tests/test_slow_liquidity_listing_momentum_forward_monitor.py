@@ -651,11 +651,11 @@ class PlanModuleTests(unittest.TestCase):
         previous_path = (
             ROOT
             / "docs/plans"
-            / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260821-v3.json"
+            / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json"
         )
         self.assertEqual(
             hashlib.sha256(previous_path.read_bytes()).hexdigest(),
-            "b4e6b085c40e10c91cc235f186e46f52e56fc6f6d913b79f0b707172d4bc99f4",
+            "cdb69cdb2514035592122f0b93e97f2f95c6787040802a7addb9ce1186ae7dfd",
         )
         previous = json.loads(previous_path.read_text(encoding="utf-8"))
         plan = plan_module.build_forward_monitor_plan("2026-08-17T12:45:00Z")
@@ -693,21 +693,24 @@ class PlanModuleTests(unittest.TestCase):
         with self.assertRaisesRegex(Exception, "must carry its declaration"):
             plan_module.validate_forward_monitor_plan(plan)
 
-    def test_a_first_appearance_role_may_not_claim_to_supersede(self) -> None:
-        # The rule that lets the role set grow at all: a role the superseded plan did not
-        # carry has nothing to replace, so a borrowed hash must be refused outright.
+    def test_every_v7_role_has_exact_v6_row_provenance(self) -> None:
         plan = plan_module.build_forward_monitor_plan("2026-08-17T12:45:00Z")
-        row = next(
-            item
-            for item in plan["implementation"]["files"]
-            if item["role"] == "cadence_policy"
+        previous = json.loads(
+            plan_module.PREVIOUS_PLAN_PATH.read_text(encoding="utf-8")
         )
-        self.assertIsNone(row["provenance"]["superseded_sha256"])
-        row["provenance"]["superseded_sha256"] = "0" * 64
-        row["provenance"]["kind"] = "technical_rebind_from_superseded_plan_row"
-        plan["plan_hash"] = canonical_hash(plan)
-        with self.assertRaisesRegex(Exception, "must not claim to supersede"):
-            plan_module.validate_forward_monitor_plan(plan)
+        previous_by_role = {
+            row["role"]: row for row in previous["implementation"]["files"]
+        }
+        for row in plan["implementation"]["files"]:
+            with self.subTest(role=row["role"]):
+                self.assertEqual(
+                    row["provenance"]["kind"],
+                    "technical_rebind_from_superseded_plan_row",
+                )
+                self.assertEqual(
+                    row["provenance"]["superseded_sha256"],
+                    previous_by_role[row["role"]]["sha256"],
+                )
 
     def test_monitor_rejects_stale_implementation_binding(self) -> None:
         plan = plan_module.build_forward_monitor_plan("2026-08-17T12:45:00Z")
