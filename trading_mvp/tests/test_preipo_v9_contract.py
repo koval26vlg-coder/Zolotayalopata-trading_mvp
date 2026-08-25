@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 import tempfile
@@ -14,7 +15,7 @@ if str(SRC) not in sys.path:
 import preipo_plan  # noqa: E402
 
 
-class PreIPOV9ContractTests(unittest.TestCase):
+class PreIPOV10ContractTests(unittest.TestCase):
     def _validate_payload(self, payload: dict) -> dict:
         payload["plan_hash"] = preipo_plan.canonical_plan_hash(payload)
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -22,40 +23,46 @@ class PreIPOV9ContractTests(unittest.TestCase):
             path.write_text(json.dumps(payload), encoding="utf-8")
             return preipo_plan.validate_plan(path)
 
-    def test_runtime_defaults_use_a_new_immutable_v9_identity(self) -> None:
-        self.assertEqual(preipo_plan.PLAN_ID, "preipo_perpetual_event_20260825_v9")
+    def test_runtime_defaults_use_a_new_immutable_v10_identity(self) -> None:
+        self.assertEqual(preipo_plan.PLAN_ID, "preipo_perpetual_event_20260825_v10")
         self.assertEqual(
             preipo_plan.DEFAULT_PLAN_PATH.name,
-            "preipo-perpetual-event-planonly-20260825-v9.json",
+            "preipo-perpetual-event-planonly-20260825-v10.json",
         )
         self.assertEqual(
             preipo_plan.SUPERSEDED_PLAN_PATH.name,
-            "preipo-perpetual-event-planonly-20260825-v8.json",
+            "preipo-perpetual-event-planonly-20260825-v9.json",
         )
 
-    def test_v9_declares_the_real_venue_and_candidate_scope_change(self) -> None:
+    def test_v10_declares_only_the_exact_byte_technical_rebind(self) -> None:
         payload = preipo_plan.build_rebound_plan(
             preipo_plan.SUPERSEDED_PLAN_PATH,
             "2026-08-25T18:00:00Z",
         )
 
         binding = payload["source_bindings"]["technical_rebind"]
-        self.assertIs(binding["research_scope_changed"], True)
-        self.assertEqual(binding["baseline_active_venues"], ["gate", "okx"])
-        self.assertEqual(binding["baseline_candidate_venues"], ["bybit"])
+        self.assertIs(binding["research_scope_changed"], False)
         self.assertEqual(
-            set(binding["current_active_venues"]),
+            set(binding["baseline_active_venues"]),
             {"bitmex", "gate", "kraken", "okx"},
         )
         self.assertEqual(
-            set(binding["current_candidate_venues"]),
+            set(binding["baseline_candidate_venues"]),
             {"binance", "bybit", "coinbase_intx", "cryptocom"},
         )
-        self.assertIn("active_venues", binding["changed_dimensions"])
-        self.assertIn("candidate_venues", binding["changed_dimensions"])
         self.assertEqual(
-            set(payload["candidate_venues"]),
-            {"binance", "bybit", "coinbase_intx", "cryptocom"},
+            binding["current_active_venues"], binding["baseline_active_venues"]
+        )
+        self.assertEqual(
+            binding["current_candidate_venues"], binding["baseline_candidate_venues"]
+        )
+        self.assertEqual(
+            binding["changed_dimensions"],
+            [
+                "implementation_exact_byte_sha256",
+                "launcher_default_plan",
+                "plan_identity",
+            ],
         )
 
     def test_all_active_venues_have_distinct_fail_closed_source_contracts(self) -> None:
@@ -213,19 +220,19 @@ class PreIPOV9ContractTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertIn("public_source_contracts_invalid", result["reasons"])
 
-    def test_validator_rejects_a_scope_change_marked_as_technical_only(self) -> None:
+    def test_validator_rejects_a_technical_rebind_marked_as_scope_change(self) -> None:
         payload = preipo_plan.build_rebound_plan(
             preipo_plan.SUPERSEDED_PLAN_PATH,
             "2026-08-25T18:00:00Z",
         )
         payload["source_bindings"]["technical_rebind"][
             "research_scope_changed"
-        ] = False
+        ] = True
 
         result = self._validate_payload(payload)
 
         self.assertFalse(result["ok"])
-        self.assertIn("research_scope_change_binding_invalid", result["reasons"])
+        self.assertIn("technical_exact_byte_rebind_binding_invalid", result["reasons"])
 
     def test_validator_rejects_missing_candidate_promotion_condition(self) -> None:
         payload = preipo_plan.build_rebound_plan(
@@ -239,7 +246,7 @@ class PreIPOV9ContractTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertIn("candidate_promotion_conditions_invalid", result["reasons"])
 
-    def test_v9_uses_an_equity_first_trade_anchor_without_stale_bybit_claims(self) -> None:
+    def test_v10_uses_an_equity_first_trade_anchor_without_stale_bybit_claims(self) -> None:
         payload = preipo_plan.build_rebound_plan(
             preipo_plan.SUPERSEDED_PLAN_PATH,
             "2026-08-25T18:00:00Z",
@@ -316,7 +323,7 @@ class PreIPOV9ContractTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertIn("preipo_temporal_anchor_contract_invalid", result["reasons"])
 
-    def test_commands_and_production_launcher_are_bound_to_v9(self) -> None:
+    def test_commands_and_production_launcher_are_bound_to_v10(self) -> None:
         payload = preipo_plan.build_rebound_plan(
             preipo_plan.SUPERSEDED_PLAN_PATH,
             "2026-08-25T18:00:00Z",
@@ -328,25 +335,25 @@ class PreIPOV9ContractTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn(
-            "preipo-perpetual-event-planonly-20260825-v9.json",
+            "preipo-perpetual-event-planonly-20260825-v10.json",
             payload["commands"]["plan_check"],
         )
         self.assertIn(
-            "preipo-perpetual-event-planonly-20260825-v9.json", launcher
+            "preipo-perpetual-event-planonly-20260825-v10.json", launcher
         )
-        self.assertIn("use the immutable v9 default", launcher)
+        self.assertIn("use the immutable v10 default", launcher)
 
-    def test_rebind_error_names_the_actual_immutable_v8_source(self) -> None:
+    def test_rebind_error_names_the_actual_immutable_v9_source(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             wrong = Path(temp_dir) / "wrong.json"
             wrong.write_text("{}", encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "source_plan_must_be_immutable_v8"):
+            with self.assertRaisesRegex(ValueError, "source_plan_must_be_immutable_v9"):
                 preipo_plan.build_rebound_plan(
                     wrong,
                     "2026-08-25T18:00:00Z",
                 )
 
-    def test_implementation_provenance_names_the_v9_scope_correction(self) -> None:
+    def test_implementation_provenance_names_the_v10_exact_byte_rebind(self) -> None:
         payload = preipo_plan.build_rebound_plan(
             preipo_plan.SUPERSEDED_PLAN_PATH,
             "2026-08-25T18:00:00Z",
@@ -355,12 +362,19 @@ class PreIPOV9ContractTests(unittest.TestCase):
             with self.subTest(role=row["role"]):
                 self.assertEqual(
                     row["change"]["kind"],
-                    "preipo_scope_and_equity_t0_contract_v9",
+                    "preipo_exact_byte_git_sealing_rebind_v10",
                 )
+                self.assertIs(row["change"]["research_scope_changed"], False)
                 self.assertEqual(
                     row["change"]["superseded_plan_hash"],
                     preipo_plan.SUPERSEDED_PLAN["plan_hash"],
                 )
+
+    def test_superseded_v9_plan_bytes_are_immutable(self) -> None:
+        self.assertEqual(
+            hashlib.sha256(preipo_plan.SUPERSEDED_PLAN_PATH.read_bytes()).hexdigest(),
+            "766f0848ea265389422431210902b4150657af5693bbdf3985f008a1549e5324",
+        )
 
     def test_venue_verification_covers_every_active_and_candidate_venue(self) -> None:
         payload = preipo_plan.build_rebound_plan(

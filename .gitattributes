@@ -15,6 +15,33 @@ trading_mvp/src/listing_event_history_collector.py -text
 trading_mvp/src/slow_liquidity_history_collector.py -text
 trading_mvp/src/slow_liquidity_history_quality.py -text
 trading_mvp/src/slow_liquidity_recollect_control_plane.py -text
+
+# Canonical listing-strategy runtime bindings are exact-byte artifacts.  Keep
+# their committed blobs identical to the bytes hashed by immutable PlanOnly
+# files and by the external control-plane receipt on Windows.
+docs/control/canonical_strategy_runtime.staging.json -text whitespace=cr-at-eol
+docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v8.json -text whitespace=cr-at-eol
+docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v9.json -text whitespace=cr-at-eol
+docs/plans/preipo-perpetual-event-planonly-20260825-v9.json -text whitespace=cr-at-eol
+docs/plans/preipo-perpetual-event-planonly-20260825-v10.json -text whitespace=cr-at-eol
+tools/invoke_listing_strategy_due_coordinator.ps1 -text whitespace=cr-at-eol
+tools/start_listing_momentum_exchange_expansion_preflight_visible.ps1 -text whitespace=cr-at-eol
+tools/start_listing_momentum_forward_expansion_tick_visible.ps1 -text whitespace=cr-at-eol
+tools/start_preipo_perpetual_event_automation_visible.ps1 -text whitespace=cr-at-eol
+trading_mvp/src/adaptive_cadence.py -text whitespace=cr-at-eol
+trading_mvp/src/canonical_strategy_runtime.py -text whitespace=cr-at-eol
+trading_mvp/src/external_registry_materializer.py -text whitespace=cr-at-eol
+trading_mvp/src/listing_momentum_exchange_expansion.py -text whitespace=cr-at-eol
+trading_mvp/src/listing_spot_asset_class.py -text whitespace=cr-at-eol
+trading_mvp/src/premarket_temporal_anchor.py -text whitespace=cr-at-eol
+trading_mvp/src/preipo_adapters.py -text whitespace=cr-at-eol
+trading_mvp/src/preipo_automation.py -text whitespace=cr-at-eol
+trading_mvp/src/preipo_perp_event.py -text whitespace=cr-at-eol
+trading_mvp/src/preipo_plan.py -text whitespace=cr-at-eol
+trading_mvp/src/preipo_raw_event_store.py -text whitespace=cr-at-eol
+trading_mvp/src/preipo_temporal_anchor.py -text whitespace=cr-at-eol
+trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_monitor.py -text whitespace=cr-at-eol
+trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_plan.py -text whitespace=cr-at-eol
 docs/agent-log/readiness/one-week-edge-sprint-current-readiness-20260815-v14.json -text
 docs/agent-log/readiness/slow-liquidity-official-identity-v6-invalid-execution-artifacts-audit-20260815-v1.json -text
 docs/plans/slow-liquidity-official-identity-runtime-manifest-20260814-v6.json -text

@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -43,7 +44,8 @@ SPOT_V6 = PLANS / "slow-liquidity-listing-momentum-forward-monitor-planonly-2026
 NEW_SPOT = PLANS / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v7.json"
 EXPANSION_V6 = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v6.json"
 EXPANSION_V7 = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v7.json"
-NEW_EXPANSION = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v8.json"
+EXPANSION_V8 = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v8.json"
+NEW_EXPANSION = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v9.json"
 # premarket ran v1 -> v2 -> v3 (asset-class acceptance gate) -> v4 (temporal anchors);
 # preipo ran v1 -> v2 -> v3 (temporal anchors). The intermediate files stay on disk and
 # stay byte-immutable; only the last one of each lineage is current.
@@ -52,7 +54,8 @@ BATCH4_PREMARKET = PLANS / "premarket-perp-listing-impulse-planonly-20260824-v3.
 BATCH3_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260821-v2.json"
 NEW_PREMARKET = PLANS / "premarket-perp-listing-impulse-planonly-20260825-v5.json"
 PREIPO_V7 = PLANS / "preipo-perpetual-event-planonly-20260825-v7.json"
-NEW_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260825-v9.json"
+PREIPO_V9 = PLANS / "preipo-perpetual-event-planonly-20260825-v9.json"
+NEW_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260825-v10.json"
 CANONICAL_PRIMARY_SPOT = Path(
     r"C:\Users\koval\Documents\ZolotyayLopata-listing-momentum-monitor\docs\plans\listing-momentum-forward-monitor-planonly-20260822-v2.json"
 )
@@ -94,7 +97,9 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
             BATCH3_PREIPO: "4a32c2ba47aaf05cfacaab35cb1112f30fb1984fe16f2bef5ca05159d7335fc8",
             EXPANSION_V6: "687a8a3e8212d942a58ebc3b41ebc1347bfc0c059e4c6487f7a332e1466ca83a",
             EXPANSION_V7: "86d6d8f76db247b693ff044570bfd7498d36b6afb0bd058baee3eb13a0f923aa",
+            EXPANSION_V8: "38328999ecd1a4e25e1f0a2f51d32c491fedcca973b0daba61281c918466433e",
             PREIPO_V7: "f9f6ee5b374a21a41820a2344bb6b5dc440a1413e67fb415880b90c4905552b5",
+            PREIPO_V9: "766f0848ea265389422431210902b4150657af5693bbdf3985f008a1549e5324",
             SPOT_V6: "cdb69cdb2514035592122f0b93e97f2f95c6787040802a7addb9ce1186ae7dfd",
         }
         self.assertEqual(
@@ -145,14 +150,14 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
             spot_plan.PREVIOUS_PLAN_FILE_SHA256,
             "cdb69cdb2514035592122f0b93e97f2f95c6787040802a7addb9ce1186ae7dfd",
         )
-        self.assertEqual(expansion_plan.PREVIOUS_EXPANSION_PLAN_PATH, EXPANSION_V7)
+        self.assertEqual(expansion_plan.PREVIOUS_EXPANSION_PLAN_PATH, EXPANSION_V8)
         self.assertEqual(
             expansion_plan.PREVIOUS_EXPANSION_PLAN_HASH,
-            "2b28105bf69acc7d4740a0f8a1afb0dadf4f0b230a1627c0bc1b827a0e3bbd32",
+            "880ffea9ac66d1bb125f4d9965aca96e6bbce3ae5f2cbf7ed3a0c53bcbebc256",
         )
         self.assertEqual(
             expansion_plan.PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
-            "86d6d8f76db247b693ff044570bfd7498d36b6afb0bd058baee3eb13a0f923aa",
+            "38328999ecd1a4e25e1f0a2f51d32c491fedcca973b0daba61281c918466433e",
         )
         self.assertEqual(expansion_plan.PREVIOUS_V2_PLAN_PATH, CANONICAL_PRIMARY_SPOT)
         self.assertEqual(
@@ -191,14 +196,14 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
         assert_scope_change_is_declared_or_absent(self, spot_rebind)
 
         expansion = json.loads(NEW_EXPANSION.read_text(encoding="utf-8"))
-        old_expansion = json.loads(EXPANSION_V7.read_text(encoding="utf-8"))
+        old_expansion = json.loads(EXPANSION_V8.read_text(encoding="utf-8"))
         self.assertEqual(
             expansion["schema"],
             "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_monitor_planonly_v3",
         )
         self.assertEqual(
             expansion["plan_id"],
-            "slow_liquidity_listing_momentum_forward_expansion_20260825_v8",
+            "slow_liquidity_listing_momentum_forward_expansion_20260825_v9",
         )
         expansion_plan.validate_plan(expansion)
         expansion_monitor._validate_plan(expansion, NEW_EXPANSION)
@@ -216,14 +221,14 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
             validate_rebind_semantics("expansion", old_expansion, expansion)
         expansion_rebind = expansion["source_bindings"]["technical_rebind"]
         self.assertEqual(
-            expansion_rebind["supersedes_plan_path"], str(EXPANSION_V7)
+            expansion_rebind["supersedes_plan_path"], str(EXPANSION_V8)
         )
         self.assertEqual(
             expansion_rebind["supersedes_plan_hash"], old_expansion["plan_hash"]
         )
         self.assertEqual(
             expansion_rebind["supersedes_plan_file_sha256"],
-            file_sha256(EXPANSION_V7),
+            file_sha256(EXPANSION_V8),
         )
         assert_scope_change_is_declared_or_absent(self, expansion_rebind)
         parent = expansion["source_bindings"]["parent_v2"]
@@ -237,6 +242,31 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
         self.assertNotIn("automation_launcher", roles)
         self.assertFalse(expansion["guard_contract"]["combined_launcher_scheduler_routable"])
 
+    def test_expansion_validator_rejects_backdated_supersession(self) -> None:
+        expansion = json.loads(NEW_EXPANSION.read_text(encoding="utf-8"))
+        superseded = json.loads(EXPANSION_V8.read_text(encoding="utf-8"))
+        expansion["generated_at_utc"] = superseded["generated_at_utc"]
+        expansion["plan_hash"] = expansion_plan.canonical_hash(expansion)
+
+        with self.assertRaisesRegex(
+            expansion_plan.ExpansionPlanError,
+            "generated_at_utc must be after superseded plan",
+        ):
+            expansion_plan.validate_plan(expansion)
+
+    def test_expansion_validator_rejects_superseded_git_blob_mismatch(self) -> None:
+        expansion = json.loads(NEW_EXPANSION.read_text(encoding="utf-8"))
+
+        with patch.object(
+            expansion_plan,
+            "_git_blob_sha256",
+            return_value="0" * 64,
+        ), self.assertRaisesRegex(
+            expansion_plan.ExpansionPlanError,
+            "previous expansion plan Git blob sha mismatch",
+        ):
+            expansion_plan.validate_plan(expansion)
+
     def test_checked_in_derivative_rebinds_are_current_visible_and_scope_stable(self) -> None:
         # The v1 -> v2 step was a pure technical rebind: same research contract, fresh
         # hashes. Later versions changed the research contract on purpose - premarket v3
@@ -249,7 +279,7 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
                 OLD_PREIPO,
                 BATCH3_PREIPO,
                 NEW_PREIPO,
-                "preipo_perpetual_event_20260825_v9",
+                "preipo_perpetual_event_20260825_v10",
                 preipo_plan.validate_plan,
             ),
         )

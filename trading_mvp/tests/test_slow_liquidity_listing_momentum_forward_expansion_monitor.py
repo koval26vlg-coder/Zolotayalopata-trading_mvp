@@ -859,6 +859,10 @@ class ExpansionPlanTests(unittest.TestCase):
     def test_checked_in_plan_is_hash_bound_and_isolated_from_v2(self) -> None:
         plan = json.loads(plan_module.FORWARD_PLAN_PATH.read_text(encoding="utf-8"))
         plan_module.validate_plan(plan)
+        self.assertEqual(
+            plan,
+            plan_module.build_plan(plan["generated_at_utc"]),
+        )
         self.assertEqual(plan["status"], "READY_FOR_VISIBLE_EXPANSION_TICKS")
         self.assertEqual(plan["venues"], ["binance", "bybit", "okx", "bitget"])
         self.assertTrue(plan["source_bindings"]["parent_v2"]["parallel_immutable"])

@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1] / "src"
 if str(ROOT) not in sys.path:
@@ -11,7 +14,10 @@ if str(ROOT) not in sys.path:
 from preipo_plan import canonical_plan_hash, validate_plan  # noqa: E402
 
 
-PLAN = Path(__file__).resolve().parents[2] / "docs" / "plans" / "preipo-perpetual-event-planonly-20260825-v9.json"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+PLAN = REPO_ROOT / "docs" / "plans" / "preipo-perpetual-event-planonly-20260825-v10.json"
+V9_PLAN = REPO_ROOT / "docs" / "plans" / "preipo-perpetual-event-planonly-20260825-v9.json"
+V9_FILE_SHA256 = "766f0848ea265389422431210902b4150657af5693bbdf3985f008a1549e5324"
 
 
 class PreIPOPlanTests(unittest.TestCase):
@@ -77,7 +83,7 @@ class PreIPOPlanTests(unittest.TestCase):
         self.assertTrue(result["ok"], result)
         self.assertEqual(result["status"], "PLAN_OK")
         self.assertEqual(set(result["venues"]), set(preipo_plan.REQUIRED_VENUES))
-        self.assertEqual(result["plan_id"], "preipo_perpetual_event_20260825_v9")
+        self.assertEqual(result["plan_id"], "preipo_perpetual_event_20260825_v10")
 
     def test_every_collected_venue_has_an_adapter(self) -> None:
         """A venue may be declared without an adapter only while it is a candidate.
@@ -124,19 +130,106 @@ class PreIPOPlanTests(unittest.TestCase):
         self.assertEqual(automation["capture_duration_sec"], 5 * 60)
         self.assertEqual(payload["recovery_contract"]["interval_sec"], 6 * 60 * 60)
 
-    def test_v9_supersedes_v8_without_reusing_its_identity(self) -> None:
-        import json
-
+    def test_v10_supersedes_v9_without_reusing_its_identity(self) -> None:
         payload = json.loads(PLAN.read_text(encoding="utf-8"))
-        self.assertEqual(payload["supersedes_plan_id"], "preipo_perpetual_event_20260825_v8")
+        self.assertEqual(payload["supersedes_plan_id"], "preipo_perpetual_event_20260825_v9")
         self.assertEqual(
             payload["supersedes_plan_hash"],
-            "6d3eb3d8fe97d212f1066bfea5cc29167cb823d394cddb3ac5ae065ad7d6ec69",
+            "5c151060fae1366443ec6ae02d4d6a7abdc8a52bfc51626d8612a2fd09a3e611",
         )
         self.assertEqual(
             payload["supersedes_plan_file_sha256"],
-            "e235832f47fc95e29f51493747df5b43e24139a160d5ed83e76520661248c84e",
+            V9_FILE_SHA256,
         )
+
+    def test_v10_validator_rejects_backdated_supersession(self) -> None:
+        import tempfile
+
+        payload = json.loads(PLAN.read_text(encoding="utf-8"))
+        superseded = json.loads(V9_PLAN.read_text(encoding="utf-8"))
+        payload["generated_at_utc"] = superseded["generated_at_utc"]
+        payload["plan_hash"] = canonical_plan_hash(payload)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "backdated.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            result = validate_plan(path)
+
+        self.assertFalse(result["ok"], result)
+        self.assertIn(
+            "generated_at_utc_not_after_superseded_plan", result["reasons"]
+        )
+
+    def test_v10_validator_rejects_superseded_git_blob_mismatch(self) -> None:
+        import preipo_plan
+
+        with patch.object(
+            preipo_plan,
+            "_git_blob_sha256",
+            return_value="0" * 64,
+        ):
+            result = validate_plan(PLAN)
+
+        self.assertFalse(result["ok"], result)
+        self.assertIn(
+            "superseded_plan_git_blob_sha256_mismatch", result["reasons"]
+        )
+
+    def test_v9_bytes_are_preserved(self) -> None:
+        self.assertEqual(hashlib.sha256(V9_PLAN.read_bytes()).hexdigest(), V9_FILE_SHA256)
+
+    def test_v10_is_only_a_technical_exact_byte_rebind(self) -> None:
+        v9 = json.loads(V9_PLAN.read_text(encoding="utf-8"))
+        v10 = json.loads(PLAN.read_text(encoding="utf-8"))
+
+        technical_top_level = {
+            "commands",
+            "generated_at_utc",
+            "implementation",
+            "plan_hash",
+            "plan_id",
+            "source_bindings",
+            "supersedes_plan_file_sha256",
+            "supersedes_plan_hash",
+            "supersedes_plan_id",
+            "supersedes_plan_path",
+        }
+        self.assertEqual(
+            {key: value for key, value in v10.items() if key not in technical_top_level},
+            {key: value for key, value in v9.items() if key not in technical_top_level},
+        )
+        self.assertEqual(
+            {
+                key: value
+                for key, value in v10["source_bindings"].items()
+                if key != "technical_rebind"
+            },
+            {
+                key: value
+                for key, value in v9["source_bindings"].items()
+                if key != "technical_rebind"
+            },
+        )
+        self.assertEqual(
+            [(row["role"], row["path"]) for row in v10["implementation"]],
+            [(row["role"], row["path"]) for row in v9["implementation"]],
+        )
+        rebind = v10["source_bindings"]["technical_rebind"]
+        self.assertIs(rebind["research_scope_changed"], False)
+        self.assertEqual(
+            rebind["changed_dimensions"],
+            [
+                "implementation_exact_byte_sha256",
+                "launcher_default_plan",
+                "plan_identity",
+            ],
+        )
+
+    def test_visible_launcher_defaults_only_to_v10(self) -> None:
+        launcher = (
+            REPO_ROOT / "tools" / "start_preipo_perpetual_event_automation_visible.ps1"
+        ).read_text(encoding="utf-8")
+        self.assertIn("preipo-perpetual-event-planonly-20260825-v10.json", launcher)
+        self.assertIn("use the immutable v10 default", launcher)
 
     def test_implementation_role_cannot_be_substituted_with_an_arbitrary_file(self) -> None:
         import json

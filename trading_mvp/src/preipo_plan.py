@@ -6,25 +6,33 @@ import argparse
 import copy
 import hashlib
 import json
+import shutil
+import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
 
 PLAN_SCHEMA = "trading_mvp_preipo_perpetual_event_planonly_v2"
-PLAN_ID = "preipo_perpetual_event_20260825_v9"
+PLAN_ID = "preipo_perpetual_event_20260825_v10"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PLAN_PATH = (
-    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v9.json"
+    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v10.json"
 )
 SUPERSEDED_PLAN_PATH = (
-    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v8.json"
+    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v9.json"
 )
 SUPERSEDED_PLAN = {
-    "plan_id": "preipo_perpetual_event_20260825_v8",
-    "plan_hash": "6d3eb3d8fe97d212f1066bfea5cc29167cb823d394cddb3ac5ae065ad7d6ec69",
-    "plan_file_sha256": "e235832f47fc95e29f51493747df5b43e24139a160d5ed83e76520661248c84e",
-    "plan_path": "docs/plans/preipo-perpetual-event-planonly-20260825-v8.json",
+    "plan_id": "preipo_perpetual_event_20260825_v9",
+    "plan_hash": "5c151060fae1366443ec6ae02d4d6a7abdc8a52bfc51626d8612a2fd09a3e611",
+    "plan_file_sha256": "766f0848ea265389422431210902b4150657af5693bbdf3985f008a1549e5324",
+    "plan_path": "docs/plans/preipo-perpetual-event-planonly-20260825-v9.json",
 }
+TECHNICAL_REBIND_CHANGED_DIMENSIONS = [
+    "implementation_exact_byte_sha256",
+    "launcher_default_plan",
+    "plan_identity",
+]
 # Promoted 2026-08-25: bitmex and kraken have adapters and public unauthenticated
 # instruments endpoints. A failing venue is isolated to its own outcome
 # (RETRY_NEXT_INTERVAL) and cannot break collection from the others, which is what makes
@@ -419,6 +427,47 @@ def file_sha256(path: str | Path) -> str:
     return digest.hexdigest()
 
 
+def _git_blob_sha256(path: str | Path, revision: str = "HEAD") -> str:
+    candidates = [
+        shutil.which("git"),
+        r"C:\Program Files\Git\cmd\git.exe",
+        "/usr/bin/git",
+    ]
+    git = next(
+        (
+            str(candidate)
+            for candidate in candidates
+            if candidate and Path(candidate).is_file()
+        ),
+        None,
+    )
+    if git is None:
+        raise RuntimeError("git_executable_missing")
+    try:
+        relative = Path(path).resolve().relative_to(REPO_ROOT.resolve()).as_posix()
+    except ValueError as exc:
+        raise RuntimeError("predecessor_path_outside_repository") from exc
+    result = subprocess.run(
+        [git, "show", f"{revision}:{relative}"],
+        cwd=REPO_ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    if result.returncode != 0:
+        raise RuntimeError("predecessor_git_blob_unavailable")
+    return hashlib.sha256(result.stdout).hexdigest()
+
+
+def _parse_generated_at_utc(value: Any) -> datetime:
+    if not isinstance(value, str) or not value.endswith("Z"):
+        raise ValueError("timestamp_must_be_utc")
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if parsed.tzinfo is None:
+        raise ValueError("timestamp_must_be_timezone_aware")
+    return parsed.astimezone(timezone.utc)
+
+
 def validate_plan(path: str | Path) -> dict[str, Any]:
     plan_path = Path(path)
     reasons: list[str] = []
@@ -548,24 +597,40 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
         or payload.get("supersedes_plan_path") != SUPERSEDED_PLAN["plan_path"]
     ):
         reasons.append("supersedes_binding_invalid")
+    if file_sha256(SUPERSEDED_PLAN_PATH) != SUPERSEDED_PLAN["plan_file_sha256"]:
+        reasons.append("superseded_plan_worktree_sha256_mismatch")
+    try:
+        if (
+            _git_blob_sha256(SUPERSEDED_PLAN_PATH)
+            != SUPERSEDED_PLAN["plan_file_sha256"]
+        ):
+            reasons.append("superseded_plan_git_blob_sha256_mismatch")
+    except (OSError, RuntimeError, ValueError):
+        reasons.append("superseded_plan_git_blob_unavailable")
+    try:
+        superseded_payload = json.loads(
+            SUPERSEDED_PLAN_PATH.read_text(encoding="utf-8")
+        )
+        if _parse_generated_at_utc(
+            payload.get("generated_at_utc")
+        ) <= _parse_generated_at_utc(superseded_payload.get("generated_at_utc")):
+            reasons.append("generated_at_utc_not_after_superseded_plan")
+    except (OSError, TypeError, ValueError, json.JSONDecodeError):
+        reasons.append("generated_at_utc_lineage_invalid")
 
     rebind = ((payload.get("source_bindings") or {}).get("technical_rebind") or {})
     if (
-        rebind.get("research_scope_changed") is not True
-        or rebind.get("baseline_active_venues") != ["gate", "okx"]
-        or rebind.get("baseline_candidate_venues") != ["bybit"]
+        rebind.get("kind") != "preipo_exact_byte_git_sealing_rebind_v10"
+        or rebind.get("research_scope_changed") is not False
+        or set(rebind.get("baseline_active_venues") or []) != REQUIRED_VENUES
+        or set(rebind.get("baseline_candidate_venues") or [])
+        != REQUIRED_CANDIDATE_VENUES
         or set(rebind.get("current_active_venues") or []) != REQUIRED_VENUES
         or set(rebind.get("current_candidate_venues") or [])
         != REQUIRED_CANDIDATE_VENUES
-        or set(rebind.get("changed_dimensions") or [])
-        != {
-            "active_venues",
-            "candidate_venues",
-            "official_timestamp_contract",
-            "public_source_contracts",
-        }
+        or rebind.get("changed_dimensions") != TECHNICAL_REBIND_CHANGED_DIMENSIONS
     ):
-        reasons.append("research_scope_change_binding_invalid")
+        reasons.append("technical_exact_byte_rebind_binding_invalid")
 
     implementation = payload.get("implementation") or []
     if not isinstance(implementation, list):
@@ -614,9 +679,11 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
 def build_rebound_plan(source_path: str | Path, generated_at_utc: str) -> dict[str, Any]:
     source = Path(source_path)
     if source.resolve() != SUPERSEDED_PLAN_PATH.resolve():
-        raise ValueError("source_plan_must_be_immutable_v8")
+        raise ValueError("source_plan_must_be_immutable_v9")
     if file_sha256(source) != SUPERSEDED_PLAN["plan_file_sha256"]:
         raise ValueError("source_plan_file_sha256_mismatch")
+    if _git_blob_sha256(source) != SUPERSEDED_PLAN["plan_file_sha256"]:
+        raise ValueError("source_plan_git_blob_sha256_mismatch")
     source_payload = json.loads(source.read_text(encoding="utf-8"))
     if (
         source_payload.get("plan_id") != SUPERSEDED_PLAN["plan_id"]
@@ -627,41 +694,21 @@ def build_rebound_plan(source_path: str | Path, generated_at_utc: str) -> dict[s
 
     payload = copy.deepcopy(source_payload)
     payload["plan_id"] = PLAN_ID
-    payload["status"] = "READY_FOR_BOUNDED_PUBLIC_PAPER_RESEARCH_NOT_SCHEDULER_ACTIVATED"
     payload["generated_at_utc"] = generated_at_utc
-    payload["candidate_venues"] = sorted(REQUIRED_CANDIDATE_VENUES)
-    payload["candidate_promotion_conditions"] = copy.deepcopy(
-        CANDIDATE_PROMOTION_CONDITIONS
-    )
-    payload["temporal_anchor_contract"] = copy.deepcopy(
-        PREIPO_TEMPORAL_ANCHOR_CONTRACT
-    )
-    payload["venue_verification"] = copy.deepcopy(VENUE_VERIFICATION)
-    payload.setdefault("data_contract", {})["public_sources"] = [
-        "BitMEX public instruments and official blog contract notices",
-        "Gate public perpetual instruments and official perpetual announcements",
-        "Kraken public futures instruments and official pre-IPO FAQ/notices",
-        "OKX public instruments and official pre-market futures notices",
-    ]
-    payload["data_contract"]["public_source_contracts"] = copy.deepcopy(
-        PUBLIC_SOURCE_CONTRACTS
-    )
-    payload["data_contract"]["official_first_trade_source_contract"] = copy.deepcopy(
-        OFFICIAL_FIRST_TRADE_SOURCE_CONTRACT
-    )
     payload["implementation"] = [
         {
             "role": role,
             "path": str(path),
             "sha256": file_sha256(path),
             "change": {
-                "kind": "preipo_scope_and_equity_t0_contract_v9",
+                "kind": "preipo_exact_byte_git_sealing_rebind_v10",
                 "superseded_plan_hash": SUPERSEDED_PLAN["plan_hash"],
                 "superseded_plan_file_sha256": SUPERSEDED_PLAN["plan_file_sha256"],
+                "research_scope_changed": False,
                 "reason": (
-                    "Bind the honestly widened venue/candidate scope, exact per-venue "
-                    "public source families, explicit candidate promotion conditions, "
-                    "and an equity-specific official-first-trade cadence taxonomy."
+                    "Refresh raw exact-byte SHA-256 implementation bindings after "
+                    "repository EOL sealing; research scope and strategy semantics "
+                    "remain unchanged."
                 ),
             },
         }
@@ -672,32 +719,27 @@ def build_rebound_plan(source_path: str | Path, generated_at_utc: str) -> dict[s
     payload["supersedes_plan_file_sha256"] = SUPERSEDED_PLAN["plan_file_sha256"]
     payload["supersedes_plan_path"] = SUPERSEDED_PLAN["plan_path"]
     payload.setdefault("source_bindings", {})["technical_rebind"] = {
-        "kind": "preipo_research_scope_correction_v9",
+        "kind": "preipo_exact_byte_git_sealing_rebind_v10",
         "supersedes_plan_id": SUPERSEDED_PLAN["plan_id"],
         "supersedes_plan_hash": SUPERSEDED_PLAN["plan_hash"],
         "supersedes_plan_file_sha256": SUPERSEDED_PLAN["plan_file_sha256"],
         "supersedes_plan_path": SUPERSEDED_PLAN["plan_path"],
-        "research_scope_changed": True,
-        "baseline_active_venues": ["gate", "okx"],
-        "baseline_candidate_venues": ["bybit"],
+        "research_scope_changed": False,
+        "baseline_active_venues": sorted(REQUIRED_VENUES),
+        "baseline_candidate_venues": sorted(REQUIRED_CANDIDATE_VENUES),
         "current_active_venues": sorted(REQUIRED_VENUES),
         "current_candidate_venues": sorted(REQUIRED_CANDIDATE_VENUES),
-        "changed_dimensions": [
-            "active_venues",
-            "candidate_venues",
-            "official_timestamp_contract",
-            "public_source_contracts",
-        ],
+        "changed_dimensions": TECHNICAL_REBIND_CHANGED_DIMENSIONS,
         "reason": (
-            "Correct the historical scope record: active venues widened from OKX/Gate "
-            "to BitMEX/Gate/Kraken/OKX, candidates widened beyond Bybit, and equity "
-            "official-first-trade provenance is now a distinct fail-closed contract."
+            "Rebind exact raw file bytes for deterministic Git sealing and move the "
+            "launcher default to the new immutable identity; venues, equity t0, data, "
+            "risk and acceptance contracts are unchanged."
         ),
     }
     payload["commands"] = {
         "plan_check": (
             "python trading_mvp/src/preipo_plan.py --plan "
-            "docs/plans/preipo-perpetual-event-planonly-20260825-v9.json --json"
+            "docs/plans/preipo-perpetual-event-planonly-20260825-v10.json --json"
         ),
         "automation": (
             "pwsh -NoProfile -ExecutionPolicy Bypass -File "

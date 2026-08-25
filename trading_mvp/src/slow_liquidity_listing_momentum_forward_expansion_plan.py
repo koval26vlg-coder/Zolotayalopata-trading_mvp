@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
@@ -33,10 +35,10 @@ CANONICAL_PRIMARY_SPOT_COMMIT = "b77c27c1b4cc84db2828d4da8049aa251b8a5bef"
 PREVIOUS_EXPANSION_PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v7.json"
+    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v8.json"
 )
-PREVIOUS_EXPANSION_PLAN_HASH = "2b28105bf69acc7d4740a0f8a1afb0dadf4f0b230a1627c0bc1b827a0e3bbd32"
-PREVIOUS_EXPANSION_PLAN_FILE_SHA256 = "86d6d8f76db247b693ff044570bfd7498d36b6afb0bd058baee3eb13a0f923aa"
+PREVIOUS_EXPANSION_PLAN_HASH = "880ffea9ac66d1bb125f4d9965aca96e6bbce3ae5f2cbf7ed3a0c53bcbebc256"
+PREVIOUS_EXPANSION_PLAN_FILE_SHA256 = "38328999ecd1a4e25e1f0a2f51d32c491fedcca973b0daba61281c918466433e"
 BATCH1_RECEIPT_PATH = (
     REPO_ROOT
     / "docs/agent-log"
@@ -114,6 +116,39 @@ def _sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _git_blob_sha256(path: Path, revision: str = "HEAD") -> str:
+    candidates = [
+        shutil.which("git"),
+        r"C:\Program Files\Git\cmd\git.exe",
+        "/usr/bin/git",
+    ]
+    git = next(
+        (
+            str(candidate)
+            for candidate in candidates
+            if candidate and Path(candidate).is_file()
+        ),
+        None,
+    )
+    _require(git is not None, "Git executable missing for immutable blob check")
+    try:
+        relative = path.resolve().relative_to(REPO_ROOT.resolve()).as_posix()
+    except ValueError as exc:
+        raise ExpansionPlanError("predecessor path is outside canonical repository") from exc
+    result = subprocess.run(
+        [git, "show", f"{revision}:{relative}"],
+        cwd=REPO_ROOT,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=False,
+    )
+    _require(
+        result.returncode == 0,
+        "previous expansion plan Git blob unavailable",
+    )
+    return hashlib.sha256(result.stdout).hexdigest()
+
+
 FIRST_BINDING_KIND = "first_binding_of_role_absent_from_superseded_plan"
 
 # See the forward-monitor generator for the full reasoning. Declaring a scope change is
@@ -129,6 +164,16 @@ def _iso_now() -> str:
 
 def _baseline_ts(generated_at_utc: str) -> int:
     return int(datetime.fromisoformat(generated_at_utc.replace("Z", "+00:00")).timestamp())
+
+
+def _parse_generated_at_utc(value: Any, *, label: str) -> datetime:
+    _require(isinstance(value, str) and value.endswith("Z"), f"{label} must be UTC")
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ExpansionPlanError(f"{label} must be ISO-8601 UTC") from exc
+    _require(parsed.tzinfo is not None, f"{label} must be timezone-aware")
+    return parsed.astimezone(timezone.utc)
 
 
 def _validate_parent_v2() -> dict[str, Any]:
@@ -162,6 +207,11 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
         _sha256_file(PREVIOUS_EXPANSION_PLAN_PATH)
         == PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
         "previous expansion plan file sha mismatch",
+    )
+    _require(
+        _git_blob_sha256(PREVIOUS_EXPANSION_PLAN_PATH)
+        == PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
+        "previous expansion plan Git blob sha mismatch",
     )
     previous_expansion = json.loads(
         PREVIOUS_EXPANSION_PLAN_PATH.read_text(encoding="utf-8")
@@ -255,7 +305,7 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
         },
         "source_bindings": {
             "technical_rebind": {
-                "kind": "listing_strategy_control_plane_batch2_p1_mutex_hash_rebind",
+                "kind": "technical_exact_byte_git_sealing_rebind",
                 "supersedes_plan_id": previous_expansion.get("plan_id"),
                 "supersedes_plan_hash": PREVIOUS_EXPANSION_PLAN_HASH,
                 "supersedes_plan_file_sha256": PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
@@ -275,9 +325,9 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
                     RESEARCH_SCOPE_CHANGE["reason"]
                     if RESEARCH_SCOPE_CHANGE
                     else (
-                        "Bind the fail-closed immutable PlanOnly writer without changing "
-                        "venue, universe, signal, cost, risk, cadence, runtime topology "
-                        "or acceptance contracts."
+                        "Seal the current fail-closed implementation to exact raw Git bytes "
+                        "without changing venue, universe, signal, cost, risk, cadence, "
+                        "runtime topology or acceptance contracts."
                     )
                 ),
             },
@@ -432,10 +482,30 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
     previous_payload = json.loads(
         PREVIOUS_EXPANSION_PLAN_PATH.read_text(encoding="utf-8")
     )
+    _require(
+        _sha256_file(PREVIOUS_EXPANSION_PLAN_PATH)
+        == PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
+        "previous expansion plan file sha mismatch",
+    )
+    _require(
+        _git_blob_sha256(PREVIOUS_EXPANSION_PLAN_PATH)
+        == PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
+        "previous expansion plan Git blob sha mismatch",
+    )
     previous_rows = {
         str(item.get("role") or ""): item
         for item in (previous_payload.get("implementation") or {}).get("files") or []
     }
+    _require(
+        _parse_generated_at_utc(
+            plan.get("generated_at_utc"), label="generated_at_utc"
+        )
+        > _parse_generated_at_utc(
+            previous_payload.get("generated_at_utc"),
+            label="superseded generated_at_utc",
+        ),
+        "generated_at_utc must be after superseded plan",
+    )
     _require(set(current_rows) == set(expected_paths), "implementation role set")
     asset_contract = plan.get("asset_class_contract") or {}
     _require(asset_contract.get("acceptance_class") == "crypto_token", "asset acceptance class")
