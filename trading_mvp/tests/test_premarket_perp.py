@@ -1124,7 +1124,7 @@ class PreMarketPerpTests(unittest.TestCase):
             self.assertEqual(terminal_rows[0]["worker_error"], "PermissionError: worker error denied")
 
     def test_planonly_is_hash_bound_to_public_paper_contract(self) -> None:
-        plan_path = Path(__file__).resolve().parents[2] / "docs" / "plans" / "premarket-perp-listing-impulse-planonly-20260824-v4.json"
+        plan_path = Path(__file__).resolve().parents[2] / "docs" / "plans" / "premarket-perp-listing-impulse-planonly-20260825-v5.json"
         result = validate_plan(plan_path)
 
         self.assertTrue(result["ok"], result)

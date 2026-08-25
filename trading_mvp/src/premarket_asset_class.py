@@ -54,7 +54,19 @@ DECLARED_EQUITY_PREIPO_UNDERLYINGS: frozenset[str] = frozenset({
     "OPENAI",      # private
     "POLYMARKET",  # private
     "QNTX",        # private
+    "SPACEX",      # private; Crypto.com, Coinbase and BitMEX all list a SpaceX pre-IPO
+                   # perpetual, BitMEX under the ticker SPCX - see UNDERLYING_ALIASES
 })
+
+# Venue tickers that name a company already declared above under a different string.
+# Without this the same company reaches classification as two different underlyings, so
+# it would be counted as two distinct events and could sit in two acceptance samples at
+# once - the very thing this module exists to prevent. Declared, never inferred: a
+# guessed alias would silently merge two genuinely different assets, which is worse than
+# leaving one unclassified.
+UNDERLYING_ALIASES: dict[str, str] = {
+    "SPCX": "SPACEX",   # BitMEX SPCXUSDT
+}
 
 _QUOTES = ("USDT", "USDC", "USD", "BTC", "ETH")
 _SEPARATORS = re.compile(r"[-_/]")
@@ -72,8 +84,9 @@ def underlying_of(contract_id: str) -> str:
     head = _SEPARATORS.split(text)[0]
     for quote in _QUOTES:
         if head.endswith(quote) and len(head) > len(quote):
-            return head[: -len(quote)]
-    return head
+            head = head[: -len(quote)]
+            break
+    return UNDERLYING_ALIASES.get(head, head)
 
 
 def classify_underlying(

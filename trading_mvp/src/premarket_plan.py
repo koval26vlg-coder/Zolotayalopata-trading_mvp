@@ -100,6 +100,9 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
     acceptance = payload.get("acceptance_gates") or {}
     for key, expected in {
         "minimum_complete_events": 30,
+        "interim_descriptive_events": 10,
+        "interim_authorizes": False,
+        "below_minimum_status": "INSUFFICIENT_DATA_NOT_REJECTED",
         "minimum_normal_fill_rate": 0.8,
         "minimum_stress_fill_rate": 0.7,
         "minimum_profit_factor": 1.2,
@@ -108,6 +111,14 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
     }.items():
         if acceptance.get(key) != expected:
             reasons.append(f"acceptance_gate_{key}_invalid")
+    interim = acceptance.get("interim_descriptive_events")
+    minimum = acceptance.get("minimum_complete_events")
+    if acceptance.get("interim_authorizes") is not False:
+        reasons.append("acceptance_interim_tier_must_not_authorize")
+    if not isinstance(interim, int) or not isinstance(minimum, int) or interim >= minimum:
+        # Collapsing the tiers would turn the early descriptive read into the acceptance
+        # decision itself, which is exactly what the two tiers exist to prevent.
+        reasons.append("acceptance_interim_tier_not_below_minimum")
     stored_hash = str(payload.get("plan_hash") or "")
     actual_hash = canonical_plan_hash(payload)
     if stored_hash != actual_hash:

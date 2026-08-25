@@ -19,7 +19,7 @@ if ($args.Count -gt 0) {
 }
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$defaultPlanPath = Join-Path $repoRoot "docs\plans\premarket-perp-listing-impulse-planonly-20260824-v4.json"
+$defaultPlanPath = Join-Path $repoRoot "docs\plans\premarket-perp-listing-impulse-planonly-20260825-v5.json"
 if (-not $PlanPath) { $PlanPath = $defaultPlanPath }
 $planValidator = Join-Path $repoRoot "trading_mvp\src\premarket_plan.py"
 $automationPy = Join-Path $repoRoot "trading_mvp\src\premarket_automation.py"

@@ -38,6 +38,23 @@ class UnderlyingTests(unittest.TestCase):
             with self.subTest(contract_id=contract_id):
                 self.assertEqual(underlying_of(contract_id), "ANTHROPIC")
 
+    def test_a_declared_alias_resolves_to_one_underlying(self):
+        # BitMEX trades SpaceX as SPCX while other venues spell it SPACEX. Without the
+        # alias the same company arrives as two underlyings, which would double-count its
+        # events and could place it in two acceptance samples at once.
+        for contract_id in ("SPCXUSDT", "SPACEX_USDT", "SPACEX-USDT-SWAP"):
+            with self.subTest(contract_id=contract_id):
+                self.assertEqual(underlying_of(contract_id), "SPACEX")
+                self.assertEqual(
+                    classify_contract(contract_id), ASSET_CLASS_EQUITY_PREIPO
+                )
+
+    def test_an_undeclared_ticker_is_not_guessed_into_an_alias(self):
+        # A guessed alias would silently merge two genuinely different assets, which is
+        # worse than leaving one unclassified.
+        self.assertEqual(underlying_of("SPCEUSDT"), "SPCE")
+        self.assertEqual(classify_contract("SPCEUSDT"), ASSET_CLASS_UNCLASSIFIED)
+
     def test_quote_suffixes_are_stripped_only_when_they_are_suffixes(self):
         self.assertEqual(underlying_of("BTCUSDT"), "BTC")
         self.assertEqual(underlying_of("USDTUSDT"), "USDT")

@@ -130,6 +130,8 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
     for key, expected in {
         "minimum_complete_events": 30,
         "minimum_official_events": 30,
+        "interim_descriptive_events": 10,
+        "interim_authorizes": False,
         "minimum_normal_fill_rate": 0.8,
         "minimum_stress_fill_rate": 0.7,
         "minimum_profit_factor": 1.2,
@@ -140,6 +142,15 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
             reasons.append(f"acceptance_gate_{key}_invalid")
     if acceptance.get("below_minimum_status") != "INSUFFICIENT_DATA_NOT_REJECTED":
         reasons.append("acceptance_insufficient_status_invalid")
+    interim = acceptance.get("interim_descriptive_events")
+    minimum = acceptance.get("minimum_complete_events")
+    if acceptance.get("interim_authorizes") is not False:
+        reasons.append("acceptance_interim_tier_must_not_authorize")
+    if not isinstance(interim, int) or not isinstance(minimum, int) or interim >= minimum:
+        # Collapsing the tiers would turn the early descriptive read into the acceptance
+        # decision itself, which is exactly what the two tiers exist to prevent.
+        reasons.append("acceptance_interim_tier_not_below_minimum")
+
 
     recovery = payload.get("recovery_contract") or {}
     if recovery.get("interval_sec") != 6 * 60 * 60 or recovery.get("scheduler_wake_interval_sec") != 5 * 60:
