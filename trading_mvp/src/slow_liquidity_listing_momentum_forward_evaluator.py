@@ -338,15 +338,23 @@ def evaluate_forward_state(
     state: Mapping[str, Any],
     *,
     input_binding: Mapping[str, str] | None = None,
+    evaluation_class: str = EVALUATION_CLASS,
+    schema: str = "trading_mvp_slow_liquidity_listing_momentum_forward_evaluation_v1",
 ) -> dict[str, Any]:
+    """Compute the pre-registered read for one forward state.
+
+    evaluation_class and schema are parameters so the expansion track can reuse this
+    core - including its peeking guard - without a second copy of the metrics drifting
+    from this one. Both default to the values this module has always emitted, so the
+    2026-08-16 evaluation reproduces byte for byte; a test pins that."""
     windows = [
         window
         for window in state.get("windows") or []
         if window.get("window_complete")
     ]
     accrual = {
-        "schema": "trading_mvp_slow_liquidity_listing_momentum_forward_evaluation_v1",
-        "evaluation_class": EVALUATION_CLASS,
+        "schema": schema,
+        "evaluation_class": evaluation_class,
         "complete_windows": len(windows),
         "first_read_min": FIRST_READ_MIN_COMPLETE_WINDOWS,
         "terminal_min": TERMINAL_MIN_COMPLETE_WINDOWS,

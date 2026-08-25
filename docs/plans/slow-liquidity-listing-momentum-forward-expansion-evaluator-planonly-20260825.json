@@ -1,0 +1,72 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_evaluator_planonly_v1",
+  "plan_id": "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260825",
+  "mode": "PlanOnly",
+  "status": "PREREGISTERED_FIRST_READ_SAMPLE_REACHED",
+  "generated_at_utc": "2026-08-25T11:00:00.000Z",
+  "research_only": true,
+  "public_data_only": true,
+  "network_authorized": false,
+  "private_api": false,
+  "live_orders": false,
+  "real_capital": false,
+  "objective": "Pre-register the evaluation contract for the exchange-expansion forward sample. The expansion monitor plan requires a separate evaluator plan once enough complete windows accrue; as of 2026-08-25 it carries 30, which is the pre-registered first-read minimum. Metrics are computed only at or above that minimum, by the same peeking guard the forward evaluator uses.",
+  "preregistration": {
+    "evaluation_class": "PROXY_DATE_FORWARD_EXPANSION_PREREGISTERED",
+    "first_read_min_complete_windows": 30,
+    "terminal_min_complete_windows": 100,
+    "metrics_frozen": [
+      "ret_24h",
+      "ret_72h",
+      "max_runup",
+      "max_drawdown"
+    ],
+    "strategy_proxy_frozen": {
+      "rule": "long at first in-window 1h open, exit at window end",
+      "hold_bars": 72,
+      "normal_cost_bps": 120.0,
+      "stress_cost_bps": 245.0
+    },
+    "shared_core": "metrics and peeking guard imported from slow_liquidity_listing_momentum_forward_evaluator so the two tracks cannot drift into computing different things"
+  },
+  "acceptance_policy": {
+    "acceptance_decision": "NONE_FIRST_READ_DESCRIPTIVE_ONLY",
+    "first_read_authorizes": false,
+    "terminal_read_authorizes": false,
+    "live_trading_authorized": false,
+    "note": "A first read at the minimum sample is descriptive. It cannot accept a strategy, cannot authorise paper forward execution, and above all cannot authorise live trading. The terminal read at 100 windows is still only one of the stages the parent plan lists before acceptance: oos, walk_forward, stress, economics, paper_forward."
+  },
+  "source_bindings": {
+    "expansion_monitor_plan": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v5.json",
+      "plan_id": "slow_liquidity_listing_momentum_forward_expansion_20260825_v5",
+      "plan_hash": "f682b49195dfd509132df615211260164282ed67896342d677df051d030f6ae5",
+      "file_sha256": "b5efd9aff58c0c5934ef7aef777c64eb05f93697589c9113c678a40315ca1c78"
+    },
+    "expansion_state": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_listing_momentum_forward_expansion_state_20260817.json"
+    }
+  },
+  "implementation": {
+    "files": [
+      {
+        "role": "expansion_evaluator",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_listing_momentum_forward_expansion_evaluator.py",
+        "sha256": "bb84cf4321628afac2a01965687f438be132aa778b96a3e388e5a9d311f0d184"
+      },
+      {
+        "role": "shared_evaluation_core",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_listing_momentum_forward_evaluator.py",
+        "sha256": "0825634ac2762f312e148d0be39a07a0a2a149269467badbad323bce3ed2a3ad"
+      }
+    ]
+  },
+  "forbidden": [
+    "live orders",
+    "real capital",
+    "private api",
+    "request signing",
+    "computing metrics below the pre-registered minimum"
+  ],
+  "plan_hash": "9fc8a5bdf3fd8da09754dbd0fe870f2e5ed5ebfdcd86282946728f54821e017e"
+}
