@@ -48,7 +48,7 @@ BATCH3_PREMARKET = PLANS / "premarket-perp-listing-impulse-planonly-20260821-v2.
 BATCH4_PREMARKET = PLANS / "premarket-perp-listing-impulse-planonly-20260824-v3.json"
 BATCH3_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260821-v2.json"
 NEW_PREMARKET = PLANS / "premarket-perp-listing-impulse-planonly-20260825-v5.json"
-NEW_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260825-v4.json"
+NEW_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260825-v5.json"
 
 
 def file_sha256(path: Path) -> str:
@@ -235,7 +235,7 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
                 OLD_PREIPO,
                 BATCH3_PREIPO,
                 NEW_PREIPO,
-                "preipo_perpetual_event_20260825_v4",
+                "preipo_perpetual_event_20260825_v5",
                 preipo_plan.validate_plan,
             ),
         )

@@ -11,7 +11,23 @@ from typing import Any, Mapping
 
 PLAN_SCHEMA = "trading_mvp_preipo_perpetual_event_planonly_v2"
 REQUIRED_VENUES = {"okx", "gate"}
-REQUIRED_CANDIDATE_VENUES = {"bybit"}
+# Candidates are venues we have established carry pre-IPO perpetuals on a public,
+# unauthenticated instruments endpoint - verified from their documentation on
+# 2026-08-25 - but from which nothing is collected yet. Writing an adapter says we can
+# collect; being in `venues` says we do. Promotion needs an authorised capture run.
+REQUIRED_CANDIDATE_VENUES = {"bybit", "bitmex", "kraken", "cryptocom", "coinbase_intx"}
+
+# Coinbase International's own documentation states that a pre-IPO perpetual's index
+# price "may comprise internal reference prices from trading activity and/or third-party
+# market prices, though certain contracts may use only internal reference prices". Where
+# the index is purely internal, a listing impulse measured on that venue may be the
+# venue's own order book reflecting itself rather than information arriving. This does
+# not invalidate the collection, but it bounds what a positive result could mean, and a
+# bound that is not written down is a bound that gets forgotten.
+INDEX_PRICE_CAVEAT = (
+    "pre-IPO perpetual index prices may be internal-only; a measured impulse may be "
+    "venue-internal reflexivity rather than information"
+)
 REQUIRED_LIFECYCLE = {
     "scheduled",
     "preipo_continuous",
@@ -86,6 +102,8 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
         reasons.append("asset_class_invalid")
     if set(payload.get("venues") or []) != REQUIRED_VENUES:
         reasons.append("venue_contract_invalid")
+    if str((payload.get("venue_caveats") or {}).get("index_price") or "") != INDEX_PRICE_CAVEAT:
+        reasons.append("index_price_caveat_missing")
     if not REQUIRED_CANDIDATE_VENUES.issubset(set(payload.get("candidate_venues") or [])):
         reasons.append("candidate_venue_contract_invalid")
     if "official pre-IPO contract" not in str(payload.get("bybit_extension_condition") or ""):

@@ -11,7 +11,7 @@ if str(ROOT) not in sys.path:
 from preipo_plan import canonical_plan_hash, validate_plan  # noqa: E402
 
 
-PLAN = Path(__file__).resolve().parents[2] / "docs" / "plans" / "preipo-perpetual-event-planonly-20260825-v4.json"
+PLAN = Path(__file__).resolve().parents[2] / "docs" / "plans" / "preipo-perpetual-event-planonly-20260825-v5.json"
 
 
 class PreIPOPlanTests(unittest.TestCase):
@@ -69,7 +69,7 @@ class PreIPOPlanTests(unittest.TestCase):
         self.assertTrue(result["ok"], result)
         self.assertEqual(result["status"], "PLAN_OK")
         self.assertEqual(set(result["venues"]), {"okx", "gate"})
-        self.assertEqual(result["plan_id"], "preipo_perpetual_event_20260825_v4")
+        self.assertEqual(result["plan_id"], "preipo_perpetual_event_20260825_v5")
 
     def test_plan_hash_is_canonical_and_excludes_stored_hash(self) -> None:
         import json

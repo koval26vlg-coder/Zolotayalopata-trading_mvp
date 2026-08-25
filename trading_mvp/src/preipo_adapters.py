@@ -26,7 +26,7 @@ from preipo_perp_event import PreIPOEvent, PreIPOEventError, parse_announcement
 
 
 ADAPTER_SCHEMA = "trading_mvp_preipo_public_adapter_v1"
-VENUES = ("okx", "gate")
+VENUES = ("okx", "gate", "bitmex")
 
 
 def _timestamp(value: Any) -> float | None:
@@ -172,6 +172,70 @@ def normalize_okx_contract(item: Mapping[str, Any], *, source_class: str = "offi
         maintenance_margin_rate=_float(item.get("mmr") or item.get("maintenanceMarginRate")),
         taker_fee_bps=(_float(item.get("takerFeeRate")) or 0.0) * 10_000.0,
         maker_fee_bps=(_float(item.get("makerFeeRate")) or 0.0) * 10_000.0,
+    )
+
+
+def normalize_bitmex_contract(item: Mapping[str, Any], *, source_class: str = "official") -> PreIPOContract | None:
+    """Normalize a BitMEX instrument, refusing to guess that it is pre-IPO.
+
+    BitMEX publishes no pre-IPO marker at all - unlike OKX ruleType or Gate's fields,
+    there is nothing on the instrument that says "this tracks a private company". So the
+    only honest test is the declared equity list: an instrument enters here when its
+    underlying is one we have declared, and otherwise it is refused. Guessing from the
+    ticker would be the same defect that had the crypto track collecting ANTHROPIC.
+
+    The `listing` field is BitMEX's own timestamp for when the *instrument* was listed on
+    BitMEX. That is a contract launch, not the underlying's IPO and not an observed first
+    trade, so it maps to tradable_ts. Nothing here can satisfy the acceptance gate's
+    exact_first_trade_t0 requirement, and it must not be presented as if it could.
+    """
+    from premarket_asset_class import (
+        ASSET_CLASS_EQUITY_PREIPO,
+        classify_contract,
+        underlying_of,
+    )
+
+    symbol = str(item.get("symbol") or "").strip().upper()
+    if not symbol:
+        return None
+    # FFWCSX is BitMEX's perpetual contract type; anything else is a future or an index.
+    typ = _normalise_status(item.get("typ"))
+    if typ and typ not in {"ffwcsx", "ffwcsf"}:
+        return None
+    if classify_contract(symbol) != ASSET_CLASS_EQUITY_PREIPO:
+        return None
+
+    state = _normalise_status(item.get("state"))
+    if state in {"unlisted", "settled", "closed"}:
+        lifecycle = "delisted" if state != "settled" else "expired"
+    elif state == "open":
+        lifecycle = "preipo_continuous"
+    else:
+        lifecycle = "scheduled"
+
+    quote = str(item.get("quoteCurrency") or item.get("quote_currency") or "USDT").strip().upper()
+    # The canonical underlying, not the venue's spelling: BitMEX writes SPCX where other
+    # venues write SPACEX, and storing the raw field would split one company into two
+    # underlyings the moment a second venue is added - which is the whole point of adding
+    # venues in the first place.
+    underlying = underlying_of(symbol) or str(
+        item.get("underlying") or item.get("rootSymbol") or ""
+    ).strip().upper()
+    return PreIPOContract(
+        venue="bitmex",
+        contract_id=symbol,
+        underlying_symbol=underlying,
+        quote=quote,
+        lifecycle_status=lifecycle,
+        phase="preipo_continuous" if lifecycle == "preipo_continuous" else "scheduled",
+        source_class=source_class,
+        # Contract launch, deliberately not official_conversion_ts: BitMEX publishes no
+        # conversion time, and inventing one would be the collapsed-taxonomy defect again.
+        tradable_ts=_timestamp(item.get("listing")),
+        official_conversion_ts=None,
+        maintenance_margin_rate=_float(item.get("maintMargin")),
+        taker_fee_bps=(_float(item.get("takerFee")) or 0.0) * 10_000.0,
+        maker_fee_bps=(_float(item.get("makerFee")) or 0.0) * 10_000.0,
     )
 
 
@@ -385,6 +449,43 @@ class GatePreIPOAdapter(PublicPreIPOAdapter):
 
 
 ADAPTERS: dict[str, type[PublicPreIPOAdapter]] = {"okx": OkxPreIPOAdapter, "gate": GatePreIPOAdapter}
+
+class BitmexPreIPOAdapter(PublicPreIPOAdapter):
+    """BitMEX public market data. No key, no signing - /instrument/active is open.
+
+    Declared as a candidate venue, not an active one: writing the adapter says we can
+    collect here, and that is a separate statement from being authorised to. Promotion
+    to the active venue set needs a capture run the operator authorises.
+    """
+
+    venue = "bitmex"
+    base_url = "https://www.bitmex.com/api/v1"
+    ws_url = "wss://ws.bitmex.com/realtime"
+
+    def discover_contracts(self) -> list[PreIPOContract]:
+        payload = self._get("/instrument/active")
+        return [
+            contract
+            for item in payload or []
+            if (contract := normalize_bitmex_contract(item)) is not None
+        ]
+
+    def snapshot_payloads(self, contract: PreIPOContract) -> list[Mapping[str, Any]]:
+        symbol = contract.contract_id
+        return [
+            {"table": "orderBookL2_25", "data": self._get("/orderBook/L2", {"symbol": symbol, "depth": 25})},
+            {"table": "instrument", "data": self._get("/instrument", {"symbol": symbol})},
+            {"table": "trade", "data": self._get("/trade", {"symbol": symbol, "count": 50, "reverse": "true"})},
+        ]
+
+    def websocket_subscriptions(self, contract: PreIPOContract) -> list[dict[str, Any]]:
+        symbol = contract.contract_id
+        return [
+            {"op": "subscribe", "args": [f"orderBookL2_25:{symbol}"]},
+            {"op": "subscribe", "args": [f"trade:{symbol}"]},
+            {"op": "subscribe", "args": [f"instrument:{symbol}"]},
+        ]
+
 
 
 def build_public_adapters(
