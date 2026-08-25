@@ -17,6 +17,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Mapping
+from urllib.parse import urlsplit
 
 import requests
 
@@ -224,17 +225,40 @@ class PublicAdapter:
     venue = ""
     base_url = ""
     ws_url = ""
+    allowed_paths: frozenset[str] = frozenset()
 
     def __init__(self, timeout_sec: float = 10.0, session: requests.Session | None = None) -> None:
         self.timeout_sec = timeout_sec
         self.session = session or requests.Session()
         self.session.trust_env = False
+        self.last_response_received_ts: float | None = None
 
     def _get(self, path: str, params: Mapping[str, Any] | None = None) -> Any:
-        url = path if path.startswith("http") else f"{self.base_url}{path}"
-        response = self.session.get(url, params=dict(params or {}), timeout=self.timeout_sec)
+        if not path.startswith("/") or "://" in path or path not in self.allowed_paths:
+            raise ValueError(f"{self.venue} public request requires a relative approved path")
+        base = urlsplit(self.base_url)
+        if base.scheme.lower() != "https" or not base.hostname:
+            raise RuntimeError(f"{self.venue} adapter base URL is not approved HTTPS")
+        url = f"{self.base_url}{path}"
+        response = self.session.get(
+            url,
+            params=dict(params or {}),
+            timeout=self.timeout_sec,
+            allow_redirects=False,
+        )
+        status = int(getattr(response, "status_code", 0) or 0)
+        final = urlsplit(str(getattr(response, "url", url) or url))
+        expected = urlsplit(url)
+        if (
+            status != 200
+            or final.scheme.lower() != "https"
+            or (final.hostname or "").lower() != (expected.hostname or "").lower()
+            or final.path != expected.path
+        ):
+            raise RuntimeError(f"{self.venue} redirect_or_final_url_rejected:{status}")
         response.raise_for_status()
         payload = response.json()
+        self.last_response_received_ts = time.time()
         if isinstance(payload, Mapping) and str(payload.get("retCode", 0)) not in {"0", ""}:
             raise RuntimeError(f"{self.venue} retCode={payload.get('retCode')} retMsg={payload.get('retMsg')}")
         if isinstance(payload, Mapping) and str(payload.get("code", "0")) not in {"0", ""}:
@@ -258,6 +282,13 @@ class BybitPublicAdapter(PublicAdapter):
     venue = "bybit"
     base_url = "https://api.bybit.com"
     ws_url = "wss://stream.bybit.com/v5/public/linear"
+    allowed_paths = frozenset(
+        {
+            "/v5/market/instruments-info",
+            "/v5/market/orderbook",
+            "/v5/market/tickers",
+        }
+    )
 
     def discover_contracts(self) -> list[PreMarketContract]:
         out: list[PreMarketContract] = []
@@ -279,10 +310,12 @@ class BybitPublicAdapter(PublicAdapter):
 
     def snapshot_payloads(self, contract: PreMarketContract) -> list[Mapping[str, Any]]:
         book = self._get("/v5/market/orderbook", {"category": "linear", "symbol": contract.contract_id, "limit": 50})
+        book_received_ts = self.last_response_received_ts
         ticker = self._get("/v5/market/tickers", {"category": "linear", "symbol": contract.contract_id})
+        ticker_received_ts = self.last_response_received_ts
         return [
-            {"topic": f"orderbook.50.{contract.contract_id}", **book},
-            {"topic": f"tickers.{contract.contract_id}", **ticker},
+            {"topic": f"orderbook.50.{contract.contract_id}", **book, "__received_ts": book_received_ts},
+            {"topic": f"tickers.{contract.contract_id}", **ticker, "__received_ts": ticker_received_ts},
         ]
 
     def websocket_subscription(self, contract: PreMarketContract) -> dict[str, Any]:
@@ -293,6 +326,14 @@ class OkxPublicAdapter(PublicAdapter):
     venue = "okx"
     base_url = "https://www.okx.com"
     ws_url = "wss://ws.okx.com:8443/ws/v5/public"
+    allowed_paths = frozenset(
+        {
+            "/api/v5/public/instruments",
+            "/api/v5/market/books",
+            "/api/v5/market/ticker",
+            "/api/v5/public/mark-price",
+        }
+    )
 
     def discover_contracts(self) -> list[PreMarketContract]:
         payload = self._get("/api/v5/public/instruments", {"instType": "SWAP"})
@@ -300,12 +341,15 @@ class OkxPublicAdapter(PublicAdapter):
 
     def snapshot_payloads(self, contract: PreMarketContract) -> list[Mapping[str, Any]]:
         book = self._get("/api/v5/market/books", {"instId": contract.contract_id, "sz": 50})
+        book_received_ts = self.last_response_received_ts
         ticker = self._get("/api/v5/market/ticker", {"instId": contract.contract_id})
+        ticker_received_ts = self.last_response_received_ts
         mark = self._get("/api/v5/public/mark-price", {"instType": "SWAP", "instId": contract.contract_id})
+        mark_received_ts = self.last_response_received_ts
         return [
-            {"arg": {"channel": "books", "instId": contract.contract_id}, **book},
-            {"arg": {"channel": "tickers", "instId": contract.contract_id}, **ticker},
-            {"arg": {"channel": "mark-price", "instId": contract.contract_id}, **mark},
+            {"arg": {"channel": "books", "instId": contract.contract_id}, **book, "__received_ts": book_received_ts},
+            {"arg": {"channel": "tickers", "instId": contract.contract_id}, **ticker, "__received_ts": ticker_received_ts},
+            {"arg": {"channel": "mark-price", "instId": contract.contract_id}, **mark, "__received_ts": mark_received_ts},
         ]
 
     def websocket_subscription(self, contract: PreMarketContract) -> dict[str, Any]:
@@ -323,6 +367,13 @@ class GatePublicAdapter(PublicAdapter):
     venue = "gate"
     base_url = "https://api.gateio.ws/api/v4"
     ws_url = "wss://fx-ws.gateio.ws/v4/ws/usdt"
+    allowed_paths = frozenset(
+        {
+            "/futures/usdt/contracts",
+            "/futures/usdt/order_book",
+            "/futures/usdt/tickers",
+        }
+    )
 
     def discover_contracts(self) -> list[PreMarketContract]:
         payload = self._get("/futures/usdt/contracts")
@@ -330,10 +381,12 @@ class GatePublicAdapter(PublicAdapter):
 
     def snapshot_payloads(self, contract: PreMarketContract) -> list[Mapping[str, Any]]:
         book = self._get("/futures/usdt/order_book", {"contract": contract.contract_id, "limit": 50})
+        book_received_ts = self.last_response_received_ts
         ticker = self._get("/futures/usdt/tickers", {"contract": contract.contract_id})
+        ticker_received_ts = self.last_response_received_ts
         return [
-            {"channel": "futures.order_book", "result": book},
-            {"channel": "futures.tickers", "result": ticker},
+            {"channel": "futures.order_book", "result": book, "__received_ts": book_received_ts},
+            {"channel": "futures.tickers", "result": ticker, "__received_ts": ticker_received_ts},
         ]
 
     def websocket_subscription(self, contract: PreMarketContract) -> dict[str, Any]:
@@ -391,6 +444,8 @@ def _enrich_contract_events(contract: PreMarketContract, events: Iterable[Mappin
         "premarket_phase": contract.phase,
         "lifecycle_status": contract.lifecycle_status,
         "source_class": contract.source_class,
+        "listing_source_class": contract.listing_source_class,
+        "listing_acceptance_eligible": contract.listing_acceptance_eligible,
         "announcement_ts": contract.announcement_ts,
         "official_spot_listing_ts": contract.official_spot_listing_ts,
         "transition_ts": contract.transition_ts,
@@ -878,6 +933,13 @@ def discover_and_snapshot(
                         ANCHOR_CONTRACT_LAUNCH: contract.tradable_ts,
                     },
                     source_class=contract.source_class,
+                    source_classes={
+                        ANCHOR_OFFICIAL_SPOT_T0: (
+                            contract.listing_source_class
+                            if contract.listing_acceptance_eligible
+                            else "proxy"
+                        ),
+                    },
                 )
                 cadence_contracts.append(
                     {
@@ -890,7 +952,23 @@ def discover_and_snapshot(
                     }
                 )
                 for payload in adapter.snapshot_payloads(contract):
-                    venue_events.extend(_enrich_contract_events(contract, normalize_market_payload(venue, contract.contract_id, payload, received_ts=received_ts)))
+                    payload_received_ts = received_ts
+                    normalized_payload = payload
+                    if isinstance(payload, Mapping):
+                        payload_received_ts = float(payload.get("__received_ts") or received_ts)
+                        normalized_payload = dict(payload)
+                        normalized_payload.pop("__received_ts", None)
+                    venue_events.extend(
+                        _enrich_contract_events(
+                            contract,
+                            normalize_market_payload(
+                                venue,
+                                contract.contract_id,
+                                normalized_payload,
+                                received_ts=payload_received_ts,
+                            ),
+                        )
+                    )
             total_contracts += len(selected)
             total_events += _append_jsonl(events_path, venue_events)
             active = [contract for contract in selected if contract.lifecycle_status in {"call_auction", "continuous"}][:max_active_websockets_per_venue]
@@ -923,7 +1001,7 @@ def discover_and_snapshot(
     # combined with another contract's timestamp into a confirmation no single
     # observation supported.
     cadence_observation: dict[str, Any] = {}
-    anchor_row = select_cadence_anchor(cadence_contracts, now_ts=time.time())
+    anchor_row = select_cadence_anchor(cadence_contracts, now_ts=received_ts)
     if anchor_row is not None:
         cadence_observation = {
             **anchor_row,
@@ -964,6 +1042,18 @@ def run_tick(
 ) -> dict[str, Any]:
     reconcile_prepared_receipts(paths)
     state = load_state(paths)
+    prior_cadence = {
+        key: state.get(key)
+        for key in (
+            "cadence_stage",
+            "cadence_seconds",
+            "cadence_minutes",
+            "cadence_reason",
+            "event_eta_utc",
+            "official_confirmation",
+            "exact_timestamp",
+        )
+    }
     attempt_id = attempt_id or f"premarket_perp_automation_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
     if not attempt_id or Path(attempt_id).name != attempt_id:
         raise ValueError("unsafe attempt_id")
@@ -990,7 +1080,29 @@ def run_tick(
         failed = [venue for venue, outcome in result["outcomes"].items() if outcome.get("status") != "COMPLETE"]
         status = "PARTIAL_RETRY_NEXT_INTERVAL" if failed and len(failed) < len(result["outcomes"]) else "RETRY_NEXT_INTERVAL" if failed else "COMPLETE"
         cadence = decide_cadence(result.get("cadence_observation"))
-        state.update({"status": status, "pending_retry": bool(failed), "cadence_stage": cadence.stage.value, "cadence_seconds": cadence.interval_sec, "cadence_minutes": cadence.interval_sec // 60, "cadence_reason": cadence.reason, "event_eta_utc": cadence.event_eta_utc, "official_confirmation": bool((result.get("cadence_observation") or {}).get("official_confirmed")), "exact_timestamp": bool((result.get("cadence_observation") or {}).get("exact_timestamp")), "next_interval_at_utc": cadence.next_interval_at_utc, "last_finished_at_utc": utc_iso(), "worker_pid": None, "worker_process_started_at_utc": None, "outcomes": result["outcomes"], "accrual": {"contracts_seen": result["contracts_seen"], "events_written": result["events_written"], "complete_events": 0}, "last_error": "; ".join(failed) if failed else None})
+        cadence_fields = {
+            "cadence_stage": cadence.stage.value,
+            "cadence_seconds": cadence.interval_sec,
+            "cadence_minutes": cadence.interval_sec // 60,
+            "cadence_reason": cadence.reason,
+            "event_eta_utc": cadence.event_eta_utc,
+            "official_confirmation": bool((result.get("cadence_observation") or {}).get("official_confirmed")),
+            "exact_timestamp": bool((result.get("cadence_observation") or {}).get("exact_timestamp")),
+            "next_interval_at_utc": cadence.next_interval_at_utc,
+        }
+        prior_interval = int(prior_cadence.get("cadence_seconds") or SEARCH_INTERVAL_SEC)
+        if (
+            failed
+            and prior_cadence.get("event_eta_utc")
+            and prior_interval in {SCHEDULED_INTERVAL_SEC, 3600, 10800, SEARCH_INTERVAL_SEC}
+            and prior_interval < cadence.interval_sec
+        ):
+            # A failed acquisition cannot erase a previously known near event
+            # and postpone its retry to SEARCH.  Preserve the closer cadence;
+            # the next successful observation may retire or revise it.
+            cadence_fields.update(prior_cadence)
+            cadence_fields["next_interval_at_utc"] = next_interval_iso(interval_sec=prior_interval)
+        state.update({"status": status, "pending_retry": bool(failed), **cadence_fields, "last_finished_at_utc": utc_iso(), "worker_pid": None, "worker_process_started_at_utc": None, "outcomes": result["outcomes"], "accrual": {"contracts_seen": result["contracts_seen"], "events_written": result["events_written"], "complete_events": 0}, "last_error": "; ".join(failed) if failed else None})
         if failed:
             state["retry_count"] = int(state.get("retry_count", 0)) + 1
         terminal_reason = "; ".join(failed) if failed else None

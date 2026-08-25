@@ -121,5 +121,40 @@ class RegistryTests(unittest.TestCase):
             adapters.build_public_adapters(["binance"])
 
 
+class WebSocketBookTests(unittest.TestCase):
+    def test_snapshot_and_one_sided_delta_keep_current_bbo(self):
+        adapter = adapters.KrakenPreIPOAdapter()
+        contract = normalize_kraken_contract(_instrument())
+        snapshot = adapter.normalize_snapshot(
+            contract,
+            {
+                "feed": "book_snapshot",
+                "product_id": contract.contract_id,
+                "seq": 1,
+                "bids": [{"price": 20.0, "qty": 4}],
+                "asks": [{"price": 20.2, "qty": 5}],
+            },
+            received_ts=1_780_000_100.0,
+        )
+        delta = adapter.normalize_snapshot(
+            contract,
+            {
+                "feed": "book",
+                "product_id": contract.contract_id,
+                "seq": 2,
+                "side": "buy",
+                "price": 20.1,
+                "qty": 3,
+            },
+            received_ts=1_780_000_101.0,
+        )
+
+        self.assertEqual(snapshot[0]["event_kind"], "bbo")
+        self.assertEqual(delta[0]["event_kind"], "bbo")
+        self.assertEqual(delta[0]["bid"], 20.1)
+        self.assertEqual(delta[0]["ask"], 20.2)
+        self.assertEqual(delta[0]["sequence"], 2)
+
+
 if __name__ == "__main__":
     unittest.main()

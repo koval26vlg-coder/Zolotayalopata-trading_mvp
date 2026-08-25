@@ -80,6 +80,22 @@ class ClassificationTests(unittest.TestCase):
             with self.subTest(contract_id=contract_id):
                 self.assertEqual(classify_contract(contract_id), ASSET_CLASS_UNCLASSIFIED)
 
+    def test_positive_crypto_identity_requires_an_explicit_attested_underlying(self):
+        self.assertEqual(
+            classify_contract("NEWTOKEN-USDT-SWAP", crypto_underlyings={"NEWTOKEN"}),
+            ASSET_CLASS_CRYPTO_TOKEN,
+        )
+        self.assertEqual(classify_contract("OTHERUSDT"), ASSET_CLASS_UNCLASSIFIED)
+
+    def test_conflicting_crypto_and_equity_attestations_fail_closed(self):
+        self.assertEqual(
+            classify_contract(
+                "ANTHROPICUSDT",
+                crypto_underlyings={"ANTHROPIC"},
+            ),
+            ASSET_CLASS_UNCLASSIFIED,
+        )
+
     def test_case_and_separator_do_not_change_the_verdict(self):
         for contract_id in ("anthropicusdt", "Anthropic_USDT", "ANTHROPIC-usdt-swap"):
             with self.subTest(contract_id=contract_id):
@@ -142,6 +158,17 @@ class CollectorGateTests(unittest.TestCase):
         self.assertIsNone(
             premarket_perp.normalise_contract("bybit", self._bybit("ANTHROPICUSDT"))
         )
+
+    def test_the_crypto_collector_accepts_only_a_positive_identity_attestation(self):
+        import premarket_perp
+
+        contract = premarket_perp.normalise_contract(
+            "bybit",
+            self._bybit("NEWTOKENUSDT"),
+            crypto_underlyings={"NEWTOKEN"},
+        )
+        self.assertIsNotNone(contract)
+        self.assertEqual(contract.contract_id, "NEWTOKENUSDT")
 
     def test_descriptive_normalisation_without_a_gate_still_works(self):
         import premarket_perp

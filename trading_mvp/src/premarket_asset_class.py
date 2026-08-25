@@ -93,6 +93,7 @@ def classify_underlying(
     underlying: str,
     *,
     equity_underlyings: Iterable[str] | None = None,
+    crypto_underlyings: Iterable[str] | None = None,
 ) -> str:
     """Classify a bare underlying, refusing to guess.
 
@@ -107,8 +108,17 @@ def classify_underlying(
         if equity_underlyings is None
         else frozenset(str(x).strip().upper() for x in equity_underlyings)
     )
+    attested_crypto = frozenset(
+        str(item).strip().upper() for item in (crypto_underlyings or ()) if str(item).strip()
+    )
+    # Contradictory identity evidence is not resolved by precedence.  It must be
+    # reviewed at the registry boundary before this classifier can accept it.
+    if name in declared and name in attested_crypto:
+        return ASSET_CLASS_UNCLASSIFIED
     if name in declared:
         return ASSET_CLASS_EQUITY_PREIPO
+    if name in attested_crypto:
+        return ASSET_CLASS_CRYPTO_TOKEN
     return ASSET_CLASS_UNCLASSIFIED
 
 
@@ -116,9 +126,12 @@ def classify_contract(
     contract_id: str,
     *,
     equity_underlyings: Iterable[str] | None = None,
+    crypto_underlyings: Iterable[str] | None = None,
 ) -> str:
     return classify_underlying(
-        underlying_of(contract_id), equity_underlyings=equity_underlyings
+        underlying_of(contract_id),
+        equity_underlyings=equity_underlyings,
+        crypto_underlyings=crypto_underlyings,
     )
 
 

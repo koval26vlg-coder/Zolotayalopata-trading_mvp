@@ -324,15 +324,15 @@ def _text_listing_timestamp(text: str) -> tuple[float | None, str | None]:
         return None, "placeholder_timestamp"
     context = "|".join(re.escape(marker) for marker in _CONTEXT_MARKERS)
     iso_pattern = re.compile(
-        rf"(?P<stamp>20\d{{2}}-\d{{2}}-\d{{2}}[T ]\d{{2}}:\d{{2}}(?::\d{{2}})?(?:\.\d+)?\s*(?:Z|UTC|GMT|[+-]\d{{2}}:?\d{{2}}))",
+        r"(?P<stamp>20\d{2}-\d{2}-\d{2}[T ]\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?\s*(?:Z|UTC|GMT|[+-]\d{2}:?\d{2}))",
         re.IGNORECASE,
     )
     month_pattern = re.compile(
-        rf"(?P<date>(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{{1,2}},\s*20\d{{2}})\s*(?:,?\s*(?:at|@)\s*)?(?P<clock>\d{{1,2}}:\d{{2}}(?::\d{{2}})?)\s*(?P<zone>UTC|GMT|Z)",
+        r"(?P<date>(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s*20\d{2})\s*(?:,?\s*(?:at|@)\s*)?(?P<clock>\d{1,2}:\d{2}(?::\d{2})?)\s*(?P<zone>UTC|GMT|Z)",
         re.IGNORECASE,
     )
     dmy_pattern = re.compile(
-        rf"(?P<date>\d{{1,2}}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+20\d{{2}})\s*(?:,?\s*(?:at|@)\s*)?(?P<clock>\d{{1,2}}:\d{{2}}(?::\d{{2}})?)\s*(?P<zone>UTC|GMT|Z)",
+        r"(?P<date>\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+20\d{2})\s*(?:,?\s*(?:at|@)\s*)?(?P<clock>\d{1,2}:\d{2}(?::\d{2})?)\s*(?P<zone>UTC|GMT|Z)",
         re.IGNORECASE,
     )
     for pattern in (iso_pattern, month_pattern, dmy_pattern):
@@ -490,7 +490,22 @@ def fetch_public_announcement(
             body = content.decode(encoding, errors="replace")
         except LookupError:
             body = content.decode("utf-8", errors="replace")
-        payload = dict(metadata or {})
+        # Caller metadata may identify the contract/pair, but it is not the
+        # fetched response.  In particular, never let a caller-supplied title
+        # or timestamp manufacture an official t0 for an unrelated page.
+        identity_keys = {
+            *(_key(item) for item in _CONTRACT_KEYS),
+            *(_key(item) for item in _SPOT_KEYS),
+            *(_key(item) for item in _BASE_KEYS),
+            *(_key(item) for item in _QUOTE_KEYS),
+            "id",
+            "announcementid",
+        }
+        payload = {
+            str(key): value
+            for key, value in dict(metadata or {}).items()
+            if _key(key) in identity_keys
+        }
         payload.update({"source_url": url, "body": body})
         return parse_official_listing_announcement(venue_key, payload)
     finally:

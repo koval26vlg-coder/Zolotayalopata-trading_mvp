@@ -1135,6 +1135,55 @@ class ListingMomentumVisibleLauncherGuardTests(unittest.TestCase):
                 combined_output,
             )
 
+    def test_main_combined_cadence_selects_smallest_ordered_track_interval(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as temp_dir:
+            fixture = self.fixture(temp_dir)
+            fixture.install_recording_child_launchers()
+            fixture.write_main_state(next_interval_at_utc=None)
+            states = fixture.root / "states"
+            states.mkdir(parents=True, exist_ok=True)
+            (states / "fixture-v2.json").write_text(
+                json.dumps(
+                    {
+                        "adaptive_cadence": {
+                            "stage": "CANDIDATE",
+                            "interval_sec": 10800,
+                            "reason": "fixture_v2_candidate",
+                            "event_eta_utc": None,
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (states / "fixture-expansion.json").write_text(
+                json.dumps(
+                    {
+                        "adaptive_cadence": {
+                            "stage": "CONFIRMED",
+                            "interval_sec": 3600,
+                            "reason": "fixture_expansion_confirmed",
+                            "event_eta_utc": None,
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            result = fixture.run(
+                MAIN_SCRIPT,
+                "-VisibleWorker",
+                "-ScheduledTick",
+                "-Json",
+            )
+
+            self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+            final_state = json.loads(fixture.main_state.read_text(encoding="utf-8-sig"))
+            self.assertEqual(final_state["cadence_stage"], "CONFIRMED")
+            self.assertEqual(final_state["cadence_seconds"], 3600)
+            self.assertEqual(
+                final_state["cadence_reason"], "fixture_expansion_confirmed"
+            )
+
     def test_main_track_outcomes_use_only_integer_exit_code_while_child_output_stays_visible(self) -> None:
         scenarios = (
             {

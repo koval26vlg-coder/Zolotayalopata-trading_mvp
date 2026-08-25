@@ -21,6 +21,13 @@ if ($args.Count -gt 0) {
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $defaultPlanPath = Join-Path $repoRoot "docs\plans\premarket-perp-listing-impulse-planonly-20260825-v5.json"
 if (-not $PlanPath) { $PlanPath = $defaultPlanPath }
+$resolvedPlanPath = [System.IO.Path]::GetFullPath($PlanPath)
+$resolvedDefaultPlanPath = [System.IO.Path]::GetFullPath($defaultPlanPath)
+if (-not [string]::Equals($resolvedPlanPath, $resolvedDefaultPlanPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+    Write-Error "Untrusted PlanPath rejected; this launcher is bound to the immutable default trust root"
+    exit 2
+}
+$PlanPath = $resolvedDefaultPlanPath
 $planValidator = Join-Path $repoRoot "trading_mvp\src\premarket_plan.py"
 $automationPy = Join-Path $repoRoot "trading_mvp\src\premarket_automation.py"
 $claimManagerPy = Join-Path $repoRoot "trading_mvp\src\global_market_writer_claim.py"
@@ -40,7 +47,7 @@ $soonIntervalSec = 3 * 60 * 60
 $confirmedIntervalSec = 60 * 60
 $scheduledIntervalSec = 5 * 60
 $wakeIntervalSec = 5 * 60
-$cadencePolicyVersion = "adaptive_event_proximity_v1"
+$cadencePolicyVersion = "adaptive_event_proximity_v2"
 $automationId = "zolotyaylopata-premarket-perp-listing-monitor"
 
 if ($StatePathOverride) { $statePath = [System.IO.Path]::GetFullPath($StatePathOverride) }

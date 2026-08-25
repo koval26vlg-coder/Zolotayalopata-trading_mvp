@@ -9,6 +9,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from preipo_perp_event import (  # noqa: E402
+    ACTIVE_VENUES,
     EXIT_LABELS,
     LIFECYCLE_STATUSES,
     PreIPOEvent,
@@ -22,6 +23,44 @@ from preipo_perp_event import (  # noqa: E402
 
 
 class PreIPOEventTests(unittest.TestCase):
+    def test_event_model_accepts_every_plan_active_venue(self) -> None:
+        self.assertEqual(set(ACTIVE_VENUES), {"okx", "gate", "bitmex", "kraken"})
+        official_hosts = {
+            "okx": "https://www.okx.com/help/pre-ipo",
+            "gate": "https://www.gate.com/announcements/pre-ipo",
+            "bitmex": "https://www.bitmex.com/app/announcements/pre-ipo",
+            "kraken": "https://support.kraken.com/articles/pre-ipo",
+        }
+        for venue in ACTIVE_VENUES:
+            with self.subTest(venue=venue):
+                event = parse_announcement(
+                    {
+                        "venue": venue,
+                        "source_url": official_hosts[venue],
+                        "contract_id": f"TEST-{venue.upper()}-USDT",
+                        "underlying_symbol": "TEST",
+                        "quote": "USDT",
+                        "official_first_trade_ts": 1_780_010_000,
+                    }
+                )
+                self.assertEqual(event.venue, venue)
+                self.assertTrue(event.acceptance_eligible)
+
+    def test_candidate_venue_cannot_enter_acceptance_before_promotion(self) -> None:
+        event = parse_announcement(
+            {
+                "venue": "bybit",
+                "source_url": "https://www.bybit.com/en/help-center/article/pre-ipo",
+                "contract_id": "TESTUSDT",
+                "underlying_symbol": "TEST",
+                "quote": "USDT",
+                "official_first_trade_ts": 1_780_010_000,
+            }
+        )
+
+        self.assertEqual(event.venue, "bybit")
+        self.assertFalse(event.acceptance_eligible)
+
     def _official_event(self) -> PreIPOEvent:
         return parse_announcement(
             {
@@ -78,6 +117,19 @@ class PreIPOEventTests(unittest.TestCase):
                     "source_url": "https://example.test/preipo",
                     "contract_id": "ABC-USDT-SWAP",
                     "underlying_symbol": "ABC",
+                    "quote": "USDT",
+                    "official_first_trade_ts": 1_780_010_000,
+                }
+            )
+
+    def test_official_host_over_plain_http_is_rejected(self) -> None:
+        with self.assertRaises(PreIPOEventError):
+            parse_announcement(
+                {
+                    "venue": "bitmex",
+                    "source_url": "http://www.bitmex.com/app/announcements/pre-ipo",
+                    "contract_id": "SPCXUSDT",
+                    "underlying_symbol": "SPACEX",
                     "quote": "USDT",
                     "official_first_trade_ts": 1_780_010_000,
                 }

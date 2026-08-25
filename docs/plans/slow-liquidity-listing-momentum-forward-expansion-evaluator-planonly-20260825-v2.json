@@ -1,0 +1,92 @@
+{
+  "schema": "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_evaluator_planonly_v2",
+  "plan_id": "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260825_v2",
+  "mode": "PlanOnly",
+  "status": "PREREGISTERED_CRYPTO_ONLY_REBIND_NO_ACCEPTANCE",
+  "generated_at_utc": "2026-08-25T19:20:00Z",
+  "research_only": true,
+  "public_data_only": true,
+  "network_authorized": false,
+  "private_api": false,
+  "live_orders": false,
+  "real_capital": false,
+  "objective": "Pre-register the crypto-only evaluation contract for expansion monitor v6. The historical 30-window mixed-asset sample is retained as descriptive evidence but cannot satisfy this plan's minimum. Metrics require at least 30 complete windows positively classified as crypto_token before capture.",
+  "supersedes": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-expansion-evaluator-planonly-20260825.json",
+    "plan_id": "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260825",
+    "plan_hash": "9fc8a5bdf3fd8da09754dbd0fe870f2e5ed5ebfdcd86282946728f54821e017e",
+    "file_sha256": "e07ba6afff9c09d3fb43cff60f6ea5f4a245e38721ba7e7b7de06ea9acb46a36"
+  },
+  "preregistration": {
+    "evaluation_class": "PROXY_DATE_FORWARD_EXPANSION_PREREGISTERED",
+    "first_read_min_complete_windows": 30,
+    "terminal_min_complete_windows": 100,
+    "metrics_frozen": [
+      "ret_24h",
+      "ret_72h",
+      "max_runup",
+      "max_drawdown"
+    ],
+    "strategy_proxy_frozen": {
+      "rule": "long at first in-window 1h open, exit at window end",
+      "hold_bars": 72,
+      "normal_cost_bps": 120.0,
+      "stress_cost_bps": 245.0
+    },
+    "shared_core": "metrics and peeking guard imported from slow_liquidity_listing_momentum_forward_evaluator so the two tracks cannot drift into computing different things"
+  },
+  "acceptance_policy": {
+    "acceptance_decision": "NONE_FIRST_READ_DESCRIPTIVE_ONLY",
+    "first_read_authorizes": false,
+    "terminal_read_authorizes": false,
+    "live_trading_authorized": false,
+    "note": "A first read at the minimum sample is descriptive. It cannot accept a strategy, cannot authorise paper forward execution, and above all cannot authorise live trading. The terminal read at 100 windows is still only one of the stages the parent plan lists before acceptance: oos, walk_forward, stress, economics, paper_forward."
+  },
+  "asset_class_contract": {
+    "acceptance_asset_class": "crypto_token",
+    "required_source": "declared_spot_asset_registry_v1",
+    "positive_identity_required": true,
+    "legacy_mixed_sample_acceptance_eligible": false,
+    "tokenized_equity_acceptance_eligible": false,
+    "unclassified_acceptance_eligible": false,
+    "minimum_applies_after_asset_filter": true
+  },
+  "source_bindings": {
+    "expansion_monitor_plan": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v6.json",
+      "plan_id": "slow_liquidity_listing_momentum_forward_expansion_20260825_v6",
+      "plan_hash": "dd903a54d656e6e3e050d7faa2028a98e2dccd26e6b2139eb370cfd5b884387d",
+      "file_sha256": "687a8a3e8212d942a58ebc3b41ebc1347bfc0c059e4c6487f7a332e1466ca83a"
+    },
+    "expansion_state": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_listing_momentum_forward_expansion_state_20260817.json"
+    }
+  },
+  "implementation": {
+    "files": [
+      {
+        "role": "expansion_evaluator",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_listing_momentum_forward_expansion_evaluator.py",
+        "sha256": "fcbc15efd96c45f63ed8d920347207e6489ca20e483becce48519197c2a10f95"
+      },
+      {
+        "role": "shared_evaluation_core",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\slow_liquidity_listing_momentum_forward_evaluator.py",
+        "sha256": "0825634ac2762f312e148d0be39a07a0a2a149269467badbad323bce3ed2a3ad"
+      },
+      {
+        "role": "spot_asset_classifier",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_spot_asset_class.py",
+        "sha256": "be521e7036bd91b5aee7864d51b9f25ced34d3aca7dbfe820caa2545f62a1050"
+      }
+    ]
+  },
+  "forbidden": [
+    "live orders",
+    "real capital",
+    "private api",
+    "request signing",
+    "computing metrics below the pre-registered minimum"
+  ],
+  "plan_hash": "3671602f078df9e49449cc9f17523b3be8981df5e68c2e682dc466b75fb4f17b"
+}

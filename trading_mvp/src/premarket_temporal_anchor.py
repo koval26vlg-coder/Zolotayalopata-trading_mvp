@@ -77,10 +77,17 @@ class TemporalAnchor:
 def resolve_anchor(
     candidates: Mapping[str, Any],
     *,
-    source_class: str,
+    source_class: str = "",
+    source_classes: Mapping[str, Any] | None = None,
     precedence: Sequence[str] = ANCHOR_PRECEDENCE,
 ) -> TemporalAnchor | None:
-    """Pick the timestamp that best describes the awaited event, keeping its kind."""
+    """Pick an anchor while keeping provenance attached to each timestamp.
+
+    ``source_class`` is retained for legacy non-official anchors only.  A
+    record-wide label can never certify an official spot t0; that requires an
+    explicit per-kind entry in ``source_classes`` from the resolver.
+    """
+    provenance = dict(source_classes or {})
     for kind in precedence:
         value = candidates.get(kind)
         if value is None:
@@ -89,7 +96,10 @@ def resolve_anchor(
             ts = float(value)
         except (TypeError, ValueError):
             continue
-        return TemporalAnchor(kind=kind, ts=ts, source_class=str(source_class or ""))
+        kind_source = str(provenance.get(kind) or "").strip().lower()
+        if not kind_source:
+            kind_source = "proxy" if kind == ANCHOR_OFFICIAL_SPOT_T0 else str(source_class or "")
+        return TemporalAnchor(kind=kind, ts=ts, source_class=kind_source)
     return None
 
 

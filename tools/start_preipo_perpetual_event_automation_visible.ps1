@@ -19,8 +19,15 @@ if ($args.Count -gt 0) {
 }
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$defaultPlanPath = Join-Path $repoRoot "docs\plans\preipo-perpetual-event-planonly-20260825-v6.json"
+$defaultPlanPath = Join-Path $repoRoot "docs\plans\preipo-perpetual-event-planonly-20260825-v8.json"
 if (-not $PlanPath) { $PlanPath = $defaultPlanPath }
+$resolvedRequestedPlanPath = [System.IO.Path]::GetFullPath($PlanPath)
+$resolvedDefaultPlanPath = [System.IO.Path]::GetFullPath($defaultPlanPath)
+if (-not [string]::Equals($resolvedRequestedPlanPath, $resolvedDefaultPlanPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+    Write-Error "PlanPath override is disabled for the production launcher; use the immutable v8 default"
+    exit 2
+}
+$PlanPath = $resolvedDefaultPlanPath
 $planValidator = Join-Path $repoRoot "trading_mvp\src\preipo_plan.py"
 $automationPy = Join-Path $repoRoot "trading_mvp\src\preipo_automation.py"
 $claimManagerPy = Join-Path $repoRoot "trading_mvp\src\global_market_writer_claim.py"
@@ -36,14 +43,14 @@ $workerErrorPath = Join-Path $runGateDir "preipo_perpetual_event_automation.work
 $pythonHandoffDir = Join-Path $runGateDir "python-worker-handoffs"
 $eventsPath = Join-Path $repoRoot "exports\trading-mvp\preipo-perp\raw_events.jsonl"
 $manifestPath = Join-Path $repoRoot "exports\trading-mvp\preipo-perp\manifest.json"
-$scheduleIntervalSec = 3 * 60 * 60
+$scheduleIntervalSec = 6 * 60 * 60
 $captureDurationSec = 5 * 60
 $searchIntervalSec = 6 * 60 * 60
 $soonIntervalSec = 3 * 60 * 60
 $confirmedIntervalSec = 60 * 60
 $scheduledIntervalSec = 5 * 60
 $wakeIntervalSec = 5 * 60
-$cadencePolicyVersion = "adaptive_event_proximity_v1"
+$cadencePolicyVersion = "adaptive_event_proximity_v2"
 $automationId = "zolotyaylopata-preipo-perpetual-event-monitor"
 
 if ($StatePathOverride) { $statePath = [System.IO.Path]::GetFullPath($StatePathOverride) }
@@ -162,6 +169,10 @@ function Get-State {
     $state = Read-JsonFile $statePath
     if ([string]$state.schema -ne "trading_mvp_preipo_perpetual_event_automation_state_v1") { throw "pre-IPO automation state schema mismatch" }
     $legacyCadence = -not ($state.PSObject.Properties.Name -contains "cadence_policy_version")
+    $staleCadencePolicy = (
+        -not $legacyCadence -and
+        [string]$state.cadence_policy_version -ne $cadencePolicyVersion
+    )
     Ensure-StateProperty $state "cadence_policy_version" $cadencePolicyVersion
     Ensure-StateProperty $state "cadence_stage" "SEARCH"
     Ensure-StateProperty $state "cadence_seconds" $searchIntervalSec
@@ -176,13 +187,17 @@ function Get-State {
     if ([int]$state.schedule_interval_seconds -ne $searchIntervalSec) {
         $state.schedule_interval_seconds = $searchIntervalSec
     }
-    if ($legacyCadence) {
+    if ($legacyCadence -or $staleCadencePolicy) {
         $state.cadence_policy_version = $cadencePolicyVersion
-        $state.cadence_stage = "SEARCH"
-        $state.cadence_seconds = $searchIntervalSec
         $state.schedule_interval_seconds = $searchIntervalSec
-        $state.cadence_reason = "migrated_legacy_fixed_cadence"
-        $state.next_interval_at_utc = Get-NextIntervalUtc $state
+        if ($legacyCadence) {
+            $state.cadence_stage = "SEARCH"
+            $state.cadence_seconds = $searchIntervalSec
+            $state.cadence_reason = "migrated_legacy_fixed_cadence"
+            $state.next_interval_at_utc = Get-NextIntervalUtc $state
+        } else {
+            $state.cadence_reason = "migrated_stale_cadence_policy"
+        }
     }
     return $state
 }
@@ -733,7 +748,7 @@ if ($VisibleWorker) {
     Set-State $state
     Write-JsonAtomic $launchRecordPath $launchRecord
         Write-Host "=== Pre-IPO perpetual automation (visible) ===" -ForegroundColor Cyan
-        Write-Host ("venues: OKX + Gate; cadence stage: " + [string]$state.cadence_stage + "; actual interval: " + [int]$state.cadence_seconds + " sec; scheduler wake: " + $wakeIntervalSec + " sec; public capture window: " + $captureDurationSec + " sec")
+        Write-Host ("venues: OKX + Gate + BitMEX + Kraken; cadence stage: " + [string]$state.cadence_stage + "; actual interval: " + [int]$state.cadence_seconds + " sec; scheduler wake: " + $wakeIntervalSec + " sec; public capture window: " + $captureDurationSec + " sec")
         $env:PYTHONIOENCODING = "utf-8"
         $env:PYTHONUTF8 = "1"
         $pythonExe = Resolve-PythonExecutable

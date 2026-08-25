@@ -38,9 +38,13 @@ from slow_liquidity_listing_momentum_forward_evaluator import (
     _validated_state_hash,
     evaluate_forward_state,
 )
+from listing_spot_asset_class import (
+    ASSET_CLASS_CRYPTO_TOKEN,
+    DECLARATION_SOURCE,
+)
 
-SCHEMA = "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_evaluator_planonly_v1"
-PLAN_ID = "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260825"
+SCHEMA = "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_evaluator_planonly_v4"
+PLAN_ID = "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260825_v4"
 EVALUATION_CLASS = "PROXY_DATE_FORWARD_EXPANSION_PREREGISTERED"
 EVALUATION_SCHEMA = (
     "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_evaluation_v1"
@@ -50,7 +54,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-expansion-evaluator-planonly-20260825.json"
+    / "slow-liquidity-listing-momentum-forward-expansion-evaluator-planonly-20260825-v4.json"
 )
 EXPANSION_STATE_PATH = (
     REPO_ROOT
@@ -60,13 +64,36 @@ EXPANSION_STATE_PATH = (
 EXPANSION_MONITOR_PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v5.json"
+    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v8.json"
 )
 EVALUATION_PATH = (
     REPO_ROOT
     / "exports/trading-mvp/analysis"
-    / "slow_liquidity_listing_momentum_forward_expansion_evaluation_20260825.json"
+    / "slow_liquidity_listing_momentum_forward_expansion_evaluation_20260825_v4.json"
 )
+
+SUPERSEDED_PLAN = {
+    "path": str(
+        REPO_ROOT
+        / "docs/plans"
+        / "slow-liquidity-listing-momentum-forward-expansion-evaluator-planonly-20260825-v3.json"
+    ),
+    "plan_id": "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260825_v3",
+    "plan_hash": "0136c144f4a9027dedd59af5c3811ef56afb5eb48e251ca981a314655c266851",
+    "file_sha256": "140144343f871e0e9a9b5f5bf18715999d3a79ab9d88a19af39cc58167f401d5",
+}
+
+EXPECTED_IMPLEMENTATION_PATHS = {
+    "expansion_evaluator": Path(__file__).resolve(),
+    "shared_evaluation_core": (
+        REPO_ROOT
+        / "trading_mvp/src"
+        / "slow_liquidity_listing_momentum_forward_evaluator.py"
+    ).resolve(),
+    "spot_asset_classifier": (
+        REPO_ROOT / "trading_mvp/src" / "listing_spot_asset_class.py"
+    ).resolve(),
+}
 
 
 def _read_json_object(path: Path, label: str) -> dict[str, Any]:
@@ -109,13 +136,54 @@ def _build_input_binding(
     }
 
 
+def evaluate_expansion_state(
+    state: Mapping[str, Any],
+    *,
+    input_binding: Mapping[str, str] | None = None,
+) -> dict[str, Any]:
+    complete_windows = [
+        window
+        for window in state.get("windows") or []
+        if isinstance(window, Mapping) and window.get("window_complete")
+    ]
+    crypto_windows = [
+        dict(window)
+        for window in complete_windows
+        if window.get("asset_class") == ASSET_CLASS_CRYPTO_TOKEN
+        and window.get("asset_class_source") == DECLARATION_SOURCE
+        and window.get("asset_class_acceptance_eligible") is True
+    ]
+    filtered_state = dict(state)
+    filtered_state["windows"] = crypto_windows
+    result = evaluate_forward_state(
+        filtered_state,
+        input_binding=input_binding,
+        evaluation_class=EVALUATION_CLASS,
+        schema=EVALUATION_SCHEMA,
+    )
+    result.update(
+        {
+            "observed_complete_window_count": len(complete_windows),
+            "crypto_acceptance_window_count": len(crypto_windows),
+            "descriptive_only_window_count": len(complete_windows)
+            - len(crypto_windows),
+            "asset_class_policy": (
+                "only explicit crypto_token windows bound to the declared identity "
+                "registry are eligible; tokenized_equity, unclassified and legacy rows remain "
+                "descriptive-only"
+            ),
+        }
+    )
+    return result
+
+
 def build_plan(generated_at_utc: str) -> dict[str, Any]:
     monitor_plan = _read_json_object(EXPANSION_MONITOR_PLAN_PATH, "expansion monitor plan")
     plan: dict[str, Any] = {
         "schema": SCHEMA,
         "plan_id": PLAN_ID,
         "mode": "PlanOnly",
-        "status": "PREREGISTERED_FIRST_READ_SAMPLE_REACHED",
+        "status": "PREREGISTERED_CRYPTO_ONLY_REBIND_NO_ACCEPTANCE",
         "generated_at_utc": generated_at_utc,
         "research_only": True,
         "public_data_only": True,
@@ -124,12 +192,12 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
         "live_orders": False,
         "real_capital": False,
         "objective": (
-            "Pre-register the evaluation contract for the exchange-expansion forward "
-            "sample. The expansion monitor plan requires a separate evaluator plan once "
-            "enough complete windows accrue; as of 2026-08-25 it carries 30, which is "
-            "the pre-registered first-read minimum. Metrics are computed only at or "
-            "above that minimum, by the same peeking guard the forward evaluator uses."
+            "Pre-register the crypto-only evaluation contract for expansion monitor v6. "
+            "The historical 30-window mixed-asset sample is retained as descriptive "
+            "evidence but cannot satisfy this plan's minimum. Metrics require at least "
+            "30 complete windows positively classified as crypto_token before capture."
         ),
+        "supersedes": dict(SUPERSEDED_PLAN),
         "preregistration": {
             "evaluation_class": EVALUATION_CLASS,
             "first_read_min_complete_windows": FIRST_READ_MIN_COMPLETE_WINDOWS,
@@ -160,6 +228,15 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
                 "oos, walk_forward, stress, economics, paper_forward."
             ),
         },
+        "asset_class_contract": {
+            "acceptance_asset_class": ASSET_CLASS_CRYPTO_TOKEN,
+            "required_source": DECLARATION_SOURCE,
+            "positive_identity_required": True,
+            "legacy_mixed_sample_acceptance_eligible": False,
+            "tokenized_equity_acceptance_eligible": False,
+            "unclassified_acceptance_eligible": False,
+            "minimum_applies_after_asset_filter": True,
+        },
         "source_bindings": {
             "expansion_monitor_plan": {
                 "path": str(EXPANSION_MONITOR_PLAN_PATH),
@@ -172,23 +249,11 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
         "implementation": {
             "files": [
                 {
-                    "role": "expansion_evaluator",
-                    "path": str(Path(__file__).resolve()),
-                    "sha256": _sha256_file(Path(__file__).resolve()),
-                },
-                {
-                    "role": "shared_evaluation_core",
-                    "path": str(
-                        REPO_ROOT
-                        / "trading_mvp/src"
-                        / "slow_liquidity_listing_momentum_forward_evaluator.py"
-                    ),
-                    "sha256": _sha256_file(
-                        REPO_ROOT
-                        / "trading_mvp/src"
-                        / "slow_liquidity_listing_momentum_forward_evaluator.py"
-                    ),
-                },
+                    "role": role,
+                    "path": str(path),
+                    "sha256": _sha256_file(path),
+                }
+                for role, path in EXPECTED_IMPLEMENTATION_PATHS.items()
             ]
         },
         "forbidden": [
@@ -212,6 +277,7 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
     _require(plan.get("private_api") is False, "private_api")
     _require(plan.get("live_orders") is False, "live_orders")
     _require(plan.get("real_capital") is False, "real_capital")
+    _require(plan.get("supersedes") == SUPERSEDED_PLAN, "supersedes")
     pre = plan.get("preregistration") or {}
     _require(
         pre.get("first_read_min_complete_windows") == FIRST_READ_MIN_COMPLETE_WINDOWS,
@@ -224,16 +290,55 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
     acceptance = plan.get("acceptance_policy") or {}
     for key in ("first_read_authorizes", "terminal_read_authorizes", "live_trading_authorized"):
         _require(acceptance.get(key) is False, f"{key} must be False")
+    asset_contract = plan.get("asset_class_contract") or {}
+    _require(
+        asset_contract.get("acceptance_asset_class") == ASSET_CLASS_CRYPTO_TOKEN,
+        "acceptance asset class",
+    )
+    _require(asset_contract.get("required_source") == DECLARATION_SOURCE, "asset source")
+    for key in (
+        "legacy_mixed_sample_acceptance_eligible",
+        "tokenized_equity_acceptance_eligible",
+        "unclassified_acceptance_eligible",
+    ):
+        _require(asset_contract.get(key) is False, f"{key} must be False")
+    _require(asset_contract.get("positive_identity_required") is True, "positive identity")
+    _require(
+        asset_contract.get("minimum_applies_after_asset_filter") is True,
+        "minimum after asset filter",
+    )
+    monitor_plan = _read_json_object(EXPANSION_MONITOR_PLAN_PATH, "expansion monitor plan")
+    monitor_binding = (plan.get("source_bindings") or {}).get("expansion_monitor_plan") or {}
+    expected_monitor_binding = {
+        "path": str(EXPANSION_MONITOR_PLAN_PATH),
+        "plan_id": str(monitor_plan.get("plan_id") or ""),
+        "plan_hash": str(monitor_plan.get("plan_hash") or ""),
+        "file_sha256": _sha256_file(EXPANSION_MONITOR_PLAN_PATH),
+    }
+    _require(monitor_binding == expected_monitor_binding, "expansion monitor binding")
+    state_binding = (plan.get("source_bindings") or {}).get("expansion_state") or {}
+    _require(state_binding == {"path": str(EXPANSION_STATE_PATH)}, "expansion state binding")
     _require(
         plan.get("plan_hash") == _canonical_hash_without(plan, "plan_hash"),
         "plan hash",
     )
-    for row in (plan.get("implementation") or {}).get("files") or []:
-        path = Path(str(row.get("path") or ""))
-        _require(path.is_file(), f"implementation missing: {row.get('role')}")
+    rows = (plan.get("implementation") or {}).get("files") or []
+    _require(isinstance(rows, list), "implementation files")
+    by_role = {
+        str(row.get("role") or ""): row
+        for row in rows
+        if isinstance(row, Mapping)
+    }
+    _require(set(by_role) == set(EXPECTED_IMPLEMENTATION_PATHS), "implementation roles")
+    _require(len(rows) == len(by_role), "duplicate implementation roles")
+    for role, expected_path in EXPECTED_IMPLEMENTATION_PATHS.items():
+        row = by_role[role]
+        path = Path(str(row.get("path") or "")).resolve()
+        _require(path == expected_path, f"implementation path: {role}")
+        _require(path.is_file(), f"implementation missing: {role}")
         _require(
             row.get("sha256") == _sha256_file(path),
-            f"implementation sha256: {row.get('role')}",
+            f"implementation sha256: {role}",
         )
 
 
@@ -256,12 +361,7 @@ def evaluate() -> dict[str, Any]:
     state = _read_json_object(EXPANSION_STATE_PATH, "expansion state")
     _require_state_matches_bound_plan(state, monitor_plan)
     binding = _build_input_binding(state, evaluator_plan, monitor_plan)
-    result = evaluate_forward_state(
-        state,
-        input_binding=binding,
-        evaluation_class=EVALUATION_CLASS,
-        schema=EVALUATION_SCHEMA,
-    )
+    result = evaluate_expansion_state(state, input_binding=binding)
     result["evaluation_hash"] = _canonical_hash_without(result, "evaluation_hash")
     return result
 
@@ -271,11 +371,25 @@ def main(argv: list[str] | None = None) -> int:
         description="Pre-registered evaluation for the listing-momentum expansion sample"
     )
     parser.add_argument("--write-plan", action="store_true")
+    parser.add_argument("--plan-check", action="store_true")
     parser.add_argument("--evaluate", action="store_true")
     parser.add_argument(
         "--generated-at-utc", default="", help="required with --write-plan"
     )
     args = parser.parse_args(argv)
+    if args.plan_check:
+        plan = _read_json_object(PLAN_PATH, "expansion evaluator plan")
+        validate_plan(plan)
+        print(
+            json.dumps(
+                {
+                    "status": "PLAN_OK",
+                    "plan_id": plan["plan_id"],
+                    "plan_hash": plan["plan_hash"],
+                }
+            )
+        )
+        return 0
     if args.write_plan:
         if not args.generated_at_utc:
             raise SystemExit("--generated-at-utc is required with --write-plan")

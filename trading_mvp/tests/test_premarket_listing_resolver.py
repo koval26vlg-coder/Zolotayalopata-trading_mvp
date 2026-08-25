@@ -52,6 +52,34 @@ class PreMarketListingResolverTests(unittest.TestCase):
         self.assertEqual(session.calls[0][1]["allow_redirects"], False)
         self.assertEqual(session.calls[0][1]["timeout"], 3.0)
 
+    def test_fetched_announcement_requires_timestamp_in_saved_response_evidence(self) -> None:
+        class Response:
+            status_code = 200
+            url = "https://www.gate.com/announcements/abc"
+            content = b"<h1>ABC listing</h1><p>Trading time will be announced later.</p>"
+
+        class Session:
+            def get(self, url: str, **kwargs: object) -> Response:
+                return Response()
+
+        with self.assertRaisesRegex(
+            OfficialListingAnnouncementError,
+            "official_spot_listing_timestamp_missing",
+        ):
+            fetch_public_announcement(
+                "gate",
+                "https://www.gate.com/announcements/abc",
+                session=Session(),
+                metadata={
+                    "spot_symbol": "ABC_USDT",
+                    "pre_market_contract_id": "ABC_USDT",
+                    # Caller metadata is not response evidence and must not be
+                    # allowed to manufacture an official t0.
+                    "official_spot_listing_ts": 1_900_000_000,
+                    "title": "Spot opens 2030-03-17 17:46 UTC",
+                },
+            )
+
     def test_gate_exact_utc_listing_phrase_keeps_publish_and_t0_distinct(self) -> None:
         announcement = parse_official_listing_announcement(
             "gate",

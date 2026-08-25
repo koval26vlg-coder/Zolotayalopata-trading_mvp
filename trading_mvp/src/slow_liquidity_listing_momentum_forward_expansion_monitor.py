@@ -21,6 +21,11 @@ from listing_momentum_exchange_expansion import (
     fetch_current_snapshot_rows,
     resolve_proxy_timestamp,
 )
+from listing_spot_asset_class import (
+    ASSET_CLASS_CRYPTO_TOKEN,
+    DECLARATION_SOURCE,
+    classify_spot_asset,
+)
 from slow_liquidity_listing_momentum_first_days_census import compute_window_stats
 from slow_liquidity_listing_momentum_first_days_collector import (
     GRANULARITY,
@@ -34,13 +39,13 @@ from adaptive_cadence import decide_cadence
 
 
 SCHEMA = "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_monitor_planonly_v3"
-PLAN_ID = "slow_liquidity_listing_momentum_forward_expansion_20260825_v5"
+PLAN_ID = "slow_liquidity_listing_momentum_forward_expansion_20260825_v8"
 AUTOMATION_ID = "zolotyaylopata-listing-momentum-forward-expansion"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v5.json"
+    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v8.json"
 )
 FORWARD_ROOT = Path("E:/trading_mvp/listing-momentum-forward-expansion")
 TICKS_DIR = FORWARD_ROOT / "ticks"
@@ -101,6 +106,11 @@ def _validate_plan(plan: Mapping[str, Any], plan_path: Path) -> None:
     _require(plan.get("replay_allowed") is False, "replay must remain blocked")
     _require(plan.get("evaluator_or_oos_allowed") is False, "evaluator/OOS must remain blocked")
     _require(tuple(plan.get("venues") or []) == SUPPORTED_VENUES, "expansion venue set mismatch")
+    _require(
+        (plan.get("guard_contract") or {}).get("combined_launcher_scheduler_routable")
+        is False,
+        "combined launcher must remain retired from scheduler routing",
+    )
     preflight = (plan.get("source_bindings") or {}).get("preflight") or {}
     preflight_path = Path(str(preflight.get("path") or ""))
     _require(preflight_path.resolve() == DEFAULT_PREFLIGHT_PATH.resolve(), "preflight path mismatch")
@@ -111,10 +121,10 @@ def _validate_plan(plan: Mapping[str, Any], plan_path: Path) -> None:
     implementation = (plan.get("implementation") or {}).get("files") or []
     expected = {
         "expansion_adapter": REPO_ROOT / "trading_mvp/src/listing_momentum_exchange_expansion.py",
+        "spot_asset_classifier": REPO_ROOT / "trading_mvp/src/listing_spot_asset_class.py",
         "expansion_monitor": Path(__file__).resolve(),
         "preflight_launcher": REPO_ROOT / "tools/start_listing_momentum_exchange_expansion_preflight_visible.ps1",
         "visible_tick_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_expansion_tick_visible.ps1",
-        "automation_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_automation_visible.ps1",
         "expansion_plan_generator": REPO_ROOT / "trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_plan.py",
         "cadence_policy": REPO_ROOT / "trading_mvp/src/adaptive_cadence.py",
     }
@@ -168,6 +178,7 @@ def diff_new_listings(
         if bool(row.get("is_delisted")) or (venue, symbol) in baseline_keys:
             continue
         proxy_ts, timestamp_source = resolve_proxy_timestamp(row, now_ts=now_ts)
+        asset = classify_spot_asset(venue, base)
         candidate = {
             "exchange": venue,
             "base": base,
@@ -175,6 +186,9 @@ def diff_new_listings(
             "listed_ts": proxy_ts,
             "timestamp_source": timestamp_source,
             "is_proxy_timestamp": timestamp_source.endswith("proxy"),
+            "asset_class": asset.asset_class,
+            "asset_class_source": asset.source,
+            "asset_class_acceptance_eligible": asset.acceptance_eligible,
         }
         previous = candidates.get((venue, symbol))
         if previous is None or proxy_ts < previous["listed_ts"]:
@@ -208,6 +222,11 @@ def derive_forward_jobs(new_listings: Sequence[Mapping[str, Any]]) -> list[dict[
                 "symbol": entry["symbol"],
                 "proxy_ts": proxy_ts,
                 "timestamp_source": entry["timestamp_source"],
+                "asset_class": entry["asset_class"],
+                "asset_class_source": entry["asset_class_source"],
+                "asset_class_acceptance_eligible": entry[
+                    "asset_class_acceptance_eligible"
+                ],
                 "probe_start_ts": ((proxy_ts - PROBE_BEFORE_SEC) // 3600) * 3600,
                 "window_end_ts": ((proxy_ts + WINDOW_SEC) // 3600) * 3600,
                 "category": entry["category"],
@@ -236,6 +255,11 @@ def _forward_row(job: Mapping[str, Any], bar: Any) -> dict[str, Any]:
         "volume": bar.volume,
         "proxy_event_ts": job["proxy_ts"],
         "proxy_timestamp_source": job["timestamp_source"],
+        "asset_class": job["asset_class"],
+        "asset_class_source": job["asset_class_source"],
+        "asset_class_acceptance_eligible": job[
+            "asset_class_acceptance_eligible"
+        ],
         "window_role": "first_days_forward_expansion",
     }
 
@@ -418,6 +442,9 @@ def run_tick(
                     "symbol",
                     "listed_ts",
                     "timestamp_source",
+                    "asset_class",
+                    "asset_class_source",
+                    "asset_class_acceptance_eligible",
                     "category",
                 )
             }
@@ -475,6 +502,11 @@ def run_tick(
                         "symbol": job["symbol"],
                         "proxy_ts": job["proxy_ts"],
                         "timestamp_source": job["timestamp_source"],
+                        "asset_class": job["asset_class"],
+                        "asset_class_source": job["asset_class_source"],
+                        "asset_class_acceptance_eligible": job[
+                            "asset_class_acceptance_eligible"
+                        ],
                         "category": job["category"],
                         "requests": requests,
                     }
@@ -599,6 +631,51 @@ def _tick_dirs() -> list[Path]:
     return sorted(path for path in TICKS_DIR.iterdir() if path.is_dir())
 
 
+def _window_asset_provenance(
+    bars: Sequence[Mapping[str, Any]],
+    job: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    records: list[tuple[str, str, bool]] = []
+    for row in [*bars, *((job,) if job is not None else ())]:
+        asset_class = str(row.get("asset_class") or "")
+        source = str(row.get("asset_class_source") or "")
+        if not asset_class or not source:
+            continue
+        eligible = row.get("asset_class_acceptance_eligible") is True
+        if eligible and (
+            asset_class != ASSET_CLASS_CRYPTO_TOKEN
+            or source != DECLARATION_SOURCE
+        ):
+            return {
+                "asset_class": "unclassified",
+                "asset_class_source": "conflicting_asset_provenance",
+                "asset_class_acceptance_eligible": False,
+            }
+        records.append((asset_class, source, eligible))
+    if not records:
+        return {
+            "asset_class": "unclassified",
+            "asset_class_source": "legacy_missing_asset_provenance",
+            "asset_class_acceptance_eligible": False,
+        }
+    if len(set(records)) != 1:
+        return {
+            "asset_class": "unclassified",
+            "asset_class_source": "conflicting_asset_provenance",
+            "asset_class_acceptance_eligible": False,
+        }
+    asset_class, source, eligible = records[0]
+    return {
+        "asset_class": asset_class,
+        "asset_class_source": source,
+        "asset_class_acceptance_eligible": bool(
+            eligible
+            and asset_class == ASSET_CLASS_CRYPTO_TOKEN
+            and source == DECLARATION_SOURCE
+        ),
+    }
+
+
 def rebuild_forward_state() -> dict[str, Any]:
     windows: dict[tuple[str, str], dict[str, Any]] = {}
     ticks: list[dict[str, Any]] = []
@@ -626,17 +703,27 @@ def rebuild_forward_state() -> dict[str, Any]:
                 continue
             row = json.loads(line)
             bars_by_key.setdefault((str(row["exchange"]), str(row["base"])), []).append(row)
+        jobs_by_key = {
+            (job.get("exchange"), job.get("base")): job
+            for job in manifest.get("jobs") or []
+            if isinstance(job, Mapping)
+        }
         job_flags = {
             (job.get("exchange"), job.get("base")): job.get("flags") or []
             for job in manifest.get("jobs") or []
+            if isinstance(job, Mapping)
         }
         for key, bars in bars_by_key.items():
+            asset_provenance = _window_asset_provenance(
+                bars, jobs_by_key.get(key)
+            )
             windows[key] = {
                 "exchange": key[0],
                 "base": key[1],
                 "flags": job_flags.get(key, []),
                 "window_complete": "window_in_progress" not in job_flags.get(key, []),
                 "stats": compute_window_stats(bars),
+                **asset_provenance,
             }
     ordered_windows = [windows[key] for key in sorted(windows)]
     in_progress = any(row.get("category") == "new_listing_in_progress" for row in cadence_rows)
@@ -653,6 +740,13 @@ def rebuild_forward_state() -> dict[str, Any]:
         "proxy_timestamp": not official and bool(cadence_rows),
     }
     cadence = decide_cadence(cadence_observation)
+    crypto_acceptance_window_count = sum(
+        1
+        for window in ordered_windows
+        if window["asset_class"] == ASSET_CLASS_CRYPTO_TOKEN
+        and window["asset_class_source"] == DECLARATION_SOURCE
+        and window["asset_class_acceptance_eligible"] is True
+    )
     payload: dict[str, Any] = {
         "schema": "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_state_v1",
         "monitor": PLAN_ID,
@@ -663,6 +757,9 @@ def rebuild_forward_state() -> dict[str, Any]:
         "tick_count": len(ticks),
         "window_count": len(ordered_windows),
         "complete_window_count": sum(1 for window in ordered_windows if window["window_complete"]),
+        "crypto_acceptance_window_count": crypto_acceptance_window_count,
+        "descriptive_only_window_count": len(ordered_windows)
+        - crypto_acceptance_window_count,
         "windows": ordered_windows,
         "cadence_observation": cadence_observation,
         "adaptive_cadence": cadence.as_dict(),

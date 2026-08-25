@@ -6,6 +6,7 @@ $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $coordinatorPath = Join-Path $PSScriptRoot "invoke_listing_strategy_due_coordinator.ps1"
 $installerPath = Join-Path $PSScriptRoot "install_listing_strategy_due_coordinator_task.ps1"
 $uninstallerPath = Join-Path $PSScriptRoot "uninstall_listing_strategy_due_coordinator_task.ps1"
+$stagingRegistryPath = Join-Path $repoRoot "docs\control\canonical_strategy_runtime.staging.json"
 $pwshExe = (Get-Process -Id $PID).Path
 $script:passed = 0
 $script:failed = 0
@@ -351,6 +352,22 @@ function Start-TestWorker {
     return [System.Diagnostics.Process]::Start($startInfo)
 }
 
+function New-LegacyCoordinatorHarness {
+    param(
+        [string]$SourcePath,
+        [string]$TargetRoot
+    )
+    $source = Get-Content -Raw -LiteralPath $SourcePath
+    $pattern = '(?s)# BEGIN CANONICAL_RUNTIME_REGISTRY_PREFLIGHT.*?# END CANONICAL_RUNTIME_REGISTRY_PREFLIGHT\s*'
+    $stripped = [regex]::Replace($source, $pattern, "", 1)
+    if ($stripped -ceq $source) {
+        throw "canonical registry preflight markers are missing from test source: $SourcePath"
+    }
+    $target = Join-Path $TargetRoot ("legacy-core-" + [guid]::NewGuid().ToString("N") + ".ps1")
+    $stripped | Set-Content -LiteralPath $target -Encoding utf8NoBOM
+    return $target
+}
+
 function Invoke-Coordinator {
     param(
         $Fixture,
@@ -358,6 +375,9 @@ function Invoke-Coordinator {
         [string]$CoordinatorScriptPath = $coordinatorPath,
         [string]$AutomationsRoot = ""
     )
+    $CoordinatorScriptPath = New-LegacyCoordinatorHarness `
+        -SourcePath $CoordinatorScriptPath `
+        -TargetRoot $Fixture.root
     $arguments = @(
         "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $CoordinatorScriptPath,
         "-ScheduledTick", "-Json", "-NowUtc", $Fixture.now.ToString("o"),
@@ -1486,7 +1506,9 @@ Invoke-Test "installer defines one hidden five-minute no-model task and uninstal
     Assert-True ($installer -match "FromMinutes\(5\)") "installer does not use a five-minute trigger"
     Assert-True ($installer -match "WindowStyle Hidden") "scheduled coordinator process is not hidden"
     Assert-True ($installer -match "invoke_listing_strategy_due_coordinator\.ps1") "task does not run the coordinator"
-    Assert-True ($installer -match "CodexAutomationsRoot") "installer has no legacy automation root override"
+    Assert-True ($installer -match "canonical_strategy_runtime\.staging\.json") "installer does not bind the staging registry"
+    Assert-True ($installer -match "ExpectedRegistrySha256") "installer does not bind the raw registry SHA"
+    Assert-True ($installer -match "ExpectedCoordinatorSha256") "installer does not bind the coordinator SHA"
     Assert-True ($installer -match "DryRun") "installer has no dry-run gate"
     Assert-True ($installer -notmatch "start_(listing_momentum|premarket|preipo)") "task directly launches a track orchestrator"
     Assert-True ($uninstaller -match "Unregister-ScheduledTask") "uninstaller does not unregister the task"
@@ -1522,8 +1544,35 @@ Invoke-Test "installer dry-run succeeds only when all three legacy automations a
     Assert-Equal @($result.payload.legacy_automations).Count 3 "dry-run did not verify all three legacy automations"
     Assert-Equal ((@($result.payload.legacy_automations | ForEach-Object { $_.id }) | Sort-Object) -join ",") (($legacyAutomationIds | Sort-Object) -join ",") "dry-run returned the wrong automation ids"
     Assert-True (@($result.payload.legacy_automations | Where-Object { $_.status -ne "PAUSED" }).Count -eq 0) "dry-run accepted a non-PAUSED status"
-    Assert-True ([string]$result.payload.action_arguments -match '(?:^|\s)-ScheduledTick(?:\s|$)') "scheduled task action does not require ScheduledTick"
-    Assert-True ([string]$result.payload.action_arguments -match '(?:^|\s)-CodexAutomationsRoot(?:\s|$)') "scheduled task action does not bind the verified legacy automation root"
+    $actionArguments = [string]$result.payload.action_arguments
+    $expectedRegistryPath = [IO.Path]::GetFullPath($stagingRegistryPath)
+    $expectedRegistrySha = Get-FileSha256 $expectedRegistryPath
+    $expectedCoordinatorSha = Get-FileSha256 $coordinatorPath
+    Assert-True ($actionArguments -match '(?:^|\s)-ScheduledTick(?:\s|$)') "scheduled task action does not require ScheduledTick"
+    Assert-True ($actionArguments -match ('(?:^|\s)-RegistryPath\s+"' + [regex]::Escape($expectedRegistryPath) + '"(?:\s|$)')) "scheduled task action does not bind the exact registry path"
+    Assert-True ($actionArguments -match ('(?:^|\s)-ExpectedRegistrySha256\s+' + $expectedRegistrySha + '(?:\s|$)')) "scheduled task action does not bind the exact registry SHA"
+    Assert-True ($actionArguments -match ('(?:^|\s)-ExpectedCoordinatorSha256\s+' + $expectedCoordinatorSha + '(?:\s|$)')) "scheduled task action does not bind the exact coordinator SHA"
+    foreach ($forbidden in @(
+        "CodexAutomationsRoot",
+        "ListingStatePath",
+        "PremarketStatePath",
+        "PreipoStatePath",
+        "ListingLauncherPath",
+        "PremarketLauncherPath",
+        "PreipoLauncherPath",
+        "CoordinatorStatePath",
+        "CoordinatorAttemptsPath",
+        "CoordinatorClaimPath"
+    )) {
+        Assert-True ($actionArguments -notmatch ('(?:^|\s)-' + $forbidden + '(?:\s|$)')) "scheduled task action contains forbidden production override -$forbidden"
+    }
+    Assert-Equal $result.payload.registry_path $expectedRegistryPath "dry-run exposes the wrong registry path"
+    Assert-Equal $result.payload.expected_registry_sha256 $expectedRegistrySha "dry-run exposes the wrong registry SHA"
+    Assert-Equal $result.payload.expected_coordinator_sha256 $expectedCoordinatorSha "dry-run exposes the wrong coordinator SHA"
+    Assert-Equal $result.payload.coordinator_preflight.status "STAGED_FAIL_CLOSED" "dry-run did not execute the read-only staging preflight"
+    Assert-Equal $result.payload.coordinator_preflight.reason "NOT_ACTIVATED" "dry-run staging preflight reason is ambiguous"
+    Assert-Equal $result.payload.coordinator_preflight.execution_performed $false "dry-run coordinator preflight performed execution"
+    Assert-Equal $result.payload.coordinator_preflight.launch_allowed $false "dry-run coordinator preflight allowed launch"
     Assert-Equal $result.payload.registration_attempted $false "dry-run attempted Scheduled Task registration"
 }
 

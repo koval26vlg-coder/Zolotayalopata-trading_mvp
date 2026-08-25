@@ -19,11 +19,8 @@ from enum import Enum
 
 from premarket_asset_class import (  # noqa: E402
     ASSET_CLASS_CRYPTO_TOKEN,
-    ASSET_CLASS_EQUITY_PREIPO,
     belongs_to,
-    classify_contract,
 )
-from pathlib import Path
 from typing import Any, Iterable, Mapping
 
 from ws_replay import ReplayConfig
@@ -43,6 +40,7 @@ class SourceClass(str, Enum):
 EXIT_OFFSETS_SEC: tuple[int, ...] = (0, 5, 15, 60)
 VENUES: tuple[str, ...] = ("bybit", "okx", "gate")
 ENTRY_COHORTS: tuple[str, ...] = ("first_tradable", "last_1_4h")
+MAX_BBO_STALENESS_SEC = 2.0
 
 
 def _as_float(value: Any) -> float | None:
@@ -109,6 +107,12 @@ class PreMarketContract:
     phase: str
     lifecycle_status: str
     source_class: str = SourceClass.OFFICIAL.value
+    # Provenance belongs to the individual timestamp.  Venue instrument
+    # metadata is useful lifecycle evidence, but it is not an official spot
+    # listing announcement unless the resolver has independently materialised
+    # and accepted that timestamp.
+    listing_source_class: str = SourceClass.PROXY.value
+    listing_acceptance_eligible: bool = False
     announcement_ts: float | None = None
     tradable_ts: float | None = None
     official_spot_listing_ts: float | None = None
@@ -133,7 +137,11 @@ class PreMarketContract:
 
     @property
     def has_official_listing_time(self) -> bool:
-        return self.source_class == SourceClass.OFFICIAL.value and self.official_spot_listing_ts is not None
+        return (
+            self.listing_source_class == SourceClass.OFFICIAL.value
+            and self.listing_acceptance_eligible
+            and self.official_spot_listing_ts is not None
+        )
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self) | {"key": self.key, "has_official_listing_time": self.has_official_listing_time}
@@ -322,6 +330,7 @@ def normalise_contract(
     *,
     source_class: str = SourceClass.OFFICIAL.value,
     acceptance_class: str | None = ASSET_CLASS_CRYPTO_TOKEN,
+    crypto_underlyings: Iterable[str] | None = None,
 ) -> PreMarketContract | None:
     """Normalise one venue instrument, refusing anything outside the asked-for class.
 
@@ -347,7 +356,11 @@ def normalise_contract(
 
     if contract is None or acceptance_class is None:
         return contract
-    if not belongs_to(contract.contract_id, acceptance_class):
+    if not belongs_to(
+        contract.contract_id,
+        acceptance_class,
+        crypto_underlyings=crypto_underlyings,
+    ):
         return None
     return contract
 
@@ -700,19 +713,32 @@ def build_replay_config(
 
 
 def _event_ts(event: Mapping[str, Any]) -> float | None:
-    return _timestamp(event.get("exchange_ts")) or _timestamp(event.get("recv_ts"))
+    # Decisions can only use data after it reached our collector.  Exchange
+    # time remains descriptive/freshness evidence and is only a fallback for
+    # legacy fixtures that genuinely predate receive-time capture.
+    return _timestamp(event.get("recv_ts")) or _timestamp(event.get("exchange_ts"))
 
 
 def _bbo_event(event: Mapping[str, Any]) -> bool:
     return _as_float(event.get("bid_price")) is not None and _as_float(event.get("ask_price")) is not None
 
 
-def _latest_bbo_before(events: Iterable[Mapping[str, Any]], ts: float) -> Mapping[str, Any] | None:
+def _latest_bbo_before(
+    events: Iterable[Mapping[str, Any]],
+    ts: float,
+    *,
+    max_age_sec: float = MAX_BBO_STALENESS_SEC,
+) -> Mapping[str, Any] | None:
     selected: Mapping[str, Any] | None = None
     selected_ts = -math.inf
     for event in events:
         event_ts = _event_ts(event)
-        if event_ts is None or event_ts > ts or not _bbo_event(event):
+        if (
+            event_ts is None
+            or event_ts > ts
+            or event_ts < ts - max_age_sec
+            or not _bbo_event(event)
+        ):
             continue
         if event_ts >= selected_ts:
             selected = event
@@ -720,9 +746,37 @@ def _latest_bbo_before(events: Iterable[Mapping[str, Any]], ts: float) -> Mappin
     return selected
 
 
-def _first_bbo_at_or_after(events: Iterable[Mapping[str, Any]], ts: float) -> Mapping[str, Any] | None:
-    candidates = [event for event in events if (event_ts := _event_ts(event)) is not None and event_ts >= ts and _bbo_event(event)]
+def _first_bbo_at_or_after(
+    events: Iterable[Mapping[str, Any]],
+    ts: float,
+    *,
+    max_delay_sec: float = MAX_BBO_STALENESS_SEC,
+) -> Mapping[str, Any] | None:
+    candidates = [
+        event
+        for event in events
+        if (event_ts := _event_ts(event)) is not None
+        and ts <= event_ts <= ts + max_delay_sec
+        and _bbo_event(event)
+    ]
     return min(candidates, key=lambda event: _event_ts(event) or math.inf) if candidates else None
+
+
+def _identity_key(value: Any) -> str:
+    return "".join(char for char in str(value or "").upper() if char.isalnum())
+
+
+def _event_contract_identity(event: Mapping[str, Any]) -> str:
+    return _identity_key(
+        _first(
+            event,
+            "premarket_contract_id",
+            "contract_id",
+            "instId",
+            "inst_id",
+            "symbol",
+        )
+    )
 
 
 def _funding_between(entry_event: Mapping[str, Any], exit_event: Mapping[str, Any], qty: float, mark_price: float) -> tuple[float, int]:
@@ -831,7 +885,20 @@ def replay_listing_event(
     effective_latency_sec = max(0.0, float(cfg.latency_ms)) / 1000.0
     effective_slippage_bps = float(cfg.slippage_bps)
     fee_rate = float(taker_fee_bps if taker_fee_bps is not None else (_as_float(raw_contract.get("taker_fee_bps")) or cfg.taker_fee_bps))
-    ordered = sorted((dict(event) for event in events), key=lambda event: (_event_ts(event) or math.inf, event.get("recv_ts", math.inf)))
+    contract_identity = _identity_key(raw_contract.get("contract_id"))
+    raw_events = [dict(event) for event in events]
+    mismatched_identity_events = [
+        event
+        for event in raw_events
+        if (event_identity := _event_contract_identity(event))
+        and contract_identity
+        and event_identity != contract_identity
+    ]
+    matching_events = [event for event in raw_events if event not in mismatched_identity_events]
+    identity_evidence_missing = not contract_identity or any(
+        not _event_contract_identity(event) for event in matching_events
+    )
+    ordered = sorted(matching_events, key=lambda event: (_event_ts(event) or math.inf, event.get("recv_ts", math.inf)))
     listing_ts = _as_float(raw_contract.get("official_spot_listing_ts"))
     if entry_ts is None:
         entry_ts = _as_float(raw_contract.get("tradable_ts"))
@@ -840,14 +907,32 @@ def replay_listing_event(
 
     entry_ready_ts = entry_ts + effective_latency_sec
     entry_event = _latest_bbo_before(ordered, entry_ts) if effective_latency_sec <= 0 else _first_bbo_at_or_after(ordered, entry_ready_ts)
+    listing_source_class = str(
+        raw_contract.get("listing_source_class") or SourceClass.PROXY.value
+    ).strip().lower()
+    resolver_acceptance_eligible = raw_contract.get("acceptance_eligible") is True
+    event_id = str(raw_contract.get("event_id") or "").strip() or (
+        f"{str(raw_contract.get('venue') or '').lower()}:"
+        f"{str(raw_contract.get('contract_id') or '')}:"
+        f"{listing_ts:.6f}"
+    )
+    fee_model_missing = taker_fee_bps is None and _as_float(raw_contract.get("taker_fee_bps")) is None
     result: dict[str, Any] = {
+        "event_id": event_id,
         "event_status": "complete",
         "acceptance_eligible": False,
         "entry_ts": entry_ts,
         "listing_ts": listing_ts,
         "exit_offsets_sec": list(EXIT_OFFSETS_SEC),
         "fill_denominator": 1,
-        "source_class": raw_contract.get("source_class", SourceClass.OFFICIAL.value),
+        "source_class": listing_source_class,
+        "contract_source_class": str(
+            raw_contract.get("source_class") or SourceClass.PROXY.value
+        ).strip().lower(),
+        "resolver_acceptance_eligible": resolver_acceptance_eligible,
+        "fee_model_missing": fee_model_missing,
+        "identity_evidence_missing": identity_evidence_missing,
+        "identity_mismatch_events_ignored": len(mismatched_identity_events),
         "venue": raw_contract.get("venue"),
         "contract_id": raw_contract.get("contract_id"),
         "entry_fill_status": "unfilled",
@@ -963,12 +1048,29 @@ def replay_listing_event(
     result["liquidation_model_missing"] = not bool(result["liquidation_stress"]["available"])
     t0 = result["exits"].get("t0") or {}
     result["net_pnl_quote"] = t0.get("net_pnl_quote", 0.0) if t0.get("available") else 0.0
+    result["round_trip_filled"] = bool(
+        result["filled"] and t0.get("fill_status") in {"full", "partial"}
+    )
     result["acceptance_eligible"] = bool(
         result["event_status"] == "complete"
-        and result["filled"]
         and result["source_class"] == SourceClass.OFFICIAL.value
+        and resolver_acceptance_eligible
+        and not fee_model_missing
+        and not identity_evidence_missing
         and not result["liquidation_model_missing"]
     )
+    if result["source_class"] != SourceClass.OFFICIAL.value or not resolver_acceptance_eligible:
+        result["acceptance_reason"] = "official_t0_resolver_evidence_missing"
+    elif fee_model_missing:
+        result["acceptance_reason"] = "public_taker_fee_missing"
+    elif identity_evidence_missing:
+        result["acceptance_reason"] = "contract_identity_evidence_missing"
+    elif result["liquidation_model_missing"]:
+        result["acceptance_reason"] = "liquidation_model_missing"
+    elif result["event_status"] != "complete":
+        result["acceptance_reason"] = "event_incomplete"
+    else:
+        result["acceptance_reason"] = None
     return result
 
 
@@ -991,37 +1093,120 @@ def _max_drawdown(values: list[float]) -> float:
     return drawdown
 
 
-def evaluate_evidence_gate(events: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
-    rows = [dict(event) for event in events if str(event.get("event_status", "complete")) == "complete"]
-    official = [event for event in rows if event.get("source_class", SourceClass.OFFICIAL.value) == SourceClass.OFFICIAL.value]
-    pnl = [_as_float(event.get("net_pnl_quote")) or 0.0 for event in official]
-    complete_count = len(rows)
-    filled_count = sum(1 for event in official if bool(event.get("filled")))
-    fill_rate = filled_count / len(official) if official else 0.0
-    venues = sorted({str(event.get("venue")) for event in official if event.get("venue")})
-    concentration = max((value / sum(value for value in pnl if value > 0) for value in pnl if value > 0), default=0.0)
-    result = {
+PRIMARY_ENTRY_COHORT = "first_tradable"
+PRIMARY_EXIT_POLICY = "t0"
+
+
+def _cell_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Evaluate one preregistered entry-cohort/exit-policy cell.
+
+    Rows from different cohorts or exits never enter the same metric.  If one
+    underlying event has multiple venue rows in a cell, no venue is selected
+    after seeing the result: that event becomes an identity conflict and fails
+    closed until a venue-selection rule is preregistered.
+    """
+
+    by_event: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        by_event.setdefault(str(row["event_id"]), []).append(row)
+
+    events: list[dict[str, Any]] = []
+    for event_id, group in by_event.items():
+        conflict = len(group) != 1 or any(bool(row.get("cell_revision_conflict")) for row in group)
+        row = group[0]
+        official = all(
+            str(item.get("source_class") or "").strip().lower()
+            == SourceClass.OFFICIAL.value
+            for item in group
+        )
+        round_trip_filled = bool(row.get("round_trip_filled")) if not conflict else False
+        # An entry-only or zero-fill observation stays in the fill denominator
+        # and contributes zero PnL; it never receives synthetic chart profit.
+        pnl = (_as_float(row.get("net_pnl_quote")) or 0.0) if round_trip_filled else 0.0
+        events.append(
+            {
+                "event_id": event_id,
+                "venue": str(row.get("venue") or "").strip().lower() if not conflict else "",
+                "identity_conflict": conflict,
+                "official": official,
+                "net_pnl_quote": pnl,
+                "round_trip_filled": round_trip_filled,
+                "stress_filled": bool(row.get("stress_filled")) if not conflict else False,
+                "liquidation_model_missing": any(
+                    bool(item.get("liquidation_model_missing")) for item in group
+                ),
+                "acceptance_eligible": (
+                    not conflict
+                    and all(bool(item.get("acceptance_eligible")) for item in group)
+                ),
+            }
+        )
+
+    official = [event for event in events if event["official"]]
+    official_acceptance = [
+        event
+        for event in official
+        if event["acceptance_eligible"]
+        and not event["liquidation_model_missing"]
+        and not event["identity_conflict"]
+        and event["venue"]
+    ]
+    pnl = [float(event["net_pnl_quote"]) for event in official_acceptance]
+    fill_rate = (
+        sum(1 for event in official if event["round_trip_filled"]) / len(official)
+        if official
+        else 0.0
+    )
+    stress_fill_rate = (
+        sum(1 for event in official if event["stress_filled"]) / len(official)
+        if official
+        else 0.0
+    )
+    official_events_by_venue = {
+        venue: sum(1 for event in official_acceptance if event["venue"] == venue)
+        for venue in sorted({str(event["venue"]) for event in official_acceptance})
+    }
+    positive_total = sum(value for value in pnl if value > 0)
+    concentration = max(
+        (
+            value / positive_total
+            for value in pnl
+            if value > 0 and positive_total > 0
+        ),
+        default=0.0,
+    )
+    result: dict[str, Any] = {
         "status": "INSUFFICIENT_DATA_NOT_REJECTED",
         "acceptance_eligible": False,
-        "complete_events": complete_count,
+        "complete_events": len(events),
         "official_events": len(official),
-        "official_venues": venues,
+        "official_acceptance_events": len(official_acceptance),
+        "official_events_by_venue": official_events_by_venue,
+        "venue_specific_ready": {
+            venue: official_events_by_venue.get(venue, 0) >= 5 for venue in VENUES
+        },
         "fill_rate": fill_rate,
+        "stress_fill_rate": stress_fill_rate,
         "net_expectancy_quote": sum(pnl) / len(pnl) if pnl else 0.0,
         "profit_factor": _profit_factor(pnl),
         "maximum_drawdown_quote": _max_drawdown(pnl),
         "maximum_positive_event_share": concentration,
+        "identity_conflicts": sum(1 for event in events if event["identity_conflict"]),
         "reasons": [],
     }
-    if complete_count < 30:
+    if len(events) < 30:
         result["reasons"].append("minimum_complete_events_not_met")
         return result
-    if len(official) < 30:
+    if result["identity_conflicts"]:
+        result["reasons"].append("event_identity_conflict")
+    if len(official_acceptance) < 30:
         result["reasons"].append("minimum_official_events_not_met")
-    if len(venues) < 3:
-        result["reasons"].append("official_venue_coverage_not_met")
+    if any(event["liquidation_model_missing"] for event in official):
+        result["reasons"].append("liquidation_model_missing")
     if fill_rate < 0.80:
         result["reasons"].append("normal_fill_rate_below_80pct")
+    if stress_fill_rate < 0.70:
+        result["reasons"].append("stress_fill_rate_below_70pct")
     if result["net_expectancy_quote"] <= 0:
         result["reasons"].append("net_expectancy_not_positive")
     if result["profit_factor"] < 1.2:
@@ -1036,6 +1221,80 @@ def evaluate_evidence_gate(events: Iterable[Mapping[str, Any]]) -> dict[str, Any
     result["status"] = "ACCEPTANCE_CANDIDATE"
     result["acceptance_eligible"] = True
     return result
+
+
+def evaluate_evidence_gate(events: Iterable[Mapping[str, Any]]) -> dict[str, Any]:
+    rows = [
+        dict(event)
+        for event in events
+        if str(event.get("event_status", "complete")) == "complete"
+    ]
+    unidentified_rows = sum(1 for row in rows if not str(row.get("event_id") or "").strip())
+
+    # Collapse only byte-equivalent revisions of the same exact cell identity.
+    # Conflicting revisions are preserved as one fail-closed row and can never
+    # improve the sample by multiplying it.
+    exact_cells: dict[tuple[str, str, str, str], list[dict[str, Any]]] = {}
+    for row in rows:
+        event_id = str(row.get("event_id") or "").strip()
+        if not event_id:
+            continue
+        venue = str(row.get("venue") or "").strip().lower()
+        cohort = str(row.get("entry_cohort") or "").strip()
+        exit_policy = str(row.get("exit_policy") or "t0").strip()
+        exact_cells.setdefault((event_id, venue, cohort, exit_policy), []).append(row)
+
+    deduped: list[dict[str, Any]] = []
+    for (_event_id, _venue, _cohort, _exit), revisions in exact_cells.items():
+        canonical = {
+            json.dumps(row, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+            for row in revisions
+        }
+        row = dict(revisions[0])
+        row["cell_revision_conflict"] = len(canonical) > 1
+        deduped.append(row)
+
+    cells: dict[str, list[dict[str, Any]]] = {}
+    for row in deduped:
+        cohort = str(row.get("entry_cohort") or "").strip()
+        exit_policy = str(row.get("exit_policy") or "t0").strip()
+        cells.setdefault(f"{cohort}|{exit_policy}", []).append(row)
+    analysis_cells = {key: _cell_summary(value) for key, value in sorted(cells.items())}
+
+    primary_key = f"{PRIMARY_ENTRY_COHORT}|{PRIMARY_EXIT_POLICY}"
+    primary = dict(analysis_cells.get(primary_key) or _cell_summary([]))
+    all_event_ids = {
+        str(row.get("event_id") or "").strip()
+        for row in deduped
+        if str(row.get("event_id") or "").strip()
+    }
+    primary.update(
+        {
+            "complete_rows": len(rows),
+            "complete_events": len(all_event_ids),
+            "primary_complete_events": int(
+                (analysis_cells.get(primary_key) or {}).get("complete_events", 0)
+            ),
+            "unidentified_complete_rows": unidentified_rows,
+            "primary_analysis_cell": {
+                "entry_cohort": PRIMARY_ENTRY_COHORT,
+                "exit_policy": PRIMARY_EXIT_POLICY,
+            },
+            "analysis_cells": analysis_cells,
+            "official_venues": sorted(
+                (analysis_cells.get(primary_key) or {}).get("official_events_by_venue", {})
+            ),
+        }
+    )
+    if unidentified_rows and "event_identity_missing" not in primary["reasons"]:
+        primary["reasons"].append("event_identity_missing")
+        primary["status"] = (
+            "INSUFFICIENT_DATA_NOT_REJECTED"
+            if primary["primary_complete_events"] < 30
+            else "RESEARCH_GATES_FAILED"
+        )
+        primary["acceptance_eligible"] = False
+    return primary
 
 
 def official_preflight_contract() -> dict[str, Any]:

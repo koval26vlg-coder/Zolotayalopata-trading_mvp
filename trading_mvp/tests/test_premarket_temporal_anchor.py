@@ -68,9 +68,19 @@ class AnchorKindTests(unittest.TestCase):
         self.assertFalse(anchor.is_official_time)
 
     def test_only_an_announced_spot_t0_carries_an_official_exact_time(self):
-        anchor = resolve_anchor({ANCHOR_OFFICIAL_SPOT_T0: 1.0}, source_class="official")
+        anchor = resolve_anchor(
+            {ANCHOR_OFFICIAL_SPOT_T0: 1.0},
+            source_classes={ANCHOR_OFFICIAL_SPOT_T0: "official"},
+        )
         self.assertTrue(anchor.is_official_time)
         self.assertFalse(anchor.is_proxy)
+
+    def test_record_wide_official_metadata_cannot_certify_a_spot_t0(self):
+        anchor = resolve_anchor(
+            {ANCHOR_OFFICIAL_SPOT_T0: 1.0},
+            source_class="official",
+        )
+        self.assertFalse(anchor.is_official_time)
 
     def test_an_unofficial_source_cannot_carry_an_official_time_even_for_a_spot_t0(self):
         anchor = resolve_anchor({ANCHOR_OFFICIAL_SPOT_T0: 1.0}, source_class="venue_metadata")
@@ -83,7 +93,7 @@ class AnchorKindTests(unittest.TestCase):
                 ANCHOR_TRANSITION: 200.0,
                 ANCHOR_CONTRACT_LAUNCH: 100.0,
             },
-            source_class="official",
+            source_classes={ANCHOR_OFFICIAL_SPOT_T0: "official"},
         )
         self.assertEqual(anchor.kind, ANCHOR_OFFICIAL_SPOT_T0)
         self.assertEqual(anchor.ts, 300.0)

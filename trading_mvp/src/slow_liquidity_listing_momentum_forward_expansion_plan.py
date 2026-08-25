@@ -23,19 +23,20 @@ HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 FORWARD_PLAN_PATH = monitor.PLAN_PATH
 PREVIOUS_V2_PLAN_PATH = (
-    REPO_ROOT
-    / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json"
+    Path(r"C:\Users\koval\Documents\ZolotyayLopata-listing-momentum-monitor")
+    / "docs/plans/listing-momentum-forward-monitor-planonly-20260822-v2.json"
 )
-PREVIOUS_V2_PLAN_HASH = "e841a0dc9368f1c05fd29c37ff93f7090158fe5155964a0e9e0639351a71c69a"
-PREVIOUS_V2_PLAN_FILE_SHA256 = "cdb69cdb2514035592122f0b93e97f2f95c6787040802a7addb9ce1186ae7dfd"
+PREVIOUS_V2_PLAN_HASH = "ffdc27009d7ec6354348a163d0e7f11b03d4555bbb7cd6830b8764d2fdfafd78"
+PREVIOUS_V2_PLAN_FILE_SHA256 = "823b4f6813bf0eda2878400947824aaa8b8335ee9699bca528bfc8cc177d8422"
+CANONICAL_PRIMARY_SPOT_REPOSITORY = str(PREVIOUS_V2_PLAN_PATH.parents[2])
+CANONICAL_PRIMARY_SPOT_COMMIT = "b77c27c1b4cc84db2828d4da8049aa251b8a5bef"
 PREVIOUS_EXPANSION_PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260821-v2.json"
+    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v7.json"
 )
-PREVIOUS_EXPANSION_PLAN_HASH = "3e3d7ffe8a58bf70263b349644663054893d77e6b7a02c4e5b4fca04208a0b0c"
-PREVIOUS_EXPANSION_PLAN_FILE_SHA256 = "0becc5ef47cfe03d5f2fcea94ef30a24668354fc238c3864db3f8b011ed40128"
+PREVIOUS_EXPANSION_PLAN_HASH = "2b28105bf69acc7d4740a0f8a1afb0dadf4f0b230a1627c0bc1b827a0e3bbd32"
+PREVIOUS_EXPANSION_PLAN_FILE_SHA256 = "86d6d8f76db247b693ff044570bfd7498d36b6afb0bd058baee3eb13a0f923aa"
 BATCH1_RECEIPT_PATH = (
     REPO_ROOT
     / "docs/agent-log"
@@ -118,26 +119,8 @@ FIRST_BINDING_KIND = "first_binding_of_role_absent_from_superseded_plan"
 # See the forward-monitor generator for the full reasoning. Declaring a scope change is
 # a code edit under review; it withdraws the autopilot's unattended authority over this
 # plan, which autopilot_guard enforces by admitting only same-scope technical rebinds.
-RESEARCH_SCOPE_CHANGE: dict[str, Any] | None = {
-    "changed_fields": [
-        "adaptive_cadence.policy_version",
-        "adaptive_cadence.event_spent_after_sec",
-        "adaptive_cadence.spent_anchor_returns_to_search",
-        "implementation.files[cadence_policy]",
-    ],
-    "reason": (
-        "adaptive_cadence.py implements adaptive_event_proximity_v2: an anchor whose own "
-        "event has already passed returns to SEARCH instead of holding the CONFIRMED "
-        "cadence indefinitely. The expansion monitor calls decide_cadence from that "
-        "module, which no plan had ever bound, so the declared policy could drift from "
-        "the running code without invalidating anything; it is bound here as the "
-        "cadence_policy role. Measured 2026-08-24: this track's cadence observation "
-        "carries no timestamp at all, so the new clause is unreachable here and nothing "
-        "about what is collected changes. The declared contract does change, and a "
-        "changed contract is declared rather than quietly rebound."
-    ),
-    "autopilot_authority": "WITHDRAWN_UNTIL_REVIEWED",
-}
+RESEARCH_SCOPE_CHANGE: dict[str, Any] | None = None
+RUNTIME_TOPOLOGY_CHANGE: dict[str, Any] | None = None
 
 
 def _iso_now() -> str:
@@ -157,6 +140,8 @@ def _validate_parent_v2() -> dict[str, Any]:
     _require(payload.get("plan_hash") == canonical_hash(payload), "current v2 plan is not internally consistent")
     return {
         "path": str(PREVIOUS_V2_PLAN_PATH),
+        "canonical_repository": CANONICAL_PRIMARY_SPOT_REPOSITORY,
+        "canonical_git_commit": CANONICAL_PRIMARY_SPOT_COMMIT,
         "file_sha256": file_sha,
         "plan_id": payload.get("plan_id"),
         "plan_hash": payload.get("plan_hash"),
@@ -193,10 +178,10 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
     )
     implementation_paths = {
         "expansion_adapter": REPO_ROOT / "trading_mvp/src/listing_momentum_exchange_expansion.py",
+        "spot_asset_classifier": REPO_ROOT / "trading_mvp/src/listing_spot_asset_class.py",
         "expansion_monitor": REPO_ROOT / "trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_monitor.py",
         "preflight_launcher": REPO_ROOT / "tools/start_listing_momentum_exchange_expansion_preflight_visible.ps1",
         "visible_tick_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_expansion_tick_visible.ps1",
-        "automation_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_automation_visible.ps1",
         "expansion_plan_generator": Path(__file__).resolve(),
         "cadence_policy": REPO_ROOT / "trading_mvp/src/adaptive_cadence.py",
     }
@@ -244,7 +229,7 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
         "evaluator_or_oos_allowed": False,
         "venues": list(SUPPORTED_VENUES),
         "objective": (
-            "Accrue a separate descriptive first-days forward sample for "
+            "Accrue a separate crypto-token descriptive first-days forward sample for "
             "new USDT spot symbols detected on Binance, Bybit, OKX and "
             "Bitget. Use official snapshot timestamps where available and "
             "an explicit detection-time proxy where the public spot schema "
@@ -252,6 +237,22 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
             "this namespace with the immutable MEXC/Gate v2 sample."
         ),
         "adaptive_cadence": ADAPTIVE_CADENCE,
+        "asset_class_contract": {
+            "acceptance_class": "crypto_token",
+            "classifier_role": "spot_asset_classifier",
+            "classifier_source": "declared_spot_asset_registry_v1",
+            "unknown_is_acceptance_eligible": False,
+            "tokenized_equity_is_acceptance_eligible": False,
+            "legacy_rows_without_provenance": "descriptive_only",
+            "provenance_required_through": [
+                "snapshot",
+                "candidate",
+                "job",
+                "ohlcv_row",
+                "manifest",
+                "state_window",
+            ],
+        },
         "source_bindings": {
             "technical_rebind": {
                 "kind": "listing_strategy_control_plane_batch2_p1_mutex_hash_rebind",
@@ -261,6 +262,11 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
                 "supersedes_plan_path": str(PREVIOUS_EXPANSION_PLAN_PATH),
                 "research_scope_changed": RESEARCH_SCOPE_CHANGE is not None,
                 **(
+                    {"runtime_topology_change": RUNTIME_TOPOLOGY_CHANGE}
+                    if RUNTIME_TOPOLOGY_CHANGE
+                    else {}
+                ),
+                **(
                     {"research_scope_change": RESEARCH_SCOPE_CHANGE}
                     if RESEARCH_SCOPE_CHANGE
                     else {}
@@ -269,9 +275,9 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
                     RESEARCH_SCOPE_CHANGE["reason"]
                     if RESEARCH_SCOPE_CHANGE
                     else (
-                        "Rebind the current-run transaction mutex fix and current "
-                        "launcher identities without changing venue, universe, "
-                        "signal, cost, risk, cadence or acceptance contracts."
+                        "Bind the fail-closed immutable PlanOnly writer without changing "
+                        "venue, universe, signal, cost, risk, cadence, runtime topology "
+                        "or acceptance contracts."
                     )
                 ),
             },
@@ -316,6 +322,8 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
             "tick_directory_must_be_new": True,
             "no_background_daemon": True,
             "v2_namespace_must_remain_untouched": True,
+            "combined_launcher_scheduler_routable": False,
+            "canonical_primary_spot_owned_by_dedicated_repository": True,
         },
         "authorized_after_guards": [
             "run repeatable visible public read-only expansion ticks",
@@ -331,6 +339,7 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
         },
         "forbidden": [
             "background daemon or hidden scheduled runs",
+            "routing through the retired combined spot launcher",
             "second concurrent market-data writer",
             "mixing expansion rows into MEXC/Gate v2 state",
             "evaluator or OOS without a separate plan",
@@ -345,7 +354,7 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
         "commands": {
             "plan_check": "python trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_monitor.py --plan-check",
             "status": "python trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_monitor.py --status",
-            "visible_tick": "python trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_monitor.py --tick --confirmed-visible-tick",
+            "visible_tick": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/start_listing_momentum_forward_expansion_tick_visible.ps1 -ScheduledTick -Json",
         },
         "plan_hash_method": HASH_METHOD,
     }
@@ -370,6 +379,11 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
     _require(plan.get("tick", {}).get("max_new_listings_per_tick") == monitor.MAX_NEW_LISTINGS_PER_TICK, "tick cap")
     _require(plan.get("source_bindings", {}).get("parent_v2", {}).get("parallel_immutable") is True, "v2 parallel binding")
     _require(plan.get("guard_contract", {}).get("v2_namespace_must_remain_untouched") is True, "v2 isolation guard")
+    _require(
+        plan.get("guard_contract", {}).get("combined_launcher_scheduler_routable")
+        is False,
+        "combined launcher routing guard",
+    )
     _require(plan.get("acceptance_policy", {}).get("acceptance_decision") == "NONE_ACCRUAL_ONLY", "acceptance policy")
     rebind = (plan.get("source_bindings") or {}).get("technical_rebind") or {}
     _require(
@@ -379,6 +393,15 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
         "technical rebind provenance",
     )
     _require_declared_scope_change(rebind)
+    topology = rebind.get("runtime_topology_change")
+    if RUNTIME_TOPOLOGY_CHANGE is None:
+        _require(topology is None, "unexpected runtime topology change declaration")
+    else:
+        _require(
+            topology == RUNTIME_TOPOLOGY_CHANGE
+            and topology.get("research_contract_changed") is False,
+            "runtime topology change declaration",
+        )
     receipt = (plan.get("source_bindings") or {}).get(
         "control_plane_readiness_receipt"
     ) or {}
@@ -395,10 +418,10 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
     )
     expected_paths = {
         "expansion_adapter": REPO_ROOT / "trading_mvp/src/listing_momentum_exchange_expansion.py",
+        "spot_asset_classifier": REPO_ROOT / "trading_mvp/src/listing_spot_asset_class.py",
         "expansion_monitor": REPO_ROOT / "trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_monitor.py",
         "preflight_launcher": REPO_ROOT / "tools/start_listing_momentum_exchange_expansion_preflight_visible.ps1",
         "visible_tick_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_expansion_tick_visible.ps1",
-        "automation_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_automation_visible.ps1",
         "expansion_plan_generator": Path(__file__).resolve(),
         "cadence_policy": REPO_ROOT / "trading_mvp/src/adaptive_cadence.py",
     }
@@ -414,6 +437,10 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
         for item in (previous_payload.get("implementation") or {}).get("files") or []
     }
     _require(set(current_rows) == set(expected_paths), "implementation role set")
+    asset_contract = plan.get("asset_class_contract") or {}
+    _require(asset_contract.get("acceptance_class") == "crypto_token", "asset acceptance class")
+    _require(asset_contract.get("unknown_is_acceptance_eligible") is False, "unknown asset gate")
+    _require(asset_contract.get("tokenized_equity_is_acceptance_eligible") is False, "equity asset gate")
     for role, path in expected_paths.items():
         row = current_rows[role]
         _require(Path(str(row.get("path") or "")).resolve() == path.resolve(), f"implementation path: {role}")
@@ -434,6 +461,19 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
         )
 
 
+def write_immutable_plan(path: Path, plan: Mapping[str, Any]) -> Path:
+    payload = json.dumps(dict(plan), indent=2, ensure_ascii=False) + "\n"
+    if path.exists():
+        _require(
+            path.read_text(encoding="utf-8") == payload,
+            f"immutable artifact mismatch: {path}",
+        )
+        return path
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(payload, encoding="utf-8")
+    return path
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Build the Listing Momentum exchange expansion PlanOnly")
     parser.add_argument("--output", default=str(FORWARD_PLAN_PATH))
@@ -446,8 +486,7 @@ def main(argv: list[str] | None = None) -> int:
         validate_plan(plan)
     else:
         plan = build_plan(args.generated_at_utc)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(json.dumps(plan, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        write_immutable_plan(output_path, plan)
     print(
         json.dumps(
             {

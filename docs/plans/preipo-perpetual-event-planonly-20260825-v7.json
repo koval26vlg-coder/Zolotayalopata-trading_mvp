@@ -1,0 +1,373 @@
+{
+  "schema": "trading_mvp_preipo_perpetual_event_planonly_v2",
+  "plan_id": "preipo_perpetual_event_20260825_v7",
+  "strategy_branch": "preipo_perpetual_event",
+  "mode": "PlanOnly",
+  "status": "READY_FOR_BOUNDED_PUBLIC_PAPER_RESEARCH_NOT_SCHEDULER_ACTIVATED",
+  "generated_at_utc": "2026-08-25T19:35:00Z",
+  "research_only": true,
+  "public_data_only": true,
+  "private_api": false,
+  "live_orders": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "asset_class": "preipo_equity",
+  "crypto_listing_mix_allowed": false,
+  "replay_allowed": true,
+  "evaluator_or_oos_allowed": false,
+  "venues": [
+    "bitmex",
+    "gate",
+    "kraken",
+    "okx"
+  ],
+  "candidate_venues": [
+    "bybit",
+    "coinbase_intx",
+    "cryptocom"
+  ],
+  "bybit_extension_condition": "Activate Bybit only after an official pre-IPO contract and an official timestamp method are bound to the immutable plan.",
+  "objective": "Test whether a paper LONG or SHORT entered on a pre-IPO perpetual can produce executable net economics around an official equity IPO or conversion event.",
+  "adaptive_cadence": {
+    "policy_version": "adaptive_event_proximity_v2",
+    "scheduler_wake_interval_sec": 300,
+    "search_interval_sec": 21600,
+    "soon_interval_sec": 10800,
+    "confirmed_interval_sec": 3600,
+    "scheduled_interval_sec": 300,
+    "soon_horizon_sec": 259200,
+    "scheduled_horizon_sec": 86400,
+    "exact_timestamp_required_for_scheduled": true,
+    "proxy_cannot_escalate_to_confirmed": true,
+    "collector_runs_only_when_due": true,
+    "terminal_event_returns_to_search": true,
+    "event_spent_after_sec": 259200,
+    "spent_anchor_returns_to_search": true
+  },
+  "hypothesis": "A pre-IPO perpetual may offer an executable event-relative LONG or SHORT before IPO price discovery, but basis, rebase, funding, queue and conversion risk can erase the apparent edge.",
+  "sides": [
+    "long",
+    "short"
+  ],
+  "lifecycle_statuses": [
+    "scheduled",
+    "preipo_continuous",
+    "s1_disclosed",
+    "rebase",
+    "ipo_pending",
+    "ipo_open",
+    "converted",
+    "postponed",
+    "cancelled",
+    "delisted",
+    "expired"
+  ],
+  "entry_cohorts": [
+    "first_tradable",
+    "last_1_4h"
+  ],
+  "event_relative_exits": [
+    "ipo_open",
+    "ipo_open_plus_5s",
+    "ipo_open_plus_15s",
+    "ipo_open_plus_60s",
+    "conversion"
+  ],
+  "primary_exit_policy": "event_relative_only_no_hindsight",
+  "official_timestamp_policy": "exact_first_trade_t0_required_for_acceptance_proxy_separate",
+  "proxy_acceptance_allowed": false,
+  "rebase_policy": {
+    "value_neutral": true,
+    "price_quantity_inverse_ratio": true,
+    "pnl_credit": false,
+    "record_as_event": true
+  },
+  "risk_contract": {
+    "paper_notional_quote": 25.0,
+    "primary_leverage_equivalent": 1,
+    "stress_leverage_equivalent": [
+      2,
+      5
+    ],
+    "real_leverage_or_margin": false,
+    "liquidation_model": "paper_only_mark_index_maintenance_margin_when_official_parameters_exist",
+    "missing_liquidation_model": "liquidation_model_missing_not_acceptance_grade",
+    "max_concurrent_positions_per_contract_side_cohort": 1
+  },
+  "cost_contract": {
+    "primary_execution": "public_taker_like_fee",
+    "maker_queue": "sensitivity_only",
+    "includes": [
+      "fee",
+      "spread",
+      "observed_slippage",
+      "funding",
+      "partial_fill",
+      "queue_ahead",
+      "order_ttl"
+    ],
+    "one_leg_or_zero_fill_profit_credit": false,
+    "rebase_profit_credit": false
+  },
+  "data_contract": {
+    "public_sources": [
+      "OKX official pre-IPO announcements and public market data",
+      "Gate official pre-IPO announcements and public market data"
+    ],
+    "source_classes": [
+      "official",
+      "proxy"
+    ],
+    "official_first_trade_required_for_acceptance": true,
+    "expected_date_only_is_descriptive_proxy": true,
+    "equity_ipo_and_crypto_listing_are_separate": true,
+    "official_and_received_timestamps_separate": true
+  },
+  "acceptance_gates": {
+    "minimum_complete_events": 30,
+    "minimum_official_events": 30,
+    "minimum_venue_events_preferred": 5,
+    "minimum_normal_fill_rate": 0.8,
+    "minimum_stress_fill_rate": 0.7,
+    "minimum_net_expectancy_quote": 0.0,
+    "minimum_profit_factor": 1.2,
+    "maximum_drawdown_fraction": 0.1,
+    "maximum_positive_event_share": 0.25,
+    "below_minimum_status": "INSUFFICIENT_DATA_NOT_REJECTED",
+    "final_acceptance_requires": [
+      "oos",
+      "walk_forward",
+      "stress",
+      "economics",
+      "paper_forward"
+    ],
+    "live_trading_authorized": false,
+    "interim_descriptive_events": 10,
+    "interim_authorizes": false
+  },
+  "automation": {
+    "status": "READY_FOR_VISIBLE_PUBLIC_PAPER_RESEARCH",
+    "schedule_interval_sec": 21600,
+    "discovery_interval_sec": 21600,
+    "scheduler_wake_interval_sec": 300,
+    "cadence_escalation": "search_6h_to_soon_3h_to_confirmed_1h_to_scheduled_5m",
+    "capture_duration_sec": 300,
+    "active_capture": "public_websocket_with_rest_fallback",
+    "visible_terminal_required": true,
+    "one_writer_at_a_time": true,
+    "does_not_launch_crypto_listing_automation": true,
+    "future_state_namespace": "docs/agent-log/run-gates/preipo_perpetual_event_automation_state.json",
+    "network_tick_launch": "not launched in this bounded implementation turn"
+  },
+  "implementation": [
+    {
+      "role": "preipo_event_lifecycle_and_causal_paper_replay",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_perp_event.py",
+      "sha256": "4bb1c31b64055b9f8b52353b5be27d36e82ee5343c08b17d285452cc6f974d47",
+      "change": {
+        "kind": "runtime_hardening_rebind_v7",
+        "superseded_plan_hash": "ed28f52ff937e5e3b7cf12d2317b04a109f75a61a125995a0fa639d094cef5cb",
+        "superseded_plan_file_sha256": "488622265b7f43f0ca7a7876814e165c91d963f3c67f5b387abbc4d56508f9df",
+        "reason": "Bind venue parity, causal ordering, stateful market-data normalization, per-response receive timestamps, retry provenance, HTTPS allow-list, strict implementation roles and the immutable production launcher."
+      }
+    },
+    {
+      "role": "preipo_public_venue_adapters",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_adapters.py",
+      "sha256": "ef088991494857f1e774ec4c48dc9bbd0bee251f8ae4857acc7ce59a2881edac",
+      "change": {
+        "kind": "runtime_hardening_rebind_v7",
+        "superseded_plan_hash": "ed28f52ff937e5e3b7cf12d2317b04a109f75a61a125995a0fa639d094cef5cb",
+        "superseded_plan_file_sha256": "488622265b7f43f0ca7a7876814e165c91d963f3c67f5b387abbc4d56508f9df",
+        "reason": "Bind venue parity, causal ordering, stateful market-data normalization, per-response receive timestamps, retry provenance, HTTPS allow-list, strict implementation roles and the immutable production launcher."
+      }
+    },
+    {
+      "role": "preipo_append_only_raw_event_store",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_raw_event_store.py",
+      "sha256": "a6148604b87b3416ba6caf151e58542f4b436d8d6758a4db88dc5a4c9fde010b",
+      "change": {
+        "kind": "runtime_hardening_rebind_v7",
+        "superseded_plan_hash": "ed28f52ff937e5e3b7cf12d2317b04a109f75a61a125995a0fa639d094cef5cb",
+        "superseded_plan_file_sha256": "488622265b7f43f0ca7a7876814e165c91d963f3c67f5b387abbc4d56508f9df",
+        "reason": "Bind venue parity, causal ordering, stateful market-data normalization, per-response receive timestamps, retry provenance, HTTPS allow-list, strict implementation roles and the immutable production launcher."
+      }
+    },
+    {
+      "role": "preipo_retry_state_and_tick_worker",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_automation.py",
+      "sha256": "bf04edfbc715c54a3678e8fe97e9ab8ef651812804554af8271d30f3f169a1fe",
+      "change": {
+        "kind": "runtime_hardening_rebind_v7",
+        "superseded_plan_hash": "ed28f52ff937e5e3b7cf12d2317b04a109f75a61a125995a0fa639d094cef5cb",
+        "superseded_plan_file_sha256": "488622265b7f43f0ca7a7876814e165c91d963f3c67f5b387abbc4d56508f9df",
+        "reason": "Bind venue parity, causal ordering, stateful market-data normalization, per-response receive timestamps, retry provenance, HTTPS allow-list, strict implementation roles and the immutable production launcher."
+      }
+    },
+    {
+      "role": "preipo_plan_validator",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_plan.py",
+      "sha256": "a6c0594be6e12bbdec01fc135f11bd95e1a070c438cd37e3c05e8d2e89d95d74",
+      "change": {
+        "kind": "runtime_hardening_rebind_v7",
+        "superseded_plan_hash": "ed28f52ff937e5e3b7cf12d2317b04a109f75a61a125995a0fa639d094cef5cb",
+        "superseded_plan_file_sha256": "488622265b7f43f0ca7a7876814e165c91d963f3c67f5b387abbc4d56508f9df",
+        "reason": "Bind venue parity, causal ordering, stateful market-data normalization, per-response receive timestamps, retry provenance, HTTPS allow-list, strict implementation roles and the immutable production launcher."
+      }
+    },
+    {
+      "role": "preipo_visible_orchestrator",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_preipo_perpetual_event_automation_visible.ps1",
+      "sha256": "939600138ae9d47d88dde181715dcfb793aafe6f9f635b04123f8298b4a51e4e",
+      "change": {
+        "kind": "runtime_hardening_rebind_v7",
+        "superseded_plan_hash": "ed28f52ff937e5e3b7cf12d2317b04a109f75a61a125995a0fa639d094cef5cb",
+        "superseded_plan_file_sha256": "488622265b7f43f0ca7a7876814e165c91d963f3c67f5b387abbc4d56508f9df",
+        "reason": "Bind venue parity, causal ordering, stateful market-data normalization, per-response receive timestamps, retry provenance, HTTPS allow-list, strict implementation roles and the immutable production launcher."
+      }
+    },
+    {
+      "role": "cadence_policy",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\adaptive_cadence.py",
+      "sha256": "066d7991c0e223be02b5073911c43efda4888d8efd6b62a8845dd4bf7ee4afaa",
+      "change": {
+        "kind": "runtime_hardening_rebind_v7",
+        "superseded_plan_hash": "ed28f52ff937e5e3b7cf12d2317b04a109f75a61a125995a0fa639d094cef5cb",
+        "superseded_plan_file_sha256": "488622265b7f43f0ca7a7876814e165c91d963f3c67f5b387abbc4d56508f9df",
+        "reason": "Bind venue parity, causal ordering, stateful market-data normalization, per-response receive timestamps, retry provenance, HTTPS allow-list, strict implementation roles and the immutable production launcher."
+      }
+    },
+    {
+      "role": "temporal_anchor_taxonomy",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_temporal_anchor.py",
+      "sha256": "f346ed43ea3d06959c02b7b0734550af6fdc960e0f64a49162e22bedfe02e88f",
+      "change": {
+        "kind": "runtime_hardening_rebind_v7",
+        "superseded_plan_hash": "ed28f52ff937e5e3b7cf12d2317b04a109f75a61a125995a0fa639d094cef5cb",
+        "superseded_plan_file_sha256": "488622265b7f43f0ca7a7876814e165c91d963f3c67f5b387abbc4d56508f9df",
+        "reason": "Bind venue parity, causal ordering, stateful market-data normalization, per-response receive timestamps, retry provenance, HTTPS allow-list, strict implementation roles and the immutable production launcher."
+      }
+    }
+  ],
+  "state": {
+    "state_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\preipo_perpetual_event_automation_state.json",
+    "attempts_ledger_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\preipo_perpetual_event_automation_attempts.jsonl",
+    "claim_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\preipo_perpetual_event_automation.claim.json",
+    "manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\preipo-perp\\manifest.json",
+    "events_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\preipo-perp\\raw_events.jsonl"
+  },
+  "guard_contract": {
+    "active_run_gate_must_not_be_running": true,
+    "one_writer_at_a_time": true,
+    "visible_terminal_required": true,
+    "exact_plan_hash_required": true,
+    "public_only_required": true,
+    "crypto_premarket_listing_namespace_untouched": true,
+    "spot_listing_momentum_namespace_untouched": true,
+    "inline_worker_no_terminal_allowed": false
+  },
+  "recovery_contract": {
+    "failure_status": "RETRY_NEXT_INTERVAL",
+    "partial_failure_status": "PARTIAL_RETRY_NEXT_INTERVAL",
+    "pending_retry": true,
+    "interval_sec": 21600,
+    "scheduler_wake_interval_sec": 300,
+    "capture_duration_sec": 300,
+    "no_tight_loop": true,
+    "preserve_failed_track": true,
+    "skip_duplicate_worker": true
+  },
+  "commands": {
+    "plan_check": "python trading_mvp/src/preipo_plan.py --plan docs/plans/preipo-perpetual-event-planonly-20260825-v7.json --json",
+    "automation": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/start_preipo_perpetual_event_automation_visible.ps1 -ScheduledTick -Json",
+    "status": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/start_preipo_perpetual_event_automation_visible.ps1 -Status -Json"
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "4349a3745af908717972a189df47c55301a5075e48022a92a7d714d8b526349c",
+  "source_bindings": {
+    "technical_rebind": {
+      "kind": "listing_strategy_control_plane_batch2_hash_rebind",
+      "supersedes_plan_id": "preipo_perpetual_event_20260818_v1",
+      "supersedes_plan_hash": "3779e26adde5bdb1227940bcd2a7d3d8481a41b414df68aa6c82e4e5c13c44b0",
+      "supersedes_plan_file_sha256": "6f8dd54c3d0666c5f8507103c194ce8ea546b57018d8a85aaf6f8f38104abd1c",
+      "supersedes_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\preipo-perpetual-event-planonly-20260818-v1.json",
+      "research_scope_changed": false,
+      "reason": "Rebind current fail-closed launchers, retry recovery and canonical writer controls without changing venue, universe, signal, cost, risk, cadence or acceptance contracts."
+    },
+    "control_plane_readiness_receipt": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\listing-strategy-control-plane-batch1-readiness-20260821.json",
+      "file_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56",
+      "status": "READY_FOR_PLANONLY_REBIND_NOT_ACTIVATED"
+    }
+  },
+  "supersedes_plan_id": "preipo_perpetual_event_20260825_v6",
+  "supersedes_plan_hash": "ed28f52ff937e5e3b7cf12d2317b04a109f75a61a125995a0fa639d094cef5cb",
+  "supersedes_plan_path": "docs/plans/preipo-perpetual-event-planonly-20260825-v6.json",
+  "temporal_anchor_contract": {
+    "module": "trading_mvp/src/premarket_temporal_anchor.py",
+    "kinds": [
+      "official_spot_t0",
+      "transition_ts",
+      "first_trade_ts",
+      "premarket_contract_launch_ts"
+    ],
+    "official_anchor_kinds": [
+      "official_spot_t0"
+    ],
+    "rule": "the kind of moment stays attached to the moment; only an official_spot_t0 published by an official source may claim an exact official time, and every other kind is a proxy that the cadence policy already refuses to escalate",
+    "source_class_is_not_timestamp_class": "source_class describes where the contract record came from, not where its timestamp came from; the two were conflated",
+    "anchor_selection": "the earliest still-future anchor among live contracts; with nothing ahead, the freshest past anchor, which the cadence policy then retires on its own age",
+    "confirmation_scope": "official_confirmed and exact_timestamp are properties of the selected anchor, never any() across the batch",
+    "measured": "2026-08-24: preipo official_conversion_ts is read from Bybit preMktSwTime and OKX conversion_time, which the hardened capture repo maps to transition_ts and refuses official_spot_t0 without an OFFICIAL_ANNOUNCEMENT; no venue endpoint feeding the pre-IPO track publishes a spot t0, so that track carries no exact official time at all"
+  },
+  "acceptance_gate_change": {
+    "kind": "interim_descriptive_tier_added",
+    "changed_fields": [
+      "acceptance_gates.interim_descriptive_events",
+      "acceptance_gates.interim_authorizes",
+      "acceptance_gates.below_minimum_status"
+    ],
+    "minimum_complete_events_unchanged": 30,
+    "reason": "A verdict was wanted sooner. Lowering minimum_complete_events would have delivered that and destroyed the verdict: at n=10 with profit_factor >= 1.2 a single good event carries the whole statistic, so 'accepted' would stop meaning anything. The acceptance threshold therefore does not move. An interim tier at 10 reports the same metrics early under INSUFFICIENT_DATA_NOT_REJECTED and is structurally unable to authorise: interim_authorizes is False and the validator requires interim_descriptive_events to sit strictly below minimum_complete_events, so the two tiers cannot be collapsed into one by later raising the interim number.",
+    "authorizes": false
+  },
+  "venue_caveats": {
+    "index_price": "pre-IPO perpetual index prices may be internal-only; a measured impulse may be venue-internal reflexivity rather than information",
+    "source": "Coinbase International Exchange trading rules, read 2026-08-25"
+  },
+  "venue_verification": {
+    "verified_at_utc": "2026-08-25",
+    "method": "vendor documentation, no venue endpoint was called",
+    "venues": {
+      "bitmex": {
+        "public_instruments_endpoint": "/api/v1/instrument/active",
+        "authentication_required": false,
+        "publishes_instrument_listing_timestamp": true,
+        "timestamp_kind": "premarket_contract_launch_ts",
+        "adapter": true,
+        "timestamp_field": "listing"
+      },
+      "kraken": {
+        "public_instruments_endpoint": "/derivatives/api/v3/instruments",
+        "authentication_required": false,
+        "publishes_instrument_listing_timestamp": true,
+        "adapter": true,
+        "timestamp_field": "openingDate",
+        "timestamp_kind": "premarket_contract_launch_ts"
+      },
+      "cryptocom": {
+        "public_instruments_endpoint": "public/get-instruments",
+        "authentication_required": false,
+        "publishes_instrument_listing_timestamp": null,
+        "adapter": false
+      },
+      "coinbase_intx": {
+        "public_instruments_endpoint": "market data APIs are public",
+        "authentication_required": false,
+        "publishes_instrument_listing_timestamp": null,
+        "adapter": false
+      }
+    }
+  },
+  "supersedes_plan_file_sha256": "488622265b7f43f0ca7a7876814e165c91d963f3c67f5b387abbc4d56508f9df"
+}

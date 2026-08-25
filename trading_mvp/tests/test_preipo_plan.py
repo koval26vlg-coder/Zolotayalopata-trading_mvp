@@ -11,7 +11,7 @@ if str(ROOT) not in sys.path:
 from preipo_plan import canonical_plan_hash, validate_plan  # noqa: E402
 
 
-PLAN = Path(__file__).resolve().parents[2] / "docs" / "plans" / "preipo-perpetual-event-planonly-20260825-v6.json"
+PLAN = Path(__file__).resolve().parents[2] / "docs" / "plans" / "preipo-perpetual-event-planonly-20260825-v8.json"
 
 
 class PreIPOPlanTests(unittest.TestCase):
@@ -77,7 +77,7 @@ class PreIPOPlanTests(unittest.TestCase):
         self.assertTrue(result["ok"], result)
         self.assertEqual(result["status"], "PLAN_OK")
         self.assertEqual(set(result["venues"]), set(preipo_plan.REQUIRED_VENUES))
-        self.assertEqual(result["plan_id"], "preipo_perpetual_event_20260825_v6")
+        self.assertEqual(result["plan_id"], "preipo_perpetual_event_20260825_v8")
 
     def test_every_collected_venue_has_an_adapter(self) -> None:
         """A venue may be declared without an adapter only while it is a candidate.
@@ -123,6 +123,35 @@ class PreIPOPlanTests(unittest.TestCase):
         self.assertEqual(automation["scheduler_wake_interval_sec"], 5 * 60)
         self.assertEqual(automation["capture_duration_sec"], 5 * 60)
         self.assertEqual(payload["recovery_contract"]["interval_sec"], 6 * 60 * 60)
+
+    def test_v8_supersedes_v7_without_reusing_its_identity(self) -> None:
+        import json
+
+        payload = json.loads(PLAN.read_text(encoding="utf-8"))
+        self.assertEqual(payload["supersedes_plan_id"], "preipo_perpetual_event_20260825_v7")
+        self.assertEqual(
+            payload["supersedes_plan_hash"],
+            "4349a3745af908717972a189df47c55301a5075e48022a92a7d714d8b526349c",
+        )
+        self.assertEqual(
+            payload["supersedes_plan_file_sha256"],
+            "f9f6ee5b374a21a41820a2344bb6b5dc440a1413e67fb415880b90c4905552b5",
+        )
+
+    def test_implementation_role_cannot_be_substituted_with_an_arbitrary_file(self) -> None:
+        import json
+        import tempfile
+
+        payload = json.loads(PLAN.read_text(encoding="utf-8"))
+        payload["implementation"][0]["path"] = payload["implementation"][1]["path"]
+        payload["implementation"][0]["sha256"] = payload["implementation"][1]["sha256"]
+        payload["plan_hash"] = canonical_plan_hash(payload)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "substituted.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            result = validate_plan(path)
+        self.assertFalse(result["ok"])
+        self.assertIn("implementation_path_mismatch:preipo_event_lifecycle_and_causal_paper_replay", result["reasons"])
 
 
 if __name__ == "__main__":

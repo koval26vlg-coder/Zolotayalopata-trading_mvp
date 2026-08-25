@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 from pathlib import Path
@@ -10,6 +11,20 @@ from typing import Any, Mapping
 
 
 PLAN_SCHEMA = "trading_mvp_preipo_perpetual_event_planonly_v2"
+PLAN_ID = "preipo_perpetual_event_20260825_v8"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_PLAN_PATH = (
+    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v8.json"
+)
+SUPERSEDED_PLAN_PATH = (
+    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v7.json"
+)
+SUPERSEDED_PLAN = {
+    "plan_id": "preipo_perpetual_event_20260825_v7",
+    "plan_hash": "4349a3745af908717972a189df47c55301a5075e48022a92a7d714d8b526349c",
+    "plan_file_sha256": "f9f6ee5b374a21a41820a2344bb6b5dc440a1413e67fb415880b90c4905552b5",
+    "plan_path": "docs/plans/preipo-perpetual-event-planonly-20260825-v7.json",
+}
 # Promoted 2026-08-25: bitmex and kraken have adapters and public unauthenticated
 # instruments endpoints. A failing venue is isolated to its own outcome
 # (RETRY_NEXT_INTERVAL) and cannot break collection from the others, which is what makes
@@ -72,6 +87,29 @@ ADAPTIVE_CADENCE = {
     "spent_anchor_returns_to_search": True,
 }
 
+EXPECTED_IMPLEMENTATION_PATHS = {
+    "preipo_event_lifecycle_and_causal_paper_replay": (
+        REPO_ROOT / "trading_mvp/src/preipo_perp_event.py"
+    ).resolve(),
+    "preipo_public_venue_adapters": (
+        REPO_ROOT / "trading_mvp/src/preipo_adapters.py"
+    ).resolve(),
+    "preipo_append_only_raw_event_store": (
+        REPO_ROOT / "trading_mvp/src/preipo_raw_event_store.py"
+    ).resolve(),
+    "preipo_retry_state_and_tick_worker": (
+        REPO_ROOT / "trading_mvp/src/preipo_automation.py"
+    ).resolve(),
+    "preipo_plan_validator": Path(__file__).resolve(),
+    "preipo_visible_orchestrator": (
+        REPO_ROOT / "tools/start_preipo_perpetual_event_automation_visible.ps1"
+    ).resolve(),
+    "cadence_policy": (REPO_ROOT / "trading_mvp/src/adaptive_cadence.py").resolve(),
+    "temporal_anchor_taxonomy": (
+        REPO_ROOT / "trading_mvp/src/premarket_temporal_anchor.py"
+    ).resolve(),
+}
+
 
 def canonical_plan_hash(payload: Mapping[str, Any]) -> str:
     body = {key: value for key, value in payload.items() if key != "plan_hash"}
@@ -99,6 +137,8 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
 
     if payload.get("schema") != PLAN_SCHEMA:
         reasons.append("schema_mismatch")
+    if payload.get("plan_id") != PLAN_ID:
+        reasons.append("plan_id_mismatch")
     if payload.get("mode") != "PlanOnly" or payload.get("research_only") is not True:
         reasons.append("plan_mode_or_research_only_invalid")
     for key in ("public_data_only",):
@@ -113,8 +153,10 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
         reasons.append("venue_contract_invalid")
     if str((payload.get("venue_caveats") or {}).get("index_price") or "") != INDEX_PRICE_CAVEAT:
         reasons.append("index_price_caveat_missing")
-    if not REQUIRED_CANDIDATE_VENUES.issubset(set(payload.get("candidate_venues") or [])):
+    if set(payload.get("candidate_venues") or []) != REQUIRED_CANDIDATE_VENUES:
         reasons.append("candidate_venue_contract_invalid")
+    if set(payload.get("venues") or []) & set(payload.get("candidate_venues") or []):
+        reasons.append("venue_candidate_overlap")
     if "official pre-IPO contract" not in str(payload.get("bybit_extension_condition") or ""):
         reasons.append("bybit_extension_condition_invalid")
     if payload.get("sides") != REQUIRED_SIDES:
@@ -189,18 +231,40 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
     ):
         reasons.append("visible_worker_contract_invalid")
 
+    if (
+        payload.get("supersedes_plan_id") != SUPERSEDED_PLAN["plan_id"]
+        or payload.get("supersedes_plan_hash") != SUPERSEDED_PLAN["plan_hash"]
+        or payload.get("supersedes_plan_file_sha256")
+        != SUPERSEDED_PLAN["plan_file_sha256"]
+        or payload.get("supersedes_plan_path") != SUPERSEDED_PLAN["plan_path"]
+    ):
+        reasons.append("supersedes_binding_invalid")
+
     implementation = payload.get("implementation") or []
-    missing_bindings: list[str] = []
-    for binding in implementation:
-        binding_path = Path(str(binding.get("path") or ""))
-        if not binding_path.exists():
-            missing_bindings.append(str(binding_path))
+    if not isinstance(implementation, list):
+        implementation = []
+        reasons.append("implementation_not_list")
+    by_role = {
+        str(binding.get("role") or ""): binding
+        for binding in implementation
+        if isinstance(binding, Mapping)
+    }
+    if set(by_role) != set(EXPECTED_IMPLEMENTATION_PATHS) or len(by_role) != len(implementation):
+        reasons.append("implementation_roles_invalid")
+    for role, expected_path in EXPECTED_IMPLEMENTATION_PATHS.items():
+        binding = by_role.get(role)
+        if binding is None:
+            continue
+        binding_path = Path(str(binding.get("path") or "")).resolve()
+        if binding_path != expected_path:
+            reasons.append(f"implementation_path_mismatch:{role}")
+            continue
+        if not binding_path.is_file():
+            reasons.append(f"implementation_file_missing:{role}")
             continue
         expected_sha = str(binding.get("sha256") or "")
         if len(expected_sha) != 64 or file_sha256(binding_path) != expected_sha:
-            reasons.append(f"implementation_hash_mismatch:{binding_path.name}")
-    if missing_bindings:
-        reasons.append("implementation_file_missing")
+            reasons.append(f"implementation_hash_mismatch:{role}")
 
     stored_hash = str(payload.get("plan_hash") or "")
     actual_hash = canonical_plan_hash(payload)
@@ -220,11 +284,94 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
     }
 
 
+def build_rebound_plan(source_path: str | Path, generated_at_utc: str) -> dict[str, Any]:
+    source = Path(source_path)
+    if source.resolve() != SUPERSEDED_PLAN_PATH.resolve():
+        raise ValueError("source_plan_must_be_immutable_v6")
+    if file_sha256(source) != SUPERSEDED_PLAN["plan_file_sha256"]:
+        raise ValueError("source_plan_file_sha256_mismatch")
+    source_payload = json.loads(source.read_text(encoding="utf-8"))
+    if (
+        source_payload.get("plan_id") != SUPERSEDED_PLAN["plan_id"]
+        or source_payload.get("plan_hash") != SUPERSEDED_PLAN["plan_hash"]
+        or canonical_plan_hash(source_payload) != SUPERSEDED_PLAN["plan_hash"]
+    ):
+        raise ValueError("source_plan_identity_mismatch")
+
+    payload = copy.deepcopy(source_payload)
+    payload["plan_id"] = PLAN_ID
+    payload["status"] = "READY_FOR_BOUNDED_PUBLIC_PAPER_RESEARCH_NOT_SCHEDULER_ACTIVATED"
+    payload["generated_at_utc"] = generated_at_utc
+    payload["implementation"] = [
+        {
+            "role": role,
+            "path": str(path),
+            "sha256": file_sha256(path),
+            "change": {
+                "kind": "runtime_hardening_rebind_v7",
+                "superseded_plan_hash": SUPERSEDED_PLAN["plan_hash"],
+                "superseded_plan_file_sha256": SUPERSEDED_PLAN["plan_file_sha256"],
+                "reason": (
+                    "Bind venue parity, causal ordering, stateful market-data normalization, "
+                    "per-response receive timestamps, retry provenance, HTTPS allow-list, "
+                    "strict implementation roles, cadence-policy migration and the "
+                    "immutable production launcher."
+                ),
+            },
+        }
+        for role, path in EXPECTED_IMPLEMENTATION_PATHS.items()
+    ]
+    payload["supersedes_plan_id"] = SUPERSEDED_PLAN["plan_id"]
+    payload["supersedes_plan_hash"] = SUPERSEDED_PLAN["plan_hash"]
+    payload["supersedes_plan_file_sha256"] = SUPERSEDED_PLAN["plan_file_sha256"]
+    payload["supersedes_plan_path"] = SUPERSEDED_PLAN["plan_path"]
+    payload["commands"] = {
+        "plan_check": (
+            "python trading_mvp/src/preipo_plan.py --plan "
+            "docs/plans/preipo-perpetual-event-planonly-20260825-v8.json --json"
+        ),
+        "automation": (
+            "pwsh -NoProfile -ExecutionPolicy Bypass -File "
+            "tools/start_preipo_perpetual_event_automation_visible.ps1 -ScheduledTick -Json"
+        ),
+        "status": (
+            "pwsh -NoProfile -ExecutionPolicy Bypass -File "
+            "tools/start_preipo_perpetual_event_automation_visible.ps1 -Status -Json"
+        ),
+    }
+    payload["plan_hash"] = canonical_plan_hash(payload)
+    return payload
+
+
+def write_rebound_plan(source_path: str | Path, generated_at_utc: str) -> Path:
+    if DEFAULT_PLAN_PATH.exists():
+        raise FileExistsError(f"refusing to overwrite immutable plan: {DEFAULT_PLAN_PATH}")
+    payload = build_rebound_plan(source_path, generated_at_utc)
+    DEFAULT_PLAN_PATH.parent.mkdir(parents=True, exist_ok=True)
+    DEFAULT_PLAN_PATH.write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+    result = validate_plan(DEFAULT_PLAN_PATH)
+    if not result["ok"]:
+        raise ValueError(f"generated_plan_invalid:{result['reasons']}")
+    return DEFAULT_PLAN_PATH
+
+
 def _main() -> int:
     parser = argparse.ArgumentParser(description="Validate the immutable pre-IPO PlanOnly")
-    parser.add_argument("--plan", required=True)
+    parser.add_argument("--plan", default=str(DEFAULT_PLAN_PATH))
+    parser.add_argument("--write-rebind", action="store_true")
+    parser.add_argument("--source-plan", default=str(SUPERSEDED_PLAN_PATH))
+    parser.add_argument("--generated-at-utc", default="")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
+    if args.write_rebind:
+        if not args.generated_at_utc:
+            raise SystemExit("--generated-at-utc is required with --write-rebind")
+        path = write_rebound_plan(args.source_plan, args.generated_at_utc)
+        result = validate_plan(path)
+        print(json.dumps({**result, "path": str(path)}, ensure_ascii=False, sort_keys=True))
+        return 0
     result = validate_plan(args.plan)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     return 0 if result["ok"] else 1

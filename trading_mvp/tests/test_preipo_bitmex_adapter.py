@@ -119,6 +119,37 @@ class AdapterSurfaceTests(unittest.TestCase):
         self.assertTrue(BitmexPreIPOAdapter.base_url.startswith("https://"))
         self.assertTrue(BitmexPreIPOAdapter.ws_url.startswith("wss://"))
 
+    def test_l2_partial_and_delta_updates_keep_a_causal_bbo(self):
+        adapter = BitmexPreIPOAdapter()
+        contract = normalize_bitmex_contract(_instrument())
+        partial = adapter.normalize_snapshot(
+            contract,
+            {
+                "table": "orderBookL2_25",
+                "action": "partial",
+                "data": [
+                    {"symbol": "SPCXUSDT", "id": 1, "side": "Buy", "size": 4, "price": 10.0},
+                    {"symbol": "SPCXUSDT", "id": 2, "side": "Sell", "size": 3, "price": 10.1},
+                ],
+            },
+            received_ts=1_780_000_100.0,
+        )
+        update = adapter.normalize_snapshot(
+            contract,
+            {
+                "table": "orderBookL2_25",
+                "action": "update",
+                "data": [{"symbol": "SPCXUSDT", "id": 1, "size": 8}],
+            },
+            received_ts=1_780_000_101.0,
+        )
+
+        self.assertEqual(partial[0]["event_kind"], "bbo")
+        self.assertEqual(update[0]["event_kind"], "bbo")
+        self.assertEqual(update[0]["bid"], 10.0)
+        self.assertEqual(update[0]["bid_qty"], 8.0)
+        self.assertEqual(update[0]["ask"], 10.1)
+
 
 if __name__ == "__main__":
     unittest.main()

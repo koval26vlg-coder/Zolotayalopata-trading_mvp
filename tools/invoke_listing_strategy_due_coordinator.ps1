@@ -1,6 +1,9 @@
 param(
     [switch]$ScheduledTick,
     [switch]$Json,
+    [string]$RegistryPath = "",
+    [string]$ExpectedRegistrySha256 = "",
+    [string]$ExpectedCoordinatorSha256 = "",
     [string]$NowUtc = "",
     [ValidateRange(1, 86400)][int]$WorkerExitTimeoutSec = 1800,
     [string]$ListingStatePath = "",
@@ -29,6 +32,254 @@ if (-not $ScheduledTick) {
     } | ConvertTo-Json -Depth 10
     exit 2
 }
+
+# BEGIN CANONICAL_RUNTIME_REGISTRY_PREFLIGHT
+# Canonical-runtime migration preflight.  The checked-in registry for this
+# package is deliberately STAGING-only, so this block must terminate before
+# any state, claim, ledger, or launcher path is touched.  The legacy execution
+# engine below is retained for the later ACTIVE-registry migration, but it is
+# not scheduler-reachable through a staging trust root.
+function Get-PreflightSha256 {
+    param([byte[]]$Bytes)
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try {
+        return [Convert]::ToHexString($sha.ComputeHash($Bytes)).ToLowerInvariant()
+    } finally {
+        $sha.Dispose()
+    }
+}
+
+function Write-PreflightResult {
+    param(
+        [string]$Status,
+        [string]$Reason,
+        [int]$ExitCode,
+        [hashtable]$Additional = @{}
+    )
+    $payload = [ordered]@{
+        schema = "trading_mvp_listing_strategy_due_coordinator_preflight_v1"
+        status = $Status
+        reason = $Reason
+        execution_performed = $false
+        launch_allowed = $false
+    }
+    foreach ($entry in $Additional.GetEnumerator()) {
+        $payload[$entry.Key] = $entry.Value
+    }
+    $payload | ConvertTo-Json -Depth 40
+    exit $ExitCode
+}
+
+$requiredRegistryBindings = @(
+    "RegistryPath",
+    "ExpectedRegistrySha256",
+    "ExpectedCoordinatorSha256"
+)
+$missingRegistryBindings = @(
+    $requiredRegistryBindings | Where-Object {
+        -not $PSBoundParameters.ContainsKey($_) -or -not [string]$PSBoundParameters[$_]
+    }
+)
+if ($missingRegistryBindings.Count -gt 0) {
+    Write-PreflightResult `
+        -Status "REGISTRY_BINDING_REQUIRED" `
+        -Reason "CANONICAL_REGISTRY_BINDING_REQUIRED" `
+        -ExitCode 2 `
+        -Additional @{ missing_bindings = $missingRegistryBindings }
+}
+
+$legacyProductionPathParameters = @(
+    "ListingStatePath",
+    "PremarketStatePath",
+    "PreipoStatePath",
+    "ListingLauncherPath",
+    "PremarketLauncherPath",
+    "PreipoLauncherPath",
+    "CoordinatorStatePath",
+    "CoordinatorAttemptsPath",
+    "CoordinatorClaimPath",
+    "CoordinatorClaimArchivePath",
+    "CoordinatorClaimMutexPath",
+    "CodexAutomationsRoot"
+)
+$forbiddenOverrides = @(
+    $legacyProductionPathParameters | Where-Object { $PSBoundParameters.ContainsKey($_) }
+)
+if ($forbiddenOverrides.Count -gt 0) {
+    Write-PreflightResult `
+        -Status "PRODUCTION_OVERRIDE_REJECTED" `
+        -Reason "PRODUCTION_PATH_OVERRIDE_FORBIDDEN" `
+        -ExitCode 2 `
+        -Additional @{ forbidden_parameters = $forbiddenOverrides }
+}
+
+foreach ($binding in @(
+    @{ name = "ExpectedRegistrySha256"; value = $ExpectedRegistrySha256 },
+    @{ name = "ExpectedCoordinatorSha256"; value = $ExpectedCoordinatorSha256 }
+)) {
+    if ([string]$binding.value -cnotmatch '^[0-9a-f]{64}$') {
+        Write-PreflightResult `
+            -Status "REGISTRY_BINDING_INVALID" `
+            -Reason "EXPECTED_SHA256_FORMAT_INVALID" `
+            -ExitCode 2 `
+            -Additional @{ binding = [string]$binding.name }
+    }
+}
+
+$coordinatorScriptPath = [IO.Path]::GetFullPath([string]$PSCommandPath)
+try {
+    $coordinatorRawBytes = [IO.File]::ReadAllBytes($coordinatorScriptPath)
+} catch {
+    Write-PreflightResult `
+        -Status "COORDINATOR_BINDING_INVALID" `
+        -Reason "COORDINATOR_BYTES_UNREADABLE" `
+        -ExitCode 2 `
+        -Additional @{ error = $_.Exception.Message }
+}
+$actualCoordinatorSha256 = Get-PreflightSha256 -Bytes $coordinatorRawBytes
+if ($actualCoordinatorSha256 -cne $ExpectedCoordinatorSha256) {
+    Write-PreflightResult `
+        -Status "COORDINATOR_BINDING_INVALID" `
+        -Reason "COORDINATOR_SHA256_MISMATCH" `
+        -ExitCode 2 `
+        -Additional @{
+            coordinator_path = $coordinatorScriptPath
+            expected_coordinator_sha256 = $ExpectedCoordinatorSha256
+            actual_coordinator_sha256 = $actualCoordinatorSha256
+        }
+}
+
+if (-not [IO.Path]::IsPathFullyQualified($RegistryPath)) {
+    Write-PreflightResult `
+        -Status "REGISTRY_BINDING_INVALID" `
+        -Reason "REGISTRY_PATH_NOT_ABSOLUTE" `
+        -ExitCode 2
+}
+$canonicalRegistryPath = [IO.Path]::GetFullPath($RegistryPath)
+if ($canonicalRegistryPath -cne $RegistryPath) {
+    Write-PreflightResult `
+        -Status "REGISTRY_BINDING_INVALID" `
+        -Reason "REGISTRY_PATH_NOT_NORMALIZED" `
+        -ExitCode 2 `
+        -Additional @{ normalized_registry_path = $canonicalRegistryPath }
+}
+try {
+    $registryRawBytes = [IO.File]::ReadAllBytes($canonicalRegistryPath)
+} catch {
+    Write-PreflightResult `
+        -Status "REGISTRY_BINDING_INVALID" `
+        -Reason "REGISTRY_BYTES_UNREADABLE" `
+        -ExitCode 2 `
+        -Additional @{ registry_path = $canonicalRegistryPath; error = $_.Exception.Message }
+}
+$actualRegistrySha256 = Get-PreflightSha256 -Bytes $registryRawBytes
+if ($actualRegistrySha256 -cne $ExpectedRegistrySha256) {
+    Write-PreflightResult `
+        -Status "REGISTRY_BINDING_INVALID" `
+        -Reason "REGISTRY_SHA256_MISMATCH" `
+        -ExitCode 2 `
+        -Additional @{
+            registry_path = $canonicalRegistryPath
+            expected_registry_sha256 = $ExpectedRegistrySha256
+            actual_registry_sha256 = $actualRegistrySha256
+        }
+}
+
+$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+$registryValidatorPath = Join-Path $repoRoot "trading_mvp\src\canonical_strategy_runtime.py"
+if (-not (Test-Path -LiteralPath $registryValidatorPath -PathType Leaf)) {
+    Write-PreflightResult `
+        -Status "REGISTRY_VALIDATION_FAILED" `
+        -Reason "CANONICAL_REGISTRY_VALIDATOR_MISSING" `
+        -ExitCode 2 `
+        -Additional @{ validator_path = $registryValidatorPath }
+}
+$pythonExecutable = if (Test-Path -LiteralPath "C:\Program Files\Python313\python.exe" -PathType Leaf) {
+    "C:\Program Files\Python313\python.exe"
+} else {
+    $null
+}
+if (-not $pythonExecutable) {
+    Write-PreflightResult `
+        -Status "REGISTRY_VALIDATION_FAILED" `
+        -Reason "PYTHON_RUNTIME_UNAVAILABLE" `
+        -ExitCode 2
+}
+
+$validatorOutput = @(
+    & $pythonExecutable $registryValidatorPath `
+        --validate $canonicalRegistryPath `
+        --expected-sha256 $ExpectedRegistrySha256 `
+        --json 2>&1
+)
+$validatorExitCode = $LASTEXITCODE
+$validatorText = ($validatorOutput | ForEach-Object { [string]$_ }) -join [Environment]::NewLine
+$validatorResult = $null
+try {
+    $validatorResult = $validatorText | ConvertFrom-Json -DateKind String -ErrorAction Stop
+} catch {
+    Write-PreflightResult `
+        -Status "REGISTRY_VALIDATION_FAILED" `
+        -Reason "CANONICAL_REGISTRY_VALIDATOR_OUTPUT_INVALID" `
+        -ExitCode 2 `
+        -Additional @{
+            validator_exit_code = $validatorExitCode
+            validator_output = $validatorText
+        }
+}
+if ($validatorResult.registry_valid -ne $true) {
+    Write-PreflightResult `
+        -Status "REGISTRY_VALIDATION_FAILED" `
+        -Reason "CANONICAL_REGISTRY_REJECTED" `
+        -ExitCode 2 `
+        -Additional @{
+            validator_exit_code = $validatorExitCode
+            registry_decision = [string]$validatorResult.decision
+            registry_reasons = @($validatorResult.reasons)
+            registry_raw_sha256 = $actualRegistrySha256
+        }
+}
+
+if (
+    [string]$validatorResult.decision -cin @("STAGED_FAIL_CLOSED", "PARTIAL_RUNTIME_BLOCK") -and
+    $validatorResult.launch_allowed -eq $false
+) {
+    Write-PreflightResult `
+        -Status "STAGED_FAIL_CLOSED" `
+        -Reason "NOT_ACTIVATED" `
+        -ExitCode 0 `
+        -Additional @{
+            registry_path = $canonicalRegistryPath
+            registry_raw_sha256 = $actualRegistrySha256
+            registry_decision = [string]$validatorResult.decision
+            validator_exit_code = $validatorExitCode
+            runtimes = @($validatorResult.runtimes)
+        }
+}
+
+if ($validatorExitCode -ne 0) {
+    Write-PreflightResult `
+        -Status "REGISTRY_VALIDATION_FAILED" `
+        -Reason "CANONICAL_REGISTRY_VALIDATOR_FAILED" `
+        -ExitCode 2 `
+        -Additional @{
+            validator_exit_code = $validatorExitCode
+            registry_decision = [string]$validatorResult.decision
+            registry_reasons = @($validatorResult.reasons)
+            registry_raw_sha256 = $actualRegistrySha256
+        }
+}
+
+Write-PreflightResult `
+    -Status "REGISTRY_ACTIVATION_UNSUPPORTED" `
+    -Reason "ACTIVE_REGISTRY_ROUTING_NOT_IMPLEMENTED" `
+    -ExitCode 2 `
+    -Additional @{
+        registry_path = $canonicalRegistryPath
+        registry_raw_sha256 = $actualRegistrySha256
+        registry_decision = [string]$validatorResult.decision
+    }
+# END CANONICAL_RUNTIME_REGISTRY_PREFLIGHT
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $runGateDir = Join-Path $repoRoot "docs\agent-log\run-gates"

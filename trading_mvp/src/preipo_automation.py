@@ -26,6 +26,8 @@ from preipo_adapters import (
 )
 from preipo_raw_event_store import RawEventStore
 from adaptive_cadence import (
+    CadenceDecision,
+    CadenceStage,
     SEARCH_INTERVAL_SEC,
     SCHEDULED_INTERVAL_SEC,
     decide_cadence,
@@ -232,6 +234,35 @@ def mark_retry_next_interval(
     return updated, next_at
 
 
+def _retry_cadence_from_state(
+    state: Mapping[str, Any],
+    *,
+    now_ts: float | None,
+) -> CadenceDecision:
+    """Re-evaluate the last causal anchor without silently widening a failed tick.
+
+    A venue/network failure contains no new evidence that a known near event moved
+    away.  Reusing an empty observation would reset a five-minute event window to the
+    six-hour search cadence.  The previous ETA and its provenance flags remain the
+    best causal evidence until a successful response supersedes them.  The shared
+    cadence policy still retires an ETA once it is genuinely spent.
+    """
+
+    stage = str(state.get("cadence_stage") or "SEARCH").upper()
+    has_prior_event = bool(state.get("event_eta_utc")) or stage != CadenceStage.SEARCH.value
+    if not has_prior_event:
+        return decide_cadence({}, now=now_ts)
+    official = bool(state.get("official_confirmation"))
+    observation = {
+        "candidate": True,
+        "event_eta_utc": state.get("event_eta_utc"),
+        "official_confirmed": official,
+        "exact_timestamp": bool(state.get("exact_timestamp")),
+        "proxy_timestamp": not official,
+    }
+    return decide_cadence(observation, now=now_ts)
+
+
 def acquire_writer_claim(paths: AutomationPaths, *, pid: int | None = None) -> WriterClaim | None:
     paths.claim_path.parent.mkdir(parents=True, exist_ok=True)
     stream = None
@@ -330,9 +361,20 @@ def capture_websocket_events(
             if not isinstance(payload, Mapping):
                 continue
             received_ts = float(received_clock())
+            normalizer = getattr(adapter, "normalize_snapshot", None)
+            normalized = (
+                normalizer(contract, payload, received_ts=received_ts)
+                if callable(normalizer)
+                else normalize_market_snapshot(
+                    adapter.venue,
+                    contract.contract_id,
+                    payload,
+                    received_ts=received_ts,
+                )
+            )
             events = [
                 {**_contract_metadata(contract, received_ts=received_ts), **event}
-                for event in normalize_market_snapshot(adapter.venue, contract.contract_id, payload, received_ts=received_ts)
+                for event in normalized
             ]
             written += int(store.append(events)["written"])
         return {"status": "COMPLETE", "events_written": written, "duration_sec": float(received_clock()) - started}
@@ -353,17 +395,36 @@ def discover_and_snapshot(
     max_contracts_per_venue: int = 25,
     websocket_duration_sec: float = 0.0,
     now_ts: float | None = None,
+    received_clock: Any | None = None,
 ) -> dict[str, Any]:
-    received_ts = time.time() if now_ts is None else float(now_ts)
+    if received_clock is None:
+        received_clock = (lambda: float(now_ts)) if now_ts is not None else time.time
+    anchor_now_ts = (
+        float(now_ts) if now_ts is not None else float(received_clock())
+    )
+    last_received_ts = anchor_now_ts
+
+    def receive_now() -> float:
+        nonlocal last_received_ts
+        value = float(received_clock())
+        if not value > 0:
+            raise ValueError("received clock must return a positive timestamp")
+        last_received_ts = value
+        return value
+
     outcomes: dict[str, Any] = {}
     total_contracts = 0
     total_events = 0
     official_contracts = 0
     proxy_contracts = 0
-    discovered: dict[str, tuple[PublicPreIPOAdapter, list[Any], int]] = {}
+    discovered: dict[
+        str,
+        tuple[PublicPreIPOAdapter, list[Any], int, float],
+    ] = {}
     for venue, adapter in adapters.items():
         try:
             contracts = adapter.discover_contracts()
+            discovery_received_ts = receive_now()
             selected = list(contracts)[: max(0, int(max_contracts_per_venue))]
             for contract in selected:
                 if contract.source_class == "official":
@@ -371,7 +432,12 @@ def discover_and_snapshot(
                 else:
                     proxy_contracts += 1
             total_contracts += len(selected)
-            discovered[venue] = (adapter, selected, len(contracts))
+            discovered[venue] = (
+                adapter,
+                selected,
+                len(contracts),
+                discovery_received_ts,
+            )
         except Exception as exc:
             outcomes[venue] = {
                 "status": "RETRY_NEXT_INTERVAL",
@@ -383,7 +449,7 @@ def discover_and_snapshot(
 
     eligible_contracts = [
         (venue, contract)
-        for venue, (_, selected, _) in discovered.items()
+        for venue, (_, selected, _, _) in discovered.items()
         for contract in selected
         if contract.lifecycle_status in {"preipo_continuous", "ipo_pending"}
     ]
@@ -395,7 +461,12 @@ def discover_and_snapshot(
 
     cadence_contracts: list[dict[str, Any]] = []
 
-    for venue, (adapter, selected, contracts_seen) in discovered.items():
+    for venue, (
+        adapter,
+        selected,
+        contracts_seen,
+        discovery_received_ts,
+    ) in discovered.items():
         venue_events = 0
         ws_outcomes: list[dict[str, Any]] = []
         try:
@@ -423,9 +494,9 @@ def discover_and_snapshot(
                     }
                 )
                 lifecycle_event = {
-                    **_contract_metadata(contract, received_ts=received_ts),
+                    **_contract_metadata(contract, received_ts=discovery_received_ts),
                     "event_kind": "lifecycle",
-                    "exchange_ts": contract.tradable_ts or received_ts,
+                    "exchange_ts": contract.tradable_ts or discovery_received_ts,
                     "official_conversion_ts": contract.official_conversion_ts,
                     "rebase_ts": contract.rebase_ts,
                     "maintenance_margin_rate": contract.maintenance_margin_rate,
@@ -434,10 +505,11 @@ def discover_and_snapshot(
                 }
                 venue_events += int(store.append([lifecycle_event])["written"])
                 for payload in adapter.snapshot_payloads(contract):
+                    payload_received_ts = receive_now()
                     normalizer = getattr(adapter, "normalize_snapshot", None)
-                    normalized = normalizer(contract, payload, received_ts=received_ts) if callable(normalizer) else normalize_market_snapshot(adapter.venue, contract.contract_id, payload, received_ts=received_ts)
+                    normalized = normalizer(contract, payload, received_ts=payload_received_ts) if callable(normalizer) else normalize_market_snapshot(adapter.venue, contract.contract_id, payload, received_ts=payload_received_ts)
                     events = [
-                        {**_contract_metadata(contract, received_ts=received_ts), **event}
+                        {**_contract_metadata(contract, received_ts=payload_received_ts), **event}
                         for event in normalized
                     ]
                     venue_events += int(store.append(events)["written"])
@@ -483,7 +555,7 @@ def discover_and_snapshot(
     # observation supported. pre_market_active stays a batch fact: it says a live
     # pre-IPO contract exists somewhere, which is true of the set, not of the anchor.
     cadence_observation: dict[str, Any] = {}
-    anchor_row = select_cadence_anchor(cadence_contracts, now_ts=time.time())
+    anchor_row = select_cadence_anchor(cadence_contracts, now_ts=anchor_now_ts)
     if anchor_row is not None:
         cadence_observation = {
             **anchor_row,
@@ -498,7 +570,7 @@ def discover_and_snapshot(
         "proxy_contracts": proxy_contracts,
         "capture_budget_sec": capture_budget_sec,
         "capture_elapsed_sec": time.monotonic() - capture_started,
-        "checked_at_utc": utc_iso(received_ts),
+        "checked_at_utc": utc_iso(last_received_ts),
         "cadence_observation": cadence_observation,
     }
 
@@ -915,7 +987,14 @@ def run_tick(
         if not result["outcomes"]:
             failed = ["no_active_venues"]
         status = "PARTIAL_RETRY_NEXT_INTERVAL" if failed and len(failed) < len(result["outcomes"]) else "RETRY_NEXT_INTERVAL" if failed else "COMPLETE"
-        cadence = decide_cadence(result.get("cadence_observation"), now=now_ts)
+        cadence_observation = result.get("cadence_observation") or {}
+        cadence = decide_cadence(cadence_observation, now=now_ts)
+        preserved_retry_context = False
+        if failed:
+            prior_retry_cadence = _retry_cadence_from_state(state, now_ts=now_ts)
+            if prior_retry_cadence.interval_sec < cadence.interval_sec:
+                cadence = prior_retry_cadence
+                preserved_retry_context = True
         next_at = cadence.next_interval_at_utc
         state.update({
             "status": status,
@@ -924,8 +1003,16 @@ def run_tick(
             "cadence_seconds": cadence.interval_sec,
             "cadence_reason": cadence.reason,
             "event_eta_utc": cadence.event_eta_utc,
-            "official_confirmation": bool((result.get("cadence_observation") or {}).get("official_confirmed")),
-            "exact_timestamp": bool((result.get("cadence_observation") or {}).get("exact_timestamp")),
+            "official_confirmation": (
+                bool(state.get("official_confirmation"))
+                if preserved_retry_context
+                else bool(cadence_observation.get("official_confirmed"))
+            ),
+            "exact_timestamp": (
+                bool(state.get("exact_timestamp"))
+                if preserved_retry_context
+                else bool(cadence_observation.get("exact_timestamp"))
+            ),
             "next_interval_at_utc": next_at,
             "last_finished_at_utc": utc_iso(now_ts),
             "worker_pid": None,

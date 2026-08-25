@@ -24,7 +24,7 @@ import slow_liquidity_listing_momentum_forward_evaluator as forward  # noqa: E40
 import slow_liquidity_listing_momentum_forward_expansion_evaluator as expansion  # noqa: E402
 
 
-def _state(complete: int, *, monitor: str = expansion.PLAN_ID) -> dict:
+def _state(complete: int, *, monitor: str = "") -> dict:
     windows = [
         {
             "exchange": "okx",
@@ -39,7 +39,11 @@ def _state(complete: int, *, monitor: str = expansion.PLAN_ID) -> dict:
         }
         for i in range(complete)
     ]
-    return {"monitor": monitor, "windows": windows, "ticks": []}
+    return {
+        "monitor": monitor or "slow_liquidity_listing_momentum_forward_expansion_20260825_v8",
+        "windows": windows,
+        "ticks": [],
+    }
 
 
 class PeekingGuardTests(unittest.TestCase):
@@ -52,6 +56,71 @@ class PeekingGuardTests(unittest.TestCase):
         self.assertEqual(result["status"], "INSUFFICIENT_SAMPLE_NO_METRICS")
         self.assertNotIn("metrics", result)
         self.assertEqual(result["acceptance_decision"], "NONE")
+
+    def test_legacy_tokenized_and_unclassified_windows_are_descriptive_only(self):
+        state = _state(30)
+        for index, window in enumerate(state["windows"]):
+            if index % 3 == 0:
+                window.update(
+                    {
+                        "asset_class": "tokenized_equity",
+                        "asset_class_source": "declared_spot_asset_registry_v1",
+                        "asset_class_acceptance_eligible": False,
+                    }
+                )
+            elif index % 3 == 1:
+                window.update(
+                    {
+                        "asset_class": "unclassified",
+                        "asset_class_source": "unclassified_no_positive_identity",
+                        "asset_class_acceptance_eligible": False,
+                    }
+                )
+
+        result = expansion.evaluate_expansion_state(state)
+
+        self.assertEqual(result["status"], "INSUFFICIENT_SAMPLE_NO_METRICS")
+        self.assertEqual(result["complete_windows"], 0)
+        self.assertEqual(result["descriptive_only_window_count"], 30)
+        self.assertEqual(result["crypto_acceptance_window_count"], 0)
+        self.assertEqual(result["acceptance_decision"], "NONE")
+        self.assertNotIn("metrics", result)
+
+    def test_only_positive_crypto_identity_can_enter_expansion_metrics(self):
+        state = _state(30)
+        for window in state["windows"]:
+            window.update(
+                {
+                    "asset_class": "crypto_token",
+                    "asset_class_source": "declared_spot_asset_registry_v1",
+                    "asset_class_acceptance_eligible": True,
+                }
+            )
+
+        result = expansion.evaluate_expansion_state(state)
+
+        self.assertEqual(result["status"], "EVALUATED_DESCRIPTIVE")
+        self.assertEqual(result["complete_windows"], 30)
+        self.assertEqual(result["crypto_acceptance_window_count"], 30)
+        self.assertEqual(result["descriptive_only_window_count"], 0)
+
+    def test_unbound_crypto_label_cannot_self_promote_into_acceptance(self):
+        state = _state(30)
+        for window in state["windows"]:
+            window.update(
+                {
+                    "asset_class": "crypto_token",
+                    "asset_class_source": "arbitrary_unbound_label",
+                    "asset_class_acceptance_eligible": True,
+                }
+            )
+
+        result = expansion.evaluate_expansion_state(state)
+
+        self.assertEqual(result["complete_windows"], 0)
+        self.assertEqual(result["crypto_acceptance_window_count"], 0)
+        self.assertEqual(result["descriptive_only_window_count"], 30)
+        self.assertNotIn("metrics", result)
 
     def test_metrics_appear_exactly_at_the_minimum(self):
         result = forward.evaluate_forward_state(
@@ -90,7 +159,7 @@ class BindingTests(unittest.TestCase):
         with self.assertRaisesRegex(Exception, "but this evaluation binds"):
             expansion._require_state_matches_bound_plan(
                 _state(30, monitor="some_other_plan_v1"),
-                {"plan_id": "slow_liquidity_listing_momentum_forward_expansion_20260825_v5"},
+                {"plan_id": "slow_liquidity_listing_momentum_forward_expansion_20260825_v8"},
             )
 
     def test_a_matching_state_is_accepted(self):
@@ -119,6 +188,50 @@ class AuthorityTests(unittest.TestCase):
         expansion.validate_plan(
             json.loads(expansion.PLAN_PATH.read_text(encoding="utf-8"))
         )
+
+    def test_evaluator_plan_has_a_new_immutable_identity_and_supersedes_v1(self):
+        import json
+
+        plan = json.loads(expansion.PLAN_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(
+            plan["plan_id"],
+            "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260825_v4",
+        )
+        self.assertEqual(
+            plan["supersedes"]["plan_hash"],
+            "0136c144f4a9027dedd59af5c3811ef56afb5eb48e251ca981a314655c266851",
+        )
+        self.assertEqual(
+            plan["source_bindings"]["expansion_monitor_plan"]["plan_id"],
+            "slow_liquidity_listing_momentum_forward_expansion_20260825_v8",
+        )
+
+    def test_asset_classifier_is_hash_bound_and_cannot_be_removed(self):
+        import copy
+        import json
+
+        plan = json.loads(expansion.PLAN_PATH.read_text(encoding="utf-8"))
+        roles = {row["role"] for row in plan["implementation"]["files"]}
+        self.assertIn("spot_asset_classifier", roles)
+        tampered = copy.deepcopy(plan)
+        tampered["implementation"]["files"] = [
+            row
+            for row in tampered["implementation"]["files"]
+            if row["role"] != "spot_asset_classifier"
+        ]
+        tampered["plan_hash"] = expansion._canonical_hash_without(
+            tampered, "plan_hash"
+        )
+        with self.assertRaisesRegex(Exception, "implementation roles"):
+            expansion.validate_plan(tampered)
+
+    def test_legacy_mixed_sample_is_explicitly_descriptive_only(self):
+        import json
+
+        plan = json.loads(expansion.PLAN_PATH.read_text(encoding="utf-8"))
+        contract = plan["asset_class_contract"]
+        self.assertEqual(contract["acceptance_asset_class"], "crypto_token")
+        self.assertFalse(contract["legacy_mixed_sample_acceptance_eligible"])
 
 
 if __name__ == "__main__":

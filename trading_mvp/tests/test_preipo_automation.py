@@ -5,6 +5,7 @@ import json
 import os
 import sys
 import tempfile
+import types
 import unittest
 from datetime import datetime
 from pathlib import Path
@@ -24,6 +25,7 @@ from preipo_automation import (  # noqa: E402
     SCHEDULE_INTERVAL_SEC,
     acquire_writer_claim,
     append_attempt,
+    capture_websocket_events,
     discover_and_snapshot,
     load_state,
     mark_retry_next_interval,
@@ -72,7 +74,203 @@ class _FakeAdapter:
         return []
 
 
+class _TwoContractAdapter(_FakeAdapter):
+    def discover_contracts(self):
+        return [
+            PreIPOContract(
+                venue="okx",
+                contract_id="EARLY-USDT-SWAP",
+                underlying_symbol="EARLY",
+                quote="USDT",
+                lifecycle_status="preipo_continuous",
+                phase="preipo_continuous",
+                source_class="official",
+                official_conversion_ts=1_780_000_010.0,
+            ),
+            PreIPOContract(
+                venue="okx",
+                contract_id="LATE-USDT-SWAP",
+                underlying_symbol="LATE",
+                quote="USDT",
+                lifecycle_status="preipo_continuous",
+                phase="preipo_continuous",
+                source_class="official",
+                official_conversion_ts=1_780_000_020.0,
+            ),
+        ]
+
+
+class _TwoSnapshotAdapter(_FakeAdapter):
+    def snapshot_payloads(self, contract):
+        return [
+            {
+                "arg": {"channel": "books", "instId": contract.contract_id},
+                "data": [{"ts": "1780000001000", "bids": [["10", "4"]], "asks": [["10.1", "3"]], "seqId": 1}],
+            },
+            {
+                "arg": {"channel": "books", "instId": contract.contract_id},
+                "data": [{"ts": "1780000002000", "bids": [["10.2", "4"]], "asks": [["10.3", "3"]], "seqId": 2}],
+            },
+        ]
+
+
 class PreIPOAutomationTests(unittest.TestCase):
+    def test_websocket_capture_uses_adapter_stateful_normalizer(self) -> None:
+        class StatefulAdapter(_FakeAdapter):
+            ws_url = "wss://example.test/public"
+
+            def __init__(self):
+                super().__init__()
+                self.normalized = 0
+
+            def websocket_subscriptions(self, contract):
+                return [{"op": "subscribe"}]
+
+            def normalize_snapshot(self, contract, payload, *, received_ts):
+                self.normalized += 1
+                return [
+                    {
+                        "venue": contract.venue,
+                        "contract_id": contract.contract_id,
+                        "event_kind": "bbo",
+                        "exchange_ts": received_ts,
+                        "received_ts": received_ts,
+                        "bid": 10.0,
+                        "ask": 10.1,
+                    }
+                ]
+
+        class FakeSocket:
+            def __init__(self):
+                self.messages = iter([json.dumps({"feed": "book"}), None])
+
+            def send(self, message):
+                return None
+
+            def recv(self):
+                return next(self.messages)
+
+            def close(self):
+                return None
+
+        module = types.SimpleNamespace(create_connection=lambda *args, **kwargs: FakeSocket())
+        contract = PreIPOContract(
+            venue="okx",
+            contract_id="SPCX-USDT-SWAP",
+            underlying_symbol="SPCX",
+            quote="USDT",
+            lifecycle_status="preipo_continuous",
+            phase="preipo_continuous",
+        )
+        adapter = StatefulAdapter()
+        with tempfile.TemporaryDirectory() as temp_dir, patch.dict(
+            sys.modules,
+            {"websocket": module},
+        ):
+            store = RawEventStore(Path(temp_dir) / "events.jsonl")
+            clock = iter([1_780_000_000.0, 1_780_000_001.0, 1_780_000_002.0])
+            result = capture_websocket_events(
+                adapter,
+                contract,
+                store,
+                duration_sec=1.0,
+                received_clock=lambda: next(clock),
+            )
+
+        self.assertEqual(result["status"], "COMPLETE")
+        self.assertEqual(adapter.normalized, 1)
+    def test_injected_now_controls_future_anchor_selection(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            paths = self._paths(Path(temp_dir))
+            result = discover_and_snapshot(
+                adapters={"okx": _TwoContractAdapter()},
+                store=RawEventStore(paths.events_path, paths.manifest_path),
+                now_ts=1_780_000_000.0,
+            )
+
+            self.assertEqual(
+                result["cadence_observation"]["event_anchor_ts"],
+                1_780_000_010.0,
+            )
+
+    def test_each_rest_response_gets_its_own_receive_timestamp(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            paths = self._paths(Path(temp_dir))
+            clock_values = iter(
+                [
+                    1_780_000_000.0,
+                    1_780_000_001.0,
+                    1_780_000_002.0,
+                    1_780_000_003.0,
+                    1_780_000_004.0,
+                ]
+            )
+            discover_and_snapshot(
+                adapters={"okx": _TwoSnapshotAdapter()},
+                store=RawEventStore(paths.events_path, paths.manifest_path),
+                now_ts=1_780_000_000.0,
+                received_clock=lambda: next(clock_values),
+            )
+            bbo_rows = [
+                row
+                for row in RawEventStore(paths.events_path).iter_events()
+                if row["event_kind"] == "bbo"
+            ]
+            lifecycle_rows = [
+                row
+                for row in RawEventStore(paths.events_path).iter_events()
+                if row["event_kind"] == "lifecycle"
+            ]
+
+            self.assertEqual(len(bbo_rows), 2)
+            self.assertEqual(lifecycle_rows[0]["received_ts"], 1_780_000_000.0)
+            self.assertLess(lifecycle_rows[0]["received_ts"], bbo_rows[0]["received_ts"])
+            self.assertLess(bbo_rows[0]["received_ts"], bbo_rows[1]["received_ts"])
+
+    def test_failed_discovery_preserves_near_event_retry_cadence_and_eta(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            paths = self._paths(Path(temp_dir))
+            now_ts = 1_780_000_000.0
+            event_eta = preipo_automation_module.utc_iso(now_ts + 1_200)
+            state = load_state(paths)
+            state.update(
+                {
+                    "cadence_stage": "SCHEDULED",
+                    "cadence_seconds": 5 * 60,
+                    "cadence_reason": "exact_official_event_within_24h",
+                    "event_eta_utc": event_eta,
+                    "official_confirmation": True,
+                    "exact_timestamp": True,
+                }
+            )
+            preipo_automation_module.save_state(paths, state)
+
+            result = run_tick(
+                paths,
+                adapters={"okx": _FakeAdapter(fail=True)},
+                now_ts=now_ts,
+                attempt_id="near_event_retry_1",
+            )
+            reloaded = load_state(paths)
+
+            self.assertEqual(result["status"], "RETRY_NEXT_INTERVAL")
+            self.assertEqual(result["cadence"]["interval_sec"], 5 * 60)
+            self.assertEqual(result["cadence"]["event_eta_utc"], event_eta)
+            self.assertEqual(reloaded["event_eta_utc"], event_eta)
+            self.assertTrue(reloaded["official_confirmation"])
+            self.assertTrue(reloaded["exact_timestamp"])
+            self.assertEqual(
+                datetime.fromisoformat(result["next_interval_at_utc"].replace("Z", "+00:00")).timestamp(),
+                now_ts + 5 * 60,
+            )
+            second = run_tick(
+                paths,
+                adapters={"okx": _FakeAdapter(fail=True)},
+                now_ts=now_ts + 5 * 60,
+                attempt_id="near_event_retry_2",
+            )
+            self.assertEqual(second["cadence"]["interval_sec"], 5 * 60)
+            self.assertEqual(second["cadence"]["event_eta_utc"], event_eta)
     def test_cli_tick_requires_bound_worker_handoff_before_run_tick(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir, patch.object(
             sys,

@@ -22,8 +22,8 @@ from urllib.parse import urlsplit
 
 SCHEMA = "trading_mvp_preipo_perpetual_event_v1"
 ASSET_CLASS = "preipo_equity"
-ACTIVE_VENUES = ("okx", "gate")
-CANDIDATE_VENUES = ("bybit",)
+ACTIVE_VENUES = ("okx", "gate", "bitmex", "kraken")
+CANDIDATE_VENUES = ("bybit", "coinbase_intx", "cryptocom")
 SOURCE_OFFICIAL = "official"
 SOURCE_PROXY = "proxy"
 
@@ -59,6 +59,8 @@ _OFFICIAL_HOSTS = {
     "okx": ("okx.com", "okx-digital.com"),
     "gate": ("gate.com", "gate.io", "gateio.ws"),
     "bybit": ("bybit.com", "bybit-exchange.github.io"),
+    "bitmex": ("bitmex.com",),
+    "kraken": ("kraken.com",),
 }
 _TERMINAL_STATUSES = {"converted", "cancelled", "delisted", "expired"}
 _ALLOWED_TRANSITIONS = {
@@ -145,7 +147,16 @@ def _find(payload: Mapping[str, Any], *keys: str) -> Any:
 def _is_official_url(venue: str, source_url: str) -> bool:
     parsed = urlsplit(source_url)
     host = (parsed.hostname or "").lower().rstrip(".")
-    return bool(host) and any(host == root or host.endswith(f".{root}") for root in _OFFICIAL_HOSTS[venue])
+    return (
+        parsed.scheme.lower() == "https"
+        and not parsed.username
+        and not parsed.password
+        and bool(host)
+        and any(
+            host == root or host.endswith(f".{root}")
+            for root in _OFFICIAL_HOSTS[venue]
+        )
+    )
 
 
 def _canonical_hash(payload: Any) -> str:
@@ -208,7 +219,8 @@ class PreIPOEvent:
     @property
     def acceptance_eligible(self) -> bool:
         return (
-            self.source_class == SOURCE_OFFICIAL
+            self.venue in ACTIVE_VENUES
+            and self.source_class == SOURCE_OFFICIAL
             and self.official_first_trade_ts is not None
             and self.lifecycle_status not in {"cancelled", "postponed", "delisted", "expired"}
         )

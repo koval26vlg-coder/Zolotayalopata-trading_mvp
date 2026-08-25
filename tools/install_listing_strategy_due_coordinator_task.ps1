@@ -9,6 +9,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+$RegistryPath = [IO.Path]::GetFullPath(
+    (Join-Path $repoRoot "docs\control\canonical_strategy_runtime.staging.json")
+)
 if (-not $CoordinatorPath) {
     $CoordinatorPath = Join-Path $PSScriptRoot "invoke_listing_strategy_due_coordinator.ps1"
 }
@@ -16,6 +19,23 @@ $CoordinatorPath = [IO.Path]::GetFullPath($CoordinatorPath)
 if (-not (Test-Path -LiteralPath $CoordinatorPath -PathType Leaf)) {
     throw "coordinator not found: $CoordinatorPath"
 }
+if (-not (Test-Path -LiteralPath $RegistryPath -PathType Leaf)) {
+    throw "staging registry not found: $RegistryPath"
+}
+
+function Get-RawSha256 {
+    param([string]$Path)
+    $bytes = [IO.File]::ReadAllBytes($Path)
+    $sha = [Security.Cryptography.SHA256]::Create()
+    try {
+        return [Convert]::ToHexString($sha.ComputeHash($bytes)).ToLowerInvariant()
+    } finally {
+        $sha.Dispose()
+    }
+}
+
+$ExpectedCoordinatorSha256 = Get-RawSha256 -Path $CoordinatorPath
+$ExpectedRegistrySha256 = Get-RawSha256 -Path $RegistryPath
 
 if (-not $CodexAutomationsRoot) {
     $userProfilePath = [Environment]::GetFolderPath([Environment+SpecialFolder]::UserProfile)
@@ -86,29 +106,89 @@ if ($validationErrors.Count -gt 0) {
     exit 2
 }
 
-$actionArguments = "-NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$CoordinatorPath`" -ScheduledTick -Json -WorkerExitTimeoutSec $WorkerExitTimeoutSec -CodexAutomationsRoot `"$CodexAutomationsRoot`""
+$pwsh = (Get-Process -Id $PID).Path
+if (-not $pwsh -or -not (Test-Path -LiteralPath $pwsh -PathType Leaf)) {
+    throw "current pwsh.exe runtime is unavailable"
+}
+
+$preflightArguments = @(
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy", "Bypass",
+    "-File", $CoordinatorPath,
+    "-ScheduledTick",
+    "-Json",
+    "-WorkerExitTimeoutSec", [string]$WorkerExitTimeoutSec,
+    "-RegistryPath", $RegistryPath,
+    "-ExpectedRegistrySha256", $ExpectedRegistrySha256,
+    "-ExpectedCoordinatorSha256", $ExpectedCoordinatorSha256
+)
+$preflightOutput = & $pwsh @preflightArguments 2>&1 | Out-String
+$preflightExitCode = $LASTEXITCODE
+$coordinatorPreflight = $null
+try {
+    $coordinatorPreflight = $preflightOutput | ConvertFrom-Json -DateKind String -ErrorAction Stop
+} catch {
+    [ordered]@{
+        status = "BLOCKED_COORDINATOR_PREFLIGHT"
+        reason = "COORDINATOR_PREFLIGHT_OUTPUT_INVALID"
+        task_name = $TaskName
+        coordinator_path = $CoordinatorPath
+        registry_path = $RegistryPath
+        expected_registry_sha256 = $ExpectedRegistrySha256
+        expected_coordinator_sha256 = $ExpectedCoordinatorSha256
+        coordinator_preflight_exit_code = $preflightExitCode
+        coordinator_preflight_output = $preflightOutput
+        registration_attempted = $false
+        legacy_automations = @($legacyRecords)
+    } | ConvertTo-Json -Depth 40
+    exit 2
+}
+if (
+    $preflightExitCode -ne 0 -or
+    [string]$coordinatorPreflight.status -cne "STAGED_FAIL_CLOSED" -or
+    [string]$coordinatorPreflight.reason -cne "NOT_ACTIVATED" -or
+    $coordinatorPreflight.execution_performed -ne $false -or
+    $coordinatorPreflight.launch_allowed -ne $false -or
+    [string]$coordinatorPreflight.registry_raw_sha256 -cne $ExpectedRegistrySha256
+) {
+    [ordered]@{
+        status = "BLOCKED_COORDINATOR_PREFLIGHT"
+        reason = "COORDINATOR_PREFLIGHT_NOT_STAGED_FAIL_CLOSED"
+        task_name = $TaskName
+        coordinator_path = $CoordinatorPath
+        registry_path = $RegistryPath
+        expected_registry_sha256 = $ExpectedRegistrySha256
+        expected_coordinator_sha256 = $ExpectedCoordinatorSha256
+        coordinator_preflight_exit_code = $preflightExitCode
+        coordinator_preflight = $coordinatorPreflight
+        registration_attempted = $false
+        legacy_automations = @($legacyRecords)
+    } | ConvertTo-Json -Depth 40
+    exit 2
+}
+
+$actionArguments = "-NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$CoordinatorPath`" -ScheduledTick -Json -WorkerExitTimeoutSec $WorkerExitTimeoutSec -RegistryPath `"$RegistryPath`" -ExpectedRegistrySha256 $ExpectedRegistrySha256 -ExpectedCoordinatorSha256 $ExpectedCoordinatorSha256"
 
 if ($DryRun) {
     [ordered]@{
         status = "READY_TO_INSTALL"
         task_name = $TaskName
         coordinator_path = $CoordinatorPath
+        registry_path = $RegistryPath
+        expected_registry_sha256 = $ExpectedRegistrySha256
+        expected_coordinator_sha256 = $ExpectedCoordinatorSha256
         codex_automations_root = $CodexAutomationsRoot
         wake_interval_minutes = 5
         hidden = $true
         model_invocation = $false
         worker_exit_timeout_sec = $WorkerExitTimeoutSec
         action_arguments = $actionArguments
+        coordinator_preflight = $coordinatorPreflight
         registration_attempted = $false
         legacy_automations = @($legacyRecords)
     } | ConvertTo-Json -Depth 20
     exit 0
-}
-
-$pwsh = (Get-Command "pwsh.exe" -ErrorAction SilentlyContinue | Select-Object -First 1).Source
-if (-not $pwsh) { $pwsh = "C:\Program Files\PowerShell\7\pwsh.exe" }
-if (-not (Test-Path -LiteralPath $pwsh -PathType Leaf)) {
-    throw "pwsh.exe not found"
 }
 
 $action = New-ScheduledTaskAction -Execute $pwsh -Argument $actionArguments -WorkingDirectory $repoRoot
@@ -123,12 +203,16 @@ $payload = [ordered]@{
     task_name = $TaskName
     task_path = $registered.TaskPath
     coordinator_path = $CoordinatorPath
+    registry_path = $RegistryPath
+    expected_registry_sha256 = $ExpectedRegistrySha256
+    expected_coordinator_sha256 = $ExpectedCoordinatorSha256
     wake_interval_minutes = 5
     hidden = $true
     model_invocation = $false
     worker_exit_timeout_sec = $WorkerExitTimeoutSec
     action_execute = $pwsh
     action_arguments = $actionArguments
+    coordinator_preflight = $coordinatorPreflight
     registration_attempted = $true
     legacy_automations = @($legacyRecords)
 }

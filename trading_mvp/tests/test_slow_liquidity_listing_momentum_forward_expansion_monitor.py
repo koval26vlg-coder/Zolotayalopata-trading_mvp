@@ -47,6 +47,141 @@ class FakeClient:
 
 
 class ExpansionMonitorTests(unittest.TestCase):
+    def test_asset_provenance_survives_candidate_job_and_forward_row(self) -> None:
+        candidates = monitor.diff_new_listings(
+            set(),
+            [
+                {
+                    "exchange": "okx",
+                    "base": "XAPLD",
+                    "symbol": "XAPLD-USDT",
+                    "is_delisted": False,
+                    "listed_ts": 1_710_000_000,
+                    "asset_class": "tokenized_equity",
+                    "asset_class_source": "declared_spot_asset_registry_v1",
+                    "asset_class_acceptance_eligible": False,
+                }
+            ],
+            baseline_as_of_ts=1_709_000_000,
+            now_ts=1_710_000_100,
+        )
+
+        jobs = monitor.derive_forward_jobs(candidates)
+        forward = monitor._forward_row(
+            jobs[0],
+            Candle(
+                ts=jobs[0]["proxy_ts"],
+                open=1.0,
+                high=1.2,
+                low=0.9,
+                close=1.1,
+                volume=10.0,
+                quote_volume=11.0,
+            ),
+        )
+
+        for row in (candidates[0], jobs[0], forward):
+            self.assertEqual(row["asset_class"], "tokenized_equity")
+            self.assertEqual(
+                row["asset_class_source"], "declared_spot_asset_registry_v1"
+            )
+            self.assertFalse(row["asset_class_acceptance_eligible"])
+
+    def test_rebuild_preserves_asset_provenance_and_quarantines_legacy_rows(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            modern = root / "ticks" / "modern"
+            legacy = root / "ticks" / "legacy"
+            modern.mkdir(parents=True)
+            legacy.mkdir(parents=True)
+            modern_job = {
+                "exchange": "okx",
+                "base": "XAPLD",
+                "symbol": "XAPLD-USDT",
+                "category": "new_listing_window_complete",
+                "timestamp_source": "listTime_ms",
+                "flags": [],
+                "asset_class": "tokenized_equity",
+                "asset_class_source": "declared_spot_asset_registry_v1",
+                "asset_class_acceptance_eligible": False,
+            }
+            legacy_job = {
+                "exchange": "okx",
+                "base": "HYPE",
+                "symbol": "HYPE-USDT",
+                "category": "new_listing_window_complete",
+                "timestamp_source": "listTime_ms",
+                "flags": [],
+            }
+            for tick_dir, tick_id, job in (
+                (modern, "modern", modern_job),
+                (legacy, "legacy", legacy_job),
+            ):
+                (tick_dir / "manifest.json").write_text(
+                    json.dumps(
+                        {
+                            "tick_id": tick_id,
+                            "status": "COMPLETED",
+                            "new_listing_count": 1,
+                            "rows_written": 1,
+                            "jobs": [job],
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+            (modern / "ohlcv.jsonl").write_text(
+                json.dumps(
+                    {
+                        "exchange": "okx",
+                        "base": "XAPLD",
+                        "ts": 1_710_000_000,
+                        "open": 1.0,
+                        "high": 1.2,
+                        "low": 0.9,
+                        "close": 1.1,
+                        "volume": 10.0,
+                        "asset_class": "tokenized_equity",
+                        "asset_class_source": "declared_spot_asset_registry_v1",
+                        "asset_class_acceptance_eligible": False,
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (legacy / "ohlcv.jsonl").write_text(
+                json.dumps(
+                    {
+                        "exchange": "okx",
+                        "base": "HYPE",
+                        "ts": 1_710_000_000,
+                        "open": 2.0,
+                        "high": 2.2,
+                        "low": 1.9,
+                        "close": 2.1,
+                        "volume": 20.0,
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            with mock.patch.object(monitor, "TICKS_DIR", root / "ticks"), mock.patch.object(
+                monitor, "STATE_PATH", root / "state.json"
+            ):
+                state = monitor.rebuild_forward_state()
+
+        by_base = {window["base"]: window for window in state["windows"]}
+        self.assertEqual(by_base["XAPLD"]["asset_class"], "tokenized_equity")
+        self.assertFalse(by_base["XAPLD"]["asset_class_acceptance_eligible"])
+        self.assertEqual(by_base["HYPE"]["asset_class"], "unclassified")
+        self.assertEqual(
+            by_base["HYPE"]["asset_class_source"],
+            "legacy_missing_asset_provenance",
+        )
+        self.assertFalse(by_base["HYPE"]["asset_class_acceptance_eligible"])
+        self.assertEqual(state["crypto_acceptance_window_count"], 0)
+        self.assertEqual(state["descriptive_only_window_count"], 2)
+
     def test_direct_cli_tick_flag_cannot_bypass_launcher_handoff(self) -> None:
         with mock.patch.object(
             monitor, "load_plan", return_value={"plan_hash": "a" * 64}
@@ -707,6 +842,14 @@ class ExpansionMonitorTests(unittest.TestCase):
             self.assertEqual(manifest["status"], "COMPLETED")
             self.assertEqual(manifest["new_listing_count"], 1)
             self.assertEqual(manifest["jobs"][0]["timestamp_source"], "snapshot_diff_detection_time_proxy")
+            self.assertEqual(manifest["jobs"][0]["asset_class"], "unclassified")
+            self.assertEqual(
+                manifest["jobs"][0]["asset_class_source"],
+                "unclassified_no_positive_identity",
+            )
+            self.assertFalse(
+                manifest["jobs"][0]["asset_class_acceptance_eligible"]
+            )
             self.assertTrue(fake_client.calls)
             state = json.loads((root / "state.json").read_text(encoding="utf-8"))
             self.assertEqual(state["venues"], ["binance", "bybit", "okx", "bitget"])
@@ -719,9 +862,27 @@ class ExpansionPlanTests(unittest.TestCase):
         self.assertEqual(plan["status"], "READY_FOR_VISIBLE_EXPANSION_TICKS")
         self.assertEqual(plan["venues"], ["binance", "bybit", "okx", "bitget"])
         self.assertTrue(plan["source_bindings"]["parent_v2"]["parallel_immutable"])
+        self.assertEqual(
+            plan["source_bindings"]["parent_v2"]["canonical_repository"],
+            r"C:\Users\koval\Documents\ZolotyayLopata-listing-momentum-monitor",
+        )
+        self.assertNotIn(
+            "automation_launcher",
+            {row["role"] for row in plan["implementation"]["files"]},
+        )
         self.assertTrue(plan["guard_contract"]["v2_namespace_must_remain_untouched"])
         self.assertFalse(plan["evaluator_or_oos_allowed"])
         self.assertFalse(plan["replay_allowed"])
+
+    def test_plan_writer_is_idempotent_and_refuses_different_bytes(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "immutable.json"
+            first = {"plan_id": "fixture_v1", "plan_hash": "a" * 64}
+            second = {"plan_id": "fixture_v1", "plan_hash": "b" * 64}
+            plan_module.write_immutable_plan(path, first)
+            plan_module.write_immutable_plan(path, first)
+            with self.assertRaisesRegex(Exception, "immutable artifact mismatch"):
+                plan_module.write_immutable_plan(path, second)
 
 
 if __name__ == "__main__":

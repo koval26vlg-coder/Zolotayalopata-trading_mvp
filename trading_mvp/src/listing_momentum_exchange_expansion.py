@@ -13,6 +13,8 @@ from typing import Any, Callable, Mapping
 
 import requests
 
+from listing_spot_asset_class import classify_spot_asset
+
 
 SCHEMA = "trading_mvp_listing_momentum_exchange_expansion_compatibility_preflight_v1"
 PREFLIGHT_ID = "listing_momentum_exchange_expansion_preflight_20260817"
@@ -111,6 +113,7 @@ def _row(
     source_type: str,
     is_delisted: bool,
 ) -> dict[str, Any]:
+    classification = classify_spot_asset(exchange, base)
     return {
         "exchange": exchange,
         "base": base.upper(),
@@ -124,6 +127,9 @@ def _row(
         "timestamp_quality": timestamp_quality,
         "source_url": source_url,
         "source_type": source_type,
+        "asset_class": classification.asset_class,
+        "asset_class_source": classification.source,
+        "asset_class_acceptance_eligible": classification.acceptance_eligible,
     }
 
 

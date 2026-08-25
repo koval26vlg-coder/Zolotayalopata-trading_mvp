@@ -17,7 +17,7 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $defaultV2PlanPath = Join-Path $repoRoot "docs\plans\slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json"
-$defaultExpansionPlanPath = Join-Path $repoRoot "docs\plans\slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v5.json"
+$defaultExpansionPlanPath = Join-Path $repoRoot "docs\plans\slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v6.json"
 if (-not $V2PlanPath) { $V2PlanPath = $defaultV2PlanPath }
 if (-not $ExpansionPlanPath) { $ExpansionPlanPath = $defaultExpansionPlanPath }
 
@@ -220,7 +220,13 @@ function Resolve-CombinedCadence($State) {
         if ($null -ne $decision) { $choices.Add($decision) }
     }
     if ($choices.Count -eq 0) { return Resolve-CadenceDecision $State }
-    return ($choices | Sort-Object -Property interval_sec | Select-Object -First 1)
+    $best = $null
+    foreach ($choice in $choices) {
+        if ($null -eq $best -or [int]$choice.interval_sec -lt [int]$best.interval_sec) {
+            $best = $choice
+        }
+    }
+    return $best
 }
 
 function Get-ProcessStartedAtUtc([int]$ProcessId) {

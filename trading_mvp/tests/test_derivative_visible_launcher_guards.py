@@ -25,7 +25,7 @@ LAUNCHERS = {
         "script": "start_premarket_perp_listing_automation_visible.ps1",
         "validator": "premarket_plan.py",
         "automation": "premarket_automation.py",
-        "plan": "premarket-perp-listing-impulse-planonly-20260821-v2.json",
+        "plan": "premarket-perp-listing-impulse-planonly-20260825-v5.json",
         "state": "premarket_perp_listing_automation_state.json",
         "ledger": "premarket_perp_listing_automation_attempts.jsonl",
         "state_schema": "trading_mvp_premarket_perp_listing_automation_state_v1",
@@ -35,7 +35,7 @@ LAUNCHERS = {
         "script": "start_preipo_perpetual_event_automation_visible.ps1",
         "validator": "preipo_plan.py",
         "automation": "preipo_automation.py",
-        "plan": "preipo-perpetual-event-planonly-20260821-v2.json",
+        "plan": "preipo-perpetual-event-planonly-20260825-v8.json",
         "state": "preipo_perpetual_event_automation_state.json",
         "ledger": "preipo_perpetual_event_automation_attempts.jsonl",
         "state_schema": "trading_mvp_preipo_perpetual_event_automation_state_v1",
@@ -218,6 +218,7 @@ switch ($env:FAKE_GATE_MODE) {
         self,
         *,
         next_interval_at_utc: str | None,
+        cadence_policy_version: str = "adaptive_event_proximity_v2",
         worker_pid: int | None = None,
         worker_process_started_at_utc: str | None | object = _MISSING,
         last_started_at_utc: str | None = None,
@@ -226,7 +227,7 @@ switch ($env:FAKE_GATE_MODE) {
         state = {
             "schema": self.config["state_schema"],
             "automation_id": self.config["automation_id"],
-            "cadence_policy_version": "adaptive_event_proximity_v1",
+            "cadence_policy_version": cadence_policy_version,
             "cadence_stage": "SEARCH",
             "cadence_seconds": 21600,
             "cadence_reason": "fixture",
@@ -889,7 +890,6 @@ class DerivativeVisibleLauncherGuardTests(unittest.TestCase):
                         last_started_at_utc=exact_start,
                         status="RUNNING",
                     )
-                    original_state = fixture.state.read_bytes()
                     original_claim = fixture.write_claim(owner_pid=999_999)
                     fixture.ledger.write_bytes(b"fixture-seed\n")
                     original_ledger = fixture.ledger.read_bytes()
@@ -1136,6 +1136,23 @@ class DerivativeVisibleLauncherGuardTests(unittest.TestCase):
 
             self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertFalse(fixture.marker.exists(), result.stdout + result.stderr)
+
+    def test_preipo_due_worker_migrates_stale_cadence_policy_version(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as temp_dir:
+            fixture = self.fixture(temp_dir, "preipo")
+            fixture.write_state(
+                next_interval_at_utc=None,
+                cadence_policy_version="adaptive_event_proximity_v1",
+            )
+
+            result = fixture.run("-VisibleWorker", "-ScheduledTick", "-Json")
+
+            self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+            marker = json.loads(fixture.marker.read_text(encoding="utf-8"))
+            self.assertEqual(
+                marker["state"]["cadence_policy_version"],
+                "adaptive_event_proximity_v2",
+            )
 
     def test_status_and_not_due_do_not_persist_in_memory_state_normalization(self) -> None:
         future = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()

@@ -60,6 +60,14 @@ OKX_FIXTURE = {
     "data": [
         {
             "instType": "SPOT",
+            "instId": "XAPLD-USDT",
+            "baseCcy": "XAPLD",
+            "quoteCcy": "USDT",
+            "state": "live",
+            "listTime": "1710000000000",
+        },
+        {
+            "instType": "SPOT",
             "instId": "HYPE-USDT",
             "baseCcy": "HYPE",
             "quoteCcy": "USDT",
@@ -122,6 +130,19 @@ class ExpansionParserTests(unittest.TestCase):
         self.assertEqual(rows[0]["listing_timestamp_source"], "listTime_ms")
         self.assertFalse(rows[0]["is_delisted"])
         self.assertTrue(rows[1]["is_delisted"])
+
+    def test_spot_asset_class_is_explicit_and_never_defaults_to_crypto(self) -> None:
+        rows = expansion.parse_okx_snapshot(OKX_FIXTURE)
+        by_base = {row["base"]: row for row in rows}
+
+        self.assertEqual(by_base["XAPLD"]["asset_class"], "tokenized_equity")
+        self.assertEqual(
+            by_base["XAPLD"]["asset_class_source"],
+            "declared_spot_asset_registry_v1",
+        )
+        self.assertFalse(by_base["XAPLD"]["asset_class_acceptance_eligible"])
+        self.assertEqual(by_base["HYPE"]["asset_class"], "unclassified")
+        self.assertFalse(by_base["HYPE"]["asset_class_acceptance_eligible"])
 
     def test_bitget_parser_marks_open_time_as_deprecated(self) -> None:
         rows = expansion.parse_bitget_snapshot(BITGET_FIXTURE)

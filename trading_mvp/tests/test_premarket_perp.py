@@ -16,16 +16,22 @@ if str(ROOT) not in sys.path:
 import premarket_automation as premarket_automation_module  # noqa: E402
 from premarket_automation import (  # noqa: E402
     AutomationPaths,
+    BybitPublicAdapter,
     append_attempt,
     capture_websocket_events,
     discover_and_snapshot,
     load_state,
     mark_retry_next_interval,
 )
-from premarket_plan import validate_plan  # noqa: E402
+from premarket_plan import (  # noqa: E402
+    REQUIRED_IMPLEMENTATION_ROLES,
+    canonical_plan_hash,
+    validate_plan,
+)
 from global_market_writer_claim import claim_global_market_writer  # noqa: E402
 from premarket_perp import (  # noqa: E402
     EXIT_OFFSETS_SEC,
+    PreMarketContract,
     PreMarketPhase,
     SourceClass,
     build_entry_candidates,
@@ -39,6 +45,69 @@ from premarket_perp import (  # noqa: E402
 
 
 class PreMarketPerpTests(unittest.TestCase):
+    def test_public_adapter_rejects_unapproved_url_and_redirects(self) -> None:
+        class Response:
+            status_code = 200
+            url = "https://evil.example/v5/market/instruments-info"
+
+            def raise_for_status(self):
+                return None
+
+            def json(self):
+                return {"retCode": 0, "result": {"list": []}}
+
+        class Session:
+            trust_env = True
+
+            def get(self, *args, **kwargs):
+                self.args = args
+                self.kwargs = kwargs
+                return Response()
+
+        session = Session()
+        adapter = BybitPublicAdapter(session=session)
+
+        with self.assertRaisesRegex(ValueError, "relative approved path"):
+            adapter._get("https://evil.example/anything")
+        with self.assertRaisesRegex(RuntimeError, "redirect_or_final_url_rejected"):
+            adapter._get("/v5/market/instruments-info", {"category": "linear"})
+        self.assertFalse(session.kwargs["allow_redirects"])
+
+    def test_each_snapshot_response_keeps_its_own_post_response_receive_time(self) -> None:
+        contract = PreMarketContract(
+            venue="bybit",
+            contract_id="ABCUSDT",
+            spot_symbol="ABCUSDT",
+            base="ABC",
+            quote="USDT",
+            phase="continuous",
+            lifecycle_status="continuous",
+        )
+
+        class Adapter:
+            venue = "bybit"
+
+            def discover_contracts(self):
+                return [contract]
+
+            def snapshot_payloads(self, _contract):
+                return [
+                    {"__received_ts": 100.0, "topic": "tickers.ABCUSDT", "data": {"bid1Price": "1", "ask1Price": "1.1"}},
+                    {"__received_ts": 101.0, "topic": "tickers.ABCUSDT", "data": {"bid1Price": "2", "ask1Price": "2.1"}},
+                ]
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            events_path = Path(temp_dir) / "events.jsonl"
+            discover_and_snapshot(
+                adapters={"bybit": Adapter()},
+                events_path=events_path,
+                websocket_duration_sec=0,
+                now_ts=50.0,
+            )
+            rows = [json.loads(line) for line in events_path.read_text(encoding="utf-8").splitlines()]
+
+        self.assertEqual([row["recv_ts"] for row in rows], [100.0, 101.0])
+
     def test_cli_tick_requires_bound_worker_handoff_before_run_tick(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir, patch.object(
             sys,
@@ -315,6 +384,8 @@ class PreMarketPerpTests(unittest.TestCase):
             "official_spot_listing_ts": 1_700_020_000.0,
             "phase": "continuous",
             "source_class": "official",
+            "listing_source_class": "official",
+            "acceptance_eligible": True,
         }
         candidates = build_entry_candidates(contract)
 
@@ -341,16 +412,18 @@ class PreMarketPerpTests(unittest.TestCase):
             "phase": "continuous",
             "official_spot_listing_ts": 100.0,
             "source_class": "official",
+            "listing_source_class": "official",
+            "acceptance_eligible": True,
             "taker_fee_bps": 10.0,
             "maker_fee_bps": 4.0,
             "maintenance_margin_rate": 0.01,
         }
         events = [
-            {"exchange_ts": 90.0, "recv_ts": 90.0, "event_kind": "bbo", "bid_price": 10.0, "ask_price": 10.1, "bid_qty": 5.0, "ask_qty": 0.0, "mark_price": 10.05, "index_price": 10.0},
-            {"exchange_ts": 100.0, "recv_ts": 100.0, "event_kind": "bbo", "bid_price": 11.0, "ask_price": 11.1, "bid_qty": 0.0, "ask_qty": 0.0, "mark_price": 11.05, "index_price": 10.5},
-            {"exchange_ts": 105.0, "recv_ts": 105.0, "event_kind": "bbo", "bid_price": 12.0, "ask_price": 12.1, "bid_qty": 10.0, "ask_qty": 10.0, "mark_price": 12.05, "index_price": 11.0},
-            {"exchange_ts": 115.0, "recv_ts": 115.0, "event_kind": "bbo", "bid_price": 13.0, "ask_price": 13.1, "bid_qty": 10.0, "ask_qty": 10.0, "mark_price": 13.05, "index_price": 12.0},
-            {"exchange_ts": 160.0, "recv_ts": 160.0, "event_kind": "bbo", "bid_price": 14.0, "ask_price": 14.1, "bid_qty": 10.0, "ask_qty": 10.0, "mark_price": 14.05, "index_price": 13.0},
+            {"exchange_ts": 90.0, "recv_ts": 90.0, "premarket_contract_id": "ABCUSDT", "event_kind": "bbo", "bid_price": 10.0, "ask_price": 10.1, "bid_qty": 5.0, "ask_qty": 0.0, "mark_price": 10.05, "index_price": 10.0},
+            {"exchange_ts": 100.0, "recv_ts": 100.0, "premarket_contract_id": "ABCUSDT", "event_kind": "bbo", "bid_price": 11.0, "ask_price": 11.1, "bid_qty": 0.0, "ask_qty": 0.0, "mark_price": 11.05, "index_price": 10.5},
+            {"exchange_ts": 105.0, "recv_ts": 105.0, "premarket_contract_id": "ABCUSDT", "event_kind": "bbo", "bid_price": 12.0, "ask_price": 12.1, "bid_qty": 10.0, "ask_qty": 10.0, "mark_price": 12.05, "index_price": 11.0},
+            {"exchange_ts": 115.0, "recv_ts": 115.0, "premarket_contract_id": "ABCUSDT", "event_kind": "bbo", "bid_price": 13.0, "ask_price": 13.1, "bid_qty": 10.0, "ask_qty": 10.0, "mark_price": 13.05, "index_price": 12.0},
+            {"exchange_ts": 160.0, "recv_ts": 160.0, "premarket_contract_id": "ABCUSDT", "event_kind": "bbo", "bid_price": 14.0, "ask_price": 14.1, "bid_qty": 10.0, "ask_qty": 10.0, "mark_price": 14.05, "index_price": 13.0},
         ]
 
         result = replay_listing_event(contract, events, notional_quote=25.0, entry_ts=90.0)
@@ -358,21 +431,283 @@ class PreMarketPerpTests(unittest.TestCase):
         self.assertEqual(result["exit_offsets_sec"], list(EXIT_OFFSETS_SEC))
         self.assertEqual(result["event_status"], "complete")
         self.assertEqual(result["entry_fill_status"], "unfilled")
-        self.assertFalse(result["acceptance_eligible"])
+        self.assertTrue(result["acceptance_eligible"])
         self.assertEqual(result["fill_denominator"], 1)
         self.assertIn("t0_plus_5s", result["exits"])
         self.assertNotIn("peak_price", result)
 
+    def test_replay_uses_receive_time_for_causal_bbo_selection(self) -> None:
+        contract = {
+            "venue": "bybit",
+            "contract_id": "ABCUSDT",
+            "official_spot_listing_ts": 100.0,
+            "source_class": "official",
+            "listing_source_class": "official",
+            "acceptance_eligible": True,
+            "maintenance_margin_rate": 0.01,
+        }
+        events = [
+            # Better exchange timestamp, but it arrived after the entry decision and
+            # must not be visible to the replay at t=90.
+            {"exchange_ts": 89.0, "recv_ts": 91.0, "event_kind": "bbo", "bid_price": 1.0, "ask_price": 1.1, "bid_qty": 10.0, "ask_qty": 10.0, "mark_price": 1.05},
+            {"exchange_ts": 88.0, "recv_ts": 89.0, "event_kind": "bbo", "bid_price": 2.0, "ask_price": 2.1, "bid_qty": 10.0, "ask_qty": 10.0, "mark_price": 2.05},
+            {"exchange_ts": 99.0, "recv_ts": 100.0, "event_kind": "bbo", "bid_price": 2.2, "ask_price": 2.3, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 2.25},
+            {"exchange_ts": 104.0, "recv_ts": 105.0, "event_kind": "bbo", "bid_price": 2.2, "ask_price": 2.3, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 2.25},
+            {"exchange_ts": 114.0, "recv_ts": 115.0, "event_kind": "bbo", "bid_price": 2.2, "ask_price": 2.3, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 2.25},
+            {"exchange_ts": 159.0, "recv_ts": 160.0, "event_kind": "bbo", "bid_price": 2.2, "ask_price": 2.3, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 2.25},
+        ]
+
+        result = replay_listing_event(contract, events, entry_ts=90.0)
+
+        self.assertEqual(result["entry_price"], 2.1)
+        self.assertEqual(result["exits"]["t0"]["exit_ts"], 100.0)
+
+    def test_replay_requires_resolver_provenance_and_never_defaults_to_official(self) -> None:
+        contract = {
+            "venue": "bybit",
+            "contract_id": "ABCUSDT",
+            "official_spot_listing_ts": 100.0,
+            "maintenance_margin_rate": 0.01,
+        }
+        events = [
+            {"recv_ts": 90.0, "event_kind": "bbo", "bid_price": 1.0, "ask_price": 1.1, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 1.05},
+            {"recv_ts": 100.0, "event_kind": "bbo", "bid_price": 1.2, "ask_price": 1.3, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 1.25},
+            {"recv_ts": 105.0, "event_kind": "bbo", "bid_price": 1.2, "ask_price": 1.3, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 1.25},
+            {"recv_ts": 115.0, "event_kind": "bbo", "bid_price": 1.2, "ask_price": 1.3, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 1.25},
+            {"recv_ts": 160.0, "event_kind": "bbo", "bid_price": 1.2, "ask_price": 1.3, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 1.25},
+        ]
+
+        result = replay_listing_event(contract, events, entry_ts=90.0)
+
+        self.assertEqual(result["source_class"], "proxy")
+        self.assertFalse(result["acceptance_eligible"])
+        self.assertEqual(result["acceptance_reason"], "official_t0_resolver_evidence_missing")
+
+    def test_round_trip_fill_requires_an_executable_primary_exit(self) -> None:
+        contract = {
+            "venue": "bybit",
+            "contract_id": "ABCUSDT",
+            "official_spot_listing_ts": 100.0,
+            "source_class": "official",
+            "listing_source_class": "official",
+            "acceptance_eligible": True,
+            "maintenance_margin_rate": 0.01,
+        }
+        events = [
+            {"recv_ts": 90.0, "event_kind": "bbo", "bid_price": 1.0, "ask_price": 1.1, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 1.05},
+            *[
+                {"recv_ts": ts, "event_kind": "bbo", "bid_price": 1.2, "ask_price": 1.3, "bid_qty": 0.0, "ask_qty": 20.0, "mark_price": 1.25}
+                for ts in (100.0, 105.0, 115.0, 160.0)
+            ],
+        ]
+
+        result = replay_listing_event(contract, events, entry_ts=90.0)
+
+        self.assertTrue(result["filled"])
+        self.assertFalse(result["round_trip_filled"])
+        self.assertEqual(result["exits"]["t0"]["fill_status"], "unfilled")
+
+    def test_missing_public_taker_fee_fails_closed(self) -> None:
+        contract = {
+            "venue": "bybit",
+            "contract_id": "ABCUSDT",
+            "official_spot_listing_ts": 100.0,
+            "listing_source_class": "official",
+            "acceptance_eligible": True,
+            "maintenance_margin_rate": 0.01,
+        }
+        events = [
+            {"recv_ts": ts, "event_kind": "bbo", "bid_price": 1.0, "ask_price": 1.1, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 1.05}
+            for ts in (90.0, 100.0, 105.0, 115.0, 160.0)
+        ]
+
+        result = replay_listing_event(contract, events, entry_ts=90.0)
+
+        self.assertTrue(result["fee_model_missing"])
+        self.assertFalse(result["acceptance_eligible"])
+        self.assertEqual(result["acceptance_reason"], "public_taker_fee_missing")
+
+    def test_replay_filters_explicit_contract_identity_before_price_selection(self) -> None:
+        contract = {
+            "venue": "bybit",
+            "contract_id": "ABCUSDT",
+            "official_spot_listing_ts": 100.0,
+            "listing_source_class": "official",
+            "acceptance_eligible": True,
+            "taker_fee_bps": 10.0,
+            "maintenance_margin_rate": 0.01,
+        }
+        events = [
+            {"recv_ts": 90.0, "premarket_contract_id": "WRONGUSDT", "event_kind": "bbo", "bid_price": 9.0, "ask_price": 9.1, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 9.05},
+            {"recv_ts": 89.0, "premarket_contract_id": "ABCUSDT", "event_kind": "bbo", "bid_price": 1.0, "ask_price": 1.1, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 1.05},
+            *[
+                {"recv_ts": ts, "premarket_contract_id": "ABCUSDT", "event_kind": "bbo", "bid_price": 1.2, "ask_price": 1.3, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 1.25}
+                for ts in (100.0, 105.0, 115.0, 160.0)
+            ],
+        ]
+
+        result = replay_listing_event(contract, events, entry_ts=90.0)
+
+        self.assertEqual(result["entry_price"], 1.1)
+        self.assertEqual(result["identity_mismatch_events_ignored"], 1)
+
+    def test_stale_entry_bbo_is_not_causal_execution_evidence(self) -> None:
+        contract = {
+            "venue": "bybit",
+            "contract_id": "ABCUSDT",
+            "official_spot_listing_ts": 100.0,
+            "listing_source_class": "official",
+            "acceptance_eligible": True,
+            "taker_fee_bps": 10.0,
+            "maintenance_margin_rate": 0.01,
+        }
+        events = [
+            {"recv_ts": 80.0, "event_kind": "bbo", "bid_price": 1.0, "ask_price": 1.1, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 1.05},
+            *[
+                {"recv_ts": ts, "event_kind": "bbo", "bid_price": 1.2, "ask_price": 1.3, "bid_qty": 20.0, "ask_qty": 20.0, "mark_price": 1.25}
+                for ts in (100.0, 105.0, 115.0, 160.0)
+            ],
+        ]
+
+        result = replay_listing_event(contract, events, entry_ts=90.0)
+
+        self.assertEqual(result["event_status"], "incomplete")
+        self.assertEqual(result["reason"], "missing_causal_entry_bbo")
+
     def test_evidence_gate_reports_insufficient_data_and_concentration(self) -> None:
         events = [
-            {"event_status": "complete", "source_class": "official", "venue": "bybit", "filled": True, "net_pnl_quote": 1.0}
-            for _ in range(10)
+            {
+                "event_id": f"event-{index}",
+                "event_status": "complete",
+                "source_class": "official",
+                "acceptance_eligible": True,
+                "liquidation_model_missing": False,
+                "venue": "bybit",
+                "filled": True,
+                "round_trip_filled": True,
+                "stress_filled": True,
+                "net_pnl_quote": 1.0,
+                "entry_cohort": "first_tradable",
+                "exit_policy": "t0",
+            }
+            for index in range(10)
         ]
         result = evaluate_evidence_gate(events)
 
         self.assertEqual(result["status"], "INSUFFICIENT_DATA_NOT_REJECTED")
         self.assertEqual(result["complete_events"], 10)
         self.assertFalse(result["acceptance_eligible"])
+
+    def test_evidence_gate_counts_independent_events_not_rows(self) -> None:
+        rows = [
+            {
+                "event_id": "same-listing-event",
+                "event_status": "complete",
+                "source_class": "official",
+                "acceptance_eligible": True,
+                "liquidation_model_missing": False,
+                "venue": "bybit",
+                "filled": True,
+                "round_trip_filled": True,
+                "stress_filled": True,
+                "net_pnl_quote": 1.0,
+                "entry_cohort": "first_tradable",
+                "exit_policy": "t0",
+            }
+            for _ in range(30)
+        ]
+
+        result = evaluate_evidence_gate(rows)
+
+        self.assertEqual(result["complete_rows"], 30)
+        self.assertEqual(result["complete_events"], 1)
+        self.assertEqual(result["status"], "INSUFFICIENT_DATA_NOT_REJECTED")
+
+    def test_evidence_gate_requires_liquidation_and_stress_fill_evidence(self) -> None:
+        venues = ("bybit", "okx", "gate")
+        rows = []
+        for index in range(30):
+            rows.append(
+                {
+                    "event_id": f"event-{index}",
+                    "event_status": "complete",
+                    "source_class": "official",
+                    "acceptance_eligible": index != 0,
+                    "liquidation_model_missing": index == 0,
+                    "venue": venues[index % len(venues)],
+                    "filled": True,
+                    "round_trip_filled": True,
+                    "stress_filled": index < 20,
+                    "net_pnl_quote": 1.0 if index % 5 else -0.25,
+                    "entry_cohort": "first_tradable",
+                    "exit_policy": "t0",
+                }
+            )
+
+        result = evaluate_evidence_gate(rows)
+
+        self.assertEqual(result["complete_events"], 30)
+        self.assertEqual(result["official_acceptance_events"], 29)
+        self.assertAlmostEqual(result["stress_fill_rate"], 20 / 30)
+        self.assertIn("minimum_official_events_not_met", result["reasons"])
+        self.assertIn("stress_fill_rate_below_70pct", result["reasons"])
+        self.assertIn("liquidation_model_missing", result["reasons"])
+
+    def test_evidence_gate_reports_venue_specific_readiness_without_blocking_overall(self) -> None:
+        rows = []
+        venues = ["bybit"] * 26 + ["okx"] * 2 + ["gate"] * 2
+        for index, venue in enumerate(venues):
+            rows.append(
+                {
+                    "event_id": f"event-{index}",
+                    "event_status": "complete",
+                    "source_class": "official",
+                    "acceptance_eligible": True,
+                    "liquidation_model_missing": False,
+                    "venue": venue,
+                    "filled": True,
+                    "round_trip_filled": True,
+                    "stress_filled": True,
+                    "net_pnl_quote": 1.0 if index % 5 else -0.25,
+                    "entry_cohort": "first_tradable",
+                    "exit_policy": "t0",
+                }
+            )
+
+        result = evaluate_evidence_gate(rows)
+
+        self.assertEqual(result["official_events_by_venue"], {"bybit": 26, "gate": 2, "okx": 2})
+        self.assertEqual(result["venue_specific_ready"], {"bybit": True, "gate": False, "okx": False})
+        self.assertNotIn("minimum_five_official_events_per_venue_not_met", result["reasons"])
+
+    def test_entry_cohorts_and_exit_policies_are_never_silently_pooled(self) -> None:
+        rows = []
+        for index in range(30):
+            for cohort, exit_policy, pnl in (
+                ("first_tradable", "t0", 1.0),
+                ("last_1_4h", "t0_plus_60s", -5.0),
+            ):
+                rows.append(
+                    {
+                        "event_id": f"event-{index}",
+                        "event_status": "complete",
+                        "source_class": "official",
+                        "acceptance_eligible": True,
+                        "liquidation_model_missing": False,
+                        "venue": "bybit",
+                        "round_trip_filled": True,
+                        "stress_filled": True,
+                        "net_pnl_quote": pnl,
+                        "entry_cohort": cohort,
+                        "exit_policy": exit_policy,
+                    }
+                )
+
+        result = evaluate_evidence_gate(rows)
+
+        self.assertEqual(result["primary_analysis_cell"], {"entry_cohort": "first_tradable", "exit_policy": "t0"})
+        self.assertGreater(result["net_expectancy_quote"], 0)
+        self.assertEqual(result["analysis_cells"]["last_1_4h|t0_plus_60s"]["net_expectancy_quote"], -5.0)
 
     def test_retry_state_is_persisted_and_attempt_is_append_only(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -402,6 +737,52 @@ class PreMarketPerpTests(unittest.TestCase):
             rows = [json.loads(line) for line in paths.ledger_path.read_text(encoding="utf-8").splitlines()]
             self.assertEqual(len(rows), 1)
             self.assertEqual(rows[0]["attempt_id"], "a1")
+
+    def test_failed_tick_preserves_known_scheduled_event_cadence_and_eta(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = AutomationPaths(
+                state_path=root / "state.json",
+                ledger_path=root / "attempts.jsonl",
+                claim_path=root / "claim.json",
+                launch_path=root / "launch.json",
+                worker_error_path=root / "worker-error.log",
+                events_path=root / "events.jsonl",
+                manifest_path=root / "manifest.json",
+            )
+            state = load_state(paths)
+            state.update(
+                {
+                    "cadence_stage": "SCHEDULED",
+                    "cadence_seconds": 300,
+                    "cadence_minutes": 5,
+                    "cadence_reason": "known_official_t0",
+                    "event_eta_utc": "2099-01-01T00:00:00Z",
+                    "official_confirmation": True,
+                    "exact_timestamp": True,
+                }
+            )
+            premarket_automation_module.save_state(paths, state)
+            failed_result = {
+                "outcomes": {"bybit": {"status": "RETRY_NEXT_INTERVAL", "error": "network"}},
+                "contracts_seen": 0,
+                "events_written": 0,
+                "cadence_observation": {},
+            }
+
+            with (
+                patch.object(premarket_automation_module, "build_public_adapters", return_value={}),
+                patch.object(premarket_automation_module, "discover_and_snapshot", return_value=failed_result),
+            ):
+                result = premarket_automation_module.run_tick(paths, attempt_id="scheduled-retry")
+
+            persisted = load_state(paths)
+
+        self.assertFalse(result["ok"])
+        self.assertEqual(persisted["cadence_stage"], "SCHEDULED")
+        self.assertEqual(persisted["cadence_seconds"], 300)
+        self.assertEqual(persisted["event_eta_utc"], "2099-01-01T00:00:00Z")
+        self.assertTrue(persisted["pending_retry"])
 
     def test_attempt_append_flushes_and_fsyncs(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -1123,13 +1504,53 @@ class PreMarketPerpTests(unittest.TestCase):
             self.assertEqual(terminal_rows[0]["reason"], "RuntimeError: raw store denied")
             self.assertEqual(terminal_rows[0]["worker_error"], "PermissionError: worker error denied")
 
-    def test_planonly_is_hash_bound_to_public_paper_contract(self) -> None:
+    def test_legacy_main_repo_plan_stays_fail_closed_after_runtime_retirement(self) -> None:
         plan_path = Path(__file__).resolve().parents[2] / "docs" / "plans" / "premarket-perp-listing-impulse-planonly-20260825-v5.json"
         result = validate_plan(plan_path)
 
-        self.assertTrue(result["ok"], result)
-        self.assertEqual(result["status"], "PLAN_OK")
-        self.assertEqual(set(result["venues"]), {"bybit", "okx", "gate"})
+        self.assertFalse(result["ok"], result)
+        self.assertEqual(result["status"], "PLAN_INVALID")
+        self.assertTrue(
+            any(reason.startswith("implementation_") for reason in result["reasons"]),
+            result,
+        )
+
+    def test_plan_validator_rejects_rehashed_plan_without_required_bindings(self) -> None:
+        plan_path = Path(__file__).resolve().parents[2] / "docs" / "plans" / "premarket-perp-listing-impulse-planonly-20260825-v5.json"
+        payload = json.loads(plan_path.read_text(encoding="utf-8"))
+        payload["implementation"] = []
+        payload["plan_hash"] = canonical_plan_hash(payload)
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            altered_path = Path(temp_dir) / "altered-plan.json"
+            altered_path.write_text(json.dumps(payload), encoding="utf-8")
+            result = validate_plan(altered_path)
+
+        self.assertFalse(result["ok"])
+        self.assertIn("required_implementation_bindings_missing", result["reasons"])
+
+    def test_plan_validator_rejects_required_roles_bound_to_wrong_paths(self) -> None:
+        repo_root = Path(__file__).resolve().parents[2]
+        plan_path = repo_root / "docs" / "plans" / "premarket-perp-listing-impulse-planonly-20260825-v5.json"
+        payload = json.loads(plan_path.read_text(encoding="utf-8"))
+        wrong_path = repo_root / "trading_mvp" / "src" / "premarket_plan.py"
+        wrong_sha = hashlib.sha256(wrong_path.read_bytes()).hexdigest()
+        payload["implementation"] = [
+            {"role": role, "path": str(wrong_path), "sha256": wrong_sha}
+            for role in sorted(REQUIRED_IMPLEMENTATION_ROLES)
+        ]
+        payload["plan_hash"] = canonical_plan_hash(payload)
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            altered_path = Path(temp_dir) / "altered-plan.json"
+            altered_path.write_text(json.dumps(payload), encoding="utf-8")
+            result = validate_plan(altered_path)
+
+        self.assertFalse(result["ok"])
+        self.assertTrue(
+            any(reason.startswith("implementation_path_mismatch:") for reason in result["reasons"]),
+            result["reasons"],
+        )
 
     def test_websocket_capture_is_bounded_and_skips_zero_duration(self) -> None:
         class Adapter:
@@ -1206,6 +1627,8 @@ class PreMarketPerpTests(unittest.TestCase):
         self.assertIn("active-market-data-writer-claim.json", source)
         self.assertIn("STALE_CLAIM_RECOVERED", source)
         self.assertIn("ALREADY_RUNNING", source)
+        self.assertIn("Untrusted PlanPath rejected", source)
+        self.assertIn('adaptive_event_proximity_v2', source)
         self.assertNotIn("InlineWorker", source)
 
 

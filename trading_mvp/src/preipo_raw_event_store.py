@@ -6,13 +6,14 @@ import hashlib
 import json
 import math
 import os
+from decimal import Decimal, InvalidOperation
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Iterator, Mapping
 
 
 STORE_SCHEMA = "trading_mvp_preipo_raw_event_store_v1"
-VALID_VENUES = {"okx", "gate"}
+VALID_VENUES = {"okx", "gate", "bitmex", "kraken"}
 
 
 def _canonical_hash(payload: Mapping[str, Any]) -> str:
@@ -41,22 +42,59 @@ class CausalOrderTracker:
     """Classify stale/out-of-order updates without deleting raw evidence."""
 
     def __init__(self) -> None:
-        self._last: dict[tuple[str, str, str], tuple[float, str]] = {}
+        self._last: dict[
+            tuple[str, str, str],
+            tuple[float, tuple[str, Decimal | str]],
+        ] = {}
+
+    @staticmethod
+    def _sequence(value: Any) -> tuple[str, Decimal | str]:
+        if value in (None, "") or isinstance(value, bool):
+            return ("missing", "")
+        text = str(value).strip()
+        try:
+            number = Decimal(text)
+        except (InvalidOperation, ValueError):
+            return ("text", text)
+        if not number.is_finite():
+            return ("text", text)
+        return ("number", number)
+
+    @staticmethod
+    def _sequence_is_older(
+        current: tuple[str, Decimal | str],
+        previous: tuple[str, Decimal | str],
+    ) -> bool:
+        current_kind, current_value = current
+        previous_kind, previous_value = previous
+        if current_kind == "missing" or previous_kind == "missing":
+            return False
+        if current_kind != previous_kind:
+            return False
+        return current_value < previous_value
 
     def classify(self, event: Mapping[str, Any]) -> str:
         key = (str(event["venue"]), str(event["contract_id"]), str(event["event_kind"]))
         exchange_ts = _timestamp(event.get("exchange_ts")) or _timestamp(event.get("received_ts"))
         if exchange_ts is None:
             return "missing_timestamp"
-        sequence = str(event.get("sequence", ""))
+        sequence = self._sequence(event.get("sequence"))
         previous = self._last.get(key)
         if previous is None:
             self._last[key] = (exchange_ts, sequence)
             return "accepted"
         previous_ts, previous_sequence = previous
-        if exchange_ts < previous_ts or (exchange_ts == previous_ts and sequence and previous_sequence and sequence < previous_sequence):
+        if exchange_ts < previous_ts or (
+            exchange_ts == previous_ts
+            and self._sequence_is_older(sequence, previous_sequence)
+        ):
             return "stale"
-        if exchange_ts == previous_ts and sequence == previous_sequence:
+        if (
+            exchange_ts == previous_ts
+            and sequence[0] != "missing"
+            and previous_sequence[0] != "missing"
+            and sequence == previous_sequence
+        ):
             return "duplicate"
         self._last[key] = (exchange_ts, sequence)
         return "accepted"

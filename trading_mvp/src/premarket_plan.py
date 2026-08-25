@@ -32,6 +32,21 @@ ADAPTIVE_CADENCE = {
     "spent_anchor_returns_to_search": True,
 }
 
+EXPECTED_IMPLEMENTATION_PATHS = {
+    "premarket_contract_and_replay": "trading_mvp/src/premarket_perp.py",
+    "official_listing_t0_resolver_and_materializer": "trading_mvp/src/premarket_listing_resolver.py",
+    "public_adapters_and_automation_worker": "trading_mvp/src/premarket_automation.py",
+    "plan_validator": "trading_mvp/src/premarket_plan.py",
+    "visible_orchestrator": "tools/start_premarket_perp_listing_automation_visible.ps1",
+    "cadence_policy": "trading_mvp/src/adaptive_cadence.py",
+    "temporal_anchor_taxonomy": "trading_mvp/src/premarket_temporal_anchor.py",
+    "premarket_asset_class_classifier": "trading_mvp/src/premarket_asset_class.py",
+    "execution_replay_engine": "trading_mvp/src/ws_replay.py",
+    "global_market_writer_claim": "trading_mvp/src/global_market_writer_claim.py",
+    "active_run_gate_checker": "tools/check_active_run_gate.ps1",
+}
+REQUIRED_IMPLEMENTATION_ROLES = frozenset(EXPECTED_IMPLEMENTATION_PATHS)
+
 
 def canonical_plan_hash(payload: Mapping[str, Any]) -> str:
     body = {key: value for key, value in payload.items() if key != "plan_hash"}
@@ -124,9 +139,26 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
     if stored_hash != actual_hash:
         reasons.append("plan_hash_mismatch")
     implementation = payload.get("implementation") or []
+    roles = [str(binding.get("role") or "").strip() for binding in implementation]
+    if len(roles) != len(set(roles)):
+        reasons.append("implementation_role_duplicate")
+    missing_roles = sorted(REQUIRED_IMPLEMENTATION_ROLES - set(roles))
+    if missing_roles:
+        reasons.append("required_implementation_bindings_missing")
+        reasons.append("implementation_required_roles_missing:" + ",".join(missing_roles))
+    unknown_roles = sorted(set(roles) - REQUIRED_IMPLEMENTATION_ROLES)
+    if unknown_roles:
+        reasons.append("implementation_unknown_roles:" + ",".join(unknown_roles))
+    repo_root = Path(__file__).resolve().parents[2]
     missing_bindings: list[str] = []
     for binding in implementation:
+        role = str(binding.get("role") or "").strip()
         binding_path = Path(str(binding.get("path") or ""))
+        expected_relative = EXPECTED_IMPLEMENTATION_PATHS.get(role)
+        if expected_relative is not None:
+            expected_path = (repo_root / expected_relative).resolve(strict=False)
+            if binding_path.resolve(strict=False) != expected_path:
+                reasons.append(f"implementation_path_mismatch:{role}")
         if not binding_path.exists():
             missing_bindings.append(str(binding_path))
             continue

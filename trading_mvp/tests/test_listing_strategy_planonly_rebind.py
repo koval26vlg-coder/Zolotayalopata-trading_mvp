@@ -40,7 +40,9 @@ OLD_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260818-v1.json"
 BATCH2_SPOT = PLANS / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260821-v3.json"
 BATCH2_EXPANSION = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260821-v2.json"
 NEW_SPOT = PLANS / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json"
-NEW_EXPANSION = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v5.json"
+EXPANSION_V6 = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v6.json"
+EXPANSION_V7 = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v7.json"
+NEW_EXPANSION = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v8.json"
 # premarket ran v1 -> v2 -> v3 (asset-class acceptance gate) -> v4 (temporal anchors);
 # preipo ran v1 -> v2 -> v3 (temporal anchors). The intermediate files stay on disk and
 # stay byte-immutable; only the last one of each lineage is current.
@@ -48,7 +50,11 @@ BATCH3_PREMARKET = PLANS / "premarket-perp-listing-impulse-planonly-20260821-v2.
 BATCH4_PREMARKET = PLANS / "premarket-perp-listing-impulse-planonly-20260824-v3.json"
 BATCH3_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260821-v2.json"
 NEW_PREMARKET = PLANS / "premarket-perp-listing-impulse-planonly-20260825-v5.json"
-NEW_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260825-v6.json"
+PREIPO_V7 = PLANS / "preipo-perpetual-event-planonly-20260825-v7.json"
+NEW_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260825-v8.json"
+CANONICAL_PRIMARY_SPOT = Path(
+    r"C:\Users\koval\Documents\ZolotyayLopata-listing-momentum-monitor\docs\plans\listing-momentum-forward-monitor-planonly-20260822-v2.json"
+)
 
 
 def file_sha256(path: Path) -> str:
@@ -85,6 +91,9 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
             BATCH3_PREMARKET: "89be986f5887b309fa195609cd3ccb7c08157c3a07983a26a9514f5dddd40d03",
             BATCH4_PREMARKET: "31230c7ef6747feb0bff5633c6171e856353990173b9cb42ddd32781d7efbc62",
             BATCH3_PREIPO: "4a32c2ba47aaf05cfacaab35cb1112f30fb1984fe16f2bef5ca05159d7335fc8",
+            EXPANSION_V6: "687a8a3e8212d942a58ebc3b41ebc1347bfc0c059e4c6487f7a332e1466ca83a",
+            EXPANSION_V7: "86d6d8f76db247b693ff044570bfd7498d36b6afb0bd058baee3eb13a0f923aa",
+            PREIPO_V7: "f9f6ee5b374a21a41820a2344bb6b5dc440a1413e67fb415880b90c4905552b5",
         }
         self.assertEqual(
             file_sha256(RECEIPT),
@@ -101,11 +110,6 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
         self.assertEqual(expansion_plan.FORWARD_PLAN_PATH, NEW_EXPANSION)
 
         launcher_bindings = {
-            "start_listing_momentum_forward_automation_visible.ps1": (
-                NEW_SPOT.name,
-                NEW_EXPANSION.name,
-            ),
-            "start_listing_momentum_forward_tick_visible.ps1": (NEW_SPOT.name,),
             "start_listing_momentum_forward_expansion_tick_visible.ps1": (
                 NEW_EXPANSION.name,
             ),
@@ -115,6 +119,10 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
             for plan_name in expected_plan_names:
                 with self.subTest(launcher=launcher_name, plan=plan_name):
                     self.assertIn(plan_name, source)
+        retired_combined = (
+            REPO_ROOT / "tools/start_listing_momentum_forward_automation_visible.ps1"
+        ).read_text(encoding="utf-8")
+        self.assertNotIn(NEW_EXPANSION.name, retired_combined)
 
         derivative_launchers = {
             "start_premarket_perp_listing_automation_visible.ps1": NEW_PREMARKET.name,
@@ -135,23 +143,23 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
             spot_plan.PREVIOUS_PLAN_FILE_SHA256,
             "b4e6b085c40e10c91cc235f186e46f52e56fc6f6d913b79f0b707172d4bc99f4",
         )
-        self.assertEqual(expansion_plan.PREVIOUS_EXPANSION_PLAN_PATH, BATCH2_EXPANSION)
+        self.assertEqual(expansion_plan.PREVIOUS_EXPANSION_PLAN_PATH, EXPANSION_V7)
         self.assertEqual(
             expansion_plan.PREVIOUS_EXPANSION_PLAN_HASH,
-            "3e3d7ffe8a58bf70263b349644663054893d77e6b7a02c4e5b4fca04208a0b0c",
+            "2b28105bf69acc7d4740a0f8a1afb0dadf4f0b230a1627c0bc1b827a0e3bbd32",
         )
         self.assertEqual(
             expansion_plan.PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
-            "0becc5ef47cfe03d5f2fcea94ef30a24668354fc238c3864db3f8b011ed40128",
+            "86d6d8f76db247b693ff044570bfd7498d36b6afb0bd058baee3eb13a0f923aa",
         )
-        self.assertEqual(expansion_plan.PREVIOUS_V2_PLAN_PATH, NEW_SPOT)
+        self.assertEqual(expansion_plan.PREVIOUS_V2_PLAN_PATH, CANONICAL_PRIMARY_SPOT)
         self.assertEqual(
             expansion_plan.PREVIOUS_V2_PLAN_HASH,
-            "e841a0dc9368f1c05fd29c37ff93f7090158fe5155964a0e9e0639351a71c69a",
+            "ffdc27009d7ec6354348a163d0e7f11b03d4555bbb7cd6830b8764d2fdfafd78",
         )
         self.assertEqual(
             expansion_plan.PREVIOUS_V2_PLAN_FILE_SHA256,
-            "cdb69cdb2514035592122f0b93e97f2f95c6787040802a7addb9ce1186ae7dfd",
+            "823b4f6813bf0eda2878400947824aaa8b8335ee9699bca528bfc8cc177d8422",
         )
 
     def test_checked_in_spot_and_expansion_rebinds_are_current_and_scope_stable(self) -> None:
@@ -181,14 +189,14 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
         assert_scope_change_is_declared_or_absent(self, spot_rebind)
 
         expansion = json.loads(NEW_EXPANSION.read_text(encoding="utf-8"))
-        old_expansion = json.loads(BATCH2_EXPANSION.read_text(encoding="utf-8"))
+        old_expansion = json.loads(EXPANSION_V7.read_text(encoding="utf-8"))
         self.assertEqual(
             expansion["schema"],
             "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_monitor_planonly_v3",
         )
         self.assertEqual(
             expansion["plan_id"],
-            "slow_liquidity_listing_momentum_forward_expansion_20260825_v5",
+            "slow_liquidity_listing_momentum_forward_expansion_20260825_v8",
         )
         expansion_plan.validate_plan(expansion)
         expansion_monitor._validate_plan(expansion, NEW_EXPANSION)
@@ -196,24 +204,36 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
         # applies exactly when the plan declares itself a technical rebind. Where a
         # scope change is declared it does not apply, and the declaration checked
         # just above is the guarantee in its place.
-        if expansion["source_bindings"]["technical_rebind"]["research_scope_changed"] is False:
+        if (
+            expansion["source_bindings"]["technical_rebind"]["research_scope_changed"]
+            is False
+            and not expansion["source_bindings"]["technical_rebind"].get(
+                "runtime_topology_change"
+            )
+        ):
             validate_rebind_semantics("expansion", old_expansion, expansion)
         expansion_rebind = expansion["source_bindings"]["technical_rebind"]
         self.assertEqual(
-            expansion_rebind["supersedes_plan_path"], str(BATCH2_EXPANSION)
+            expansion_rebind["supersedes_plan_path"], str(EXPANSION_V7)
         )
         self.assertEqual(
             expansion_rebind["supersedes_plan_hash"], old_expansion["plan_hash"]
         )
         self.assertEqual(
             expansion_rebind["supersedes_plan_file_sha256"],
-            file_sha256(BATCH2_EXPANSION),
+            file_sha256(EXPANSION_V7),
         )
         assert_scope_change_is_declared_or_absent(self, expansion_rebind)
         parent = expansion["source_bindings"]["parent_v2"]
-        self.assertEqual(Path(parent["path"]), NEW_SPOT)
-        self.assertEqual(parent["plan_hash"], spot["plan_hash"])
-        self.assertEqual(parent["file_sha256"], file_sha256(NEW_SPOT))
+        self.assertEqual(Path(parent["path"]), CANONICAL_PRIMARY_SPOT)
+        self.assertEqual(
+            parent["plan_hash"],
+            "ffdc27009d7ec6354348a163d0e7f11b03d4555bbb7cd6830b8764d2fdfafd78",
+        )
+        self.assertEqual(parent["file_sha256"], file_sha256(CANONICAL_PRIMARY_SPOT))
+        roles = {row["role"] for row in expansion["implementation"]["files"]}
+        self.assertNotIn("automation_launcher", roles)
+        self.assertFalse(expansion["guard_contract"]["combined_launcher_scheduler_routable"])
 
     def test_checked_in_derivative_rebinds_are_current_visible_and_scope_stable(self) -> None:
         # The v1 -> v2 step was a pure technical rebind: same research contract, fresh
@@ -223,19 +243,11 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
         # claims it, not across the whole lineage, where it would assert something false.
         cases = (
             (
-                "premarket",
-                OLD_PREMARKET,
-                BATCH3_PREMARKET,
-                NEW_PREMARKET,
-                "premarket_perp_listing_impulse_20260825_v5",
-                premarket_plan.validate_plan,
-            ),
-            (
                 "preipo",
                 OLD_PREIPO,
                 BATCH3_PREIPO,
                 NEW_PREIPO,
-                "preipo_perpetual_event_20260825_v6",
+                "preipo_perpetual_event_20260825_v8",
                 preipo_plan.validate_plan,
             ),
         )
@@ -268,6 +280,16 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
                 self.assertTrue(guard["visible_terminal_required"])
                 self.assertFalse(guard.get("inline_worker_no_terminal_allowed", False))
                 self.assertNotIn("inline_tick", current["commands"])
+
+        legacy_premarket = premarket_plan.validate_plan(NEW_PREMARKET)
+        self.assertFalse(legacy_premarket["ok"])
+        self.assertTrue(
+            any(
+                reason.startswith("implementation_")
+                for reason in legacy_premarket["reasons"]
+            ),
+            legacy_premarket,
+        )
 
     def test_derivative_builder_records_row_level_provenance(self) -> None:
         old = json.loads(OLD_PREMARKET.read_text(encoding="utf-8"))
