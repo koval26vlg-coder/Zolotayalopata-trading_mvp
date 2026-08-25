@@ -25,10 +25,10 @@ FORWARD_PLAN_PATH = monitor.PLAN_PATH
 PREVIOUS_V2_PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260824-v5.json"
+    / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json"
 )
-PREVIOUS_V2_PLAN_HASH = "8face1d1ad40043782dafdbdfe7a9bc162248c701bcc9eedb2c4a4a15f5fd8eb"
-PREVIOUS_V2_PLAN_FILE_SHA256 = "b801918d9dbb63c8d3635dc0a38b885dad8b0125e234dfbd1ad9a49fe604bcd6"
+PREVIOUS_V2_PLAN_HASH = "e841a0dc9368f1c05fd29c37ff93f7090158fe5155964a0e9e0639351a71c69a"
+PREVIOUS_V2_PLAN_FILE_SHA256 = "cdb69cdb2514035592122f0b93e97f2f95c6787040802a7addb9ce1186ae7dfd"
 PREVIOUS_EXPANSION_PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
@@ -43,7 +43,7 @@ BATCH1_RECEIPT_PATH = (
 )
 BATCH1_RECEIPT_FILE_SHA256 = "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56"
 ADAPTIVE_CADENCE = {
-    "policy_version": "adaptive_event_proximity_v1",
+    "policy_version": "adaptive_event_proximity_v2",
     "scheduler_wake_interval_sec": 300,
     "search_interval_sec": 21600,
     "soon_interval_sec": 10800,
@@ -55,6 +55,10 @@ ADAPTIVE_CADENCE = {
     "proxy_cannot_escalate_to_confirmed": True,
     "collector_runs_only_when_due": True,
     "terminal_event_returns_to_search": True,
+    # Unreachable on this track, whose cadence observation carries no timestamp, but
+    # declared because the shared module implements it.
+    "event_spent_after_sec": 259200,
+    "spent_anchor_returns_to_search": True,
 }
 
 
@@ -66,9 +70,74 @@ def _require(value: bool, message: str) -> None:
     if not value:
         raise ExpansionPlanError(message)
 
+def _row_provenance(role: str, previous_rows: Mapping[str, Any]) -> dict[str, Any]:
+    """A role the superseded plan did not carry has nothing to supersede."""
+    base = {
+        "superseded_plan_hash": PREVIOUS_EXPANSION_PLAN_HASH,
+        "superseded_plan_file_sha256": PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
+        "batch1_readiness_receipt_sha256": BATCH1_RECEIPT_FILE_SHA256,
+    }
+    previous = previous_rows.get(role)
+    if previous is None:
+        return {"kind": FIRST_BINDING_KIND, "superseded_sha256": None, **base}
+    return {
+        "kind": "technical_rebind_from_superseded_plan_row",
+        "superseded_sha256": previous["sha256"],
+        **base,
+    }
+
+
+def _require_declared_scope_change(rebind: Mapping[str, Any]) -> None:
+    """False keeps the plan a technical rebind; True must be declared, not asserted."""
+    changed = rebind.get("research_scope_changed")
+    if changed is False:
+        return
+    _require(changed is True, "research_scope_changed must be a boolean")
+    declaration = rebind.get("research_scope_change")
+    _require(isinstance(declaration, Mapping),
+             "a declared scope change must carry its declaration")
+    fields = declaration.get("changed_fields")
+    _require(
+        isinstance(fields, list) and len(fields) > 0
+        and all(isinstance(f, str) and f.strip() for f in fields),
+        "a declared scope change must enumerate the fields that moved",
+    )
+    _require(bool(str(declaration.get("reason") or "").strip()),
+             "a declared scope change must say why")
+    _require(declaration.get("autopilot_authority") == "WITHDRAWN_UNTIL_REVIEWED",
+             "a declared scope change must record that autopilot authority is withdrawn")
+
+
 
 def _sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+FIRST_BINDING_KIND = "first_binding_of_role_absent_from_superseded_plan"
+
+# See the forward-monitor generator for the full reasoning. Declaring a scope change is
+# a code edit under review; it withdraws the autopilot's unattended authority over this
+# plan, which autopilot_guard enforces by admitting only same-scope technical rebinds.
+RESEARCH_SCOPE_CHANGE: dict[str, Any] | None = {
+    "changed_fields": [
+        "adaptive_cadence.policy_version",
+        "adaptive_cadence.event_spent_after_sec",
+        "adaptive_cadence.spent_anchor_returns_to_search",
+        "implementation.files[cadence_policy]",
+    ],
+    "reason": (
+        "adaptive_cadence.py implements adaptive_event_proximity_v2: an anchor whose own "
+        "event has already passed returns to SEARCH instead of holding the CONFIRMED "
+        "cadence indefinitely. The expansion monitor calls decide_cadence from that "
+        "module, which no plan had ever bound, so the declared policy could drift from "
+        "the running code without invalidating anything; it is bound here as the "
+        "cadence_policy role. Measured 2026-08-24: this track's cadence observation "
+        "carries no timestamp at all, so the new clause is unreachable here and nothing "
+        "about what is collected changes. The declared contract does change, and a "
+        "changed contract is declared rather than quietly rebound."
+    ),
+    "autopilot_authority": "WITHDRAWN_UNTIL_REVIEWED",
+}
 
 
 def _iso_now() -> str:
@@ -129,6 +198,7 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
         "visible_tick_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_expansion_tick_visible.ps1",
         "automation_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_automation_visible.ps1",
         "expansion_plan_generator": Path(__file__).resolve(),
+        "cadence_policy": REPO_ROOT / "trading_mvp/src/adaptive_cadence.py",
     }
     previous_rows = {
         str(item.get("role") or ""): item
@@ -139,13 +209,7 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
             "role": role,
             "path": str(path),
             "sha256": _sha256_file(path),
-            "provenance": {
-                "kind": "technical_rebind_from_superseded_plan_row",
-                "superseded_sha256": previous_rows[role]["sha256"],
-                "superseded_plan_hash": PREVIOUS_EXPANSION_PLAN_HASH,
-                "superseded_plan_file_sha256": PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
-                "batch1_readiness_receipt_sha256": BATCH1_RECEIPT_FILE_SHA256,
-            },
+            "provenance": _row_provenance(role, previous_rows),
         }
         for role, path in implementation_paths.items()
     ]
@@ -195,11 +259,20 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
                 "supersedes_plan_hash": PREVIOUS_EXPANSION_PLAN_HASH,
                 "supersedes_plan_file_sha256": PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
                 "supersedes_plan_path": str(PREVIOUS_EXPANSION_PLAN_PATH),
-                "research_scope_changed": False,
+                "research_scope_changed": RESEARCH_SCOPE_CHANGE is not None,
+                **(
+                    {"research_scope_change": RESEARCH_SCOPE_CHANGE}
+                    if RESEARCH_SCOPE_CHANGE
+                    else {}
+                ),
                 "reason": (
-                    "Rebind the current-run transaction mutex fix and current "
-                    "launcher identities without changing venue, universe, "
-                    "signal, cost, risk, cadence or acceptance contracts."
+                    RESEARCH_SCOPE_CHANGE["reason"]
+                    if RESEARCH_SCOPE_CHANGE
+                    else (
+                        "Rebind the current-run transaction mutex fix and current "
+                        "launcher identities without changing venue, universe, "
+                        "signal, cost, risk, cadence or acceptance contracts."
+                    )
                 ),
             },
             "control_plane_readiness_receipt": {
@@ -302,10 +375,10 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
     _require(
         rebind.get("supersedes_plan_hash") == PREVIOUS_EXPANSION_PLAN_HASH
         and rebind.get("supersedes_plan_file_sha256")
-        == PREVIOUS_EXPANSION_PLAN_FILE_SHA256
-        and rebind.get("research_scope_changed") is False,
+        == PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
         "technical rebind provenance",
     )
+    _require_declared_scope_change(rebind)
     receipt = (plan.get("source_bindings") or {}).get(
         "control_plane_readiness_receipt"
     ) or {}
@@ -327,6 +400,7 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
         "visible_tick_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_expansion_tick_visible.ps1",
         "automation_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_automation_visible.ps1",
         "expansion_plan_generator": Path(__file__).resolve(),
+        "cadence_policy": REPO_ROOT / "trading_mvp/src/adaptive_cadence.py",
     }
     current_rows = {
         str(item.get("role") or ""): item
@@ -346,8 +420,17 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
         _require(row.get("sha256") == _sha256_file(path), f"implementation sha256: {role}")
         _require(
             (row.get("provenance") or {}).get("superseded_sha256")
-            == previous_rows[role]["sha256"],
+            == (previous_rows[role]["sha256"] if role in previous_rows else None),
             f"implementation provenance: {role}",
+        )
+        _require(
+            (row.get("provenance") or {}).get("kind")
+            == (
+                "technical_rebind_from_superseded_plan_row"
+                if role in previous_rows
+                else FIRST_BINDING_KIND
+            ),
+            f"implementation provenance kind: {role}",
         )
 
 

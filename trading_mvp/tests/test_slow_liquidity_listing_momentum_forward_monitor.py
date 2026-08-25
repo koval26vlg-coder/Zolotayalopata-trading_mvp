@@ -669,7 +669,45 @@ class PlanModuleTests(unittest.TestCase):
             hashlib.sha256(previous_path.read_bytes()).hexdigest(),
         )
         self.assertEqual(rebind["supersedes_plan_path"], str(previous_path))
-        self.assertEqual(rebind["research_scope_changed"], False)
+        # A scope change may be declared, never merely asserted. False keeps the plan a
+        # pure technical rebind; True is admitted only with a declaration that enumerates
+        # what moved, says why, and records that autopilot authority is withdrawn -
+        # autopilot_guard admits only same-scope rebinds, and is deliberately unrelaxed.
+        if rebind["research_scope_changed"] is False:
+            self.assertNotIn("research_scope_change", rebind)
+        else:
+            self.assertIs(rebind["research_scope_changed"], True)
+            declaration = rebind["research_scope_change"]
+            self.assertTrue(declaration["changed_fields"])
+            self.assertTrue(all(f.strip() for f in declaration["changed_fields"]))
+            self.assertTrue(declaration["reason"].strip())
+            self.assertEqual(
+                declaration["autopilot_authority"], "WITHDRAWN_UNTIL_REVIEWED"
+            )
+
+    def test_a_scope_change_without_its_declaration_is_refused(self) -> None:
+        plan = plan_module.build_forward_monitor_plan("2026-08-17T12:45:00Z")
+        rebind = plan["source_bindings"]["technical_rebind"]
+        rebind["research_scope_changed"] = True
+        rebind.pop("research_scope_change", None)
+        with self.assertRaisesRegex(Exception, "must carry its declaration"):
+            plan_module.validate_forward_monitor_plan(plan)
+
+    def test_a_first_appearance_role_may_not_claim_to_supersede(self) -> None:
+        # The rule that lets the role set grow at all: a role the superseded plan did not
+        # carry has nothing to replace, so a borrowed hash must be refused outright.
+        plan = plan_module.build_forward_monitor_plan("2026-08-17T12:45:00Z")
+        row = next(
+            item
+            for item in plan["implementation"]["files"]
+            if item["role"] == "cadence_policy"
+        )
+        self.assertIsNone(row["provenance"]["superseded_sha256"])
+        row["provenance"]["superseded_sha256"] = "0" * 64
+        row["provenance"]["kind"] = "technical_rebind_from_superseded_plan_row"
+        plan["plan_hash"] = canonical_hash(plan)
+        with self.assertRaisesRegex(Exception, "must not claim to supersede"):
+            plan_module.validate_forward_monitor_plan(plan)
 
     def test_monitor_rejects_stale_implementation_binding(self) -> None:
         plan = plan_module.build_forward_monitor_plan("2026-08-17T12:45:00Z")

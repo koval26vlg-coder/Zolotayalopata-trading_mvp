@@ -15,7 +15,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$defaultPlanPath = Join-Path $repoRoot "docs\plans\slow-liquidity-listing-momentum-forward-monitor-planonly-20260824-v5.json"
+$defaultPlanPath = Join-Path $repoRoot "docs\plans\slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json"
 if (-not $PlanPath) { $PlanPath = $defaultPlanPath }
 $gateChecker = Join-Path $repoRoot "tools\check_active_run_gate.ps1"
 $claimPath = Join-Path $repoRoot "docs\agent-log\active-market-data-writer-claim.json"

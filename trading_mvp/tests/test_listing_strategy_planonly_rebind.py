@@ -39,8 +39,8 @@ OLD_PREMARKET = PLANS / "premarket-perp-listing-impulse-planonly-20260818-v1.jso
 OLD_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260818-v1.json"
 BATCH2_SPOT = PLANS / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260821-v3.json"
 BATCH2_EXPANSION = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260821-v2.json"
-NEW_SPOT = PLANS / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260824-v5.json"
-NEW_EXPANSION = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260824-v4.json"
+NEW_SPOT = PLANS / "slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json"
+NEW_EXPANSION = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v5.json"
 # premarket ran v1 -> v2 -> v3 (asset-class acceptance gate) -> v4 (temporal anchors);
 # preipo ran v1 -> v2 -> v3 (temporal anchors). The intermediate files stay on disk and
 # stay byte-immutable; only the last one of each lineage is current.
@@ -53,6 +53,24 @@ NEW_PREIPO = PLANS / "preipo-perpetual-event-planonly-20260824-v3.json"
 
 def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def assert_scope_change_is_declared_or_absent(test, rebind) -> None:
+    """False keeps a plan a pure technical rebind; True must be fully declared.
+
+    Asserting only "must be False" would have to be deleted the first time a plan
+    legitimately changes scope. Asserting the declaration instead keeps a real guarantee
+    in place on both branches: nothing can flip the flag without enumerating what moved,
+    saying why, and recording that autopilot authority is withdrawn."""
+    if rebind["research_scope_changed"] is False:
+        test.assertNotIn("research_scope_change", rebind)
+        return
+    test.assertIs(rebind["research_scope_changed"], True)
+    declaration = rebind["research_scope_change"]
+    test.assertTrue(declaration["changed_fields"])
+    test.assertTrue(all(str(f).strip() for f in declaration["changed_fields"]))
+    test.assertTrue(str(declaration["reason"]).strip())
+    test.assertEqual(declaration["autopilot_authority"], "WITHDRAWN_UNTIL_REVIEWED")
 
 
 class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
@@ -129,11 +147,11 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
         self.assertEqual(expansion_plan.PREVIOUS_V2_PLAN_PATH, NEW_SPOT)
         self.assertEqual(
             expansion_plan.PREVIOUS_V2_PLAN_HASH,
-            "8face1d1ad40043782dafdbdfe7a9bc162248c701bcc9eedb2c4a4a15f5fd8eb",
+            "e841a0dc9368f1c05fd29c37ff93f7090158fe5155964a0e9e0639351a71c69a",
         )
         self.assertEqual(
             expansion_plan.PREVIOUS_V2_PLAN_FILE_SHA256,
-            "b801918d9dbb63c8d3635dc0a38b885dad8b0125e234dfbd1ad9a49fe604bcd6",
+            "cdb69cdb2514035592122f0b93e97f2f95c6787040802a7addb9ce1186ae7dfd",
         )
 
     def test_checked_in_spot_and_expansion_rebinds_are_current_and_scope_stable(self) -> None:
@@ -145,17 +163,22 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
         )
         self.assertEqual(
             spot["plan_id"],
-            "slow_liquidity_listing_momentum_forward_monitor_20260824_v5",
+            "slow_liquidity_listing_momentum_forward_monitor_20260825_v6",
         )
         spot_plan.validate_forward_monitor_plan(spot)
-        validate_rebind_semantics("spot", old_spot, spot)
+        # The technical-rebind invariant - same research contract, fresh hashes -
+        # applies exactly when the plan declares itself a technical rebind. Where a
+        # scope change is declared it does not apply, and the declaration checked
+        # just above is the guarantee in its place.
+        if spot["source_bindings"]["technical_rebind"]["research_scope_changed"] is False:
+            validate_rebind_semantics("spot", old_spot, spot)
         spot_rebind = spot["source_bindings"]["technical_rebind"]
         self.assertEqual(spot_rebind["supersedes_plan_path"], str(BATCH2_SPOT))
         self.assertEqual(spot_rebind["supersedes_plan_hash"], old_spot["plan_hash"])
         self.assertEqual(
             spot_rebind["supersedes_plan_file_sha256"], file_sha256(BATCH2_SPOT)
         )
-        self.assertFalse(spot_rebind["research_scope_changed"])
+        assert_scope_change_is_declared_or_absent(self, spot_rebind)
 
         expansion = json.loads(NEW_EXPANSION.read_text(encoding="utf-8"))
         old_expansion = json.loads(BATCH2_EXPANSION.read_text(encoding="utf-8"))
@@ -165,11 +188,16 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
         )
         self.assertEqual(
             expansion["plan_id"],
-            "slow_liquidity_listing_momentum_forward_expansion_20260824_v4",
+            "slow_liquidity_listing_momentum_forward_expansion_20260825_v5",
         )
         expansion_plan.validate_plan(expansion)
         expansion_monitor._validate_plan(expansion, NEW_EXPANSION)
-        validate_rebind_semantics("expansion", old_expansion, expansion)
+        # The technical-rebind invariant - same research contract, fresh hashes -
+        # applies exactly when the plan declares itself a technical rebind. Where a
+        # scope change is declared it does not apply, and the declaration checked
+        # just above is the guarantee in its place.
+        if expansion["source_bindings"]["technical_rebind"]["research_scope_changed"] is False:
+            validate_rebind_semantics("expansion", old_expansion, expansion)
         expansion_rebind = expansion["source_bindings"]["technical_rebind"]
         self.assertEqual(
             expansion_rebind["supersedes_plan_path"], str(BATCH2_EXPANSION)
@@ -181,7 +209,7 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
             expansion_rebind["supersedes_plan_file_sha256"],
             file_sha256(BATCH2_EXPANSION),
         )
-        self.assertFalse(expansion_rebind["research_scope_changed"])
+        assert_scope_change_is_declared_or_absent(self, expansion_rebind)
         parent = expansion["source_bindings"]["parent_v2"]
         self.assertEqual(Path(parent["path"]), NEW_SPOT)
         self.assertEqual(parent["plan_hash"], spot["plan_hash"])

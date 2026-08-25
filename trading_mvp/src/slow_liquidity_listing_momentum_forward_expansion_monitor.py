@@ -34,13 +34,13 @@ from adaptive_cadence import decide_cadence
 
 
 SCHEMA = "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_monitor_planonly_v3"
-PLAN_ID = "slow_liquidity_listing_momentum_forward_expansion_20260824_v4"
+PLAN_ID = "slow_liquidity_listing_momentum_forward_expansion_20260825_v5"
 AUTOMATION_ID = "zolotyaylopata-listing-momentum-forward-expansion"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260824-v4.json"
+    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v5.json"
 )
 FORWARD_ROOT = Path("E:/trading_mvp/listing-momentum-forward-expansion")
 TICKS_DIR = FORWARD_ROOT / "ticks"
@@ -116,6 +116,7 @@ def _validate_plan(plan: Mapping[str, Any], plan_path: Path) -> None:
         "visible_tick_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_expansion_tick_visible.ps1",
         "automation_launcher": REPO_ROOT / "tools/start_listing_momentum_forward_automation_visible.ps1",
         "expansion_plan_generator": REPO_ROOT / "trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_plan.py",
+        "cadence_policy": REPO_ROOT / "trading_mvp/src/adaptive_cadence.py",
     }
     by_role = {str(item.get("role")): item for item in implementation if isinstance(item, Mapping)}
     _require(set(by_role) == set(expected), "expansion implementation role set mismatch")
