@@ -2,11 +2,11 @@
   "schema": "trading_mvp_preipo_perpetual_event_automation_launch_v1",
   "status": "COMPLETE",
   "automation_id": "zolotyaylopata-preipo-perpetual-event-monitor",
-  "attempt_id": "preipo_outer_20260824T1352308397123Z_926353d8",
-  "visible_terminal_pid": 39340,
-  "started_at_utc": "2026-08-24T13:52:36.4353298+00:00",
+  "attempt_id": "preipo_outer_20260825T0211433658840Z_09c59363",
+  "visible_terminal_pid": 23856,
+  "started_at_utc": "2026-08-25T02:11:45.2506227+00:00",
   "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
-  "command": "python trading_mvp/src/preipo_automation.py --repo-root \"C:\\Users\\koval\\Documents\\ZolotyayLopata\" --tick --attempt-id \"preipo_outer_20260824T1352308397123Z_926353d8\" --worker-handoff-token <redacted> --plan-hash \"a79479287cf81a703c64efecd00eea3483dd675b71b00a9f1361c8edc545825e\"",
+  "command": "python trading_mvp/src/preipo_automation.py --repo-root \"C:\\Users\\koval\\Documents\\ZolotyayLopata\" --tick --attempt-id \"preipo_outer_20260825T0211433658840Z_09c59363\" --worker-handoff-token <redacted> --plan-hash \"a79479287cf81a703c64efecd00eea3483dd675b71b00a9f1361c8edc545825e\"",
   "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\preipo-perpetual-event-planonly-20260824-v3.json",
   "plan_hash": "a79479287cf81a703c64efecd00eea3483dd675b71b00a9f1361c8edc545825e",
   "plan_file_sha256": "dadfac75e1835e3e3b2a42a3daa2dedbd54b44722740230630b58d2484835072",
@@ -18,34 +18,34 @@
   "live_orders": false,
   "retry_policy": "failed or deferred venue retries on next adaptive interval; scheduler wake is every 5 minutes",
   "manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\preipo-perp\\manifest.json",
-  "finished_at_utc": "2026-08-24T13:57:45.8529321+00:00",
+  "finished_at_utc": "2026-08-25T02:16:53.6396407+00:00",
   "worker_exit_code": 0,
   "pending_retry": false,
-  "next_interval_at_utc": "2026-08-24T19:57:44.412949Z",
+  "next_interval_at_utc": "2026-08-25T08:16:52.823208Z",
   "outcomes": {
     "okx": {
       "status": "COMPLETE",
       "contracts_seen": 3,
       "contracts_selected": 3,
-      "events_written": 2517,
+      "events_written": 2192,
       "websocket": [
         {
           "contract_id": "ANTHROPIC-USDT-SWAP",
           "status": "COMPLETE",
-          "events_written": 1021,
-          "duration_sec": 101.45978355407715
+          "events_written": 772,
+          "duration_sec": 101.4183554649353
         },
         {
           "contract_id": "MOONSHOT-USDT-SWAP",
           "status": "COMPLETE",
-          "events_written": 649,
-          "duration_sec": 101.28707957267761
+          "events_written": 606,
+          "duration_sec": 101.18534541130066
         },
         {
           "contract_id": "OPENAI-USDT-SWAP",
           "status": "COMPLETE",
-          "events_written": 829,
-          "duration_sec": 90.66194605827332
+          "events_written": 796,
+          "duration_sec": 91.40701460838318
         }
       ],
       "retry_reason": null

@@ -1,13 +1,13 @@
 {
   "schema": "active_run_pointer_v1",
   "project": "trading_mvp",
-  "run_id": "slow_liquidity_listing_momentum_forward_monitor_20260821_v4",
+  "run_id": "slow_liquidity_listing_momentum_forward_monitor_20260824_v5",
   "status": "READY_FOR_POSTPROCESS",
-  "updated_at": "2026-08-24T17:52:16.4407041+03:00",
+  "updated_at": "2026-08-25T09:12:11.4265068+03:00",
   "manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_listing_momentum_forward_state_20260816.json",
   "output": {
-    "path": "E:\\trading_mvp\\listing-momentum-forward\\ticks",
-    "kind": "directory"
+    "kind": "directory",
+    "path": "E:\\trading_mvp\\listing-momentum-forward\\ticks"
   },
   "collector_pid": null,
   "monitor_pid": null,

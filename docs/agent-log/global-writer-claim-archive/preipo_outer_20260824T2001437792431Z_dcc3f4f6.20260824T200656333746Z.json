@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "preipo_outer_20260824T2001437792431Z_dcc3f4f6",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": 4672,
+  "owner_kind": "preipo_perpetual_visible_worker",
+  "ownership_token": "9371554708928d03a6837e4a98464842",
+  "plan_hash": "a79479287cf81a703c64efecd00eea3483dd675b71b00a9f1361c8edc545825e",
+  "output_namespace": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\preipo-perp",
+  "claimed_at_utc": "2026-08-24T20:01:45.747756+00:00",
+  "owner_process_started_at_utc": "2026-08-24T20:01:43.9157640Z",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "final_status": "COMPLETE",
+  "released_at_utc": "2026-08-24T20:06:56.333450+00:00"
+}
