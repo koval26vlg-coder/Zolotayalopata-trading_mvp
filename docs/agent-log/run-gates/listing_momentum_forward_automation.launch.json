@@ -1,28 +1,31 @@
 {
   "schema": "trading_mvp_listing_momentum_forward_automation_launch_v1",
-  "status": "COMPLETE",
+  "status": "RETRY_NEXT_INTERVAL",
   "automation_id": "zolotyaylopata-listing-momentum-monitor",
-  "attempt_id": "listing_momentum_scheduler_20260825T0611457768718Z_fb66eebe",
-  "visible_terminal_pid": 2456,
-  "started_at_utc": "2026-08-25T06:11:49.4480394Z",
+  "attempt_id": "listing_momentum_scheduler_20260825T0916454110673Z_2c3be90e",
+  "visible_terminal_pid": 48828,
+  "started_at_utc": "2026-08-25T09:16:49.0289249Z",
   "cadence_policy_version": "adaptive_event_proximity_v1",
   "cadence_stage": "SOON",
   "cadence_seconds": 10800,
   "cadence_hours": 3.0,
   "wake_interval_seconds": 300,
-  "v2_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-monitor-planonly-20260824-v5.json",
-  "expansion_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-expansion-planonly-20260824-v4.json",
+  "v2_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-monitor-planonly-20260825-v6.json",
+  "expansion_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v5.json",
   "research_only": true,
   "public_data_only": true,
   "retry_policy": "failed_or_deferred_track_retries_on_next_scheduled_interval",
-  "finished_at_utc": "2026-08-25T06:13:03.6422790Z",
+  "finished_at_utc": "2026-08-25T09:17:22.9181737Z",
   "outcomes": {
-    "mexc_gate_v2": "COMPLETE",
-    "binance_bybit_okx_bitget_expansion": "COMPLETE"
+    "mexc_gate_v2": "FAILED_RETRY_NEXT_INTERVAL",
+    "binance_bybit_okx_bitget_expansion": "DEFERRED_RETRY_NEXT_INTERVAL"
   },
-  "errors": [],
-  "pending_retry": false,
-  "next_interval_at_utc": "2026-08-25T09:13:03.7052930+00:00",
+  "errors": [
+    "mexc_gate_v2_exit_1",
+    "expansion_preflight: active_run_gate_STOPPED_INCOMPLETE"
+  ],
+  "pending_retry": true,
+  "next_interval_at_utc": "2026-08-25T12:17:23.0532645+00:00",
   "cadence_reason": "candidate_or_pre_market_contract_present",
-  "exit_code": 0
+  "exit_code": 1
 }

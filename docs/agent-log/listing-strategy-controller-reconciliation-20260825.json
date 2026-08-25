@@ -1,0 +1,36 @@
+{
+  "schema": "trading_mvp_listing_strategy_controller_reconciliation_v1",
+  "project": "trading_mvp",
+  "stopped_run_id": "slow_liquidity_listing_momentum_forward_monitor_20260825_v6",
+  "neutral_run_id": "resolved_incomplete_20260819_094844395",
+  "disposition": "INCOMPLETE_ATTEMPT_REJECTED_ACCRUAL_PRESERVED",
+  "stopped_pointer": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\current-run.json",
+    "file_sha256": "51836bb9cc31ec85cae29aea6ed93756ee1cca55ece71d728932ae6d20b5c590"
+  },
+  "neutral_gate": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\active-run-gate.json",
+    "file_sha256": "4670c02f1423da9f537c835f7a4c0df8979c6dec299f416f8e2d96719888f586"
+  },
+  "accrual_state": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\slow_liquidity_listing_momentum_forward_state_20260816.json",
+    "file_sha256": "ba9691b8f32eb7edebc97b054cfe2736ad6149b76d3ebbcb6e7bd5d7454ee0c2",
+    "tick_count": 18,
+    "window_count": 21,
+    "complete_window_count": 8,
+    "acceptance_decision": "NONE_ACCRUAL_ONLY",
+    "preservation": "DESCRIPTIVE_ACCRUAL_ONLY"
+  },
+  "failed_launch_record": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\listing_momentum_forward_monitor.launch.json",
+    "file_sha256": "6647d4200e996f00254501f9bd540cbc15251e448ec8424e26573f750a4c77ef",
+    "status": "FAILED",
+    "tick_exit_code": 1
+  },
+  "acceptance_authorized": false,
+  "replay_authorized": false,
+  "evaluator_or_oos_authorized": false,
+  "runtime_activated": false,
+  "deterministic_result_hash": "0a2d5329c2c75dc20d0ea90468b36db221f8c1d67fd7799709f92983edad1335",
+  "reconciled_at_utc": "2026-08-25T14:46:11.5549142+00:00"
+}

@@ -1,0 +1,115 @@
+{
+  "schema": "trading_mvp_listing_event_replay_planonly_v1",
+  "plan_id": "listing_event_replay_20260825_v1",
+  "mode": "PlanOnly",
+  "status": "PREREGISTERED_DESCRIPTIVE_REPLAY",
+  "generated_at_utc": "2026-08-25T15:00:00.000Z",
+  "research_only": true,
+  "public_data_only": true,
+  "network_authorized": false,
+  "private_api": false,
+  "live_orders": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "grid_search_allowed": false,
+  "objective": "Replay the accepted 36-event listing history read-only, under the costs the 2026-07-08 plan fixed before any data was collected, and report the result as descriptive evidence only.",
+  "cost_contract": {
+    "source_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\listing_event_drift_reversal_planonly_20260708_184450.json",
+    "source_file_sha256": "c1e6d2d79845ded04f7d29306dee62465bfb5fd544c7fae522f466b4c4157c3f",
+    "round_trip_fee_bps": 39.0,
+    "round_trip_slippage_bps": 30.0,
+    "applied_round_trip_cost_bps": 69.0,
+    "module_default_round_trip_cost_bps": 30.0,
+    "policy": "base/VIP0/no-volume only; do not accept lower-cost sensitivity as proof",
+    "note": "The module defaults to 10.0 fee and 5.0 slippage per side, giving 30 bps round trip where the contract requires 69, and its stress case of 50 bps is still cheaper than the contract's normal case. This plan overrides those defaults rather than inheriting them."
+  },
+  "frozen_parameters": {
+    "trigger_bps": 200.0,
+    "fee_bps_per_side": 19.5,
+    "slippage_bps_per_side": 15.0,
+    "notional_quote": 100.0,
+    "entry_delay_hours": 6.0,
+    "hold_hours": 24.0,
+    "stress_fee_multiplier": 1.5,
+    "stress_slippage_multiplier": 2.0,
+    "stress_haircut_bps": 50.0,
+    "min_trades": 10,
+    "min_oos_trades": 3,
+    "min_profit_factor": 1.2,
+    "min_walk_forward_pass_ratio": 0.6,
+    "walk_forward_windows": 4,
+    "train_fraction": 0.7
+  },
+  "parameter_provenance": {
+    "trigger_bps": "contract_anchored",
+    "fee_bps_per_side": "contract_anchored",
+    "slippage_bps_per_side": "contract_anchored",
+    "notional_quote": "chosen_after_data",
+    "entry_delay_hours": "chosen_after_data",
+    "hold_hours": "chosen_after_data",
+    "stress_fee_multiplier": "chosen_after_data",
+    "stress_slippage_multiplier": "chosen_after_data",
+    "stress_haircut_bps": "chosen_after_data",
+    "min_trades": "chosen_after_data",
+    "min_oos_trades": "chosen_after_data",
+    "min_profit_factor": "chosen_after_data",
+    "min_walk_forward_pass_ratio": "chosen_after_data",
+    "walk_forward_windows": "chosen_after_data",
+    "train_fraction": "chosen_after_data"
+  },
+  "preregistration_honesty": {
+    "history_collected_at": "2026-07-09",
+    "module_written_at": "2026-07-10",
+    "consequence": "Every parameter marked chosen_after_data was fixed after the sample existed. Nothing in the artifacts establishes whether it was tuned on that sample, so this replay is descriptive and its result may not be cited as a pre-registered out-of-sample verdict.",
+    "contract_anchored_basis": "trigger_bps 200 exceeds minimum_gross_move_hurdle_bps 174, declared 2026-07-08 before collection; the two cost terms reproduce that plan's 39 and 30 bps round trip."
+  },
+  "history_coverage": {
+    "min_history_events": 30,
+    "ok_events": 36,
+    "ok_unique_bases": 30,
+    "ok_exchange_count": 3,
+    "ok_events_by_exchange": {
+      "bitget": 9,
+      "gateio": 7,
+      "mexc": 20
+    },
+    "max_single_exchange_event_fraction": 0.6
+  },
+  "acceptance_policy": {
+    "acceptance_decision": "NONE_DESCRIPTIVE_ONLY",
+    "replay_authorizes": false,
+    "paper_forward_authorized": false,
+    "live_trading_authorized": false,
+    "note": "A descriptive replay cannot accept a strategy, cannot authorise paper forward execution, and cannot authorise live trading. The module does compute a chronological train/test split, walk-forward and stress, but computing those stages is not the same as passing them under a contract fixed before the data."
+  },
+  "source_bindings": {
+    "normalizer": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\analysis\\listing_event_normalizer_planonly_20260709_094518.json",
+      "file_sha256": "2adf33812b21d60f4473386c79339b965aceda201891bcec897b922b9d7da6d0",
+      "decision": "LISTING_EVENT_NORMALIZER_PLANONLY_READY_FOR_EVENT_REPLAY_PLANONLY",
+      "required_next_step": "implement_read_only_listing_event_replay_planonly_no_grid_no_live"
+    }
+  },
+  "implementation": {
+    "files": [
+      {
+        "role": "replay_engine",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_event_replay.py",
+        "sha256": "06e6f9a9b73c10d6a10255ad54be70c806d29dfcb4ec10931535bf88bb97769f"
+      },
+      {
+        "role": "replay_plan",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_event_replay_plan.py",
+        "sha256": "0a32235b43a8c05d2f2a3d46a86838c39269597005317a3ec5c6459f1575be01"
+      }
+    ]
+  },
+  "forbidden": [
+    "live orders",
+    "real capital",
+    "private api",
+    "grid search over the frozen parameters",
+    "re-running with cheaper costs and reporting the better result"
+  ],
+  "plan_hash": "b94a45878074e3a486975b3fb994e7123eae5c89e261b9a7acef9bc25bb8f8b0"
+}
