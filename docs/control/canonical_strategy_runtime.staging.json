@@ -1,7 +1,7 @@
 {
   "schema": "zolotyaylopata.canonical_strategy_runtime.v1",
-  "registry_id": "canonical_strategy_runtime_staging_20260825_v4",
-  "generated_at_utc": "2026-08-25T21:39:00Z",
+  "registry_id": "canonical_strategy_runtime_staging_20260826_v5",
+  "generated_at_utc": "2026-08-25T23:07:58Z",
   "activation_status": "STAGING_NOT_INSTALLED",
   "canonical_owners": [
     {
@@ -25,7 +25,7 @@
       ]
     },
     {
-      "strategy_id": "crypto_premarket_perpetual_capture_v27",
+      "strategy_id": "crypto_premarket_perpetual_capture_v28",
       "namespace_prefix": "listing.crypto.premarket.perpetual.capture",
       "scope": "crypto_premarket_perpetual",
       "venues": [
@@ -224,7 +224,7 @@
       "retired_aliases": []
     },
     {
-      "strategy_id": "crypto_premarket_perpetual_capture_v27",
+      "strategy_id": "crypto_premarket_perpetual_capture_v28",
       "track_class": "crypto_premarket_perpetual",
       "runtime_status": "INACTIVE",
       "activation_readiness": "NO_CAPTURE_PLAN_REQUIRES_NEW_ACTIVATION_PLAN",
@@ -237,12 +237,12 @@
       ],
       "canonical_repo": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture",
       "canonical_remote_url": "https://github.com/koval26vlg-coder/Zolotayalopata-premarket-perp-capture.git",
-      "canonical_git_commit": "1a2c68ee6b25251b9d0bee4f37f18b32daed6a5d",
-      "canonical_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture\\docs\\plans\\premarket-perp-capture-planonly-20260822-v27.json",
-      "canonical_plan_sha256": "859bd59a406dd97ae0fb1e8239f5f34541a50cb08cbb39fbda4d189c5d7b2446",
-      "canonical_plan_file_sha256": "de5c2bd1998bebd7cedd7ed728aa992ef4515ccbab4248a1d6aa8a63d644bfac",
-      "canonical_plan_id": "premarket_perp_capture_20260822_v27",
-      "canonical_plan_status": "REGISTRY_QUARANTINE_HARDENED_NO_CAPTURE",
+      "canonical_git_commit": "7cb1450bb5d8903ae62652ed222bee1e117096c4",
+      "canonical_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture\\docs\\plans\\premarket-perp-capture-planonly-20260822-v28.json",
+      "canonical_plan_sha256": "141ab762953a21985eb6678c3c4bafb6247eadf7bef1073cc9626ee89d404d80",
+      "canonical_plan_file_sha256": "b59162ee152bf1fc2301921925267731ba1c1f2f9c3d92fe4093354d55797d92",
+      "canonical_plan_id": "premarket_perp_capture_20260822_v28",
+      "canonical_plan_status": "OFFICIAL_ATTESTATION_LINEAGE_HARDENED_NO_CAPTURE",
       "launcher_path": null,
       "launcher_sha256": null,
       "scheduler_routable": false,
@@ -258,7 +258,7 @@
         {
           "role": "project_config",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture\\src\\project_config.py",
-          "sha256": "d56cb2dd411dcd8f3a0524ef25dcbce429d37e8403d5305084014eac3fa7fe3b"
+          "sha256": "49dfddb89ec7217990b01363284aa8dcc056da14ca495e125f114343a78900ae"
         },
         {
           "role": "canonical_hash",
@@ -273,12 +273,12 @@
         {
           "role": "risk_gate",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture\\src\\risk_gate.py",
-          "sha256": "a8d40b1a310645d6a81e0a79ad439fbd02832e3f9da679909f4231571cc4c3a4"
+          "sha256": "f232dab5542ef99a1bf31beeb359acdd31eb2a6067b109c6e1a52fbe3650d219"
         },
         {
           "role": "plan_builder",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture\\src\\plan_builder.py",
-          "sha256": "fc21adda751ef091bfbcb889535a8f3b1d63dd41000b9c45e9e81b53bb09099f"
+          "sha256": "404206968f9ca90518a69f1cbe9cefbec59d88dffd04cf51866e185b37e5cc91"
         },
         {
           "role": "public_http",
@@ -288,7 +288,7 @@
         {
           "role": "event_registry",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture\\src\\event_registry.py",
-          "sha256": "d1a64cbbd92d2701bdb13d2e7bd4b23ef8404ef10bc74857227283444dcf3d89"
+          "sha256": "6c46cc6f159ea3183e30c1afcc40bff4eef34353f9539f6b53dd1aee2b5bc5b3"
         },
         {
           "role": "registry_quarantine",
@@ -303,17 +303,17 @@
         {
           "role": "capture",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture\\src\\capture.py",
-          "sha256": "e4fbbfb5c17e0052b57cc490a32285b5712cb9e480b48dbeb1399c35d1142889"
+          "sha256": "7c6c797d21eaa41ca40b0a65065586894c8513d0c542fb2204487cfcb580e9de"
         },
         {
           "role": "replay",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture\\src\\replay.py",
-          "sha256": "5509ab6d7108f21c2b7737f5358be168d682690f10982a8504d851d34e03ec75"
+          "sha256": "9f720bf06f77aeb62dd7a31cb0adee34b6e3507a751e79487adf28da62cd3484"
         },
         {
           "role": "official_attestation",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture\\src\\official_attestation.py",
-          "sha256": "6cb5fbd14fb3091139b409addb65e3e1b6d94baac036dcd5581dc12fe93a3bae"
+          "sha256": "3daeda607863b66ca111cf0fc175b553f5b468bc81b397b35d8bb060e863852a"
         },
         {
           "role": "forbidden_capabilities",
@@ -322,7 +322,7 @@
         }
       ],
       "supersedes": [
-        "crypto_premarket_perpetual_capture_v26",
+        "crypto_premarket_perpetual_capture_v27",
         "legacy_main_repo_crypto_premarket_perpetual"
       ],
       "retired_aliases": []

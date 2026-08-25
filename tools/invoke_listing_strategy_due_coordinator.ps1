@@ -1,5 +1,6 @@
 param(
     [switch]$ScheduledTick,
+    [switch]$PreflightOnly,
     [switch]$Json,
     [string]$RegistryPath = "",
     [string]$ReceiptPath = "",
@@ -27,7 +28,11 @@ param(
 $ErrorActionPreference = "Stop"
 $PSNativeCommandUseErrorActionPreference = $false
 
-if (-not $ScheduledTick) {
+if ($ScheduledTick -and $PreflightOnly) {
+    [ordered]@{ status = "NO_EXECUTION"; reason = "EXECUTION_MODE_CONFLICT"; execution_performed = $false } | ConvertTo-Json
+    exit 2
+}
+if (-not $ScheduledTick -and -not $PreflightOnly) {
     [ordered]@{
         schema = "trading_mvp_listing_strategy_due_coordinator_state_v1"
         status = "NO_EXECUTION"
@@ -38,11 +43,8 @@ if (-not $ScheduledTick) {
 }
 
 # BEGIN CANONICAL_RUNTIME_REGISTRY_PREFLIGHT
-# Canonical-runtime migration preflight.  The checked-in registry for this
-# package is deliberately STAGING-only, so this block must terminate before
-# any state, claim, ledger, or launcher path is touched.  The legacy execution
-# engine below is retained for the later ACTIVE-registry migration, but it is
-# not scheduler-reachable through a staging trust root.
+# STAGING and PreflightOnly terminate before any state, claim or launcher write.
+# Only a hash-bound ACTIVE publication may reach the one-runtime execution engine.
 function Get-PreflightSha256 {
     param([byte[]]$Bytes)
     $sha = [Security.Cryptography.SHA256]::Create()
@@ -108,7 +110,8 @@ $legacyProductionPathParameters = @(
     "CoordinatorClaimPath",
     "CoordinatorClaimArchivePath",
     "CoordinatorClaimMutexPath",
-    "CodexAutomationsRoot"
+    "CodexAutomationsRoot",
+    "NowUtc"
 )
 $forbiddenOverrides = @(
     $legacyProductionPathParameters | Where-Object { $PSBoundParameters.ContainsKey($_) }
@@ -357,6 +360,194 @@ function Assert-BoundFileStable {
     }
 }
 
+function Test-PreflightJsonEqual {
+    param($Left, $Right)
+    return [System.Text.Json.Nodes.JsonNode]::DeepEquals(
+        [System.Text.Json.Nodes.JsonNode]::Parse(($Left | ConvertTo-Json -Depth 60 -Compress)),
+        [System.Text.Json.Nodes.JsonNode]::Parse(($Right | ConvertTo-Json -Depth 60 -Compress)))
+}
+
+function Assert-PreflightFields {
+    param($Value, [string[]]$Fields, [string]$Reason)
+    $actual = @($Value.PSObject.Properties.Name | Sort-Object -CaseSensitive)
+    if (-not (Test-PreflightJsonEqual $actual @($Fields | Sort-Object -CaseSensitive))) { throw $Reason }
+}
+
+function Assert-ActivePublicationReceipt {
+    param($Registry, $Receipt)
+    Assert-PreflightFields $Receipt @(
+        "schema", "status", "decision", "launch_allowed", "publication_id", "publication_directory",
+        "registry_path", "receipt_path", "registry_raw_sha256", "active_strategy_id", "parent_lineage",
+        "policy_evidence", "active_runtime_binding", "control_plane_git_commit", "control_bindings",
+        "canonical_repositories", "validation"
+    ) "ACTIVE_RECEIPT_FIELDS_INVALID"
+    if ([string]$Receipt.schema -cne "zolotyaylopata.external_registry_activation_receipt.v1" -or
+        [string]$Receipt.status -cne "ACTIVATED_PUBLIC_RESEARCH_ONLY" -or
+        [string]$Receipt.decision -cne "ACTIVE_ROUTABLE" -or
+        -not (Test-PreflightJsonEqual $Receipt.launch_allowed $true) -or
+        [string]$Registry.schema -cne "zolotyaylopata.canonical_strategy_runtime.v2" -or
+        [string]$Registry.activation_status -cne "ACTIVE_INSTALLED") { throw "ACTIVE_PUBLICATION_STATUS_INVALID" }
+    if ([string]$Receipt.publication_id -cne $publicationId -or
+        -not (Test-SamePreflightPath ([string]$Receipt.publication_directory) $publicationDirectory) -or
+        -not (Test-SamePreflightPath ([string]$Receipt.registry_path) $canonicalRegistryPath) -or
+        -not (Test-SamePreflightPath ([string]$Receipt.receipt_path) $canonicalReceiptPath) -or
+        [string]$Receipt.registry_raw_sha256 -cne $ExpectedRegistrySha256) { throw "ACTIVE_RECEIPT_PUBLICATION_MISMATCH" }
+
+    $strategyId = [string]$Registry.active_strategy_id
+    if (-not $strategyId -or $strategyId -cne [string]$Receipt.active_strategy_id) { throw "ACTIVE_STRATEGY_ID_MISMATCH" }
+    $activeRows = @($Registry.runtimes | Where-Object { [string]$_.runtime_status -ceq "ACTIVE" })
+    $routableRows = @($Registry.runtimes | Where-Object { Test-PreflightJsonEqual $_.scheduler_routable $true })
+    if ($activeRows.Count -ne 1 -or $routableRows.Count -ne 1 -or
+        [string]$activeRows[0].strategy_id -cne $strategyId -or
+        [string]$routableRows[0].strategy_id -cne $strategyId) { throw "ACTIVE_RUNTIME_CARDINALITY_INVALID" }
+    $runtime = $activeRows[0]
+    $modes = @($runtime.allowed_modes)
+    if ([string]$runtime.activation_readiness -cne "READY_AFTER_ROUTER_MIGRATION" -or
+        -not (Test-PreflightJsonEqual $runtime.public_data_only $true) -or
+        -not (Test-PreflightJsonEqual $runtime.live_trading_allowed $false) -or
+        $modes.Count -eq 0 -or @($modes | Where-Object { $_ -isnot [string] -or $_ -cnotin @("DISCOVERY", "PAPER_RESEARCH") }).Count -gt 0) { throw "ACTIVE_POLICY_INVALID" }
+    $expectedPolicy = [ordered]@{
+        source_decision = "STAGED_FAIL_CLOSED"; all_source_bindings_match = $true
+        active_runtime_count = 1; routable_runtime_count = 1
+        activation_readiness = "READY_AFTER_ROUTER_MIGRATION"
+        public_data_only = $true; live_trading_allowed = $false; allowed_modes = $modes
+    }
+    if (-not (Test-PreflightJsonEqual $Receipt.policy_evidence $expectedPolicy)) { throw "ACTIVE_POLICY_INVALID" }
+    foreach ($field in @("ok", "registry_valid", "launch_allowed")) {
+        if (-not (Test-PreflightJsonEqual $Receipt.validation.$field $true)) { throw "ACTIVE_RECEIPT_VALIDATION_INVALID" }
+    }
+    if ([string]$Receipt.validation.decision -cne "ACTIVE_ROUTABLE" -or
+        [string]$Receipt.validation.registry_raw_sha256 -cne $ExpectedRegistrySha256) { throw "ACTIVE_RECEIPT_VALIDATION_INVALID" }
+    if ([string]$Receipt.control_plane_git_commit -cne $ExpectedControlPlaneGitCommit) { throw "ACTIVE_CONTROL_PLANE_COMMIT_MISMATCH" }
+    $expectedControls = @{
+        promoter = (Join-Path $repoRoot "trading_mvp\src\external_registry_promoter.py")
+        validator = $registryValidatorPath; publication_primitive = $materializerPath
+        coordinator = $coordinatorScriptPath
+        installer = (Join-Path $repoRoot "tools\install_listing_strategy_due_coordinator_task.ps1")
+    }
+    $controls = @($Receipt.control_bindings)
+    if (-not (Test-PreflightJsonEqual @($controls | ForEach-Object { [string]$_.role } | Sort-Object -CaseSensitive) @($expectedControls.Keys | Sort-Object -CaseSensitive))) { throw "ACTIVE_CONTROL_ROLE_SET_INVALID" }
+    foreach ($binding in $controls) {
+        Assert-PreflightFields $binding @("role", "path", "git_commit", "head_sha256") "ACTIVE_CONTROL_FIELDS_INVALID"
+        $role = [string]$binding.role
+        if (-not (Test-SamePreflightPath ([string]$binding.path) ([string]$expectedControls[$role])) -or
+            [string]$binding.git_commit -cne $ExpectedControlPlaneGitCommit -or
+            [string]$binding.head_sha256 -cnotmatch '^[0-9a-f]{64}$') { throw "ACTIVE_CONTROL_BINDING_INVALID:$role" }
+        if (($role -eq "validator" -and [string]$binding.head_sha256 -cne $ExpectedValidatorSha256) -or
+            ($role -eq "coordinator" -and [string]$binding.head_sha256 -cne $ExpectedCoordinatorSha256)) { throw "ACTIVE_CONTROL_ARGUMENT_BINDING_MISMATCH:$role" }
+        [void](Assert-ControlPlaneFileBinding -Repository $repoRoot -Path ([string]$binding.path) -ExpectedSha256 ([string]$binding.head_sha256) -Binding $role)
+    }
+
+    $runtimeFields = @("strategy_id", "canonical_repo", "canonical_remote_url", "canonical_git_commit", "canonical_plan_path", "canonical_plan_sha256", "canonical_plan_file_sha256", "canonical_plan_id", "canonical_plan_status", "launcher_path", "launcher_sha256", "state_path", "implementation_bindings")
+    Assert-PreflightFields $Receipt.active_runtime_binding ($runtimeFields + @("state_raw_sha256", "state_status", "next_interval_at_utc")) "ACTIVE_RUNTIME_BINDING_FIELDS_INVALID"
+    foreach ($field in $runtimeFields) {
+        if (-not (Test-PreflightJsonEqual $Receipt.active_runtime_binding.$field $runtime.$field)) { throw "ACTIVE_RUNTIME_BINDING_MISMATCH:$field" }
+    }
+    # This is historical activation evidence. Current mutable state is validated separately.
+    $snapshotTime = [DateTimeOffset]::MinValue
+    if ([string]$Receipt.active_runtime_binding.state_raw_sha256 -cnotmatch '^[0-9a-f]{64}$' -or
+        [string]::IsNullOrWhiteSpace([string]$Receipt.active_runtime_binding.state_status) -or
+        -not [DateTimeOffset]::TryParse([string]$Receipt.active_runtime_binding.next_interval_at_utc, [ref]$snapshotTime)) { throw "ACTIVE_STATE_SNAPSHOT_INVALID" }
+
+    $lineage = $Receipt.parent_lineage
+    Assert-PreflightFields $lineage @(
+        "publication_id", "registry_path", "registry_raw_sha256", "receipt_path", "receipt_raw_sha256",
+        "source_path", "source_git_commit", "source_head_sha256",
+        "materializer_path", "materializer_git_commit", "materializer_head_sha256",
+        "validator_path", "validator_git_commit", "validator_head_sha256"
+    ) "PARENT_LINEAGE_FIELDS_INVALID"
+    $parentRegistry = Assert-CanonicalPreflightPath ([string]$lineage.registry_path) "parent_registry" Leaf
+    $parentReceipt = Assert-CanonicalPreflightPath ([string]$lineage.receipt_path) "parent_receipt" Leaf
+    if ((Get-PreflightSha256 ([IO.File]::ReadAllBytes($parentRegistry))) -cne [string]$lineage.registry_raw_sha256 -or
+        (Get-PreflightSha256 ([IO.File]::ReadAllBytes($parentReceipt))) -cne [string]$lineage.receipt_raw_sha256) { throw "PARENT_PUBLICATION_SHA256_MISMATCH" }
+    $parentDirectory = Split-Path -Parent $parentRegistry
+    if ((Split-Path -Leaf $parentRegistry) -cne "canonical_strategy_runtime.json" -or
+        (Split-Path -Leaf $parentReceipt) -cne "materialization_receipt.json" -or
+        -not (Test-SamePreflightPath $parentDirectory (Split-Path -Parent $parentReceipt)) -or
+        [string]$lineage.publication_id -cnotmatch '^[0-9a-f]{64}$' -or
+        (Split-Path -Leaf $parentDirectory) -cne [string]$lineage.publication_id) { throw "PARENT_PUBLICATION_PATH_INVALID" }
+    foreach ($protectedRepo in @($repoRoot) + @($Registry.runtimes | ForEach-Object { [string]$_.canonical_repo })) {
+        if ((Test-PreflightPathWithin $parentRegistry $protectedRepo) -or (Test-PreflightPathWithin $parentReceipt $protectedRepo)) { throw "PARENT_PUBLICATION_INSIDE_CANONICAL_REPOSITORY" }
+    }
+    if ((Test-PreflightPathWithin $canonicalRegistryPath $parentDirectory) -or (Test-PreflightPathWithin $canonicalReceiptPath $parentDirectory)) { throw "ACTIVE_PUBLICATION_INSIDE_PARENT" }
+    $parentPayload = $strictUtf8.GetString([IO.File]::ReadAllBytes($parentRegistry)) | ConvertFrom-Json -DateKind String
+    $parentEvidence = $strictUtf8.GetString([IO.File]::ReadAllBytes($parentReceipt)) | ConvertFrom-Json -DateKind String
+    if ([string]$parentPayload.schema -cne "zolotyaylopata.canonical_strategy_runtime.v1" -or
+        [string]$parentPayload.activation_status -cne "STAGING_NOT_INSTALLED" -or
+        [string]$parentEvidence.schema -cne "zolotyaylopata.external_registry_materialization_receipt.v2" -or
+        [string]$parentEvidence.status -cne "MATERIALIZED_FAIL_CLOSED" -or
+        [string]$parentEvidence.decision -cne "STAGED_FAIL_CLOSED" -or
+        -not (Test-PreflightJsonEqual $parentEvidence.launch_allowed $false)) { throw "PARENT_PUBLICATION_STATUS_INVALID" }
+    foreach ($field in @("publication_id", "registry_path", "registry_raw_sha256", "receipt_path", "source_path", "source_git_commit", "source_head_sha256", "materializer_path", "materializer_git_commit", "materializer_head_sha256", "validator_path", "validator_git_commit", "validator_head_sha256")) {
+        if (-not (Test-PreflightJsonEqual $lineage.$field $parentEvidence.$field)) { throw "PARENT_LINEAGE_MISMATCH:$field" }
+    }
+    foreach ($role in @("source", "materializer", "validator")) {
+        $historicalPath = [string]$lineage."${role}_path"
+        $historicalCommit = [string]$lineage."${role}_git_commit"
+        $historicalSha = [string]$lineage."${role}_head_sha256"
+        if ($historicalCommit -cnotmatch '^[0-9a-f]{40}$' -or $historicalSha -cnotmatch '^[0-9a-f]{64}$') { throw "PARENT_HISTORICAL_IDENTITY_INVALID:$role" }
+        if (($role -eq "materializer" -and -not (Test-SamePreflightPath $historicalPath $materializerPath)) -or
+            ($role -eq "validator" -and -not (Test-SamePreflightPath $historicalPath $registryValidatorPath))) { throw "PARENT_HISTORICAL_PATH_MISMATCH:$role" }
+        $physicalHistoricalPath = Assert-CanonicalPreflightPath $historicalPath "parent_$role" Leaf
+        $historicalRepoResult = Invoke-PinnedGitText @("-C", (Split-Path -Parent $physicalHistoricalPath), "rev-parse", "--show-toplevel")
+        if ($historicalRepoResult.exit_code -ne 0) { throw "PARENT_HISTORICAL_REPOSITORY_INVALID:$role" }
+        $historicalRepo = [IO.Path]::GetFullPath($historicalRepoResult.stdout.Trim())
+        $relative = [IO.Path]::GetRelativePath($historicalRepo, $physicalHistoricalPath).Replace('\', '/')
+        $blobBytes = Get-PinnedGitBlobBytes $historicalRepo $historicalCommit $relative
+        if ((Get-PreflightSha256 $blobBytes) -cne $historicalSha) { throw "PARENT_HISTORICAL_SHA256_MISMATCH:$role" }
+    }
+    if ([string]$lineage.materializer_git_commit -cne [string]$lineage.validator_git_commit) { throw "PARENT_CONTROL_COMMIT_MISMATCH" }
+    if (-not (Test-SamePreflightPath ([string]$parentEvidence.publication_directory) $parentDirectory)) { throw "PARENT_PUBLICATION_DIRECTORY_MISMATCH" }
+    foreach ($field in @("ok", "registry_valid", "all_runtime_bindings_valid")) {
+        if (-not (Test-PreflightJsonEqual $parentEvidence.validation.$field $true)) { throw "PARENT_RECEIPT_VALIDATION_INVALID" }
+    }
+    if ([string]$parentEvidence.validation.decision -cne "STAGED_FAIL_CLOSED" -or
+        [string]$parentEvidence.validation.registry_raw_sha256 -cne [string]$lineage.registry_raw_sha256 -or
+        -not (Test-PreflightJsonEqual $parentEvidence.validation.launch_allowed $false)) { throw "PARENT_RECEIPT_VALIDATION_INVALID" }
+    if (-not (Test-PreflightJsonEqual $parentEvidence.canonical_repositories $Receipt.canonical_repositories)) { throw "PARENT_CANONICAL_REPOSITORY_SET_MISMATCH" }
+    $parentTime = [DateTimeOffset]::MinValue
+    $activeTime = [DateTimeOffset]::MinValue
+    if (-not [DateTimeOffset]::TryParse([string]$parentPayload.generated_at_utc, [ref]$parentTime) -or
+        -not [DateTimeOffset]::TryParse([string]$Registry.generated_at_utc, [ref]$activeTime) -or $activeTime -lt $parentTime) { throw "ACTIVE_GENERATED_AT_INVALID" }
+    # Promotion changes routing metadata only, never hypotheses, plans or runtime bindings.
+    $parentPayload.schema = "zolotyaylopata.canonical_strategy_runtime.v2"
+    $parentPayload.registry_id = "$($parentPayload.registry_id).active.$strategyId"
+    $parentPayload.generated_at_utc = $Registry.generated_at_utc
+    $parentPayload.activation_status = "ACTIVE_INSTALLED"
+    $parentPayload | Add-Member -NotePropertyName active_strategy_id -NotePropertyValue $strategyId
+    foreach ($row in $parentPayload.runtimes) {
+        $selected = [string]$row.strategy_id -ceq $strategyId
+        if ($selected) { $row.runtime_status = "ACTIVE" }
+        elseif ([string]$row.runtime_status -cne "RETIRED") { $row.runtime_status = "INACTIVE" }
+        $row.scheduler_routable = $selected
+    }
+    if (-not (Test-PreflightJsonEqual $parentPayload $Registry)) { throw "ACTIVE_REGISTRY_PARENT_TRANSFORMATION_MISMATCH" }
+    return $runtime
+}
+
+function Assert-CanonicalValidationResult {
+    param($Result, [string]$Reason)
+    $expectedDecision = if ($isActivePublication) { "ACTIVE_ROUTABLE" } else { "STAGED_FAIL_CLOSED" }
+    $runtimeResults = @($Result.runtimes)
+    $valid = $Result.ok -is [bool] -and $Result.ok -eq $true -and
+        $Result.registry_valid -is [bool] -and $Result.registry_valid -eq $true -and
+        [string]$Result.registry_raw_sha256 -ceq $ExpectedRegistrySha256 -and
+        [string]$Result.decision -ceq $expectedDecision -and
+        $Result.launch_allowed -is [bool] -and $Result.launch_allowed -eq $isActivePublication -and
+        $runtimeResults.Count -gt 0 -and
+        (Test-PreflightJsonEqual @($runtimeResults.strategy_id | Sort-Object -CaseSensitive) @($registryPayload.runtimes.strategy_id | Sort-Object -CaseSensitive))
+    foreach ($row in $runtimeResults) {
+        $isSelected = $isActivePublication -and [string]$row.strategy_id -ceq [string]$activeRuntime.strategy_id
+        $decisions = if ($isSelected) { @("READY_ROUTABLE") } elseif ($isActivePublication) { @("INACTIVE_NOT_ROUTABLE", "RETIRED_NOT_ROUTABLE") } else { @("READY_NOT_ROUTABLE", "INACTIVE_NOT_ROUTABLE", "RETIRED_NOT_ROUTABLE") }
+        if ([string]$row.binding_status -cne "MATCH" -or $row.launch_allowed -isnot [bool] -or
+            $row.launch_allowed -ne $isSelected -or [string]$row.decision -cnotin $decisions) { $valid = $false }
+    }
+    if (-not $valid) {
+        Write-PreflightResult -Status "REGISTRY_VALIDATION_FAILED" -Reason $Reason -ExitCode 2 `
+            -Additional @{ registry_decision = [string]$Result.decision; runtimes = $runtimeResults }
+    }
+}
+
 $pinnedGitPath = "C:\Program Files\Git\cmd\git.exe"
 if (-not (Test-Path -LiteralPath $pinnedGitPath -PathType Leaf)) {
     Write-PreflightResult -Status "CONTROL_PLANE_BINDING_INVALID" -Reason "PINNED_GIT_UNAVAILABLE" -ExitCode 2
@@ -398,7 +589,7 @@ $registryValidatorPath = Assert-ControlPlaneFileBinding -Repository $repoRoot `
 $canonicalRegistryPath = Assert-CanonicalPreflightPath -Path $RegistryPath -Binding "registry" -PathType Leaf
 $canonicalReceiptPath = Assert-CanonicalPreflightPath -Path $ReceiptPath -Binding "receipt" -PathType Leaf
 if ((Split-Path -Leaf $canonicalRegistryPath) -cne "canonical_strategy_runtime.json" -or
-    (Split-Path -Leaf $canonicalReceiptPath) -cne "materialization_receipt.json") {
+    (Split-Path -Leaf $canonicalReceiptPath) -cnotin @("materialization_receipt.json", "activation_receipt.json")) {
     Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "PUBLICATION_FILENAMES_INVALID" -ExitCode 2
 }
 $publicationDirectory = [IO.Path]::GetFullPath((Split-Path -Parent $canonicalRegistryPath))
@@ -438,6 +629,18 @@ try {
         -Additional @{ error = $_.Exception.Message }
 }
 
+$isActivePublication = [string]$receiptPayload.schema -ceq "zolotyaylopata.external_registry_activation_receipt.v1"
+$expectedReceiptFilename = if ($isActivePublication) { "activation_receipt.json" } else { "materialization_receipt.json" }
+if ((Split-Path -Leaf $canonicalReceiptPath) -cne $expectedReceiptFilename) {
+    Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "PUBLICATION_RECEIPT_SCHEMA_FILENAME_MISMATCH" -ExitCode 2
+}
+$activeRuntime = $null
+if ($isActivePublication) {
+    try { $activeRuntime = Assert-ActivePublicationReceipt $registryPayload $receiptPayload } catch {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason $_.Exception.Message -ExitCode 2
+    }
+    $materializerExpectedSha256 = [string]@($receiptPayload.control_bindings | Where-Object { $_.role -ceq "publication_primitive" })[0].head_sha256
+} else {
 $receiptIsStrict = $false
 try {
     $receiptIsStrict = (
@@ -477,6 +680,7 @@ if ($materializerExpectedSha256 -cnotmatch '^[0-9a-f]{64}$') {
 }
 $materializerPath = Assert-ControlPlaneFileBinding -Repository $repoRoot `
     -Path $materializerPath -ExpectedSha256 $materializerExpectedSha256 -Binding "materializer"
+}
 
 $registryRepoPairs = [System.Collections.Generic.List[string]]::new()
 $canonicalRepoPaths = [System.Collections.Generic.List[string]]::new()
@@ -547,33 +751,7 @@ try {
     Write-PreflightResult -Status "REGISTRY_VALIDATION_FAILED" -Reason "CANONICAL_REGISTRY_VALIDATOR_OUTPUT_INVALID" -ExitCode 2 `
         -Additional @{ validator_exit_code = $validatorExitCode; validator_output = $validatorText }
 }
-$runtimeResults = @($validatorResult.runtimes)
-$allRuntimeBindingsMatch = ($runtimeResults.Count -gt 0) -and (@(
-    $runtimeResults | Where-Object {
-        [string]$_.binding_status -cne "MATCH" -or
-        $_.launch_allowed -isnot [bool] -or
-        $_.launch_allowed -ne $false -or
-        [string]$_.decision -cnotin @("READY_NOT_ROUTABLE", "INACTIVE_NOT_ROUTABLE", "RETIRED_NOT_ROUTABLE")
-    }
-).Count -eq 0)
-if (
-    $validatorResult.ok -isnot [bool] -or
-    $validatorResult.ok -ne $true -or
-    $validatorResult.registry_valid -isnot [bool] -or
-    $validatorResult.registry_valid -ne $true -or
-    [string]$validatorResult.decision -cne "STAGED_FAIL_CLOSED" -or
-    $validatorResult.launch_allowed -isnot [bool] -or
-    $validatorResult.launch_allowed -ne $false -or
-    -not $allRuntimeBindingsMatch
-) {
-    Write-PreflightResult -Status "REGISTRY_VALIDATION_FAILED" -Reason "CANONICAL_REGISTRY_NOT_EXACT_STAGED" -ExitCode 2 `
-        -Additional @{
-            validator_exit_code = $validatorExitCode
-            registry_decision = [string]$validatorResult.decision
-            registry_reasons = @($validatorResult.reasons)
-            runtimes = $runtimeResults
-        }
-}
+Assert-CanonicalValidationResult $validatorResult "CANONICAL_REGISTRY_NOT_EXACT_BOUND_PUBLICATION"
 
 # Close the validation/use race before returning the only successful preflight status.
 $finalHead = Invoke-PinnedGitText -Arguments @("-C", $repoRoot, "rev-parse", "HEAD")
@@ -614,30 +792,12 @@ try {
         -Additional @{ validator_exit_code = $finalValidatorExitCode; validator_output = $finalValidatorText }
 }
 $finalRuntimeResults = @($finalValidatorResult.runtimes)
-$finalRuntimeBindingsMatch = ($finalRuntimeResults.Count -gt 0) -and (@(
-    $finalRuntimeResults | Where-Object {
-        [string]$_.binding_status -cne "MATCH" -or
-        $_.launch_allowed -isnot [bool] -or
-        $_.launch_allowed -ne $false -or
-        [string]$_.decision -cnotin @("READY_NOT_ROUTABLE", "INACTIVE_NOT_ROUTABLE", "RETIRED_NOT_ROUTABLE")
+Assert-CanonicalValidationResult $finalValidatorResult "FINAL_CANONICAL_REGISTRY_NOT_EXACT_BOUND_PUBLICATION"
+if ($isActivePublication) {
+    # Re-read parent evidence and every control binding after runtime validation.
+    try { [void](Assert-ActivePublicationReceipt $registryPayload $receiptPayload) } catch {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason $_.Exception.Message -ExitCode 2
     }
-).Count -eq 0)
-if (
-    $finalValidatorResult.ok -isnot [bool] -or
-    $finalValidatorResult.ok -ne $true -or
-    $finalValidatorResult.registry_valid -isnot [bool] -or
-    $finalValidatorResult.registry_valid -ne $true -or
-    [string]$finalValidatorResult.decision -cne "STAGED_FAIL_CLOSED" -or
-    $finalValidatorResult.launch_allowed -isnot [bool] -or
-    $finalValidatorResult.launch_allowed -ne $false -or
-    -not $finalRuntimeBindingsMatch
-) {
-    Write-PreflightResult -Status "REGISTRY_VALIDATION_FAILED" -Reason "FINAL_CANONICAL_REGISTRY_NOT_EXACT_STAGED" -ExitCode 2 `
-        -Additional @{
-            validator_exit_code = $finalValidatorExitCode
-            registry_decision = [string]$finalValidatorResult.decision
-            runtimes = $finalRuntimeResults
-        }
 }
 Assert-BoundFileStable -Path $canonicalRegistryPath -ExpectedSha256 $ExpectedRegistrySha256 -Binding "registry"
 Assert-BoundFileStable -Path $canonicalReceiptPath -ExpectedSha256 $ExpectedReceiptSha256 -Binding "receipt"
@@ -650,11 +810,7 @@ if ($terminalControlPlaneHead.exit_code -ne 0 -or
     Write-PreflightResult -Status "CONTROL_PLANE_BINDING_INVALID" -Reason "CONTROL_PLANE_CHANGED_DURING_FINAL_VALIDATION" -ExitCode 2
 }
 
-Write-PreflightResult `
-    -Status "STAGED_FAIL_CLOSED" `
-    -Reason "NOT_ACTIVATED" `
-    -ExitCode 0 `
-    -Additional @{
+$publicationProvenance = @{
         publication_id = $publicationId
         registry_path = $canonicalRegistryPath
         receipt_path = $canonicalReceiptPath
@@ -663,8 +819,16 @@ Write-PreflightResult `
         registry_decision = [string]$validatorResult.decision
         validator_exit_code = $validatorExitCode
         control_plane_git_commit = $ExpectedControlPlaneGitCommit
-        runtimes = $finalRuntimeResults
-    }
+}
+if (-not $isActivePublication) {
+    Write-PreflightResult -Status "STAGED_FAIL_CLOSED" -Reason "NOT_ACTIVATED" -ExitCode 0 `
+        -Additional ($publicationProvenance + @{ runtimes = $finalRuntimeResults })
+}
+$publicationProvenance["active_strategy_id"] = [string]$activeRuntime.strategy_id
+if ($PreflightOnly) {
+    Write-PreflightResult -Status "ACTIVE_PREFLIGHT_OK" -Reason "PREFLIGHT_ONLY" -ExitCode 0 `
+        -Additional ($publicationProvenance + @{ launch_allowed = $true; runtimes = $finalRuntimeResults })
+}
 # END CANONICAL_RUNTIME_REGISTRY_PREFLIGHT
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
@@ -707,12 +871,25 @@ $legacyAutomationIds = @(
     "zolotyaylopata-pre-market-perpetual-listing-impulse-monitor",
     "zolotyaylopata-pre-ipo-perpetual-event-monitor"
 )
-$trackOrder = @("listing", "premarket", "preipo")
-$trackDefinitions = [ordered]@{
-    listing = [ordered]@{ state_path = $ListingStatePath; launcher_path = $ListingLauncherPath }
-    premarket = [ordered]@{ state_path = $PremarketStatePath; launcher_path = $PremarketLauncherPath }
-    preipo = [ordered]@{ state_path = $PreipoStatePath; launcher_path = $PreipoLauncherPath }
+if ($isActivePublication) {
+    $trackOrder = @([string]$activeRuntime.strategy_id)
+    $trackDefinitions = [ordered]@{}
+    $trackDefinitions[$trackOrder[0]] = [ordered]@{
+        state_path = [string]$activeRuntime.state_path; launcher_path = [string]$activeRuntime.launcher_path
+        canonical_repo = [string]$activeRuntime.canonical_repo; plan_path = [string]$activeRuntime.canonical_plan_path
+    }
+} else {
+    # Test-only legacy-engine harness strips the terminal preflight block.
+    # Real STAGING requests can never reach these fallback definitions.
+    $trackOrder = @("listing", "premarket", "preipo")
+    $trackDefinitions = [ordered]@{
+        listing = [ordered]@{ state_path = $ListingStatePath; launcher_path = $ListingLauncherPath }
+        premarket = [ordered]@{ state_path = $PremarketStatePath; launcher_path = $PremarketLauncherPath }
+        preipo = [ordered]@{ state_path = $PreipoStatePath; launcher_path = $PreipoLauncherPath }
+    }
 }
+$boundStatePaths = [ordered]@{}
+foreach ($track in $trackOrder) { $boundStatePaths[$track] = $trackDefinitions[$track].state_path }
 
 function Get-UtcIso {
     param([datetimeoffset]$Value = [datetimeoffset]::UtcNow)
@@ -749,6 +926,9 @@ function ConvertTo-JsonBytes {
 
 function Write-JsonAtomic {
     param([string]$Path, $Value)
+    if ($isActivePublication -and $Path -eq $CoordinatorStatePath) {
+        foreach ($entry in $publicationProvenance.GetEnumerator()) { $Value[$entry.Key] = $entry.Value }
+    }
     Ensure-ParentDirectory -Path $Path
     $temporaryPath = "$Path.tmp.$PID.$([guid]::NewGuid().ToString('N'))"
     try {
@@ -763,6 +943,9 @@ function Write-JsonAtomic {
 
 function Append-Attempt {
     param($Value)
+    if ($isActivePublication) {
+        foreach ($entry in $publicationProvenance.GetEnumerator()) { $Value[$entry.Key] = $entry.Value }
+    }
     Ensure-ParentDirectory -Path $CoordinatorAttemptsPath
     $bytes = [Text.UTF8Encoding]::new($false).GetBytes(
         (($Value | ConvertTo-Json -Compress -Depth 40) + [Environment]::NewLine)
@@ -1076,7 +1259,8 @@ function Update-OwnedClaim {
         [string]$Status,
         [AllowNull()][string]$ActiveTrack,
         [AllowNull()][Nullable[int]]$ActiveWorkerPid,
-        [AllowNull()][string]$ActiveWorkerProcessStartedAtUtc
+        [AllowNull()][string]$ActiveWorkerProcessStartedAtUtc,
+        $UnresolvedHandoff = $null
     )
     $claimMutexHandle = Enter-CoordinatorClaimMutex
     try {
@@ -1088,6 +1272,9 @@ function Update-OwnedClaim {
             $claim.active_worker_process_started_at_utc = $ActiveWorkerProcessStartedAtUtc
         } else {
             $claim | Add-Member -NotePropertyName active_worker_process_started_at_utc -NotePropertyValue $ActiveWorkerProcessStartedAtUtc
+        }
+        if ($null -ne $UnresolvedHandoff) {
+            $claim | Add-Member -NotePropertyName unresolved_handoff -NotePropertyValue $UnresolvedHandoff -Force
         }
         [void](Assert-ClaimOwnership -ExpectedOwnership $ExpectedOwnership)
         Write-JsonAtomic -Path $CoordinatorClaimPath -Value $claim
@@ -1112,6 +1299,34 @@ function Archive-OwnedClaim {
     } finally {
         $claimMutexHandle.Dispose()
     }
+}
+
+function Resolve-LateHandoffWorkerIdentity {
+    param($Claim)
+    $evidence = $Claim.unresolved_handoff
+    $track = [string]$Claim.active_track
+    if (-not $evidence -or -not $trackDefinitions.Contains($track)) { return $null }
+    $statePath = [string]$trackDefinitions[$track].state_path
+    if ([string]$evidence.state_path -cne $statePath -or [string]$evidence.pre_state_sha256 -cnotmatch '^[0-9a-f]{64}$') { return $null }
+    $bytes = [IO.File]::ReadAllBytes($statePath)
+    if ((Get-Sha256 $bytes) -ceq [string]$evidence.pre_state_sha256) { return $null }
+    $state = [Text.UTF8Encoding]::new($false, $true).GetString($bytes) | ConvertFrom-Json -DateKind String -ErrorAction Stop
+    if ([string]$state.status -cnotin @("RUNNING", "LAUNCHING", "WAITING_VISIBLE_WORKER") -or
+        -not [string]$state.last_attempt_id -or [string]$state.last_attempt_id -ceq [string]$evidence.pre_last_attempt_id) { return $null }
+    $candidate = 0
+    $claimedStart = [DateTimeOffset]::MinValue
+    $handoffStart = [DateTimeOffset]::MinValue
+    if (-not [int]::TryParse([string]$state.worker_pid, [ref]$candidate) -or $candidate -le 0 -or
+        -not [DateTimeOffset]::TryParse([string]$state.worker_process_started_at_utc, [ref]$claimedStart) -or
+        -not [DateTimeOffset]::TryParse([string]$evidence.started_at_utc, [ref]$handoffStart) -or
+        $claimedStart -lt $handoffStart.AddSeconds(-2)) { return $null }
+    $process = $null
+    try {
+        $process = [Diagnostics.Process]::GetProcessById($candidate)
+        $actualStart = $process.StartTime.ToUniversalTime()
+        if ($process.HasExited -or $actualStart.Ticks -ne $claimedStart.UtcDateTime.Ticks) { return $null }
+        return [pscustomobject]@{ pid = $candidate; started_at_utc = $actualStart.ToString("o"); state_sha256 = (Get-Sha256 $bytes) }
+    } finally { if ($process) { $process.Dispose() } }
 }
 
 function Acquire-CoordinatorClaim {
@@ -1157,6 +1372,28 @@ function Acquire-CoordinatorClaim {
                 archived_stale_claim = $null
             }
         }
+        if ([string]$existing.status -ceq "REJECTED_HANDOFF_IDENTITY_UNRESOLVED") {
+            $lateIdentity = $null
+            try { $lateIdentity = Resolve-LateHandoffWorkerIdentity $existing } catch { }
+            if ($lateIdentity) {
+                # Still under the claim transaction mutex: bind only fresh,
+                # canonical, exact PID/start evidence without changing ownership.
+                try {
+                    $currentSnapshot = Read-ClaimSnapshot
+                    if (-not $currentSnapshot -or $currentSnapshot.sha256 -cne $existingSnapshot.sha256 -or
+                        -not (Test-ExactByteArray $currentSnapshot.bytes $existingSnapshot.bytes)) { throw "claim changed before late handoff recovery" }
+                    $existing.status = "WAITING_REJECTED_HANDOFF_WORKER"
+                    $existing.active_worker_pid = $lateIdentity.pid
+                    $existing | Add-Member -NotePropertyName active_worker_process_started_at_utc -NotePropertyValue $lateIdentity.started_at_utc -Force
+                    $existing | Add-Member -NotePropertyName recovered_handoff_state_sha256 -NotePropertyValue $lateIdentity.state_sha256 -Force
+                    Write-JsonAtomic -Path $CoordinatorClaimPath -Value $existing
+                    $existingSnapshot = Read-ClaimSnapshot
+                    $existing = $existingSnapshot.claim
+                } catch {
+                    return [pscustomobject]@{ acquired=$false; reason="claim_recovery_race"; validation_error=$_.Exception.Message; existing_claim=$existing; archived_stale_claim=$null }
+                }
+            }
+        }
         $activeWorkerPid = $null
         try { if ($existing.active_worker_pid) { $activeWorkerPid = [int]$existing.active_worker_pid } } catch { }
         $activeWorkerStartedAtUtc = $null
@@ -1177,6 +1414,15 @@ function Acquire-CoordinatorClaim {
             return [pscustomobject]@{
                 acquired = $false
                 reason = "coordinator_owner_alive"
+                existing_claim = $existing
+                archived_stale_claim = $null
+            }
+        }
+        if ([string]$existing.status -ceq "REJECTED_HANDOFF_IDENTITY_UNRESOLVED") {
+            return [pscustomobject]@{
+                acquired = $false
+                reason = "worker_identity_unresolved"
+                validation_error = "rejected launcher handoff has no verifiable worker identity; preserve claim for explicit reconciliation"
                 existing_claim = $existing
                 archived_stale_claim = $null
             }
@@ -1294,11 +1540,83 @@ function Test-FinishedMarkerAdvanced {
     return $afterValue.ToUniversalTime() -gt $beforeValue.ToUniversalTime()
 }
 
+function Protect-RejectedLauncherWorker {
+    param($Outcome, $LauncherPayload, [string]$StatePath, $ClaimOwnership, [switch]$AllowNoWorker)
+    $candidates = [Collections.Generic.List[int]]::new()
+    $uncertainties = [Collections.Generic.List[string]]::new()
+    # Noncanonical fields never authorize success; a live PID in one still
+    # prevents us from releasing the global writer claim prematurely.
+    foreach ($field in @("visible_terminal_pid", "worker_pid", "terminal_pid")) {
+        if ($null -eq $LauncherPayload -or $null -eq $LauncherPayload.PSObject.Properties[$field]) { continue }
+        $candidate = 0
+        if (-not [int]::TryParse([string]$LauncherPayload.$field, [ref]$candidate) -or $candidate -le 0) {
+            $uncertainties.Add("invalid_launcher_pid:$field")
+        } elseif (-not $candidates.Contains($candidate)) { $candidates.Add($candidate) }
+    }
+    try {
+        $state = [Text.UTF8Encoding]::new($false, $true).GetString([IO.File]::ReadAllBytes($StatePath)) | ConvertFrom-Json -DateKind String -ErrorAction Stop
+        if ($null -eq $state -or $state -isnot [pscustomobject]) { throw "state_not_object" }
+        if ($null -ne $state.worker_pid) {
+            $candidate = 0
+            if (-not [int]::TryParse([string]$state.worker_pid, [ref]$candidate) -or $candidate -le 0) { throw "state_worker_pid_invalid" }
+            if (-not $candidates.Contains($candidate)) { $candidates.Add($candidate) }
+        }
+    } catch { $uncertainties.Add("state_identity_unreadable:$($_.Exception.Message)") }
+    foreach ($candidate in $candidates) {
+        $process = $null
+        try {
+            $process = [Diagnostics.Process]::GetProcessById($candidate)
+            if ($process.HasExited) { continue }
+            $startedAt = $process.StartTime.ToUniversalTime().ToString("o")
+            $Outcome.worker_pid = $candidate
+            $Outcome.worker_wait_status = "REJECTED_HANDOFF_WORKER_ALIVE"
+            $Outcome.rejected_worker_retained = $true
+            Update-OwnedClaim -ExpectedOwnership $ClaimOwnership -Status "WAITING_REJECTED_HANDOFF_WORKER" `
+                -ActiveTrack $Outcome.track -ActiveWorkerPid $candidate -ActiveWorkerProcessStartedAtUtc $startedAt
+            return
+        } catch [ArgumentException] {
+            # GetProcessById positively establishes that this PID has exited.
+            continue
+        } catch {
+            if ($_.Exception.Message.StartsWith("CLAIM_OWNERSHIP_LOST:", [StringComparison]::Ordinal)) {
+                $Outcome.status = "CLAIM_OWNERSHIP_LOST"
+                $Outcome.error = $_.Exception.Message
+                $Outcome.rejected_worker_retained = $true
+                return
+            }
+            $uncertainties.Add("pid_identity_unreadable:$candidate`:$($_.Exception.Message)")
+        } finally { if ($process) { $process.Dispose() } }
+    }
+    if ($candidates.Count -eq 0 -and -not $AllowNoWorker) {
+        $uncertainties.Add("worker_identity_missing_after_rejected_handoff")
+    }
+    if ($uncertainties.Count -gt 0) {
+        $Outcome.worker_wait_status = "REJECTED_HANDOFF_IDENTITY_UNRESOLVED"
+        $Outcome.rejected_worker_retained = $true
+        $Outcome.worker_identity_uncertainty = $uncertainties -join ";"
+        try {
+            Update-OwnedClaim -ExpectedOwnership $ClaimOwnership -Status "REJECTED_HANDOFF_IDENTITY_UNRESOLVED" `
+                -ActiveTrack $Outcome.track -ActiveWorkerPid $null -ActiveWorkerProcessStartedAtUtc $null `
+                -UnresolvedHandoff ([ordered]@{
+                    state_path = $StatePath
+                    pre_state_sha256 = $Outcome.pre_state_sha256
+                    pre_last_attempt_id = $Outcome.pre_last_attempt_id
+                    started_at_utc = $Outcome.started_at_utc
+                })
+        } catch {
+            $Outcome.status = "CLAIM_OWNERSHIP_LOST"
+            $Outcome.error = $_.Exception.Message
+        }
+    }
+}
+
 function Invoke-TrackLauncher {
     param(
         [string]$Track,
         [string]$LauncherPath,
         [string]$StatePath,
+        [string]$CanonicalRepo = "",
+        [string]$PlanPath = "",
         [datetimeoffset]$StartedAtUtc,
         $ClaimOwnership
     )
@@ -1316,6 +1634,8 @@ function Invoke-TrackLauncher {
         worker_exit_evidence_attempt_id = $null
         worker_exit_evidence_observed_at_utc = $null
         worker_exit_evidence_error = $null
+        rejected_worker_retained = $false
+        worker_identity_uncertainty = $null
         finished_at_utc = $null
         pre_state_sha256 = $null
         post_state_sha256 = $null
@@ -1347,14 +1667,80 @@ function Invoke-TrackLauncher {
     }
 
     $pwshExe = Resolve-PowerShellExecutable
+    if ($isActivePublication) {
+        try {
+            # Reuse the entire read-only trust chain, without exiting this writer's
+            # terminal-evidence/finally path if any binding changed after the claim.
+            if ((Get-PreflightSha256 ([IO.File]::ReadAllBytes($coordinatorScriptPath))) -cne $ExpectedCoordinatorSha256) {
+                throw "COORDINATOR_CHANGED_BEFORE_PRELAUNCH_PREFLIGHT"
+            }
+            $recheckText = & $pwshExe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File $coordinatorScriptPath `
+                -PreflightOnly -Json -RegistryPath $canonicalRegistryPath -ReceiptPath $canonicalReceiptPath `
+                -ExpectedRegistrySha256 $ExpectedRegistrySha256 -ExpectedReceiptSha256 $ExpectedReceiptSha256 `
+                -ExpectedCoordinatorSha256 $ExpectedCoordinatorSha256 -ExpectedValidatorSha256 $ExpectedValidatorSha256 `
+                -ExpectedControlPlaneGitCommit $ExpectedControlPlaneGitCommit 2>&1 | Out-String
+            $recheckExit = $LASTEXITCODE
+            $recheck = $recheckText | ConvertFrom-Json -DateKind String -ErrorAction Stop
+            if ($recheckExit -ne 0 -or [string]$recheck.status -cne "ACTIVE_PREFLIGHT_OK" -or
+                [string]$recheck.reason -cne "PREFLIGHT_ONLY" -or [string]$recheck.registry_decision -cne "ACTIVE_ROUTABLE" -or
+                -not (Test-PreflightJsonEqual $recheck.launch_allowed $true) -or
+                -not (Test-PreflightJsonEqual $recheck.execution_performed $false) -or
+                [string]$recheck.active_strategy_id -cne $Track -or
+                [string]$recheck.registry_raw_sha256 -cne $ExpectedRegistrySha256 -or
+                [string]$recheck.receipt_raw_sha256 -cne $ExpectedReceiptSha256) {
+                throw "PRELAUNCH_PREFLIGHT_FAILED:$recheckText"
+            }
+            $currentState = Read-TrackState -Track $Track -Path $StatePath -ReferenceUtc ([datetimeoffset]::UtcNow)
+            if (-not $currentState.due) {
+                $outcome.status = "NOT_DUE_AFTER_RECHECK"
+                $outcome.worker_wait_status = "NO_WORKER"
+                $outcome.finished_at_utc = Get-UtcIso
+                return [pscustomobject]$outcome
+            }
+            if ($currentState.worker_pid -and (Test-ProcessIdentityAlive -ProcessId ([int]$currentState.worker_pid) -ExpectedStartUtc ([string]$currentState.worker_process_started_at_utc))) {
+                $outcome.status = "ACTIVE_TRACK_WORKER_PRESENT"
+                $outcome.worker_wait_status = "DUPLICATE_SKIPPED"
+                $outcome.finished_at_utc = Get-UtcIso
+                return [pscustomobject]$outcome
+            }
+            $preEvidence = Read-TrackStateEvidence -Path $StatePath
+            $outcome.pre_state_sha256 = $preEvidence.hash
+            $outcome.pre_last_attempt_id = $preEvidence.last_attempt_id
+            $outcome.pre_last_finished_at_utc = $preEvidence.last_finished_at_utc
+            $launchTopology = Read-LegacyAutomationTopology
+            if (-not $launchTopology.valid) {
+                $outcome.status = "LEGACY_TOPOLOGY_CHANGED"
+                $outcome.error = @($launchTopology.validation_errors) -join ";"
+                $outcome.finished_at_utc = Get-UtcIso
+                return [pscustomobject]$outcome
+            }
+            foreach ($legacyRecord in $launchTopology.automations) {
+                if ((Get-PreflightSha256 ([IO.File]::ReadAllBytes([string]$legacyRecord.path))) -cne [string]$legacyRecord.config_sha256) {
+                    $outcome.status = "LEGACY_TOPOLOGY_CHANGED"
+                    $outcome.error = "legacy configuration changed during prelaunch check: $($legacyRecord.id)"
+                    $outcome.finished_at_utc = Get-UtcIso
+                    return [pscustomobject]$outcome
+                }
+            }
+        } catch {
+            $outcome.status = "RUNTIME_BINDING_CHANGED"
+            $outcome.error = $_.Exception.Message
+            $outcome.finished_at_utc = Get-UtcIso
+            return [pscustomobject]$outcome
+        }
+    }
     $previousLocation = Get-Location
     try {
-        Set-Location -LiteralPath $repoRoot
-        $nativeOutput = & $pwshExe -NoProfile -ExecutionPolicy Bypass -File $LauncherPath -ScheduledTick -Json 2>&1 | Out-String
+        $launchCwd = if ($CanonicalRepo) { $CanonicalRepo } else { $repoRoot }
+        Set-Location -LiteralPath $launchCwd
+        $launcherArguments = @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $LauncherPath, "-ScheduledTick", "-Json")
+        if ($PlanPath) { $launcherArguments += @("-PlanPath", $PlanPath) }
+        $nativeOutput = & $pwshExe @launcherArguments 2>&1 | Out-String
         $outcome.launcher_exit_code = $LASTEXITCODE
     } catch {
         $outcome.status = "LAUNCHER_EXCEPTION"
         $outcome.error = $_.Exception.Message
+        Protect-RejectedLauncherWorker $outcome $null $StatePath $ClaimOwnership
         $outcome.finished_at_utc = Get-UtcIso
         return [pscustomobject]$outcome
     } finally {
@@ -1366,6 +1752,7 @@ function Invoke-TrackLauncher {
     } catch {
         $outcome.status = "INVALID_LAUNCHER_OUTPUT"
         $outcome.error = "launcher output is not JSON: " + $nativeOutput.Trim()
+        Protect-RejectedLauncherWorker $outcome $null $StatePath $ClaimOwnership
         $outcome.finished_at_utc = Get-UtcIso
         return [pscustomobject]$outcome
     }
@@ -1373,12 +1760,24 @@ function Invoke-TrackLauncher {
     if ($outcome.launcher_exit_code -ne 0) {
         $outcome.status = "LAUNCHER_FAILED"
         $outcome.error = "launcher exit code $($outcome.launcher_exit_code)"
+        Protect-RejectedLauncherWorker $outcome $launcherPayload $StatePath $ClaimOwnership
         $outcome.finished_at_utc = Get-UtcIso
         return [pscustomobject]$outcome
     }
     if ([string]$launcherPayload.status -eq "NOT_DUE") {
         $outcome.status = "NOT_DUE_AFTER_RECHECK"
-        $outcome.worker_wait_status = "NO_WORKER"
+        Protect-RejectedLauncherWorker $outcome $launcherPayload $StatePath $ClaimOwnership -AllowNoWorker
+        if ($outcome.rejected_worker_retained) {
+            if ($outcome.status -ne "CLAIM_OWNERSHIP_LOST") { $outcome.status = "INVALID_NOT_DUE_HANDOFF" }
+            $outcome.error = "NOT_DUE handoff does not establish absence of a live worker"
+        } else { $outcome.worker_wait_status = "NO_WORKER" }
+        $outcome.finished_at_utc = Get-UtcIso
+        return [pscustomobject]$outcome
+    }
+    if ([string]$launcherPayload.status -cnotin @("VISIBLE_TERMINAL_LAUNCHED", "ALREADY_RUNNING")) {
+        $outcome.status = "INVALID_LAUNCHER_STATUS"
+        $outcome.error = "unrecognized launcher success status: $($launcherPayload.status)"
+        Protect-RejectedLauncherWorker $outcome $launcherPayload $StatePath $ClaimOwnership
         $outcome.finished_at_utc = Get-UtcIso
         return [pscustomobject]$outcome
     }
@@ -1392,6 +1791,7 @@ function Invoke-TrackLauncher {
     if (-not $workerPid -or $workerPid -le 0) {
         $outcome.status = "NO_VISIBLE_WORKER_PID"
         $outcome.error = "launcher status '$($launcherPayload.status)' did not return visible_terminal_pid"
+        Protect-RejectedLauncherWorker $outcome $launcherPayload $StatePath $ClaimOwnership
         $outcome.finished_at_utc = Get-UtcIso
         return [pscustomobject]$outcome
     }
@@ -1560,6 +1960,9 @@ function Invoke-TrackLauncher {
 
 function Publish-Result {
     param($Payload, [int]$ExitCode)
+    if ($isActivePublication) {
+        foreach ($entry in $publicationProvenance.GetEnumerator()) { $Payload[$entry.Key] = $entry.Value }
+    }
     $Payload | ConvertTo-Json -Depth 40
     exit $ExitCode
 }
@@ -1609,11 +2012,7 @@ function Persist-CoordinatorTerminalEvidence {
         track_outcomes = @($TrackOutcomes)
         pending_retry = $PendingRetry
         retained_claim_for_active_worker = $RetainedClaim
-        state_paths = [ordered]@{
-            listing = $ListingStatePath
-            premarket = $PremarketStatePath
-            preipo = $PreipoStatePath
-        }
+        state_paths = $boundStatePaths
         attempts_path = $CoordinatorAttemptsPath
         claim_path = $CoordinatorClaimPath
         claim_archive_path = $CoordinatorClaimArchivePath
@@ -1961,6 +2360,8 @@ try {
                 -Track $track `
                 -LauncherPath $definition.launcher_path `
                 -StatePath $definition.state_path `
+                -CanonicalRepo $definition.canonical_repo `
+                -PlanPath $definition.plan_path `
                 -StartedAtUtc ([datetimeoffset]::UtcNow) `
                 -ClaimOwnership $claimOwnership
             $outcomes.Add($outcome)
@@ -1970,6 +2371,10 @@ try {
             }
             if ($outcome.status -eq "CLAIM_OWNERSHIP_LOST") {
                 $claimOwnershipLost = $true
+                $retainClaim = $true
+                break
+            }
+            if ($outcome.rejected_worker_retained) {
                 $retainClaim = $true
                 break
             }
@@ -2091,11 +2496,7 @@ try {
             track_outcomes = @($terminalPayload.track_outcomes)
             pending_retry = [bool]$terminalPayload.pending_retry
             retained_claim_for_active_worker = $retainClaim
-            state_paths = [ordered]@{
-                listing = $ListingStatePath
-                premarket = $PremarketStatePath
-                preipo = $PreipoStatePath
-            }
+            state_paths = $boundStatePaths
             attempts_path = $CoordinatorAttemptsPath
             claim_path = $CoordinatorClaimPath
             claim_archive_path = $CoordinatorClaimArchivePath

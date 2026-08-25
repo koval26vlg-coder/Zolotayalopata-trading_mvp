@@ -1,4 +1,4 @@
-param()
+param([string]$TestFilter = "")
 
 $ErrorActionPreference = "Stop"
 
@@ -31,6 +31,7 @@ function Assert-Equal {
 
 function Invoke-Test {
     param([string]$Name, [scriptblock]$Body)
+    if ($TestFilter -and $Name -notmatch $TestFilter) { return }
     try {
         & $Body
         $script:passed += 1
@@ -179,7 +180,10 @@ param([switch]`$ScheduledTick, [switch]`$Json)
 `$ErrorActionPreference = 'Stop'
 if (-not `$ScheduledTick -or -not `$Json) { throw 'coordinator must use -ScheduledTick -Json' }
 [System.IO.File]::AppendAllText('$escapedLog', '{"track":"$TrackName"}' + [Environment]::NewLine, [System.Text.UTF8Encoding]::new(`$false))
-[ordered]@{ status = '$LauncherStatus' } | ConvertTo-Json -Compress
+`$payload = [ordered]@{ status = '$LauncherStatus' }
+# BROKEN models a rejected, already-exited worker, not an unknown handoff.
+if ('$LauncherStatus' -eq 'BROKEN') { `$payload['visible_terminal_pid'] = 2147483647 }
+`$payload | ConvertTo-Json -Compress
 "@ | Set-Content -LiteralPath $Path -Encoding utf8NoBOM
 }
 
@@ -1617,6 +1621,109 @@ Invoke-Test "worker timeout is bounded, blocks later tracks, and retains the act
     } catch { }
 }
 
+foreach ($rejectionCase in @(
+    @{ name="unknown status"; expected="INVALID_LAUNCHER_STATUS"; mode="unknown" },
+    @{ name="nonzero launcher exit"; expected="LAUNCHER_FAILED"; mode="nonzero" },
+    @{ name="invalid JSON with state PID"; expected="INVALID_LAUNCHER_OUTPUT"; mode="invalid_json" },
+    @{ name="terminal_pid only"; expected="NO_VISIBLE_WORKER_PID"; mode="terminal_pid" }
+    @{ name="NOT_DUE with live PID"; expected="INVALID_NOT_DUE_HANDOFF"; mode="not_due" }
+)) {
+    Invoke-Test "rejected handoff $($rejectionCase.name) retains a live worker and blocks another writer" {
+        $fixture=New-TestFixture -DueTracks @("listing", "premarket")
+        $worker=Start-TestWorker -DelayMs 8000
+        try {
+            New-LauncherStub -Path $fixture.tracks.listing.launcher_path -TrackName "listing" -InvocationLog $fixture.invocation_log -WorkerPidOverride $worker.Id
+            New-StaticLauncherStub -Path $fixture.tracks.premarket.launcher_path -TrackName "premarket" -InvocationLog $fixture.invocation_log -LauncherStatus "NOT_DUE"
+            $source=Get-Content -Raw -LiteralPath $fixture.tracks.listing.launcher_path
+            switch ($rejectionCase.mode) {
+                "unknown" { $source=$source.Replace("status = 'VISIBLE_TERMINAL_LAUNCHED'", "status = 'UNKNOWN_SUCCESS'") }
+                "nonzero" { $source += "`nexit 7`n" }
+                "terminal_pid" { $source=$source.Replace("visible_terminal_pid", "terminal_pid") }
+                "not_due" { $source=$source.Replace("status = 'VISIBLE_TERMINAL_LAUNCHED'", "status = 'NOT_DUE'") }
+                "invalid_json" {
+                    $statePath=$fixture.tracks.listing.state_path.Replace("'", "''")
+                    $writeState="`$state=Get-Content -Raw -LiteralPath '$statePath' | ConvertFrom-Json; `$state.worker_pid=`$workerPid; `$state | ConvertTo-Json | Set-Content -LiteralPath '$statePath' -Encoding utf8NoBOM`n"
+                    $source=$source.Replace("[ordered]@{", ($writeState + "Write-Output 'unexpected launcher noise'`n[ordered]@{"))
+                }
+            }
+            [IO.File]::WriteAllText($fixture.tracks.listing.launcher_path, $source, [Text.UTF8Encoding]::new($false))
+            $result=Invoke-Coordinator -Fixture $fixture -WorkerExitTimeoutSec 1
+            Assert-Equal $result.exit_code 2 "rejected live-worker handoff was accepted: $($result.raw)"
+            Assert-Equal $result.payload.track_outcomes[0].status $rejectionCase.expected "wrong rejected-handoff status"
+            Assert-True (-not $worker.HasExited) "live-worker fixture exited before assertions"
+            Assert-Equal (@(Get-Content -LiteralPath $fixture.invocation_log | ForEach-Object { ($_ | ConvertFrom-Json).track }) -join ",") "listing" "another track launched while rejected worker was alive"
+            Assert-True (Test-Path -LiteralPath $fixture.coordinator_claim) "claim was released while rejected worker was alive"
+            $claim=Get-Content -Raw -LiteralPath $fixture.coordinator_claim | ConvertFrom-Json
+            Assert-Equal ([int]$claim.active_worker_pid) $worker.Id "claim did not preserve exact live worker PID"
+            $claimHash=Get-FileSha256 $fixture.coordinator_claim
+            $again=Invoke-Coordinator -Fixture $fixture -WorkerExitTimeoutSec 1
+            Assert-Equal $again.payload.status "COORDINATOR_ALREADY_RUNNING" "next tick did not suppress duplicate for rejected live worker"
+            Assert-Equal (Get-FileSha256 $fixture.coordinator_claim) $claimHash "duplicate tick changed retained claim"
+            Assert-Equal (@(Get-Content -LiteralPath $fixture.invocation_log | ForEach-Object { ($_ | ConvertFrom-Json).track }) -join ",") "listing" "duplicate tick launched a writer"
+        } finally {
+            [void]$worker.WaitForExit(10000)
+            $worker.Dispose()
+        }
+    }
+}
+
+Invoke-Test "rejected handoff without observable PID preserves explicit unresolved identity" {
+    $fixture=New-TestFixture -DueTracks @("listing", "premarket")
+    $oldState=Get-Content -Raw -LiteralPath $fixture.tracks.listing.state_path | ConvertFrom-Json
+    $oldState.status="COMPLETE"
+    Write-TestJson -Path $fixture.tracks.listing.state_path -Value $oldState
+    $logPath=$fixture.invocation_log.Replace("'", "''")
+    $launcherText="param([switch]`$ScheduledTick,[switch]`$Json)`n[IO.File]::AppendAllText('$logPath', '{`"track`":`"listing`"}' + [Environment]::NewLine)`nWrite-Output 'malformed handoff without PID'`n"
+    [IO.File]::WriteAllText($fixture.tracks.listing.launcher_path, $launcherText, [Text.UTF8Encoding]::new($false))
+    New-StaticLauncherStub -Path $fixture.tracks.premarket.launcher_path -TrackName "premarket" -InvocationLog $fixture.invocation_log -LauncherStatus "NOT_DUE"
+    $result=Invoke-Coordinator -Fixture $fixture
+    Assert-Equal $result.exit_code 2 "unknown handoff did not fail"
+    Assert-Equal $result.payload.track_outcomes[0].worker_wait_status "REJECTED_HANDOFF_IDENTITY_UNRESOLVED" "missing PID was treated as proof of exit"
+    Assert-Equal (@(Get-Content -LiteralPath $fixture.invocation_log).Count) 1 "unknown handoff did not block later tracks"
+    $claim=Get-Content -Raw -LiteralPath $fixture.coordinator_claim | ConvertFrom-Json
+    Assert-Equal $claim.status "REJECTED_HANDOFF_IDENTITY_UNRESOLVED" "unresolved identity was not durable"
+    Assert-Equal $claim.active_worker_pid $null "a worker PID was invented"
+    $claimHash=Get-FileSha256 $fixture.coordinator_claim
+    $next=Invoke-Coordinator -Fixture $fixture
+    Assert-Equal $next.exit_code 2 "unresolved handoff allowed a duplicate"
+    Assert-Equal $next.payload.claim_failure_reason "worker_identity_unresolved" "unresolved identity reason was lost"
+    Assert-Equal (Get-FileSha256 $fixture.coordinator_claim) $claimHash "unresolved claim was modified or archived"
+    Assert-Equal (@(Get-Content -LiteralPath $fixture.invocation_log).Count) 1 "next tick launched after an unresolved handoff"
+}
+
+Invoke-Test "unresolved handoff recovers only from fresh canonical PID and exact start evidence" {
+    $fixture=New-TestFixture -DueTracks @("listing")
+    [IO.File]::WriteAllText($fixture.tracks.listing.launcher_path, "param([switch]`$ScheduledTick,[switch]`$Json)`nWrite-Output 'invalid handoff'`n", [Text.UTF8Encoding]::new($false))
+    $first=Invoke-Coordinator -Fixture $fixture
+    Assert-Equal $first.payload.track_outcomes[0].worker_wait_status "REJECTED_HANDOFF_IDENTITY_UNRESOLVED" "first handoff was not unresolved"
+    $originalClaim=Get-Content -Raw -LiteralPath $fixture.coordinator_claim | ConvertFrom-Json
+    $worker=Start-TestWorker -DelayMs 8000 -StatePath $fixture.tracks.listing.state_path -AttemptId "late-terminal"
+    try {
+        $state=Get-Content -Raw -LiteralPath $fixture.tracks.listing.state_path | ConvertFrom-Json
+        $state.status="RUNNING"
+        $state.last_attempt_id="late-start"
+        $state.worker_pid=$worker.Id
+        $state | Add-Member -NotePropertyName worker_process_started_at_utc -NotePropertyValue $worker.StartTime.ToUniversalTime().ToString("o") -Force
+        Write-TestJson -Path $fixture.tracks.listing.state_path -Value $state
+        $next=Invoke-Coordinator -Fixture $fixture
+        Assert-Equal $next.payload.status "COORDINATOR_ALREADY_RUNNING" "fresh exact canonical worker was not recovered"
+        Assert-Equal $next.payload.reason "active_worker_alive" "recovered worker did not suppress duplicate"
+        $recovered=Get-Content -Raw -LiteralPath $fixture.coordinator_claim | ConvertFrom-Json
+        Assert-Equal ([int]$recovered.active_worker_pid) $worker.Id "claim did not bind recovered worker identity"
+        Assert-Equal $recovered.coordinator_run_id $originalClaim.coordinator_run_id "recovery replaced the unresolved owner"
+        [void]$worker.WaitForExit(10000)
+        New-StaticLauncherStub -Path $fixture.tracks.listing.launcher_path -TrackName "listing" -InvocationLog $fixture.invocation_log -LauncherStatus "NOT_DUE"
+        $afterExit=Invoke-Coordinator -Fixture $fixture
+        Assert-Equal $afterExit.exit_code 0 "verified worker exit did not unblock later tick: $($afterExit.raw)"
+        Assert-True (-not (Test-Path -LiteralPath $fixture.coordinator_claim)) "completed recovery claim stayed permanently blocked"
+        $archives=@(Get-ChildItem -LiteralPath $fixture.claim_archive -File | ForEach-Object { Get-Content -Raw -LiteralPath $_.FullName | ConvertFrom-Json })
+        Assert-True (@($archives | Where-Object { $_.coordinator_run_id -eq $originalClaim.coordinator_run_id }).Count -eq 1) "original rejected claim was not preserved in archive"
+    } finally {
+        [void]$worker.WaitForExit(10000)
+        $worker.Dispose()
+    }
+}
+
 Invoke-Test "claim release archive failure corrects durable terminal state and ledger" {
     $fixture = New-TestFixture -DueTracks @("listing")
     $listingWorker = Start-TestWorker -DelayMs 3000 -StatePath $fixture.tracks.listing.state_path -AttemptId "after-release-failure"
@@ -1678,7 +1785,8 @@ Invoke-Test "installer defines one hidden five-minute no-model task and uninstal
     Assert-True ($coordinator -match 'zolotyaylopata\.external_registry_materialization_receipt\.v2') "coordinator does not validate the receipt schema"
     Assert-True ($coordinator -match 'PUBLICATION_INSIDE_CANONICAL_REPOSITORY') "coordinator does not reject in-repository publications"
     Assert-True ($coordinator -match 'CONTROL_PLANE_FILE_SHA256_MISMATCH') "coordinator does not require worktree and committed-blob SHA equality"
-    Assert-True ($coordinator -match 'CANONICAL_REGISTRY_NOT_EXACT_STAGED') "coordinator does not require the exact staged validator result"
+    Assert-True ($coordinator -match 'CANONICAL_REGISTRY_NOT_EXACT_BOUND_PUBLICATION') "coordinator does not require the exact bound validator result"
+    Assert-True ($coordinator -match '\$expectedDecision = if \(\$isActivePublication\) \{ "ACTIVE_ROUTABLE" \} else \{ "STAGED_FAIL_CLOSED" \}') "coordinator does not distinguish exact ACTIVE and STAGING results"
     Assert-True ($coordinator -notmatch '-cin\s+@\("STAGED_FAIL_CLOSED",\s*"PARTIAL_RUNTIME_BLOCK"\)') "coordinator still promotes PARTIAL_RUNTIME_BLOCK"
     Assert-True ($coordinator -notmatch "WindowStyle\s+Hidden") "coordinator hides a worker"
     Assert-True ($coordinator -notmatch "Start-Process") "coordinator starts a process outside the existing visible orchestrators"
@@ -1813,5 +1921,5 @@ foreach ($root in $script:externalTestRoots) {
 }
 
 Write-Host "RESULT passed=$script:passed failed=$script:failed"
-if ($script:failed -gt 0) { exit 1 }
+if ($script:failed -gt 0 -or $script:passed -eq 0) { exit 1 }
 exit 0

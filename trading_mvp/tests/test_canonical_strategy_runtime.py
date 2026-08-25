@@ -23,6 +23,7 @@ import canonical_strategy_runtime as runtime_registry  # noqa: E402
 
 
 SCHEMA = "zolotyaylopata.canonical_strategy_runtime.v1"
+ACTIVE_SCHEMA = "zolotyaylopata.canonical_strategy_runtime.v2"
 CHECKED_IN_TEMPLATE = (
     REPO_ROOT / "docs" / "control" / "canonical_strategy_runtime.staging.json"
 )
@@ -76,7 +77,10 @@ class RegistryFixture:
         self.launcher = root / "start_visible.ps1"
         self.launcher.write_bytes(b"Write-Output 'fixture visible launcher'\r\n")
         self.state = root / "state.json"
-        self.state.write_text('{"status":"IDLE"}', encoding="utf-8")
+        self.state.write_text(
+            '{"status":"IDLE","next_interval_at_utc":"2026-08-25T17:00:00Z"}',
+            encoding="utf-8",
+        )
         self.ledger = root / "attempts.jsonl"
         self.ledger.write_bytes(b"")
         self.plan = root / "plan.json"
@@ -297,6 +301,180 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
         self.assertFalse(result["launch_allowed"])
         self.assertEqual(result["runtimes"][0]["decision"], "READY_NOT_ROUTABLE")
         self.assertFalse(result["runtimes"][0]["launch_allowed"])
+
+    def test_valid_active_registry_routes_exactly_one_public_research_runtime(
+        self,
+    ) -> None:
+        runtime = self.fixture.payload["runtimes"][0]
+        self.fixture.payload["schema"] = ACTIVE_SCHEMA
+        self.fixture.payload["registry_id"] = (
+            "canonical_strategy_runtime_active_20260826_v1"
+        )
+        self.fixture.payload["activation_status"] = "ACTIVE_INSTALLED"
+        self.fixture.payload["active_strategy_id"] = runtime["strategy_id"]
+        runtime["scheduler_routable"] = True
+        self.fixture.write()
+
+        result = self.validate()
+
+        self.assertTrue(result["registry_valid"], result)
+        self.assertTrue(result["ok"], result)
+        self.assertEqual(result["decision"], "ACTIVE_ROUTABLE")
+        self.assertTrue(result["launch_allowed"])
+        self.assertEqual(result["runtimes"][0]["decision"], "READY_ROUTABLE")
+        self.assertTrue(result["runtimes"][0]["launch_allowed"])
+
+    def test_active_registry_requires_exact_active_strategy_id(self) -> None:
+        runtime = self.fixture.payload["runtimes"][0]
+        self.fixture.payload["schema"] = ACTIVE_SCHEMA
+        self.fixture.payload["registry_id"] = (
+            "canonical_strategy_runtime_active_20260826_v1"
+        )
+        self.fixture.payload["activation_status"] = "ACTIVE_INSTALLED"
+        runtime["scheduler_routable"] = True
+        self.fixture.write()
+
+        missing = self.validate()
+
+        self.assertFalse(missing["registry_valid"], missing)
+        self.assertTrue(
+            any("active_strategy_id" in reason for reason in missing["reasons"]),
+            missing,
+        )
+
+        self.fixture.payload["active_strategy_id"] = "different_strategy"
+        self.fixture.write()
+        mismatched = self.validate()
+        self.assertFalse(mismatched["registry_valid"], mismatched)
+        self.assertIn("active_strategy_id_mismatch", mismatched["reasons"])
+
+    def test_active_registry_rejects_unready_runtime_or_unapproved_mode(self) -> None:
+        runtime = self.fixture.payload["runtimes"][0]
+        self.fixture.payload["schema"] = ACTIVE_SCHEMA
+        self.fixture.payload["registry_id"] = (
+            "canonical_strategy_runtime_active_20260826_v1"
+        )
+        self.fixture.payload["activation_status"] = "ACTIVE_INSTALLED"
+        self.fixture.payload["active_strategy_id"] = runtime["strategy_id"]
+        runtime["scheduler_routable"] = True
+
+        runtime["activation_readiness"] = "NO_CAPTURE_PLAN_REQUIRES_NEW_ACTIVATION_PLAN"
+        self.fixture.write()
+        unready = self.validate()
+        self.assertFalse(unready["registry_valid"], unready)
+        self.assertIn(
+            "active_runtime_activation_readiness_invalid:fixture_spot_primary",
+            unready["reasons"],
+        )
+
+        runtime["activation_readiness"] = "READY_AFTER_ROUTER_MIGRATION"
+        runtime["allowed_modes"] = ["DISCOVERY", "DESCRIPTIVE_REPLAY"]
+        self.fixture.write()
+        unapproved_mode = self.validate()
+        self.assertFalse(unapproved_mode["registry_valid"], unapproved_mode)
+        self.assertIn(
+            "active_runtime_mode_invalid:fixture_spot_primary:DESCRIPTIVE_REPLAY",
+            unapproved_mode["reasons"],
+        )
+
+    def test_active_registry_requires_due_state_contract_before_routing(self) -> None:
+        runtime = self.fixture.payload["runtimes"][0]
+        self.fixture.payload["schema"] = ACTIVE_SCHEMA
+        self.fixture.payload["registry_id"] = (
+            "canonical_strategy_runtime_active_20260826_v1"
+        )
+        self.fixture.payload["activation_status"] = "ACTIVE_INSTALLED"
+        self.fixture.payload["active_strategy_id"] = runtime["strategy_id"]
+        runtime["scheduler_routable"] = True
+        self.fixture.state.write_text('{"status":"IDLE"}', encoding="utf-8")
+        self.fixture.write()
+
+        result = self.validate()
+
+        self.assertTrue(result["registry_valid"], result)
+        self.assertFalse(result["ok"], result)
+        self.assertEqual(result["decision"], "ACTIVE_RUNTIME_BLOCKED")
+        self.assertFalse(result["launch_allowed"])
+        self.assertEqual(result["runtimes"][0]["state_status"], "CORRUPT")
+        self.assertEqual(
+            result["runtimes"][0]["decision"], "RETRY_WITHOUT_LAUNCH"
+        )
+
+    def test_active_registry_requires_nonempty_state_status(self) -> None:
+        runtime = self.fixture.payload["runtimes"][0]
+        self.fixture.payload["schema"] = ACTIVE_SCHEMA
+        self.fixture.payload["registry_id"] = (
+            "canonical_strategy_runtime_active_20260826_v1"
+        )
+        self.fixture.payload["activation_status"] = "ACTIVE_INSTALLED"
+        self.fixture.payload["active_strategy_id"] = runtime["strategy_id"]
+        runtime["scheduler_routable"] = True
+        self.fixture.state.write_text(
+            '{"next_interval_at_utc":"2026-08-25T17:00:00Z"}',
+            encoding="utf-8",
+        )
+        self.fixture.write()
+
+        result = self.validate()
+
+        self.assertTrue(result["registry_valid"], result)
+        self.assertFalse(result["ok"], result)
+        self.assertEqual(result["decision"], "ACTIVE_RUNTIME_BLOCKED")
+        self.assertEqual(result["runtimes"][0]["state_status"], "CORRUPT")
+        self.assertFalse(result["launch_allowed"])
+
+    def test_active_registry_rejects_two_active_routable_runtimes(self) -> None:
+        first = self.fixture.payload["runtimes"][0]
+        self.fixture.payload["schema"] = ACTIVE_SCHEMA
+        self.fixture.payload["registry_id"] = (
+            "canonical_strategy_runtime_active_20260826_v1"
+        )
+        self.fixture.payload["activation_status"] = "ACTIVE_INSTALLED"
+        self.fixture.payload["active_strategy_id"] = first["strategy_id"]
+        first["scheduler_routable"] = True
+        second = self.fixture.add_runtime(
+            strategy_id="fixture_crypto_premarket",
+            namespace_prefix="listing.crypto.premarket",
+            scope="crypto_premarket_perpetual",
+            venues=["bybit"],
+        )
+        second["scheduler_routable"] = True
+        self.fixture.write()
+
+        result = self.validate()
+
+        self.assertFalse(result["registry_valid"], result)
+        self.assertIn("active_runtime_count_invalid:2", result["reasons"])
+        self.assertIn("routable_runtime_count_invalid:2", result["reasons"])
+
+    def test_active_registry_ignores_missing_state_for_inactive_runtime(self) -> None:
+        first = self.fixture.payload["runtimes"][0]
+        self.fixture.payload["schema"] = ACTIVE_SCHEMA
+        self.fixture.payload["registry_id"] = (
+            "canonical_strategy_runtime_active_20260826_v1"
+        )
+        self.fixture.payload["activation_status"] = "ACTIVE_INSTALLED"
+        self.fixture.payload["active_strategy_id"] = first["strategy_id"]
+        first["scheduler_routable"] = True
+        second = self.fixture.add_runtime(
+            strategy_id="fixture_crypto_premarket",
+            namespace_prefix="listing.crypto.premarket",
+            scope="crypto_premarket_perpetual",
+            venues=["bybit"],
+            runtime_status="INACTIVE",
+        )
+        second["scheduler_routable"] = False
+        second["state_path"] = str(Path(self.temp.name) / "missing-inactive.json")
+        self.fixture.write()
+
+        result = self.validate()
+
+        self.assertTrue(result["ok"], result)
+        self.assertTrue(result["launch_allowed"], result)
+        rows = {row["strategy_id"]: row for row in result["runtimes"]}
+        self.assertEqual(
+            rows["fixture_crypto_premarket"]["state_status"], "IGNORED_INACTIVE"
+        )
 
     def test_unknown_fields_are_rejected_at_every_schema_level(self) -> None:
         targets = (
@@ -598,7 +776,7 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
             {
                 "spot_listing_momentum_mexc_gate_v2",
                 "spot_listing_momentum_expansion_v10",
-                "crypto_premarket_perpetual_capture_v27",
+                "crypto_premarket_perpetual_capture_v28",
                 "preipo_perpetual_event_v11",
             },
         )
@@ -609,7 +787,7 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
         )
         self.assertTrue(all(row["public_data_only"] for row in runtimes.values()))
         self.assertIsNone(
-            runtimes["crypto_premarket_perpetual_capture_v27"]["launcher_path"]
+            runtimes["crypto_premarket_perpetual_capture_v28"]["launcher_path"]
         )
         self.assertEqual(
             runtimes["preipo_perpetual_event_v11"]["activation_readiness"],
@@ -630,6 +808,7 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
             REPO_ROOT / "tools/invoke_listing_strategy_due_coordinator.ps1",
             REPO_ROOT / "trading_mvp/src/canonical_strategy_runtime.py",
             REPO_ROOT / "trading_mvp/src/external_registry_materializer.py",
+            REPO_ROOT / "trading_mvp/src/external_registry_promoter.py",
         }
         for runtime in payload["runtimes"]:
             if Path(runtime["canonical_repo"]).resolve() != REPO_ROOT.resolve():

@@ -14,7 +14,9 @@ from typing import Any, Iterable, Sequence
 
 
 SCHEMA = "zolotyaylopata.canonical_strategy_runtime.v1"
+ACTIVE_SCHEMA = "zolotyaylopata.canonical_strategy_runtime.v2"
 STAGING_ACTIVATION_STATUS = "STAGING_NOT_INSTALLED"
+ACTIVE_ACTIVATION_STATUS = "ACTIVE_INSTALLED"
 EXTERNAL_REGISTRY_PATH = (
     Path.home()
     / "AppData"
@@ -36,6 +38,7 @@ _TOP_LEVEL_FIELDS = {
     "canonical_owners",
     "runtimes",
 }
+_ACTIVE_TOP_LEVEL_FIELDS = _TOP_LEVEL_FIELDS | {"active_strategy_id"}
 _OWNER_FIELDS = {
     "strategy_id",
     "namespace_prefix",
@@ -72,6 +75,8 @@ _RUNTIME_FIELDS = {
 }
 _IMPLEMENTATION_BINDING_FIELDS = {"role", "path", "sha256"}
 _RUNTIME_STATUSES = {"ACTIVE", "INACTIVE", "RETIRED"}
+_ACTIVE_RUNTIME_READINESS = "READY_AFTER_ROUTER_MIGRATION"
+_ACTIVE_ALLOWED_MODES = {"DISCOVERY", "PAPER_RESEARCH"}
 
 
 class DuplicateJsonKeyError(ValueError):
@@ -298,18 +303,35 @@ def _validate_timestamp(value: Any) -> bool:
 
 
 def _validate_structure(payload: Any) -> tuple[list[str], list[dict[str, Any]]]:
-    reasons = _unknown_or_missing_fields(payload, _TOP_LEVEL_FIELDS, "registry")
+    expected_top_level_fields = (
+        _ACTIVE_TOP_LEVEL_FIELDS
+        if isinstance(payload, dict) and payload.get("schema") == ACTIVE_SCHEMA
+        else _TOP_LEVEL_FIELDS
+    )
+    reasons = _unknown_or_missing_fields(
+        payload, expected_top_level_fields, "registry"
+    )
     if reasons or not isinstance(payload, dict):
         return reasons, []
 
-    if payload.get("schema") != SCHEMA:
+    schema = payload.get("schema")
+    activation_status = payload.get("activation_status")
+    if schema not in {SCHEMA, ACTIVE_SCHEMA}:
         reasons.append("schema_invalid")
     if not _valid_identifier(payload.get("registry_id")):
         reasons.append("registry_id_invalid")
     if not _validate_timestamp(payload.get("generated_at_utc")):
         reasons.append("generated_at_utc_invalid")
-    if payload.get("activation_status") != STAGING_ACTIVATION_STATUS:
+    expected_activation_status = {
+        SCHEMA: STAGING_ACTIVATION_STATUS,
+        ACTIVE_SCHEMA: ACTIVE_ACTIVATION_STATUS,
+    }.get(schema)
+    if activation_status != expected_activation_status:
         reasons.append("activation_status_invalid")
+    is_staging = schema == SCHEMA and activation_status == STAGING_ACTIVATION_STATUS
+    is_active = schema == ACTIVE_SCHEMA and activation_status == ACTIVE_ACTIVATION_STATUS
+    if is_active and not _valid_identifier(payload.get("active_strategy_id")):
+        reasons.append("active_strategy_id_invalid")
 
     owners = payload.get("canonical_owners")
     runtimes = payload.get("runtimes")
@@ -483,10 +505,17 @@ def _validate_structure(payload: Any) -> tuple[list[str], list[dict[str, Any]]]:
             reasons.append(f"public_data_only_required:{strategy_id}")
         if runtime.get("live_trading_allowed") is not False:
             reasons.append(f"live_trading_forbidden:{strategy_id}")
-        if runtime.get("scheduler_routable") is True:
+        if is_staging and runtime.get("scheduler_routable") is True:
             reasons.append(f"staging_runtime_routable:{strategy_id}")
-            if runtime.get("runtime_status") == "RETIRED":
-                reasons.append(f"retired_runtime_routable:{strategy_id}")
+        if (
+            runtime.get("runtime_status") in {"INACTIVE", "RETIRED"}
+            and runtime.get("scheduler_routable") is True
+        ):
+            reasons.append(f"nonactive_runtime_routable:{strategy_id}")
+        if runtime.get("runtime_status") == "RETIRED" and runtime.get(
+            "scheduler_routable"
+        ) is True:
+            reasons.append(f"retired_runtime_routable:{strategy_id}")
 
         if not row_reasons:
             structurally_valid_runtimes.append(runtime)
@@ -520,6 +549,36 @@ def _validate_structure(payload: Any) -> tuple[list[str], list[dict[str, Any]]]:
         for runtime in runtimes
         if isinstance(runtime, dict) and runtime.get("runtime_status") == "ACTIVE"
     ]
+    if is_active:
+        routable = [
+            runtime
+            for runtime in runtimes
+            if isinstance(runtime, dict) and runtime.get("scheduler_routable") is True
+        ]
+        if len(active) != 1:
+            reasons.append(f"active_runtime_count_invalid:{len(active)}")
+        if len(routable) != 1:
+            reasons.append(f"routable_runtime_count_invalid:{len(routable)}")
+        if len(active) == 1 and len(routable) == 1 and active[0] is not routable[0]:
+            reasons.append("active_routable_runtime_mismatch")
+        if (
+            len(active) == 1
+            and payload.get("active_strategy_id") != active[0].get("strategy_id")
+        ):
+            reasons.append("active_strategy_id_mismatch")
+        for runtime in active:
+            if runtime.get("scheduler_routable") is not True:
+                reasons.append(
+                    f"active_runtime_not_routable:{runtime.get('strategy_id')}"
+                )
+            strategy_id = runtime.get("strategy_id")
+            if runtime.get("activation_readiness") != _ACTIVE_RUNTIME_READINESS:
+                reasons.append(
+                    f"active_runtime_activation_readiness_invalid:{strategy_id}"
+                )
+            for mode in runtime.get("allowed_modes") or []:
+                if mode not in _ACTIVE_ALLOWED_MODES:
+                    reasons.append(f"active_runtime_mode_invalid:{strategy_id}:{mode}")
     for left_index, left in enumerate(active):
         left_id = str(left.get("strategy_id"))
         for right in active[left_index + 1 :]:
@@ -550,7 +609,9 @@ def _validate_structure(payload: Any) -> tuple[list[str], list[dict[str, Any]]]:
     return sorted(set(reasons)), structurally_valid_runtimes
 
 
-def _runtime_binding_result(runtime: dict[str, Any]) -> dict[str, Any]:
+def _runtime_binding_result(
+    runtime: dict[str, Any], *, activation_status: str
+) -> dict[str, Any]:
     strategy_id = str(runtime["strategy_id"])
     reasons: list[str] = []
     repo = Path(runtime["canonical_repo"])
@@ -706,6 +767,18 @@ def _runtime_binding_result(runtime: dict[str, Any]) -> dict[str, Any]:
             state_status = "CORRUPT"
         else:
             state_status = "READY" if isinstance(state_payload, dict) else "CORRUPT"
+            if (
+                state_status == "READY"
+                and activation_status == ACTIVE_ACTIVATION_STATUS
+                and runtime_status == "ACTIVE"
+                and (
+                    not _valid_nonempty_string(state_payload.get("status"))
+                    or not _validate_timestamp(
+                        state_payload.get("next_interval_at_utc")
+                    )
+                )
+            ):
+                state_status = "CORRUPT"
 
     if reasons:
         decision = "BLOCKED_BINDING_MISMATCH"
@@ -720,10 +793,16 @@ def _runtime_binding_result(runtime: dict[str, Any]) -> dict[str, Any]:
     else:
         decision = "READY_NOT_ROUTABLE"
 
+    launch_allowed = (
+        activation_status == ACTIVE_ACTIVATION_STATUS
+        and decision == "READY_ROUTABLE"
+        and runtime_status == "ACTIVE"
+        and runtime["scheduler_routable"] is True
+    )
     return {
         "strategy_id": strategy_id,
         "decision": decision,
-        "launch_allowed": False,
+        "launch_allowed": launch_allowed,
         "state_status": state_status,
         "binding_status": "MATCH" if not reasons else "MISMATCH",
         "reasons": sorted(set(reasons)),
@@ -764,23 +843,39 @@ def validate_registry(
     if structural_reasons:
         return _invalid_result(raw_sha256, structural_reasons)
 
-    runtime_results = [_runtime_binding_result(runtime) for runtime in runtimes]
-    all_runtime_ready = all(
-        row["decision"]
-        in {
-            "READY_NOT_ROUTABLE",
-            "INACTIVE_NOT_ROUTABLE",
-            "RETIRED_NOT_ROUTABLE",
-        }
-        for row in runtime_results
-    )
+    activation_status = payload["activation_status"]
+    runtime_results = [
+        _runtime_binding_result(runtime, activation_status=activation_status)
+        for runtime in runtimes
+    ]
+    if activation_status == ACTIVE_ACTIVATION_STATUS:
+        all_runtime_ready = all(
+            row["decision"]
+            in {"READY_ROUTABLE", "INACTIVE_NOT_ROUTABLE", "RETIRED_NOT_ROUTABLE"}
+            for row in runtime_results
+        )
+        launchable = [row for row in runtime_results if row["launch_allowed"]]
+        launch_allowed = all_runtime_ready and len(launchable) == 1
+        decision = "ACTIVE_ROUTABLE" if launch_allowed else "ACTIVE_RUNTIME_BLOCKED"
+        result_ok = launch_allowed
+    else:
+        all_runtime_ready = all(
+            row["decision"]
+            in {
+                "READY_NOT_ROUTABLE",
+                "INACTIVE_NOT_ROUTABLE",
+                "RETIRED_NOT_ROUTABLE",
+            }
+            for row in runtime_results
+        )
+        launch_allowed = False
+        decision = "STAGED_FAIL_CLOSED" if all_runtime_ready else "PARTIAL_RUNTIME_BLOCK"
+        result_ok = all_runtime_ready
     return {
-        "ok": all_runtime_ready,
+        "ok": result_ok,
         "registry_valid": True,
-        "decision": "STAGED_FAIL_CLOSED"
-        if all_runtime_ready
-        else "PARTIAL_RUNTIME_BLOCK",
-        "launch_allowed": False,
+        "decision": decision,
+        "launch_allowed": launch_allowed,
         "registry_raw_sha256": raw_sha256,
         "reasons": [],
         "runtimes": runtime_results,

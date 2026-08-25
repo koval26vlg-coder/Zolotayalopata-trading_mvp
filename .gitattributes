@@ -34,6 +34,7 @@ tools/start_preipo_perpetual_event_automation_visible.ps1 -text whitespace=cr-at
 trading_mvp/src/adaptive_cadence.py -text whitespace=cr-at-eol
 trading_mvp/src/canonical_strategy_runtime.py -text whitespace=cr-at-eol
 trading_mvp/src/external_registry_materializer.py -text whitespace=cr-at-eol
+trading_mvp/src/external_registry_promoter.py -text whitespace=cr-at-eol
 trading_mvp/src/listing_momentum_exchange_expansion.py -text whitespace=cr-at-eol
 trading_mvp/src/listing_spot_asset_class.py -text whitespace=cr-at-eol
 trading_mvp/src/premarket_temporal_anchor.py -text whitespace=cr-at-eol
