@@ -15,9 +15,9 @@ paper/research-only и fail-closed для authenticated API, ордеров, к�
 | Стратегия | Биржи и фактическая роль | Как трансформировалась | Подтверждённое состояние данных | Текущий control state | Чего не хватает |
 |---|---|---|---|---|---|
 | Spot Listing Momentum v2 | MEXC, Gate; discovery и описательное окно первых 72 часов | Идея «купить на первом spot-принте» заменена на causal discovery/first-days accrual; runtime вынесен в отдельный репозиторий | Baseline: 3 790 пар, MEXC 1 708, Gate 2 082. Это bias-control snapshot, не forward-выборка. Новых v2-governed тиков нет | Dedicated `main == origin/main == b77c27c1...`; PlanOnly v2 `AWAIT_GUARD_GREEN_VISIBLE_TICKS`; runtime `INACTIVE`, не routable | Установленный hash-bound registry/router, явная активация и минимум 30 новых полных provenance-bearing окон |
-| Spot Listing Momentum expansion v9 | Binance, Bybit, OKX, Bitget; вспомогательный discovery/descriptive слой | После попадания tokenized equities добавлена строгая asset-class provenance; неизвестный актив больше не считается crypto token. v9 — exact-byte technical successor v8 без изменения research scope | Legacy/pre-v8: 33 окна, 30 полных, но 0 crypto-eligible. У всех 30 нет asset provenance; 28 OKX относятся к tokenized equities, два полных Bitget остаются unclassified. v9-governed windows = 0 | PlanOnly v9 `READY_FOR_VISIBLE_EXPANSION_TICKS`, hash `ae59287d...`; runtime checkpoint `e56c284...`; runtime `INACTIVE`, не routable | Положительный registry `venue/base -> CRYPTO_TOKEN`, сквозная provenance, явная активация и новая v9-выборка. Старые 30 окон нельзя переименовать в acceptance evidence |
+| Spot Listing Momentum expansion v10 | Binance, Bybit, OKX, Bitget; вспомогательный discovery/descriptive слой | После попадания tokenized equities добавлена строгая asset-class provenance; неизвестный актив больше не считается crypto token. v9 запечатал exact bytes, v10 отдельно закрепил remediation CWE-426 без изменения research scope | Legacy/pre-v8: 33 окна, 30 полных, но 0 crypto-eligible. У всех 30 нет asset provenance; 28 OKX относятся к tokenized equities, два полных Bitget остаются unclassified. v10-governed windows = 0 | PlanOnly v10 `READY_FOR_VISIBLE_EXPANSION_TICKS`, hash `911c9024...`; runtime `INACTIVE`, не routable | Положительный registry `venue/base -> CRYPTO_TOKEN`, сквозная provenance, явная активация и новая v10-выборка. Старые 30 окон нельзя переименовать в acceptance evidence |
 | Crypto pre-market perpetual capture v27 | Bybit, OKX, Gate; главный контур для входа до spot `t0` и выходов `t0/+5/+15/+60s` | Crypto и equity разделены; official/proxy timestamps разделены; peak-aware exit удалён; capture отделён от replay/исполнения | Dedicated registry содержит 16 metadata-событий: 14 `EQUITY_ISSUER`, 2 `UNCLASSIFIED`, 0 `CRYPTO_TOKEN`. v27 capture не запускался. Исторический main-repo descriptive capture (417 events / 2 429 rows) не является v27 или acceptance evidence | Dedicated branch `codex/premarket-v27-accuracy-20260825`, commit `1a2c68ee...`, не merged в `main`; PlanOnly `REGISTRY_QUARANTINE_HARDENED_NO_CAPTURE`; runtime `INACTIVE` | Настоящий crypto-token event, независимая identity, official spot `t0` точностью не хуже 1 s, новый immutable capture-authorizing PlanOnly и видимый capture-launcher |
-| Pre-IPO equity perpetual v10 | Активный venue set в PlanOnly: BitMEX, Gate, Kraken, OKX. Кандидаты: Binance, Bybit, Coinbase International, Crypto.com | Из OKX/Gate + Bybit-candidate стала отдельной equity LONG/SHORT стратегией. Primary `t0` — только official first trade базовой акции; launch/rebase/conversion остаются proxy; rebase value-neutral. v10 — exact-byte technical successor v9 | Старый store: 50 377 строк, только OKX, ANTHROPIC/MOONSHOT/OPENAI. В старых строках нет official first-trade и announcement provenance; acceptance-grade official events = 0 | PlanOnly v10 `READY_FOR_BOUNDED_PUBLIC_PAPER_RESEARCH_NOT_SCHEDULER_ACTIVATED`, hash `bdfb567d...`; runtime checkpoint `e56c284...`; runtime `INACTIVE`, не routable | Official resolver с URL, announcement timestamp и точным first trade; новые v10-governed events; promotion candidate venues только после всех gates |
+| Pre-IPO equity perpetual v11 | Активный venue set в PlanOnly: BitMEX, Gate, Kraken, OKX. Кандидаты: Binance, Bybit, Coinbase International, Crypto.com | Из OKX/Gate + Bybit-candidate стала отдельной equity LONG/SHORT стратегией. Primary `t0` — только official first trade базовой акции; launch/rebase/conversion остаются proxy; rebase value-neutral. v10 запечатал exact bytes, v11 отдельно закрепил remediation CWE-426 | Старый store: 50 377 строк, только OKX, ANTHROPIC/MOONSHOT/OPENAI. В старых строках нет official first-trade и announcement provenance; acceptance-grade official events = 0 | PlanOnly v11 `READY_FOR_BOUNDED_PUBLIC_PAPER_RESEARCH_NOT_SCHEDULER_ACTIVATED`, hash `75ef96b4...`; runtime `INACTIVE`, не routable | Official resolver с URL, announcement timestamp и точным first trade; новые v11-governed events; promotion candidate venues только после всех gates |
 
 ## Что не является отдельной стратегией
 
@@ -47,8 +47,11 @@ paper/research-only и fail-closed для authenticated API, ордеров, к�
 
 ## Исправления текущего пакета
 
-- Выпущены immutable Expansion PlanOnly v9 и Pre-IPO PlanOnly v10; v8/v9 predecessors
+- Выпущены immutable Expansion PlanOnly v9/v10 и Pre-IPO PlanOnly v10/v11; все predecessors
   сохранены как committed Git blobs и exact-byte sealed без переписывания их истории.
+- Два независимо достижимых CWE-426 из первого security scan устранены: PlanOnly
+  validators больше не разрешают PATH-resolved Git, используют только абсолютный
+  installation-owned executable и 15-секундный fail-closed timeout.
 - Validator запрещает successor timestamp, который не позже predecessor, и проверяет
   одновременно raw worktree SHA и immutable predecessor Git-blob SHA.
 - Pre-IPO acceptance требует active venue, official venue URL, announcement timestamp и
@@ -70,13 +73,19 @@ paper/research-only и fail-closed для authenticated API, ордеров, к�
 - Финальный focused runtime suite: `59/59`.
 - Canonical registry validator: `22/22`; external materializer: `20/20`, один
   ожидаемый skip.
+- CWE-426 successor/lineage suite: `47/47`; derivative visible-launcher guards:
+  `33/33`; повторная canonical registry/materializer выборка: `41` passed, `1` skip.
 - Coordinator failure paths: `49/49`; installer smoke: `12/12`.
 - Python `py_compile` и Ruff: clean для всех изменённых Python-файлов.
 - PowerShell parser: `8` изменённых/новых скриптов, clean.
-- Expansion v9: `PLAN_OK`, plan hash `ae59287d497e7869fea3461fe937c6bbaf43f956811a24dee0c92f74b685b765`, raw file SHA `3aae802c...`.
-- Pre-IPO v10: `PLAN_OK`, plan hash `bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13`, raw file SHA `56d450db...`.
+- Expansion v10: `PLAN_OK`, plan hash `911c9024c4fc5c6a5c145076e37678b7899944f2e748e6000b9ea7d5e8abf40f`, raw file SHA `0354af66...`.
+- Pre-IPO v11: `PLAN_OK`, plan hash `75ef96b4302d0a313ee86c31eb0b3603c06945253ebb2058393501e0476ac4ff`, raw file SHA `93efec13...`.
 - Runtime commit: `e56c284b5c3f349378f15e8c7c2f2b7b3670ac9a`; control-plane code commit: `317269f9857af4dc491ac3b9fa545fe74d1ea51a`.
-- Staging registry source raw SHA: `baf97c60f24f9a71beb1800e088594d6e9bfa73738cd0a0dfa01a5ee9adcd16d`; all four entries validate as exact `MATCH`, `INACTIVE`, not routable before the control-plane commit advances HEAD.
+- Staging registry v4 source raw SHA: `cbd1fbb47c8857e7a18b4673c4f7dbda855617fbf24c938af46aa933b1f809fb`; все четыре runtime остаются `INACTIVE` и не routable; external materializer должен перепривязать main-repo entries к окончательному committed HEAD.
+- Первый exact-range security scan зафиксировал две medium CWE-426 (Pre-IPO и
+  Expansion Git lookup) и не нашёл других concrete regressions. Обе причины устранены
+  отдельными immutable successors; публикация требует чистого повторного scan уже
+  окончательного remediation commit.
 - `git diff --check`: clean. Независимый staged review: `GO`, без merge blockers.
 
 ## Следующий безопасный порядок

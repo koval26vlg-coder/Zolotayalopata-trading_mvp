@@ -1,0 +1,653 @@
+{
+  "acceptance_gate_change": {
+    "authorizes": false,
+    "changed_fields": [
+      "acceptance_gates.interim_descriptive_events",
+      "acceptance_gates.interim_authorizes",
+      "acceptance_gates.below_minimum_status"
+    ],
+    "kind": "interim_descriptive_tier_added",
+    "minimum_complete_events_unchanged": 30,
+    "reason": "A verdict was wanted sooner. Lowering minimum_complete_events would have delivered that and destroyed the verdict: at n=10 with profit_factor >= 1.2 a single good event carries the whole statistic, so 'accepted' would stop meaning anything. The acceptance threshold therefore does not move. An interim tier at 10 reports the same metrics early under INSUFFICIENT_DATA_NOT_REJECTED and is structurally unable to authorise: interim_authorizes is False and the validator requires interim_descriptive_events to sit strictly below minimum_complete_events, so the two tiers cannot be collapsed into one by later raising the interim number."
+  },
+  "acceptance_gates": {
+    "below_minimum_status": "INSUFFICIENT_DATA_NOT_REJECTED",
+    "final_acceptance_requires": [
+      "oos",
+      "walk_forward",
+      "stress",
+      "economics",
+      "paper_forward"
+    ],
+    "interim_authorizes": false,
+    "interim_descriptive_events": 10,
+    "live_trading_authorized": false,
+    "maximum_drawdown_fraction": 0.1,
+    "maximum_positive_event_share": 0.25,
+    "minimum_complete_events": 30,
+    "minimum_net_expectancy_quote": 0.0,
+    "minimum_normal_fill_rate": 0.8,
+    "minimum_official_events": 30,
+    "minimum_profit_factor": 1.2,
+    "minimum_stress_fill_rate": 0.7,
+    "minimum_venue_events_preferred": 5
+  },
+  "adaptive_cadence": {
+    "collector_runs_only_when_due": true,
+    "confirmed_interval_sec": 3600,
+    "event_spent_after_sec": 259200,
+    "exact_timestamp_required_for_scheduled": true,
+    "policy_version": "adaptive_event_proximity_v2",
+    "proxy_cannot_escalate_to_confirmed": true,
+    "scheduled_horizon_sec": 86400,
+    "scheduled_interval_sec": 300,
+    "scheduler_wake_interval_sec": 300,
+    "search_interval_sec": 21600,
+    "soon_horizon_sec": 259200,
+    "soon_interval_sec": 10800,
+    "spent_anchor_returns_to_search": true,
+    "terminal_event_returns_to_search": true
+  },
+  "asset_class": "preipo_equity",
+  "automation": {
+    "active_capture": "public_websocket_with_rest_fallback",
+    "cadence_escalation": "search_6h_to_soon_3h_to_confirmed_1h_to_scheduled_5m",
+    "capture_duration_sec": 300,
+    "discovery_interval_sec": 21600,
+    "does_not_launch_crypto_listing_automation": true,
+    "future_state_namespace": "docs/agent-log/run-gates/preipo_perpetual_event_automation_state.json",
+    "network_tick_launch": "not launched in this bounded implementation turn",
+    "one_writer_at_a_time": true,
+    "schedule_interval_sec": 21600,
+    "scheduler_wake_interval_sec": 300,
+    "status": "READY_FOR_VISIBLE_PUBLIC_PAPER_RESEARCH",
+    "visible_terminal_required": true
+  },
+  "bybit_extension_condition": "Activate Bybit only after an official pre-IPO contract and an official timestamp method are bound to the immutable plan.",
+  "candidate_promotion_conditions": {
+    "binance": {
+      "automatic_promotion_allowed": false,
+      "promotion_requires_all": [
+        "official_preipo_perpetual_product_evidence",
+        "public_unauthenticated_instrument_and_lifecycle_api",
+        "public_market_data_adapter",
+        "equity_timestamp_taxonomy",
+        "preipo_equity_asset_class_separation",
+        "adapter_fixtures_and_failure_tests",
+        "https_allow_list_and_provenance_audit",
+        "official_binance_preipo_listing_source"
+      ],
+      "status": "candidate_only"
+    },
+    "bybit": {
+      "automatic_promotion_allowed": false,
+      "promotion_requires_all": [
+        "official_preipo_perpetual_product_evidence",
+        "public_unauthenticated_instrument_and_lifecycle_api",
+        "public_market_data_adapter",
+        "equity_timestamp_taxonomy",
+        "preipo_equity_asset_class_separation",
+        "adapter_fixtures_and_failure_tests",
+        "https_allow_list_and_provenance_audit",
+        "official_bybit_contract_and_timestamp_method"
+      ],
+      "status": "candidate_only"
+    },
+    "coinbase_intx": {
+      "automatic_promotion_allowed": false,
+      "promotion_requires_all": [
+        "official_preipo_perpetual_product_evidence",
+        "public_unauthenticated_instrument_and_lifecycle_api",
+        "public_market_data_adapter",
+        "equity_timestamp_taxonomy",
+        "preipo_equity_asset_class_separation",
+        "adapter_fixtures_and_failure_tests",
+        "https_allow_list_and_provenance_audit",
+        "documented_index_methodology_and_internal_index_caveat"
+      ],
+      "status": "candidate_only"
+    },
+    "cryptocom": {
+      "automatic_promotion_allowed": false,
+      "promotion_requires_all": [
+        "official_preipo_perpetual_product_evidence",
+        "public_unauthenticated_instrument_and_lifecycle_api",
+        "public_market_data_adapter",
+        "equity_timestamp_taxonomy",
+        "preipo_equity_asset_class_separation",
+        "adapter_fixtures_and_failure_tests",
+        "https_allow_list_and_provenance_audit",
+        "documented_contract_listing_and_lifecycle_timestamps"
+      ],
+      "status": "candidate_only"
+    }
+  },
+  "candidate_venues": [
+    "binance",
+    "bybit",
+    "coinbase_intx",
+    "cryptocom"
+  ],
+  "commands": {
+    "plan_check": "python trading_mvp/src/preipo_plan.py --plan docs/plans/preipo-perpetual-event-planonly-20260826-v11.json --json",
+    "automation": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/start_preipo_perpetual_event_automation_visible.ps1 -ScheduledTick -Json",
+    "status": "pwsh -NoProfile -ExecutionPolicy Bypass -File tools/start_preipo_perpetual_event_automation_visible.ps1 -Status -Json"
+  },
+  "cost_contract": {
+    "includes": [
+      "fee",
+      "spread",
+      "observed_slippage",
+      "funding",
+      "partial_fill",
+      "queue_ahead",
+      "order_ttl"
+    ],
+    "maker_queue": "sensitivity_only",
+    "one_leg_or_zero_fill_profit_credit": false,
+    "primary_execution": "public_taker_like_fee",
+    "rebase_profit_credit": false
+  },
+  "crypto_listing_mix_allowed": false,
+  "data_contract": {
+    "equity_ipo_and_crypto_listing_are_separate": true,
+    "expected_date_only_is_descriptive_proxy": true,
+    "official_and_received_timestamps_separate": true,
+    "official_first_trade_required_for_acceptance": true,
+    "official_first_trade_source_contract": {
+      "allowed_source_families": {
+        "bitmex": "bitmex_official_equity_first_trade_notice",
+        "gate": "gate_preipo_perpetual_official_first_trade_notice",
+        "kraken": "kraken_official_equity_first_trade_notice",
+        "okx": "okx_official_equity_first_trade_notice"
+      },
+      "contract_provenance_fields": [
+        "official_first_trade_ts",
+        "official_first_trade_announcement_ts",
+        "official_first_trade_source_class",
+        "official_first_trade_source_url",
+        "official_first_trade_source_family"
+      ],
+      "disallowed_substitutions": [
+        "premarket_contract_launch_ts",
+        "contract_first_trading_ts",
+        "first_trade_ts",
+        "ipo_open_ts",
+        "ipo_start_ts",
+        "first_trading_ts",
+        "conversion_window_ts",
+        "transition_ts",
+        "rebase_ts",
+        "expected_ipo_date",
+        "first_observed_trade_ts"
+      ],
+      "meaning": "underlying_equity_first_executed_trade",
+      "proxy_acceptance_allowed": false,
+      "required_binding_arguments": [
+        "source_family"
+      ],
+      "required_fields": [
+        "venue",
+        "contract_id",
+        "underlying_symbol",
+        "quote",
+        "source_url",
+        "announcement_ts",
+        "official_first_trade_ts"
+      ],
+      "required_source_class": "official",
+      "resolver": "preipo_perp_event.parse_announcement",
+      "source_url_must_match_venue_official_host": true,
+      "timestamp_kind": "official_first_trade_ts",
+      "unresolved_policy": "descriptive_only"
+    },
+    "public_source_contracts": {
+      "bitmex": {
+        "auto_proves_official_first_trade": false,
+        "fail_closed_reason": "BitMEX instrument listing and blog futures-listing dates describe the derivative contract, not the underlying equity's first executed trade.",
+        "instrument_metadata": {
+          "host": "www.bitmex.com",
+          "path": "/api/v1/instrument/active",
+          "timestamp_field": "listing",
+          "timestamp_kind": "premarket_contract_launch_ts"
+        },
+        "official_event_family": {
+          "host": "www.bitmex.com",
+          "path_prefix": "/blog/",
+          "published_semantics": [
+            "contract_launch",
+            "contract_specification"
+          ]
+        }
+      },
+      "gate": {
+        "auto_proves_official_first_trade": false,
+        "excluded_product_families": [
+          "mirror_note",
+          "spot_preipo_asset_certificate"
+        ],
+        "fail_closed_reason": "Gate pre-IPO perpetual announcements are distinct from Mirror Note and spot pre-IPO certificates; none is equity first-trade proof by default.",
+        "instrument_metadata": {
+          "host": "api.gateio.ws",
+          "path": "/api/v4/futures/usdt/contracts",
+          "timestamp_field": "launch_time",
+          "timestamp_kind": "premarket_contract_launch_ts"
+        },
+        "official_event_family": {
+          "host": "www.gate.com",
+          "perpetual_announcement_path_prefix": "/announcements/article/",
+          "published_semantics": [
+            "contract_launch",
+            "conversion_notice"
+          ],
+          "reference_article_id": "50673"
+        }
+      },
+      "kraken": {
+        "auto_proves_official_first_trade": false,
+        "fail_closed_reason": "Kraken conversion/rebase notices and a contract First Trading field do not by themselves prove the underlying equity's first executed trade.",
+        "instrument_metadata": {
+          "host": "futures.kraken.com",
+          "path": "/derivatives/api/v3/instruments",
+          "timestamp_field": "openingDate",
+          "timestamp_kind": "premarket_contract_launch_ts"
+        },
+        "official_event_family": {
+          "host": "support.kraken.com",
+          "path_prefix": "/articles/pre-ipo-perpetual-futures-faq",
+          "published_semantics": [
+            "conversion_notice",
+            "rebase_notice",
+            "contract_first_trading"
+          ]
+        }
+      },
+      "okx": {
+        "auto_proves_official_first_trade": false,
+        "fail_closed_reason": "An OKX conversion window depends on the stock's actual first trade but remains separate from an explicitly sourced equity first-trade timestamp.",
+        "instrument_metadata": {
+          "host": "www.okx.com",
+          "path": "/api/v5/public/instruments",
+          "timestamp_field": "listTime",
+          "timestamp_kind": "premarket_contract_launch_ts"
+        },
+        "official_event_family": {
+          "host": "www.okx.com",
+          "path_prefix": "/help/",
+          "published_semantics": [
+            "conversion_window",
+            "rebase_notice"
+          ]
+        }
+      }
+    },
+    "public_sources": [
+      "BitMEX public instruments and official blog contract notices",
+      "Gate public perpetual instruments and official perpetual announcements",
+      "Kraken public futures instruments and official pre-IPO FAQ/notices",
+      "OKX public instruments and official pre-market futures notices"
+    ],
+    "source_classes": [
+      "official",
+      "proxy"
+    ]
+  },
+  "entry_cohorts": [
+    "first_tradable",
+    "last_1_4h"
+  ],
+  "evaluator_or_oos_allowed": false,
+  "event_relative_exits": [
+    "ipo_open",
+    "ipo_open_plus_5s",
+    "ipo_open_plus_15s",
+    "ipo_open_plus_60s",
+    "conversion"
+  ],
+  "generated_at_utc": "2026-08-25T21:32:59Z",
+  "guard_contract": {
+    "active_run_gate_must_not_be_running": true,
+    "crypto_premarket_listing_namespace_untouched": true,
+    "exact_plan_hash_required": true,
+    "inline_worker_no_terminal_allowed": false,
+    "one_writer_at_a_time": true,
+    "public_only_required": true,
+    "spot_listing_momentum_namespace_untouched": true,
+    "visible_terminal_required": true
+  },
+  "hypothesis": "A pre-IPO perpetual may offer an executable event-relative LONG or SHORT before IPO price discovery, but basis, rebase, funding, queue and conversion risk can erase the apparent edge.",
+  "implementation": [
+    {
+      "role": "preipo_event_lifecycle_and_causal_paper_replay",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_perp_event.py",
+      "sha256": "44bb6946eae1f093c9deadaa459f081b609a3028e4f6e91b61385be05fb8be1f",
+      "change": {
+        "kind": "preipo_trusted_git_path_cwe426_rebind_v11",
+        "superseded_plan_hash": "bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13",
+        "superseded_plan_file_sha256": "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
+        "research_scope_changed": false,
+        "reason": "Bind the CWE-426 fix that permits only the fixed platform Git executable with a 15-second fail-closed timeout; research scope and strategy semantics remain unchanged."
+      }
+    },
+    {
+      "role": "preipo_public_venue_adapters",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_adapters.py",
+      "sha256": "b3944376005ef8ba4a7b813a1851dbb085fddeb19a946194dfae7ad162696da4",
+      "change": {
+        "kind": "preipo_trusted_git_path_cwe426_rebind_v11",
+        "superseded_plan_hash": "bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13",
+        "superseded_plan_file_sha256": "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
+        "research_scope_changed": false,
+        "reason": "Bind the CWE-426 fix that permits only the fixed platform Git executable with a 15-second fail-closed timeout; research scope and strategy semantics remain unchanged."
+      }
+    },
+    {
+      "role": "preipo_append_only_raw_event_store",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_raw_event_store.py",
+      "sha256": "a6148604b87b3416ba6caf151e58542f4b436d8d6758a4db88dc5a4c9fde010b",
+      "change": {
+        "kind": "preipo_trusted_git_path_cwe426_rebind_v11",
+        "superseded_plan_hash": "bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13",
+        "superseded_plan_file_sha256": "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
+        "research_scope_changed": false,
+        "reason": "Bind the CWE-426 fix that permits only the fixed platform Git executable with a 15-second fail-closed timeout; research scope and strategy semantics remain unchanged."
+      }
+    },
+    {
+      "role": "preipo_retry_state_and_tick_worker",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_automation.py",
+      "sha256": "20f6c20d6f6d164e9a402f33e94501d231a771ca1343b22c2537af8bae379dee",
+      "change": {
+        "kind": "preipo_trusted_git_path_cwe426_rebind_v11",
+        "superseded_plan_hash": "bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13",
+        "superseded_plan_file_sha256": "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
+        "research_scope_changed": false,
+        "reason": "Bind the CWE-426 fix that permits only the fixed platform Git executable with a 15-second fail-closed timeout; research scope and strategy semantics remain unchanged."
+      }
+    },
+    {
+      "role": "preipo_plan_validator",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_plan.py",
+      "sha256": "97766123e5115fb6c1f95e355326887bd1368a3e6b243ae99037368aa054e182",
+      "change": {
+        "kind": "preipo_trusted_git_path_cwe426_rebind_v11",
+        "superseded_plan_hash": "bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13",
+        "superseded_plan_file_sha256": "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
+        "research_scope_changed": false,
+        "reason": "Bind the CWE-426 fix that permits only the fixed platform Git executable with a 15-second fail-closed timeout; research scope and strategy semantics remain unchanged."
+      }
+    },
+    {
+      "role": "preipo_visible_orchestrator",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_preipo_perpetual_event_automation_visible.ps1",
+      "sha256": "d764d09edd1c2dfd2c97b41ecd69f4acbccf382b41fbb93f3c590ea4136802cb",
+      "change": {
+        "kind": "preipo_trusted_git_path_cwe426_rebind_v11",
+        "superseded_plan_hash": "bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13",
+        "superseded_plan_file_sha256": "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
+        "research_scope_changed": false,
+        "reason": "Bind the CWE-426 fix that permits only the fixed platform Git executable with a 15-second fail-closed timeout; research scope and strategy semantics remain unchanged."
+      }
+    },
+    {
+      "role": "cadence_policy",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\adaptive_cadence.py",
+      "sha256": "066d7991c0e223be02b5073911c43efda4888d8efd6b62a8845dd4bf7ee4afaa",
+      "change": {
+        "kind": "preipo_trusted_git_path_cwe426_rebind_v11",
+        "superseded_plan_hash": "bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13",
+        "superseded_plan_file_sha256": "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
+        "research_scope_changed": false,
+        "reason": "Bind the CWE-426 fix that permits only the fixed platform Git executable with a 15-second fail-closed timeout; research scope and strategy semantics remain unchanged."
+      }
+    },
+    {
+      "role": "shared_temporal_anchor_selection",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_temporal_anchor.py",
+      "sha256": "f346ed43ea3d06959c02b7b0734550af6fdc960e0f64a49162e22bedfe02e88f",
+      "change": {
+        "kind": "preipo_trusted_git_path_cwe426_rebind_v11",
+        "superseded_plan_hash": "bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13",
+        "superseded_plan_file_sha256": "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
+        "research_scope_changed": false,
+        "reason": "Bind the CWE-426 fix that permits only the fixed platform Git executable with a 15-second fail-closed timeout; research scope and strategy semantics remain unchanged."
+      }
+    },
+    {
+      "role": "preipo_temporal_anchor_taxonomy",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\preipo_temporal_anchor.py",
+      "sha256": "7c4f9dcc0f12908c5ded0c1dba107cdf4bb9f96931c07408c63efc012c35258c",
+      "change": {
+        "kind": "preipo_trusted_git_path_cwe426_rebind_v11",
+        "superseded_plan_hash": "bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13",
+        "superseded_plan_file_sha256": "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
+        "research_scope_changed": false,
+        "reason": "Bind the CWE-426 fix that permits only the fixed platform Git executable with a 15-second fail-closed timeout; research scope and strategy semantics remain unchanged."
+      }
+    }
+  ],
+  "leverage_or_margin": false,
+  "lifecycle_statuses": [
+    "scheduled",
+    "preipo_continuous",
+    "s1_disclosed",
+    "rebase",
+    "ipo_pending",
+    "ipo_open",
+    "converted",
+    "postponed",
+    "cancelled",
+    "delisted",
+    "expired"
+  ],
+  "live_orders": false,
+  "mode": "PlanOnly",
+  "objective": "Test whether a paper LONG or SHORT entered on a pre-IPO perpetual can produce executable net economics around an official equity IPO or conversion event.",
+  "official_timestamp_policy": "exact_first_trade_t0_required_for_acceptance_proxy_separate",
+  "plan_hash": "75ef96b4302d0a313ee86c31eb0b3603c06945253ebb2058393501e0476ac4ff",
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_id": "preipo_perpetual_event_20260826_v11",
+  "primary_exit_policy": "event_relative_only_no_hindsight",
+  "private_api": false,
+  "proxy_acceptance_allowed": false,
+  "public_data_only": true,
+  "real_capital": false,
+  "rebase_policy": {
+    "pnl_credit": false,
+    "price_quantity_inverse_ratio": true,
+    "record_as_event": true,
+    "value_neutral": true
+  },
+  "recovery_contract": {
+    "capture_duration_sec": 300,
+    "failure_status": "RETRY_NEXT_INTERVAL",
+    "interval_sec": 21600,
+    "no_tight_loop": true,
+    "partial_failure_status": "PARTIAL_RETRY_NEXT_INTERVAL",
+    "pending_retry": true,
+    "preserve_failed_track": true,
+    "scheduler_wake_interval_sec": 300,
+    "skip_duplicate_worker": true
+  },
+  "replay_allowed": true,
+  "research_only": true,
+  "risk_contract": {
+    "liquidation_model": "paper_only_mark_index_maintenance_margin_when_official_parameters_exist",
+    "max_concurrent_positions_per_contract_side_cohort": 1,
+    "missing_liquidation_model": "liquidation_model_missing_not_acceptance_grade",
+    "paper_notional_quote": 25.0,
+    "primary_leverage_equivalent": 1,
+    "real_leverage_or_margin": false,
+    "stress_leverage_equivalent": [
+      2,
+      5
+    ]
+  },
+  "schema": "trading_mvp_preipo_perpetual_event_planonly_v2",
+  "sides": [
+    "long",
+    "short"
+  ],
+  "source_bindings": {
+    "control_plane_readiness_receipt": {
+      "file_sha256": "b310912a5c1d4e5b4bca16d8e343bb77aecca837a4ad32d4917a899fd08eeb56",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\listing-strategy-control-plane-batch1-readiness-20260821.json",
+      "status": "READY_FOR_PLANONLY_REBIND_NOT_ACTIVATED"
+    },
+    "technical_rebind": {
+      "kind": "preipo_trusted_git_path_cwe426_rebind_v11",
+      "supersedes_plan_id": "preipo_perpetual_event_20260825_v10",
+      "supersedes_plan_hash": "bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13",
+      "supersedes_plan_file_sha256": "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
+      "supersedes_plan_path": "docs/plans/preipo-perpetual-event-planonly-20260825-v10.json",
+      "research_scope_changed": false,
+      "baseline_active_venues": [
+        "bitmex",
+        "gate",
+        "kraken",
+        "okx"
+      ],
+      "baseline_candidate_venues": [
+        "binance",
+        "bybit",
+        "coinbase_intx",
+        "cryptocom"
+      ],
+      "current_active_venues": [
+        "bitmex",
+        "gate",
+        "kraken",
+        "okx"
+      ],
+      "current_candidate_venues": [
+        "binance",
+        "bybit",
+        "coinbase_intx",
+        "cryptocom"
+      ],
+      "changed_dimensions": [
+        "implementation_exact_byte_sha256",
+        "launcher_default_plan",
+        "plan_identity",
+        "trusted_git_executable_resolution"
+      ],
+      "reason": "Replace PATH-resolved Git with the fixed platform executable, enforce a 15-second fail-closed timeout, refresh exact raw file bindings and move the launcher default; all research contracts are unchanged."
+    }
+  },
+  "state": {
+    "attempts_ledger_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\preipo_perpetual_event_automation_attempts.jsonl",
+    "claim_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\preipo_perpetual_event_automation.claim.json",
+    "events_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\preipo-perp\\raw_events.jsonl",
+    "manifest_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\exports\\trading-mvp\\preipo-perp\\manifest.json",
+    "state_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\run-gates\\preipo_perpetual_event_automation_state.json"
+  },
+  "status": "READY_FOR_BOUNDED_PUBLIC_PAPER_RESEARCH_NOT_SCHEDULER_ACTIVATED",
+  "strategy_branch": "preipo_perpetual_event",
+  "supersedes_plan_file_sha256": "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
+  "supersedes_plan_hash": "bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13",
+  "supersedes_plan_id": "preipo_perpetual_event_20260825_v10",
+  "supersedes_plan_path": "docs/plans/preipo-perpetual-event-planonly-20260825-v10.json",
+  "temporal_anchor_contract": {
+    "anchor_selection": "Use official_first_trade_ts first, otherwise the best still-future descriptive proxy; select the earliest future row and retire spent rows by cadence policy.",
+    "confirmation_scope": "official_confirmed and exact_timestamp belong only to the selected official_first_trade_ts anchor, never any other row or field.",
+    "kinds": [
+      "official_first_trade_ts",
+      "conversion_window_ts",
+      "transition_ts",
+      "premarket_contract_launch_ts"
+    ],
+    "measured": "2026-08-25: active venue metadata and published conversion/rebase notices do not automatically prove an underlying equity first-trade t0. Bybit is candidate-only and cannot feed this runtime until all promotion conditions pass.",
+    "module": "trading_mvp/src/preipo_temporal_anchor.py",
+    "official_anchor_kinds": [
+      "official_first_trade_ts"
+    ],
+    "primary_t0_kind": "official_first_trade_ts",
+    "proxy_anchor_kinds": [
+      "conversion_window_ts",
+      "transition_ts",
+      "premarket_contract_launch_ts"
+    ],
+    "required_exact_provenance": [
+      "active_venue",
+      "positive_finite_official_first_trade_ts",
+      "positive_finite_announcement_ts",
+      "official_source_class",
+      "venue_official_source_url"
+    ],
+    "rule": "Only an official source that explicitly publishes the underlying equity's first executed trade may certify the primary t0; contract launch, contract First Trading, conversion, transition, rebase and expected dates remain proxy.",
+    "source_class_is_not_timestamp_class": "Contract metadata provenance never certifies a timestamp; official-first-trade provenance is attached to that field, a positive announcement timestamp, the active venue and its venue-official source URL."
+  },
+  "venue_caveats": {
+    "index_price": "pre-IPO perpetual index prices may be internal-only; a measured impulse may be venue-internal reflexivity rather than information",
+    "source": "Coinbase International Exchange trading rules, read 2026-08-25"
+  },
+  "venue_verification": {
+    "method": "official vendor documentation; no venue endpoint called in this rebind",
+    "venues": {
+      "binance": {
+        "adapter": false,
+        "official_product_evidence": "Binance Academy pre-IPO product documentation",
+        "promotion_contract": "candidate_promotion_conditions.binance",
+        "public_instruments_endpoint": null,
+        "status": "candidate_only"
+      },
+      "bitmex": {
+        "adapter": true,
+        "authentication_required": false,
+        "public_instruments_endpoint": "/api/v1/instrument/active",
+        "status": "active",
+        "timestamp_field": "listing",
+        "timestamp_kind": "premarket_contract_launch_ts"
+      },
+      "bybit": {
+        "adapter": false,
+        "promotion_contract": "candidate_promotion_conditions.bybit",
+        "public_instruments_endpoint": null,
+        "status": "candidate_only"
+      },
+      "coinbase_intx": {
+        "adapter": false,
+        "promotion_contract": "candidate_promotion_conditions.coinbase_intx",
+        "public_instruments_endpoint": "public market-data API family not yet bound",
+        "status": "candidate_only"
+      },
+      "cryptocom": {
+        "adapter": false,
+        "promotion_contract": "candidate_promotion_conditions.cryptocom",
+        "public_instruments_endpoint": "public/get-instruments",
+        "status": "candidate_only"
+      },
+      "gate": {
+        "adapter": true,
+        "authentication_required": false,
+        "public_instruments_endpoint": "/api/v4/futures/usdt/contracts",
+        "status": "active",
+        "timestamp_field": "launch_time",
+        "timestamp_kind": "premarket_contract_launch_ts"
+      },
+      "kraken": {
+        "adapter": true,
+        "authentication_required": false,
+        "public_instruments_endpoint": "/derivatives/api/v3/instruments",
+        "status": "active",
+        "timestamp_field": "openingDate",
+        "timestamp_kind": "premarket_contract_launch_ts"
+      },
+      "okx": {
+        "adapter": true,
+        "authentication_required": false,
+        "public_instruments_endpoint": "/api/v5/public/instruments",
+        "status": "active",
+        "timestamp_field": "listTime",
+        "timestamp_kind": "premarket_contract_launch_ts"
+      }
+    },
+    "verified_at_utc": "2026-08-25"
+  },
+  "venues": [
+    "bitmex",
+    "gate",
+    "kraken",
+    "okx"
+  ]
+}

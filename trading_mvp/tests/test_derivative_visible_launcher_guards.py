@@ -35,7 +35,7 @@ LAUNCHERS = {
         "script": "start_preipo_perpetual_event_automation_visible.ps1",
         "validator": "preipo_plan.py",
         "automation": "preipo_automation.py",
-        "plan": "preipo-perpetual-event-planonly-20260825-v9.json",
+        "plan": "preipo-perpetual-event-planonly-20260826-v11.json",
         "state": "preipo_perpetual_event_automation_state.json",
         "ledger": "preipo_perpetual_event_automation_attempts.jsonl",
         "state_schema": "trading_mvp_preipo_perpetual_event_automation_state_v1",

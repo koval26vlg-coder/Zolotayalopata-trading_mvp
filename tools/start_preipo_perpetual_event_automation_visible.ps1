@@ -19,12 +19,12 @@ if ($args.Count -gt 0) {
 }
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$defaultPlanPath = Join-Path $repoRoot "docs\plans\preipo-perpetual-event-planonly-20260825-v10.json"
+$defaultPlanPath = Join-Path $repoRoot "docs\plans\preipo-perpetual-event-planonly-20260826-v11.json"
 if (-not $PlanPath) { $PlanPath = $defaultPlanPath }
 $resolvedRequestedPlanPath = [System.IO.Path]::GetFullPath($PlanPath)
 $resolvedDefaultPlanPath = [System.IO.Path]::GetFullPath($defaultPlanPath)
 if (-not [string]::Equals($resolvedRequestedPlanPath, $resolvedDefaultPlanPath, [System.StringComparison]::OrdinalIgnoreCase)) {
-    Write-Error "PlanPath override is disabled for the production launcher; use the immutable v10 default"
+    Write-Error "PlanPath override is disabled for the production launcher; use the immutable v11 default"
     exit 2
 }
 $PlanPath = $resolvedDefaultPlanPath

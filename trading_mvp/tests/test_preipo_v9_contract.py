@@ -15,7 +15,7 @@ if str(SRC) not in sys.path:
 import preipo_plan  # noqa: E402
 
 
-class PreIPOV10ContractTests(unittest.TestCase):
+class PreIPOV11ContractTests(unittest.TestCase):
     def _validate_payload(self, payload: dict) -> dict:
         payload["plan_hash"] = preipo_plan.canonical_plan_hash(payload)
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -23,24 +23,27 @@ class PreIPOV10ContractTests(unittest.TestCase):
             path.write_text(json.dumps(payload), encoding="utf-8")
             return preipo_plan.validate_plan(path)
 
-    def test_runtime_defaults_use_a_new_immutable_v10_identity(self) -> None:
-        self.assertEqual(preipo_plan.PLAN_ID, "preipo_perpetual_event_20260825_v10")
+    def test_runtime_defaults_use_a_new_immutable_v11_identity(self) -> None:
+        self.assertEqual(preipo_plan.PLAN_ID, "preipo_perpetual_event_20260826_v11")
         self.assertEqual(
             preipo_plan.DEFAULT_PLAN_PATH.name,
-            "preipo-perpetual-event-planonly-20260825-v10.json",
+            "preipo-perpetual-event-planonly-20260826-v11.json",
         )
         self.assertEqual(
             preipo_plan.SUPERSEDED_PLAN_PATH.name,
-            "preipo-perpetual-event-planonly-20260825-v9.json",
+            "preipo-perpetual-event-planonly-20260825-v10.json",
         )
 
-    def test_v10_declares_only_the_exact_byte_technical_rebind(self) -> None:
+    def test_v11_declares_only_the_cwe426_technical_rebind(self) -> None:
         payload = preipo_plan.build_rebound_plan(
             preipo_plan.SUPERSEDED_PLAN_PATH,
             "2026-08-25T18:00:00Z",
         )
 
         binding = payload["source_bindings"]["technical_rebind"]
+        self.assertEqual(
+            binding["kind"], "preipo_trusted_git_path_cwe426_rebind_v11"
+        )
         self.assertIs(binding["research_scope_changed"], False)
         self.assertEqual(
             set(binding["baseline_active_venues"]),
@@ -62,6 +65,7 @@ class PreIPOV10ContractTests(unittest.TestCase):
                 "implementation_exact_byte_sha256",
                 "launcher_default_plan",
                 "plan_identity",
+                "trusted_git_executable_resolution",
             ],
         )
 
@@ -246,7 +250,7 @@ class PreIPOV10ContractTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertIn("candidate_promotion_conditions_invalid", result["reasons"])
 
-    def test_v10_uses_an_equity_first_trade_anchor_without_stale_bybit_claims(self) -> None:
+    def test_v11_uses_an_equity_first_trade_anchor_without_stale_bybit_claims(self) -> None:
         payload = preipo_plan.build_rebound_plan(
             preipo_plan.SUPERSEDED_PLAN_PATH,
             "2026-08-25T18:00:00Z",
@@ -323,7 +327,7 @@ class PreIPOV10ContractTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertIn("preipo_temporal_anchor_contract_invalid", result["reasons"])
 
-    def test_commands_and_production_launcher_are_bound_to_v10(self) -> None:
+    def test_commands_and_production_launcher_are_bound_to_v11(self) -> None:
         payload = preipo_plan.build_rebound_plan(
             preipo_plan.SUPERSEDED_PLAN_PATH,
             "2026-08-25T18:00:00Z",
@@ -335,25 +339,25 @@ class PreIPOV10ContractTests(unittest.TestCase):
         ).read_text(encoding="utf-8")
 
         self.assertIn(
-            "preipo-perpetual-event-planonly-20260825-v10.json",
+            "preipo-perpetual-event-planonly-20260826-v11.json",
             payload["commands"]["plan_check"],
         )
         self.assertIn(
-            "preipo-perpetual-event-planonly-20260825-v10.json", launcher
+            "preipo-perpetual-event-planonly-20260826-v11.json", launcher
         )
-        self.assertIn("use the immutable v10 default", launcher)
+        self.assertIn("use the immutable v11 default", launcher)
 
-    def test_rebind_error_names_the_actual_immutable_v9_source(self) -> None:
+    def test_rebind_error_names_the_actual_immutable_v10_source(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             wrong = Path(temp_dir) / "wrong.json"
             wrong.write_text("{}", encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "source_plan_must_be_immutable_v9"):
+            with self.assertRaisesRegex(ValueError, "source_plan_must_be_immutable_v10"):
                 preipo_plan.build_rebound_plan(
                     wrong,
                     "2026-08-25T18:00:00Z",
                 )
 
-    def test_implementation_provenance_names_the_v10_exact_byte_rebind(self) -> None:
+    def test_implementation_provenance_names_the_v11_cwe426_rebind(self) -> None:
         payload = preipo_plan.build_rebound_plan(
             preipo_plan.SUPERSEDED_PLAN_PATH,
             "2026-08-25T18:00:00Z",
@@ -362,7 +366,7 @@ class PreIPOV10ContractTests(unittest.TestCase):
             with self.subTest(role=row["role"]):
                 self.assertEqual(
                     row["change"]["kind"],
-                    "preipo_exact_byte_git_sealing_rebind_v10",
+                    "preipo_trusted_git_path_cwe426_rebind_v11",
                 )
                 self.assertIs(row["change"]["research_scope_changed"], False)
                 self.assertEqual(
@@ -370,10 +374,10 @@ class PreIPOV10ContractTests(unittest.TestCase):
                     preipo_plan.SUPERSEDED_PLAN["plan_hash"],
                 )
 
-    def test_superseded_v9_plan_bytes_are_immutable(self) -> None:
+    def test_superseded_v10_plan_bytes_are_immutable(self) -> None:
         self.assertEqual(
             hashlib.sha256(preipo_plan.SUPERSEDED_PLAN_PATH.read_bytes()).hexdigest(),
-            "766f0848ea265389422431210902b4150657af5693bbdf3985f008a1549e5324",
+            "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
         )
 
     def test_venue_verification_covers_every_active_and_candidate_venue(self) -> None:

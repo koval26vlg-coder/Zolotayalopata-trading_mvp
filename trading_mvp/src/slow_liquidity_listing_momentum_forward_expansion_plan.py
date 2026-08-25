@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import shutil
+import os
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -35,10 +35,10 @@ CANONICAL_PRIMARY_SPOT_COMMIT = "b77c27c1b4cc84db2828d4da8049aa251b8a5bef"
 PREVIOUS_EXPANSION_PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v8.json"
+    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v9.json"
 )
-PREVIOUS_EXPANSION_PLAN_HASH = "880ffea9ac66d1bb125f4d9965aca96e6bbce3ae5f2cbf7ed3a0c53bcbebc256"
-PREVIOUS_EXPANSION_PLAN_FILE_SHA256 = "38328999ecd1a4e25e1f0a2f51d32c491fedcca973b0daba61281c918466433e"
+PREVIOUS_EXPANSION_PLAN_HASH = "ae59287d497e7869fea3461fe937c6bbaf43f956811a24dee0c92f74b685b765"
+PREVIOUS_EXPANSION_PLAN_FILE_SHA256 = "3aae802c8cec4a91e8783441048b1b0f0747ab9ef52944e335a88ada887a0758"
 BATCH1_RECEIPT_PATH = (
     REPO_ROOT
     / "docs/agent-log"
@@ -116,32 +116,32 @@ def _sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _trusted_git_path(platform_name: str | None = None) -> Path:
+    """Return an absolute, installation-owned Git path; never consult PATH."""
+    platform = os.name if platform_name is None else platform_name
+    if platform == "nt":
+        return Path(r"C:\Program Files\Git\cmd\git.exe")
+    return Path("/usr/bin/git")
+
+
 def _git_blob_sha256(path: Path, revision: str = "HEAD") -> str:
-    candidates = [
-        shutil.which("git"),
-        r"C:\Program Files\Git\cmd\git.exe",
-        "/usr/bin/git",
-    ]
-    git = next(
-        (
-            str(candidate)
-            for candidate in candidates
-            if candidate and Path(candidate).is_file()
-        ),
-        None,
-    )
-    _require(git is not None, "Git executable missing for immutable blob check")
+    git_path = _trusted_git_path()
+    _require(git_path.is_file(), "Trusted Git executable missing for immutable blob check")
     try:
         relative = path.resolve().relative_to(REPO_ROOT.resolve()).as_posix()
     except ValueError as exc:
         raise ExpansionPlanError("predecessor path is outside canonical repository") from exc
-    result = subprocess.run(
-        [git, "show", f"{revision}:{relative}"],
-        cwd=REPO_ROOT,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
+    try:
+        result = subprocess.run(
+            [str(git_path), "cat-file", "blob", f"{revision}:{relative}"],
+            cwd=REPO_ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            timeout=15,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise ExpansionPlanError("previous expansion plan Git blob check timed out") from exc
     _require(
         result.returncode == 0,
         "previous expansion plan Git blob unavailable",

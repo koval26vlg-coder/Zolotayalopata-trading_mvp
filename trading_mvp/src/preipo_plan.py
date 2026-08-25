@@ -6,7 +6,7 @@ import argparse
 import copy
 import hashlib
 import json
-import shutil
+import os
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -14,24 +14,25 @@ from typing import Any, Mapping
 
 
 PLAN_SCHEMA = "trading_mvp_preipo_perpetual_event_planonly_v2"
-PLAN_ID = "preipo_perpetual_event_20260825_v10"
+PLAN_ID = "preipo_perpetual_event_20260826_v11"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_PLAN_PATH = (
-    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v10.json"
+    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260826-v11.json"
 )
 SUPERSEDED_PLAN_PATH = (
-    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v9.json"
+    REPO_ROOT / "docs/plans/preipo-perpetual-event-planonly-20260825-v10.json"
 )
 SUPERSEDED_PLAN = {
-    "plan_id": "preipo_perpetual_event_20260825_v9",
-    "plan_hash": "5c151060fae1366443ec6ae02d4d6a7abdc8a52bfc51626d8612a2fd09a3e611",
-    "plan_file_sha256": "766f0848ea265389422431210902b4150657af5693bbdf3985f008a1549e5324",
-    "plan_path": "docs/plans/preipo-perpetual-event-planonly-20260825-v9.json",
+    "plan_id": "preipo_perpetual_event_20260825_v10",
+    "plan_hash": "bdfb567da778f4f7f6ac7c6b1625fcd7d5013ab42734e15e3037ad3679db0f13",
+    "plan_file_sha256": "56d450dba620044fa1662c82d3d1d8381fbfc26a4ed72a6de7aa0ee5e4604d9f",
+    "plan_path": "docs/plans/preipo-perpetual-event-planonly-20260825-v10.json",
 }
 TECHNICAL_REBIND_CHANGED_DIMENSIONS = [
     "implementation_exact_byte_sha256",
     "launcher_default_plan",
     "plan_identity",
+    "trusted_git_executable_resolution",
 ]
 # Promoted 2026-08-25: bitmex and kraken have adapters and public unauthenticated
 # instruments endpoints. A failing venue is isolated to its own outcome
@@ -428,32 +429,31 @@ def file_sha256(path: str | Path) -> str:
 
 
 def _git_blob_sha256(path: str | Path, revision: str = "HEAD") -> str:
-    candidates = [
-        shutil.which("git"),
-        r"C:\Program Files\Git\cmd\git.exe",
-        "/usr/bin/git",
-    ]
-    git = next(
-        (
-            str(candidate)
-            for candidate in candidates
-            if candidate and Path(candidate).is_file()
-        ),
-        None,
-    )
-    if git is None:
+    if os.name == "nt":
+        git = r"C:\Program Files\Git\cmd\git.exe"
+    elif os.name == "posix":
+        git = "/usr/bin/git"
+    else:
+        raise RuntimeError("git_platform_unsupported")
+    if not Path(git).is_file():
         raise RuntimeError("git_executable_missing")
     try:
         relative = Path(path).resolve().relative_to(REPO_ROOT.resolve()).as_posix()
     except ValueError as exc:
         raise RuntimeError("predecessor_path_outside_repository") from exc
-    result = subprocess.run(
-        [git, "show", f"{revision}:{relative}"],
-        cwd=REPO_ROOT,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        check=False,
-    )
+    try:
+        result = subprocess.run(
+            [git, "show", f"{revision}:{relative}"],
+            cwd=REPO_ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+            timeout=15,
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RuntimeError("predecessor_git_blob_timeout") from exc
+    except OSError as exc:
+        raise RuntimeError("predecessor_git_blob_unavailable") from exc
     if result.returncode != 0:
         raise RuntimeError("predecessor_git_blob_unavailable")
     return hashlib.sha256(result.stdout).hexdigest()
@@ -620,7 +620,7 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
 
     rebind = ((payload.get("source_bindings") or {}).get("technical_rebind") or {})
     if (
-        rebind.get("kind") != "preipo_exact_byte_git_sealing_rebind_v10"
+        rebind.get("kind") != "preipo_trusted_git_path_cwe426_rebind_v11"
         or rebind.get("research_scope_changed") is not False
         or set(rebind.get("baseline_active_venues") or []) != REQUIRED_VENUES
         or set(rebind.get("baseline_candidate_venues") or [])
@@ -679,7 +679,7 @@ def validate_plan(path: str | Path) -> dict[str, Any]:
 def build_rebound_plan(source_path: str | Path, generated_at_utc: str) -> dict[str, Any]:
     source = Path(source_path)
     if source.resolve() != SUPERSEDED_PLAN_PATH.resolve():
-        raise ValueError("source_plan_must_be_immutable_v9")
+        raise ValueError("source_plan_must_be_immutable_v10")
     if file_sha256(source) != SUPERSEDED_PLAN["plan_file_sha256"]:
         raise ValueError("source_plan_file_sha256_mismatch")
     if _git_blob_sha256(source) != SUPERSEDED_PLAN["plan_file_sha256"]:
@@ -701,14 +701,14 @@ def build_rebound_plan(source_path: str | Path, generated_at_utc: str) -> dict[s
             "path": str(path),
             "sha256": file_sha256(path),
             "change": {
-                "kind": "preipo_exact_byte_git_sealing_rebind_v10",
+                "kind": "preipo_trusted_git_path_cwe426_rebind_v11",
                 "superseded_plan_hash": SUPERSEDED_PLAN["plan_hash"],
                 "superseded_plan_file_sha256": SUPERSEDED_PLAN["plan_file_sha256"],
                 "research_scope_changed": False,
                 "reason": (
-                    "Refresh raw exact-byte SHA-256 implementation bindings after "
-                    "repository EOL sealing; research scope and strategy semantics "
-                    "remain unchanged."
+                    "Bind the CWE-426 fix that permits only the fixed platform Git "
+                    "executable with a 15-second fail-closed timeout; research scope "
+                    "and strategy semantics remain unchanged."
                 ),
             },
         }
@@ -719,7 +719,7 @@ def build_rebound_plan(source_path: str | Path, generated_at_utc: str) -> dict[s
     payload["supersedes_plan_file_sha256"] = SUPERSEDED_PLAN["plan_file_sha256"]
     payload["supersedes_plan_path"] = SUPERSEDED_PLAN["plan_path"]
     payload.setdefault("source_bindings", {})["technical_rebind"] = {
-        "kind": "preipo_exact_byte_git_sealing_rebind_v10",
+        "kind": "preipo_trusted_git_path_cwe426_rebind_v11",
         "supersedes_plan_id": SUPERSEDED_PLAN["plan_id"],
         "supersedes_plan_hash": SUPERSEDED_PLAN["plan_hash"],
         "supersedes_plan_file_sha256": SUPERSEDED_PLAN["plan_file_sha256"],
@@ -731,15 +731,15 @@ def build_rebound_plan(source_path: str | Path, generated_at_utc: str) -> dict[s
         "current_candidate_venues": sorted(REQUIRED_CANDIDATE_VENUES),
         "changed_dimensions": TECHNICAL_REBIND_CHANGED_DIMENSIONS,
         "reason": (
-            "Rebind exact raw file bytes for deterministic Git sealing and move the "
-            "launcher default to the new immutable identity; venues, equity t0, data, "
-            "risk and acceptance contracts are unchanged."
+            "Replace PATH-resolved Git with the fixed platform executable, enforce a "
+            "15-second fail-closed timeout, refresh exact raw file bindings and move "
+            "the launcher default; all research contracts are unchanged."
         ),
     }
     payload["commands"] = {
         "plan_check": (
             "python trading_mvp/src/preipo_plan.py --plan "
-            "docs/plans/preipo-perpetual-event-planonly-20260825-v10.json --json"
+            "docs/plans/preipo-perpetual-event-planonly-20260826-v11.json --json"
         ),
         "automation": (
             "pwsh -NoProfile -ExecutionPolicy Bypass -File "
