@@ -24,6 +24,7 @@ docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v
 docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v9.json -text whitespace=cr-at-eol
 docs/plans/preipo-perpetual-event-planonly-20260825-v9.json -text whitespace=cr-at-eol
 docs/plans/preipo-perpetual-event-planonly-20260825-v10.json -text whitespace=cr-at-eol
+tools/install_listing_strategy_due_coordinator_task.ps1 -text whitespace=cr-at-eol
 tools/invoke_listing_strategy_due_coordinator.ps1 -text whitespace=cr-at-eol
 tools/start_listing_momentum_exchange_expansion_preflight_visible.ps1 -text whitespace=cr-at-eol
 tools/start_listing_momentum_forward_expansion_tick_visible.ps1 -text whitespace=cr-at-eol

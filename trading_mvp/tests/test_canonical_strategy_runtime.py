@@ -3,8 +3,10 @@ from __future__ import annotations
 import contextlib
 import copy
 import hashlib
+import inspect
 import io
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -234,6 +236,58 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
 
     def validate(self) -> dict:
         return runtime_registry.validate_registry(self.fixture.registry)
+
+    @unittest.skipUnless(os.name == "nt", "Windows PATH hardening")
+    def test_validator_git_executable_ignores_path_shadow_on_windows(self) -> None:
+        original_which = runtime_registry.shutil.which
+        runtime_registry.shutil.which = lambda _: r"C:\untrusted\git.exe"
+        try:
+            self.assertEqual(
+                Path(runtime_registry._git_executable()),
+                Path(r"C:\Program Files\Git\cmd\git.exe"),
+            )
+        finally:
+            runtime_registry.shutil.which = original_which
+
+    def test_git_blob_reader_is_bound_to_requested_commit_not_symbolic_head(
+        self,
+    ) -> None:
+        parameters = inspect.signature(runtime_registry._git_head_blob).parameters
+        self.assertIn("commit", parameters)
+        original_commit = git_output("rev-parse", "HEAD", repo=self.fixture.root)
+        original_worker = self.fixture.impl.read_bytes()
+        self.fixture.impl.write_bytes(b"def run():\n    return 'new commit'\n")
+        self.fixture._git("add", "worker.py")
+        self.fixture._git("commit", "--quiet", "-m", "new worker commit")
+        self.assertEqual(
+            runtime_registry._git_head_blob(
+                self.fixture.root,
+                self.fixture.impl,
+                commit=original_commit,
+            ),
+            original_worker,
+        )
+
+    def test_validator_detects_repo_head_change_during_binding_read(self) -> None:
+        declared_head = self.fixture.payload["runtimes"][0]["canonical_git_commit"]
+        original_git_output = runtime_registry._git_output
+        head_reads = 0
+
+        def changing_git_output(repo: Path, *args: str) -> str:
+            nonlocal head_reads
+            if args == ("rev-parse", "HEAD"):
+                head_reads += 1
+                return declared_head if head_reads == 1 else "f" * 40
+            return original_git_output(repo, *args)
+
+        runtime_registry._git_output = changing_git_output
+        try:
+            result = self.validate()
+        finally:
+            runtime_registry._git_output = original_git_output
+        row = result["runtimes"][0]
+        self.assertEqual(row["decision"], "BLOCKED_BINDING_MISMATCH")
+        self.assertIn("repo_head_changed_during_validation", row["reasons"])
 
     def test_valid_staged_registry_is_globally_valid_and_never_launches(self) -> None:
         result = self.validate()
@@ -494,7 +548,7 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
         self.assertIn("registry_raw_sha256_mismatch", mismatch["reasons"])
         self.assertFalse(mismatch["launch_allowed"])
 
-    def test_generator_refreshes_bindings_but_only_emits_fail_closed_payload(
+    def test_legacy_worktree_generator_is_disabled_in_favor_of_external_head_tool(
         self,
     ) -> None:
         old_external = runtime_registry.EXTERNAL_REGISTRY_PATH
@@ -503,32 +557,11 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
 
         self.fixture.impl.write_bytes(b"def run():\n    return 'updated'\n")
         self.fixture._write_plan("files")
-        generated = runtime_registry.generate_staged_registry(
-            self.fixture.registry,
-            generated_at_utc="2026-08-25T17:00:00Z",
-        )
-        runtime = generated["runtimes"][0]
-        plan = json.loads(self.fixture.plan.read_text(encoding="utf-8"))
-        self.assertEqual(generated["activation_status"], "STAGING_NOT_INSTALLED")
-        self.assertFalse(runtime["scheduler_routable"])
-        self.assertFalse(runtime["live_trading_allowed"])
-        self.assertEqual(runtime["canonical_plan_sha256"], plan["plan_hash"])
-        self.assertEqual(
-            runtime["canonical_plan_file_sha256"], file_sha256(self.fixture.plan)
-        )
-        self.assertEqual(
-            runtime["implementation_bindings"][0]["sha256"],
-            file_sha256(self.fixture.impl),
-        )
-        self.assertEqual(runtime["launcher_sha256"], file_sha256(self.fixture.launcher))
-        self.assertEqual(
-            runtime["canonical_git_commit"],
-            git_output("rev-parse", "HEAD", repo=self.fixture.root),
-        )
-        self.assertEqual(
-            runtime["canonical_remote_url"],
-            git_output("remote", "get-url", "origin", repo=self.fixture.root),
-        )
+        with self.assertRaisesRegex(ValueError, "external_head_materializer_required"):
+            runtime_registry.generate_staged_registry(
+                self.fixture.registry,
+                generated_at_utc="2026-08-25T17:00:00Z",
+            )
         if external_existed:
             self.assertEqual(old_external.read_bytes(), external_bytes)
         else:
@@ -564,9 +597,9 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
             set(runtimes),
             {
                 "spot_listing_momentum_mexc_gate_v2",
-                "spot_listing_momentum_expansion_v8",
-                "crypto_premarket_perpetual_capture_v26",
-                "preipo_perpetual_event_v8",
+                "spot_listing_momentum_expansion_v9",
+                "crypto_premarket_perpetual_capture_v27",
+                "preipo_perpetual_event_v10",
             },
         )
         self.assertNotIn("preipo_candidate_bybit", runtimes)
@@ -576,7 +609,11 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
         )
         self.assertTrue(all(row["public_data_only"] for row in runtimes.values()))
         self.assertIsNone(
-            runtimes["crypto_premarket_perpetual_capture_v26"]["launcher_path"]
+            runtimes["crypto_premarket_perpetual_capture_v27"]["launcher_path"]
+        )
+        self.assertEqual(
+            runtimes["preipo_perpetual_event_v10"]["activation_readiness"],
+            "BLOCKED_OFFICIAL_FIRST_TRADE_RESOLVER_AND_ROUTER_MIGRATION",
         )
         result = runtime_registry.validate_registry(CHECKED_IN_TEMPLATE)
         self.assertTrue(result["registry_valid"], result)
@@ -584,6 +621,33 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
         self.assertIn(
             result["decision"], {"STAGED_FAIL_CLOSED", "PARTIAL_RUNTIME_BLOCK"}
         )
+
+    def test_main_repo_runtime_and_control_bindings_disable_eol_conversion(self) -> None:
+        payload = json.loads(CHECKED_IN_TEMPLATE.read_text(encoding="utf-8"))
+        protected = {
+            REPO_ROOT / "docs/control/canonical_strategy_runtime.staging.json",
+            REPO_ROOT / "tools/install_listing_strategy_due_coordinator_task.ps1",
+            REPO_ROOT / "tools/invoke_listing_strategy_due_coordinator.ps1",
+            REPO_ROOT / "trading_mvp/src/canonical_strategy_runtime.py",
+            REPO_ROOT / "trading_mvp/src/external_registry_materializer.py",
+        }
+        for runtime in payload["runtimes"]:
+            if Path(runtime["canonical_repo"]).resolve() != REPO_ROOT.resolve():
+                continue
+            protected.add(Path(runtime["canonical_plan_path"]))
+            if runtime["launcher_path"] is not None:
+                protected.add(Path(runtime["launcher_path"]))
+            protected.update(
+                Path(row["path"]) for row in runtime["implementation_bindings"]
+            )
+
+        for path in sorted(protected):
+            relative = path.resolve(strict=False).relative_to(REPO_ROOT).as_posix()
+            with self.subTest(path=relative):
+                self.assertEqual(
+                    git_output("check-attr", "text", "--", relative),
+                    f"{relative}: text: unset",
+                )
 
 
 if __name__ == "__main__":

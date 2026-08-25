@@ -2,8 +2,12 @@ param(
     [switch]$ScheduledTick,
     [switch]$Json,
     [string]$RegistryPath = "",
+    [string]$ReceiptPath = "",
     [string]$ExpectedRegistrySha256 = "",
+    [string]$ExpectedReceiptSha256 = "",
     [string]$ExpectedCoordinatorSha256 = "",
+    [string]$ExpectedValidatorSha256 = "",
+    [string]$ExpectedControlPlaneGitCommit = "",
     [string]$NowUtc = "",
     [ValidateRange(1, 86400)][int]$WorkerExitTimeoutSec = 1800,
     [string]$ListingStatePath = "",
@@ -72,8 +76,12 @@ function Write-PreflightResult {
 
 $requiredRegistryBindings = @(
     "RegistryPath",
+    "ReceiptPath",
     "ExpectedRegistrySha256",
-    "ExpectedCoordinatorSha256"
+    "ExpectedReceiptSha256",
+    "ExpectedCoordinatorSha256",
+    "ExpectedValidatorSha256",
+    "ExpectedControlPlaneGitCommit"
 )
 $missingRegistryBindings = @(
     $requiredRegistryBindings | Where-Object {
@@ -115,7 +123,9 @@ if ($forbiddenOverrides.Count -gt 0) {
 
 foreach ($binding in @(
     @{ name = "ExpectedRegistrySha256"; value = $ExpectedRegistrySha256 },
-    @{ name = "ExpectedCoordinatorSha256"; value = $ExpectedCoordinatorSha256 }
+    @{ name = "ExpectedReceiptSha256"; value = $ExpectedReceiptSha256 },
+    @{ name = "ExpectedCoordinatorSha256"; value = $ExpectedCoordinatorSha256 },
+    @{ name = "ExpectedValidatorSha256"; value = $ExpectedValidatorSha256 }
 )) {
     if ([string]$binding.value -cnotmatch '^[0-9a-f]{64}$') {
         Write-PreflightResult `
@@ -126,86 +136,399 @@ foreach ($binding in @(
     }
 }
 
-$coordinatorScriptPath = [IO.Path]::GetFullPath([string]$PSCommandPath)
-try {
-    $coordinatorRawBytes = [IO.File]::ReadAllBytes($coordinatorScriptPath)
-} catch {
-    Write-PreflightResult `
-        -Status "COORDINATOR_BINDING_INVALID" `
-        -Reason "COORDINATOR_BYTES_UNREADABLE" `
-        -ExitCode 2 `
-        -Additional @{ error = $_.Exception.Message }
-}
-$actualCoordinatorSha256 = Get-PreflightSha256 -Bytes $coordinatorRawBytes
-if ($actualCoordinatorSha256 -cne $ExpectedCoordinatorSha256) {
-    Write-PreflightResult `
-        -Status "COORDINATOR_BINDING_INVALID" `
-        -Reason "COORDINATOR_SHA256_MISMATCH" `
-        -ExitCode 2 `
-        -Additional @{
-            coordinator_path = $coordinatorScriptPath
-            expected_coordinator_sha256 = $ExpectedCoordinatorSha256
-            actual_coordinator_sha256 = $actualCoordinatorSha256
-        }
-}
-
-if (-not [IO.Path]::IsPathFullyQualified($RegistryPath)) {
+if ($ExpectedControlPlaneGitCommit -cnotmatch '^[0-9a-f]{40}$') {
     Write-PreflightResult `
         -Status "REGISTRY_BINDING_INVALID" `
-        -Reason "REGISTRY_PATH_NOT_ABSOLUTE" `
+        -Reason "EXPECTED_CONTROL_PLANE_COMMIT_FORMAT_INVALID" `
         -ExitCode 2
 }
-$canonicalRegistryPath = [IO.Path]::GetFullPath($RegistryPath)
-if ($canonicalRegistryPath -cne $RegistryPath) {
-    Write-PreflightResult `
-        -Status "REGISTRY_BINDING_INVALID" `
-        -Reason "REGISTRY_PATH_NOT_NORMALIZED" `
-        -ExitCode 2 `
-        -Additional @{ normalized_registry_path = $canonicalRegistryPath }
+
+if (-not ("ListingStrategyCoordinatorPhysicalPath" -as [type])) {
+    Add-Type -TypeDefinition @"
+using System;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Text;
+using Microsoft.Win32.SafeHandles;
+
+public static class ListingStrategyCoordinatorPhysicalPath
+{
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern SafeFileHandle CreateFileW(
+        string fileName, uint desiredAccess, uint shareMode, IntPtr securityAttributes,
+        uint creationDisposition, uint flagsAndAttributes, IntPtr templateFile);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern uint GetFinalPathNameByHandleW(
+        SafeFileHandle handle, StringBuilder path, uint pathLength, uint flags);
+
+    public static string Resolve(string path)
+    {
+        const uint shareAll = 0x00000001 | 0x00000002 | 0x00000004;
+        const uint openExisting = 3;
+        const uint backupSemantics = 0x02000000;
+        using (SafeFileHandle handle = CreateFileW(
+            path, 0, shareAll, IntPtr.Zero, openExisting, backupSemantics, IntPtr.Zero))
+        {
+            if (handle.IsInvalid) throw new Win32Exception(Marshal.GetLastWin32Error());
+            StringBuilder buffer = new StringBuilder(32768);
+            uint length = GetFinalPathNameByHandleW(handle, buffer, (uint)buffer.Capacity, 0);
+            if (length == 0) throw new Win32Exception(Marshal.GetLastWin32Error());
+            if (length >= buffer.Capacity) throw new InvalidOperationException("final path exceeds buffer");
+            string value = buffer.ToString();
+            if (value.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase))
+                return @"\\" + value.Substring(8);
+            if (value.StartsWith(@"\\?\", StringComparison.OrdinalIgnoreCase))
+                return value.Substring(4);
+            return value;
+        }
+    }
 }
+"@
+}
+
+function Test-SamePreflightPath {
+    param([string]$Left, [string]$Right)
+    $leftNormalized = [IO.Path]::GetFullPath($Left).TrimEnd('\', '/')
+    $rightNormalized = [IO.Path]::GetFullPath($Right).TrimEnd('\', '/')
+    return [string]::Equals(
+        $leftNormalized,
+        $rightNormalized,
+        [StringComparison]::OrdinalIgnoreCase
+    )
+}
+
+function Get-PhysicalPreflightPath {
+    param([string]$Path)
+    return [IO.Path]::GetFullPath(
+        [ListingStrategyCoordinatorPhysicalPath]::Resolve([IO.Path]::GetFullPath($Path))
+    )
+}
+
+function Assert-CanonicalPreflightPath {
+    param(
+        [string]$Path,
+        [string]$Binding,
+        [ValidateSet("Leaf", "Container")][string]$PathType = "Leaf"
+    )
+    try {
+        $isFullyQualified = [IO.Path]::IsPathFullyQualified($Path)
+        $normalized = if ($isFullyQualified) { [IO.Path]::GetFullPath($Path) } else { $null }
+    } catch {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "BOUND_PATH_INVALID" -ExitCode 2 `
+            -Additional @{ binding = $Binding; path = $Path; error = $_.Exception.Message }
+    }
+    if (-not $isFullyQualified) {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "BOUND_PATH_NOT_ABSOLUTE" -ExitCode 2 `
+            -Additional @{ binding = $Binding; path = $Path }
+    }
+    if ($normalized -cne $Path) {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "BOUND_PATH_NOT_NORMALIZED" -ExitCode 2 `
+            -Additional @{ binding = $Binding; path = $Path; normalized_path = $normalized }
+    }
+    if (-not (Test-Path -LiteralPath $normalized -PathType $PathType)) {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "BOUND_PATH_MISSING" -ExitCode 2 `
+            -Additional @{ binding = $Binding; path = $normalized }
+    }
+    try {
+        $physical = Get-PhysicalPreflightPath -Path $normalized
+    } catch {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "BOUND_PHYSICAL_PATH_UNREADABLE" -ExitCode 2 `
+            -Additional @{ binding = $Binding; path = $normalized; error = $_.Exception.Message }
+    }
+    if (-not (Test-SamePreflightPath -Left $normalized -Right $physical)) {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "BOUND_REPARSE_ALIAS_REJECTED" -ExitCode 2 `
+            -Additional @{ binding = $Binding; path = $normalized; physical_path = $physical }
+    }
+    return $normalized
+}
+
+function Test-PreflightPathWithin {
+    param([string]$Candidate, [string]$Root)
+    $relative = [IO.Path]::GetRelativePath($Root, $Candidate)
+    if ($relative -eq ".") { return $true }
+    if ([IO.Path]::IsPathFullyQualified($relative)) { return $false }
+    return -not ($relative -eq ".." -or $relative.StartsWith("..\") -or $relative.StartsWith("../"))
+}
+
+function Invoke-PinnedGitText {
+    param([string[]]$Arguments)
+    $startInfo = [Diagnostics.ProcessStartInfo]::new()
+    $startInfo.FileName = "C:\Program Files\Git\cmd\git.exe"
+    $startInfo.UseShellExecute = $false
+    $startInfo.CreateNoWindow = $true
+    $startInfo.RedirectStandardOutput = $true
+    $startInfo.RedirectStandardError = $true
+    foreach ($argument in $Arguments) { [void]$startInfo.ArgumentList.Add($argument) }
+    $process = [Diagnostics.Process]::new()
+    $process.StartInfo = $startInfo
+    try {
+        if (-not $process.Start()) { throw "pinned git failed to start" }
+        $stdoutTask = $process.StandardOutput.ReadToEndAsync()
+        $stderrTask = $process.StandardError.ReadToEndAsync()
+        $process.WaitForExit()
+        return [pscustomobject]@{
+            exit_code = $process.ExitCode
+            stdout = $stdoutTask.GetAwaiter().GetResult()
+            stderr = $stderrTask.GetAwaiter().GetResult()
+        }
+    } finally {
+        $process.Dispose()
+    }
+}
+
+function Get-PinnedGitBlobBytes {
+    param([string]$Repository, [string]$Commit, [string]$RelativePath)
+    $startInfo = [Diagnostics.ProcessStartInfo]::new()
+    $startInfo.FileName = "C:\Program Files\Git\cmd\git.exe"
+    $startInfo.UseShellExecute = $false
+    $startInfo.CreateNoWindow = $true
+    $startInfo.RedirectStandardOutput = $true
+    $startInfo.RedirectStandardError = $true
+    foreach ($argument in @("-C", $Repository, "cat-file", "blob", "${Commit}:$RelativePath")) {
+        [void]$startInfo.ArgumentList.Add($argument)
+    }
+    $process = [Diagnostics.Process]::new()
+    $process.StartInfo = $startInfo
+    $memory = [IO.MemoryStream]::new()
+    try {
+        if (-not $process.Start()) { throw "pinned git failed to start" }
+        $stderrTask = $process.StandardError.ReadToEndAsync()
+        $process.StandardOutput.BaseStream.CopyTo($memory)
+        $process.WaitForExit()
+        $stderr = $stderrTask.GetAwaiter().GetResult()
+        if ($process.ExitCode -ne 0) {
+            throw "git cat-file failed ($($process.ExitCode)): $stderr"
+        }
+        return ,$memory.ToArray()
+    } finally {
+        $memory.Dispose()
+        $process.Dispose()
+    }
+}
+
+function Assert-ControlPlaneFileBinding {
+    param(
+        [string]$Repository,
+        [string]$Path,
+        [string]$ExpectedSha256,
+        [string]$Binding
+    )
+    $canonicalPath = Assert-CanonicalPreflightPath -Path $Path -Binding $Binding -PathType Leaf
+    $relativePath = [IO.Path]::GetRelativePath($Repository, $canonicalPath).Replace('\', '/')
+    if ($relativePath -eq ".." -or $relativePath.StartsWith("../")) {
+        Write-PreflightResult -Status "CONTROL_PLANE_BINDING_INVALID" -Reason "CONTROL_PLANE_FILE_OUTSIDE_REPOSITORY" -ExitCode 2 `
+            -Additional @{ binding = $Binding; path = $canonicalPath }
+    }
+    try {
+        $worktreeBytes = [IO.File]::ReadAllBytes($canonicalPath)
+        $blobBytes = Get-PinnedGitBlobBytes -Repository $Repository `
+            -Commit $ExpectedControlPlaneGitCommit -RelativePath $relativePath
+    } catch {
+        Write-PreflightResult -Status "CONTROL_PLANE_BINDING_INVALID" -Reason "CONTROL_PLANE_FILE_UNREADABLE" -ExitCode 2 `
+            -Additional @{ binding = $Binding; path = $canonicalPath; error = $_.Exception.Message }
+    }
+    $worktreeSha256 = Get-PreflightSha256 -Bytes $worktreeBytes
+    $blobSha256 = Get-PreflightSha256 -Bytes $blobBytes
+    if ($worktreeSha256 -cne $ExpectedSha256 -or $blobSha256 -cne $ExpectedSha256) {
+        Write-PreflightResult -Status "CONTROL_PLANE_BINDING_INVALID" -Reason "CONTROL_PLANE_FILE_SHA256_MISMATCH" -ExitCode 2 `
+            -Additional @{
+                binding = $Binding
+                path = $canonicalPath
+                expected_sha256 = $ExpectedSha256
+                worktree_sha256 = $worktreeSha256
+                committed_blob_sha256 = $blobSha256
+            }
+    }
+    return $canonicalPath
+}
+
+function Assert-BoundFileStable {
+    param([string]$Path, [string]$ExpectedSha256, [string]$Binding)
+    [void](Assert-CanonicalPreflightPath -Path $Path -Binding $Binding -PathType Leaf)
+    try { $bytes = [IO.File]::ReadAllBytes($Path) } catch {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "BOUND_FILE_REREAD_FAILED" -ExitCode 2 `
+            -Additional @{ binding = $Binding; path = $Path; error = $_.Exception.Message }
+    }
+    $actual = Get-PreflightSha256 -Bytes $bytes
+    if ($actual -cne $ExpectedSha256) {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "BOUND_FILE_CHANGED_DURING_PREFLIGHT" -ExitCode 2 `
+            -Additional @{ binding = $Binding; expected_sha256 = $ExpectedSha256; actual_sha256 = $actual }
+    }
+}
+
+$pinnedGitPath = "C:\Program Files\Git\cmd\git.exe"
+if (-not (Test-Path -LiteralPath $pinnedGitPath -PathType Leaf)) {
+    Write-PreflightResult -Status "CONTROL_PLANE_BINDING_INVALID" -Reason "PINNED_GIT_UNAVAILABLE" -ExitCode 2
+}
+
+$repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
+$repoRoot = Assert-CanonicalPreflightPath -Path $repoRoot -Binding "control_plane_repository" -PathType Container
+$canonicalCoordinatorPath = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot "invoke_listing_strategy_due_coordinator.ps1"))
+$coordinatorScriptPath = [IO.Path]::GetFullPath([string]$PSCommandPath)
+if (-not (Test-SamePreflightPath -Left $coordinatorScriptPath -Right $canonicalCoordinatorPath)) {
+    Write-PreflightResult -Status "COORDINATOR_BINDING_INVALID" -Reason "NONCANONICAL_COORDINATOR_ENTRYPOINT" -ExitCode 2 `
+        -Additional @{ coordinator_path = $coordinatorScriptPath; canonical_path = $canonicalCoordinatorPath }
+}
+$registryValidatorPath = [IO.Path]::GetFullPath((Join-Path $repoRoot "trading_mvp\src\canonical_strategy_runtime.py"))
+$materializerPath = [IO.Path]::GetFullPath((Join-Path $repoRoot "trading_mvp\src\external_registry_materializer.py"))
+
+$gitTopResult = Invoke-PinnedGitText -Arguments @("-C", $repoRoot, "rev-parse", "--show-toplevel")
+$gitHeadResult = Invoke-PinnedGitText -Arguments @("-C", $repoRoot, "rev-parse", "HEAD")
+if ($gitTopResult.exit_code -ne 0 -or $gitHeadResult.exit_code -ne 0) {
+    Write-PreflightResult -Status "CONTROL_PLANE_BINDING_INVALID" -Reason "CONTROL_PLANE_GIT_METADATA_UNREADABLE" -ExitCode 2 `
+        -Additional @{ git_top_error = $gitTopResult.stderr; git_head_error = $gitHeadResult.stderr }
+}
+$gitTopLevel = [IO.Path]::GetFullPath($gitTopResult.stdout.Trim())
+if (-not (Test-SamePreflightPath -Left $repoRoot -Right $gitTopLevel)) {
+    Write-PreflightResult -Status "CONTROL_PLANE_BINDING_INVALID" -Reason "CONTROL_PLANE_NOT_GIT_TOPLEVEL" -ExitCode 2 `
+        -Additional @{ repository = $repoRoot; git_toplevel = $gitTopLevel }
+}
+$controlPlaneHead = $gitHeadResult.stdout.Trim()
+if ($controlPlaneHead -cne $ExpectedControlPlaneGitCommit) {
+    Write-PreflightResult -Status "CONTROL_PLANE_BINDING_INVALID" -Reason "CONTROL_PLANE_COMMIT_MISMATCH" -ExitCode 2 `
+        -Additional @{ expected_commit = $ExpectedControlPlaneGitCommit; actual_commit = $controlPlaneHead }
+}
+
+$coordinatorScriptPath = Assert-ControlPlaneFileBinding -Repository $repoRoot `
+    -Path $canonicalCoordinatorPath -ExpectedSha256 $ExpectedCoordinatorSha256 -Binding "coordinator"
+$registryValidatorPath = Assert-ControlPlaneFileBinding -Repository $repoRoot `
+    -Path $registryValidatorPath -ExpectedSha256 $ExpectedValidatorSha256 -Binding "validator"
+
+$canonicalRegistryPath = Assert-CanonicalPreflightPath -Path $RegistryPath -Binding "registry" -PathType Leaf
+$canonicalReceiptPath = Assert-CanonicalPreflightPath -Path $ReceiptPath -Binding "receipt" -PathType Leaf
+if ((Split-Path -Leaf $canonicalRegistryPath) -cne "canonical_strategy_runtime.json" -or
+    (Split-Path -Leaf $canonicalReceiptPath) -cne "materialization_receipt.json") {
+    Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "PUBLICATION_FILENAMES_INVALID" -ExitCode 2
+}
+$publicationDirectory = [IO.Path]::GetFullPath((Split-Path -Parent $canonicalRegistryPath))
+if (-not (Test-SamePreflightPath -Left $publicationDirectory -Right (Split-Path -Parent $canonicalReceiptPath))) {
+    Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "REGISTRY_RECEIPT_VERSION_DIRECTORY_MISMATCH" -ExitCode 2
+}
+$publicationId = Split-Path -Leaf $publicationDirectory
+if ($publicationId -cnotmatch '^[0-9a-f]{64}$') {
+    Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "PUBLICATION_ID_INVALID" -ExitCode 2
+}
+
 try {
     $registryRawBytes = [IO.File]::ReadAllBytes($canonicalRegistryPath)
+    $receiptRawBytes = [IO.File]::ReadAllBytes($canonicalReceiptPath)
 } catch {
-    Write-PreflightResult `
-        -Status "REGISTRY_BINDING_INVALID" `
-        -Reason "REGISTRY_BYTES_UNREADABLE" `
-        -ExitCode 2 `
-        -Additional @{ registry_path = $canonicalRegistryPath; error = $_.Exception.Message }
+    Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "PUBLICATION_BYTES_UNREADABLE" -ExitCode 2 `
+        -Additional @{ error = $_.Exception.Message }
 }
 $actualRegistrySha256 = Get-PreflightSha256 -Bytes $registryRawBytes
-if ($actualRegistrySha256 -cne $ExpectedRegistrySha256) {
-    Write-PreflightResult `
-        -Status "REGISTRY_BINDING_INVALID" `
-        -Reason "REGISTRY_SHA256_MISMATCH" `
-        -ExitCode 2 `
+$actualReceiptSha256 = Get-PreflightSha256 -Bytes $receiptRawBytes
+if ($actualRegistrySha256 -cne $ExpectedRegistrySha256 -or $actualReceiptSha256 -cne $ExpectedReceiptSha256) {
+    Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "PUBLICATION_SHA256_MISMATCH" -ExitCode 2 `
         -Additional @{
-            registry_path = $canonicalRegistryPath
             expected_registry_sha256 = $ExpectedRegistrySha256
             actual_registry_sha256 = $actualRegistrySha256
+            expected_receipt_sha256 = $ExpectedReceiptSha256
+            actual_receipt_sha256 = $actualReceiptSha256
         }
 }
 
-$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$registryValidatorPath = Join-Path $repoRoot "trading_mvp\src\canonical_strategy_runtime.py"
-if (-not (Test-Path -LiteralPath $registryValidatorPath -PathType Leaf)) {
-    Write-PreflightResult `
-        -Status "REGISTRY_VALIDATION_FAILED" `
-        -Reason "CANONICAL_REGISTRY_VALIDATOR_MISSING" `
-        -ExitCode 2 `
-        -Additional @{ validator_path = $registryValidatorPath }
-}
-$pythonExecutable = if (Test-Path -LiteralPath "C:\Program Files\Python313\python.exe" -PathType Leaf) {
-    "C:\Program Files\Python313\python.exe"
-} else {
-    $null
-}
-if (-not $pythonExecutable) {
-    Write-PreflightResult `
-        -Status "REGISTRY_VALIDATION_FAILED" `
-        -Reason "PYTHON_RUNTIME_UNAVAILABLE" `
-        -ExitCode 2
+$strictUtf8 = [Text.UTF8Encoding]::new($false, $true)
+try {
+    $registryPayload = $strictUtf8.GetString($registryRawBytes) | ConvertFrom-Json -DateKind String -ErrorAction Stop
+    $receiptPayload = $strictUtf8.GetString($receiptRawBytes) | ConvertFrom-Json -DateKind String -ErrorAction Stop
+} catch {
+    Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "PUBLICATION_JSON_INVALID" -ExitCode 2 `
+        -Additional @{ error = $_.Exception.Message }
 }
 
+$receiptIsStrict = $false
+try {
+    $receiptIsStrict = (
+        [string]$receiptPayload.schema -ceq "zolotyaylopata.external_registry_materialization_receipt.v2" -and
+        [string]$receiptPayload.status -ceq "MATERIALIZED_FAIL_CLOSED" -and
+        [string]$receiptPayload.decision -ceq "STAGED_FAIL_CLOSED" -and
+        $receiptPayload.launch_allowed -is [bool] -and
+        $receiptPayload.launch_allowed -eq $false -and
+        [string]$receiptPayload.publication_id -ceq $publicationId -and
+        (Test-SamePreflightPath -Left ([string]$receiptPayload.publication_directory) -Right $publicationDirectory) -and
+        (Test-SamePreflightPath -Left ([string]$receiptPayload.registry_path) -Right $canonicalRegistryPath) -and
+        (Test-SamePreflightPath -Left ([string]$receiptPayload.receipt_path) -Right $canonicalReceiptPath) -and
+        [string]$receiptPayload.registry_raw_sha256 -ceq $ExpectedRegistrySha256 -and
+        [string]$receiptPayload.validator_git_commit -ceq $ExpectedControlPlaneGitCommit -and
+        [string]$receiptPayload.materializer_git_commit -ceq $ExpectedControlPlaneGitCommit -and
+        [string]$receiptPayload.validator_head_sha256 -ceq $ExpectedValidatorSha256 -and
+        (Test-SamePreflightPath -Left ([string]$receiptPayload.validator_path) -Right $registryValidatorPath) -and
+        (Test-SamePreflightPath -Left ([string]$receiptPayload.materializer_path) -Right $materializerPath) -and
+        $receiptPayload.validation.ok -is [bool] -and
+        $receiptPayload.validation.ok -eq $true -and
+        $receiptPayload.validation.registry_valid -is [bool] -and
+        $receiptPayload.validation.registry_valid -eq $true -and
+        [string]$receiptPayload.validation.decision -ceq "STAGED_FAIL_CLOSED" -and
+        [string]$receiptPayload.validation.registry_raw_sha256 -ceq $ExpectedRegistrySha256 -and
+        $receiptPayload.validation.launch_allowed -is [bool] -and
+        $receiptPayload.validation.launch_allowed -eq $false
+    )
+} catch {
+    $receiptIsStrict = $false
+}
+if (-not $receiptIsStrict) {
+    Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "MATERIALIZATION_RECEIPT_MISMATCH" -ExitCode 2
+}
+$materializerExpectedSha256 = [string]$receiptPayload.materializer_head_sha256
+if ($materializerExpectedSha256 -cnotmatch '^[0-9a-f]{64}$') {
+    Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "MATERIALIZER_SHA256_FORMAT_INVALID" -ExitCode 2
+}
+$materializerPath = Assert-ControlPlaneFileBinding -Repository $repoRoot `
+    -Path $materializerPath -ExpectedSha256 $materializerExpectedSha256 -Binding "materializer"
+
+$registryRepoPairs = [System.Collections.Generic.List[string]]::new()
+$canonicalRepoPaths = [System.Collections.Generic.List[string]]::new()
+foreach ($runtime in @($registryPayload.runtimes)) {
+    $canonicalRepo = [string]$runtime.canonical_repo
+    $canonicalCommit = [string]$runtime.canonical_git_commit
+    if (-not $canonicalRepo -or $canonicalCommit -cnotmatch '^[0-9a-f]{40}$') {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "REGISTRY_CANONICAL_REPOSITORY_INVALID" -ExitCode 2
+    }
+    $repoPair = ([ordered]@{ canonical_repo = $canonicalRepo; canonical_git_commit = $canonicalCommit } | ConvertTo-Json -Compress)
+    if (-not $registryRepoPairs.Contains($repoPair)) {
+        $registryRepoPairs.Add($repoPair)
+        $canonicalRepoPaths.Add($canonicalRepo)
+    }
+}
+$receiptRepoPairs = [System.Collections.Generic.List[string]]::new()
+foreach ($repository in @($receiptPayload.canonical_repositories)) {
+    $canonicalRepo = [string]$repository.canonical_repo
+    $canonicalCommit = [string]$repository.canonical_git_commit
+    if (-not $canonicalRepo -or $canonicalCommit -cnotmatch '^[0-9a-f]{40}$') {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "RECEIPT_CANONICAL_REPOSITORY_INVALID" -ExitCode 2
+    }
+    $receiptRepoPairs.Add(([ordered]@{ canonical_repo = $canonicalRepo; canonical_git_commit = $canonicalCommit } | ConvertTo-Json -Compress))
+}
+$registryRepoSet = @($registryRepoPairs | Sort-Object)
+$receiptRepoSet = @($receiptRepoPairs | Sort-Object)
+if ($receiptRepoSet.Count -ne $registryRepoSet.Count -or
+    ($receiptRepoSet -join "`n") -cne ($registryRepoSet -join "`n")) {
+    Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "RECEIPT_REGISTRY_REPOSITORY_SET_MISMATCH" -ExitCode 2
+}
+
+$allProtectedRepos = @($repoRoot) + @($canonicalRepoPaths)
+foreach ($canonicalRepo in $allProtectedRepos) {
+    $resolvedCanonicalRepo = Assert-CanonicalPreflightPath -Path $canonicalRepo `
+        -Binding "canonical_repository" -PathType Container
+    $topResult = Invoke-PinnedGitText -Arguments @("-C", $resolvedCanonicalRepo, "rev-parse", "--show-toplevel")
+    if ($topResult.exit_code -ne 0 -or
+        -not (Test-SamePreflightPath -Left $resolvedCanonicalRepo -Right ([IO.Path]::GetFullPath($topResult.stdout.Trim())))) {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "CANONICAL_REPOSITORY_NOT_GIT_TOPLEVEL" -ExitCode 2 `
+            -Additional @{ canonical_repo = $resolvedCanonicalRepo; error = $topResult.stderr }
+    }
+    if ((Test-PreflightPathWithin -Candidate $canonicalRegistryPath -Root $resolvedCanonicalRepo) -or
+        (Test-PreflightPathWithin -Candidate $canonicalReceiptPath -Root $resolvedCanonicalRepo)) {
+        Write-PreflightResult -Status "REGISTRY_BINDING_INVALID" -Reason "PUBLICATION_INSIDE_CANONICAL_REPOSITORY" -ExitCode 2 `
+            -Additional @{ canonical_repo = $resolvedCanonicalRepo }
+    }
+}
+
+$pythonExecutable = "C:\Program Files\Python313\python.exe"
+if (-not (Test-Path -LiteralPath $pythonExecutable -PathType Leaf)) {
+    Write-PreflightResult -Status "REGISTRY_VALIDATION_FAILED" -Reason "PYTHON_RUNTIME_UNAVAILABLE" -ExitCode 2
+}
 $validatorOutput = @(
     & $pythonExecutable $registryValidatorPath `
         --validate $canonicalRegistryPath `
@@ -214,70 +537,133 @@ $validatorOutput = @(
 )
 $validatorExitCode = $LASTEXITCODE
 $validatorText = ($validatorOutput | ForEach-Object { [string]$_ }) -join [Environment]::NewLine
-$validatorResult = $null
+if ($validatorExitCode -ne 0) {
+    Write-PreflightResult -Status "REGISTRY_VALIDATION_FAILED" -Reason "CANONICAL_REGISTRY_VALIDATOR_FAILED" -ExitCode 2 `
+        -Additional @{ validator_exit_code = $validatorExitCode; validator_output = $validatorText }
+}
 try {
     $validatorResult = $validatorText | ConvertFrom-Json -DateKind String -ErrorAction Stop
 } catch {
-    Write-PreflightResult `
-        -Status "REGISTRY_VALIDATION_FAILED" `
-        -Reason "CANONICAL_REGISTRY_VALIDATOR_OUTPUT_INVALID" `
-        -ExitCode 2 `
-        -Additional @{
-            validator_exit_code = $validatorExitCode
-            validator_output = $validatorText
-        }
+    Write-PreflightResult -Status "REGISTRY_VALIDATION_FAILED" -Reason "CANONICAL_REGISTRY_VALIDATOR_OUTPUT_INVALID" -ExitCode 2 `
+        -Additional @{ validator_exit_code = $validatorExitCode; validator_output = $validatorText }
 }
-if ($validatorResult.registry_valid -ne $true) {
-    Write-PreflightResult `
-        -Status "REGISTRY_VALIDATION_FAILED" `
-        -Reason "CANONICAL_REGISTRY_REJECTED" `
-        -ExitCode 2 `
-        -Additional @{
-            validator_exit_code = $validatorExitCode
-            registry_decision = [string]$validatorResult.decision
-            registry_reasons = @($validatorResult.reasons)
-            registry_raw_sha256 = $actualRegistrySha256
-        }
-}
-
+$runtimeResults = @($validatorResult.runtimes)
+$allRuntimeBindingsMatch = ($runtimeResults.Count -gt 0) -and (@(
+    $runtimeResults | Where-Object {
+        [string]$_.binding_status -cne "MATCH" -or
+        $_.launch_allowed -isnot [bool] -or
+        $_.launch_allowed -ne $false -or
+        [string]$_.decision -cnotin @("READY_NOT_ROUTABLE", "INACTIVE_NOT_ROUTABLE", "RETIRED_NOT_ROUTABLE")
+    }
+).Count -eq 0)
 if (
-    [string]$validatorResult.decision -cin @("STAGED_FAIL_CLOSED", "PARTIAL_RUNTIME_BLOCK") -and
-    $validatorResult.launch_allowed -eq $false
+    $validatorResult.ok -isnot [bool] -or
+    $validatorResult.ok -ne $true -or
+    $validatorResult.registry_valid -isnot [bool] -or
+    $validatorResult.registry_valid -ne $true -or
+    [string]$validatorResult.decision -cne "STAGED_FAIL_CLOSED" -or
+    $validatorResult.launch_allowed -isnot [bool] -or
+    $validatorResult.launch_allowed -ne $false -or
+    -not $allRuntimeBindingsMatch
 ) {
-    Write-PreflightResult `
-        -Status "STAGED_FAIL_CLOSED" `
-        -Reason "NOT_ACTIVATED" `
-        -ExitCode 0 `
-        -Additional @{
-            registry_path = $canonicalRegistryPath
-            registry_raw_sha256 = $actualRegistrySha256
-            registry_decision = [string]$validatorResult.decision
-            validator_exit_code = $validatorExitCode
-            runtimes = @($validatorResult.runtimes)
-        }
-}
-
-if ($validatorExitCode -ne 0) {
-    Write-PreflightResult `
-        -Status "REGISTRY_VALIDATION_FAILED" `
-        -Reason "CANONICAL_REGISTRY_VALIDATOR_FAILED" `
-        -ExitCode 2 `
+    Write-PreflightResult -Status "REGISTRY_VALIDATION_FAILED" -Reason "CANONICAL_REGISTRY_NOT_EXACT_STAGED" -ExitCode 2 `
         -Additional @{
             validator_exit_code = $validatorExitCode
             registry_decision = [string]$validatorResult.decision
             registry_reasons = @($validatorResult.reasons)
-            registry_raw_sha256 = $actualRegistrySha256
+            runtimes = $runtimeResults
         }
+}
+
+# Close the validation/use race before returning the only successful preflight status.
+$finalHead = Invoke-PinnedGitText -Arguments @("-C", $repoRoot, "rev-parse", "HEAD")
+if ($finalHead.exit_code -ne 0 -or $finalHead.stdout.Trim() -cne $ExpectedControlPlaneGitCommit) {
+    Write-PreflightResult -Status "CONTROL_PLANE_BINDING_INVALID" -Reason "CONTROL_PLANE_CHANGED_DURING_PREFLIGHT" -ExitCode 2
+}
+Assert-BoundFileStable -Path $coordinatorScriptPath -ExpectedSha256 $ExpectedCoordinatorSha256 -Binding "coordinator"
+Assert-BoundFileStable -Path $registryValidatorPath -ExpectedSha256 $ExpectedValidatorSha256 -Binding "validator"
+Assert-BoundFileStable -Path $materializerPath -ExpectedSha256 $materializerExpectedSha256 -Binding "materializer"
+Assert-BoundFileStable -Path $canonicalRegistryPath -ExpectedSha256 $ExpectedRegistrySha256 -Binding "registry"
+Assert-BoundFileStable -Path $canonicalReceiptPath -ExpectedSha256 $ExpectedReceiptSha256 -Binding "receipt"
+foreach ($repository in @($receiptPayload.canonical_repositories)) {
+    $finalCanonicalRepo = Assert-CanonicalPreflightPath -Path ([string]$repository.canonical_repo) `
+        -Binding "canonical_repository" -PathType Container
+    $headResult = Invoke-PinnedGitText -Arguments @("-C", $finalCanonicalRepo, "rev-parse", "HEAD")
+    if ($headResult.exit_code -ne 0 -or $headResult.stdout.Trim() -cne [string]$repository.canonical_git_commit) {
+        Write-PreflightResult -Status "REGISTRY_VALIDATION_FAILED" -Reason "CANONICAL_REPOSITORY_CHANGED_DURING_PREFLIGHT" -ExitCode 2 `
+            -Additional @{ canonical_repo = [string]$repository.canonical_repo }
+    }
+}
+
+$finalValidatorOutput = @(
+    & $pythonExecutable $registryValidatorPath `
+        --validate $canonicalRegistryPath `
+        --expected-sha256 $ExpectedRegistrySha256 `
+        --json 2>&1
+)
+$finalValidatorExitCode = $LASTEXITCODE
+$finalValidatorText = ($finalValidatorOutput | ForEach-Object { [string]$_ }) -join [Environment]::NewLine
+if ($finalValidatorExitCode -ne 0) {
+    Write-PreflightResult -Status "REGISTRY_VALIDATION_FAILED" -Reason "FINAL_CANONICAL_REGISTRY_VALIDATOR_FAILED" -ExitCode 2 `
+        -Additional @{ validator_exit_code = $finalValidatorExitCode; validator_output = $finalValidatorText }
+}
+try {
+    $finalValidatorResult = $finalValidatorText | ConvertFrom-Json -DateKind String -ErrorAction Stop
+} catch {
+    Write-PreflightResult -Status "REGISTRY_VALIDATION_FAILED" -Reason "FINAL_CANONICAL_REGISTRY_VALIDATOR_OUTPUT_INVALID" -ExitCode 2 `
+        -Additional @{ validator_exit_code = $finalValidatorExitCode; validator_output = $finalValidatorText }
+}
+$finalRuntimeResults = @($finalValidatorResult.runtimes)
+$finalRuntimeBindingsMatch = ($finalRuntimeResults.Count -gt 0) -and (@(
+    $finalRuntimeResults | Where-Object {
+        [string]$_.binding_status -cne "MATCH" -or
+        $_.launch_allowed -isnot [bool] -or
+        $_.launch_allowed -ne $false -or
+        [string]$_.decision -cnotin @("READY_NOT_ROUTABLE", "INACTIVE_NOT_ROUTABLE", "RETIRED_NOT_ROUTABLE")
+    }
+).Count -eq 0)
+if (
+    $finalValidatorResult.ok -isnot [bool] -or
+    $finalValidatorResult.ok -ne $true -or
+    $finalValidatorResult.registry_valid -isnot [bool] -or
+    $finalValidatorResult.registry_valid -ne $true -or
+    [string]$finalValidatorResult.decision -cne "STAGED_FAIL_CLOSED" -or
+    $finalValidatorResult.launch_allowed -isnot [bool] -or
+    $finalValidatorResult.launch_allowed -ne $false -or
+    -not $finalRuntimeBindingsMatch
+) {
+    Write-PreflightResult -Status "REGISTRY_VALIDATION_FAILED" -Reason "FINAL_CANONICAL_REGISTRY_NOT_EXACT_STAGED" -ExitCode 2 `
+        -Additional @{
+            validator_exit_code = $finalValidatorExitCode
+            registry_decision = [string]$finalValidatorResult.decision
+            runtimes = $finalRuntimeResults
+        }
+}
+Assert-BoundFileStable -Path $canonicalRegistryPath -ExpectedSha256 $ExpectedRegistrySha256 -Binding "registry"
+Assert-BoundFileStable -Path $canonicalReceiptPath -ExpectedSha256 $ExpectedReceiptSha256 -Binding "receipt"
+Assert-BoundFileStable -Path $coordinatorScriptPath -ExpectedSha256 $ExpectedCoordinatorSha256 -Binding "coordinator"
+Assert-BoundFileStable -Path $registryValidatorPath -ExpectedSha256 $ExpectedValidatorSha256 -Binding "validator"
+Assert-BoundFileStable -Path $materializerPath -ExpectedSha256 $materializerExpectedSha256 -Binding "materializer"
+$terminalControlPlaneHead = Invoke-PinnedGitText -Arguments @("-C", $repoRoot, "rev-parse", "HEAD")
+if ($terminalControlPlaneHead.exit_code -ne 0 -or
+    $terminalControlPlaneHead.stdout.Trim() -cne $ExpectedControlPlaneGitCommit) {
+    Write-PreflightResult -Status "CONTROL_PLANE_BINDING_INVALID" -Reason "CONTROL_PLANE_CHANGED_DURING_FINAL_VALIDATION" -ExitCode 2
 }
 
 Write-PreflightResult `
-    -Status "REGISTRY_ACTIVATION_UNSUPPORTED" `
-    -Reason "ACTIVE_REGISTRY_ROUTING_NOT_IMPLEMENTED" `
-    -ExitCode 2 `
+    -Status "STAGED_FAIL_CLOSED" `
+    -Reason "NOT_ACTIVATED" `
+    -ExitCode 0 `
     -Additional @{
+        publication_id = $publicationId
         registry_path = $canonicalRegistryPath
+        receipt_path = $canonicalReceiptPath
         registry_raw_sha256 = $actualRegistrySha256
+        receipt_raw_sha256 = $actualReceiptSha256
         registry_decision = [string]$validatorResult.decision
+        validator_exit_code = $validatorExitCode
+        control_plane_git_commit = $ExpectedControlPlaneGitCommit
+        runtimes = $finalRuntimeResults
     }
 # END CANONICAL_RUNTIME_REGISTRY_PREFLIGHT
 

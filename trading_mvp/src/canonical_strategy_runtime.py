@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import copy
 import hashlib
 import json
 import os
@@ -9,7 +8,7 @@ import re
 import shutil
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterable, Sequence
 
@@ -176,12 +175,12 @@ def _is_within_repo(path_text: str, repo_text: str) -> bool:
 
 
 def _git_executable() -> str:
+    windows_git = Path(r"C:\Program Files\Git\cmd\git.exe")
+    if os.name == "nt":
+        return str(windows_git)
     discovered = shutil.which("git")
     if discovered:
         return discovered
-    windows_git = Path(r"C:\Program Files\Git\cmd\git.exe")
-    if windows_git.exists():
-        return str(windows_git)
     return "git"
 
 
@@ -197,35 +196,33 @@ def _git_output(repo: Path, *args: str) -> str:
     return completed.stdout.strip()
 
 
-def _git_head_blob(repo: Path, path: Path) -> bytes | None:
+def _git_toplevel(repo: Path) -> Path:
+    return Path(_git_output(repo, "rev-parse", "--show-toplevel")).resolve(
+        strict=True
+    )
+
+
+def _git_head_blob(repo: Path, path: Path, *, commit: str) -> bytes | None:
+    if not _COMMIT_RE.fullmatch(commit):
+        return None
     try:
-        relative = path.resolve(strict=False).relative_to(repo.resolve(strict=False))
+        resolved_repo = repo.resolve(strict=True)
+        if _git_toplevel(resolved_repo) != resolved_repo:
+            return None
+    except (OSError, subprocess.SubprocessError):
+        return None
+    try:
+        relative = path.resolve(strict=False).relative_to(resolved_repo)
     except ValueError:
         return None
     relative_text = relative.as_posix()
-    tracked = subprocess.run(
-        [
-            _git_executable(),
-            "-C",
-            str(repo),
-            "ls-files",
-            "--error-unmatch",
-            "--",
-            relative_text,
-        ],
-        check=False,
-        capture_output=True,
-        timeout=15,
-    )
-    if tracked.returncode != 0:
-        return None
     blob = subprocess.run(
         [
             _git_executable(),
             "-C",
             str(repo),
             "show",
-            f"HEAD:{relative_text}",
+            f"{commit}:{relative_text}",
         ],
         check=False,
         capture_output=True,
@@ -557,12 +554,24 @@ def _runtime_binding_result(runtime: dict[str, Any]) -> dict[str, Any]:
     strategy_id = str(runtime["strategy_id"])
     reasons: list[str] = []
     repo = Path(runtime["canonical_repo"])
+    initial_head: str | None = None
+    initial_remote: str | None = None
+
+    try:
+        resolved_repo = repo.resolve(strict=True)
+        git_toplevel = _git_toplevel(resolved_repo)
+    except (OSError, subprocess.SubprocessError):
+        reasons.append("canonical_repo_git_toplevel_unreadable")
+    else:
+        if git_toplevel != resolved_repo:
+            reasons.append("canonical_repo_not_git_toplevel")
 
     try:
         head = _git_output(repo, "rev-parse", "HEAD")
     except (OSError, subprocess.SubprocessError):
         reasons.append("repo_head_unreadable")
     else:
+        initial_head = head
         if head != runtime["canonical_git_commit"]:
             reasons.append("repo_head_mismatch")
     try:
@@ -570,6 +579,7 @@ def _runtime_binding_result(runtime: dict[str, Any]) -> dict[str, Any]:
     except (OSError, subprocess.SubprocessError):
         reasons.append("repo_remote_unreadable")
     else:
+        initial_remote = remote
         if remote != runtime["canonical_remote_url"]:
             reasons.append("repo_remote_mismatch")
 
@@ -582,7 +592,11 @@ def _runtime_binding_result(runtime: dict[str, Any]) -> dict[str, Any]:
         raw_plan = plan_path.read_bytes()
         if _sha256_bytes(raw_plan) != runtime["canonical_plan_file_sha256"]:
             reasons.append("plan_file_sha256_mismatch")
-        plan_blob = _git_head_blob(repo, plan_path)
+        plan_blob = _git_head_blob(
+            repo,
+            plan_path,
+            commit=runtime["canonical_git_commit"],
+        )
         if plan_blob is None:
             reasons.append("plan_not_tracked")
         elif _sha256_bytes(plan_blob) != runtime["canonical_plan_file_sha256"]:
@@ -626,7 +640,11 @@ def _runtime_binding_result(runtime: dict[str, Any]) -> dict[str, Any]:
             reasons.append(f"implementation_missing:{role}")
         elif _file_sha256(implementation_path) != declared["sha256"]:
             reasons.append(f"implementation_bytes_mismatch:{role}")
-        implementation_blob = _git_head_blob(repo, implementation_path)
+        implementation_blob = _git_head_blob(
+            repo,
+            implementation_path,
+            commit=runtime["canonical_git_commit"],
+        )
         if implementation_blob is None:
             reasons.append(f"implementation_not_tracked:{role}")
         elif _sha256_bytes(implementation_blob) != declared["sha256"]:
@@ -639,13 +657,34 @@ def _runtime_binding_result(runtime: dict[str, Any]) -> dict[str, Any]:
             reasons.append("launcher_missing")
         elif _file_sha256(launcher_path) != runtime["launcher_sha256"]:
             reasons.append("launcher_sha256_mismatch")
-        launcher_blob = _git_head_blob(repo, launcher_path)
+        launcher_blob = _git_head_blob(
+            repo,
+            launcher_path,
+            commit=runtime["canonical_git_commit"],
+        )
         if launcher_blob is None:
             reasons.append("launcher_not_tracked")
         elif _sha256_bytes(launcher_blob) != runtime["launcher_sha256"]:
             reasons.append("launcher_git_blob_mismatch")
     elif runtime["scheduler_routable"]:
         reasons.append("routable_launcher_missing")
+
+    if initial_head is not None:
+        try:
+            final_head = _git_output(repo, "rev-parse", "HEAD")
+        except (OSError, subprocess.SubprocessError):
+            reasons.append("repo_head_recheck_unreadable")
+        else:
+            if final_head != initial_head:
+                reasons.append("repo_head_changed_during_validation")
+    if initial_remote is not None:
+        try:
+            final_remote = _git_output(repo, "remote", "get-url", "origin")
+        except (OSError, subprocess.SubprocessError):
+            reasons.append("repo_remote_recheck_unreadable")
+        else:
+            if final_remote != initial_remote:
+                reasons.append("repo_remote_changed_during_validation")
 
     runtime_status = runtime["runtime_status"]
     state_path = Path(runtime["state_path"])
@@ -753,71 +792,8 @@ def generate_staged_registry(
     *,
     generated_at_utc: str | None = None,
 ) -> dict[str, Any]:
-    source = Path(source_path)
-    try:
-        payload = _load_json_bytes(source.read_bytes())
-    except (
-        OSError,
-        UnicodeDecodeError,
-        json.JSONDecodeError,
-        DuplicateJsonKeyError,
-    ) as exc:
-        raise ValueError(f"staging_source_invalid:{exc}") from exc
-    structural_reasons, _ = _validate_structure(payload)
-    if structural_reasons:
-        raise ValueError(
-            "staging_source_structure_invalid:" + ";".join(structural_reasons)
-        )
-
-    generated = copy.deepcopy(payload)
-    generated["activation_status"] = STAGING_ACTIVATION_STATUS
-    generated["generated_at_utc"] = generated_at_utc or datetime.now(
-        timezone.utc
-    ).isoformat(timespec="seconds").replace("+00:00", "Z")
-    if not _validate_timestamp(generated["generated_at_utc"]):
-        raise ValueError("generated_at_utc_invalid")
-
-    for runtime in generated["runtimes"]:
-        runtime["scheduler_routable"] = False
-        runtime["public_data_only"] = True
-        runtime["live_trading_allowed"] = False
-        runtime["allowed_modes"] = [
-            mode
-            for mode in runtime["allowed_modes"]
-            if not str(mode).upper().startswith("LIVE")
-        ]
-        if not runtime["allowed_modes"]:
-            raise ValueError(f"no_non_live_mode:{runtime['strategy_id']}")
-
-        repo = Path(runtime["canonical_repo"])
-        runtime["canonical_git_commit"] = _git_output(repo, "rev-parse", "HEAD")
-        runtime["canonical_remote_url"] = _git_output(
-            repo, "remote", "get-url", "origin"
-        )
-        plan_path = Path(runtime["canonical_plan_path"])
-        raw_plan = plan_path.read_bytes()
-        plan = _load_json_bytes(raw_plan)
-        if not isinstance(plan, dict):
-            raise ValueError(f"plan_not_object:{runtime['strategy_id']}")
-        calculated_hash = canonical_plan_hash(plan)
-        if plan.get("plan_hash") != calculated_hash:
-            raise ValueError(f"plan_internal_hash_invalid:{runtime['strategy_id']}")
-        runtime["canonical_plan_sha256"] = calculated_hash
-        runtime["canonical_plan_file_sha256"] = _sha256_bytes(raw_plan)
-        runtime["canonical_plan_id"] = plan.get("plan_id")
-        runtime["canonical_plan_status"] = plan.get("status")
-        runtime["implementation_bindings"] = _extract_plan_bindings(plan, repo)
-
-        launcher_text = runtime["launcher_path"]
-        if launcher_text is None:
-            runtime["launcher_sha256"] = None
-        else:
-            launcher_path = Path(launcher_text)
-            if not launcher_path.is_file():
-                raise ValueError(f"launcher_missing:{runtime['strategy_id']}")
-            runtime["launcher_sha256"] = _file_sha256(launcher_path)
-
-    return generated
+    del source_path, generated_at_utc
+    raise ValueError("external_head_materializer_required")
 
 
 def _build_parser() -> argparse.ArgumentParser:

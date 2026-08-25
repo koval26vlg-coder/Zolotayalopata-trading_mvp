@@ -6,11 +6,11 @@ $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $coordinatorPath = Join-Path $PSScriptRoot "invoke_listing_strategy_due_coordinator.ps1"
 $installerPath = Join-Path $PSScriptRoot "install_listing_strategy_due_coordinator_task.ps1"
 $uninstallerPath = Join-Path $PSScriptRoot "uninstall_listing_strategy_due_coordinator_task.ps1"
-$stagingRegistryPath = Join-Path $repoRoot "docs\control\canonical_strategy_runtime.staging.json"
 $pwshExe = (Get-Process -Id $PID).Path
 $script:passed = 0
 $script:failed = 0
 $script:testRoots = [System.Collections.Generic.List[string]]::new()
+$script:externalTestRoots = [System.Collections.Generic.List[string]]::new()
 $legacyAutomationIds = @(
     "zolotyaylopata-listing-momentum-monitor",
     "zolotyaylopata-pre-market-perpetual-listing-impulse-monitor",
@@ -471,12 +471,145 @@ status = "$status"
 }
 
 function Invoke-InstallerDryRun {
-    param([string]$AutomationsRoot)
+    param(
+        [string]$AutomationsRoot,
+        [switch]$CorruptRuntimeBinding,
+        [switch]$UsePublicationJunction,
+        [switch]$TamperReceiptAfterHash,
+        [switch]$TamperInstallerAfterHash
+    )
     $taskName = "ZolotyayLopata Coordinator Test " + [guid]::NewGuid().ToString("N")
+    $externalRoot = Join-Path ([IO.Path]::GetTempPath()) ("listing-coordinator-installer-" + [guid]::NewGuid().ToString("N"))
+    New-Item -ItemType Directory -Path $externalRoot | Out-Null
+    $script:externalTestRoots.Add($externalRoot)
+    $git = "C:\Program Files\Git\cmd\git.exe"
+    $python = "C:\Program Files\Python313\python.exe"
+    $controlPlane = Join-Path $externalRoot "control-plane"
+    $controlTools = Join-Path $controlPlane "tools"
+    $controlSrc = Join-Path $controlPlane "trading_mvp\src"
+    New-Item -ItemType Directory -Path $controlTools -Force | Out-Null
+    New-Item -ItemType Directory -Path $controlSrc -Force | Out-Null
+    Copy-Item -LiteralPath $installerPath -Destination (Join-Path $controlTools "install_listing_strategy_due_coordinator_task.ps1")
+    Copy-Item -LiteralPath $coordinatorPath -Destination (Join-Path $controlTools "invoke_listing_strategy_due_coordinator.ps1")
+    Copy-Item -LiteralPath (Join-Path $repoRoot "trading_mvp\src\canonical_strategy_runtime.py") -Destination (Join-Path $controlSrc "canonical_strategy_runtime.py")
+    Copy-Item -LiteralPath (Join-Path $repoRoot "trading_mvp\src\external_registry_materializer.py") -Destination (Join-Path $controlSrc "external_registry_materializer.py")
+    & $git -C $controlPlane init --quiet
+    & $git -C $controlPlane config core.autocrlf false
+    & $git -C $controlPlane config user.email "coordinator-tests@example.invalid"
+    & $git -C $controlPlane config user.name "Coordinator Tests"
+    & $git -C $controlPlane add tools trading_mvp
+    & $git -C $controlPlane commit --quiet -m "committed control plane fixture"
+    $controlCommit = (& $git -C $controlPlane rev-parse HEAD).Trim()
+
+    $runtimeRepo = Join-Path $externalRoot "runtime"
+    New-Item -ItemType Directory -Path $runtimeRepo | Out-Null
+    & $git -C $runtimeRepo init --quiet
+    & $git -C $runtimeRepo config core.autocrlf false
+    & $git -C $runtimeRepo config user.email "coordinator-tests@example.invalid"
+    & $git -C $runtimeRepo config user.name "Coordinator Tests"
+    & $git -C $runtimeRepo remote add origin "https://example.invalid/runtime.git"
+    $workerPath = Join-Path $runtimeRepo "worker.py"
+    $launcherPath = Join-Path $runtimeRepo "launcher.ps1"
+    $planPath = Join-Path $runtimeRepo "plan.json"
+    "def run():`n    return 'fixture'`n" | Set-Content -LiteralPath $workerPath -Encoding utf8NoBOM
+    "Write-Output 'fixture'`n" | Set-Content -LiteralPath $launcherPath -Encoding utf8NoBOM
+    [ordered]@{
+        schema = "fixture_plan_v1"
+        plan_id = "fixture_plan_20260825_v1"
+        status = "READY_FOR_OFFLINE_VALIDATION"
+        implementation = [ordered]@{ files = @([ordered]@{ role = "worker"; repo_path = "worker.py"; sha256 = (Get-FileSha256 $workerPath) }) }
+    } | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath $planPath -Encoding utf8NoBOM
+    $planHasher = 'import hashlib,json,sys; p=json.load(open(sys.argv[1],encoding="utf-8-sig")); u=dict(p); u.pop("plan_hash",None); p["plan_hash"]=hashlib.sha256(json.dumps(u,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode()).hexdigest(); open(sys.argv[1],"w",encoding="utf-8",newline="\n").write(json.dumps(p,ensure_ascii=False,indent=2)+"\n")'
+    & $python -c $planHasher $planPath
+    & $git -C $runtimeRepo add worker.py launcher.ps1 plan.json
+    & $git -C $runtimeRepo commit --quiet -m "runtime fixture"
+    $runtimeCommit = (& $git -C $runtimeRepo rev-parse HEAD).Trim()
+    $plan = Get-Content -Raw -LiteralPath $planPath | ConvertFrom-Json
+
+    $publicationId = "a" * 64
+    $publicationDirectory = Join-Path $externalRoot $publicationId
+    New-Item -ItemType Directory -Path $publicationDirectory | Out-Null
+    $externalRegistryPath = Join-Path $publicationDirectory "canonical_strategy_runtime.json"
+    $externalReceiptPath = Join-Path $publicationDirectory "materialization_receipt.json"
+    [ordered]@{
+        schema = "zolotyaylopata.canonical_strategy_runtime.v1"
+        registry_id = "fixture_external_registry_v1"
+        generated_at_utc = "2026-08-25T17:00:00Z"
+        activation_status = "STAGING_NOT_INSTALLED"
+        canonical_owners = @([ordered]@{ strategy_id = "fixture_runtime"; namespace_prefix = "listing.fixture.runtime"; scope = "fixture_scope"; venues = @("fixture") })
+        runtimes = @([ordered]@{
+            strategy_id = "fixture_runtime"; track_class = "fixture_track"; runtime_status = "INACTIVE"; activation_readiness = "STAGED_ONLY"
+            namespace_prefix = "listing.fixture.runtime"; scope = "fixture_scope"; venues = @("fixture")
+            canonical_repo = $runtimeRepo; canonical_remote_url = "https://example.invalid/runtime.git"; canonical_git_commit = $runtimeCommit
+            canonical_plan_path = $planPath; canonical_plan_sha256 = [string]$plan.plan_hash; canonical_plan_file_sha256 = (Get-FileSha256 $planPath)
+            canonical_plan_id = [string]$plan.plan_id; canonical_plan_status = [string]$plan.status
+            launcher_path = $launcherPath; launcher_sha256 = (Get-FileSha256 $launcherPath); scheduler_routable = $false
+            allowed_modes = @("DISCOVERY"); state_path = (Join-Path $runtimeRepo "state.json"); ledger_path = (Join-Path $runtimeRepo "attempts.jsonl")
+            public_data_only = $true; live_trading_allowed = $false
+            implementation_bindings = @([ordered]@{ role = "worker"; path = $workerPath; sha256 = (Get-FileSha256 $workerPath) })
+            supersedes = @(); retired_aliases = @()
+        })
+    } | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $externalRegistryPath -Encoding utf8NoBOM
+    if ($CorruptRuntimeBinding) {
+        $corruptRegistry = Get-Content -Raw -LiteralPath $externalRegistryPath | ConvertFrom-Json
+        $corruptRegistry.runtimes[0].implementation_bindings[0].sha256 = "f" * 64
+        $corruptRegistry | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $externalRegistryPath -Encoding utf8NoBOM
+    }
+    $expectedRegistrySha = Get-FileSha256 $externalRegistryPath
+    $committedCoordinatorPath = Join-Path $controlTools "invoke_listing_strategy_due_coordinator.ps1"
+    $committedValidatorPath = Join-Path $controlSrc "canonical_strategy_runtime.py"
+    $committedMaterializerPath = Join-Path $controlSrc "external_registry_materializer.py"
+    [ordered]@{
+        schema = "zolotyaylopata.external_registry_materialization_receipt.v2"; status = "MATERIALIZED_FAIL_CLOSED"; decision = "STAGED_FAIL_CLOSED"; launch_allowed = $false
+        publication_id = $publicationId; publication_directory = $publicationDirectory; source_path = (Join-Path $controlPlane "source.json"); source_git_commit = $controlCommit; source_head_sha256 = ("0" * 64)
+        materializer_path = $committedMaterializerPath; materializer_git_commit = $controlCommit; materializer_head_sha256 = (Get-FileSha256 $committedMaterializerPath)
+        validator_path = $committedValidatorPath; validator_git_commit = $controlCommit; validator_head_sha256 = (Get-FileSha256 $committedValidatorPath)
+        registry_path = $externalRegistryPath; receipt_path = $externalReceiptPath; registry_raw_sha256 = $expectedRegistrySha
+        canonical_repositories = @([ordered]@{ canonical_repo = $runtimeRepo; canonical_git_commit = $runtimeCommit })
+        validation = [ordered]@{
+            ok = $true
+            registry_valid = $true
+            all_runtime_bindings_valid = $true
+            decision = "STAGED_FAIL_CLOSED"
+            registry_raw_sha256 = $expectedRegistrySha
+            launch_allowed = $false
+        }
+    } | ConvertTo-Json -Depth 20 | Set-Content -LiteralPath $externalReceiptPath -Encoding utf8NoBOM
+    $expectedReceiptSha = Get-FileSha256 $externalReceiptPath
+    if ($TamperReceiptAfterHash) {
+        [IO.File]::AppendAllText($externalReceiptPath, " ", [Text.UTF8Encoding]::new($false))
+    }
+    $expectedCoordinatorSha = Get-FileSha256 $committedCoordinatorPath
+    $expectedValidatorSha = Get-FileSha256 $committedValidatorPath
+    $fixtureInstallerPath = Join-Path $controlTools "install_listing_strategy_due_coordinator_task.ps1"
+    $expectedInstallerSha = Get-FileSha256 $fixtureInstallerPath
+    if ($TamperInstallerAfterHash) {
+        [IO.File]::AppendAllText(
+            $fixtureInstallerPath,
+            "`n# tampered after committed binding`n",
+            [Text.UTF8Encoding]::new($false)
+        )
+    }
+    $boundRegistryPath = $externalRegistryPath
+    $boundReceiptPath = $externalReceiptPath
+    if ($UsePublicationJunction) {
+        $publicationAlias = Join-Path $externalRoot ("b" * 64)
+        $junction = & "C:\Windows\System32\cmd.exe" /d /c mklink /J $publicationAlias $publicationDirectory 2>&1
+        if ($LASTEXITCODE -ne 0) { throw "failed to create publication junction: $junction" }
+        $boundRegistryPath = Join-Path $publicationAlias "canonical_strategy_runtime.json"
+        $boundReceiptPath = Join-Path $publicationAlias "materialization_receipt.json"
+    }
     $arguments = @(
-        "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $installerPath,
+        "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $fixtureInstallerPath,
         "-DryRun", "-Json", "-TaskName", $taskName,
-        "-CoordinatorPath", $coordinatorPath,
+        "-RegistryPath", $boundRegistryPath,
+        "-ReceiptPath", $boundReceiptPath,
+        "-ExpectedRegistrySha256", $expectedRegistrySha,
+        "-ExpectedInstallerSha256", $expectedInstallerSha,
+        "-ExpectedCoordinatorSha256", $expectedCoordinatorSha,
+        "-ExpectedReceiptSha256", $expectedReceiptSha,
+        "-ExpectedValidatorSha256", $expectedValidatorSha,
+        "-ExpectedControlPlaneGitCommit", $controlCommit,
         "-CodexAutomationsRoot", $AutomationsRoot
     )
     $output = & $pwshExe @arguments 2>&1 | Out-String
@@ -486,7 +619,21 @@ function Invoke-InstallerDryRun {
     } catch {
         throw "installer output is not JSON (exit=$exitCode): $output"
     }
-    return [pscustomobject]@{ payload = $payload; exit_code = $exitCode; raw = $output; task_name = $taskName }
+    return [pscustomobject]@{
+        payload = $payload
+        exit_code = $exitCode
+        raw = $output
+        task_name = $taskName
+        registry_path = $boundRegistryPath
+        receipt_path = $boundReceiptPath
+        registry_sha256 = $expectedRegistrySha
+        receipt_sha256 = $expectedReceiptSha
+        coordinator_path = $committedCoordinatorPath
+        coordinator_sha256 = $expectedCoordinatorSha
+        installer_sha256 = $expectedInstallerSha
+        validator_sha256 = $expectedValidatorSha
+        control_plane_commit = $controlCommit
+    }
 }
 
 function Assert-ScheduledTickRejectsLegacyCaseVariant {
@@ -1504,18 +1651,46 @@ Invoke-Test "installer defines one hidden five-minute no-model task and uninstal
     $uninstaller = Get-Content -Raw -LiteralPath $uninstallerPath
     Assert-True ($installer -match "Register-ScheduledTask") "installer does not register a Scheduled Task"
     Assert-True ($installer -match "FromMinutes\(5\)") "installer does not use a five-minute trigger"
-    Assert-True ($installer -match "WindowStyle Hidden") "scheduled coordinator process is not hidden"
+    Assert-True ($installer -match '"-WindowStyle"\s*,\s*"Hidden"|WindowStyle Hidden') "scheduled coordinator process is not hidden"
     Assert-True ($installer -match "invoke_listing_strategy_due_coordinator\.ps1") "task does not run the coordinator"
-    Assert-True ($installer -match "canonical_strategy_runtime\.staging\.json") "installer does not bind the staging registry"
+    Assert-True ($installer -notmatch "canonical_strategy_runtime\.staging\.json") "installer still defaults to the in-repo staging registry"
+    Assert-True ($installer -match 'Parameter\(Mandatory\s*=\s*\$true\)') "installer does not require explicit production bindings"
     Assert-True ($installer -match "ExpectedRegistrySha256") "installer does not bind the raw registry SHA"
+    Assert-True ($installer -match "ExpectedInstallerSha256") "installer does not bind its own SHA"
     Assert-True ($installer -match "ExpectedCoordinatorSha256") "installer does not bind the coordinator SHA"
+    Assert-True ($installer -match "ExpectedValidatorSha256") "installer does not bind the validator SHA"
+    Assert-True ($installer -match "ExpectedReceiptSha256") "installer does not bind the receipt SHA"
+    Assert-True ($installer -match "ExpectedControlPlaneGitCommit") "installer does not bind the control-plane commit"
+    Assert-True ($installer -notmatch '\[string\]\$CoordinatorPath') "installer accepts a production coordinator override"
+    Assert-True ($installer -match "GetFinalPathNameByHandle") "installer does not resolve reparse targets physically"
     Assert-True ($installer -match "DryRun") "installer has no dry-run gate"
     Assert-True ($installer -notmatch "start_(listing_momentum|premarket|preipo)") "task directly launches a track orchestrator"
     Assert-True ($uninstaller -match "Unregister-ScheduledTask") "uninstaller does not unregister the task"
     Assert-True ($uninstaller -notmatch "Remove-Item") "uninstaller must not delete state, attempts, claims, or manifests"
     $coordinator = Get-Content -Raw -LiteralPath $coordinatorPath
+    Assert-True ($coordinator -match "ExpectedValidatorSha256") "coordinator does not bind the validator SHA"
+    Assert-True ($coordinator -match "ExpectedReceiptSha256") "coordinator does not bind the receipt SHA"
+    Assert-True ($coordinator -match "ExpectedControlPlaneGitCommit") "coordinator does not bind the control-plane commit"
+    Assert-True ($coordinator -match "GetFinalPathNameByHandle") "coordinator does not resolve reparse targets physically"
+    Assert-True ($coordinator -match 'cat-file",\s*"blob"') "coordinator does not bind control-plane files to exact committed blobs"
+    Assert-True ($coordinator -match 'canonical_strategy_runtime\.json') "coordinator does not require the immutable registry filename"
+    Assert-True ($coordinator -match 'materialization_receipt\.json') "coordinator does not require the immutable receipt filename"
+    Assert-True ($coordinator -match 'zolotyaylopata\.external_registry_materialization_receipt\.v2') "coordinator does not validate the receipt schema"
+    Assert-True ($coordinator -match 'PUBLICATION_INSIDE_CANONICAL_REPOSITORY') "coordinator does not reject in-repository publications"
+    Assert-True ($coordinator -match 'CONTROL_PLANE_FILE_SHA256_MISMATCH') "coordinator does not require worktree and committed-blob SHA equality"
+    Assert-True ($coordinator -match 'CANONICAL_REGISTRY_NOT_EXACT_STAGED') "coordinator does not require the exact staged validator result"
+    Assert-True ($coordinator -notmatch '-cin\s+@\("STAGED_FAIL_CLOSED",\s*"PARTIAL_RUNTIME_BLOCK"\)') "coordinator still promotes PARTIAL_RUNTIME_BLOCK"
     Assert-True ($coordinator -notmatch "WindowStyle\s+Hidden") "coordinator hides a worker"
     Assert-True ($coordinator -notmatch "Start-Process") "coordinator starts a process outside the existing visible orchestrators"
+}
+
+Invoke-Test "installer rejects its own worktree after committed hash binding" {
+    $root = New-LegacyAutomationFixture
+    $result = Invoke-InstallerDryRun -AutomationsRoot $root -TamperInstallerAfterHash
+    Assert-Equal $result.exit_code 2 "tampered installer was accepted: $($result.raw)"
+    Assert-Equal $result.payload.status "BLOCKED_INSTALL_BINDING" "tampered installer rejection status is ambiguous"
+    Assert-True ([string]$result.payload.reason -match "INSTALLER_SHA256_MISMATCH|INSTALLER_WORKTREE_DIFFERS_FROM_COMMIT") "tampered installer did not fail its self-binding"
+    Assert-Equal $result.payload.registration_attempted $false "tampered installer rejection attempted registration"
 }
 
 Invoke-Test "installer blocks when any legacy Codex automation is active" {
@@ -1530,6 +1705,32 @@ Invoke-Test "installer blocks when any legacy Codex automation is active" {
     Assert-Equal $result.payload.registration_attempted $false "blocked dry-run attempted Scheduled Task registration"
 }
 
+Invoke-Test "installer rejects a physical publication junction before coordinator preflight" {
+    $root = New-LegacyAutomationFixture
+    $result = Invoke-InstallerDryRun -AutomationsRoot $root -UsePublicationJunction
+    Assert-Equal $result.exit_code 2 "publication junction was accepted: $($result.raw)"
+    Assert-Equal $result.payload.status "BLOCKED_INSTALL_BINDING" "junction rejection status is ambiguous"
+    Assert-True ([string]$result.payload.reason -match "REGISTRY_PATH_REPARSE_ALIAS") "junction rejection did not expose the physical alias"
+    Assert-Equal $result.payload.registration_attempted $false "junction rejection attempted registration"
+}
+
+Invoke-Test "installer rejects PARTIAL runtime evidence even when receipt claims staging" {
+    $root = New-LegacyAutomationFixture
+    $result = Invoke-InstallerDryRun -AutomationsRoot $root -CorruptRuntimeBinding
+    Assert-Equal $result.exit_code 2 "PARTIAL runtime evidence was accepted: $($result.raw)"
+    Assert-Equal $result.payload.status "BLOCKED_COORDINATOR_PREFLIGHT" "PARTIAL runtime did not fail at coordinator preflight"
+    Assert-Equal $result.payload.registration_attempted $false "PARTIAL runtime rejection attempted registration"
+}
+
+Invoke-Test "installer rejects receipt bytes changed after hash binding" {
+    $root = New-LegacyAutomationFixture
+    $result = Invoke-InstallerDryRun -AutomationsRoot $root -TamperReceiptAfterHash
+    Assert-Equal $result.exit_code 2 "tampered receipt was accepted: $($result.raw)"
+    Assert-Equal $result.payload.status "BLOCKED_INSTALL_BINDING" "tampered receipt rejection status is ambiguous"
+    Assert-True ([string]$result.payload.reason -match "RECEIPT_SHA256_MISMATCH") "tampered receipt did not fail on its raw hash"
+    Assert-Equal $result.payload.registration_attempted $false "tampered receipt rejection attempted registration"
+}
+
 foreach ($caseVariant in $legacyCaseVariants) {
     Invoke-Test "installer dry-run rejects $($caseVariant.name) without mutation or registration" {
         Assert-InstallerRejectsLegacyCaseVariant -Field $caseVariant.field -Value $caseVariant.value
@@ -1540,18 +1741,27 @@ Invoke-Test "installer dry-run succeeds only when all three legacy automations a
     $root = New-LegacyAutomationFixture
     $result = Invoke-InstallerDryRun -AutomationsRoot $root
     Assert-Equal $result.exit_code 0 "all-PAUSED dry-run must exit zero: $($result.raw)"
-    Assert-Equal $result.payload.status "READY_TO_INSTALL" "all-PAUSED topology is not ready"
+    Assert-Equal $result.payload.status "STAGED_FAIL_CLOSED" "all-PAUSED dry-run is not fail-closed"
+    Assert-Equal $result.payload.reason "NOT_ACTIVATED" "all-PAUSED dry-run has ambiguous activation status"
     Assert-Equal @($result.payload.legacy_automations).Count 3 "dry-run did not verify all three legacy automations"
     Assert-Equal ((@($result.payload.legacy_automations | ForEach-Object { $_.id }) | Sort-Object) -join ",") (($legacyAutomationIds | Sort-Object) -join ",") "dry-run returned the wrong automation ids"
     Assert-True (@($result.payload.legacy_automations | Where-Object { $_.status -ne "PAUSED" }).Count -eq 0) "dry-run accepted a non-PAUSED status"
     $actionArguments = [string]$result.payload.action_arguments
-    $expectedRegistryPath = [IO.Path]::GetFullPath($stagingRegistryPath)
-    $expectedRegistrySha = Get-FileSha256 $expectedRegistryPath
-    $expectedCoordinatorSha = Get-FileSha256 $coordinatorPath
+    $expectedRegistryPath = [IO.Path]::GetFullPath($result.registry_path)
+    $expectedRegistrySha = $result.registry_sha256
+    $expectedCoordinatorSha = $result.coordinator_sha256
+    $expectedReceiptPath = [IO.Path]::GetFullPath($result.receipt_path)
+    $expectedReceiptSha = $result.receipt_sha256
+    $expectedValidatorSha = $result.validator_sha256
+    $expectedControlPlaneCommit = $result.control_plane_commit
     Assert-True ($actionArguments -match '(?:^|\s)-ScheduledTick(?:\s|$)') "scheduled task action does not require ScheduledTick"
     Assert-True ($actionArguments -match ('(?:^|\s)-RegistryPath\s+"' + [regex]::Escape($expectedRegistryPath) + '"(?:\s|$)')) "scheduled task action does not bind the exact registry path"
     Assert-True ($actionArguments -match ('(?:^|\s)-ExpectedRegistrySha256\s+' + $expectedRegistrySha + '(?:\s|$)')) "scheduled task action does not bind the exact registry SHA"
     Assert-True ($actionArguments -match ('(?:^|\s)-ExpectedCoordinatorSha256\s+' + $expectedCoordinatorSha + '(?:\s|$)')) "scheduled task action does not bind the exact coordinator SHA"
+    Assert-True ($actionArguments -match ('(?:^|\s)-ReceiptPath\s+"' + [regex]::Escape($expectedReceiptPath) + '"(?:\s|$)')) "scheduled task action does not bind the exact receipt path"
+    Assert-True ($actionArguments -match ('(?:^|\s)-ExpectedReceiptSha256\s+' + $expectedReceiptSha + '(?:\s|$)')) "scheduled task action does not bind the exact receipt SHA"
+    Assert-True ($actionArguments -match ('(?:^|\s)-ExpectedValidatorSha256\s+' + $expectedValidatorSha + '(?:\s|$)')) "scheduled task action does not bind the exact validator SHA"
+    Assert-True ($actionArguments -match ('(?:^|\s)-ExpectedControlPlaneGitCommit\s+' + $expectedControlPlaneCommit + '(?:\s|$)')) "scheduled task action does not bind the exact control-plane commit"
     foreach ($forbidden in @(
         "CodexAutomationsRoot",
         "ListingStatePath",
@@ -1569,6 +1779,10 @@ Invoke-Test "installer dry-run succeeds only when all three legacy automations a
     Assert-Equal $result.payload.registry_path $expectedRegistryPath "dry-run exposes the wrong registry path"
     Assert-Equal $result.payload.expected_registry_sha256 $expectedRegistrySha "dry-run exposes the wrong registry SHA"
     Assert-Equal $result.payload.expected_coordinator_sha256 $expectedCoordinatorSha "dry-run exposes the wrong coordinator SHA"
+    Assert-Equal $result.payload.receipt_path $expectedReceiptPath "dry-run exposes the wrong receipt path"
+    Assert-Equal $result.payload.expected_receipt_sha256 $expectedReceiptSha "dry-run exposes the wrong receipt SHA"
+    Assert-Equal $result.payload.expected_validator_sha256 $expectedValidatorSha "dry-run exposes the wrong validator SHA"
+    Assert-Equal $result.payload.expected_control_plane_git_commit $expectedControlPlaneCommit "dry-run exposes the wrong control-plane commit"
     Assert-Equal $result.payload.coordinator_preflight.status "STAGED_FAIL_CLOSED" "dry-run did not execute the read-only staging preflight"
     Assert-Equal $result.payload.coordinator_preflight.reason "NOT_ACTIVATED" "dry-run staging preflight reason is ambiguous"
     Assert-Equal $result.payload.coordinator_preflight.execution_performed $false "dry-run coordinator preflight performed execution"
@@ -1583,6 +1797,17 @@ foreach ($root in $script:testRoots) {
     $leaf = Split-Path -Leaf $resolvedRoot
     if (-not $resolvedRoot.StartsWith($resolvedTools, [StringComparison]::OrdinalIgnoreCase) -or -not $leaf.StartsWith(".test_listing_strategy_due_coordinator_")) {
         throw "refusing to remove unexpected test directory: $resolvedRoot"
+    }
+    Remove-Item -LiteralPath $resolvedRoot -Recurse -Force
+}
+
+foreach ($root in $script:externalTestRoots) {
+    if (-not (Test-Path -LiteralPath $root)) { continue }
+    $resolvedRoot = [System.IO.Path]::GetFullPath($root)
+    $resolvedTemp = [System.IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd([System.IO.Path]::DirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
+    $leaf = Split-Path -Leaf $resolvedRoot
+    if (-not $resolvedRoot.StartsWith($resolvedTemp, [StringComparison]::OrdinalIgnoreCase) -or -not $leaf.StartsWith("listing-coordinator-installer-")) {
+        throw "refusing to remove unexpected external test directory: $resolvedRoot"
     }
     Remove-Item -LiteralPath $resolvedRoot -Recurse -Force
 }
