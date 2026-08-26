@@ -92,6 +92,17 @@ def _aware(value: Any, label: str) -> datetime:
     return moment.astimezone(timezone.utc)
 
 
+def _same_instant(left: Any, right: Any, label: str) -> bool:
+    """Compare two timestamps as moments rather than as strings.
+
+    The wrapper observes a launcher's start time through psutil and the launcher records
+    its own through .NET's round-trip format, which prints seven fractional digits where
+    Python prints six. Measured on this machine the two agree exactly at microsecond
+    resolution, so the instants are comparable even though the text is not. Comparing the
+    text would reject a correct identity over a formatting difference - and comparing the
+    instant still rejects a one-microsecond substitution, which is the check that matters."""
+    return _aware(left, label) == _aware(right, label)
+
 def _sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -307,7 +318,11 @@ def _validate_receipt(
         raise _reject("the handoff receipt was issued under a different plan")
     if not _is_int(receipt.get("wrapper_pid")) or receipt.get("wrapper_pid") != identity["pid"]:
         raise _reject("the handoff receipt names a different wrapper process")
-    if receipt.get("wrapper_process_started_at_utc") != identity["started_at_utc"]:
+    if not _same_instant(
+        receipt.get("wrapper_process_started_at_utc"),
+        identity["started_at_utc"],
+        "handoff wrapper_process_started_at_utc",
+    ):
         raise _reject("the handoff receipt names a wrapper with a different start time")
     if receipt.get("claim_run_id") != f"{plan_id}__{tick_id}":
         raise _reject("the handoff receipt names a different run")
@@ -354,8 +369,10 @@ def _validate_ledger_row(
         raise _reject("the terminal ledger row names a different run")
     if not _is_int(row.get("owner_pid")) or row.get("owner_pid") != manifest.get("writer_pid"):
         raise _reject("the terminal ledger row names a different writer")
-    if row.get("owner_process_started_at_utc") != manifest.get(
-        "writer_process_started_at_utc"
+    if not _same_instant(
+        row.get("owner_process_started_at_utc"),
+        manifest.get("writer_process_started_at_utc"),
+        "terminal ledger owner_process_started_at_utc",
     ):
         raise _reject("the terminal ledger row names a writer with a different start time")
     if row.get("ownership_token_sha256") != ownership_token:
@@ -374,7 +391,7 @@ def _validate_ledger_row(
     if row.get("pending_retry") != manifest.get("pending_retry"):
         raise _reject("the terminal ledger pending_retry contradicts the manifest")
     for field in ("started_at_utc", "finished_at_utc"):
-        if row.get(field) != manifest.get(field):
+        if not _same_instant(row.get(field), manifest.get(field), f"terminal ledger {field}"):
             raise _reject(f"the terminal ledger {field} contradicts the manifest")
 
 

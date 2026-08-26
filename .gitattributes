@@ -67,3 +67,13 @@ tools/start_listing_momentum_expansion_automation_visible.ps1 -text whitespace=c
 docs/plans/listing-momentum-expansion-automation-planonly-20260826-v1.json -text whitespace=cr-at-eol
 docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v11.json -text whitespace=cr-at-eol
 docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v12.json -text whitespace=cr-at-eol
+
+# Reached transitively from the expansion wrapper's bindings, so their exact bytes
+# are hashed too. Only the identity proposal had actually drifted; the rest are
+# listed to stop a future checkout from rewriting them into a mismatch.
+trading_mvp/src/listing_event_normalizer.py -text whitespace=cr-at-eol
+trading_mvp/src/slow_liquidity_listing_momentum_first_days_census.py -text whitespace=cr-at-eol
+trading_mvp/src/slow_liquidity_listing_momentum_first_days_collector.py -text whitespace=cr-at-eol
+trading_mvp/src/slow_liquidity_official_identity_proposal.py -text whitespace=cr-at-eol
+trading_mvp/src/slow_liquidity_spot_v2_official_page_discovery.py -text whitespace=cr-at-eol
+trading_mvp/src/slow_liquidity_spot_v2_request_plan.py -text whitespace=cr-at-eol
