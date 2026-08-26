@@ -31,9 +31,23 @@ DECLARED_TOKENIZED_EQUITY_BASES: dict[str, frozenset[str]] = {
     )
 }
 
-# Empty until a positive official crypto identity registry is bound. Ticker spelling
-# alone is not evidence that an instrument belongs to the crypto acceptance universe.
-DECLARED_CRYPTO_TOKEN_BASES: dict[str, frozenset[str]] = {}
+# Ticker spelling alone is not evidence that an instrument belongs to the crypto
+# acceptance universe, so every entry here is a reviewed identity rather than a guess.
+#
+# The Bitget four were established on 2026-08-26 under probe plan
+# listing_spot_crypto_identity_probe_20260826_v2: Bitget publishes both deposit and
+# withdrawal for each on a public network with a contract address - ALIGN on ERC20,
+# DGAI, PWT and SWARM on BEP20. An instrument that can be moved onto a public chain
+# and back is not an internal exchange ledger entry, which is what a tokenised share
+# on these venues is. The response bytes each verdict rests on are hashed in
+# docs/agent-log/listing-spot-crypto-identity-probe-result-20260826.json.
+#
+# TMX is deliberately absent. Bitget publishes deposit for it and not withdrawal, and
+# one-way movement does not establish the identity: a suspended withdrawal looks the
+# same here as an asset that structurally cannot leave.
+DECLARED_CRYPTO_TOKEN_BASES: dict[str, frozenset[str]] = {
+    "bitget": frozenset({"ALIGN", "DGAI", "PWT", "SWARM"}),
+}
 
 
 @dataclass(frozen=True)

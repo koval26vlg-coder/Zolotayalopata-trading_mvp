@@ -195,11 +195,11 @@ class AuthorityTests(unittest.TestCase):
         plan = json.loads(expansion.PLAN_PATH.read_text(encoding="utf-8"))
         self.assertEqual(
             plan["plan_id"],
-            "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260826_v5",
+            "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260826_v6",
         )
         self.assertEqual(
             plan["supersedes"]["plan_hash"],
-            "1c6ba55c047dbfac331eb2237422be265f9b73418cce213fa184ead663f2b2d1",
+            "d98346103d9818945d89bfdb91203aae27b0b97960fcf665156e4784be194bfc",
         )
         self.assertEqual(
             plan["source_bindings"]["expansion_monitor_plan"]["plan_id"],

@@ -71,13 +71,33 @@ class EligibilityTests(unittest.TestCase):
                 self.assertEqual(result.asset_class, ASSET_CLASS_TOKENIZED_EQUITY)
                 self.assertFalse(result.acceptance_eligible)
 
-    def test_nothing_is_eligible_while_no_crypto_identity_is_declared(self):
-        """The crypto universe is empty by declaration, not by permissive default.
+    def test_the_declared_crypto_universe_is_exactly_what_was_reviewed(self):
+        """Eligibility comes from a reviewed declaration, never from a default.
 
-        If this ever fails, a crypto registry has been bound - which is the intended
-        next step, but it should be a reviewed edit and not a surprise."""
-        self.assertEqual(DECLARED_CRYPTO_TOKEN_BASES, {})
-        for venue, base in (("okx", "BTC"), ("bitget", "ETH"), ("binance", "SOL")):
+        This test used to assert the registry was empty, and it was right to: the
+        emptiness was the whole safeguard. It is no longer empty, so it now pins what
+        was actually declared. Four Bitget bases were established on 2026-08-26 under
+        probe plan listing_spot_crypto_identity_probe_20260826_v2, each because the
+        venue publishes two-way movement on a public chain. Anything appearing here
+        without that review should fail this test."""
+        self.assertEqual({"bitget"}, set(DECLARED_CRYPTO_TOKEN_BASES))
+        self.assertEqual(
+            frozenset({"ALIGN", "DGAI", "PWT", "SWARM"}),
+            DECLARED_CRYPTO_TOKEN_BASES["bitget"],
+        )
+        for base in sorted(DECLARED_CRYPTO_TOKEN_BASES["bitget"]):
+            with self.subTest(base=base):
+                result = classify_spot_asset("bitget", base)
+                self.assertEqual(result.asset_class, ASSET_CLASS_CRYPTO_TOKEN)
+                self.assertTrue(result.acceptance_eligible)
+
+    def test_everything_undeclared_stays_ineligible(self):
+        # TMX is the pointed case: it was probed in the same run and not established,
+        # because Bitget publishes deposit for it and not withdrawal.
+        for venue, base in (
+            ("bitget", "TMX"), ("okx", "BTC"), ("bitget", "ETH"), ("binance", "SOL"),
+            ("okx", "ALIGN"),
+        ):
             with self.subTest(venue=venue, base=base):
                 self.assertFalse(classify_spot_asset(venue, base).acceptance_eligible)
 

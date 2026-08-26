@@ -126,6 +126,13 @@ class ProbeRunTests(unittest.TestCase):
             return mapping.get(base, json.dumps({"code": "00000", "data": []}).encode())
         return fetch
 
+    def plan_bases(self) -> list[str]:
+        plan = json.loads(
+            (probe.REPO_ROOT / probe.PLAN_RELATIVE_PATH).read_text(encoding="utf-8")
+        )
+        self.assertTrue(plan["probe"]["bases"], "the issued plan names no base to probe")
+        return list(plan["probe"]["bases"])
+
     def run_with(self, mapping: dict[str, bytes], fail: set[str] | None = None) -> dict:
         return probe.run_probe(
             fetch=self.fetcher(mapping, fail),
@@ -147,20 +154,21 @@ class ProbeRunTests(unittest.TestCase):
             self.assertTrue(url.startswith(plan["probe"]["endpoint"]))
 
     def test_a_movable_asset_produces_a_proposal_a_static_one_does_not(self) -> None:
-        plan = json.loads(
-            (probe.REPO_ROOT / probe.PLAN_RELATIVE_PATH).read_text(encoding="utf-8")
-        )
-        movable, static = plan["probe"]["bases"][0], plan["probe"]["bases"][1]
-        result = self.run_with({
-            movable: venue_payload(movable, [MOVABLE]),
-            static: venue_payload(static, [DEPOSIT_ONLY]),
-        })
-        by_base = {row["base"]: row for row in result["observations"]}
-        self.assertEqual("PROPOSED", by_base[movable]["status"])
-        self.assertEqual("NOT_ESTABLISHED", by_base[static]["status"])
-        self.assertEqual(1, len(result["proposals"]))
-        self.assertEqual(movable, result["proposals"][0]["base"])
-        self.assertTrue(result["proposals"][0]["requires_human_review"])
+        # Two runs over the same base rather than two bases in one run: the plan names
+        # only what is still unresolved, and that set shrinks as identities are declared.
+        # A test that indexed bases[0] and bases[1] would stop testing the mechanism the
+        # moment the list got down to one entry.
+        base = self.plan_bases()[0]
+        movable = self.run_with({base: venue_payload(base, [MOVABLE])})
+        static = self.run_with({base: venue_payload(base, [DEPOSIT_ONLY])})
+
+        moved = next(row for row in movable["observations"] if row["base"] == base)
+        stayed = next(row for row in static["observations"] if row["base"] == base)
+        self.assertEqual("PROPOSED", moved["status"])
+        self.assertEqual("NOT_ESTABLISHED", stayed["status"])
+        self.assertEqual(base, movable["proposals"][0]["base"])
+        self.assertTrue(movable["proposals"][0]["requires_human_review"])
+        self.assertEqual([], static["proposals"])
 
     def test_a_failed_request_is_recorded_and_does_not_stop_the_rest(self) -> None:
         plan = json.loads(

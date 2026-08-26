@@ -62,11 +62,17 @@ def _imported_modules(path: Path) -> set[str]:
     return names
 
 
+# An undeclared base on purpose. SWARM and its three companions were declared on
+# 2026-08-26, so proposing about them now correctly returns nothing - which would make
+# every case below test the "already settled" path instead of the mechanism.
+UNDECLARED_BASE = "NEWCOIN"
+
+
 def evidence(**overrides) -> VenueAssetEvidence:
     payload = {
         "exchange": "bitget",
-        "base": "SWARM",
-        "source_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=SWARM",
+        "base": UNDECLARED_BASE,
+        "source_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=NEWCOIN",
         "observed_at_utc": "2026-08-26T11:00:00Z",
         "chains": (
             ChainListing(
@@ -87,7 +93,7 @@ class CryptoIdentityProposalTests(unittest.TestCase):
         self.assertIsNotNone(proposal)
         assert proposal is not None
         self.assertEqual("bitget", proposal.exchange)
-        self.assertEqual("SWARM", proposal.base)
+        self.assertEqual(UNDECLARED_BASE, proposal.base)
         self.assertEqual(ASSET_CLASS_CRYPTO_TOKEN, proposal.proposed_class)
         self.assertEqual(("Ethereum",), proposal.supporting_networks)
         self.assertTrue(proposal.requires_human_review)
@@ -106,7 +112,7 @@ class CryptoIdentityProposalTests(unittest.TestCase):
     def test_proposal_refuses_to_be_built_for_any_other_class_or_without_review(self) -> None:
         common = {
             "exchange": "bitget",
-            "base": "SWARM",
+            "base": UNDECLARED_BASE,
             "supporting_networks": ("Ethereum",),
             "source_url": "https://api.bitget.com/x",
             "observed_at_utc": "2026-08-26T11:00:00Z",
@@ -160,7 +166,7 @@ class CryptoIdentityProposalTests(unittest.TestCase):
 
     def test_only_the_venue_may_make_the_claim(self) -> None:
         for url in (
-            "https://api.coingecko.com/api/v3/coins/swarm",
+            "https://api.coingecko.com/api/v3/coins/newcoin",
             "https://bitget.example.com/coins",
             "http://api.bitget.com/api/v2/spot/public/coins",
             "https://api.binance.com/sapi/v1/capital/config/getall",
@@ -230,24 +236,26 @@ class CryptoIdentityProposalTests(unittest.TestCase):
 
     def test_lowercase_input_is_normalised_without_changing_the_answer(self) -> None:
         proposal = propose_crypto_identity(
-            evidence(exchange="BITGET", base="swarm"), now=NOW
+            evidence(exchange="BITGET", base=UNDECLARED_BASE.lower()), now=NOW
         )
         assert proposal is not None
         self.assertEqual("bitget", proposal.exchange)
-        self.assertEqual("SWARM", proposal.base)
+        self.assertEqual(UNDECLARED_BASE, proposal.base)
 
     def test_review_queue_deduplicates_and_orders(self) -> None:
         queue = review_queue(
             [
+                evidence(base="NEWCOIN"),
+                evidence(base="NEWCOIN"),
+                evidence(base="OTHERCOIN"),
+                evidence(base="THIRDCOIN", chains=()),
                 evidence(base="SWARM"),
-                evidence(base="SWARM"),
-                evidence(base="ALIGN"),
-                evidence(base="DGAI", chains=()),
             ],
             now=NOW,
         )
+        # SWARM is declared, so it is absent: a settled identity is not a question.
         self.assertEqual(
-            [("bitget", "ALIGN"), ("bitget", "SWARM")],
+            [("bitget", "NEWCOIN"), ("bitget", "OTHERCOIN")],
             [(item.exchange, item.base) for item in queue],
         )
 
@@ -267,15 +275,12 @@ class CryptoIdentityProposalTests(unittest.TestCase):
         self.assertEqual(("Ethereum", "Polygon"), proposal.supporting_networks)
 
     def test_unresolved_bases_names_what_the_track_is_blocked_on(self) -> None:
+        # Four of these were declared on 2026-08-26 and drop out; TMX did not and stays.
         observed = [
             ("bitget", "ALIGN"), ("bitget", "DGAI"), ("bitget", "PWT"),
-            ("bitget", "SWARM"), ("bitget", "TMX"), ("okx", "XCRM"), ("bitget", "align"),
+            ("bitget", "SWARM"), ("bitget", "TMX"), ("okx", "XCRM"), ("bitget", "tmx"),
         ]
-        self.assertEqual(
-            [("bitget", "ALIGN"), ("bitget", "DGAI"), ("bitget", "PWT"),
-             ("bitget", "SWARM"), ("bitget", "TMX")],
-            unresolved_bases(observed),
-        )
+        self.assertEqual([("bitget", "TMX")], unresolved_bases(observed))
 
     def test_the_module_performs_no_collection(self) -> None:
         # Checked against the imports rather than the text. A substring search would

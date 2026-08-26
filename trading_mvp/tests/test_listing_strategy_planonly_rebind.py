@@ -49,11 +49,12 @@ EXPANSION_V9 = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planon
 EXPANSION_V10 = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v10.json"
 EXPANSION_V11 = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v11.json"
 EXPANSION_V12 = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v12.json"
-NEW_EXPANSION = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v13.json"
+EXPANSION_V13 = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v13.json"
+NEW_EXPANSION = PLANS / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v14.json"
 # The immediate predecessor, named by the role it plays rather than by its number.
 # The tests below compare the current plan against the one it supersedes; spelling
 # that as a version constant meant each reissue quietly changed what was compared.
-PREVIOUS_EXPANSION = EXPANSION_V12
+PREVIOUS_EXPANSION = EXPANSION_V13
 # premarket ran v1 -> v2 -> v3 (asset-class acceptance gate) -> v4 (temporal anchors);
 # preipo ran v1 -> v2 -> v3 (temporal anchors). The intermediate files stay on disk and
 # stay byte-immutable; only the last one of each lineage is current.
@@ -110,6 +111,7 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
             EXPANSION_V10: "0354af661fde87bfa4e5e8941e35ce9412de474c73c2c59bfed8f7048da18268",
             EXPANSION_V11: "82a965a34da669af07a8abd5015a5b23e03ddb4918451d0422be6aa5f527d5a6",
             EXPANSION_V12: "866a32a3af0ceab3a44dd0fc6255cf8889d6e67fda569fdf60959eb1126a9369",
+            EXPANSION_V13: "c350de9e9bc95ed522fd08ae8c61ee8d00debfa452b6013dd2cc06d2c9488880",
             PREIPO_V7: "f9f6ee5b374a21a41820a2344bb6b5dc440a1413e67fb415880b90c4905552b5",
             PREIPO_V9: "766f0848ea265389422431210902b4150657af5693bbdf3985f008a1549e5324",
             SPOT_V6: "cdb69cdb2514035592122f0b93e97f2f95c6787040802a7addb9ce1186ae7dfd",
@@ -167,11 +169,11 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
         )
         self.assertEqual(
             expansion_plan.PREVIOUS_EXPANSION_PLAN_HASH,
-            "dfa77b63f7de0f5d6f7a37625a4ab79799fcd0150a650ca1cea438457cb2f809",
+            "b49a050ef073760d593ea869eacaebc2124550de45270c21721e52cababea167",
         )
         self.assertEqual(
             expansion_plan.PREVIOUS_EXPANSION_PLAN_FILE_SHA256,
-            "866a32a3af0ceab3a44dd0fc6255cf8889d6e67fda569fdf60959eb1126a9369",
+            "c350de9e9bc95ed522fd08ae8c61ee8d00debfa452b6013dd2cc06d2c9488880",
         )
         self.assertEqual(expansion_plan.PREVIOUS_V2_PLAN_PATH, CANONICAL_PRIMARY_SPOT)
         self.assertEqual(
@@ -217,7 +219,7 @@ class ListingStrategyPlanOnlyRebindTests(unittest.TestCase):
         )
         self.assertEqual(
             expansion["plan_id"],
-            "slow_liquidity_listing_momentum_forward_expansion_20260826_v13",
+            "slow_liquidity_listing_momentum_forward_expansion_20260826_v14",
         )
         expansion_plan.validate_plan(expansion)
         expansion_monitor._validate_plan(expansion, NEW_EXPANSION)
