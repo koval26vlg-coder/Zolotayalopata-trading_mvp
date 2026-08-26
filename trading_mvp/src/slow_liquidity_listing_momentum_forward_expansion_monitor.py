@@ -39,13 +39,13 @@ from adaptive_cadence import decide_cadence
 
 
 SCHEMA = "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_monitor_planonly_v3"
-PLAN_ID = "slow_liquidity_listing_momentum_forward_expansion_20260825_v10"
+PLAN_ID = "slow_liquidity_listing_momentum_forward_expansion_20260826_v11"
 AUTOMATION_ID = "zolotyaylopata-listing-momentum-forward-expansion"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v10.json"
+    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v11.json"
 )
 FORWARD_ROOT = Path("E:/trading_mvp/listing-momentum-forward-expansion")
 TICKS_DIR = FORWARD_ROOT / "ticks"
@@ -62,6 +62,11 @@ LEGACY_CLAIM_PATH = (
     REPO_ROOT
     / "docs/agent-log/active-market-data-writer-expansion-claim.json"
 )
+TERMINAL_ATTEMPTS_PATH = (
+    REPO_ROOT / "docs" / "agent-log" / "run-gates"
+    / "listing_momentum_forward_expansion_terminal_attempts.jsonl"
+)
+TERMINAL_ATTEMPT_SCHEMA = "trading_mvp_listing_momentum_forward_expansion_terminal_attempt_v1"
 MAX_NEW_LISTINGS_PER_TICK = 50
 MAX_RUNTIME_SEC = 600
 TIMEOUT_SEC = 20
@@ -315,6 +320,93 @@ def _finalize_incomplete_tick_manifest(
     return payload
 
 
+def _append_terminal_attempt(
+    *,
+    claim: Mapping[str, Any],
+    tick_id: str,
+    started_at_utc: str,
+    manifest_path: Path,
+    terminal: Mapping[str, Any],
+    primary_error: BaseException | None,
+    finalization_error: str | None,
+) -> None:
+    """Persist independent terminal evidence while the exact writer claim is held."""
+    owner_started_at = claim.get("owner_process_started_at_utc")
+    _require(
+        isinstance(owner_started_at, str) and bool(owner_started_at),
+        "terminal attempt requires exact owner process start identity",
+    )
+    manifest_sha256 = None
+    manifest_status = None
+    manifest_error = None
+    try:
+        raw_manifest = manifest_path.read_bytes()
+    except FileNotFoundError:
+        manifest_error = "manifest_missing"
+    except OSError as exc:
+        manifest_error = f"{type(exc).__name__}: {exc}"
+    else:
+        manifest_sha256 = hashlib.sha256(raw_manifest).hexdigest()
+        try:
+            observed_manifest = json.loads(raw_manifest)
+            if isinstance(observed_manifest, Mapping):
+                manifest_status = observed_manifest.get("status")
+            else:
+                manifest_error = "manifest_not_object"
+        except (ValueError, UnicodeError) as exc:
+            manifest_error = f"{type(exc).__name__}: {exc}"
+    payload = {
+        "schema": TERMINAL_ATTEMPT_SCHEMA,
+        "tick_id": tick_id,
+        "attempt_id": tick_id,
+        "run_id": claim["run_id"],
+        "plan_id": PLAN_ID,
+        "plan_hash": claim["plan_hash"],
+        "owner_pid": claim["owner_pid"],
+        "owner_process_started_at_utc": owner_started_at,
+        "ownership_token_sha256": hashlib.sha256(
+            str(claim["ownership_token"]).encode("ascii")
+        ).hexdigest(),
+        "claim_path": str(CLAIM_PATH.resolve()),
+        "output_namespace": claim["output_namespace"],
+        "started_at_utc": started_at_utc,
+        "finished_at_utc": utc_now_iso(),
+        "status": terminal["status"],
+        "stop_reason": terminal["stop_reason"],
+        "retry_disposition": terminal.get("retry_disposition"),
+        "pending_retry": terminal["pending_retry"],
+        "manifest_path": str(manifest_path.resolve()),
+        "manifest_sha256": manifest_sha256,
+        "manifest_status": manifest_status,
+        "manifest_error": manifest_error,
+        "primary_error": (
+            f"{type(primary_error).__name__}: {primary_error}"
+            if primary_error is not None else None
+        ),
+        "finalization_error": finalization_error,
+        **{
+            key: terminal.get(key)
+            for key in (
+                "jobs_total", "jobs_attempted", "jobs_succeeded", "jobs_failed",
+                "jobs_pending_retry", "retry_queue",
+            )
+        },
+    }
+    encoded = (json.dumps(payload, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
+    TERMINAL_ATTEMPTS_PATH.parent.mkdir(parents=True, exist_ok=True)
+    # One global writer owns this append. Never truncate a prior attempt, even
+    # after a short write; a torn tail requires explicit evidence recovery.
+    with TERMINAL_ATTEMPTS_PATH.open("a+b") as handle:
+        handle.seek(0, os.SEEK_END)
+        if handle.tell():
+            handle.seek(-1, os.SEEK_END)
+            _require(handle.read(1) == b"\n", "terminal attempt ledger has an incomplete tail")
+        if handle.write(encoded) != len(encoded):
+            raise OSError("terminal attempt ledger short write")
+        handle.flush()
+        os.fsync(handle.fileno())
+
+
 def reconcile_running_tick_manifests(*, exclude_tick_id: str | None = None) -> dict[str, Any]:
     checked = 0
     reconciled = 0
@@ -390,6 +482,14 @@ def run_tick(
         "reason=tick_failed_before_terminal_manifest"
     )
     primary_error: BaseException | None = None
+    finalization_error: str | None = None
+    terminal_attempt: dict[str, Any] = {}
+    writer_identity = {
+        "attempt_id": tick_id,
+        "run_id": claim["run_id"],
+        "writer_pid": claim["owner_pid"],
+        "writer_process_started_at_utc": claim["owner_process_started_at_utc"],
+    }
     rows_written = 0
     requests_made = 0
     job_summaries: list[dict[str, Any]] = []
@@ -408,13 +508,11 @@ def run_tick(
             {
                 "schema": "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_tick_manifest_v1",
                 "tick_id": tick_id,
-                "attempt_id": tick_id,
-                "run_id": f"{PLAN_ID}__{tick_id}",
+                **writer_identity,
                 "status": "RUNNING",
                 "evidence_stage": "CLAIMED_PRE_FETCH",
                 "started_at_utc": started_utc,
                 "plan_hash": plan["plan_hash"],
-                "writer_pid": os.getpid(),
                 "ownership_token": claim["ownership_token"],
                 "claim_path": str(CLAIM_PATH),
                 "jobs_total": None,
@@ -541,6 +639,7 @@ def run_tick(
         manifest = {
             "schema": "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_tick_manifest_v1",
             "tick_id": tick_id,
+            **writer_identity,
             "status": terminal_status,
             "stop_reason": stop_reason,
             "retry_disposition": "RETRY_NEXT_INTERVAL" if retry_queue else None,
@@ -566,12 +665,33 @@ def run_tick(
         release_failure_reason = "state_rebuild_exception"
         rebuild_forward_state()
         release_final_status = terminal_status
+        terminal_attempt = manifest
     except BaseException as exc:
         primary_error = exc
         release_final_status = (
             "STOPPED_INCOMPLETE;RETRY_NEXT_INTERVAL;"
             f"reason={release_failure_reason}"
         )
+        terminal_attempt = {
+            **writer_identity,
+            "status": "STOPPED_INCOMPLETE",
+            "stop_reason": release_failure_reason,
+            "retry_disposition": "RETRY_NEXT_INTERVAL",
+            "pending_retry": True,
+            "now_ts": now_ts,
+            "baseline_as_of_ts": baseline_as_of_ts,
+            "new_listing_count": len(jobs),
+            "skipped_backfill_or_relist": skipped,
+            "jobs_total": len(jobs),
+            "jobs_attempted": len(job_summaries),
+            "jobs_succeeded": jobs_succeeded,
+            "jobs_failed": jobs_failed,
+            "jobs_pending_retry": max(1, len(retry_queue)),
+            "jobs": job_summaries,
+            "retry_queue": retry_queue,
+            "rows_written": rows_written,
+            "requests_made": requests_made,
+        }
         try:
             _finalize_incomplete_tick_manifest(
                 manifest_path,
@@ -580,48 +700,75 @@ def run_tick(
                 plan_hash=str(plan["plan_hash"]),
                 failure_reason=release_failure_reason,
                 error=f"{type(exc).__name__}: {exc}",
-                partial={
-                    "now_ts": now_ts,
-                    "baseline_as_of_ts": baseline_as_of_ts,
-                    "new_listing_count": len(jobs),
-                    "skipped_backfill_or_relist": skipped,
-                    "jobs_total": len(jobs),
-                    "jobs_attempted": len(job_summaries),
-                    "jobs_succeeded": jobs_succeeded,
-                    "jobs_failed": jobs_failed,
-                    "jobs_pending_retry": max(1, len(retry_queue)),
-                    "jobs": job_summaries,
-                    "retry_queue": retry_queue,
-                    "rows_written": rows_written,
-                    "requests_made": requests_made,
-                },
+                partial=terminal_attempt,
             )
         except Exception as finalize_exc:  # noqa: BLE001
+            finalization_error = f"{type(finalize_exc).__name__}: {finalize_exc}"
             exc.add_note(
                 "incomplete tick manifest finalization also failed: "
-                f"{type(finalize_exc).__name__}: {finalize_exc}"
+                f"{finalization_error}"
             )
         raise
     finally:
         try:
-            release_global_market_writer(
-                CLAIM_PATH,
-                run_id=f"{PLAN_ID}__{tick_id}",
-                owner_pid=int(claim["owner_pid"]),
-                ownership_token=str(claim["ownership_token"]),
-                final_status=release_final_status,
-                expected_plan_hash=str(claim["plan_hash"]),
-                expected_owner_process_started_at_utc=str(
-                    claim["owner_process_started_at_utc"]
-                ),
+            _append_terminal_attempt(
+                claim=claim,
+                tick_id=tick_id,
+                started_at_utc=started_utc,
+                manifest_path=manifest_path,
+                terminal=terminal_attempt,
+                primary_error=primary_error,
+                finalization_error=finalization_error,
             )
-        except Exception as release_exc:  # noqa: BLE001
+        except BaseException as ledger_exc:
+            # No successful durability barrier means no release or archive,
+            # including when the terminal manifest could not be finalized.
             if primary_error is None:
+                try:
+                    _finalize_incomplete_tick_manifest(
+                        manifest_path,
+                        tick_id=tick_id,
+                        started_at_utc=started_utc,
+                        plan_hash=str(plan["plan_hash"]),
+                        failure_reason="terminal_ledger_persistence_exception",
+                        error=f"{type(ledger_exc).__name__}: {ledger_exc}",
+                        partial={
+                            **terminal_attempt,
+                            "jobs_pending_retry": max(1, len(retry_queue)),
+                        },
+                    )
+                    rebuild_forward_state()
+                except BaseException as finalize_exc:
+                    ledger_exc.add_note(
+                        "ledger failure manifest/state finalization also failed: "
+                        f"{type(finalize_exc).__name__}: {finalize_exc}"
+                    )
+                ledger_exc.add_note("terminal attempt ledger not durable; global writer claim retained")
                 raise
             primary_error.add_note(
-                "global market writer release also failed: "
-                f"{type(release_exc).__name__}: {release_exc}"
+                "terminal attempt ledger persistence also failed; global writer claim retained: "
+                f"{type(ledger_exc).__name__}: {ledger_exc}"
             )
+        else:
+            try:
+                release_global_market_writer(
+                    CLAIM_PATH,
+                    run_id=f"{PLAN_ID}__{tick_id}",
+                    owner_pid=int(claim["owner_pid"]),
+                    ownership_token=str(claim["ownership_token"]),
+                    final_status=release_final_status,
+                    expected_plan_hash=str(claim["plan_hash"]),
+                    expected_owner_process_started_at_utc=str(
+                        claim["owner_process_started_at_utc"]
+                    ),
+                )
+            except Exception as release_exc:  # noqa: BLE001
+                if primary_error is None:
+                    raise
+                primary_error.add_note(
+                    "global market writer release also failed: "
+                    f"{type(release_exc).__name__}: {release_exc}"
+                )
     return manifest
 
 

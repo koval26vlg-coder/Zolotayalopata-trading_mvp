@@ -7,6 +7,7 @@ import sys
 import tempfile
 import threading
 import unittest
+from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from unittest import mock
 
@@ -47,6 +48,201 @@ class FakeClient:
 
 
 class ExpansionMonitorTests(unittest.TestCase):
+    def setUp(self) -> None:
+        ledger_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(ledger_dir.cleanup)
+        self.terminal_attempts_path = Path(ledger_dir.name) / "terminal_attempts.jsonl"
+        ledger_patch = mock.patch.object(
+            monitor, "TERMINAL_ATTEMPTS_PATH", self.terminal_attempts_path, create=True
+        )
+        ledger_patch.start()
+        self.addCleanup(ledger_patch.stop)
+
+    @contextmanager
+    def _terminal_tick_fixture(self):
+        with tempfile.TemporaryDirectory() as temp_dir, ExitStack() as stack:
+            root = Path(temp_dir)
+            for name, path in (
+                ("TICKS_DIR", root / "ticks"),
+                ("STATE_PATH", root / "state.json"),
+                ("CLAIM_PATH", root / "active-market-data-writer-claim.json"),
+                ("LEGACY_CLAIM_PATH", root / "legacy-claim.json"),
+            ):
+                stack.enter_context(mock.patch.object(monitor, name, path))
+            _, plan = self._write_baseline(root, 1_710_000_000)
+            yield root, plan
+
+    def _terminal_attempt_rows(self) -> list[dict]:
+        self.assertTrue(
+            self.terminal_attempts_path.is_file(),
+            "claim released without independent terminal-attempt evidence",
+        )
+        return [
+            json.loads(line)
+            for line in self.terminal_attempts_path.read_text(encoding="utf-8").splitlines()
+        ]
+
+    def test_terminal_attempt_is_fsynced_before_success_claim_release(self) -> None:
+        previous = b'{"schema":"fixture_prior_attempt"}\n'
+        self.terminal_attempts_path.write_bytes(previous)
+        actual_release = monitor.release_global_market_writer
+        actual_fsync = os.fsync
+        ledger_fsynced = False
+        captured_claim: dict = {}
+        token = "7" * 32
+        tick_id = "terminal_success"
+
+        def observe_fsync(descriptor):
+            nonlocal ledger_fsynced
+            result = actual_fsync(descriptor)
+            opened = os.fstat(descriptor)
+            ledger_stat = self.terminal_attempts_path.stat()
+            if (opened.st_dev, opened.st_ino) == (ledger_stat.st_dev, ledger_stat.st_ino):
+                ledger_fsynced = True
+            return result
+
+        with self._terminal_tick_fixture() as (root, plan):
+            claim_path = root / "active-market-data-writer-claim.json"
+
+            def fetcher():
+                captured_claim.update(json.loads(claim_path.read_text(encoding="utf-8")))
+                self.assertEqual(self.terminal_attempts_path.read_bytes(), previous)
+                return [], 0
+
+            def release_after_evidence(*args, **kwargs):
+                self.assertTrue(ledger_fsynced, "claim release happened before ledger fsync")
+                row = self._terminal_attempt_rows()[-1]
+                self.assertEqual(row["status"], "COMPLETED")
+                self.assertFalse(row["pending_retry"])
+                self.assertIsNone(row["retry_disposition"])
+                self.assertEqual(row["tick_id"], tick_id)
+                self.assertEqual(row["attempt_id"], tick_id)
+                self.assertEqual(row["run_id"], captured_claim["run_id"])
+                self.assertEqual(row["plan_id"], monitor.PLAN_ID)
+                self.assertEqual(row["plan_hash"], captured_claim["plan_hash"])
+                self.assertEqual(row["owner_pid"], captured_claim["owner_pid"])
+                self.assertEqual(
+                    row["owner_process_started_at_utc"],
+                    captured_claim["owner_process_started_at_utc"],
+                )
+                self.assertTrue(row["owner_process_started_at_utc"])
+                self.assertEqual(
+                    row["ownership_token_sha256"], hashlib.sha256(token.encode("ascii")).hexdigest()
+                )
+                self.assertNotIn("ownership_token", row)
+                self.assertEqual(row["output_namespace"], captured_claim["output_namespace"])
+                manifest_path = root / "ticks" / tick_id / "manifest.json"
+                self.assertEqual(row["manifest_path"], str(manifest_path.resolve()))
+                self.assertEqual(row["manifest_sha256"], hashlib.sha256(manifest_path.read_bytes()).hexdigest())
+                self.assertEqual(row["manifest_status"], "COMPLETED")
+                self.assertIsNone(row["manifest_error"])
+                return actual_release(*args, **kwargs)
+
+            with mock.patch.object(monitor.os, "fsync", side_effect=observe_fsync), mock.patch.object(
+                monitor, "release_global_market_writer", side_effect=release_after_evidence
+            ) as release:
+                manifest = monitor.run_tick(
+                    plan, tick_id=tick_id, clients={}, fetcher=fetcher,
+                    now_ts=1_710_000_000, claim_ownership_token=token,
+                )
+            release.assert_called_once()
+            self.assertEqual(manifest["status"], "COMPLETED")
+            self.assertFalse(claim_path.exists())
+        self.assertTrue(self.terminal_attempts_path.read_bytes().startswith(previous))
+        self.assertEqual(len(self._terminal_attempt_rows()), 2)
+
+    def test_manifest_and_finalization_failures_still_persist_terminal_attempt(self) -> None:
+        import listing_event_history_collector as collector_module
+
+        original = OSError("fixture terminal manifest failed")
+        tick_id = "terminal_dual_manifest_failure"
+        with self._terminal_tick_fixture() as (root, plan), mock.patch.object(
+            collector_module, "write_manifest", side_effect=original
+        ), mock.patch.object(
+            monitor, "_finalize_incomplete_tick_manifest", side_effect=OSError("fixture fallback failed")
+        ):
+            with self.assertRaises(OSError) as caught:
+                monitor.run_tick(plan, tick_id=tick_id, clients={}, fetcher=lambda: ([], 0))
+            self.assertIs(caught.exception, original)
+            self.assertIn("fixture fallback failed", " ".join(caught.exception.__notes__))
+            row = self._terminal_attempt_rows()[-1]
+            self.assertEqual(row["status"], "STOPPED_INCOMPLETE")
+            self.assertEqual(row["stop_reason"], "terminal_manifest_persistence_exception")
+            self.assertTrue(row["pending_retry"])
+            self.assertEqual(row["retry_disposition"], "RETRY_NEXT_INTERVAL")
+            self.assertIn("fixture terminal manifest failed", row["primary_error"])
+            self.assertIn("fixture fallback failed", row["finalization_error"])
+            manifest_path = root / "ticks" / tick_id / "manifest.json"
+            self.assertEqual(row["manifest_sha256"], hashlib.sha256(manifest_path.read_bytes()).hexdigest())
+            self.assertEqual(row["manifest_status"], "RUNNING")
+            self._assert_failed_claim_archive(root, "terminal_manifest_persistence_exception")
+
+    def test_terminal_ledger_write_failure_retains_claim_and_marks_retry(self) -> None:
+        self.terminal_attempts_path.mkdir()
+        with self._terminal_tick_fixture() as (root, plan), mock.patch.object(
+            monitor, "release_global_market_writer", wraps=monitor.release_global_market_writer
+        ) as release:
+            with self.assertRaises(OSError):
+                monitor.run_tick(plan, tick_id="terminal_ledger_write_failure", clients={}, fetcher=lambda: ([], 0))
+            release.assert_not_called()
+            claim = json.loads((root / "active-market-data-writer-claim.json").read_text(encoding="utf-8"))
+            self.assertEqual(claim["status"], "CLAIMED")
+            self.assertFalse((root / "global-writer-claim-archive").exists())
+            manifest = json.loads((root / "ticks" / "terminal_ledger_write_failure" / "manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["status"], "STOPPED_INCOMPLETE")
+            self.assertEqual(manifest["stop_reason"], "terminal_ledger_persistence_exception")
+            self.assertTrue(manifest["pending_retry"])
+
+    def test_terminal_ledger_fsync_failure_preserves_original_error_and_claim(self) -> None:
+        actual_fsync = os.fsync
+        original = ValueError("fixture original fetch failure")
+
+        def fail_only_ledger_fsync(descriptor):
+            if self.terminal_attempts_path.is_file():
+                opened = os.fstat(descriptor)
+                ledger_stat = self.terminal_attempts_path.stat()
+                if (opened.st_dev, opened.st_ino) == (ledger_stat.st_dev, ledger_stat.st_ino):
+                    raise OSError("fixture terminal ledger fsync failure")
+            return actual_fsync(descriptor)
+
+        with self._terminal_tick_fixture() as (root, plan), mock.patch.object(
+            monitor.os, "fsync", side_effect=fail_only_ledger_fsync
+        ), mock.patch.object(
+            monitor, "release_global_market_writer", wraps=monitor.release_global_market_writer
+        ) as release:
+            with self.assertRaises(ValueError) as caught:
+                monitor.run_tick(
+                    plan, tick_id="terminal_ledger_fsync_failure", clients={},
+                    fetcher=mock.Mock(side_effect=original),
+                )
+            self.assertIs(caught.exception, original)
+            self.assertIn("fixture terminal ledger fsync failure", " ".join(getattr(caught.exception, "__notes__", [])))
+            release.assert_not_called()
+            claim = json.loads((root / "active-market-data-writer-claim.json").read_text(encoding="utf-8"))
+            self.assertEqual(claim["status"], "CLAIMED")
+            self.assertFalse((root / "global-writer-claim-archive").exists())
+
+    def test_dual_manifest_and_ledger_failures_preserve_primary_error_and_claim(self) -> None:
+        import listing_event_history_collector as collector_module
+
+        original = OSError("fixture primary manifest failure")
+        self.terminal_attempts_path.mkdir()
+        with self._terminal_tick_fixture() as (root, plan), mock.patch.object(
+            collector_module, "write_manifest", side_effect=original
+        ), mock.patch.object(
+            monitor, "_finalize_incomplete_tick_manifest", side_effect=OSError("fixture fallback failure")
+        ), mock.patch.object(
+            monitor, "release_global_market_writer", wraps=monitor.release_global_market_writer
+        ) as release:
+            with self.assertRaises(OSError) as caught:
+                monitor.run_tick(plan, tick_id="terminal_all_outputs_failed", clients={}, fetcher=lambda: ([], 0))
+            self.assertIs(caught.exception, original)
+            self.assertIn("fixture fallback failure", " ".join(caught.exception.__notes__))
+            self.assertIn("terminal attempt ledger", " ".join(caught.exception.__notes__))
+            release.assert_not_called()
+            self.assertTrue((root / "active-market-data-writer-claim.json").is_file())
+            self.assertFalse((root / "global-writer-claim-archive").exists())
+
     def test_asset_provenance_survives_candidate_job_and_forward_row(self) -> None:
         candidates = monitor.diff_new_listings(
             set(),
@@ -521,6 +717,11 @@ class ExpansionMonitorTests(unittest.TestCase):
             failure_manifest["stop_reason"],
             "terminal_manifest_persistence_exception",
         )
+        terminal_attempt = self._terminal_attempt_rows()[-1]
+        self.assertEqual(terminal_attempt["status"], "STOPPED_INCOMPLETE")
+        self.assertEqual(terminal_attempt["manifest_status"], "STOPPED_INCOMPLETE")
+        self.assertTrue(terminal_attempt["pending_retry"])
+        self.assertIsNone(terminal_attempt["finalization_error"])
 
     def test_startup_reconciles_orphan_running_manifest_to_retry(self) -> None:
         root = Path(tempfile.mkdtemp())
@@ -714,6 +915,11 @@ class ExpansionMonitorTests(unittest.TestCase):
             )
         )
         self.assertEqual(durable["retry_queue"], manifest["retry_queue"])
+        terminal_attempt = self._terminal_attempt_rows()[-1]
+        self.assertEqual(terminal_attempt["status"], "STOPPED_INCOMPLETE")
+        self.assertEqual(terminal_attempt["jobs_pending_retry"], 1)
+        self.assertEqual(terminal_attempt["retry_queue"], manifest["retry_queue"])
+        self.assertTrue(terminal_attempt["pending_retry"])
         self.assertEqual(
             (root / "ticks" / "expansion_all_error" / "ohlcv.jsonl").read_text(),
             "",
@@ -782,6 +988,13 @@ class ExpansionMonitorTests(unittest.TestCase):
             )
         )
         self.assertEqual(durable_manifest["retry_queue"], manifest["retry_queue"])
+        terminal_attempt = self._terminal_attempt_rows()[-1]
+        self.assertEqual(terminal_attempt["status"], "PARTIAL_RETRY_NEXT_INTERVAL")
+        self.assertEqual(terminal_attempt["jobs_succeeded"], 1)
+        self.assertEqual(terminal_attempt["jobs_failed"], 1)
+        self.assertEqual(terminal_attempt["jobs_pending_retry"], 1)
+        self.assertEqual(terminal_attempt["retry_queue"], manifest["retry_queue"])
+        self.assertTrue(terminal_attempt["pending_retry"])
         self._assert_cli_nonzero(manifest)
 
     def test_detection_time_proxy_is_explicit(self) -> None:
