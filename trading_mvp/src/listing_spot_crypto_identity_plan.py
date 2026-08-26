@@ -40,8 +40,8 @@ from typing import Any, Mapping, Sequence
 from listing_spot_crypto_identity import VENUE_EVIDENCE_HOSTS, unresolved_bases
 
 SCHEMA = "trading_mvp_listing_spot_crypto_identity_probe_planonly_v1"
-PLAN_ID = "listing_spot_crypto_identity_probe_20260826_v1"
-PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260826-v1.json"
+PLAN_ID = "listing_spot_crypto_identity_probe_20260826_v2"
+PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260826-v2.json"
 HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -65,6 +65,9 @@ IMPLEMENTATION_ROLES = {
     "spot_asset_classifier": "trading_mvp/src/listing_spot_asset_class.py",
     "equity_class_heuristic": "trading_mvp/src/listing_asset_class_heuristic.py",
     "probe_plan_generator": "trading_mvp/src/listing_spot_crypto_identity_plan.py",
+    # The code that actually makes the requests. v1 bound only what interprets the
+    # answer, which left the acting part unbound by the plan authorising the act.
+    "probe_collector": "trading_mvp/src/listing_spot_crypto_identity_probe.py",
 }
 
 MAX_REQUESTS = 5

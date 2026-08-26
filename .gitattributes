@@ -122,3 +122,5 @@ trading_mvp/tests/test_slow_liquidity_official_currentness_topology_v2.py -text
 trading_mvp/tests/test_slow_liquidity_official_currentness_topology_v3.py -text
 trading_mvp/tests/test_slow_liquidity_official_currentness_topology_v4.py -text
 trading_mvp/tests/test_ws_durable_collector.py -text
+trading_mvp/src/listing_spot_crypto_identity_probe.py -text
+docs/plans/listing-spot-crypto-identity-probe-planonly-20260826-v2.json -text
