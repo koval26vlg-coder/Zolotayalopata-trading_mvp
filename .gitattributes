@@ -86,3 +86,16 @@ docs/plans/slow-liquidity-listing-momentum-forward-expansion-evaluator-planonly-
 # precisely how the v4 binding it just replaced went wrong.
 trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_evaluator.py -text whitespace=cr-at-eol
 trading_mvp/src/slow_liquidity_listing_momentum_forward_evaluator.py -text whitespace=cr-at-eol
+
+# Every remaining file that any PlanOnly artifact binds by sha256. An audit of all
+# 123 plans found these eight unprotected; three had already drifted from their
+# committed blob, and no plan anywhere records the normalised variant - every
+# recorded hash is over the bytes as they sit in the working tree.
+tools/run_exact_slow_liquidity_recollect_quality.ps1 -text whitespace=cr-at-eol
+tools/start_listing_momentum_first_days_collect_visible.ps1 -text whitespace=cr-at-eol
+tools/start_listing_momentum_forward_automation_visible.ps1 -text whitespace=cr-at-eol
+tools/start_listing_momentum_forward_tick_visible.ps1 -text whitespace=cr-at-eol
+trading_mvp/src/listing_calendar.py -text whitespace=cr-at-eol
+trading_mvp/src/listing_event_replay.py -text whitespace=cr-at-eol
+trading_mvp/src/listing_event_replay_plan.py -text whitespace=cr-at-eol
+trading_mvp/src/slow_liquidity_listing_momentum_forward_monitor.py -text whitespace=cr-at-eol
