@@ -23,7 +23,7 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $runner = Join-Path $repoRoot "trading_mvp\src\listing_expansion_automation.py"
-$defaultPlanPath = Join-Path $repoRoot "docs\plans\listing-momentum-expansion-automation-planonly-20260826-v1.json"
+$defaultPlanPath = Join-Path $repoRoot "docs\plans\listing-momentum-expansion-automation-planonly-20260826-v2.json"
 if (-not $PlanPath) { $PlanPath = $defaultPlanPath }
 
 if (-not (Test-Path -LiteralPath $runner)) {
