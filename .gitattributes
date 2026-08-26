@@ -99,3 +99,9 @@ trading_mvp/src/listing_calendar.py -text whitespace=cr-at-eol
 trading_mvp/src/listing_event_replay.py -text whitespace=cr-at-eol
 trading_mvp/src/listing_event_replay_plan.py -text whitespace=cr-at-eol
 trading_mvp/src/slow_liquidity_listing_momentum_forward_monitor.py -text whitespace=cr-at-eol
+
+# Asset-identity modules. Not bound by a plan yet, but they will be the moment one
+# binds the crypto identity proposer, and a binding taken before -text is exactly
+# how three separate hash bindings broke today.
+trading_mvp/src/listing_asset_class_heuristic.py -text
+trading_mvp/src/listing_spot_crypto_identity.py -text
