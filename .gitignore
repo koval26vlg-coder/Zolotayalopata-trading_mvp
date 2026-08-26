@@ -49,5 +49,9 @@ docs/agent-log/run-gates/premarket_perp_listing_automation_attempts.jsonl
 docs/agent-log/run-gates/listing_strategy_due_coordinator_state.json
 docs/agent-log/run-gates/listing_strategy_due_coordinator_attempts.jsonl
 docs/agent-log/run-gates/listing_strategy_due_coordinator_claim_archive/
+# The expansion wrapper's own bookkeeping: pids, handoff tokens and a persistent
+# lock inode, all specific to the machine that ran it. The evidence a review needs
+# is the child's tick manifest and terminal ledger, which are kept elsewhere.
+docs/agent-log/run-gates/listing-expansion-automation/
 docs/agent-log/run-gates/python-worker-handoffs/
 docs/agent-log/run-gates/terminal-receipts/
