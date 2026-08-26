@@ -13,6 +13,13 @@ SRC = Path(__file__).resolve().parents[1] / "src"
 TRADING_ROOT = Path(__file__).resolve().parents[1]
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
+# The sibling test module below is imported by bare name, which only resolves when
+# this directory is on sys.path. Discovery puts it there; running the suite from the
+# repository root does not, and the file then fails to import for a reason that has
+# nothing to do with what it tests. Stating it here makes the module work either way.
+TESTS_ROOT = Path(__file__).resolve().parent
+if str(TESTS_ROOT) not in sys.path:
+    sys.path.insert(0, str(TESTS_ROOT))
 
 import gate_membership_momentum_v2_execution_probe as probe  # noqa: E402
 import gate_historical_membership_v3_history_plan as v3_history_plan  # noqa: E402

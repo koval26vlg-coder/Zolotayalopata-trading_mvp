@@ -404,6 +404,8 @@ class GateMembershipMomentumV2ExecutionProbeRuntimeTests(unittest.TestCase):
                 cwd=repository,
                 env={**os.environ, "TRADING_MVP_PYTHON": sys.executable},
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -483,6 +485,8 @@ class GateMembershipMomentumV2ExecutionProbeRuntimeTests(unittest.TestCase):
                 cwd=repository,
                 env=env,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -519,6 +523,8 @@ class GateMembershipMomentumV2ExecutionProbeRuntimeTests(unittest.TestCase):
                 cwd=repository,
                 env=env,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )

@@ -84,6 +84,8 @@ class HistoricalBasisV2ExecutionProbeVisibleTests(unittest.TestCase):
                 command,
                 cwd=REPO_ROOT,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )

@@ -12,6 +12,13 @@ from unittest import mock
 SRC_ROOT = Path(__file__).resolve().parents[1] / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
+# The sibling test modules below are imported by bare name, which only resolves when
+# this directory is on sys.path. Discovery puts it there; running the suite from the
+# repository root does not, and the file then fails to import for a reason that has
+# nothing to do with what it tests. Stating it here makes the module work either way.
+TESTS_ROOT = Path(__file__).resolve().parent
+if str(TESTS_ROOT) not in sys.path:
+    sys.path.insert(0, str(TESTS_ROOT))
 
 from autopilot_guard import (  # noqa: E402
     CurrentSprintReadinessError,
@@ -23,7 +30,7 @@ from one_week_edge_sprint_readiness import (  # noqa: E402
     write_readiness_bundle,
 )
 import one_week_edge_sprint_readiness as readiness_module  # noqa: E402
-from trading_mvp.tests.test_one_week_edge_sprint_readiness import (  # noqa: E402
+from test_one_week_edge_sprint_readiness import (  # noqa: E402
     ReadinessFixture,
 )
 

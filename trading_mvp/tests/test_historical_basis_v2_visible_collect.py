@@ -111,6 +111,8 @@ class HistoricalBasisV2VisibleCollectTests(unittest.TestCase):
                 command,
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -155,6 +157,8 @@ class HistoricalBasisV2VisibleCollectTests(unittest.TestCase):
                 ),
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -196,6 +200,8 @@ class HistoricalBasisV2VisibleCollectTests(unittest.TestCase):
                 command,
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -244,6 +250,8 @@ class HistoricalBasisV2VisibleCollectTests(unittest.TestCase):
                 + ["-Worker", "-WorkerToken", "wrong-token"],
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
