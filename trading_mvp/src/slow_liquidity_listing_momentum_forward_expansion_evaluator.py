@@ -44,7 +44,7 @@ from listing_spot_asset_class import (
 )
 
 SCHEMA = "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_evaluator_planonly_v4"
-PLAN_ID = "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260825_v4"
+PLAN_ID = "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260826_v5"
 EVALUATION_CLASS = "PROXY_DATE_FORWARD_EXPANSION_PREREGISTERED"
 EVALUATION_SCHEMA = (
     "trading_mvp_slow_liquidity_listing_momentum_forward_expansion_evaluation_v1"
@@ -54,7 +54,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-expansion-evaluator-planonly-20260825-v4.json"
+    / "slow-liquidity-listing-momentum-forward-expansion-evaluator-planonly-20260826-v5.json"
 )
 EXPANSION_STATE_PATH = (
     REPO_ROOT
@@ -69,18 +69,18 @@ EXPANSION_MONITOR_PLAN_PATH = (
 EVALUATION_PATH = (
     REPO_ROOT
     / "exports/trading-mvp/analysis"
-    / "slow_liquidity_listing_momentum_forward_expansion_evaluation_20260825_v4.json"
+    / "slow_liquidity_listing_momentum_forward_expansion_evaluation_20260826_v5.json"
 )
 
 SUPERSEDED_PLAN = {
     "path": str(
         REPO_ROOT
         / "docs/plans"
-        / "slow-liquidity-listing-momentum-forward-expansion-evaluator-planonly-20260825-v3.json"
+        / "slow-liquidity-listing-momentum-forward-expansion-evaluator-planonly-20260825-v4.json"
     ),
-    "plan_id": "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260825_v3",
-    "plan_hash": "0136c144f4a9027dedd59af5c3811ef56afb5eb48e251ca981a314655c266851",
-    "file_sha256": "140144343f871e0e9a9b5f5bf18715999d3a79ab9d88a19af39cc58167f401d5",
+    "plan_id": "slow_liquidity_listing_momentum_forward_expansion_evaluator_20260825_v4",
+    "plan_hash": "1c6ba55c047dbfac331eb2237422be265f9b73418cce213fa184ead663f2b2d1",
+    "file_sha256": "0b5f123039c7e4419ca76bd3a721c8cae563c8a9cae79b8a782d31dced4ccede",
 }
 
 EXPECTED_IMPLEMENTATION_PATHS = {

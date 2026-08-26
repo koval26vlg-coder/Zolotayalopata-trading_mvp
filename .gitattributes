@@ -79,3 +79,4 @@ trading_mvp/src/slow_liquidity_listing_momentum_first_days_collector.py -text wh
 trading_mvp/src/slow_liquidity_official_identity_proposal.py -text whitespace=cr-at-eol
 trading_mvp/src/slow_liquidity_spot_v2_official_page_discovery.py -text whitespace=cr-at-eol
 trading_mvp/src/slow_liquidity_spot_v2_request_plan.py -text whitespace=cr-at-eol
+docs/plans/slow-liquidity-listing-momentum-forward-expansion-evaluator-planonly-20260826-v5.json -text whitespace=cr-at-eol
