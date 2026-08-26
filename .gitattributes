@@ -110,3 +110,15 @@ trading_mvp/src/listing_spot_crypto_identity.py -text
 # by sha256, so both need their bytes left alone.
 trading_mvp/src/listing_spot_crypto_identity_plan.py -text
 docs/plans/listing-spot-crypto-identity-probe-planonly-20260826-v1.json -text
+
+# Test modules that sealed runtime manifests bind by sha256 - they are evidence of
+# what was tested, not ordinary code. Without -text a checkout rewrites their line
+# endings and the manifests stop matching, which is how restoring one of them by
+# git checkout managed to break it a second, different way.
+trading_mvp/tests/test_slow_liquidity_identity_currentness_refreeze_proposal.py -text
+trading_mvp/tests/test_slow_liquidity_identity_request_plan_discovery_v3.py -text
+trading_mvp/tests/test_slow_liquidity_official_currentness_topology.py -text
+trading_mvp/tests/test_slow_liquidity_official_currentness_topology_v2.py -text
+trading_mvp/tests/test_slow_liquidity_official_currentness_topology_v3.py -text
+trading_mvp/tests/test_slow_liquidity_official_currentness_topology_v4.py -text
+trading_mvp/tests/test_ws_durable_collector.py -text

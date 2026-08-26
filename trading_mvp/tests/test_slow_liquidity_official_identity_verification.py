@@ -968,8 +968,6 @@ class ExecutionBoundaryTests(unittest.TestCase):
             cwd=REPO_ROOT,
             capture_output=True,
             text=True,
-            encoding="utf-8",
-            errors="replace",
             check=False,
         )
         self.assertNotEqual(proc.returncode, 0)
@@ -1284,8 +1282,6 @@ class ExecutionBoundaryTests(unittest.TestCase):
             cwd=REPO_ROOT,
             capture_output=True,
             text=True,
-            encoding="utf-8",
-            errors="replace",
             check=False,
         )
         payload = json.loads(proc.stderr)
@@ -1371,10 +1367,7 @@ class ExecutionBoundaryTests(unittest.TestCase):
                 "-OutputPath",
                 str(output),
             ]
-            proc = subprocess.run(
-                command, capture_output=True, text=True,
-                encoding="utf-8", errors="replace", check=False,
-            )
+            proc = subprocess.run(command, capture_output=True, text=True, check=False)
 
             self.assertNotEqual(proc.returncode, 0)
             payload = json.loads(proc.stdout)

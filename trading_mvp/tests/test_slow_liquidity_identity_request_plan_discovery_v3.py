@@ -437,8 +437,6 @@ class RequestPlanDiscoveryV3Tests(unittest.TestCase):
                 check=False,
                 capture_output=True,
                 text=True,
-                encoding="utf-8",
-                errors="replace",
             )
 
         self.assertEqual(result.returncode, 0, result.stderr)
