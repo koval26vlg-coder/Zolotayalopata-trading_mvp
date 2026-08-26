@@ -55,3 +55,8 @@ docs/agent-log/run-gates/listing_strategy_due_coordinator_claim_archive/
 docs/agent-log/run-gates/listing-expansion-automation/
 docs/agent-log/run-gates/python-worker-handoffs/
 docs/agent-log/run-gates/terminal-receipts/
+
+# Editor backups left beside the file they copy. They are not evidence and not
+# artifacts; one careless `git add -A` swept four of them in, which is reason enough
+# to make it impossible rather than to remember not to.
+*.bak-*
