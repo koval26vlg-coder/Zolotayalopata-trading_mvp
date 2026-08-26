@@ -776,7 +776,7 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
             set(runtimes),
             {
                 "spot_listing_momentum_mexc_gate_v2",
-                "spot_listing_momentum_expansion_v13",
+                "spot_listing_momentum_expansion_v14",
                 "crypto_premarket_perpetual_capture_v28",
                 "preipo_perpetual_event_v11",
             },
