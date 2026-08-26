@@ -67,6 +67,7 @@ tools/start_listing_momentum_expansion_automation_visible.ps1 -text whitespace=c
 docs/plans/listing-momentum-expansion-automation-planonly-20260826-v1.json -text whitespace=cr-at-eol
 docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v11.json -text whitespace=cr-at-eol
 docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v12.json -text whitespace=cr-at-eol
+docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v13.json -text whitespace=cr-at-eol
 
 # Reached transitively from the expansion wrapper's bindings, so their exact bytes
 # are hashed too. Only the identity proposal had actually drifted; the rest are
