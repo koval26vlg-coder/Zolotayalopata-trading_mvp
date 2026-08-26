@@ -150,8 +150,6 @@ def _run(paths: dict[str, Path]) -> subprocess.CompletedProcess[str]:
         text=True,
         encoding="utf-8",
         errors="replace",
-        encoding="utf-8",
-        errors="replace",
         timeout=30,
     )
 

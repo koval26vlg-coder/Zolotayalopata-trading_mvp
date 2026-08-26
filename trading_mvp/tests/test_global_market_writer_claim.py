@@ -332,7 +332,6 @@ print(json.dumps(payload))
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE,
                             text=True,
-                            encoding="utf-8",
                             errors="replace",
                             encoding="utf-8",
                         )
@@ -981,7 +980,6 @@ with claims._claim_transaction_lock(claim_path, timeout_seconds=5.0):
                 check=False,
                 capture_output=True,
                 text=True,
-                encoding="utf-8",
                 errors="replace",
                 encoding="utf-8",
             )

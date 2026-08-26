@@ -102,8 +102,6 @@ def _run(proposal_path: Path, output_path: Path, *, expected_sha256: str | None 
         text=True,
         encoding="utf-8",
         errors="replace",
-        encoding="utf-8",
-        errors="replace",
         timeout=30,
     )
 
