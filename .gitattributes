@@ -80,3 +80,9 @@ trading_mvp/src/slow_liquidity_official_identity_proposal.py -text whitespace=cr
 trading_mvp/src/slow_liquidity_spot_v2_official_page_discovery.py -text whitespace=cr-at-eol
 trading_mvp/src/slow_liquidity_spot_v2_request_plan.py -text whitespace=cr-at-eol
 docs/plans/slow-liquidity-listing-momentum-forward-expansion-evaluator-planonly-20260826-v5.json -text whitespace=cr-at-eol
+
+# The evaluator binds itself and its shared core by exact bytes; without -text the
+# next checkout would rewrite them and its own plan-check would fail - which is
+# precisely how the v4 binding it just replaced went wrong.
+trading_mvp/src/slow_liquidity_listing_momentum_forward_expansion_evaluator.py -text whitespace=cr-at-eol
+trading_mvp/src/slow_liquidity_listing_momentum_forward_evaluator.py -text whitespace=cr-at-eol
