@@ -35,10 +35,10 @@ CANONICAL_PRIMARY_SPOT_COMMIT = "b77c27c1b4cc84db2828d4da8049aa251b8a5bef"
 PREVIOUS_EXPANSION_PLAN_PATH = (
     REPO_ROOT
     / "docs/plans"
-    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260825-v10.json"
+    / "slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v11.json"
 )
-PREVIOUS_EXPANSION_PLAN_HASH = "911c9024c4fc5c6a5c145076e37678b7899944f2e748e6000b9ea7d5e8abf40f"
-PREVIOUS_EXPANSION_PLAN_FILE_SHA256 = "0354af661fde87bfa4e5e8941e35ce9412de474c73c2c59bfed8f7048da18268"
+PREVIOUS_EXPANSION_PLAN_HASH = "499f976773e4c1642808c50d541bbb9acf7304a5d030f77ddd98abc320721789"
+PREVIOUS_EXPANSION_PLAN_FILE_SHA256 = "82a965a34da669af07a8abd5015a5b23e03ddb4918451d0422be6aa5f527d5a6"
 BATCH1_RECEIPT_PATH = (
     REPO_ROOT
     / "docs/agent-log"
@@ -362,6 +362,10 @@ def build_plan(generated_at_utc: str) -> dict[str, Any]:
             "tick_output_root": str(monitor.TICKS_DIR),
             "claim_path": str(monitor.CLAIM_PATH),
             "state_path": str(monitor.STATE_PATH),
+            # Declared so a wrapper has a named place to read terminal evidence from,
+            # and taken from the monitor itself so the plan cannot name a file the
+            # monitor does not actually append to.
+            "terminal_attempts_ledger_path": str(monitor.TERMINAL_ATTEMPTS_PATH),
             "separate_namespace_from_v2": True,
         },
         "guard_contract": {
@@ -425,6 +429,11 @@ def validate_plan(plan: Mapping[str, Any]) -> None:
     _require(plan.get("evaluator_or_oos_allowed") is False, "evaluator allowed")
     _require(tuple(plan.get("venues") or []) == SUPPORTED_VENUES, "venue set")
     _require(plan.get("plan_hash") == canonical_hash(plan), "plan hash")
+    _require(
+        plan.get("tick", {}).get("terminal_attempts_ledger_path")
+        == str(monitor.TERMINAL_ATTEMPTS_PATH),
+        "terminal attempts ledger path",
+    )
     _require(plan.get("tick", {}).get("max_runtime_sec") == monitor.MAX_RUNTIME_SEC, "runtime bound")
     _require(plan.get("tick", {}).get("max_new_listings_per_tick") == monitor.MAX_NEW_LISTINGS_PER_TICK, "tick cap")
     _require(plan.get("source_bindings", {}).get("parent_v2", {}).get("parallel_immutable") is True, "v2 parallel binding")

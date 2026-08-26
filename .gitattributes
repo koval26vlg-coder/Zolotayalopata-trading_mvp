@@ -66,3 +66,4 @@ tools/check_active_run_gate.ps1 -text whitespace=cr-at-eol
 tools/start_listing_momentum_expansion_automation_visible.ps1 -text whitespace=cr-at-eol
 docs/plans/listing-momentum-expansion-automation-planonly-20260826-v1.json -text whitespace=cr-at-eol
 docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v11.json -text whitespace=cr-at-eol
+docs/plans/slow-liquidity-listing-momentum-forward-expansion-planonly-20260826-v12.json -text whitespace=cr-at-eol
