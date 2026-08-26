@@ -136,6 +136,8 @@ class HistoricalBasisV2VisiblePostprocessTests(unittest.TestCase):
                 ],
                 cwd=REPO_ROOT,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=120,
             )

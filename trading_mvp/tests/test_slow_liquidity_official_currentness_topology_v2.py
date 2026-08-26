@@ -475,6 +475,8 @@ def test_launcher_preflight_and_direct_call_create_nothing() -> None:
         cwd=ROOT,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         check=False,
         timeout=30,
     )
@@ -487,6 +489,8 @@ def test_launcher_preflight_and_direct_call_create_nothing() -> None:
         cwd=ROOT,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         check=False,
         timeout=30,
     )
@@ -510,6 +514,8 @@ def test_runtime_cli_has_preflight_but_no_execute_command() -> None:
         cwd=ROOT,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         check=False,
         timeout=30,
     )

@@ -95,6 +95,8 @@ class PitFullEvaluationVisibleTests(unittest.TestCase):
                 command,
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -123,6 +125,8 @@ class PitFullEvaluationVisibleTests(unittest.TestCase):
                 self._base_command(pwsh, Path(temp_dir)) + ["-Worker"],
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -245,6 +249,8 @@ class PitFullEvaluationVisibleTests(unittest.TestCase):
                 ],
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=300,
                 env={**os.environ, "TRADING_MVP_PYTHON": sys.executable},

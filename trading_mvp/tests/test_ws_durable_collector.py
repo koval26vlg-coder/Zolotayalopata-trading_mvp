@@ -324,6 +324,8 @@ class DurableWrapperTests(unittest.TestCase):
             ],
             cwd=str(REPO_ROOT),
             text=True,
+            encoding="utf-8",
+            errors="replace",
             capture_output=True,
             timeout=90,
             check=False,

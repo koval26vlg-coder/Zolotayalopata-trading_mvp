@@ -606,6 +606,8 @@ class SlowLiquidityOfficialCurrentnessTopologyTests(unittest.TestCase):
                 cwd=ROOT,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 check=False,
             )
             self.assertEqual(completed.returncode, BLOCKED_EXIT_CODE)
@@ -626,6 +628,8 @@ class SlowLiquidityOfficialCurrentnessTopologyTests(unittest.TestCase):
                 cwd=ROOT,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 check=False,
             )
             self.assertNotEqual(execute.returncode, 0)

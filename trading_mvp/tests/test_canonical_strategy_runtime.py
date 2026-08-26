@@ -56,6 +56,8 @@ def git_output(*args: str, repo: Path = REPO_ROOT) -> str:
         [executable, "-C", str(repo), *args],
         text=True,
         encoding="utf-8",
+        errors="replace",
+        encoding="utf-8",
     ).strip()
 
 

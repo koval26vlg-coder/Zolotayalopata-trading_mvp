@@ -148,6 +148,8 @@ class HistoricalBasisV2RunMvpTests(unittest.TestCase):
                 ],
                 cwd=REPO_ROOT,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=120,
             )
@@ -212,6 +214,8 @@ class HistoricalBasisV2RunMvpTests(unittest.TestCase):
                 ],
                 cwd=REPO_ROOT,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=120,
             )
@@ -275,6 +279,8 @@ class HistoricalBasisV2RunMvpTests(unittest.TestCase):
                 ],
                 cwd=REPO_ROOT,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=120,
             )
@@ -331,6 +337,8 @@ class HistoricalBasisV2RunMvpTests(unittest.TestCase):
                 ],
                 cwd=REPO_ROOT,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=120,
             )

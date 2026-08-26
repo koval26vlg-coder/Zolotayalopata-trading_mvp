@@ -112,7 +112,10 @@ class ListingStrategyControllerReconciliationTests(unittest.TestCase):
             "-Json",
             *extra,
         ]
-        return subprocess.run(command, text=True, capture_output=True, check=False)
+        return subprocess.run(
+            command, text=True, encoding="utf-8", errors="replace",
+            capture_output=True, check=False,
+        )
 
     @staticmethod
     def ps_literal(value: object) -> str:

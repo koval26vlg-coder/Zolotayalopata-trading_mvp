@@ -83,6 +83,8 @@ class PitFutilityVisibleTests(unittest.TestCase):
                 command + ["-PlanOnly"],
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -118,6 +120,8 @@ class PitFutilityVisibleTests(unittest.TestCase):
                 command + ["-PlanOnly"],
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -144,6 +148,8 @@ class PitFutilityVisibleTests(unittest.TestCase):
                 command + ["-PlanOnly"],
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -155,6 +161,8 @@ class PitFutilityVisibleTests(unittest.TestCase):
                 command + ["-PlanOnly"],
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -182,6 +190,8 @@ class PitFutilityVisibleTests(unittest.TestCase):
                 command + ["-PlanOnly"],
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -241,6 +251,8 @@ class PitFutilityVisibleTests(unittest.TestCase):
                 command + ["-PlanOnly"],
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -268,6 +280,8 @@ class PitFutilityVisibleTests(unittest.TestCase):
                 command + ["-Worker"],
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )
@@ -371,6 +385,8 @@ class PitFutilityVisibleTests(unittest.TestCase):
                 ],
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=180,
             )
@@ -456,6 +472,8 @@ class PitFutilityVisibleTests(unittest.TestCase):
                 ],
                 cwd=str(REPO_ROOT),
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 timeout=60,
             )

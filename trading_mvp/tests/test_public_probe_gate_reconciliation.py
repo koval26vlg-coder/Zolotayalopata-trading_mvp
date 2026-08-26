@@ -147,7 +147,10 @@ class PublicProbeGateReconciliationTests(unittest.TestCase):
             "-Json",
             *extra,
         ]
-        return subprocess.run(command, capture_output=True, text=True, check=False)
+        return subprocess.run(
+            command, capture_output=True, text=True,
+            encoding="utf-8", errors="replace", check=False,
+        )
 
     def test_reconciles_and_is_idempotent(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

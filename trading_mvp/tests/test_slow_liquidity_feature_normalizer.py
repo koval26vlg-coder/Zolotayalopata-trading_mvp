@@ -277,6 +277,8 @@ class SlowLiquidityFeatureNormalizerTests(unittest.TestCase):
                     "1.0",
                 ],
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 check=False,
                 timeout=30,

@@ -44,6 +44,8 @@ class ActiveRunGateTests(unittest.TestCase):
                 ],
                 check=False,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
             )
 
@@ -92,6 +94,8 @@ class ActiveRunGateTests(unittest.TestCase):
                 ],
                 check=False,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
             )
 
@@ -244,6 +248,8 @@ class ActiveRunGateTests(unittest.TestCase):
                 ],
                 check=False,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
             )
 
@@ -1065,6 +1071,8 @@ class ActiveRunGateTests(unittest.TestCase):
             ],
             check=False,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             capture_output=True,
         )
         self.assertEqual(completed.returncode, 0, completed.stderr)
@@ -1086,6 +1094,8 @@ class ActiveRunGateTests(unittest.TestCase):
             ],
             check=False,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             capture_output=True,
         )
         self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
@@ -1108,6 +1118,8 @@ class ActiveRunGateTests(unittest.TestCase):
             ],
             check=False,
             text=True,
+            encoding="utf-8",
+            errors="replace",
             capture_output=True,
         )
         self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)

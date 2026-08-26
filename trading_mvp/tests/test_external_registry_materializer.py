@@ -147,6 +147,8 @@ class MaterializerFixture:
             capture_output=True,
             text=True,
             encoding="utf-8",
+            errors="replace",
+            encoding="utf-8",
         )
         return completed.stdout.strip()
 
@@ -783,6 +785,8 @@ class ExternalRegistryMaterializerTests(unittest.TestCase):
                 check=False,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 encoding="utf-8",
             )
             if completed.returncode != 0:

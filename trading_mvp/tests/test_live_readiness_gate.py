@@ -492,6 +492,8 @@ class LiveReadinessCliTests(unittest.TestCase):
                     "2030-01-01T00:00:00Z",
                 ],
                 text=True,
+                encoding="utf-8",
+                errors="replace",
                 capture_output=True,
                 check=False,
                 timeout=10,
