@@ -192,7 +192,15 @@ class AutomationEngine:
     def _read_claim(self) -> dict[str, Any] | None:
         if not self.paths.claim.exists():
             return None
-        return json.loads(self.paths.claim.read_text(encoding="utf-8"))
+        # Same discipline as the state: a corrupt claim is the engine refusing, not a
+        # raw decoder error escaping past every caller that catches AutomationStateError.
+        try:
+            claim = json.loads(self.paths.claim.read_text(encoding="utf-8"))
+        except (ValueError, OSError) as exc:
+            raise AutomationStateError(f"CLAIM_UNREADABLE: {exc}") from exc
+        if not isinstance(claim, dict):
+            raise AutomationStateError("CLAIM_UNREADABLE: not an object")
+        return claim
 
     # ---------------------------------------------------------------- helpers
 
@@ -287,6 +295,40 @@ class AutomationEngine:
 
     def status(self) -> dict[str, Any]:
         return self.read_due()
+
+    def inspect(self) -> dict[str, Any]:
+        """What a caller may say about this automation without changing it.
+
+        ``read_due`` answers only the cheap question. A launcher standing in front of a
+        scheduler has to answer a second one - is somebody already running - and the
+        honest answer to that lives in the claim, not in the state. Probing it read-only
+        keeps a launcher from having to call ``begin_attempt`` just to look, which would
+        create the very claim it was asking about."""
+        verdict = self.read_due()
+        claim = self._read_claim()
+        if claim is None:
+            return {**verdict, "claim": "ABSENT"}
+
+        worker = self._identity_from(claim.get("worker"))
+        child = self._identity_from(claim.get("child"))
+        if worker is None:
+            # An unbound handoff cannot be called free or busy; either answer would be
+            # a guess about a process nobody recorded.
+            return {**verdict, "claim": "UNRESOLVED", "attempt_id": claim.get("attempt_id")}
+        for identity in (worker, child):
+            if identity is None:
+                continue
+            liveness = self._is_live(identity)
+            if liveness == "UNKNOWN":
+                return {**verdict, "claim": "UNRESOLVED", "attempt_id": claim.get("attempt_id")}
+            if liveness == "LIVE":
+                return {
+                    **verdict,
+                    "claim": "RUNNING",
+                    "attempt_id": claim.get("attempt_id"),
+                    "worker_pid": identity.pid,
+                }
+        return {**verdict, "claim": "STALE", "attempt_id": claim.get("attempt_id")}
 
     def begin_attempt(self) -> dict[str, Any]:
         moment = self._now()

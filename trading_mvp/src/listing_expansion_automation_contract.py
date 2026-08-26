@@ -14,8 +14,8 @@ from typing import Any, Mapping
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-PLAN_ID = "listing_momentum_expansion_automation_20260826_v3"
-PLAN_RELATIVE_PATH = "docs/plans/listing-momentum-expansion-automation-planonly-20260826-v3.json"
+PLAN_ID = "listing_momentum_expansion_automation_20260826_v4"
+PLAN_RELATIVE_PATH = "docs/plans/listing-momentum-expansion-automation-planonly-20260826-v4.json"
 SCHEMA = "trading_mvp_listing_expansion_automation_planonly_v1"
 VENUES = ("binance", "bybit", "okx", "bitget")
 WRAPPER_ARTIFACTS = {
@@ -177,7 +177,7 @@ def build_plan(repo_root: Path, child_plan_path: Path, *, generated_at_utc: str)
     state_root = root / "docs/agent-log/run-gates/listing-expansion-automation"
     payload: dict[str, Any] = {
         "schema": SCHEMA, "plan_id": PLAN_ID, "mode": "PlanOnly",
-        "status": "READY_FOR_BOUNDED_PUBLIC_RESEARCH_NOT_SCHEDULER_ACTIVATED",
+        "status": "READY_FOR_SCHEDULER_ROUTED_BOUNDED_PUBLIC_RESEARCH",
         "generated_at_utc": generated_at_utc, "research_only": True, "public_data_only": True,
         "private_api": False, "live_orders": False, "real_capital": False,
         "leverage_or_margin": False, "replay_allowed": False, "evaluator_or_oos_allowed": False,

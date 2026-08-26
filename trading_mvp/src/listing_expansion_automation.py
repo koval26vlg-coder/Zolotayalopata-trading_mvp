@@ -299,6 +299,46 @@ def run_once(
     }
 
 
+def launch_probe(
+    plan_path: Path, *, repo_root: Path = REPO_ROOT
+) -> dict[str, Any]:
+    """What a scheduler may be told before anything is started.
+
+    The due coordinator expects its launcher to answer in one breath and return: is a
+    worker already alive, is this not due after all, or may one be started. It then waits
+    on the pid the launcher hands back. So this reads and reports; it starts nothing and
+    claims nothing, because a probe that called begin_attempt to find out whether it
+    could begin would create the claim it was asking about.
+
+    A held-but-unresolved claim is reported as its own answer rather than as either
+    branch: an unbound handoff means nobody recorded what happened to a process, and
+    guessing in either direction is how a second collector gets launched beside a first.
+    """
+    plan = validate_plan(plan_path, repo_root=repo_root)
+    engine = _engine(plan)
+    engine.initialize(cadence_seconds=int(plan["automation"]["default_interval_sec"]))
+    verdict = engine.inspect()
+
+    common = {
+        "plan_id": plan["plan_id"],
+        "plan_hash": plan["plan_hash"],
+        "next_interval_at_utc": verdict.get("next_interval_at_utc"),
+        "state_status": verdict.get("state_status"),
+        "execution_performed": False,
+    }
+    claim = verdict.get("claim")
+    if claim == "RUNNING":
+        # Reported before due-ness: a live worker is the more consequential truth, and
+        # answering NOT_DUE while one is running is exactly the handoff the coordinator
+        # refuses as unable to establish that nobody is collecting.
+        return {**common, "verdict": "ALREADY_RUNNING", "worker_pid": verdict.get("worker_pid")}
+    if claim == "UNRESOLVED":
+        return {**common, "verdict": "UNRESOLVED", "attempt_id": verdict.get("attempt_id")}
+    if verdict.get("status") == STATUS_NOT_DUE:
+        return {**common, "verdict": "NOT_DUE"}
+    return {**common, "verdict": "LAUNCH"}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plan", type=Path, default=REPO_ROOT / PLAN_RELATIVE_PATH)
@@ -308,6 +348,10 @@ def main(argv: list[str] | None = None) -> int:
     actions.add_argument("--reconcile", action="store_true", help="replay unrecorded terminal evidence")
     actions.add_argument("--dry-run", action="store_true", help="validate and report due-ness only")
     actions.add_argument("--tick", action="store_true", help="run one attempt if due")
+    actions.add_argument(
+        "--launch-probe", action="store_true",
+        help="report what a scheduler may do next; starts nothing and claims nothing",
+    )
     args = parser.parse_args(argv)
 
     try:
@@ -319,6 +363,8 @@ def main(argv: list[str] | None = None) -> int:
                 **_engine(plan).status(),
                 "execution_performed": False,
             }
+        elif args.launch_probe:
+            payload = launch_probe(args.plan, repo_root=args.repo_root)
         elif args.reconcile:
             plan = validate_plan(args.plan, repo_root=args.repo_root)
             payload = {
