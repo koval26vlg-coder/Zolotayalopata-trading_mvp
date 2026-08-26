@@ -1,0 +1,229 @@
+{
+  "schema": "trading_mvp_listing_spot_crypto_identity_probe_result_v1",
+  "plan_id": "listing_spot_crypto_identity_probe_20260826_v2",
+  "plan_hash": "b1024b8a7eb4c19fbbc71624554d70a0987ecf91106622e84bbb3d8f429caff0",
+  "venue": "bitget",
+  "started_at_utc": "2026-08-26T18:56:26.365661Z",
+  "finished_at_utc": "2026-08-26T18:56:33.581612Z",
+  "requests_made": 5,
+  "bases_requested": [
+    "ALIGN",
+    "DGAI",
+    "PWT",
+    "SWARM",
+    "TMX"
+  ],
+  "observations": [
+    {
+      "base": "ALIGN",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=ALIGN",
+      "observed_at_utc": "2026-08-26T18:56:26.365685Z",
+      "response_sha256": "81954f509e0f70c5c8f71bb133ee506758e4f8d7c19114503a4949f84b9cd085",
+      "response_bytes": 551,
+      "chains": [
+        {
+          "network": "ERC20",
+          "contract_address": "0x50614cc8e44f7814549c223aa31db9296e58057c",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "ALIGN",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ERC20"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for ALIGN on 1 public network(s): ERC20",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-26T18:56:26.365685Z",
+          "contract addresses published: ERC20:0x50614cc8e44f7814549c223aa31db9296e58057c"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "DGAI",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=DGAI",
+      "observed_at_utc": "2026-08-26T18:56:28.188045Z",
+      "response_sha256": "00fc6631be800be3c35bbe1569806e2e304814ceb999a36681d60be217623d23",
+      "response_bytes": 552,
+      "chains": [
+        {
+          "network": "BEP20",
+          "contract_address": "0x10d4183389e99233db3cc981c43443ebd28ebd5e",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "DGAI",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "BEP20"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for DGAI on 1 public network(s): BEP20",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-26T18:56:28.188045Z",
+          "contract addresses published: BEP20:0x10d4183389e99233db3cc981c43443ebd28ebd5e"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "PWT",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=PWT",
+      "observed_at_utc": "2026-08-26T18:56:29.777412Z",
+      "response_sha256": "ea5cd292fccb730583d3351dbbd281a8bc6510ad34ea393af66afb17e4aa084f",
+      "response_bytes": 552,
+      "chains": [
+        {
+          "network": "BEP20",
+          "contract_address": "0x458cb0959b8fdc71ebbd92911777f8c9e814c29c",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "PWT",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "BEP20"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for PWT on 1 public network(s): BEP20",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-26T18:56:29.777412Z",
+          "contract addresses published: BEP20:0x458cb0959b8fdc71ebbd92911777f8c9e814c29c"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "SWARM",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=SWARM",
+      "observed_at_utc": "2026-08-26T18:56:31.392240Z",
+      "response_sha256": "6fc1ec5f93a790147d2eea54731c057d39d15ee4148915f5dedc7e48ff655486",
+      "response_bytes": 555,
+      "chains": [
+        {
+          "network": "BEP20",
+          "contract_address": "0x57aab42804434c4cb118ee7fe5865859483051f8",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "SWARM",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "BEP20"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for SWARM on 1 public network(s): BEP20",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-26T18:56:31.392240Z",
+          "contract addresses published: BEP20:0x57aab42804434c4cb118ee7fe5865859483051f8"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "TMX",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=TMX",
+      "observed_at_utc": "2026-08-26T18:56:33.023461Z",
+      "response_sha256": "6dda757675ef6db7e90993a4a29798b72498439a9a1bee979e69b468850aecb0",
+      "response_bytes": 552,
+      "chains": [
+        {
+          "network": "BEP20",
+          "contract_address": "0x3c2f61f2e27c865981d2e7aaf6b2cdf823030039",
+          "deposit_enabled": true,
+          "withdraw_enabled": false,
+          "movable": false
+        }
+      ],
+      "status": "NOT_ESTABLISHED",
+      "proposal": null
+    }
+  ],
+  "proposals": [
+    {
+      "exchange": "bitget",
+      "base": "ALIGN",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ERC20"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for ALIGN on 1 public network(s): ERC20",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-26T18:56:26.365685Z",
+        "contract addresses published: ERC20:0x50614cc8e44f7814549c223aa31db9296e58057c"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "DGAI",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "BEP20"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for DGAI on 1 public network(s): BEP20",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-26T18:56:28.188045Z",
+        "contract addresses published: BEP20:0x10d4183389e99233db3cc981c43443ebd28ebd5e"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "PWT",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "BEP20"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for PWT on 1 public network(s): BEP20",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-26T18:56:29.777412Z",
+        "contract addresses published: BEP20:0x458cb0959b8fdc71ebbd92911777f8c9e814c29c"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "SWARM",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "BEP20"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for SWARM on 1 public network(s): BEP20",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-26T18:56:31.392240Z",
+        "contract addresses published: BEP20:0x57aab42804434c4cb118ee7fe5865859483051f8"
+      ],
+      "requires_human_review": true
+    }
+  ],
+  "registry_edited": false,
+  "acceptance_decision": "NONE_IDENTITY_EVIDENCE_ONLY",
+  "human_review_required": true
+}
