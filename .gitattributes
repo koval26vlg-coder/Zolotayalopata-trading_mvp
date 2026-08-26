@@ -105,3 +105,8 @@ trading_mvp/src/slow_liquidity_listing_momentum_forward_monitor.py -text whitesp
 # how three separate hash bindings broke today.
 trading_mvp/src/listing_asset_class_heuristic.py -text
 trading_mvp/src/listing_spot_crypto_identity.py -text
+
+# The crypto identity probe plan and its generator; the plan binds the generator
+# by sha256, so both need their bytes left alone.
+trading_mvp/src/listing_spot_crypto_identity_plan.py -text
+docs/plans/listing-spot-crypto-identity-probe-planonly-20260826-v1.json -text

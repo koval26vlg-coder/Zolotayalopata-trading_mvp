@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import ast
+
 import sys
 import unittest
 from dataclasses import fields
@@ -31,6 +33,33 @@ from listing_spot_crypto_identity import (  # noqa: E402
 )
 
 NOW = datetime(2026, 8, 26, 12, 0, 0, tzinfo=timezone.utc)
+
+# Modules that actually open a connection. urllib.parse is not among them: parsing a URL
+# to check which host published a claim is the opposite of fetching from it, and a check
+# that forbade the whole urllib package would forbid reading the evidence carefully.
+NETWORK_MODULES = (
+    "requests",
+    "urllib.request",
+    "urllib.error",
+    "http.client",
+    "socket",
+    "aiohttp",
+    "httpx",
+    "websockets",
+)
+
+
+def _imported_modules(path: Path) -> set[str]:
+    """Every module this file imports, by full dotted name."""
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    names: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            names.update(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            names.add(node.module)
+            names.update(f"{node.module}.{alias.name}" for alias in node.names)
+    return names
 
 
 def evidence(**overrides) -> VenueAssetEvidence:
@@ -249,10 +278,15 @@ class CryptoIdentityProposalTests(unittest.TestCase):
         )
 
     def test_the_module_performs_no_collection(self) -> None:
-        source = (SRC_ROOT / "listing_spot_crypto_identity.py").read_text(encoding="utf-8")
-        for forbidden in ("requests", "urllib.request", "http.client", "socket"):
+        # Checked against the imports rather than the text. A substring search would
+        # also match the word in prose or in a field name, reporting a network
+        # dependency that is not there - and would miss one hidden behind an alias.
+        imported = _imported_modules(SRC_ROOT / "listing_spot_crypto_identity.py")
+        for forbidden in NETWORK_MODULES:
             with self.subTest(forbidden=forbidden):
-                self.assertNotIn(forbidden, source)
+                self.assertNotIn(forbidden, imported)
+        # And it does read URLs, which is the point: it checks who published the claim.
+        self.assertIn("urllib.parse", imported)
 
 
 if __name__ == "__main__":
