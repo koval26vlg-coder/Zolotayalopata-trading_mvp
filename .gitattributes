@@ -130,3 +130,6 @@ docs/plans/slow-liquidity-listing-momentum-forward-expansion-evaluator-planonly-
 docs/plans/listing-momentum-expansion-automation-planonly-20260826-v3.json -text whitespace=cr-at-eol
 docs/plans/listing-momentum-expansion-automation-planonly-20260826-v4.json -text whitespace=cr-at-eol
 docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v4.json -text
+docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v5.json -text
+docs/agent-log/crypto-identity-probe-results/listing_spot_crypto_identity_probe_20260827_v4.json -text
+docs/agent-log/crypto-identity-probe-results/listing_spot_crypto_identity_probe_20260826_v2.json -text

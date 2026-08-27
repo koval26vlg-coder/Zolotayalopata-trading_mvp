@@ -1,0 +1,785 @@
+{
+  "schema": "trading_mvp_listing_spot_crypto_identity_probe_result_v1",
+  "plan_id": "listing_spot_crypto_identity_probe_20260827_v4",
+  "plan_hash": "3ff86aece8058a6097d16f270a9a173975cd3187545364f9e19e49b21c16ae51",
+  "venue": "bitget",
+  "started_at_utc": "2026-08-27T09:52:57.338857Z",
+  "finished_at_utc": "2026-08-27T09:53:23.870289Z",
+  "requests_made": 17,
+  "bases_requested": [
+    "DEBIT",
+    "RAA",
+    "RBURL",
+    "RDJT",
+    "RDKS",
+    "REFX",
+    "REROC",
+    "RH",
+    "RLNT",
+    "RLSCC",
+    "RNXT",
+    "RPURR",
+    "RSEZL",
+    "RTTMI",
+    "RULTA",
+    "RUSFD",
+    "TMX"
+  ],
+  "observations": [
+    {
+      "base": "DEBIT",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=DEBIT",
+      "observed_at_utc": "2026-08-27T09:52:57.338884Z",
+      "response_sha256": "f3a8704300da4cd9c8e6f4f36271025bd44e3d1d0f4f49f076ee4f686494dd2c",
+      "response_bytes": 554,
+      "chains": [
+        {
+          "network": "BEP20",
+          "contract_address": "0x66661c7229901f568f16bd1551b3ba826f83ce49",
+          "deposit_enabled": true,
+          "withdraw_enabled": false,
+          "movable": false
+        }
+      ],
+      "status": "NOT_ESTABLISHED",
+      "proposal": null
+    },
+    {
+      "base": "RAA",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RAA",
+      "observed_at_utc": "2026-08-27T09:52:59.145540Z",
+      "response_sha256": "9b3633b61889b16f7590d2e697820de717bd93f8bf4e5f2ade45a4f12b2f7b95",
+      "response_bytes": 548,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0x28c3c827a74ba502a88a753b37b914666cc00c9e",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RAA",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RAA on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:52:59.145540Z",
+          "contract addresses published: ArbitrumOne:0x28c3c827a74ba502a88a753b37b914666cc00c9e"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "RBURL",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RBURL",
+      "observed_at_utc": "2026-08-27T09:53:00.754340Z",
+      "response_sha256": "b227f3a2e79da086187a4302448719812813b0d5d3adea8ec2446024169c910d",
+      "response_bytes": 549,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0x9996f33605484fd4c37feffff456ac49bfd7fbdd",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RBURL",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RBURL on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:00.754340Z",
+          "contract addresses published: ArbitrumOne:0x9996f33605484fd4c37feffff456ac49bfd7fbdd"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "RDJT",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RDJT",
+      "observed_at_utc": "2026-08-27T09:53:02.303409Z",
+      "response_sha256": "34d514f252fc5f9f74ef3702a5dee74bc39b5db1337685e4cec8f90e41032b37",
+      "response_bytes": 549,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0x0caa929a69a43aa8f4dd3497044870259526f39b",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RDJT",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RDJT on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:02.303409Z",
+          "contract addresses published: ArbitrumOne:0x0caa929a69a43aa8f4dd3497044870259526f39b"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "RDKS",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RDKS",
+      "observed_at_utc": "2026-08-27T09:53:03.934878Z",
+      "response_sha256": "ce0acd2b8b56cb7dfe006fba9c1f7d7c34e9e93a731bc4e41702bc7a6cbe2b71",
+      "response_bytes": 549,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0xa4182510464b58386e5154bdf01f16e4f1303173",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RDKS",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RDKS on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:03.934878Z",
+          "contract addresses published: ArbitrumOne:0xa4182510464b58386e5154bdf01f16e4f1303173"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "REFX",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=REFX",
+      "observed_at_utc": "2026-08-27T09:53:05.491008Z",
+      "response_sha256": "ea64aad4bd7786ff3cf738c909144fa5d4c0250f586b24ed62c64be63a31b019",
+      "response_bytes": 549,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0xee3347968e6e285f18b76f8ecf8ce9b78aeb7d77",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "REFX",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for REFX on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:05.491008Z",
+          "contract addresses published: ArbitrumOne:0xee3347968e6e285f18b76f8ecf8ce9b78aeb7d77"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "REROC",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=REROC",
+      "observed_at_utc": "2026-08-27T09:53:07.075435Z",
+      "response_sha256": "072b9300285ef3554051d90817b1c62c635945222c0fc8165365eb7d6e19a230",
+      "response_bytes": 550,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0x83c6aa917ed39f731ad321438139663237d7609c",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "REROC",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for REROC on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:07.075435Z",
+          "contract addresses published: ArbitrumOne:0x83c6aa917ed39f731ad321438139663237d7609c"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "RH",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RH",
+      "observed_at_utc": "2026-08-27T09:53:08.746327Z",
+      "response_sha256": "c96c733f66c271b1234d066f058ec0e2801eda00834c00523bb75ec12b44fe26",
+      "response_bytes": 547,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0x0df99abc4c9f1f90faf82c8843331110140be76b",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RH",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RH on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:08.746327Z",
+          "contract addresses published: ArbitrumOne:0x0df99abc4c9f1f90faf82c8843331110140be76b"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "RLNT",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RLNT",
+      "observed_at_utc": "2026-08-27T09:53:10.434582Z",
+      "response_sha256": "676a53da49c0c612b893b151280090ca53443573180b985113c0be764e0f38da",
+      "response_bytes": 549,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0x13e47c08b685801ce7339a73f9e925f34ddc19e2",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RLNT",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RLNT on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:10.434582Z",
+          "contract addresses published: ArbitrumOne:0x13e47c08b685801ce7339a73f9e925f34ddc19e2"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "RLSCC",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RLSCC",
+      "observed_at_utc": "2026-08-27T09:53:11.971334Z",
+      "response_sha256": "1bc28a0376f27bd53572b96cdd792ca126ef557606bffaf9cf1c315dda61eef9",
+      "response_bytes": 550,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0x986dfed6ff3a22b354d2cf6b12263da434fe6cba",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RLSCC",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RLSCC on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:11.971334Z",
+          "contract addresses published: ArbitrumOne:0x986dfed6ff3a22b354d2cf6b12263da434fe6cba"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "RNXT",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RNXT",
+      "observed_at_utc": "2026-08-27T09:53:13.534485Z",
+      "response_sha256": "e2414ba18a2be278ad4beffd29fd3b247f7afb37147a4981bd6d5e0133501ab7",
+      "response_bytes": 549,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0x6ee59ab1e588c6ec5574723fd43905f99fb72087",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RNXT",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RNXT on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:13.534485Z",
+          "contract addresses published: ArbitrumOne:0x6ee59ab1e588c6ec5574723fd43905f99fb72087"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "RPURR",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RPURR",
+      "observed_at_utc": "2026-08-27T09:53:15.231487Z",
+      "response_sha256": "d58b1ba1c73992a2309f95ec51cf794a11e6abcf1085d92e3dfe9ec3cf8bb265",
+      "response_bytes": 954,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0x8ad2e038005359cb2955292a3411a84516e99ed3",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        },
+        {
+          "network": "Morph",
+          "contract_address": "0xb6af60361cf44214cbd373e9aebfe01a169553c7_bak",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RPURR",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne",
+          "Morph"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RPURR on 2 public network(s): ArbitrumOne, Morph",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:15.231487Z",
+          "contract addresses published: ArbitrumOne:0x8ad2e038005359cb2955292a3411a84516e99ed3, Morph:0xb6af60361cf44214cbd373e9aebfe01a169553c7_bak"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "RSEZL",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RSEZL",
+      "observed_at_utc": "2026-08-27T09:53:16.833113Z",
+      "response_sha256": "360aa576ab8b63955701ef0f21acd60c13633a8788da96baae00712d12b51d93",
+      "response_bytes": 550,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0x8619e315a9892783c0cab86d4ee3a062ce93642f",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RSEZL",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RSEZL on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:16.833113Z",
+          "contract addresses published: ArbitrumOne:0x8619e315a9892783c0cab86d4ee3a062ce93642f"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "RTTMI",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RTTMI",
+      "observed_at_utc": "2026-08-27T09:53:18.422116Z",
+      "response_sha256": "f060f18a67d01a5b6817d2e906d58c00814b144e043c117979f9ffc1dfe7524b",
+      "response_bytes": 550,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0x93bbd2c73e180f1e0142a1a4b19021faa0e3b056",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RTTMI",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RTTMI on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:18.422116Z",
+          "contract addresses published: ArbitrumOne:0x93bbd2c73e180f1e0142a1a4b19021faa0e3b056"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "RULTA",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RULTA",
+      "observed_at_utc": "2026-08-27T09:53:20.086328Z",
+      "response_sha256": "dfd040106c3f5fd470ac62dcf582e7ee78df605e22763f54d89fc673d2f8ce3b",
+      "response_bytes": 550,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0xf5664106e172446bc64ac7ec8e9634481f8390c0",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RULTA",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RULTA on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:20.086328Z",
+          "contract addresses published: ArbitrumOne:0xf5664106e172446bc64ac7ec8e9634481f8390c0"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "RUSFD",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=RUSFD",
+      "observed_at_utc": "2026-08-27T09:53:21.639113Z",
+      "response_sha256": "1abb5a737d4d25eb702d60e6de9160e10df21ed19869b0ab9785fc3986c1c8ee",
+      "response_bytes": 548,
+      "chains": [
+        {
+          "network": "ArbitrumOne",
+          "contract_address": "0x628a9a31825740c907a0554c8ec4ac6b46f26fa6",
+          "deposit_enabled": true,
+          "withdraw_enabled": true,
+          "movable": true
+        }
+      ],
+      "status": "PROPOSED",
+      "proposal": {
+        "exchange": "bitget",
+        "base": "RUSFD",
+        "proposed_class": "crypto_token",
+        "supporting_networks": [
+          "ArbitrumOne"
+        ],
+        "evidence": [
+          "bitget publishes deposit and withdrawal for RUSFD on 1 public network(s): ArbitrumOne",
+          "evidence read from the venue's own host api.bitget.com",
+          "observed at 2026-08-27T09:53:21.639113Z",
+          "contract addresses published: ArbitrumOne:0x628a9a31825740c907a0554c8ec4ac6b46f26fa6"
+        ],
+        "requires_human_review": true
+      }
+    },
+    {
+      "base": "TMX",
+      "request_url": "https://api.bitget.com/api/v2/spot/public/coins?coin=TMX",
+      "observed_at_utc": "2026-08-27T09:53:23.190044Z",
+      "response_sha256": "f6ced04798c1f06a9c53e1eb91aed2d9998cc0d76c882113f969c840d5fdc98a",
+      "response_bytes": 553,
+      "chains": [
+        {
+          "network": "BEP20",
+          "contract_address": "0x3c2f61f2e27c865981d2e7aaf6b2cdf823030039",
+          "deposit_enabled": true,
+          "withdraw_enabled": false,
+          "movable": false
+        }
+      ],
+      "status": "NOT_ESTABLISHED",
+      "proposal": null
+    }
+  ],
+  "proposals": [
+    {
+      "exchange": "bitget",
+      "base": "RAA",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RAA on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:52:59.145540Z",
+        "contract addresses published: ArbitrumOne:0x28c3c827a74ba502a88a753b37b914666cc00c9e"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "RBURL",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RBURL on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:00.754340Z",
+        "contract addresses published: ArbitrumOne:0x9996f33605484fd4c37feffff456ac49bfd7fbdd"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "RDJT",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RDJT on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:02.303409Z",
+        "contract addresses published: ArbitrumOne:0x0caa929a69a43aa8f4dd3497044870259526f39b"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "RDKS",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RDKS on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:03.934878Z",
+        "contract addresses published: ArbitrumOne:0xa4182510464b58386e5154bdf01f16e4f1303173"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "REFX",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for REFX on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:05.491008Z",
+        "contract addresses published: ArbitrumOne:0xee3347968e6e285f18b76f8ecf8ce9b78aeb7d77"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "REROC",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for REROC on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:07.075435Z",
+        "contract addresses published: ArbitrumOne:0x83c6aa917ed39f731ad321438139663237d7609c"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "RH",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RH on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:08.746327Z",
+        "contract addresses published: ArbitrumOne:0x0df99abc4c9f1f90faf82c8843331110140be76b"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "RLNT",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RLNT on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:10.434582Z",
+        "contract addresses published: ArbitrumOne:0x13e47c08b685801ce7339a73f9e925f34ddc19e2"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "RLSCC",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RLSCC on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:11.971334Z",
+        "contract addresses published: ArbitrumOne:0x986dfed6ff3a22b354d2cf6b12263da434fe6cba"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "RNXT",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RNXT on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:13.534485Z",
+        "contract addresses published: ArbitrumOne:0x6ee59ab1e588c6ec5574723fd43905f99fb72087"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "RPURR",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne",
+        "Morph"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RPURR on 2 public network(s): ArbitrumOne, Morph",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:15.231487Z",
+        "contract addresses published: ArbitrumOne:0x8ad2e038005359cb2955292a3411a84516e99ed3, Morph:0xb6af60361cf44214cbd373e9aebfe01a169553c7_bak"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "RSEZL",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RSEZL on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:16.833113Z",
+        "contract addresses published: ArbitrumOne:0x8619e315a9892783c0cab86d4ee3a062ce93642f"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "RTTMI",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RTTMI on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:18.422116Z",
+        "contract addresses published: ArbitrumOne:0x93bbd2c73e180f1e0142a1a4b19021faa0e3b056"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "RULTA",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RULTA on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:20.086328Z",
+        "contract addresses published: ArbitrumOne:0xf5664106e172446bc64ac7ec8e9634481f8390c0"
+      ],
+      "requires_human_review": true
+    },
+    {
+      "exchange": "bitget",
+      "base": "RUSFD",
+      "proposed_class": "crypto_token",
+      "supporting_networks": [
+        "ArbitrumOne"
+      ],
+      "evidence": [
+        "bitget publishes deposit and withdrawal for RUSFD on 1 public network(s): ArbitrumOne",
+        "evidence read from the venue's own host api.bitget.com",
+        "observed at 2026-08-27T09:53:21.639113Z",
+        "contract addresses published: ArbitrumOne:0x628a9a31825740c907a0554c8ec4ac6b46f26fa6"
+      ],
+      "requires_human_review": true
+    }
+  ],
+  "registry_edited": false,
+  "acceptance_decision": "NONE_IDENTITY_EVIDENCE_ONLY",
+  "human_review_required": true
+}

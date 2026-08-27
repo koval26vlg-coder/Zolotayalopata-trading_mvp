@@ -48,9 +48,10 @@ from listing_spot_crypto_identity_plan import (
 )
 
 RESULT_SCHEMA = "trading_mvp_listing_spot_crypto_identity_probe_result_v1"
-RESULT_RELATIVE_PATH = (
-    "docs/agent-log/listing-spot-crypto-identity-probe-result-20260826.json"
-)
+# Named after the plan the run was made under. A fixed filename meant the second probe
+# silently overwrote the first one's record, and the only reason that evidence survived
+# was that it had already been committed.
+RESULT_DIRECTORY = "docs/agent-log/crypto-identity-probe-results"
 MAX_RESPONSE_BYTES = 4 * 1024 * 1024
 USER_AGENT = "ZolotyayLopata-research/1.0 (public metadata probe)"
 
@@ -241,7 +242,7 @@ def run_probe(
 
 
 def write_result(result: Mapping[str, Any], *, repo_root: Path = REPO_ROOT) -> Path:
-    target = repo_root / RESULT_RELATIVE_PATH
+    target = repo_root / RESULT_DIRECTORY / f"{result['plan_id']}.json"
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(
         (json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False) + "\n").encode("utf-8")
