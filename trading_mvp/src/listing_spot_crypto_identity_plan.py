@@ -34,19 +34,27 @@ import argparse
 import hashlib
 import json
 from datetime import datetime, timezone
+import pathlib
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from listing_spot_crypto_identity import VENUE_EVIDENCE_HOSTS, unresolved_bases
 
 SCHEMA = "trading_mvp_listing_spot_crypto_identity_probe_planonly_v1"
-PLAN_ID = "listing_spot_crypto_identity_probe_20260826_v3"
-PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260826-v3.json"
+PLAN_ID = "listing_spot_crypto_identity_probe_20260827_v4"
+PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v4.json"
 HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+# The sample the activated runtime collects into. It stopped being in this repository
+# when the runtime was carved out, and the plan follows the sample rather than the other
+# way round - a probe reading a state nobody writes to any more would ask a stale question
+# with a straight face.
+EXPANSION_RUNTIME_REPO = pathlib.Path(
+    r"C:\Users\koval\Documents\ZolotyayLopata-listing-momentum-expansion"
+)
 EXPANSION_STATE_PATH = (
-    REPO_ROOT
+    EXPANSION_RUNTIME_REPO
     / "exports/trading-mvp/analysis"
     / "slow_liquidity_listing_momentum_forward_expansion_state_20260817.json"
 )
@@ -70,7 +78,11 @@ IMPLEMENTATION_ROLES = {
     "probe_collector": "trading_mvp/src/listing_spot_crypto_identity_probe.py",
 }
 
-MAX_REQUESTS = 5
+# The bound exists to stop a probe growing past its question. The question grew: the
+# activated runtime found eighteen instruments nobody has an identity for, where the
+# first run had five. Raised deliberately rather than removed - a bound that adjusts
+# itself to whatever it finds is not a bound.
+MAX_REQUESTS = 25
 REQUEST_TIMEOUT_SEC = 20
 MAX_RUNTIME_SEC = 120
 MIN_INTERVAL_BETWEEN_REQUESTS_SEC = 1

@@ -1,0 +1,95 @@
+{
+  "schema": "trading_mvp_listing_spot_crypto_identity_probe_planonly_v1",
+  "plan_id": "listing_spot_crypto_identity_probe_20260827_v4",
+  "mode": "PlanOnly",
+  "status": "READY_FOR_ONE_BOUNDED_PUBLIC_PROBE_NOT_EXECUTED",
+  "generated_at_utc": "2026-08-27T09:52:43Z",
+  "research_only": true,
+  "public_data_only": true,
+  "private_api": false,
+  "authenticated": false,
+  "live_orders": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "writes_market_data": false,
+  "question": "Does Bitget publish deposit and withdrawal on a named public network for these bases? A base that can be moved onto a public chain and back is a token in the sense this research asks about; one that cannot is an internal instrument.",
+  "sample_binding": {
+    "state_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\exports\\trading-mvp\\analysis\\slow_liquidity_listing_momentum_forward_expansion_state_20260817.json",
+    "state_file_sha256": "20dc626fa6eb24cebcd4d4f010c84bb755ca03ac6a29e815d0fe94d3e2f916a1",
+    "observed_pairs": 50,
+    "unresolved_on_probe_venue": 17
+  },
+  "probe": {
+    "venue": "bitget",
+    "endpoint": "https://api.bitget.com/api/v2/spot/public/coins",
+    "accepted_hosts": [
+      "api.bitget.com",
+      "www.bitget.com"
+    ],
+    "bases": [
+      "DEBIT",
+      "RAA",
+      "RBURL",
+      "RDJT",
+      "RDKS",
+      "REFX",
+      "REROC",
+      "RH",
+      "RLNT",
+      "RLSCC",
+      "RNXT",
+      "RPURR",
+      "RSEZL",
+      "RTTMI",
+      "RULTA",
+      "RUSFD",
+      "TMX"
+    ],
+    "max_requests": 25,
+    "request_timeout_sec": 20,
+    "max_runtime_sec": 120,
+    "min_interval_between_requests_sec": 1,
+    "pagination": false,
+    "discovery": false
+  },
+  "outcome_contract": {
+    "produces": "crypto_identity_proposals",
+    "may_edit_declared_registry": false,
+    "may_accept_a_listing": false,
+    "may_authorise_paper_forward": false,
+    "may_authorise_live_trading": false,
+    "acceptance_decision": "NONE_IDENTITY_EVIDENCE_ONLY",
+    "human_review_required": true
+  },
+  "implementation": {
+    "files": [
+      {
+        "role": "crypto_identity_proposer",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_spot_crypto_identity.py",
+        "sha256": "2e64dc09f4de11823d8ba0cb00836462bb7b557508c36029cf22d4793e22090a"
+      },
+      {
+        "role": "equity_class_heuristic",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_asset_class_heuristic.py",
+        "sha256": "21bf0478993fdaecb3629f422c78c26748debbd1c77e57e59af2afe38a983ddc"
+      },
+      {
+        "role": "probe_collector",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_spot_crypto_identity_probe.py",
+        "sha256": "d53169e7aa8b7a1818d91b98597e3f62dda59a6c6d54874a29ac73d95411cc3c"
+      },
+      {
+        "role": "probe_plan_generator",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_spot_crypto_identity_plan.py",
+        "sha256": "da3b8c263597f28dfbb9d95f98c59f6c57ab1ef53e6ef4ecd1948860ea6193d4"
+      },
+      {
+        "role": "spot_asset_classifier",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_spot_asset_class.py",
+        "sha256": "dae979f59f87a0370166f7f3aa677967e61905c70485dd53606c57c795695a99"
+      }
+    ]
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "3ff86aece8058a6097d16f270a9a173975cd3187545364f9e19e49b21c16ae51"
+}
