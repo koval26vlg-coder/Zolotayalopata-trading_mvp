@@ -14,11 +14,21 @@ establishes an instrument is a crypto token; believing otherwise is what had the
 track collecting ANTHROPIC. So the heuristic can shrink the acceptance universe and can
 never grow it, which makes a wrong proposal cost coverage rather than correctness.
 
-**A leading X is not the evidence.** ``X`` alone would misclassify any genuine token
-whose symbol starts with one - XMR and XRP are the obvious casualties. The evidence is
-``X`` followed by a symbol that is independently a listed-equity ticker: XCRM against
-CRM, XKO against KO, XRDDT against RDDT. Both halves are required, and a symbol whose
-remainder is unknown yields no proposal at all rather than a weak one.
+**A leading wrapper letter is not the evidence.** ``X`` alone would misclassify any
+genuine token whose symbol starts with one - XMR and XRP are the obvious casualties. The
+evidence is the wrapper followed by a symbol that is independently a listed share: XCRM
+against CRM, RULTA against ULTA. Both halves are required, and a symbol whose remainder
+is unknown yields no proposal at all rather than a weak one.
+
+**The reference is narrowed on purpose, and it is still not decisive.** Reading against
+the exchange symbol directory rather than against the 28 hand-declared companies is what
+lets the fifteen R-wrapped shares on Bitget be recognised at all - but a wide reference
+makes the remainder test cheap, because thousands of short tickers exist. Measured over
+42 well-known tokens beginning with these letters, the full directory falsely matches 18
+and the ordinary-share subset 14: RARE against Alexandria Real Estate, RED against
+Consolidated Edison, XAI against C3.ai. So the narrowing helps and does not save it, and
+the proposal is explicitly *not* allowed to silently suppress a crypto proposal - see
+``listing_spot_crypto_identity``, where a disagreement is recorded rather than resolved.
 
 **Its output is not a classification.** ``ClassificationProposal`` deliberately carries
 no ``acceptance_eligible`` and no ``source`` field, so it cannot be substituted for a
@@ -31,15 +41,17 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Iterable, Mapping
 
+import listing_equity_ticker_reference as equity_reference
 from listing_spot_asset_class import (
     ASSET_CLASS_TOKENIZED_EQUITY,
     DECLARED_CRYPTO_TOKEN_BASES,
     DECLARED_TOKENIZED_EQUITY_BASES,
 )
 
-# The wrapper venues use for a tokenised share. Held as a tuple so a second convention
-# can be added by review rather than by pattern-matching.
-TOKENIZED_EQUITY_PREFIXES: tuple[str, ...] = ("X",)
+# The wrappers venues use for a tokenised share. Held as a tuple so a convention is
+# added by review rather than by pattern-matching: ``X`` is OKX's, ``R`` is the one
+# Bitget used for the fifteen US shares it listed in August 2026.
+TOKENIZED_EQUITY_PREFIXES: tuple[str, ...] = ("X", "R")
 
 PROPOSAL_SOURCE = "heuristic_proposal_not_a_classification"
 
@@ -87,6 +99,27 @@ def derive_equity_ticker_reference(
     return frozenset(tickers)
 
 
+def equity_ticker_reference() -> frozenset[str]:
+    """The reference to read a remainder against: the directory, or the bootstrap.
+
+    The frozen snapshot is preferred because it is the thing that actually answers the
+    question. When no snapshot has been fetched the bootstrap still works - narrower, so
+    fewer proposals, which is the safe direction to fail in - and the caller is never
+    left guessing which was used, because the proposal says so in its evidence."""
+    declared = derive_equity_ticker_reference()
+    if not equity_reference.available():
+        return declared
+    return declared | equity_reference.common_stock_tickers()
+
+
+def _reference_origin() -> str:
+    return (
+        "the exchange symbol directory"
+        if equity_reference.available()
+        else "the hand-declared registry on another venue"
+    )
+
+
 def _already_settled(exchange: str, base: str) -> bool:
     venue, symbol = exchange.strip().lower(), base.strip().upper()
     for registry in (DECLARED_TOKENIZED_EQUITY_BASES, DECLARED_CRYPTO_TOKEN_BASES):
@@ -110,7 +143,7 @@ def propose(
         return None
 
     reference = (
-        derive_equity_ticker_reference()
+        equity_ticker_reference()
         if equity_tickers is None
         else frozenset(str(t).strip().upper() for t in equity_tickers if str(t).strip())
     )
@@ -127,8 +160,10 @@ def propose(
             proposed_class=ASSET_CLASS_TOKENIZED_EQUITY,
             evidence=(
                 f"symbol carries the {prefix!r} tokenised-share wrapper",
-                f"remainder {remainder!r} is a listed-equity ticker already reviewed "
-                "on another venue",
+                f"remainder {remainder!r} is a listed share according to "
+                f"{_reference_origin()}",
+                "a symbol coincidence produces the same evidence, so this does not "
+                "override positive on-chain evidence to the contrary",
             ),
         )
     return None
@@ -141,7 +176,7 @@ def review_queue(
 ) -> list[ClassificationProposal]:
     """Every proposal the observed instruments support, deduplicated and ordered."""
     reference = (
-        derive_equity_ticker_reference()
+        equity_ticker_reference()
         if equity_tickers is None
         else frozenset(str(t).strip().upper() for t in equity_tickers if str(t).strip())
     )
@@ -165,6 +200,7 @@ __all__ = [
     "PROPOSAL_SOURCE",
     "TOKENIZED_EQUITY_PREFIXES",
     "derive_equity_ticker_reference",
+    "equity_ticker_reference",
     "propose",
     "review_queue",
 ]

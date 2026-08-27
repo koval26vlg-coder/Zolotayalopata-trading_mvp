@@ -133,3 +133,6 @@ docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v4.json -text
 docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v5.json -text
 docs/agent-log/crypto-identity-probe-results/listing_spot_crypto_identity_probe_20260827_v4.json -text
 docs/agent-log/crypto-identity-probe-results/listing_spot_crypto_identity_probe_20260826_v2.json -text
+docs/reference/exchange-symbol-directory-20260827.json -text whitespace=cr-at-eol
+docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v6.json -text whitespace=cr-at-eol
+trading_mvp/src/listing_equity_ticker_reference.py -text whitespace=cr-at-eol

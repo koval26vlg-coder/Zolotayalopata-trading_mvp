@@ -170,6 +170,37 @@ class ProbeRunTests(unittest.TestCase):
         self.assertTrue(movable["proposals"][0]["requires_human_review"])
         self.assertEqual([], static["proposals"])
 
+    def test_a_contested_proposal_is_distinguishable_in_the_record(self) -> None:
+        """The record enumerates proposal fields by hand, so a new one is dropped by
+        default. This one may not be.
+
+        The equity heuristic no longer vetoes; it records a disagreement, and the whole
+        value of that is that a human sees it. A contested proposal written into the
+        results as an ordinary PROPOSED is how RULTA gets promoted into the crypto
+        registry by somebody scanning a column of statuses."""
+        contested = next(
+            (base for base in self.plan_bases() if base.startswith("R") and len(base) > 2),
+            None,
+        )
+        self.assertIsNotNone(contested, "the issued plan names no wrapped share to test")
+        result = self.run_with({contested: venue_payload(contested, [MOVABLE])})
+        row = next(r for r in result["observations"] if r["base"] == contested)
+
+        self.assertEqual("PROPOSED_CONTESTED", row["status"])
+        self.assertTrue(row["proposal"]["contested_by_equity_heuristic"])
+        self.assertTrue(
+            any(line.startswith("CONTESTED:") for line in row["proposal"]["evidence"])
+        )
+
+    def test_an_uncontested_proposal_is_not_labelled_as_contested(self) -> None:
+        uncontested = next(
+            base for base in self.plan_bases() if not base.startswith(("R", "X"))
+        )
+        result = self.run_with({uncontested: venue_payload(uncontested, [MOVABLE])})
+        row = next(r for r in result["observations"] if r["base"] == uncontested)
+        self.assertEqual("PROPOSED", row["status"])
+        self.assertFalse(row["proposal"]["contested_by_equity_heuristic"])
+
     def test_a_failed_request_is_recorded_and_does_not_stop_the_rest(self) -> None:
         plan = json.loads(
             (probe.REPO_ROOT / probe.PLAN_RELATIVE_PATH).read_text(encoding="utf-8")

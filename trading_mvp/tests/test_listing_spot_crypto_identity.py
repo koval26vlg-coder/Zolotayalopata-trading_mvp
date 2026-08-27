@@ -219,11 +219,40 @@ class CryptoIdentityProposalTests(unittest.TestCase):
             )
         )
 
-    def test_an_instrument_the_equity_heuristic_recognises_is_never_proposed(self) -> None:
-        # XKO on Bitget is undeclared there, but the wrapper plus a reviewed ticker is
-        # exactly the equity signal; the two proposals must not disagree in silence.
+    def test_an_instrument_the_equity_heuristic_recognises_is_marked_contested(self) -> None:
+        """The heuristic used to veto here. It no longer does, and this pins why.
+
+        Its reference is now the exchange symbol directory rather than 28 curated names,
+        which makes the remainder test cheap: of 42 well-known tokens beginning with a
+        wrapper letter, 14 have a remainder that is a real listed share. A veto would
+        have made every one of them permanently unproposable on the strength of a
+        spelling, and silently. The disagreement is recorded instead - loudly enough that
+        nobody promotes the proposal without seeing it."""
+        proposal = propose_crypto_identity(evidence(exchange="bitget", base="XKO"), now=NOW)
+        self.assertIsNotNone(proposal)
+        self.assertTrue(proposal.contested_by_equity_heuristic)
+        self.assertTrue(any(line.startswith("CONTESTED:") for line in proposal.evidence))
+        self.assertTrue(proposal.requires_human_review)
+
+    def test_an_uncontested_proposal_says_so_rather_than_staying_silent(self) -> None:
+        proposal = propose_crypto_identity(evidence(exchange="bitget"), now=NOW)
+        self.assertIsNotNone(proposal)
+        self.assertFalse(proposal.contested_by_equity_heuristic)
+        self.assertFalse(any(line.startswith("CONTESTED:") for line in proposal.evidence))
+
+    def test_a_declared_identity_still_ends_the_question_outright(self) -> None:
+        """Dropping the veto weakened one thing deliberately; it must not weaken this.
+
+        A hand-reviewed declaration is not a heuristic, and no chain metadata reopens it."""
         self.assertIsNone(
-            propose_crypto_identity(evidence(exchange="bitget", base="XKO"), now=NOW)
+            propose_crypto_identity(
+                evidence(
+                    exchange="okx",
+                    base="XCRM",
+                    source_url="https://www.okx.com/api/v5/asset/currencies?ccy=XCRM",
+                ),
+                now=NOW,
+            )
         )
 
     def test_malformed_evidence_is_an_error_rather_than_a_negative_result(self) -> None:

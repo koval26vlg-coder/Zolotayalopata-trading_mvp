@@ -154,6 +154,11 @@ def _describe(proposal: CryptoIdentityProposal | None) -> dict[str, Any] | None:
         "supporting_networks": list(proposal.supporting_networks),
         "evidence": list(proposal.evidence),
         "requires_human_review": proposal.requires_human_review,
+        # Enumerated by hand, so a field added to the proposal is dropped here unless it
+        # is added here too. This one must not be: it is the record of the equity
+        # heuristic disagreeing, and a reader that cannot see the disagreement is back to
+        # having it resolved silently - the exact thing dropping the veto was meant to fix.
+        "contested_by_equity_heuristic": proposal.contested_by_equity_heuristic,
     }
 
 
@@ -217,7 +222,15 @@ def run_probe(
             for chain in evidence.chains
         ]
         proposal = propose_crypto_identity(evidence, now=now())
-        record["status"] = "PROPOSED" if proposal else "NOT_ESTABLISHED"
+        if proposal is None:
+            record["status"] = "NOT_ESTABLISHED"
+        elif proposal.contested_by_equity_heuristic:
+            # Distinct from PROPOSED at a glance. A contested proposal read as an ordinary
+            # one is how RULTA gets promoted into the crypto registry by someone scanning
+            # a column of statuses.
+            record["status"] = "PROPOSED_CONTESTED"
+        else:
+            record["status"] = "PROPOSED"
         record["proposal"] = _describe(proposal)
         if proposal is not None:
             proposals.append(record["proposal"])

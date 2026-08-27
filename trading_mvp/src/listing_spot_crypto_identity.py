@@ -24,6 +24,13 @@ named public network. A tokenised share on these venues is an internal instrumen
 exists in the exchange's ledger and cannot leave it. Something that can be moved onto a
 public chain and off it again is a token in the sense the research question means.
 
+**When the equity heuristic disagrees.** It says so, and does not defer. That heuristic
+recognises a wrapped share by spelling, which is cheap evidence once its reference is a
+whole exchange directory rather than 28 curated names; letting it veto would have made a
+seventh of ordinary tokens beginning with X or R permanently unproposable without anyone
+seeing it happen. A contested proposal is emitted carrying ``contested_by_equity_heuristic``
+and a CONTESTED line in its evidence, and stays a proposal.
+
 **What it still is not.** A proposal. Withdrawability is strong evidence and not a proof:
 a venue could in principle issue a tokenised share as a real on-chain asset, and then
 this test would pass for something that is not a crypto listing. So the output carries no
@@ -112,6 +119,9 @@ class CryptoIdentityProposal:
     observed_at_utc: str
     evidence: tuple[str, ...] = field(default_factory=tuple)
     requires_human_review: bool = True
+    # Set when the tokenised-equity heuristic reads the same symbol as a wrapped share.
+    # It is recorded rather than acted on: see the note above propose_crypto_identity.
+    contested_by_equity_heuristic: bool = False
 
     def __post_init__(self) -> None:
         if self.proposed_class != ASSET_CLASS_CRYPTO_TOKEN:
@@ -194,10 +204,22 @@ def propose_crypto_identity(
     if not _observed_recently(evidence.observed_at_utc, now=moment, max_age_days=max_age_days):
         return None
 
-    # An instrument the equity heuristic recognises is not a token candidate, whatever
-    # its chain metadata says. The two proposals must never disagree in silence.
-    if propose_tokenized_equity(exchange, base, equity_tickers=equity_tickers) is not None:
-        return None
+    # The tokenised-equity heuristic reads the same symbol. Until the reference behind it
+    # was the 28 companies declared by hand, letting it veto here was nearly free. Against
+    # the exchange symbol directory it is not: of 42 well-known tokens beginning with a
+    # wrapper letter, 14 have a remainder that is a real listed share - RARE against
+    # Alexandria Real Estate, RED against Consolidated Edison, RON against ON
+    # Semiconductor. A veto would have made those permanently unproposable, silently, on
+    # the strength of a spelling.
+    #
+    # So the disagreement is recorded on the proposal instead of resolving it. The weaker
+    # evidence no longer overrules the stronger, and neither one decides anything: nothing
+    # reaches DECLARED_CRYPTO_TOKEN_BASES without a human edit, which is where a contest
+    # between a symbol shape and an on-chain contract belongs. A settled declaration still
+    # ends the question outright, above.
+    contested = (
+        propose_tokenized_equity(exchange, base, equity_tickers=equity_tickers) is not None
+    )
 
     networks = tuple(
         sorted({chain.network.strip() for chain in evidence.chains if chain.is_movable})
@@ -223,6 +245,12 @@ def propose_crypto_identity(
     else:
         # Native assets have no contract; say so rather than leaving a silent gap.
         reasons.append("no contract address published; consistent with a native chain asset")
+    if contested:
+        reasons.append(
+            "CONTESTED: the tokenised-equity heuristic reads this symbol as a wrapped "
+            "listed share, so the venue publishing a chain for it does not settle what "
+            "it is; resolve before promoting"
+        )
 
     return CryptoIdentityProposal(
         exchange=exchange,
@@ -232,6 +260,7 @@ def propose_crypto_identity(
         source_url=evidence.source_url,
         observed_at_utc=evidence.observed_at_utc,
         evidence=tuple(reasons),
+        contested_by_equity_heuristic=contested,
     )
 
 

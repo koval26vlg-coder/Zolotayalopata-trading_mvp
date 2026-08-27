@@ -70,8 +70,21 @@ class EvidenceTests(unittest.TestCase):
     def test_the_wrapper_and_a_known_ticker_together_are_evidence(self):
         proposal = heuristic.propose("bitget", "XCRM")
         self.assertIsNotNone(proposal)
-        self.assertEqual(len(proposal.evidence), 2)
-        self.assertIn("CRM", proposal.evidence[1])
+        joined = " | ".join(proposal.evidence)
+        self.assertIn("'X'", joined)
+        self.assertIn("CRM", joined)
+        # The evidence has to say out loud that a coincidence produces the same thing,
+        # because with a whole exchange directory behind it, coincidences do.
+        self.assertIn("coincidence", joined)
+
+    def test_the_evidence_names_which_reference_answered(self):
+        """A proposal read against 28 curated names is not the same claim as one read
+        against a whole directory, and the reader cannot tell them apart otherwise."""
+        directory = heuristic.propose("bitget", "XCRM")
+        bootstrap = heuristic.propose("bitget", "XAAPL", equity_tickers=["AAPL"])
+        self.assertIsNotNone(directory)
+        self.assertIsNotNone(bootstrap)
+        self.assertTrue(any("directory" in line or "registry" in line for line in directory.evidence))
 
     def test_an_ordinary_symbol_yields_nothing(self):
         for base in ("BTC", "ALIGN", "SWARM", "ETH"):
@@ -82,11 +95,51 @@ class EvidenceTests(unittest.TestCase):
         self.assertIsNone(heuristic.propose("bitget", "XNOTATICKER"))
 
 
+class WrapperConventionTests(unittest.TestCase):
+    """Bitget wrapped fifteen US shares with an R, and nothing recognised them.
+
+    They are the reason the reference moved from the hand-declared registry to the
+    exchange symbol directory: R + ULTA cannot be resolved by a reference derived from
+    OKX's X-prefixed names, so all fifteen came back unclassified and were then proposed
+    as crypto tokens by a probe that tested chain movability honestly."""
+
+    R_WRAPPED = (
+        "RAA", "RBURL", "RDJT", "RDKS", "REFX", "REROC", "RH", "RLNT",
+        "RLSCC", "RNXT", "RPURR", "RSEZL", "RTTMI", "RULTA", "RUSFD",
+    )
+
+    def test_every_r_wrapped_share_bitget_listed_is_now_recognised(self):
+        for base in self.R_WRAPPED:
+            with self.subTest(base=base):
+                proposal = heuristic.propose("bitget", base)
+                self.assertIsNotNone(proposal, f"{base} still unclassified")
+                self.assertEqual(proposal.proposed_class, ASSET_CLASS_TOKENIZED_EQUITY)
+
+    def test_the_named_casualties_survive_the_wider_reference(self):
+        """The docstring names XMR and XRP; a wide reference is where they would die."""
+        for base in ("XMR", "XRP", "XLM", "XTZ", "XEC", "XCH", "RUNE", "RVN", "RPL0"):
+            with self.subTest(base=base):
+                self.assertIsNone(heuristic.propose("bitget", base))
+
+    def test_a_wide_reference_does_collide_and_the_module_does_not_pretend_otherwise(self):
+        """RARE is SuperRare. ARE is Alexandria Real Estate. Both are real.
+
+        This is pinned as a known limit rather than as a defect: the collision is why the
+        crypto module records a disagreement instead of deferring to this one."""
+        proposal = heuristic.propose("bitget", "RARE")
+        self.assertIsNotNone(proposal)
+        self.assertIn("coincidence", " | ".join(proposal.evidence))
+
+
 class GeneralisationTests(unittest.TestCase):
     def test_one_venues_curation_reaches_the_others(self):
-        """The point of the exercise: 28 companies reviewed once on OKX."""
+        """The point of the exercise: 28 companies reviewed once on OKX.
+
+        The bootstrap is kept as its own function, and kept working, so a checkout that
+        has never fetched the directory still recognises what was curated by hand."""
         reference = heuristic.derive_equity_ticker_reference()
         self.assertEqual(len(reference), 28)
+        self.assertTrue(reference <= heuristic.equity_ticker_reference())
         for venue in ("bitget", "binance", "bybit"):
             with self.subTest(venue=venue):
                 self.assertIsNotNone(heuristic.propose(venue, "XCRM"))

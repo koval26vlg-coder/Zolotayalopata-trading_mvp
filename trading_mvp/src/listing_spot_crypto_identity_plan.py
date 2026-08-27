@@ -41,8 +41,8 @@ from typing import Any, Mapping, Sequence
 from listing_spot_crypto_identity import VENUE_EVIDENCE_HOSTS, unresolved_bases
 
 SCHEMA = "trading_mvp_listing_spot_crypto_identity_probe_planonly_v1"
-PLAN_ID = "listing_spot_crypto_identity_probe_20260827_v5"
-PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v5.json"
+PLAN_ID = "listing_spot_crypto_identity_probe_20260827_v6"
+PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v6.json"
 HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -76,6 +76,12 @@ IMPLEMENTATION_ROLES = {
     # The code that actually makes the requests. v1 bound only what interprets the
     # answer, which left the acting part unbound by the plan authorising the act.
     "probe_collector": "trading_mvp/src/listing_spot_crypto_identity_probe.py",
+    # v6: the equity heuristic now reads the exchange symbol directory rather than the
+    # 28 names declared by hand, so what the probe concludes depends on both the reader
+    # and the snapshot it reads. Binding the reader without the snapshot would leave the
+    # deciding input free to change underneath a plan that claims to fix the question.
+    "equity_ticker_reference": "trading_mvp/src/listing_equity_ticker_reference.py",
+    "equity_ticker_snapshot": "docs/reference/exchange-symbol-directory-20260827.json",
 }
 
 # The bound exists to stop a probe growing past its question. The question grew: the
