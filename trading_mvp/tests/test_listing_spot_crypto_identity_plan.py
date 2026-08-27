@@ -63,6 +63,41 @@ class CryptoIdentityProbePlanTests(unittest.TestCase):
         self.assertTrue(path.is_file(), path)
         validate_plan(json.loads(path.read_text(encoding="utf-8")))
 
+    def test_a_sample_that_has_moved_on_does_not_invalidate_the_plan(self) -> None:
+        """The sample binding is provenance, not authorisation.
+
+        It names the observed state the bases were read out of. That file is rewritten by
+        every tick of the expansion monitor, and the collector never opens it - the bases
+        are frozen in the plan. Requiring the live file to still match made the artifact
+        stop validating within hours of being issued, and took nine tests with it the
+        first time the automation completed a tick."""
+        path = plan_module.REPO_ROOT / plan_module.PLAN_RELATIVE_PATH
+        issued = json.loads(path.read_text(encoding="utf-8"))
+        moved = {
+            **issued,
+            "sample_binding": {**issued["sample_binding"], "state_file_sha256": "b" * 64},
+        }
+        # Re-stamped, or this would fail on the plan hash and prove nothing about the
+        # sample - the mutation has to be the only thing under test.
+        moved["plan_hash"] = plan_module.canonical_hash(moved)
+        validate_plan(moved)
+
+    def test_a_plan_that_cannot_say_what_it_was_derived_from_is_still_refused(self) -> None:
+        path = plan_module.REPO_ROOT / plan_module.PLAN_RELATIVE_PATH
+        issued = json.loads(path.read_text(encoding="utf-8"))
+        for broken in (
+            {},
+            {**issued["sample_binding"], "state_file_sha256": "not a hash"},
+            {**issued["sample_binding"], "state_file_sha256": ""},
+            {**issued["sample_binding"], "state_path": "relative/state.json"},
+            {**issued["sample_binding"], "state_path": ""},
+        ):
+            with self.subTest(broken=sorted(broken)):
+                candidate = {**issued, "sample_binding": broken}
+                candidate["plan_hash"] = plan_module.canonical_hash(candidate)
+                with self.assertRaises(CryptoIdentityPlanError):
+                    validate_plan(candidate)
+
     def test_bases_are_derived_from_the_collected_sample_not_typed(self) -> None:
         pairs = observed_pairs()
         sample_bases = {base for venue, base in pairs if venue == plan_module.PROBE_VENUE}

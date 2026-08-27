@@ -41,8 +41,8 @@ from typing import Any, Mapping, Sequence
 from listing_spot_crypto_identity import VENUE_EVIDENCE_HOSTS, unresolved_bases
 
 SCHEMA = "trading_mvp_listing_spot_crypto_identity_probe_planonly_v1"
-PLAN_ID = "listing_spot_crypto_identity_probe_20260827_v6"
-PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v6.json"
+PLAN_ID = "listing_spot_crypto_identity_probe_20260827_v7"
+PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v7.json"
 HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -255,10 +255,21 @@ def validate_plan(plan: Mapping[str, Any], *, repo_root: Path = REPO_ROOT) -> No
         _require(_sha256_file(path) == row.get("sha256"),
                  f"implementation sha256: {row.get('role')}")
 
+    # The sample binding is provenance, not a binding in the sense the implementation
+    # rows are. It records which observed state the bases were read out of, and the bases
+    # themselves are frozen in this plan - the collector never opens the state file.
+    #
+    # Requiring the live file to still match was wrong in a way that only showed once the
+    # automation started completing ticks: that file is rewritten by every tick of the
+    # expansion monitor, so the plan stopped validating within hours of being issued and
+    # took nine tests with it. What must hold is that the plan says what it was derived
+    # from, well enough to go and check; whether the world has moved on since is a fact
+    # about the world, not a defect in the artifact.
     sample = plan.get("sample_binding") or {}
     state_path = Path(str(sample.get("state_path") or ""))
-    _require(state_path.is_file(), "sample state missing")
-    _require(_sha256_file(state_path) == sample.get("state_file_sha256"),
+    _require(str(state_path) != "." and state_path.is_absolute(), "sample state path")
+    recorded = str(sample.get("state_file_sha256") or "")
+    _require(len(recorded) == 64 and all(c in "0123456789abcdef" for c in recorded),
              "sample state sha256")
 
 
