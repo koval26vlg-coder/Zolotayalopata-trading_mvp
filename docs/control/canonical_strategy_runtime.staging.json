@@ -164,14 +164,14 @@
       ],
       "canonical_repo": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion",
       "canonical_remote_url": "https://github.com/koval26vlg-coder/Zolotayalopata-listing-momentum-expansion.git",
-      "canonical_git_commit": "6e2196dbbb060c7e6a9274c62ed35afdd934003c",
-      "canonical_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\docs\\plans\\listing-momentum-expansion-automation-planonly-20260827-v8.json",
-      "canonical_plan_sha256": "5a15b6c289e8edc7356d453e5e7cb69d75971eff0ae946e9ad8e12b5dba8ec42",
-      "canonical_plan_file_sha256": "53463af3fdd2652aec1439f18032eb5f6adfc2148117bcf791d76e68d861c6e0",
-      "canonical_plan_id": "listing_momentum_expansion_automation_20260827_v8",
+      "canonical_git_commit": "8b2fe5a34aa364c724ff1bc90c10669e61b955f1",
+      "canonical_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\docs\\plans\\listing-momentum-expansion-automation-planonly-20260827-v9.json",
+      "canonical_plan_sha256": "fca5fc248aa6bbe1ed38619c5c455714c3160f81166c94c64da3f69737e4b3f9",
+      "canonical_plan_file_sha256": "71434ceae0abdad8bded2792d2207aae551ddacf31db728fe4f42a246635a2bc",
+      "canonical_plan_id": "listing_momentum_expansion_automation_20260827_v9",
       "canonical_plan_status": "READY_FOR_SCHEDULER_ROUTED_BOUNDED_PUBLIC_RESEARCH",
       "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\tools\\start_listing_momentum_expansion_automation_visible.ps1",
-      "launcher_sha256": "3c89130d6e0e3d320e2ae117929f62dda52e13aa71594cd075279292e0baf321",
+      "launcher_sha256": "1abacbc224e934cd174094a0160679a02a4e571f81524be4a553e2af5b522c57",
       "scheduler_routable": false,
       "allowed_modes": [
         "DISCOVERY",
@@ -295,7 +295,7 @@
         {
           "role": "visible_automation_launcher",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\tools\\start_listing_momentum_expansion_automation_visible.ps1",
-          "sha256": "3c89130d6e0e3d320e2ae117929f62dda52e13aa71594cd075279292e0baf321"
+          "sha256": "1abacbc224e934cd174094a0160679a02a4e571f81524be4a553e2af5b522c57"
         }
       ],
       "supersedes": [

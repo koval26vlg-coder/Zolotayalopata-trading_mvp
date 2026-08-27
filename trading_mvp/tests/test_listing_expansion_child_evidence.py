@@ -6,6 +6,7 @@ import json
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timedelta
 from pathlib import Path
 
 
@@ -318,7 +319,9 @@ class ChildOutcomeEvidenceTests(unittest.TestCase):
             ("schema", "wrong"), ("status", "CONSUMED"), ("project", "other"),
             ("automation_id", "other"), ("attempt_id", "expansion_tick_other"),
             ("plan_hash", "d" * 64), ("wrapper_pid", 4243), ("wrapper_pid", True),
-            ("wrapper_process_started_at_utc", "2026-08-26T01:00:00.200001Z"),
+            # Seconds away, not microseconds: a PID wearing a different process is what
+            # this check exists to catch, and it is never a microsecond old.
+            ("wrapper_process_started_at_utc", "2026-08-26T01:00:07.200000Z"),
             ("claim_run_id", "wrong"), ("claim_owner_kind", "other"),
             ("claim_owner_pid", 999), ("claim_owner_process_started_at_utc", self.fixture.started),
             ("claim_output_namespace", str(self.fixture.repo)), ("claim_must_exist", True),
@@ -330,6 +333,57 @@ class ChildOutcomeEvidenceTests(unittest.TestCase):
                 self.fixture.handoff = {**original, field: value}
                 self.fixture.write()
                 self.assert_retry(self.fixture.call())
+
+    def shifted_wrapper_start(self, seconds: float) -> str:
+        """The fixture's own wrapper start, moved by a given amount.
+
+        Computed rather than written out: a hard-coded timestamp silently stops testing
+        what it names the moment the fixture moves, which is how the first version of
+        this test passed while asserting nothing."""
+        base = datetime.fromisoformat(
+            self.fixture.identity["started_at_utc"].replace("Z", "+00:00")
+        )
+        moved = base + timedelta(seconds=seconds)
+        return moved.isoformat().replace("+00:00", "Z")
+
+    def test_a_microsecond_of_measurement_noise_is_not_a_different_process(self) -> None:
+        """The defect this pins cost the automation every tick it ran.
+
+        The wrapper reads a launcher's start time through psutil; the launcher records its
+        own through .NET. Measured over six spawns on this machine the two differ by one
+        microsecond in five of them - psutil converts a float to microseconds, .NET prints
+        seven digits. Compared with `==`, that rejected roughly five ticks in six: fifty
+        jobs collected, manifest written, outcome recorded as RETRY_NEXT_INTERVAL with
+        "the handoff receipt names a wrapper with a different start time"."""
+        original = copy.deepcopy(self.fixture.handoff)
+        for microseconds in (1, -1):
+            with self.subTest(microseconds=microseconds):
+                self.fixture.handoff = {
+                    **original,
+                    "wrapper_process_started_at_utc": self.shifted_wrapper_start(
+                        microseconds / 1_000_000
+                    ),
+                }
+                self.fixture.write()
+                result = self.fixture.call()
+                self.assertEqual("COMPLETE", result["status"], result.get("reason"))
+
+    def test_the_tolerance_has_an_edge_and_the_check_still_bites_past_it(self) -> None:
+        original = copy.deepcopy(self.fixture.handoff)
+        for seconds, expected in (
+            (evidence.PROCESS_START_TOLERANCE_SEC, "COMPLETE"),
+            (-evidence.PROCESS_START_TOLERANCE_SEC, "COMPLETE"),
+            (evidence.PROCESS_START_TOLERANCE_SEC + 0.001, "RETRY_NEXT_INTERVAL"),
+            (-evidence.PROCESS_START_TOLERANCE_SEC - 0.001, "RETRY_NEXT_INTERVAL"),
+        ):
+            with self.subTest(seconds=seconds):
+                self.fixture.handoff = {
+                    **original,
+                    "wrapper_process_started_at_utc": self.shifted_wrapper_start(seconds),
+                }
+                self.fixture.write()
+                result = self.fixture.call()
+                self.assertEqual(expected, result["status"], result.get("reason"))
 
     def test_handoff_missing_duplicate_or_still_issued_fails_closed(self) -> None:
         self.fixture.receipt_path.unlink()
@@ -402,7 +456,7 @@ class ChildOutcomeEvidenceTests(unittest.TestCase):
             ("schema", "wrong"), ("attempt_id", "other"), ("plan_id", "other"),
             ("plan_hash", "d" * 64), ("run_id", "other"),
             ("owner_pid", 999), ("owner_pid", True),
-            ("owner_process_started_at_utc", "2026-08-26T01:00:01.250001Z"),
+            ("owner_process_started_at_utc", "2026-08-26T01:00:08.250000Z"),
             ("ownership_token_sha256", "e" * 64),
             ("output_namespace", str(self.fixture.repo)),
             ("claim_path", str(self.fixture.repo / "other.json")),
