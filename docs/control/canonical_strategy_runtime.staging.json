@@ -14,7 +14,7 @@
       ]
     },
     {
-      "strategy_id": "spot_listing_momentum_expansion_v17",
+      "strategy_id": "spot_listing_momentum_expansion_v18",
       "namespace_prefix": "listing.spot.expansion",
       "scope": "crypto_spot_listing",
       "venues": [
@@ -150,7 +150,7 @@
       "retired_aliases": []
     },
     {
-      "strategy_id": "spot_listing_momentum_expansion_v17",
+      "strategy_id": "spot_listing_momentum_expansion_v18",
       "track_class": "spot_listing",
       "runtime_status": "INACTIVE",
       "activation_readiness": "READY_AFTER_ROUTER_MIGRATION",
@@ -164,14 +164,14 @@
       ],
       "canonical_repo": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion",
       "canonical_remote_url": "https://github.com/koval26vlg-coder/Zolotayalopata-listing-momentum-expansion.git",
-      "canonical_git_commit": "bdbd783002d0297d6946c00c4fb5ec1b1d6cf73f",
-      "canonical_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\docs\\plans\\listing-momentum-expansion-automation-planonly-20260827-v7.json",
-      "canonical_plan_sha256": "0016aeeca6e0dab34ea5e8bedd94519da3eb391e0b3ef454348e759b11cd665a",
-      "canonical_plan_file_sha256": "6c7686b97b3bffcbcc04ec4371d5ec65939d42b51381532c54267c18d47eadd3",
-      "canonical_plan_id": "listing_momentum_expansion_automation_20260827_v7",
+      "canonical_git_commit": "87988d63e06f0615c71b29e2c76d5f8d16770d66",
+      "canonical_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\docs\\plans\\listing-momentum-expansion-automation-planonly-20260827-v8.json",
+      "canonical_plan_sha256": "5a15b6c289e8edc7356d453e5e7cb69d75971eff0ae946e9ad8e12b5dba8ec42",
+      "canonical_plan_file_sha256": "53463af3fdd2652aec1439f18032eb5f6adfc2148117bcf791d76e68d861c6e0",
+      "canonical_plan_id": "listing_momentum_expansion_automation_20260827_v8",
       "canonical_plan_status": "READY_FOR_SCHEDULER_ROUTED_BOUNDED_PUBLIC_RESEARCH",
       "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\tools\\start_listing_momentum_expansion_automation_visible.ps1",
-      "launcher_sha256": "4a52af5a29e2abc4469fac6464fa0a11550ecbebdcc9d411e8e93653eb2ef3db",
+      "launcher_sha256": "3c89130d6e0e3d320e2ae117929f62dda52e13aa71594cd075279292e0baf321",
       "scheduler_routable": false,
       "allowed_modes": [
         "DISCOVERY",
@@ -190,7 +190,7 @@
         {
           "role": "automation_contract",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\trading_mvp\\src\\listing_expansion_automation_contract.py",
-          "sha256": "0f28b5685c2713cd37e864df39cfd3b1f0011a46a3b0700805a4eddc6a677365"
+          "sha256": "184937389f3bca62a3a393837d83f750cce1c12b6e92f8d593a079b231e4229c"
         },
         {
           "role": "automation_runner",
@@ -215,12 +215,12 @@
         {
           "role": "child_expansion_monitor",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\trading_mvp\\src\\slow_liquidity_listing_momentum_forward_expansion_monitor.py",
-          "sha256": "0e52d42072d181ec650674ad94307a6ecb2d2afe9f6b3476a176ee099ddf80aa"
+          "sha256": "f7aea34faeaf8d752d3a4f8c6b0ec73d7295b20a75a6c30623169b1338a73a32"
         },
         {
           "role": "child_expansion_plan_generator",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\trading_mvp\\src\\slow_liquidity_listing_momentum_forward_expansion_plan.py",
-          "sha256": "a3cd53908d1f1b6ec74346082af30cd285862f84be6bc56bcda555af0332679e"
+          "sha256": "3634ad5ea510c3e9d14bb0bce10a8c1dda9fd6cb6eedf1c97ef10ce7d91fa7f4"
         },
         {
           "role": "child_outcome_verifier",
@@ -240,7 +240,7 @@
         {
           "role": "child_visible_tick_launcher",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\tools\\start_listing_momentum_forward_expansion_tick_visible.ps1",
-          "sha256": "1755e0c69a85169f485ffe4e06fffe97e47f26102eb6a4c0f55c4163439509c3"
+          "sha256": "fd3c06ae00e19572042c6eab4ab2d0ede70e9d9eabf614f481f631a36ae77f3e"
         },
         {
           "role": "dependency_trading_mvp_src_listing_event_history_collect_plan_py",
@@ -295,7 +295,7 @@
         {
           "role": "visible_automation_launcher",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\tools\\start_listing_momentum_expansion_automation_visible.ps1",
-          "sha256": "4a52af5a29e2abc4469fac6464fa0a11550ecbebdcc9d411e8e93653eb2ef3db"
+          "sha256": "3c89130d6e0e3d320e2ae117929f62dda52e13aa71594cd075279292e0baf321"
         }
       ],
       "supersedes": [
