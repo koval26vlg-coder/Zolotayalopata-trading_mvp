@@ -778,7 +778,7 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
                 "spot_listing_momentum_mexc_gate_v2",
                 "spot_listing_momentum_expansion_v15",
                 "crypto_premarket_perpetual_capture_v28",
-                "preipo_perpetual_event_v11",
+                "preipo_perpetual_event_v12",
             },
         )
         self.assertNotIn("preipo_candidate_bybit", runtimes)
@@ -791,7 +791,7 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
             runtimes["crypto_premarket_perpetual_capture_v28"]["launcher_path"]
         )
         self.assertEqual(
-            runtimes["preipo_perpetual_event_v11"]["activation_readiness"],
+            runtimes["preipo_perpetual_event_v12"]["activation_readiness"],
             "BLOCKED_OFFICIAL_FIRST_TRADE_RESOLVER_AND_ROUTER_MIGRATION",
         )
         result = runtime_registry.validate_registry(CHECKED_IN_TEMPLATE)
