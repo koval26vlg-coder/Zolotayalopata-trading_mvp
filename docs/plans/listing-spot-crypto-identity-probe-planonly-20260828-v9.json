@@ -1,0 +1,111 @@
+{
+  "schema": "trading_mvp_listing_spot_crypto_identity_probe_planonly_v1",
+  "plan_id": "listing_spot_crypto_identity_probe_20260828_v9",
+  "mode": "PlanOnly",
+  "status": "READY_FOR_ONE_BOUNDED_PUBLIC_PROBE_NOT_EXECUTED",
+  "generated_at_utc": "2026-08-28T16:00:00Z",
+  "research_only": true,
+  "public_data_only": true,
+  "private_api": false,
+  "authenticated": false,
+  "live_orders": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "writes_market_data": false,
+  "question": "Does Bitget publish deposit and withdrawal on a named public network for these bases? Two-way movement establishes token mechanics only, not a final crypto-underlying identity; every result remains a proposal that requires human identity review.",
+  "supersedes": {
+    "plan_id": "listing_spot_crypto_identity_probe_20260827_v8",
+    "plan_hash": "b38d4877fc92a9c75538742426c6846001d1b10c61f321b708cdbe2df8f0e0bb",
+    "plan_file_sha256": "b600e876836ac22b6981e9ccd61446c2a2061db549511da5607fb16f44d264bc",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\listing-spot-crypto-identity-probe-planonly-20260827-v8.json"
+  },
+  "sample_binding": {
+    "state_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-listing-momentum-expansion\\exports\\trading-mvp\\analysis\\slow_liquidity_listing_momentum_forward_expansion_state_20260817.json",
+    "state_file_sha256": "37200fb0b451120469d044799519afdb7b9fb9864b4c405807888e2dd21626b2",
+    "observed_pairs": 50,
+    "unresolved_on_probe_venue": 17
+  },
+  "probe": {
+    "venue": "bitget",
+    "endpoint": "https://api.bitget.com/api/v2/spot/public/coins",
+    "accepted_hosts": [
+      "api.bitget.com",
+      "www.bitget.com"
+    ],
+    "bases": [
+      "DEBIT",
+      "RAA",
+      "RBURL",
+      "RDJT",
+      "RDKS",
+      "REFX",
+      "REROC",
+      "RH",
+      "RLNT",
+      "RLSCC",
+      "RNXT",
+      "RPURR",
+      "RSEZL",
+      "RTTMI",
+      "RULTA",
+      "RUSFD",
+      "TMX"
+    ],
+    "max_requests": 25,
+    "request_timeout_sec": 20,
+    "max_runtime_sec": 120,
+    "min_interval_between_requests_sec": 1,
+    "pagination": false,
+    "discovery": false
+  },
+  "outcome_contract": {
+    "produces": "crypto_identity_proposals",
+    "may_edit_declared_registry": false,
+    "may_accept_a_listing": false,
+    "may_authorise_paper_forward": false,
+    "may_authorise_live_trading": false,
+    "acceptance_decision": "NONE_IDENTITY_EVIDENCE_ONLY",
+    "human_review_required": true
+  },
+  "implementation": {
+    "files": [
+      {
+        "role": "crypto_identity_proposer",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_spot_crypto_identity.py",
+        "sha256": "47b5986cedc35d412e5348230cddff9c72e9d9ebe2d9293bc3c3028fbadce3d6"
+      },
+      {
+        "role": "equity_class_heuristic",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_asset_class_heuristic.py",
+        "sha256": "bf11e8f45fb066f06eba4a560efdde99493b1bc93b7295366ba1acf5c2a46382"
+      },
+      {
+        "role": "equity_ticker_reference",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_equity_ticker_reference.py",
+        "sha256": "3dd7e8f16ab579b330d9402b57d7ee166725093b64f3047d5de52d3baef7ff97"
+      },
+      {
+        "role": "equity_ticker_snapshot",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\reference\\exchange-symbol-directory-20260827.json",
+        "sha256": "32d0cdef19039b528b8ac4f950e3e1cad2e57bcacdce40289d48d178d2a75bc0"
+      },
+      {
+        "role": "probe_collector",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_spot_crypto_identity_probe.py",
+        "sha256": "61070b3c9355a6d3074d966506ab7db623526c181a33587419077e72927582ad"
+      },
+      {
+        "role": "probe_plan_generator",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_spot_crypto_identity_plan.py",
+        "sha256": "d0d7e5be1a639185b271f701e39c9e252ae55a3470feb697fc2d5d8a6ed11cb7"
+      },
+      {
+        "role": "spot_asset_classifier",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\listing_spot_asset_class.py",
+        "sha256": "dae979f59f87a0370166f7f3aa677967e61905c70485dd53606c57c795695a99"
+      }
+    ]
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "a39bdd8f912decc63fc767b465a258f907cf94b2e4f3878335b45e98fdfc77c9"
+}

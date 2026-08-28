@@ -776,15 +776,15 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
             set(runtimes),
             {
                 "spot_listing_momentum_mexc_gate_v2",
-                "spot_listing_momentum_expansion_v19",
+                "spot_listing_momentum_expansion_v20",
                 "crypto_premarket_perpetual_capture_v28",
                 "preipo_perpetual_event_v12",
             },
         )
         self.assertNotIn("preipo_candidate_bybit", runtimes)
         self.assertIn(
-            "spot_listing_momentum_expansion_v18",
-            runtimes["spot_listing_momentum_expansion_v19"]["supersedes"],
+            "spot_listing_momentum_expansion_v19",
+            runtimes["spot_listing_momentum_expansion_v20"]["supersedes"],
         )
         self.assertTrue(all(not row["scheduler_routable"] for row in runtimes.values()))
         self.assertTrue(

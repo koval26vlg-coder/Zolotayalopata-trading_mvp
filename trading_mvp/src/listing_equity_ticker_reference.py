@@ -57,8 +57,8 @@ _COMMON_STOCK_RE = re.compile(
     r"(common stock|common share|ordinary share|class [a-z] (common|ordinary))", re.I
 )
 _NOT_A_SHARE_RE = re.compile(
-    r"(etf|fund|trust|warrant|units?|preferred|depositary"
-    r"|notes?|rights?|index|portfolio)",
+    r"(\betf\b|\bfund\b|\btrust\b|warrant|\bunits?\b|preferred|depositary"
+    r"|\bnotes?\b|\brights?\b|index|portfolio)",
     re.I,
 )
 

@@ -41,8 +41,8 @@ from typing import Any, Mapping, Sequence
 from listing_spot_crypto_identity import VENUE_EVIDENCE_HOSTS, unresolved_bases
 
 SCHEMA = "trading_mvp_listing_spot_crypto_identity_probe_planonly_v1"
-PLAN_ID = "listing_spot_crypto_identity_probe_20260827_v8"
-PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v8.json"
+PLAN_ID = "listing_spot_crypto_identity_probe_20260828_v9"
+PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260828-v9.json"
 HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 
 # The plan this one replaces. Recorded rather than merely implied by the version number:
@@ -52,7 +52,7 @@ HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 # same shape, and the same reason - a superseded artifact is immutable, so binding it by
 # hash is a check that stays true rather than one that expires.
 PREVIOUS_PLAN_RELATIVE_PATH = (
-    "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v7.json"
+    "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v8.json"
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -211,9 +211,9 @@ def build_plan(
         "writes_market_data": False,
         "question": (
             "Does Bitget publish deposit and withdrawal on a named public network for "
-            "these bases? A base that can be moved onto a public chain and back is a "
-            "token in the sense this research asks about; one that cannot is an internal "
-            "instrument."
+            "these bases? Two-way movement establishes token mechanics only, not a "
+            "final crypto-underlying identity; every result remains a proposal that "
+            "requires human identity review."
         ),
         "supersedes": _supersession(repo_root),
         "sample_binding": {

@@ -67,6 +67,17 @@ class CryptoIdentityProbePlanTests(unittest.TestCase):
         self.assertTrue(path.is_file(), path)
         validate_plan(json.loads(path.read_text(encoding="utf-8")))
 
+    def test_the_issued_identity_is_v9_and_v8_is_its_immutable_predecessor(self) -> None:
+        self.assertEqual("listing_spot_crypto_identity_probe_20260828_v9", plan_module.PLAN_ID)
+        self.assertEqual(
+            "docs/plans/listing-spot-crypto-identity-probe-planonly-20260828-v9.json",
+            plan_module.PLAN_RELATIVE_PATH,
+        )
+        self.assertEqual(
+            "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v8.json",
+            plan_module.PREVIOUS_PLAN_RELATIVE_PATH,
+        )
+
     def test_the_plan_records_what_it_supersedes_and_binds_it(self) -> None:
         """This family issued six versions in two days with the chain living only in
         filenames. A version number is a convention; this is the artifact saying what it
@@ -174,6 +185,11 @@ class CryptoIdentityProbePlanTests(unittest.TestCase):
         # The 28 OKX tokenised equities have a settled identity and must not appear.
         self.assertNotIn("XCRM", self.plan["probe"]["bases"])
         self.assertEqual(plan_module.PROBE_VENUE, self.plan["probe"]["venue"])
+
+    def test_technical_rebind_does_not_silently_change_the_proposal_scope(self) -> None:
+        previous_path = plan_module.REPO_ROOT / plan_module.PREVIOUS_PLAN_RELATIVE_PATH
+        previous = json.loads(previous_path.read_text(encoding="utf-8"))
+        self.assertEqual(previous["probe"]["bases"], self.plan["probe"]["bases"])
 
     def test_the_plan_cannot_claim_any_authority_it_does_not_have(self) -> None:
         outcome = self.plan["outcome_contract"]

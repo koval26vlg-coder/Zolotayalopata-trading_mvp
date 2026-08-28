@@ -90,6 +90,50 @@ class ParseTests(unittest.TestCase):
         self.assertNotIn("AAAU", parsed.common_stock)
         self.assertNotIn("PRT", parsed.common_stock)
 
+    def test_word_bounded_non_share_names_do_not_enter_common_stock(self) -> None:
+        rows = bulk(1200) + [
+            {
+                "ticker": "AAT",
+                "name": "American Assets Trust, Inc. Common Stock",
+                "etf": "N",
+            },
+            {
+                "ticker": "ACP",
+                "name": "Example Income Fund Common Shares",
+                "etf": "N",
+            },
+            {
+                "ticker": "AIIA.U",
+                "name": "Example Units, each containing one Class A Ordinary Share",
+                "etf": "N",
+            },
+            {
+                "ticker": "AIIA.R",
+                "name": "Example Rights to receive one Class A Ordinary Share",
+                "etf": "N",
+            },
+            {
+                "ticker": "SAFE",
+                "name": "Fundamental Global Inc. Common Stock",
+                "etf": "N",
+            },
+        ]
+        parsed = reference.parse_reference(snapshot(rows))
+        for ticker in ("AAT", "ACP", "AIIA.U", "AIIA.R"):
+            with self.subTest(ticker=ticker):
+                self.assertNotIn(ticker, parsed.common_stock)
+        # Word boundaries matter in both directions: "fund" must not reject a company
+        # merely because its ordinary name starts with "Fundamental".
+        self.assertIn("SAFE", parsed.common_stock)
+
+    def test_the_frozen_snapshot_has_the_preregistered_common_stock_universe(self) -> None:
+        reference.load_reference.cache_clear()
+        parsed = reference.load_reference()
+        self.assertEqual(5053, len(parsed.common_stock))
+        for ticker in ("AAT", "ACP", "AIIA.U", "AIIA.R"):
+            with self.subTest(ticker=ticker):
+                self.assertNotIn(ticker, parsed.common_stock)
+
     def test_rows_that_do_not_match_their_hash_are_refused_on_load(self) -> None:
         payload = snapshot(bulk(1200))
         payload["rows"][0]["ticker"] = "TAMPERED"
