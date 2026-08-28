@@ -41,9 +41,19 @@ from typing import Any, Mapping, Sequence
 from listing_spot_crypto_identity import VENUE_EVIDENCE_HOSTS, unresolved_bases
 
 SCHEMA = "trading_mvp_listing_spot_crypto_identity_probe_planonly_v1"
-PLAN_ID = "listing_spot_crypto_identity_probe_20260827_v7"
-PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v7.json"
+PLAN_ID = "listing_spot_crypto_identity_probe_20260827_v8"
+PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v8.json"
 HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
+
+# The plan this one replaces. Recorded rather than merely implied by the version number:
+# this family issued six versions in two days with nothing in any artifact saying which
+# came after which, so the chain existed only in filenames and in whoever remembered.
+# The expansion family has carried a supersession block since its own v3; this is the
+# same shape, and the same reason - a superseded artifact is immutable, so binding it by
+# hash is a check that stays true rather than one that expires.
+PREVIOUS_PLAN_RELATIVE_PATH = (
+    "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v7.json"
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 # The sample the activated runtime collects into. It stopped being in this repository
@@ -133,6 +143,25 @@ def observed_pairs(state_path: Path = EXPANSION_STATE_PATH) -> list[tuple[str, s
     return pairs
 
 
+def _supersession(repo_root: Path) -> dict[str, Any]:
+    """What this plan replaces, bound by hash.
+
+    Unlike the sample binding, this one is checked at validation time and should be: a
+    superseded plan is an immutable artifact. If it has changed on disk, either the chain
+    is wrong or the artifact was edited, and both are worth stopping for."""
+    previous = repo_root / PREVIOUS_PLAN_RELATIVE_PATH
+    _require(previous.is_file(), f"superseded plan missing: {previous}")
+    payload = json.loads(previous.read_text(encoding="utf-8"))
+    _require(payload.get("schema") == SCHEMA, "superseded plan schema")
+    _require(payload.get("plan_id") != PLAN_ID, "a plan cannot supersede itself")
+    return {
+        "plan_id": str(payload["plan_id"]),
+        "plan_hash": str(payload["plan_hash"]),
+        "plan_file_sha256": _sha256_file(previous),
+        "plan_path": str(previous),
+    }
+
+
 def build_plan(
     *,
     generated_at_utc: str,
@@ -186,6 +215,7 @@ def build_plan(
             "token in the sense this research asks about; one that cannot is an internal "
             "instrument."
         ),
+        "supersedes": _supersession(repo_root),
         "sample_binding": {
             "state_path": str(state_path),
             "state_file_sha256": _sha256_file(state_path),
@@ -265,6 +295,19 @@ def validate_plan(plan: Mapping[str, Any], *, repo_root: Path = REPO_ROOT) -> No
     # took nine tests with it. What must hold is that the plan says what it was derived
     # from, well enough to go and check; whether the world has moved on since is a fact
     # about the world, not a defect in the artifact.
+    # The chain, checked rather than assumed. A version number is a filename convention;
+    # this is the artifact saying what it replaced, and saying it in bytes.
+    superseded = plan.get("supersedes") or {}
+    _require(bool(superseded), "supersedes block")
+    previous_path = Path(str(superseded.get("plan_path") or ""))
+    _require(previous_path.is_file(), f"superseded plan missing: {previous_path}")
+    previous = json.loads(previous_path.read_text(encoding="utf-8"))
+    _require(previous.get("plan_id") == superseded.get("plan_id"), "superseded plan id")
+    _require(previous.get("plan_hash") == superseded.get("plan_hash"), "superseded plan hash")
+    _require(_sha256_file(previous_path) == superseded.get("plan_file_sha256"),
+             "superseded plan file sha256")
+    _require(superseded.get("plan_id") != plan.get("plan_id"), "a plan cannot supersede itself")
+
     sample = plan.get("sample_binding") or {}
     state_path = Path(str(sample.get("state_path") or ""))
     _require(str(state_path) != "." and state_path.is_absolute(), "sample state path")

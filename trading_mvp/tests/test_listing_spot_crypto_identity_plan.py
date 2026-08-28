@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import ast
-
+import hashlib
 import json
 import sys
 import tempfile
@@ -54,6 +54,10 @@ def _imported_modules(path: Path) -> set[str]:
     return names
 
 
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 class CryptoIdentityProbePlanTests(unittest.TestCase):
     def setUp(self) -> None:
         self.plan = build_plan(generated_at_utc=STAMP)
@@ -62,6 +66,55 @@ class CryptoIdentityProbePlanTests(unittest.TestCase):
         path = plan_module.REPO_ROOT / plan_module.PLAN_RELATIVE_PATH
         self.assertTrue(path.is_file(), path)
         validate_plan(json.loads(path.read_text(encoding="utf-8")))
+
+    def test_the_plan_records_what_it_supersedes_and_binds_it(self) -> None:
+        """This family issued six versions in two days with the chain living only in
+        filenames. A version number is a convention; this is the artifact saying what it
+        replaced, in bytes."""
+        path = plan_module.REPO_ROOT / plan_module.PLAN_RELATIVE_PATH
+        issued = json.loads(path.read_text(encoding="utf-8"))
+        superseded = issued["supersedes"]
+        previous_path = Path(superseded["plan_path"])
+        self.assertTrue(previous_path.is_file(), previous_path)
+        previous = json.loads(previous_path.read_text(encoding="utf-8"))
+        self.assertEqual(previous["plan_id"], superseded["plan_id"])
+        self.assertEqual(previous["plan_hash"], superseded["plan_hash"])
+        self.assertNotEqual(issued["plan_id"], superseded["plan_id"])
+
+    def test_a_broken_or_absent_chain_is_refused(self) -> None:
+        """Each case asserts the reason, not just the refusal.
+
+        This module cannot be mutation-tested the usual way - the issued plan binds the
+        generator by hash, so editing it fails on the implementation binding before the
+        chain check is ever reached. Naming the expected reason is what proves these cases
+        exercise the chain rather than tripping over something else on the way."""
+        path = plan_module.REPO_ROOT / plan_module.PLAN_RELATIVE_PATH
+        issued = json.loads(path.read_text(encoding="utf-8"))
+        good = issued["supersedes"]
+        # Self-supersession has to be built so that the id and hash agree with the file
+        # it points at, or it is refused for naming the wrong plan and the guard against
+        # a plan superseding itself is never reached.
+        itself = {
+            "plan_id": issued["plan_id"],
+            "plan_hash": issued["plan_hash"],
+            "plan_file_sha256": file_sha256(path),
+            "plan_path": str(path),
+        }
+        for broken, expected in (
+            ({}, "supersedes block"),
+            ({**good, "plan_hash": "c" * 64}, "superseded plan hash"),
+            ({**good, "plan_file_sha256": "c" * 64}, "superseded plan file sha256"),
+            ({**good, "plan_id": "listing_spot_crypto_identity_probe_20260827_v1"},
+             "superseded plan id"),
+            ({**good, "plan_path": str(path.with_name("absent.json"))},
+             "superseded plan missing"),
+            (itself, "cannot supersede itself"),
+        ):
+            with self.subTest(expected=expected):
+                candidate = {**issued, "supersedes": broken}
+                candidate["plan_hash"] = plan_module.canonical_hash(candidate)
+                with self.assertRaisesRegex(CryptoIdentityPlanError, expected):
+                    validate_plan(candidate)
 
     def test_a_sample_that_has_moved_on_does_not_invalidate_the_plan(self) -> None:
         """The sample binding is provenance, not authorisation.
