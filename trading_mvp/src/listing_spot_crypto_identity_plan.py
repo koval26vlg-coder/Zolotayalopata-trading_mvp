@@ -41,8 +41,8 @@ from typing import Any, Mapping, Sequence
 from listing_spot_crypto_identity import VENUE_EVIDENCE_HOSTS, unresolved_bases
 
 SCHEMA = "trading_mvp_listing_spot_crypto_identity_probe_planonly_v1"
-PLAN_ID = "listing_spot_crypto_identity_probe_20260828_v9"
-PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260828-v9.json"
+PLAN_ID = "listing_spot_crypto_identity_probe_20260831_v10"
+PLAN_RELATIVE_PATH = "docs/plans/listing-spot-crypto-identity-probe-planonly-20260831-v10.json"
 HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 
 # The plan this one replaces. Recorded rather than merely implied by the version number:
@@ -52,7 +52,7 @@ HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 # same shape, and the same reason - a superseded artifact is immutable, so binding it by
 # hash is a check that stays true rather than one that expires.
 PREVIOUS_PLAN_RELATIVE_PATH = (
-    "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v8.json"
+    "docs/plans/listing-spot-crypto-identity-probe-planonly-20260828-v9.json"
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -162,6 +162,45 @@ def _supersession(repo_root: Path) -> dict[str, Any]:
     }
 
 
+def _scope_change(repo_root: Path, bases: list[str]) -> dict[str, Any]:
+    """What this plan asks that its predecessor did not, and the reverse.
+
+    A technical rebind must not quietly change the question - that rule is older than
+    this block and is the reason the block exists. But the question does legitimately
+    narrow: an instrument whose identity has been declared is no longer unresolved, and
+    a probe that kept asking about it would be collecting an answer it already has.
+
+    So the difference is computed and declared rather than forbidden. An undeclared
+    change cannot ship, because validation requires this block to account for the
+    difference exactly."""
+    previous = repo_root / PREVIOUS_PLAN_RELATIVE_PATH
+    _require(previous.is_file(), f"superseded plan missing: {previous}")
+    before = list(json.loads(previous.read_text(encoding="utf-8"))["probe"]["bases"])
+    removed = sorted(set(before) - set(bases))
+    added = sorted(set(bases) - set(before))
+    changed = bool(removed or added)
+    reason = ""
+    if changed:
+        parts = []
+        if removed:
+            parts.append(
+                f"{len(removed)} base(s) no longer unresolved on {PROBE_VENUE}: "
+                + ", ".join(removed)
+            )
+        if added:
+            parts.append(f"{len(added)} newly unresolved base(s): " + ", ".join(added))
+        reason = "; ".join(parts) + (
+            ". The bases are derived from the observed state and the declared registry, "
+            "so this narrows or widens with identity, never with intent."
+        )
+    return {
+        "declared": changed,
+        "bases_removed": removed,
+        "bases_added": added,
+        "reason": reason,
+    }
+
+
 def build_plan(
     *,
     generated_at_utc: str,
@@ -216,6 +255,7 @@ def build_plan(
             "requires human identity review."
         ),
         "supersedes": _supersession(repo_root),
+        "scope_change": _scope_change(repo_root, bases),
         "sample_binding": {
             "state_path": str(state_path),
             "state_file_sha256": _sha256_file(state_path),
@@ -307,6 +347,26 @@ def validate_plan(plan: Mapping[str, Any], *, repo_root: Path = REPO_ROOT) -> No
     _require(_sha256_file(previous_path) == superseded.get("plan_file_sha256"),
              "superseded plan file sha256")
     _require(superseded.get("plan_id") != plan.get("plan_id"), "a plan cannot supersede itself")
+
+    # A rebind may narrow the question, but not silently. The declaration has to
+    # account for the difference exactly, so neither a forgotten base nor an invented
+    # one can pass as a technical rebind.
+    scope = plan.get("scope_change")
+    _require(isinstance(scope, Mapping), "scope_change block")
+    # Every key present, always. An omitted block would otherwise pass whenever nothing
+    # changed, which is exactly the run where nobody would notice it had gone missing -
+    # and then the one reissue that does change scope has nothing to check against.
+    for field in ("declared", "bases_removed", "bases_added", "reason"):
+        _require(field in scope, f"scope_change {field}")
+    before = list(json.loads(previous_path.read_text(encoding="utf-8"))["probe"]["bases"])
+    current = list((plan.get("probe") or {}).get("bases") or [])
+    removed = sorted(set(before) - set(current))
+    added = sorted(set(current) - set(before))
+    _require(list(scope.get("bases_removed") or []) == removed, "scope_change bases_removed")
+    _require(list(scope.get("bases_added") or []) == added, "scope_change bases_added")
+    _require(bool(scope.get("declared")) == bool(removed or added), "scope_change declared")
+    if removed or added:
+        _require(bool(str(scope.get("reason") or "").strip()), "scope_change reason")
 
     sample = plan.get("sample_binding") or {}
     state_path = Path(str(sample.get("state_path") or ""))

@@ -67,15 +67,26 @@ class CryptoIdentityProbePlanTests(unittest.TestCase):
         self.assertTrue(path.is_file(), path)
         validate_plan(json.loads(path.read_text(encoding="utf-8")))
 
-    def test_the_issued_identity_is_v9_and_v8_is_its_immutable_predecessor(self) -> None:
-        self.assertEqual("listing_spot_crypto_identity_probe_20260828_v9", plan_module.PLAN_ID)
-        self.assertEqual(
-            "docs/plans/listing-spot-crypto-identity-probe-planonly-20260828-v9.json",
+    def test_the_module_and_its_artifacts_agree_on_which_plan_this_is(self) -> None:
+        """Derived, not named.
+
+        This test used to spell out the current and previous version, which made every
+        reissue a test edit and taught nothing: the property worth pinning is that the
+        module, the file it writes, and the file it supersedes all agree - and that a
+        plan never points at itself as its own predecessor."""
+        self.assertEqual(plan_module.PLAN_ID, self.plan["plan_id"])
+        self.assertTrue(
+            plan_module.PLAN_RELATIVE_PATH.endswith(".json"),
             plan_module.PLAN_RELATIVE_PATH,
         )
+        self.assertNotEqual(
+            plan_module.PLAN_RELATIVE_PATH, plan_module.PREVIOUS_PLAN_RELATIVE_PATH
+        )
+        previous = plan_module.REPO_ROOT / plan_module.PREVIOUS_PLAN_RELATIVE_PATH
+        self.assertTrue(previous.is_file(), previous)
         self.assertEqual(
-            "docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v8.json",
-            plan_module.PREVIOUS_PLAN_RELATIVE_PATH,
+            json.loads(previous.read_text(encoding="utf-8"))["plan_id"],
+            self.plan["supersedes"]["plan_id"],
         )
 
     def test_the_plan_records_what_it_supersedes_and_binds_it(self) -> None:
@@ -186,10 +197,51 @@ class CryptoIdentityProbePlanTests(unittest.TestCase):
         self.assertNotIn("XCRM", self.plan["probe"]["bases"])
         self.assertEqual(plan_module.PROBE_VENUE, self.plan["probe"]["venue"])
 
-    def test_technical_rebind_does_not_silently_change_the_proposal_scope(self) -> None:
+    def test_a_rebind_may_narrow_the_question_but_never_silently(self) -> None:
+        """The scope does legitimately change, and the change has to be declared.
+
+        This started as "the bases must be identical across a rebind", which is right
+        for a technical rebind and wrong as an absolute: an instrument whose identity
+        has been declared stops being unresolved, and a probe that kept asking about it
+        would collect an answer it already has. So the difference is declared and has to
+        account for itself exactly - a forgotten base and an invented one both fail."""
         previous_path = plan_module.REPO_ROOT / plan_module.PREVIOUS_PLAN_RELATIVE_PATH
-        previous = json.loads(previous_path.read_text(encoding="utf-8"))
-        self.assertEqual(previous["probe"]["bases"], self.plan["probe"]["bases"])
+        before = json.loads(previous_path.read_text(encoding="utf-8"))["probe"]["bases"]
+        current = self.plan["probe"]["bases"]
+        scope = self.plan["scope_change"]
+        self.assertEqual(sorted(set(before) - set(current)), scope["bases_removed"])
+        self.assertEqual(sorted(set(current) - set(before)), scope["bases_added"])
+        self.assertEqual(bool(scope["bases_removed"] or scope["bases_added"]),
+                         scope["declared"])
+        if scope["declared"]:
+            self.assertTrue(scope["reason"].strip())
+
+    def test_an_unaccounted_scope_change_is_refused(self) -> None:
+        """The cases are built against whatever the truth currently is.
+
+        A first version of this hard-coded them, and half of them silently passed the
+        moment the scope stopped changing - an empty removal list is a defect when
+        fifteen bases were dropped and the plain truth when none were."""
+        path = plan_module.REPO_ROOT / plan_module.PLAN_RELATIVE_PATH
+        issued = json.loads(path.read_text(encoding="utf-8"))
+        good = issued["scope_change"]
+        broken = [
+            {**good, "declared": not good["declared"]},
+            {**good, "bases_added": [*good["bases_added"], "INVENTED"]},
+            {**good, "bases_removed": [*good["bases_removed"], "INVENTED"]},
+            {k: v for k, v in good.items() if k != "declared"},
+            {},
+        ]
+        if good["bases_removed"]:
+            broken.append({**good, "bases_removed": good["bases_removed"][:-1]})
+        if good["declared"]:
+            broken.append({**good, "reason": "   "})
+        for case in broken:
+            with self.subTest(case=sorted(case)):
+                candidate = {**issued, "scope_change": case}
+                candidate["plan_hash"] = plan_module.canonical_hash(candidate)
+                with self.assertRaises(CryptoIdentityPlanError):
+                    validate_plan(candidate)
 
     def test_the_plan_cannot_claim_any_authority_it_does_not_have(self) -> None:
         outcome = self.plan["outcome_contract"]

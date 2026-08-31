@@ -14,7 +14,9 @@ TESTS_ROOT = Path(__file__).resolve().parent
 if str(TESTS_ROOT) not in sys.path:
     sys.path.insert(0, str(TESTS_ROOT))
 
-import listing_spot_crypto_identity_probe as probe  # noqa: E402
+import listing_spot_crypto_identity_probe as probe
+from listing_spot_asset_class import ASSET_CLASS_CRYPTO_TOKEN
+from listing_asset_class_heuristic import propose as propose_tokenized_equity  # noqa: E402
 from listing_spot_crypto_identity_plan import CryptoIdentityPlanError  # noqa: E402
 from listing_spot_crypto_identity_probe import ProbeError, evidence_from_response  # noqa: E402
 
@@ -171,26 +173,43 @@ class ProbeRunTests(unittest.TestCase):
         self.assertEqual([], static["proposals"])
 
     def test_a_contested_proposal_is_distinguishable_in_the_record(self) -> None:
-        """The record enumerates proposal fields by hand, so a new one is dropped by
-        default. This one may not be.
+        """The record enumerates proposal fields by hand, so a new one is dropped unless
+        it is added here too. This one may not be.
 
-        The equity heuristic no longer vetoes; it records a disagreement, and the whole
-        value of that is that a human sees it. A contested proposal written into the
-        results as an ordinary PROPOSED is how RULTA gets promoted into the crypto
-        registry by somebody scanning a column of statuses."""
-        contested = next(
-            (base for base in self.plan_bases() if base.startswith("R") and len(base) > 2),
-            None,
+        Tested on a proposal rather than through a run: reaching this path end-to-end
+        needs an unresolved wrapped share, and the fifteen that were unresolved have
+        since been declared on the venue's own UTA metadata. The property belongs to the
+        proposal, not to whatever the current plan happens to ask about - and a test that
+        hunted through the plan's base list stopped testing anything the moment the
+        question was answered."""
+        contested = probe.CryptoIdentityProposal(
+            exchange="bitget",
+            base="RAAPL",
+            proposed_class=ASSET_CLASS_CRYPTO_TOKEN,
+            supporting_networks=("Ethereum",),
+            source_url="https://api.bitget.com/api/v2/spot/public/coins?coin=RAAPL",
+            observed_at_utc="2026-08-26T11:00:00Z",
+            evidence=("CONTESTED: the tokenised-equity heuristic reads this symbol as a "
+                      "wrapped listed share",),
+            contested_by_equity_heuristic=True,
         )
-        self.assertIsNotNone(contested, "the issued plan names no wrapped share to test")
-        result = self.run_with({contested: venue_payload(contested, [MOVABLE])})
-        row = next(r for r in result["observations"] if r["base"] == contested)
+        self.assertEqual("PROPOSED_CONTESTED", probe._status_for(contested))
+        described = probe._describe(contested)
+        self.assertTrue(described["contested_by_equity_heuristic"])
+        self.assertTrue(any(l.startswith("CONTESTED:") for l in described["evidence"]))
+        self.assertTrue(described["requires_human_review"])
 
-        self.assertEqual("PROPOSED_CONTESTED", row["status"])
-        self.assertTrue(row["proposal"]["contested_by_equity_heuristic"])
-        self.assertTrue(
-            any(line.startswith("CONTESTED:") for line in row["proposal"]["evidence"])
+    def test_the_status_words_are_the_three_the_record_can_carry(self) -> None:
+        uncontested = probe.CryptoIdentityProposal(
+            exchange="bitget", base="ALIGN", proposed_class=ASSET_CLASS_CRYPTO_TOKEN,
+            supporting_networks=("ERC20",),
+            source_url="https://api.bitget.com/api/v2/spot/public/coins?coin=ALIGN",
+            observed_at_utc="2026-08-26T11:00:00Z",
         )
+        self.assertEqual("PROPOSED", probe._status_for(uncontested))
+        self.assertEqual("NOT_ESTABLISHED", probe._status_for(None))
+        self.assertFalse(probe._describe(uncontested)["contested_by_equity_heuristic"])
+        self.assertIsNone(probe._describe(None))
 
     def test_an_uncontested_proposal_is_not_labelled_as_contested(self) -> None:
         uncontested = next(

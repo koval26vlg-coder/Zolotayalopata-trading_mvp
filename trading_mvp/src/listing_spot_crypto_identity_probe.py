@@ -144,6 +144,24 @@ def evidence_from_response(
     )
 
 
+def _status_for(proposal: CryptoIdentityProposal | None) -> str:
+    """The word that goes in the record beside a base.
+
+    A named function rather than three lines inside the run loop, because the case that
+    matters cannot be reached through the run loop any more: it needs an unresolved
+    wrapped share, and the fifteen that were unresolved have since been declared on the
+    venue's own metadata. The property is a property of a proposal, not of whatever the
+    current plan happens to ask about."""
+    if proposal is None:
+        return "NOT_ESTABLISHED"
+    if proposal.contested_by_equity_heuristic:
+        # Distinct from PROPOSED at a glance. A contested proposal read as an ordinary one
+        # is how RULTA gets promoted into the crypto registry by someone scanning a column
+        # of statuses.
+        return "PROPOSED_CONTESTED"
+    return "PROPOSED"
+
+
 def _describe(proposal: CryptoIdentityProposal | None) -> dict[str, Any] | None:
     if proposal is None:
         return None
@@ -222,15 +240,7 @@ def run_probe(
             for chain in evidence.chains
         ]
         proposal = propose_crypto_identity(evidence, now=now())
-        if proposal is None:
-            record["status"] = "NOT_ESTABLISHED"
-        elif proposal.contested_by_equity_heuristic:
-            # Distinct from PROPOSED at a glance. A contested proposal read as an ordinary
-            # one is how RULTA gets promoted into the crypto registry by someone scanning
-            # a column of statuses.
-            record["status"] = "PROPOSED_CONTESTED"
-        else:
-            record["status"] = "PROPOSED"
+        record["status"] = _status_for(proposal)
         record["proposal"] = _describe(proposal)
         if proposal is not None:
             proposals.append(record["proposal"])

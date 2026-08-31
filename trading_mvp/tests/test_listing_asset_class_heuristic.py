@@ -21,6 +21,7 @@ from listing_spot_asset_class import (  # noqa: E402
     ASSET_CLASS_CRYPTO_TOKEN,
     ASSET_CLASS_TOKENIZED_EQUITY,
     DECLARATION_SOURCE,
+    DECLARED_TOKENIZED_EQUITY_BASES,
     classify_spot_asset,
 )
 
@@ -109,11 +110,30 @@ class WrapperConventionTests(unittest.TestCase):
     )
 
     def test_every_r_wrapped_share_bitget_listed_is_now_recognised(self):
+        """In this repository the fifteen are still unclassified, and the heuristic is
+        what recognises them.
+
+        They are declared in the expansion runtime, on the venue's own UTA metadata -
+        stronger evidence than the spelling read here. This copy stays frozen at the plan
+        this repository's own lineage binds, so the two answers differ on purpose."""
         for base in self.R_WRAPPED:
             with self.subTest(base=base):
                 proposal = heuristic.propose("bitget", base)
                 self.assertIsNotNone(proposal, f"{base} still unclassified")
                 self.assertEqual(proposal.proposed_class, ASSET_CLASS_TOKENIZED_EQUITY)
+
+    def test_the_r_convention_still_recognises_an_undeclared_wrapper(self):
+        """The capability has to outlive the instruments that motivated it.
+
+        RULTA and its fourteen siblings are declared, so they prove nothing about the
+        convention any more. An R-wrapped share nobody has reviewed still has to be
+        recognised, or the next batch goes back to unclassified."""
+        for base, remainder in (("RAAPL", "AAPL"), ("RMSFT", "MSFT"), ("RKO", "KO")):
+            with self.subTest(base=base):
+                proposal = heuristic.propose("bitget", base)
+                self.assertIsNotNone(proposal, f"{base} not recognised")
+                self.assertEqual(proposal.proposed_class, ASSET_CLASS_TOKENIZED_EQUITY)
+                self.assertIn(remainder, " | ".join(proposal.evidence))
 
     def test_the_named_casualties_survive_the_wider_reference(self):
         """The docstring names XMR and XRP; a wide reference is where they would die."""
@@ -138,7 +158,20 @@ class GeneralisationTests(unittest.TestCase):
         The bootstrap is kept as its own function, and kept working, so a checkout that
         has never fetched the directory still recognises what was curated by hand."""
         reference = heuristic.derive_equity_ticker_reference()
-        self.assertEqual(len(reference), 28)
+        # Not a fixed count: the bootstrap is derived from what has been declared, and it
+        # grows every time an identity is settled. It was 28 when only OKX had been
+        # reviewed; the fifteen Bitget Reality shares took it to 43. What must hold is
+        # that it follows the registry and is contained by the full reference.
+        declared = {
+            base for bases in DECLARED_TOKENIZED_EQUITY_BASES.values() for base in bases
+        }
+        expected = {
+            base[len(prefix):]
+            for base in declared
+            for prefix in heuristic.TOKENIZED_EQUITY_PREFIXES
+            if base.startswith(prefix) and len(base) > len(prefix)
+        }
+        self.assertEqual(reference, frozenset(expected))
         self.assertTrue(reference <= heuristic.equity_ticker_reference())
         for venue in ("bitget", "binance", "bybit"):
             with self.subTest(venue=venue):
