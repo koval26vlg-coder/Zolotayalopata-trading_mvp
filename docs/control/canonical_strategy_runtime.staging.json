@@ -1,7 +1,7 @@
 {
   "schema": "zolotyaylopata.canonical_strategy_runtime.v1",
-  "registry_id": "canonical_strategy_runtime_staging_20260831_v8",
-  "generated_at_utc": "2026-08-31T10:30:00Z",
+  "registry_id": "canonical_strategy_runtime_staging_20260831_v9",
+  "generated_at_utc": "2026-08-31T15:40:00Z",
   "activation_status": "STAGING_NOT_INSTALLED",
   "canonical_owners": [
     {
@@ -35,7 +35,7 @@
       ]
     },
     {
-      "strategy_id": "preipo_perpetual_event_v12",
+      "strategy_id": "preipo_perpetual_event_v16",
       "namespace_prefix": "listing.equity.preipo.perpetual",
       "scope": "equity_preipo_perpetual",
       "venues": [
@@ -522,10 +522,10 @@
       "retired_aliases": []
     },
     {
-      "strategy_id": "preipo_perpetual_event_v12",
+      "strategy_id": "preipo_perpetual_event_v16",
       "track_class": "equity_preipo_perpetual",
       "runtime_status": "INACTIVE",
-      "activation_readiness": "BLOCKED_OFFICIAL_FIRST_TRADE_RESOLVER_AND_ROUTER_MIGRATION",
+      "activation_readiness": "READY_AFTER_ROUTER_MIGRATION",
       "namespace_prefix": "listing.equity.preipo.perpetual",
       "scope": "equity_preipo_perpetual",
       "venues": [
@@ -536,14 +536,14 @@
       ],
       "canonical_repo": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event",
       "canonical_remote_url": "https://github.com/koval26vlg-coder/Zolotayalopata-preipo-perpetual-event.git",
-      "canonical_git_commit": "85134878f13f5a553c73bf9598538a5d82df90f6",
-      "canonical_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\docs\\plans\\preipo-perpetual-event-planonly-20260827-v12.json",
-      "canonical_plan_sha256": "b495644620fdb6e738957efee1a138fbd393f35afd14f70237545887f9b040fc",
-      "canonical_plan_file_sha256": "110458cccb31064e5c79bf9070350a43eaf49d12612c4703f4cec0f88a2c3685",
-      "canonical_plan_id": "preipo_perpetual_event_20260827_v12",
+      "canonical_git_commit": "0567cfd7279c101786104ce19722975342e268ee",
+      "canonical_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\docs\\plans\\preipo-perpetual-event-planonly-20260831-v16.json",
+      "canonical_plan_sha256": "d555c4ab0f85ae72fc16324d187d198fae08f62c445c8418dda7f8e67f485944",
+      "canonical_plan_file_sha256": "19fa367a01deb2b0baa5c82015af1c0317591bca84df254681ab8b5407b04005",
+      "canonical_plan_id": "preipo_perpetual_event_20260831_v16",
       "canonical_plan_status": "READY_FOR_BOUNDED_PUBLIC_PAPER_RESEARCH_NOT_SCHEDULER_ACTIVATED",
       "launcher_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\tools\\start_preipo_perpetual_event_automation_visible.ps1",
-      "launcher_sha256": "0965fc4276aa2fff50d050814411067011accf3926db3bb86976e572bbc3e2e8",
+      "launcher_sha256": "44f118383a70961f6f5007f373f88379342c7c2050bb1a0fae465d524269573d",
       "scheduler_routable": false,
       "allowed_modes": [
         "DISCOVERY",
@@ -562,7 +562,7 @@
         {
           "role": "preipo_public_venue_adapters",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\trading_mvp\\src\\preipo_adapters.py",
-          "sha256": "b3944376005ef8ba4a7b813a1851dbb085fddeb19a946194dfae7ad162696da4"
+          "sha256": "af8ab2b721d654987598b043c7370b11b38bf0c150f25b99f62615d6547b0899"
         },
         {
           "role": "preipo_append_only_raw_event_store",
@@ -572,17 +572,17 @@
         {
           "role": "preipo_retry_state_and_tick_worker",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\trading_mvp\\src\\preipo_automation.py",
-          "sha256": "20f6c20d6f6d164e9a402f33e94501d231a771ca1343b22c2537af8bae379dee"
+          "sha256": "f59f365bbb24c698b1692d46580753d690804145081090e627514ad3fbe6ea69"
         },
         {
           "role": "preipo_plan_validator",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\trading_mvp\\src\\preipo_plan.py",
-          "sha256": "6225ee687ff78f065ad1667d75ccb5ab65871313d9ed1ea1a99217951027d384"
+          "sha256": "656ba7fa615273d122cb4d57acd95d25f3f95c2188f531245fd6dbda6af321bc"
         },
         {
           "role": "preipo_visible_orchestrator",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\tools\\start_preipo_perpetual_event_automation_visible.ps1",
-          "sha256": "0965fc4276aa2fff50d050814411067011accf3926db3bb86976e572bbc3e2e8"
+          "sha256": "44f118383a70961f6f5007f373f88379342c7c2050bb1a0fae465d524269573d"
         },
         {
           "role": "cadence_policy",
@@ -597,12 +597,38 @@
         {
           "role": "preipo_temporal_anchor_taxonomy",
           "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\trading_mvp\\src\\preipo_temporal_anchor.py",
-          "sha256": "7c4f9dcc0f12908c5ded0c1dba107cdf4bb9f96931c07408c63efc012c35258c"
+          "sha256": "c65d01a675195a5a7540f8e49599603d0112f58db4e74d7981f7d8e7c13e4e85"
+        },
+        {
+          "role": "global_market_writer_claim",
+          "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\trading_mvp\\src\\global_market_writer_claim.py",
+          "sha256": "c982def8d3f7791392af59bcb378197dbeabee53c36e48da41e7aaa509342526"
+        },
+        {
+          "role": "active_run_gate_checker",
+          "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\tools\\check_active_run_gate.ps1",
+          "sha256": "bf348e3e89bb096e57abfde2c7db224dc55ca95b6076147a433d764c13c30129"
+        },
+        {
+          "role": "runtime_dependency_manifest",
+          "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\requirements.txt",
+          "sha256": "ae99759d5b350ab3deaaa67535adf5135c7f91d9a6e53ac8d986bd445d9aceca"
+        },
+        {
+          "role": "preipo_official_first_trade_resolver",
+          "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\trading_mvp\\src\\preipo_official_first_trade.py",
+          "sha256": "ef4b610c12118afd01ea47ec54ad10a34b6d45d5978bf82053b1c8fd67d43267"
+        },
+        {
+          "role": "premarket_asset_class_registry",
+          "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-preipo-perpetual-event\\trading_mvp\\src\\premarket_asset_class.py",
+          "sha256": "ad261e00dc20a2a15e6d623ba4302e1262dc94f383c4712fe7a2dfbbdc44ee6f"
         }
       ],
       "supersedes": [
         "preipo_perpetual_event_v10",
-        "preipo_perpetual_event_v11"
+        "preipo_perpetual_event_v11",
+        "preipo_perpetual_event_v12"
       ],
       "retired_aliases": [
         "preipo_candidate_bybit"

@@ -778,7 +778,7 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
                 "spot_listing_momentum_mexc_gate_v2",
                 "spot_listing_momentum_expansion_v20",
                 "crypto_premarket_perpetual_capture_v42",
-                "preipo_perpetual_event_v12",
+                "preipo_perpetual_event_v16",
             },
         )
         self.assertNotIn("preipo_candidate_bybit", runtimes)
@@ -827,10 +827,38 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
         self.assertIsNone(
             premarket["launcher_path"]
         )
+        preipo = runtimes["preipo_perpetual_event_v16"]
         self.assertEqual(
-            runtimes["preipo_perpetual_event_v12"]["activation_readiness"],
-            "BLOCKED_OFFICIAL_FIRST_TRADE_RESOLVER_AND_ROUTER_MIGRATION",
+            preipo["activation_readiness"], "READY_AFTER_ROUTER_MIGRATION"
         )
+        self.assertEqual(
+            preipo["canonical_git_commit"],
+            "0567cfd7279c101786104ce19722975342e268ee",
+        )
+        self.assertEqual(
+            preipo["canonical_plan_id"], "preipo_perpetual_event_20260831_v16"
+        )
+        self.assertEqual(
+            preipo["canonical_plan_sha256"],
+            "d555c4ab0f85ae72fc16324d187d198fae08f62c445c8418dda7f8e67f485944",
+        )
+        self.assertEqual(
+            preipo["canonical_plan_file_sha256"],
+            "19fa367a01deb2b0baa5c82015af1c0317591bca84df254681ab8b5407b04005",
+        )
+        preipo_plan = json.loads(
+            Path(preipo["canonical_plan_path"]).read_text(encoding="utf-8")
+        )
+        expected_preipo_bindings = {
+            row["role"]: {"path": row["path"], "sha256": row["sha256"]}
+            for row in preipo_plan["implementation"]
+        }
+        actual_preipo_bindings = {
+            row["role"]: {"path": row["path"], "sha256": row["sha256"]}
+            for row in preipo["implementation_bindings"]
+        }
+        self.assertEqual(actual_preipo_bindings, expected_preipo_bindings)
+        self.assertFalse(preipo["scheduler_routable"])
         result = runtime_registry.validate_registry(CHECKED_IN_TEMPLATE)
         self.assertTrue(result["registry_valid"], result)
         self.assertFalse(result["launch_allowed"], result)
