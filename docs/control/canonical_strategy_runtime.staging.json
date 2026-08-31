@@ -1,7 +1,7 @@
 {
   "schema": "zolotyaylopata.canonical_strategy_runtime.v1",
-  "registry_id": "canonical_strategy_runtime_staging_20260831_v7",
-  "generated_at_utc": "2026-08-31T06:40:00Z",
+  "registry_id": "canonical_strategy_runtime_staging_20260831_v8",
+  "generated_at_utc": "2026-08-31T10:30:00Z",
   "activation_status": "STAGING_NOT_INSTALLED",
   "canonical_owners": [
     {
@@ -325,7 +325,7 @@
       ],
       "canonical_repo": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture",
       "canonical_remote_url": "https://github.com/koval26vlg-coder/Zolotayalopata-premarket-perp-capture.git",
-      "canonical_git_commit": "872dbe65caf7868b2028bc10f5bf2702f4766160",
+      "canonical_git_commit": "f8f2632ffc8df1ee323d8206cdcc2b9f7f4480b3",
       "canonical_plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata-premarket-perp-capture\\docs\\plans\\premarket-perp-capture-planonly-20260822-v42.json",
       "canonical_plan_sha256": "72acbc1426ddfc5ccb168dd1d75d6414e5af0d30507b80f32fa8d85020691926",
       "canonical_plan_file_sha256": "696f6368f1f2a72fdcaa598148766324ea0d24bdc2e28308f8e15470a5e081b5",

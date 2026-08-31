@@ -794,7 +794,7 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
         premarket = runtimes["crypto_premarket_perpetual_capture_v42"]
         self.assertEqual(
             premarket["canonical_git_commit"],
-            "872dbe65caf7868b2028bc10f5bf2702f4766160",
+            "f8f2632ffc8df1ee323d8206cdcc2b9f7f4480b3",
         )
         self.assertEqual(
             premarket["canonical_plan_id"],
