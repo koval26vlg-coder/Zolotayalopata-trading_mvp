@@ -16,6 +16,7 @@ TESTS_ROOT = Path(__file__).resolve().parent
 if str(TESTS_ROOT) not in sys.path:
     sys.path.insert(0, str(TESTS_ROOT))
 
+import listing_runtime_declared_identity as runtime_identity  # noqa: E402
 import listing_spot_crypto_identity_plan as plan_module  # noqa: E402
 from listing_spot_crypto_identity_plan import (  # noqa: E402
     CryptoIdentityPlanError,
@@ -242,6 +243,58 @@ class CryptoIdentityProbePlanTests(unittest.TestCase):
                 candidate["plan_hash"] = plan_module.canonical_hash(candidate)
                 with self.assertRaises(CryptoIdentityPlanError):
                     validate_plan(candidate)
+
+    def test_the_runtime_classifier_that_shaped_the_question_is_bound(self) -> None:
+        """The sample comes from the runtime, and now so does the classification.
+
+        Which bases are still worth asking about is decided by the runtime's declared
+        registry, so that file is bound by hash like any other thing that decides an
+        outcome. Citing it without binding it would leave the question free to change
+        under a plan whose whole job is to fix the question."""
+        import hashlib
+
+        path = plan_module.REPO_ROOT / plan_module.PLAN_RELATIVE_PATH
+        issued = json.loads(path.read_text(encoding="utf-8"))
+        declared = issued["runtime_declared_identity"]
+        if declared is None:
+            self.skipTest("the expansion runtime is not checked out beside this repository")
+        classifier = Path(declared["classifier_path"])
+        self.assertTrue(classifier.is_file(), classifier)
+        self.assertEqual(
+            hashlib.sha256(classifier.read_bytes()).hexdigest(),
+            declared["classifier_file_sha256"],
+        )
+        self.assertGreater(declared["declared_pairs"], 0)
+
+    def test_a_runtime_classifier_that_has_moved_is_refused(self) -> None:
+        path = plan_module.REPO_ROOT / plan_module.PLAN_RELATIVE_PATH
+        issued = json.loads(path.read_text(encoding="utf-8"))
+        if issued["runtime_declared_identity"] is None:
+            self.skipTest("the expansion runtime is not checked out beside this repository")
+        good = issued["runtime_declared_identity"]
+        for broken, expected in (
+            ({**good, "classifier_file_sha256": "d" * 64}, "runtime classifier sha256"),
+            ({**good, "classifier_path": str(path.with_name("absent.py"))},
+             "runtime classifier missing"),
+        ):
+            with self.subTest(expected=expected):
+                candidate = {**issued, "runtime_declared_identity": broken}
+                candidate["plan_hash"] = plan_module.canonical_hash(candidate)
+                with self.assertRaisesRegex(CryptoIdentityPlanError, expected):
+                    validate_plan(candidate)
+
+    def test_bases_the_runtime_has_settled_are_not_asked_about_again(self) -> None:
+        """Fifteen Bitget Reality shares, declared in the runtime on 2026-08-28 from the
+        venue's own UTA metadata while this repository's registry stayed frozen.
+
+        They were listed as unresolved here for three days. The probe would have gone on
+        asking a question that had been answered - which is the cost this binding pays
+        for, not a hypothetical."""
+        if not runtime_identity.available():
+            self.skipTest("the expansion runtime is not checked out beside this repository")
+        settled = {b for v, b in runtime_identity.declared_pairs() if v == plan_module.PROBE_VENUE}
+        self.assertTrue(settled, "the runtime declares nothing for the probe venue")
+        self.assertFalse(settled & set(self.plan["probe"]["bases"]))
 
     def test_the_plan_cannot_claim_any_authority_it_does_not_have(self) -> None:
         outcome = self.plan["outcome_contract"]

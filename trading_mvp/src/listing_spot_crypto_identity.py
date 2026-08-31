@@ -166,11 +166,24 @@ def _observed_recently(observed_at_utc: str, *, now: datetime, max_age_days: int
     return (now - moment).days <= max_age_days
 
 
-def _already_declared(exchange: str, base: str) -> bool:
+def _already_declared(
+    exchange: str, base: str, also_settled: Iterable[tuple[str, str]] = ()
+) -> bool:
+    """Whether some registry has already answered this, here or in the runtime.
+
+    ``also_settled`` is how the runtime's declarations reach this decision. The sample
+    comes from the runtime and so must the answer: this repository's copy of the registry
+    is frozen at the plan its own lineage binds, and an instrument settled there but not
+    here would otherwise be probed forever for an identity it already has.
+
+    It can only ever remove a question. Nothing passed in here puts an instrument into
+    the crypto universe - that still takes a reviewed edit in a declared registry."""
     for registry in (DECLARED_TOKENIZED_EQUITY_BASES, DECLARED_CRYPTO_TOKEN_BASES):
         if base in registry.get(exchange, frozenset()):
             return True
-    return False
+    return (exchange, base) in {
+        (str(v).strip().lower(), str(b).strip().upper()) for v, b in also_settled
+    }
 
 
 def propose_crypto_identity(
@@ -179,6 +192,7 @@ def propose_crypto_identity(
     now: datetime | None = None,
     max_age_days: int = 30,
     equity_tickers: Iterable[str] | None = None,
+    also_settled: Iterable[tuple[str, str]] = (),
 ) -> CryptoIdentityProposal | None:
     """Propose a crypto-token candidate, or nothing.
 
@@ -195,7 +209,7 @@ def propose_crypto_identity(
     if not _BASE_RE.match(base):
         raise CryptoIdentityError(f"unusable base symbol: {evidence.base!r}")
 
-    if _already_declared(exchange, base):
+    if _already_declared(exchange, base, also_settled):
         # A settled identity is not a question, in either direction.
         return None
     if not _host_is_the_venue(exchange, evidence.source_url):
@@ -270,13 +284,18 @@ def review_queue(
     now: datetime | None = None,
     max_age_days: int = 30,
     equity_tickers: Iterable[str] | None = None,
+    also_settled: Iterable[tuple[str, str]] = (),
 ) -> list[CryptoIdentityProposal]:
     """Every proposal the observations support, deduplicated and ordered."""
     seen: set[tuple[str, str]] = set()
     queue: list[CryptoIdentityProposal] = []
     for observation in observations:
         proposal = propose_crypto_identity(
-            observation, now=now, max_age_days=max_age_days, equity_tickers=equity_tickers
+            observation,
+            now=now,
+            max_age_days=max_age_days,
+            equity_tickers=equity_tickers,
+            also_settled=also_settled,
         )
         if proposal is None:
             continue
@@ -291,15 +310,18 @@ def review_queue(
 
 def unresolved_bases(
     observed: Iterable[tuple[str, str]],
+    *,
+    also_settled: Iterable[tuple[str, str]] = (),
 ) -> list[tuple[str, str]]:
     """The venue/base pairs that no registry has an answer for yet.
 
     This is what the crypto track is actually blocked on, and naming it explicitly keeps
     "we have not established this" from being read as "there is nothing here"."""
+    settled = tuple(also_settled)
     out: list[tuple[str, str]] = []
     for exchange, base in observed:
         venue, symbol = _normalise(exchange, base)
-        if not venue or not symbol or _already_declared(venue, symbol):
+        if not venue or not symbol or _already_declared(venue, symbol, settled):
             continue
         if (venue, symbol) not in out:
             out.append((venue, symbol))

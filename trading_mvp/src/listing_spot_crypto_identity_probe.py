@@ -34,6 +34,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
 
+import listing_runtime_declared_identity as runtime_identity
 from listing_spot_crypto_identity import (
     ChainListing,
     CryptoIdentityProposal,
@@ -204,6 +205,9 @@ def run_probe(
     getter = fetch or (lambda url: http_get(url, timeout_sec=timeout_sec))
     started = now()
     observations: list[dict[str, Any]] = []
+    settled = (
+        runtime_identity.declared_pairs() if runtime_identity.available() else frozenset()
+    )
     proposals: list[dict[str, Any]] = []
 
     for index, base in enumerate(bases):
@@ -239,7 +243,10 @@ def run_probe(
             }
             for chain in evidence.chains
         ]
-        proposal = propose_crypto_identity(evidence, now=now())
+        # The same settled set the plan derived its bases from. Without it the collector
+        # could still propose an instrument the runtime has already declared, and the two
+        # halves of one probe would disagree about what is an open question.
+        proposal = propose_crypto_identity(evidence, now=now(), also_settled=settled)
         record["status"] = _status_for(proposal)
         record["proposal"] = _describe(proposal)
         if proposal is not None:

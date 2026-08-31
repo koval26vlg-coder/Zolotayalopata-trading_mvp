@@ -38,6 +38,7 @@ import pathlib
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+import listing_runtime_declared_identity as runtime_identity
 from listing_spot_crypto_identity import VENUE_EVIDENCE_HOSTS, unresolved_bases
 
 SCHEMA = "trading_mvp_listing_spot_crypto_identity_probe_planonly_v1"
@@ -86,6 +87,11 @@ IMPLEMENTATION_ROLES = {
     # The code that actually makes the requests. v1 bound only what interprets the
     # answer, which left the acting part unbound by the plan authorising the act.
     "probe_collector": "trading_mvp/src/listing_spot_crypto_identity_probe.py",
+    # v10: the sample comes from the runtime and now so does the classification. This
+    # reads the runtime's declarations; the runtime's own classifier is bound separately
+    # below, because a file that decides which questions get asked has to be as fixed as
+    # the code that asks them.
+    "runtime_declared_identity": "trading_mvp/src/listing_runtime_declared_identity.py",
     # v6: the equity heuristic now reads the exchange symbol directory rather than the
     # 28 names declared by hand, so what the probe concludes depends on both the reader
     # and the snapshot it reads. Binding the reader without the snapshot would leave the
@@ -208,7 +214,18 @@ def build_plan(
     state_path: Path = EXPANSION_STATE_PATH,
 ) -> dict[str, Any]:
     pairs = observed_pairs(state_path)
-    unresolved = [pair for pair in unresolved_bases(pairs) if pair[0] == PROBE_VENUE]
+    # Settled in the runtime counts as settled. Fifteen Bitget Reality shares were
+    # declared there on 2026-08-28 from the venue's own metadata while this repository's
+    # copy of the registry stayed frozen, and the probe went on listing them as
+    # unresolved - asking a question that had been answered.
+    settled = (
+        runtime_identity.declared_pairs() if runtime_identity.available() else frozenset()
+    )
+    unresolved = [
+        pair
+        for pair in unresolved_bases(pairs, also_settled=settled)
+        if pair[0] == PROBE_VENUE
+    ]
     _require(
         bool(unresolved),
         "no unresolved base on the probe venue; this plan would ask a question that is "
@@ -255,6 +272,14 @@ def build_plan(
             "requires human identity review."
         ),
         "supersedes": _supersession(repo_root),
+        # Bound, not merely cited: this is the file that decided which bases are still
+        # worth asking about, and a plan that fixes the question cannot leave the thing
+        # that shaped it free to move. Absent when the sibling runtime is not checked
+        # out, in which case the question falls back to this repository's own registry
+        # and is wider - failing towards more instruments, never fewer.
+        "runtime_declared_identity": (
+            runtime_identity.provenance() if runtime_identity.available() else None
+        ),
         "scope_change": _scope_change(repo_root, bases),
         "sample_binding": {
             "state_path": str(state_path),
@@ -351,6 +376,16 @@ def validate_plan(plan: Mapping[str, Any], *, repo_root: Path = REPO_ROOT) -> No
     # A rebind may narrow the question, but not silently. The declaration has to
     # account for the difference exactly, so neither a forgotten base nor an invented
     # one can pass as a technical rebind.
+    declared = plan.get("runtime_declared_identity")
+    if declared is not None:
+        _require(isinstance(declared, Mapping), "runtime_declared_identity block")
+        classifier = Path(str(declared.get("classifier_path") or ""))
+        _require(classifier.is_file(), f"runtime classifier missing: {classifier}")
+        _require(
+            _sha256_file(classifier) == declared.get("classifier_file_sha256"),
+            "runtime classifier sha256",
+        )
+
     scope = plan.get("scope_change")
     _require(isinstance(scope, Mapping), "scope_change block")
     # Every key present, always. An omitted block would otherwise pass whenever nothing
