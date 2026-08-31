@@ -777,7 +777,7 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
             {
                 "spot_listing_momentum_mexc_gate_v2",
                 "spot_listing_momentum_expansion_v20",
-                "crypto_premarket_perpetual_capture_v28",
+                "crypto_premarket_perpetual_capture_v42",
                 "preipo_perpetual_event_v12",
             },
         )
@@ -791,8 +791,41 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
             all(not row["live_trading_allowed"] for row in runtimes.values())
         )
         self.assertTrue(all(row["public_data_only"] for row in runtimes.values()))
+        premarket = runtimes["crypto_premarket_perpetual_capture_v42"]
+        self.assertEqual(
+            premarket["canonical_git_commit"],
+            "872dbe65caf7868b2028bc10f5bf2702f4766160",
+        )
+        self.assertEqual(
+            premarket["canonical_plan_id"],
+            "premarket_perp_capture_20260822_v42",
+        )
+        self.assertEqual(
+            premarket["canonical_plan_sha256"],
+            "72acbc1426ddfc5ccb168dd1d75d6414e5af0d30507b80f32fa8d85020691926",
+        )
+        self.assertEqual(
+            premarket["canonical_plan_file_sha256"],
+            "696f6368f1f2a72fdcaa598148766324ea0d24bdc2e28308f8e15470a5e081b5",
+        )
+        premarket_plan = json.loads(
+            Path(premarket["canonical_plan_path"]).read_text(encoding="utf-8")
+        )
+        expected_premarket_bindings = {
+            row["role"]: {
+                "path": str(Path(premarket["canonical_repo"]) / row["repo_path"]),
+                "sha256": row["sha256"],
+            }
+            for row in premarket_plan["implementation"]["files"]
+        }
+        actual_premarket_bindings = {
+            row["role"]: {"path": row["path"], "sha256": row["sha256"]}
+            for row in premarket["implementation_bindings"]
+        }
+        self.assertEqual(actual_premarket_bindings, expected_premarket_bindings)
+        self.assertIn("crypto_premarket_perpetual_capture_v28", premarket["supersedes"])
         self.assertIsNone(
-            runtimes["crypto_premarket_perpetual_capture_v28"]["launcher_path"]
+            premarket["launcher_path"]
         )
         self.assertEqual(
             runtimes["preipo_perpetual_event_v12"]["activation_readiness"],
@@ -801,6 +834,14 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
         result = runtime_registry.validate_registry(CHECKED_IN_TEMPLATE)
         self.assertTrue(result["registry_valid"], result)
         self.assertFalse(result["launch_allowed"], result)
+        premarket_result = {
+            row["strategy_id"]: row for row in result["runtimes"]
+        }["crypto_premarket_perpetual_capture_v42"]
+        self.assertEqual(premarket_result["binding_status"], "MATCH", result)
+        self.assertEqual(
+            premarket_result["decision"], "INACTIVE_NOT_ROUTABLE", result
+        )
+        self.assertEqual(premarket_result["reasons"], [], result)
         self.assertIn(
             result["decision"], {"STAGED_FAIL_CLOSED", "PARTIAL_RUNTIME_BLOCK"}
         )
