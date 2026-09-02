@@ -141,3 +141,47 @@ docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v8.json -text wh
 docs/plans/listing-spot-crypto-identity-probe-planonly-20260828-v9.json -text whitespace=cr-at-eol
 docs/plans/listing-spot-crypto-identity-probe-planonly-20260831-v10.json -text whitespace=cr-at-eol
 trading_mvp/src/listing_runtime_declared_identity.py -text whitespace=cr-at-eol
+trading_mvp/src/premarket_descriptive_history_plan.py -text whitespace=cr-at-eol
+trading_mvp/src/premarket_descriptive_history_collect.py -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v1.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v2.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v3.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v4.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v5.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v6.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v7.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v8.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v9.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v10.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v11.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v12.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v13.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v14.json -text whitespace=cr-at-eol
+
+# Pre-market descriptive history v15-v21 and the whole forward-depth lineage. Both plan
+# families bind their modules by sha256 over the bytes as they sit in the working tree, and
+# core.autocrlf=true rewrites unmarked text on checkout - which would make every one of
+# these plans fail its own --plan-check on a fresh clone. The v1-v14 plans above were
+# protected when they were written; these were not, and the gap is the whole reason to add
+# them before the first commit rather than after.
+docs/plans/premarket-descriptive-history-planonly-20260831-v15.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v16.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v17.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v18.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v19.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v20.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v21.json -text whitespace=cr-at-eol
+trading_mvp/src/premarket_forward_depth_plan.py -text whitespace=cr-at-eol
+trading_mvp/src/premarket_forward_depth_watch.py -text whitespace=cr-at-eol
+docs/plans/premarket-forward-depth-planonly-20260902-v1.json -text whitespace=cr-at-eol
+docs/plans/premarket-forward-depth-planonly-20260902-v2.json -text whitespace=cr-at-eol
+docs/plans/premarket-forward-depth-planonly-20260902-v3.json -text whitespace=cr-at-eol
+tools/install_premarket_forward_depth_scan_task.ps1 -text whitespace=cr-at-eol
+
+# Collected data. Not bound by any plan, but every record carries the sha256 of the venue
+# response it came from, and a rewritten file is no longer the artifact those digests were
+# computed over.
+docs/analysis/premarket-descriptive-history/*.json -text
+docs/analysis/premarket-descriptive-history/runs/*.json -text
+docs/analysis/premarket-forward-depth/*.json -text
+docs/analysis/premarket-forward-depth/captures/*.jsonl -text
