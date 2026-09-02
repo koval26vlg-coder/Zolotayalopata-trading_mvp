@@ -1,0 +1,145 @@
+{
+  "schema": "trading_mvp_premarket_forward_depth_planonly_v1",
+  "plan_id": "premarket_forward_depth_20260902_v3",
+  "mode": "PlanOnly",
+  "status": "READY",
+  "generated_at_utc": "2026-09-02T06:34:18Z",
+  "research_only": true,
+  "public_data_only": true,
+  "private_api": false,
+  "authenticated": false,
+  "live_orders": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "writes_market_data": true,
+  "question": "When a token's spot pair opens and its price falls over the following hour, does resting bid depth withdraw?",
+  "why_forward": "No venue publishes order book history for past dates, and every trade-derived measure has already been shown not to change.",
+  "lineage": {
+    "kind": "NEW_LINEAGE_NOT_A_SUCCESSOR",
+    "related_family": "premarket_descriptive_history_20260831",
+    "related_final": "docs/plans/premarket-descriptive-history-planonly-20260831-v20.json",
+    "why_new": "PROSPECTIVE_CAPTURE_CANNOT_SUPERSEDE_A_RETROSPECTIVE_MEASUREMENT",
+    "related_final_sha256": "8586868a462ac59dae7c67345383b69bd39b98df393484ea22463a51ba92ea36"
+  },
+  "qualification": {
+    "rule": "PERP_LAUNCH_STRICTLY_BEFORE_SPOT_OPEN",
+    "min_lead_sec": 3600,
+    "max_lead_days": 30,
+    "quote": "USDT",
+    "rejects": "SIMULTANEOUS_OR_SPOT_FIRST_LAUNCHES"
+  },
+  "schedule_sources": {
+    "okx_spot": {
+      "endpoint": "https://www.okx.com/api/v5/public/instruments",
+      "fixed_query": {
+        "instType": "SPOT"
+      },
+      "schedule_field": "listTime",
+      "pending_state": "preopen",
+      "notice_observed": "AT_LEAST_7H46M_BEFORE_LIST_TIME_MEASURED_ON_CP_USDT"
+    },
+    "okx_swap": {
+      "endpoint": "https://www.okx.com/api/v5/public/instruments",
+      "fixed_query": {
+        "instType": "SWAP"
+      },
+      "schedule_field": "listTime"
+    },
+    "gate_spot": {
+      "endpoint": "https://api.gateio.ws/api/v4/spot/currency_pairs",
+      "fixed_query": {},
+      "schedule_field": "buy_start",
+      "notice_observed": "UNKNOWN_ONLY_ONE_FORWARD_RECORD_SEEN"
+    },
+    "gate_perp": {
+      "endpoint": "https://api.gateio.ws/api/v4/futures/usdt/contracts",
+      "fixed_query": {},
+      "schedule_field": "launch_time"
+    }
+  },
+  "trade_open_offset_sec": {
+    "okx": 3600,
+    "gate": 0
+  },
+  "depth_books": {
+    "okx_spot": "https://www.okx.com/api/v5/market/books",
+    "okx_swap": "https://www.okx.com/api/v5/market/books",
+    "gate_spot": "https://api.gateio.ws/api/v4/spot/order_book",
+    "gate_perp": "https://api.gateio.ws/api/v4/futures/usdt/order_book"
+  },
+  "capture": {
+    "window_before_min": 120,
+    "window_after_min": 120,
+    "snapshot_interval_sec": 20,
+    "depth_levels_requested": 400,
+    "levels_retained_per_side": 50,
+    "distance_bands_pct": [
+      0.1,
+      0.25,
+      0.5,
+      1.0,
+      2.0,
+      5.0
+    ],
+    "truncation_recorded": "PER_BAND_PER_SIDE_PLUS_ACTUAL_REACH",
+    "legs": {
+      "perp": "WHOLE_WINDOW",
+      "spot": "FROM_T0_ONWARD_IT_DOES_NOT_EXIST_BEFORE"
+    },
+    "max_snapshots_per_event": 1600,
+    "max_response_bytes": 8388608,
+    "min_interval_between_requests_sec": 1,
+    "request_timeout_sec": 20
+  },
+  "notice_limit": {
+    "pre_window_is_bounded_by_notice": true,
+    "on_short_notice": "RECORD_ACTUAL_PRE_MINUTES_NEVER_PAD",
+    "minimum_useful_pre_min": 30,
+    "cadence_min": 15,
+    "cadence_rationale": "SCAN_INTERVAL_MUST_BE_UNDER_NOTICE_MINUS_PRE_WINDOW",
+    "notice_measured": {
+      "okx": "AT_LEAST_466_MIN",
+      "gate": "UNMEASURED_BEING_RECORDED"
+    },
+    "measurement": "FIRST_SEEN_PER_SCHEDULED_EVENT_IS_A_LOWER_BOUND",
+    "revisit_cadence_after_samples": 5
+  },
+  "hypothesis": {
+    "statement": "The fall between +30m and +60m is accompanied by a withdrawal of resting bid depth rather than by any change in aggressive order flow.",
+    "primary_measure": "QUOTE_VALUE_OF_BIDS_WITHIN_1PCT_OF_MID_RELATIVE_TO_PRE_WINDOW",
+    "supports_if": "BID_DEPTH_FALLS_BEFORE_OR_WITH_THE_PRICE_AND_ASK_DEPTH_DOES_NOT",
+    "falsifies_if": "BID_DEPTH_FLAT_OR_RISING_THROUGH_THE_RAMP, OR_BOTH_SIDES_THIN_EQUALLY",
+    "already_known_not_to_explain": [
+      "MARKET_BETA",
+      "PRE_EXISTING_DRIFT",
+      "BASIS_CONVERGENCE",
+      "ARRIVING_LIQUIDITY",
+      "AGGRESSOR_IMBALANCE"
+    ],
+    "registered_before_data": true
+  },
+  "outcome_contract": {
+    "acceptance_capable": false,
+    "decisive_outcome": "NEGATIVE_ONLY",
+    "evidence_use": "DESCRIPTIVE_ONLY",
+    "human_review_required": true,
+    "sample_grows_at": "ABOUT_ONE_QUALIFYING_EVENT_EVERY_FOUR_DAYS_ACROSS_THREE_VENUES",
+    "minimum_events_before_any_claim": 12
+  },
+  "implementation": {
+    "files": [
+      {
+        "role": "forward_depth_plan_generator",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_forward_depth_plan.py",
+        "sha256": "515f0ff9d54253fea3f93c5d4b688c4c8a4de5b0f7fe0e2e2313696d0b8200fc"
+      },
+      {
+        "role": "forward_depth_watcher",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_forward_depth_watch.py",
+        "sha256": "443613257bd07fca3349584f274793010b37defa0b3e2bc0e1a47b2c461476d8"
+      }
+    ]
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "993d8d06f162f64dfadae977b3c6aa5842e80df7fe80d0d4c41024d6325d40eb"
+}

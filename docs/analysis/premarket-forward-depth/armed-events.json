@@ -1,0 +1,30 @@
+{
+  "schema": "trading_mvp_premarket_forward_depth_armed_v1",
+  "plan_id": "premarket_forward_depth_20260902_v3",
+  "plan_hash": "993d8d06f162f64dfadae977b3c6aa5842e80df7fe80d0d4c41024d6325d40eb",
+  "scanned_at_utc": "2026-09-02T09:45:01Z",
+  "scheduled_seen": 215,
+  "armed": [],
+  "rejected": [],
+  "capture_launched": [],
+  "first_seen": {
+    "gate:CP:1788361200": 1788330891
+  },
+  "notice_observed": [
+    {
+      "venue": "gate",
+      "base": "CP",
+      "t0_utc": "2026-09-02T15:00:00Z",
+      "first_seen_utc": "2026-09-02T06:34:51Z",
+      "notice_sec": 30309,
+      "notice_hours": 8.42,
+      "is_lower_bound": true
+    }
+  ],
+  "errors": [
+    {
+      "venue": "gate",
+      "reason": "request failed: TimeoutError: The read operation timed out"
+    }
+  ]
+}
