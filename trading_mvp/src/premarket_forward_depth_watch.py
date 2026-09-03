@@ -37,6 +37,13 @@ from premarket_forward_depth_plan import (
     validate_plan,
 )
 
+try:  # pragma: no cover - the reference is optional and its absence is recorded, not fatal
+    from listing_equity_ticker_reference import available as _equity_available
+    from listing_equity_ticker_reference import common_stock_tickers as _equity_tickers
+except ImportError:  # the watcher must still run without the equity reference module
+    _equity_available = None
+    _equity_tickers = None
+
 USER_AGENT = "ZolotyayLopata-research/1.0 (public forward market data)"
 ARMED_RELATIVE = "docs/analysis/premarket-forward-depth/armed-events.json"
 CAPTURE_DIR_RELATIVE = "docs/analysis/premarket-forward-depth/captures"
@@ -215,6 +222,37 @@ def _scan_gate(getter, plan, *, timeout, max_bytes) -> list[dict[str, Any]]:
     return out
 
 
+def equity_note(base: str) -> dict[str, Any]:
+    """Whether this base looks like a tokenised equity rather than a crypto token.
+
+    The first captured event was AINVDA on Gate - an NVDA derivative. Whether a tokenised
+    share behaves like a token listing is exactly the question this study must not assume,
+    since a share has an external reference price and a token does not. The retrospective
+    work built a listed-equity reference for precisely this distinction, so it is reused.
+
+    Recorded, never used to drop an event. A forward study that captures once every four
+    days cannot afford to discard a capture on a heuristic; the split belongs to analysis,
+    where it can be argued with, and the capture is on disk either way."""
+    if _equity_available is None or not _equity_available():
+        return {"checked": False, "reason": "EQUITY_REFERENCE_UNAVAILABLE"}
+    tickers = _equity_tickers()
+    upper = base.upper()
+    exact = upper in tickers
+    # A tokenised share is often the ticker with an issuer prefix or suffix rather than the
+    # ticker itself, which is why exact membership alone would have passed AINVDA.
+    contained = sorted(
+        t for t in tickers
+        if len(t) >= 3 and t != upper and (upper.startswith(t) or upper.endswith(t))
+    )
+    return {
+        "checked": True,
+        "exact_listed_ticker": exact,
+        "contains_listed_ticker": contained[:4],
+        "looks_like_equity": bool(exact or contained),
+        "note": "RECORDED_NOT_EXCLUDED",
+    }
+
+
 def qualifies(event: dict[str, Any], plan: dict[str, Any], now: int) -> str | None:
     """Why this event is not a pre-market listing, or None when it is one.
 
@@ -258,11 +296,29 @@ def scan(*, repo_root: Path = REPO_ROOT,
                 rejected.append({**{k: event[k] for k in ("venue", "base", "t0_ts")},
                                  "reason": reason})
             continue
-        pre_min = min(int(cap["window_before_min"]), max(0, (event["t0_ts"] - now) // 60))
+        want = int(cap["window_before_min"])
+        by_notice = max(0, (event["t0_ts"] - now) // 60)
+        by_perp_age = max(0, (event["t0_ts"] - event["perp_launched_ts"]) // 60)
+        pre_min = min(want, by_notice, by_perp_age)
+        # Which constraint bit. A 64-minute lead can never yield a 120-minute control
+        # however early the venue announces - the perpetual did not exist then - and that is
+        # a property of the event, not a failure of the capture. The first captured event
+        # was exactly this case, and calling it "short notice" would have blamed the venue
+        # for the calendar.
+        if pre_min >= want:
+            bound = "FULL"
+        elif by_perp_age <= by_notice:
+            bound = "PERP_LAUNCH"
+        else:
+            bound = "VENUE_NOTICE"
         armed.append({
             **event,
             "t0_utc": _iso(event["t0_ts"]),
             "perp_lead_days": round((event["t0_ts"] - event["perp_launched_ts"]) / 86400, 3),
+            "equity_note": equity_note(event["base"]),
+            "pre_window_bounded_by": bound,
+            "pre_window_by_notice_min": by_notice,
+            "pre_window_by_perp_age_min": by_perp_age,
             "capture_from_ts": max(now, event["t0_ts"] - int(cap["window_before_min"]) * 60),
             "capture_to_ts": event["t0_ts"] + int(cap["window_after_min"]) * 60,
             "pre_window_available_min": pre_min,
@@ -443,6 +499,25 @@ def summarise(bids: list, asks: list, bands: list[float], retain: int) -> dict[s
             sum(p * s for p, s in asks if p <= hi), 8)
         out[f"bid_truncated_{band}pct"] = bid_reach < band
         out[f"ask_truncated_{band}pct"] = ask_reach < band
+        # v4. The other way a band comes back empty, and the one the truncation flag above
+        # cannot see. When the spread is wider than twice the band, no level can lie inside
+        # it: the best bid already sits further from mid than the band reaches. The first
+        # live capture had a perpetual quoting 385 bps, and its 1% band was inside the
+        # spread in 77% of snapshots - eight hundred readings that say "no depth within one
+        # percent" when they mean "one percent is inside the spread". Both flags are needed:
+        # truncation is the book ending, this is the book not starting.
+        out[f"bid_inside_spread_{band}pct"] = best_bid < lo
+        out[f"ask_inside_spread_{band}pct"] = best_ask > hi
+    # v4. Depth of the best N levels, which no spread can make undefined. On a book whose
+    # spread swings between 76 and 512 bps within one event - as the first capture's did -
+    # a fixed distance band measures the spread as much as the depth, while a level count
+    # measures the same thing at every moment. Declared as the fallback primary.
+    for count in (5, 10, 25, 50):
+        out[f"bid_depth_top{count}"] = round(sum(p * s for p, s in bids[:count]), 8)
+        out[f"ask_depth_top{count}"] = round(sum(p * s for p, s in asks[:count]), 8)
+        out[f"bid_levels_short_top{count}"] = len(bids) < count
+        out[f"ask_levels_short_top{count}"] = len(asks) < count
+
     out["top_bids"] = [[p, s] for p, s in bids[:retain]]
     out["top_asks"] = [[p, s] for p, s in asks[:retain]]
     return out

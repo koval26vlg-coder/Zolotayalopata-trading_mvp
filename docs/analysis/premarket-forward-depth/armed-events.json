@@ -1,8 +1,8 @@
 {
   "schema": "trading_mvp_premarket_forward_depth_armed_v1",
-  "plan_id": "premarket_forward_depth_20260902_v3",
-  "plan_hash": "993d8d06f162f64dfadae977b3c6aa5842e80df7fe80d0d4c41024d6325d40eb",
-  "scanned_at_utc": "2026-09-03T06:45:01Z",
+  "plan_id": "premarket_forward_depth_20260902_v4",
+  "plan_hash": "a44cf86091ceefc0c2ccceb1ef100c7af43d37278e58d9b44b3540a679caaae2",
+  "scanned_at_utc": "2026-09-03T06:53:13Z",
   "scheduled_seen": 714,
   "armed": [],
   "rejected": [],

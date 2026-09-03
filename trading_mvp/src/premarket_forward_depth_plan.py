@@ -44,8 +44,8 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 SCHEMA = "trading_mvp_premarket_forward_depth_planonly_v1"
-PLAN_ID = "premarket_forward_depth_20260902_v3"
-PLAN_RELATIVE_PATH = "docs/plans/premarket-forward-depth-planonly-20260902-v3.json"
+PLAN_ID = "premarket_forward_depth_20260902_v4"
+PLAN_RELATIVE_PATH = "docs/plans/premarket-forward-depth-planonly-20260902-v4.json"
 HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -78,6 +78,13 @@ QUALIFICATION = {
     "max_lead_days": 30,
     "quote": "USDT",
     "rejects": "SIMULTANEOUS_OR_SPOT_FIRST_LAUNCHES",
+    # v4. Tokenised equities are recorded, not rejected. The first captured event was
+    # AINVDA - an NVDA derivative - and whether a tokenised share behaves like a token
+    # listing is a question this study must not answer by assumption: a share has an
+    # external reference price and a token does not. A study that captures one event every
+    # four days cannot discard a capture on a heuristic, so the flag rides along and the
+    # split is made in analysis, where it can be argued with.
+    "equity_handling": "RECORDED_NOT_EXCLUDED",
 }
 
 # Where a scheduled opening is published before it happens. Binance is absent by measurement,
@@ -136,6 +143,15 @@ CAPTURE = {
     # that number means the book ended, not that nothing stands beyond. Each band now
     # carries whether it was truncated, and the reach itself is recorded per side.
     "truncation_recorded": "PER_BAND_PER_SIDE_PLUS_ACTUAL_REACH",
+    # v4. Found by the first live capture, which is what a first live capture is for. A
+    # fixed distance band has two ways of coming back empty and only one was being caught.
+    # Truncation is the book ending before the band; the other is the band lying inside the
+    # spread, where no level can be. That perpetual quoted 385 bps and its 1% band was
+    # inside the spread in 77% of 532 snapshots, every one of which would have read as
+    # "no bid depth within one percent".
+    "inside_spread_recorded": "PER_BAND_PER_SIDE",
+    # And the measure that no spread can make undefined. Level counts, not distances.
+    "level_count_depth": [5, 10, 25, 50],
     "legs": {
         "perp": "WHOLE_WINDOW",
         "spot": "FROM_T0_ONWARD_IT_DOES_NOT_EXIST_BEFORE",
@@ -155,6 +171,11 @@ NOTICE_LIMIT = {
     "pre_window_is_bounded_by_notice": True,
     "on_short_notice": "RECORD_ACTUAL_PRE_MINUTES_NEVER_PAD",
     "minimum_useful_pre_min": 30,
+    # v4. A short control has two different causes and they must not be conflated. The venue
+    # may have announced late, or the perpetual may itself be younger than the window - a
+    # 64-minute lead cannot give a 120-minute control at any cadence, because there was no
+    # perpetual to record. The first captured event was the second kind.
+    "bound_reasons": ["FULL", "VENUE_NOTICE", "PERP_LAUNCH"],
     # v3. The scan cadence follows from the notice, so the notice gets measured rather than
     # guessed. A scan interval I catches an event with a full pre-window only when the venue
     # publishes at least window_before + I ahead; below that the control comes out short.
@@ -177,6 +198,12 @@ HYPOTHESIS = {
         "rather than by any change in aggressive order flow."
     ),
     "primary_measure": "QUOTE_VALUE_OF_BIDS_WITHIN_1PCT_OF_MID_RELATIVE_TO_PRE_WINDOW",
+    # v4. The fixed band is undefined whenever the spread exceeds twice it, which on the
+    # first captured event was most of the time. The fallback is a level count, which is
+    # defined at every spread, and the rule for choosing between them is fixed here rather
+    # than at analysis time - otherwise the choice becomes a free parameter.
+    "fallback_measure": "QUOTE_VALUE_OF_THE_BEST_25_BIDS_RELATIVE_TO_PRE_WINDOW",
+    "use_fallback_when": "BAND_INSIDE_SPREAD_IN_OVER_A_THIRD_OF_SNAPSHOTS",
     "supports_if": "BID_DEPTH_FALLS_BEFORE_OR_WITH_THE_PRICE_AND_ASK_DEPTH_DOES_NOT",
     "falsifies_if": (
         "BID_DEPTH_FLAT_OR_RISING_THROUGH_THE_RAMP, OR_BOTH_SIDES_THIN_EQUALLY"
@@ -305,6 +332,17 @@ def validate_plan(plan: Mapping[str, Any], *, repo_root: Path = REPO_ROOT) -> No
     _require(list(cap.get("distance_bands_pct") or [])[:1] == [0.1], "distance bands")
     _require(cap.get("truncation_recorded") == "PER_BAND_PER_SIDE_PLUS_ACTUAL_REACH",
              "a band wider than the book must be marked, never reported as a measurement")
+    _require(cap.get("inside_spread_recorded") == "PER_BAND_PER_SIDE",
+             "a band inside the spread must be marked; empty there is not zero depth")
+    _require(list(cap.get("level_count_depth") or []) == [5, 10, 25, 50],
+             "a measure that no spread can make undefined")
+
+    _require(bool((plan.get("hypothesis") or {}).get("fallback_measure")),
+             "the fallback measure must exist before a wide spread forces it")
+    _require(bool((plan.get("hypothesis") or {}).get("use_fallback_when")),
+             "and the rule for using it must be fixed here, not chosen at analysis time")
+    _require(qual.get("equity_handling") == "RECORDED_NOT_EXCLUDED",
+             "tokenised equities are recorded, never silently dropped")
 
     notice = plan.get("notice_limit") or {}
     _require(notice.get("pre_window_is_bounded_by_notice") is True, "notice bound declared")
