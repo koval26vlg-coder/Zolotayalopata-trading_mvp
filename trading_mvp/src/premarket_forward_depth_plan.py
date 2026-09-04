@@ -44,8 +44,8 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 SCHEMA = "trading_mvp_premarket_forward_depth_planonly_v1"
-PLAN_ID = "premarket_forward_depth_20260902_v4"
-PLAN_RELATIVE_PATH = "docs/plans/premarket-forward-depth-planonly-20260902-v4.json"
+PLAN_ID = "premarket_forward_depth_20260902_v5"
+PLAN_RELATIVE_PATH = "docs/plans/premarket-forward-depth-planonly-20260902-v5.json"
 HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -167,6 +167,28 @@ CAPTURE = {
 # Gate's notice is unmeasured - one forward record has been seen, and that is not a sample.
 # So the control window may come out short on Gate, and a short control must be recorded as
 # short rather than padded with whatever the capture happens to have.
+# v5. The anchor is checked against the tape, not trusted from the schedule.
+#
+# Gate published FONE opening at 11:00Z, the watcher armed and began recording, and the
+# venue then moved the opening to 12:00Z. Two captures exist an hour apart, and the earlier
+# one is anchored on a moment when nothing traded. Its own file says so: the first usable
+# spot book arrives at +60.00 minutes, against +0.25 in the correct capture.
+#
+# This is the retrospective study's defect number two wearing different clothes. There the
+# schedule said "announced" and the code read "traded"; here the schedule said 11:00 and the
+# venue later said 12:00. The lesson is the same either way - a published time is a claim
+# about the future, and only the book itself says what happened.
+#
+# The capture is flagged, never discarded. The bytes were observed; they are simply not
+# observations of what the anchor claims, and that distinction belongs in the record.
+ANCHOR_CHECK = {
+    "measure": "REL_MINUTES_OF_THE_FIRST_USABLE_SPOT_BOOK",
+    "max_first_spot_book_delay_min": 5.0,
+    "on_suspect": "FLAG_IN_FOOTER_NEVER_DISCARD",
+    "supersession": "SAME_VENUE_AND_BASE_UNDER_A_NEW_T0_SUPERSEDES_THE_OLDER_CAPTURE",
+    "why": "A_PUBLISHED_SCHEDULE_IS_A_CLAIM_THE_BOOK_IS_THE_EVIDENCE",
+}
+
 NOTICE_LIMIT = {
     "pre_window_is_bounded_by_notice": True,
     "on_short_notice": "RECORD_ACTUAL_PRE_MINUTES_NEVER_PAD",
@@ -285,6 +307,7 @@ def build_plan(*, generated_at_utc: str, repo_root: Path = REPO_ROOT) -> dict[st
         "trade_open_offset_sec": TRADE_OPEN_OFFSET_SEC,
         "depth_books": DEPTH_BOOKS,
         "capture": CAPTURE,
+        "anchor_check": ANCHOR_CHECK,
         "notice_limit": NOTICE_LIMIT,
         "hypothesis": HYPOTHESIS,
         "outcome_contract": OUTCOME,
@@ -343,6 +366,15 @@ def validate_plan(plan: Mapping[str, Any], *, repo_root: Path = REPO_ROOT) -> No
              "and the rule for using it must be fixed here, not chosen at analysis time")
     _require(qual.get("equity_handling") == "RECORDED_NOT_EXCLUDED",
              "tokenised equities are recorded, never silently dropped")
+
+    anchor = plan.get("anchor_check") or {}
+    _require(anchor.get("measure") == "REL_MINUTES_OF_THE_FIRST_USABLE_SPOT_BOOK",
+             "the anchor is checked against the book, not the schedule")
+    _require(0 < float(anchor.get("max_first_spot_book_delay_min") or 0) <= 15,
+             "anchor tolerance")
+    _require(anchor.get("on_suspect") == "FLAG_IN_FOOTER_NEVER_DISCARD",
+             "a suspect capture is flagged, not deleted - the bytes were really observed")
+    _require(bool(anchor.get("supersession")), "a moved opening must supersede, not duplicate")
 
     notice = plan.get("notice_limit") or {}
     _require(notice.get("pre_window_is_bounded_by_notice") is True, "notice bound declared")

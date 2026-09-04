@@ -1,18 +1,18 @@
 {
   "schema": "trading_mvp_premarket_forward_depth_armed_v1",
-  "plan_id": "premarket_forward_depth_20260902_v4",
-  "plan_hash": "a44cf86091ceefc0c2ccceb1ef100c7af43d37278e58d9b44b3540a679caaae2",
-  "scanned_at_utc": "2026-09-03T06:53:13Z",
-  "scheduled_seen": 714,
+  "plan_id": "premarket_forward_depth_20260902_v5",
+  "plan_hash": "0546e08c7e037884a782c35e3b86f44de25059ca572c77f603920bd091a0fcef",
+  "scanned_at_utc": "2026-09-04T13:00:17Z",
+  "scheduled_seen": 712,
   "armed": [],
   "rejected": [],
   "capture_launched": [
-    "gate:AINVDA:1788357600"
+    "gate:AINVDA:1788357600",
+    "gate:FONE:1788433200",
+    "gate:FONE:1788436800"
   ],
-  "first_seen": {
-    "gate:CP:1788361200": 1788330891,
-    "gate:AINVDA:1788357600": 1788354002
-  },
+  "superseded": [],
+  "first_seen": {},
   "notice_observed": [
     {
       "venue": "gate",
@@ -30,6 +30,24 @@
       "first_seen_utc": "2026-09-02T13:00:02Z",
       "notice_sec": 3598,
       "notice_hours": 1.0,
+      "is_lower_bound": true
+    },
+    {
+      "venue": "gate",
+      "base": "FONE",
+      "t0_utc": "2026-09-03T11:00:00Z",
+      "first_seen_utc": "2026-09-03T10:00:01Z",
+      "notice_sec": 3599,
+      "notice_hours": 1.0,
+      "is_lower_bound": true
+    },
+    {
+      "venue": "gate",
+      "base": "FONE",
+      "t0_utc": "2026-09-03T12:00:00Z",
+      "first_seen_utc": "2026-09-03T11:15:01Z",
+      "notice_sec": 2699,
+      "notice_hours": 0.75,
       "is_lower_bound": true
     }
   ],

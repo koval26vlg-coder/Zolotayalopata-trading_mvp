@@ -359,6 +359,28 @@ def scan(*, repo_root: Path = REPO_ROOT,
     seen = {k: v for k, v in seen.items() if int(k.rsplit(":", 1)[1]) > now - 86400}
     notice = notice[-200:]
 
+    # A venue that moves a listing produces the same (venue, base) under a new t0, and a key
+    # built from all three treats it as a fresh event - which is how FONE ended up captured
+    # twice, an hour apart, with the earlier capture anchored on a time that never happened.
+    # The pair is what identifies the listing; the moment is what changed about it.
+    superseded = list(previous.get("superseded") or [])
+    armed_pairs = {(e["venue"], e["base"]): e["t0_ts"] for e in armed}
+    for key in launched:
+        venue_k, base_k, t0_k = key.rsplit(":", 2)
+        current = armed_pairs.get((venue_k, base_k))
+        if current is not None and int(t0_k) != int(current):
+            record = {"venue": venue_k, "base": base_k,
+                      "superseded_t0_ts": int(t0_k),
+                      "superseded_t0_utc": _iso(int(t0_k)),
+                      "replaced_by_t0_utc": _iso(int(current)),
+                      "moved_by_sec": int(current) - int(t0_k),
+                      "detected_at_utc": _iso(now),
+                      "capture_file": f"{venue_k}-{base_k}-{t0_k}.jsonl",
+                      "reason": "VENUE_MOVED_THE_SCHEDULED_OPENING"}
+            if record not in superseded:
+                superseded.append(record)
+    superseded = superseded[-100:]
+
     to_launch = []
     if spawn:
         for event in armed:
@@ -386,6 +408,10 @@ def scan(*, repo_root: Path = REPO_ROOT,
         "armed": armed,
         "rejected": rejected,
         "capture_launched": launched,
+        # Captures whose anchor the venue invalidated by moving the opening. Kept as records
+        # rather than deleted: the bytes were really observed, they are simply not observations
+        # of what the file name claims.
+        "superseded": superseded,
         "first_seen": seen,
         # Every entry is a LOWER bound: the venue may have published earlier than the first
         # scan that looked. It tightens toward the truth as the cadence tightens, and never
@@ -402,6 +428,7 @@ def scan(*, repo_root: Path = REPO_ROOT,
         "captures_started": started,
         "next_t0_utc": armed[0]["t0_utc"] if armed else None,
         "notice_samples": len(notice),
+        "superseded_captures": len(superseded),
         "errors": len(errors),
         "execution_performed": True,
     }
@@ -566,6 +593,13 @@ def capture(*, venue: str, base: str, t0: int, repo_root: Path = REPO_ROOT,
     legs = [("perp", event["perp_symbol"]), ("spot", event["spot_symbol"])]
     end = t0 + int(cap["window_after_min"]) * 60
     taken, errors = 0, 0
+    # When the spot book first appears. The schedule says when trading is meant to start;
+    # this says when it did. FONE was captured twice an hour apart because Gate moved its
+    # buy_start after the first capture had armed, and the stale capture's own file shows
+    # the spot book arriving at +60.00 minutes while the correct one shows +0.25. A capture
+    # carries the evidence against its own anchor, so it should say so rather than leave it
+    # to be noticed.
+    first_spot_rel: float | None = None
 
     while now_fn() < end and taken < budget:
         stamp = now_fn()
@@ -582,9 +616,13 @@ def capture(*, venue: str, base: str, t0: int, repo_root: Path = REPO_ROOT,
                     endpoint, _book_request(venue, leg, symbol, levels),
                     allowed_host=host, timeout_sec=timeout, max_bytes=max_bytes)
                 bids, asks = _levels(payload, venue, leg)
+                summary = summarise(bids, asks, bands, retain)
+                rel = round((stamp - t0) / 60.0, 3)
+                if leg == "spot" and summary.get("usable") and first_spot_rel is None:
+                    first_spot_rel = rel
                 row = {"record": "book", "leg": leg, "symbol": symbol,
-                       "ts": stamp, "rel_min": round((stamp - t0) / 60.0, 3),
-                       **summarise(bids, asks, bands, retain),
+                       "ts": stamp, "rel_min": rel,
+                       **summary,
                        "response_sha256": provenance["response_sha256"],
                        "response_bytes": provenance["response_bytes"]}
             except ForwardDepthError as exc:
@@ -600,13 +638,24 @@ def capture(*, venue: str, base: str, t0: int, repo_root: Path = REPO_ROOT,
         if remaining > 0:
             sleep(float(remaining))
 
+    tolerance = float(plan["anchor_check"]["max_first_spot_book_delay_min"])
+    suspect = first_spot_rel is None or first_spot_rel > tolerance
     footer = {"record": "footer", "finished_at_utc": _iso(now_fn()),
               "snapshots": taken, "errors": errors,
-              "reached_budget": taken >= budget}
+              "reached_budget": taken >= budget,
+              "first_spot_book_rel_min": first_spot_rel,
+              "anchor_tolerance_min": tolerance,
+              "anchor_suspect": suspect,
+              "anchor_suspect_reason": (
+                  "NO_USABLE_SPOT_BOOK_IN_THE_WHOLE_WINDOW" if first_spot_rel is None
+                  else ("SPOT_BOOK_APPEARED_LATE_SCHEDULE_LIKELY_MOVED" if suspect
+                        else None))}
     with out_path.open("ab") as handle:
         handle.write((json.dumps(footer, ensure_ascii=False) + "\n").encode("utf-8"))
     return {"status": "CAPTURE_COMPLETE", "path": str(out_path),
-            "snapshots": taken, "errors": errors, "execution_performed": True}
+            "snapshots": taken, "errors": errors,
+            "first_spot_book_rel_min": first_spot_rel, "anchor_suspect": suspect,
+            "execution_performed": True}
 
 
 def main(argv: Sequence[str] | None = None) -> int:

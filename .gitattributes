@@ -186,3 +186,4 @@ docs/analysis/premarket-descriptive-history/runs/*.json -text
 docs/analysis/premarket-forward-depth/*.json -text
 docs/analysis/premarket-forward-depth/captures/*.jsonl -text
 docs/plans/premarket-forward-depth-planonly-20260902-v4.json -text whitespace=cr-at-eol
+docs/plans/premarket-forward-depth-planonly-20260902-v5.json -text whitespace=cr-at-eol
