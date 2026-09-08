@@ -44,8 +44,8 @@ from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 SCHEMA = "trading_mvp_premarket_forward_depth_planonly_v1"
-PLAN_ID = "premarket_forward_depth_20260902_v5"
-PLAN_RELATIVE_PATH = "docs/plans/premarket-forward-depth-planonly-20260902-v5.json"
+PLAN_ID = "premarket_forward_depth_20260902_v6"
+PLAN_RELATIVE_PATH = "docs/plans/premarket-forward-depth-planonly-20260902-v6.json"
 HASH_METHOD = "sha256_canonical_json_excluding_plan_hash"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -186,6 +186,11 @@ ANCHOR_CHECK = {
     "max_first_spot_book_delay_min": 5.0,
     "on_suspect": "FLAG_IN_FOOTER_NEVER_DISCARD",
     "supersession": "SAME_VENUE_AND_BASE_UNDER_A_NEW_T0_SUPERSEDES_THE_OLDER_CAPTURE",
+    # v6. One supersession, one record. The first version compared whole records, and since
+    # every record carries when the move was noticed, the comparison never matched and a
+    # single moved listing was written nine times across nine scans. Identity is the venue,
+    # the base and the moment moved from.
+    "supersession_identity": ["venue", "base", "superseded_t0_ts"],
     "why": "A_PUBLISHED_SCHEDULE_IS_A_CLAIM_THE_BOOK_IS_THE_EVIDENCE",
 }
 
@@ -375,6 +380,9 @@ def validate_plan(plan: Mapping[str, Any], *, repo_root: Path = REPO_ROOT) -> No
     _require(anchor.get("on_suspect") == "FLAG_IN_FOOTER_NEVER_DISCARD",
              "a suspect capture is flagged, not deleted - the bytes were really observed")
     _require(bool(anchor.get("supersession")), "a moved opening must supersede, not duplicate")
+    _require(list(anchor.get("supersession_identity") or []) ==
+             ["venue", "base", "superseded_t0_ts"],
+             "and supersede once, on identity that excludes when it was noticed")
 
     notice = plan.get("notice_limit") or {}
     _require(notice.get("pre_window_is_bounded_by_notice") is True, "notice bound declared")

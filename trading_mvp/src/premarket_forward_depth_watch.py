@@ -345,7 +345,7 @@ def scan(*, repo_root: Path = REPO_ROOT,
         if event["t0_ts"] <= now:
             continue
         key = f"{event['venue']}:{event['base']}:{event['t0_ts']}"
-        if key not in seen:
+        if key not in seen:  # the guard that keeps notice_observed one row per event
             seen[key] = now
             notice.append({
                 "venue": event["venue"], "base": event["base"],
@@ -377,7 +377,12 @@ def scan(*, repo_root: Path = REPO_ROOT,
                       "detected_at_utc": _iso(now),
                       "capture_file": f"{venue_k}-{base_k}-{t0_k}.jsonl",
                       "reason": "VENUE_MOVED_THE_SCHEDULED_OPENING"}
-            if record not in superseded:
+            # Identity is the listing and the moment it was moved from, not the moment the
+            # move was noticed. Comparing whole records let detected_at_utc differ on every
+            # scan, so one supersession was appended nine times before anyone looked.
+            identity = (record["venue"], record["base"], record["superseded_t0_ts"])
+            known = {(r["venue"], r["base"], r["superseded_t0_ts"]) for r in superseded}
+            if identity not in known:
                 superseded.append(record)
     superseded = superseded[-100:]
 
