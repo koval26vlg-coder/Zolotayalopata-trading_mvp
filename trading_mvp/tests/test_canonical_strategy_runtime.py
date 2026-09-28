@@ -776,16 +776,42 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
             set(runtimes),
             {
                 "spot_listing_momentum_mexc_gate_v2",
-                "spot_listing_momentum_expansion_v20",
+                "spot_listing_momentum_expansion_v21",
                 "crypto_premarket_perpetual_capture_v42",
                 "preipo_perpetual_event_v16",
             },
         )
         self.assertNotIn("preipo_candidate_bybit", runtimes)
         self.assertIn(
-            "spot_listing_momentum_expansion_v19",
-            runtimes["spot_listing_momentum_expansion_v20"]["supersedes"],
+            "spot_listing_momentum_expansion_v20",
+            runtimes["spot_listing_momentum_expansion_v21"]["supersedes"],
         )
+        expansion = runtimes["spot_listing_momentum_expansion_v21"]
+        self.assertIn("spot_listing_momentum_expansion_v19", expansion["supersedes"])
+        self.assertEqual(
+            expansion["canonical_git_commit"],
+            "fe503768d168e1c392807884a6e422eaded08db0",
+        )
+        self.assertEqual(
+            expansion["canonical_plan_id"],
+            "listing_momentum_expansion_automation_20260925_v13",
+        )
+        self.assertEqual(
+            expansion["canonical_plan_sha256"],
+            "490cbd087c51b2b3c88bc9d235dc6465cefbb9155b86d3df9ad2f827cfbc6ad9",
+        )
+        self.assertEqual(
+            expansion["canonical_plan_file_sha256"],
+            "e25fb5048ac575c08a3b9427298cefffb9abda1f252b7bccb962c1d73318245c",
+        )
+        expansion_plan = json.loads(
+            Path(expansion["canonical_plan_path"]).read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            expansion["implementation_bindings"],
+            expansion_plan["implementation"]["files"],
+        )
+        self.assertEqual(len(expansion["implementation_bindings"]), 25)
         self.assertTrue(all(not row["scheduler_routable"] for row in runtimes.values()))
         self.assertTrue(
             all(not row["live_trading_allowed"] for row in runtimes.values())

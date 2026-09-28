@@ -10,6 +10,7 @@ param(
     [Parameter(Mandatory = $true)][ValidatePattern('^[0-9a-f]{40}$')][string]$ExpectedControlPlaneGitCommit,
     [string]$CodexAutomationsRoot = "",
     [ValidateRange(1, 86400)][int]$WorkerExitTimeoutSec = 1800,
+    [switch]$InstallDisabled,
     [switch]$DryRun,
     [switch]$Json
 )
@@ -549,6 +550,7 @@ if ($DryRun) {
         wake_interval_minutes = 5
         hidden = $true
         model_invocation = $false
+        scheduler_enabled = -not [bool]$InstallDisabled
         worker_exit_timeout_sec = $WorkerExitTimeoutSec
         action_arguments = $actionArguments
         coordinator_preflight = $coordinatorPreflight
@@ -562,7 +564,8 @@ if ($DryRun) {
 
 $action = New-ScheduledTaskAction -Execute $pwsh -Argument $actionArguments -WorkingDirectory $repoRoot
 $trigger = New-ScheduledTaskTrigger -Once -At ((Get-Date).AddMinutes(1)) -RepetitionInterval ([TimeSpan]::FromMinutes(5)) -RepetitionDuration ([TimeSpan]::FromDays(3650))
-$settings = New-ScheduledTaskSettingsSet -Hidden -MultipleInstances IgnoreNew -ExecutionTimeLimit ([TimeSpan]::FromHours(12)) -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+# Disabled is part of the registered definition, never an enable-then-disable race.
+$settings = New-ScheduledTaskSettingsSet -Hidden -MultipleInstances IgnoreNew -ExecutionTimeLimit ([TimeSpan]::FromHours(12)) -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -Disable:$InstallDisabled
 $principal = New-ScheduledTaskPrincipal -UserId ([Security.Principal.WindowsIdentity]::GetCurrent().Name) -LogonType Interactive -RunLevel Limited
 try {
     $finalControlPlane = Assert-ControlPlaneBinding
@@ -573,8 +576,11 @@ try {
 }
 Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Settings $settings -Principal $principal -Force | Out-Null
 $registered = Get-ScheduledTask -TaskName $TaskName -ErrorAction Stop
+if ($InstallDisabled -and ([string]$registered.State -cne "Disabled" -or $registered.Settings.Enabled -ne $false)) {
+    throw "INSTALLED_TASK_NOT_DISABLED"
+}
 [ordered]@{
-    status = "INSTALLED"
+    status = $(if ($InstallDisabled) { "INSTALLED_DISABLED" } else { "INSTALLED" })
     task_name = $TaskName
     task_path = $registered.TaskPath
     installer_path = $finalControlPlane.installer
@@ -591,6 +597,9 @@ $registered = Get-ScheduledTask -TaskName $TaskName -ErrorAction Stop
     wake_interval_minutes = 5
     hidden = $true
     model_invocation = $false
+    scheduler_enabled = [bool]$registered.Settings.Enabled
+    task_state = [string]$registered.State
+    execution_performed = $false
     worker_exit_timeout_sec = $WorkerExitTimeoutSec
     action_execute = $pwsh
     action_arguments = $actionArguments
