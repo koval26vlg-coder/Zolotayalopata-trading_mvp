@@ -1,12 +1,12 @@
 {
   "schema": "trading_mvp_autopilot_policy_v1",
-  "policy_id": "trading_mvp_offline_strategy_reconciliation_20260929",
-  "effective_at": "2026-09-29T10:00:35.6548164Z",
-  "approved_by": "USER_20260929_APPROVED_OFFLINE_RECONCILIATION_PLAN_NO_LAUNCH",
+  "policy_id": "trading_mvp_autopilot_20260809_dense_deferred_postrun_handoff_freeze_v1",
+  "effective_at": "2026-08-09T20:38:42.9671756Z",
+  "approved_by": "USER_EXACT_DENSE_DEFERRED_POSTRUN_HANDOFF_FREEZE_NO_EXECUTION",
   "thread_id": "019e738a-b37c-7a33-ae04-6cc80739f184",
   "project": "trading_mvp",
   "mode": "research_and_paper_only",
-  "objective_document": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\2026-07-14-trading-mvp-current-goal.md",
+  "objective_document": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\2026-08-01-trading-mvp-accelerated-evidence-factory-v1.md",
   "weekly_usage_guard": {
     "window_minutes": 10080,
     "min_remaining_percent": 15.0,
@@ -1135,12 +1135,5 @@
     "separate_exact_code_bound_network_execution_approval_required": true,
     "future_execution_single_use_required": true,
     "stopped_incomplete_retry_authorized": false
-  },
-  "research_checkpoint": {
-    "enabled": true,
-    "mode": "OFFLINE_ONLY_SCHEDULES_PAUSED",
-    "readiness_hash": "26eb12f3ba6f5cfaeb189eaed7d179e5b7329f9569e8da58d1e06a7166227116",
-    "supersedes_parent_listing_checkpoint": true,
-    "superseded_policy_file_sha256": "362352fcd216b5d8f1a389ee487124663dfc71ef97bc0c8e56091853edd76187"
   }
 }

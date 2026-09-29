@@ -2294,6 +2294,24 @@ def evaluate_autopilot_state(
             else "notify_incomplete_run"
         )
         resumed_after_limit = prior_status.startswith("PAUSED_")
+    elif (gate_status == "READY_FOR_POSTPROCESS"
+          and current_readiness_status == "READY"
+          and current_readiness.get("source_status") == "PARENT_RESEARCH_RECONCILED_OFFLINE_ONLY"):
+        binding = policy.get("research_checkpoint") or {}
+        valid = (binding.get("enabled") is True
+                 and binding.get("readiness_hash") == current_readiness.get("readiness_hash")
+                 and binding.get("mode") == "OFFLINE_ONLY_SCHEDULES_PAUSED")
+        status = "OFFLINE_CHECKPOINT_COMPLETE" if valid else "CRITICAL_STOP"
+        decision = ("PREMARKET_DEPTH_QUALITY_COMPLETE_INSUFFICIENT_SAMPLE" if valid
+                    else "CRITICAL_STOP_RESEARCH_CHECKPOINT_POLICY_BINDING")
+        # This reconciles ownership; it never grants consumption of the old gate's output.
+        stop_new_actions = True
+        allow_running_writer_to_finish = False
+        action_due = False
+        next_action = (current_readiness["next_safe_action"] if valid
+                       else "repair_research_checkpoint_policy_binding")
+        critical_checkpoint_notification_required = not valid
+        resumed_after_limit = prior_status.startswith("PAUSED_")
     elif gate_status == "READY_FOR_POSTPROCESS":
         allow_running_writer_to_finish = False
         schedule_status = str((schedule_window or {}).get("status") or "")

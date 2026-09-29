@@ -190,3 +190,18 @@ docs/analysis/premarket-forward-depth/captures/*.jsonl -text
 docs/plans/premarket-forward-depth-planonly-20260902-v4.json -text whitespace=cr-at-eol
 docs/plans/premarket-forward-depth-planonly-20260902-v5.json -text whitespace=cr-at-eol
 docs/plans/premarket-forward-depth-planonly-20260902-v6.json -text whitespace=cr-at-eol
+
+# Parent research checkpoint: preserve the exact bytes used by audit bindings.
+docs/analysis/strategy-reconciliation-20260929/* -text whitespace=cr-at-eol
+docs/agent-log/readiness/one-week-edge-sprint-current-readiness-20260929-*.json -text whitespace=cr-at-eol
+docs/agent-log/one-week-edge-sprint-readiness-pointer.json -text whitespace=cr-at-eol
+docs/plans/trading-mvp-autopilot-policy-v1.json -text whitespace=cr-at-eol
+docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md -text whitespace=cr-at-eol
+tools/reconcile_research_checkpoint.py -text whitespace=cr-at-eol
+tools/trading_research_checkpoint_status.ps1 -text whitespace=cr-at-eol
+tools/trading_goal_status.ps1 -text whitespace=cr-at-eol
+tools/trading_next_goal_step.ps1 -text whitespace=cr-at-eol
+trading_mvp/src/autopilot_guard.py -text whitespace=cr-at-eol
+trading_mvp/src/one_week_edge_sprint_readiness.py -text whitespace=cr-at-eol
+trading_mvp/src/premarket_forward_depth_quality.py -text whitespace=cr-at-eol
+trading_mvp/src/research_checkpoint.py -text whitespace=cr-at-eol

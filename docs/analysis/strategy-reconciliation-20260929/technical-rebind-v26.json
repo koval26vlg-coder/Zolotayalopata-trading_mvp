@@ -1,0 +1,14 @@
+{
+  "schema": "research_checkpoint_technical_rebind_v1",
+  "reason": "preserve_quota_pause_precedence_and_detect_concurrent_writer",
+  "previous_readiness": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\one-week-edge-sprint-current-readiness-20260929-v25.json",
+  "current_readiness": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\one-week-edge-sprint-current-readiness-20260929-v26.json",
+  "readiness_file_sha256": "a3fb6680cac5b2b915a51cefbc31e7502a74135b5d3a1fbe563a64166638d754",
+  "readiness_hash": "26eb12f3ba6f5cfaeb189eaed7d179e5b7329f9569e8da58d1e06a7166227116",
+  "policy_file_sha256": "de1f0fd928fedee959ba478ef6c0ee21491052c32567c361a87dc120a1c5e995",
+  "pointer_file_sha256": "528a2990f1d643dd995b6628b54dfe120f35b01e2e33f08e9681c59a223de1a1",
+  "network_requests": 0,
+  "strategy_contract_changed": false,
+  "schedules_changed": false,
+  "synthetic_tests_passed": 94
+}

@@ -1,0 +1,1097 @@
+{
+  "schema": "trading_mvp_forward_depth_quality_v1",
+  "plan_hash": "32a320a167792263680b4ad4b8ce033df3747fecdf2980dc79fc4734d8d419a4",
+  "inputs": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\armed-events.json",
+      "file_sha256": "782b0ef351a036d2966bcc30287f1ddbe2d190c5cdfe4c6f635554fce5dc08a3",
+      "bytes": 4315
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-AINVDA-1788357600.jsonl",
+      "file_sha256": "b6720733c87247353e944617dfd3b5154d13a5d0288d96b8202eba9583f06ede",
+      "bytes": 1834265
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-ARGUS-1789621200.jsonl",
+      "file_sha256": "3ba14a9a02fed353aef1bef6392892f523a4ae6e603091baacbe200ef348dc7f",
+      "bytes": 3258574
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-FONE-1788433200.jsonl",
+      "file_sha256": "deca32e67563ce2fdbcf9272eb5fad380c52e2ade1fe54031c6753962033d5a1",
+      "bytes": 2779811
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-FONE-1788436800.jsonl",
+      "file_sha256": "3715f315cb08c80910fa8d7f4a0a7f252c22104c76a3afa8c9f97a8704f192fd",
+      "bytes": 3246058
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-LAPTOP-1789711200.jsonl",
+      "file_sha256": "870a935e7b39f118adc586b349a1b9fa8f49053139933f9a715cab8855815774",
+      "bytes": 2674356
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-STONK-1789383600.jsonl",
+      "file_sha256": "176b4d94a5e409285f572225584f6c818f383800dc7e3f9b35ae8e688aeac8c4",
+      "bytes": 3225217
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-TOLLY-1789621200.jsonl",
+      "file_sha256": "fa85cd439bec450bfd266fa3b92b09b65b0a713dffff708800ecbbd5f2073b1a",
+      "bytes": 3002870
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-哈基米-1788685200.jsonl",
+      "file_sha256": "666cc2158cb28042d688e7931c724c2e1def6ae47b4bd7bdaa41d1e9b198ff53",
+      "bytes": 2252598
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-哈基米-1788692400.jsonl",
+      "file_sha256": "e1fa2692849babda959798e5acffaf1ae288cf18df564390ba3da46dc27f3771",
+      "bytes": 4053702
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\okx-PONS-1789482600.jsonl",
+      "file_sha256": "e89d5715e9fb0c2ce9fbc939acfc33f1cfe9260b1461b5225f08b86589916108",
+      "bytes": 2836731
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-forward-depth-planonly-20260902-v1.json",
+      "file_sha256": "3b32531ebc3542b75add67ba32f7718ae1ca9395d037dcb34e097584ad97ff01",
+      "bytes": 4920
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-forward-depth-planonly-20260902-v2.json",
+      "file_sha256": "d5f8a9b728fe693cd5ff0fec9d1c56e16a562a5a76c50a71ad8d1ca7fad7e988",
+      "bytes": 4986
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-forward-depth-planonly-20260902-v3.json",
+      "file_sha256": "b3f082592478e970031b7c2a9972635ce35f91885758b060d6cf976c084daaa5",
+      "bytes": 5306
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-forward-depth-planonly-20260902-v4.json",
+      "file_sha256": "902aecae585d5e6cd83bb823a9db625cf8c6cb1f35dfb77aedd98e8af95e49f1",
+      "bytes": 5721
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-forward-depth-planonly-20260902-v5.json",
+      "file_sha256": "8cba44d8fa18f037a49801ffbb95c148b8f8abcd8c1ddf34378900cf1daa05c1",
+      "bytes": 6055
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-forward-depth-planonly-20260902-v6.json",
+      "file_sha256": "b9307d631abff2be7be5618db3bcddf9104abaece1f037449344f5dacf4a097a",
+      "bytes": 6147
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_forward_depth_quality.py",
+      "file_sha256": "b46e2a295fef7d5a1e2ea6c549a4b9e4d6cd03b24f7a9a5ac63093b16af91903",
+      "bytes": 15994
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_forward_depth_plan.py",
+      "file_sha256": "c6a0c42d5b00bbd088e067789fda24ee007733952e464f56348a1874addff73d",
+      "bytes": 23188
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_forward_depth_watch.py",
+      "file_sha256": "d459cdac7bd83b450f55e1f3cd5ad9d5b8174433bf447ace5cbd05873f435a16",
+      "bytes": 32653
+    }
+  ],
+  "input_manifest_hash": "c5a6a1d274ce53e6f2f3fdc72994a9626ed1aa8f0f72c7ebb643d0b533b78299",
+  "capture_directory": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures",
+  "events": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-AINVDA-1788357600.jsonl",
+      "file_sha256": "b6720733c87247353e944617dfd3b5154d13a5d0288d96b8202eba9583f06ede",
+      "bytes": 1834265,
+      "integrity_errors": {},
+      "exclusion_reasons": [
+        "HISTORICAL_PLAN_NOT_POOLED"
+      ],
+      "candidate": false,
+      "record_count": 898,
+      "event": {
+        "venue": "gate",
+        "base": "AINVDA",
+        "spot_symbol": "AINVDA_USDT",
+        "perp_symbol": "AINVDA_USDT",
+        "spot_state": "sellable",
+        "schedule_ts": 1788357600,
+        "t0_ts": 1788357600,
+        "perp_launched_ts": 1788353791,
+        "perp_ct_val": "10",
+        "spot_tick": 4,
+        "schedule_field": "buy_start",
+        "trade_open_offset_sec": 0,
+        "t0_utc": "2026-09-02T14:00:00Z",
+        "perp_lead_days": 0.044,
+        "capture_from_ts": 1788354002,
+        "capture_to_ts": 1788364800,
+        "pre_window_available_min": 59,
+        "pre_window_short": true,
+        "armed_at_utc": "2026-09-02T13:00:02Z"
+      },
+      "plan_id": "premarket_forward_depth_20260902_v3",
+      "plan_hash": "993d8d06f162f64dfadae977b3c6aa5842e80df7fe80d0d4c41024d6325d40eb",
+      "footer": {
+        "record": "footer",
+        "finished_at_utc": "2026-09-02T16:00:03Z",
+        "snapshots": 896,
+        "errors": 3,
+        "reached_budget": false
+      },
+      "coverage": {
+        "perp": {
+          "usable_rows": 532,
+          "first_rel_min": -58.1,
+          "last_rel_min": 119.717,
+          "max_gap_sec": 62.0,
+          "gaps_over_two_nominal_intervals": 1,
+          "windows": {
+            "pre": 175,
+            "post_0_30": 90,
+            "post_30_60": 88,
+            "post_60_120": 179
+          },
+          "primary_band_inside_spread_rows": 0,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        },
+        "spot": {
+          "usable_rows": 356,
+          "first_rel_min": 0.233,
+          "last_rel_min": 119.717,
+          "max_gap_sec": 62.0,
+          "gaps_over_two_nominal_intervals": 2,
+          "windows": {
+            "pre": 0,
+            "post_0_30": 90,
+            "post_30_60": 88,
+            "post_60_120": 178
+          },
+          "primary_band_inside_spread_rows": 0,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        }
+      },
+      "http_error_rows": 3,
+      "unusable_book_rows": 5,
+      "first_spot_rel_min": 0.233,
+      "anchor_suspect": false,
+      "units": {
+        "perp_native_to_base_multiplier": 10.0,
+        "cross_leg_absolute_depth_compared": false
+      },
+      "sampling_gaps_require_review": true
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-ARGUS-1789621200.jsonl",
+      "file_sha256": "3ba14a9a02fed353aef1bef6392892f523a4ae6e603091baacbe200ef348dc7f",
+      "bytes": 3258574,
+      "integrity_errors": {},
+      "exclusion_reasons": [],
+      "candidate": true,
+      "record_count": 943,
+      "event": {
+        "venue": "gate",
+        "base": "ARGUS",
+        "spot_symbol": "ARGUS_USDT",
+        "perp_symbol": "ARGUS_USDT",
+        "spot_state": "sellable",
+        "schedule_ts": 1789621200,
+        "t0_ts": 1789621200,
+        "perp_launched_ts": 1789569864,
+        "perp_ct_val": "100",
+        "spot_tick": 5,
+        "schedule_field": "buy_start",
+        "trade_open_offset_sec": 0,
+        "t0_utc": "2026-09-17T05:00:00Z",
+        "perp_lead_days": 0.594,
+        "equity_note": {
+          "checked": true,
+          "exact_listed_ticker": false,
+          "contains_listed_ticker": [],
+          "looks_like_equity": false,
+          "note": "RECORDED_NOT_EXCLUDED"
+        },
+        "pre_window_bounded_by": "VENUE_NOTICE",
+        "pre_window_by_notice_min": 74,
+        "pre_window_by_perp_age_min": 855,
+        "capture_from_ts": 1789616701,
+        "capture_to_ts": 1789628400,
+        "pre_window_available_min": 74,
+        "pre_window_short": true,
+        "armed_at_utc": "2026-09-17T03:45:01Z"
+      },
+      "plan_id": "premarket_forward_depth_20260902_v6",
+      "plan_hash": "32a320a167792263680b4ad4b8ce033df3747fecdf2980dc79fc4734d8d419a4",
+      "footer": {
+        "record": "footer",
+        "finished_at_utc": "2026-09-17T07:00:02Z",
+        "snapshots": 941,
+        "errors": 2,
+        "reached_budget": false,
+        "first_spot_book_rel_min": 0.15,
+        "anchor_tolerance_min": 5.0,
+        "anchor_suspect": false,
+        "anchor_suspect_reason": null
+      },
+      "coverage": {
+        "perp": {
+          "usable_rows": 582,
+          "first_rel_min": -74.85,
+          "last_rel_min": 119.7,
+          "max_gap_sec": 41.0,
+          "gaps_over_two_nominal_intervals": 1,
+          "windows": {
+            "pre": 225,
+            "post_0_30": 90,
+            "post_30_60": 88,
+            "post_60_120": 179
+          },
+          "primary_band_inside_spread_rows": 117,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        },
+        "spot": {
+          "usable_rows": 357,
+          "first_rel_min": 0.15,
+          "last_rel_min": 119.7,
+          "max_gap_sec": 41.0,
+          "gaps_over_two_nominal_intervals": 1,
+          "windows": {
+            "pre": 0,
+            "post_0_30": 90,
+            "post_30_60": 88,
+            "post_60_120": 179
+          },
+          "primary_band_inside_spread_rows": 203,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 12
+        }
+      },
+      "http_error_rows": 2,
+      "unusable_book_rows": 0,
+      "first_spot_rel_min": 0.15,
+      "anchor_suspect": false,
+      "units": {
+        "perp_native_to_base_multiplier": 100.0,
+        "cross_leg_absolute_depth_compared": false
+      },
+      "sampling_gaps_require_review": true
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-FONE-1788433200.jsonl",
+      "file_sha256": "deca32e67563ce2fdbcf9272eb5fad380c52e2ade1fe54031c6753962033d5a1",
+      "bytes": 2779811,
+      "integrity_errors": {},
+      "exclusion_reasons": [
+        "HISTORICAL_PLAN_NOT_POOLED",
+        "SPOT_ANCHOR_UNCONFIRMED",
+        "SPOT_POST_WINDOW_MISSING",
+        "SUPERSEDED_SCHEDULE"
+      ],
+      "candidate": false,
+      "record_count": 897,
+      "event": {
+        "venue": "gate",
+        "base": "FONE",
+        "spot_symbol": "FONE_USDT",
+        "perp_symbol": "FONE_USDT",
+        "spot_state": "sellable",
+        "schedule_ts": 1788433200,
+        "t0_ts": 1788433200,
+        "perp_launched_ts": 1788322051,
+        "perp_ct_val": "100",
+        "spot_tick": 6,
+        "schedule_field": "buy_start",
+        "trade_open_offset_sec": 0,
+        "t0_utc": "2026-09-03T11:00:00Z",
+        "perp_lead_days": 1.286,
+        "equity_note": {
+          "checked": true,
+          "exact_listed_ticker": false,
+          "contains_listed_ticker": [],
+          "looks_like_equity": false,
+          "note": "RECORDED_NOT_EXCLUDED"
+        },
+        "pre_window_bounded_by": "VENUE_NOTICE",
+        "pre_window_by_notice_min": 59,
+        "pre_window_by_perp_age_min": 1852,
+        "capture_from_ts": 1788429601,
+        "capture_to_ts": 1788440400,
+        "pre_window_available_min": 59,
+        "pre_window_short": true,
+        "armed_at_utc": "2026-09-03T10:00:01Z"
+      },
+      "plan_id": "premarket_forward_depth_20260902_v4",
+      "plan_hash": "a44cf86091ceefc0c2ccceb1ef100c7af43d37278e58d9b44b3540a679caaae2",
+      "footer": {
+        "record": "footer",
+        "finished_at_utc": "2026-09-03T13:00:13Z",
+        "snapshots": 895,
+        "errors": 2,
+        "reached_budget": false
+      },
+      "coverage": {
+        "perp": {
+          "usable_rows": 535,
+          "first_rel_min": -59.65,
+          "last_rel_min": 119.883,
+          "max_gap_sec": 70.0,
+          "gaps_over_two_nominal_intervals": 1,
+          "windows": {
+            "pre": 178,
+            "post_0_30": 90,
+            "post_30_60": 89,
+            "post_60_120": 178
+          },
+          "primary_band_inside_spread_rows": 2,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        },
+        "spot": {
+          "usable_rows": 179,
+          "first_rel_min": 60.0,
+          "last_rel_min": 119.883,
+          "max_gap_sec": 50.0,
+          "gaps_over_two_nominal_intervals": 1,
+          "windows": {
+            "pre": 0,
+            "post_0_30": 0,
+            "post_30_60": 0,
+            "post_60_120": 179
+          },
+          "primary_band_inside_spread_rows": 68,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 2
+        }
+      },
+      "http_error_rows": 2,
+      "unusable_book_rows": 179,
+      "first_spot_rel_min": 60.0,
+      "anchor_suspect": true,
+      "units": {
+        "perp_native_to_base_multiplier": 100.0,
+        "cross_leg_absolute_depth_compared": false
+      },
+      "sampling_gaps_require_review": true
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-FONE-1788436800.jsonl",
+      "file_sha256": "3715f315cb08c80910fa8d7f4a0a7f252c22104c76a3afa8c9f97a8704f192fd",
+      "bytes": 3246058,
+      "integrity_errors": {},
+      "exclusion_reasons": [
+        "HISTORICAL_PLAN_NOT_POOLED"
+      ],
+      "candidate": false,
+      "record_count": 847,
+      "event": {
+        "venue": "gate",
+        "base": "FONE",
+        "spot_symbol": "FONE_USDT",
+        "perp_symbol": "FONE_USDT",
+        "spot_state": "untradable",
+        "schedule_ts": 1788436800,
+        "t0_ts": 1788436800,
+        "perp_launched_ts": 1788322051,
+        "perp_ct_val": "100",
+        "spot_tick": 6,
+        "schedule_field": "buy_start",
+        "trade_open_offset_sec": 0,
+        "t0_utc": "2026-09-03T12:00:00Z",
+        "perp_lead_days": 1.328,
+        "equity_note": {
+          "checked": true,
+          "exact_listed_ticker": false,
+          "contains_listed_ticker": [],
+          "looks_like_equity": false,
+          "note": "RECORDED_NOT_EXCLUDED"
+        },
+        "pre_window_bounded_by": "VENUE_NOTICE",
+        "pre_window_by_notice_min": 44,
+        "pre_window_by_perp_age_min": 1912,
+        "capture_from_ts": 1788434101,
+        "capture_to_ts": 1788444000,
+        "pre_window_available_min": 44,
+        "pre_window_short": true,
+        "armed_at_utc": "2026-09-03T11:15:01Z"
+      },
+      "plan_id": "premarket_forward_depth_20260902_v4",
+      "plan_hash": "a44cf86091ceefc0c2ccceb1ef100c7af43d37278e58d9b44b3540a679caaae2",
+      "footer": {
+        "record": "footer",
+        "finished_at_utc": "2026-09-03T14:00:15Z",
+        "snapshots": 845,
+        "errors": 7,
+        "reached_budget": false
+      },
+      "coverage": {
+        "perp": {
+          "usable_rows": 488,
+          "first_rel_min": -44.75,
+          "last_rel_min": 119.917,
+          "max_gap_sec": 89.0,
+          "gaps_over_two_nominal_intervals": 2,
+          "windows": {
+            "pre": 135,
+            "post_0_30": 90,
+            "post_30_60": 89,
+            "post_60_120": 174
+          },
+          "primary_band_inside_spread_rows": 1,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        },
+        "spot": {
+          "usable_rows": 350,
+          "first_rel_min": 0.25,
+          "last_rel_min": 119.917,
+          "max_gap_sec": 110.0,
+          "gaps_over_two_nominal_intervals": 2,
+          "windows": {
+            "pre": 0,
+            "post_0_30": 90,
+            "post_30_60": 89,
+            "post_60_120": 171
+          },
+          "primary_band_inside_spread_rows": 128,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 1
+        }
+      },
+      "http_error_rows": 7,
+      "unusable_book_rows": 0,
+      "first_spot_rel_min": 0.25,
+      "anchor_suspect": false,
+      "units": {
+        "perp_native_to_base_multiplier": 100.0,
+        "cross_leg_absolute_depth_compared": false
+      },
+      "sampling_gaps_require_review": true
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-LAPTOP-1789711200.jsonl",
+      "file_sha256": "870a935e7b39f118adc586b349a1b9fa8f49053139933f9a715cab8855815774",
+      "bytes": 2674356,
+      "integrity_errors": {},
+      "exclusion_reasons": [
+        "PRE_WINDOW_TOO_SHORT"
+      ],
+      "candidate": false,
+      "record_count": 759,
+      "event": {
+        "venue": "gate",
+        "base": "LAPTOP",
+        "spot_symbol": "LAPTOP_USDT",
+        "perp_symbol": "LAPTOP_USDT",
+        "spot_state": "sellable",
+        "schedule_ts": 1789711200,
+        "t0_ts": 1789711200,
+        "perp_launched_ts": 1788957956,
+        "perp_ct_val": "1",
+        "spot_tick": 5,
+        "schedule_field": "buy_start",
+        "trade_open_offset_sec": 0,
+        "t0_utc": "2026-09-18T06:00:00Z",
+        "perp_lead_days": 8.718,
+        "equity_note": {
+          "checked": true,
+          "exact_listed_ticker": false,
+          "contains_listed_ticker": [
+            "TOP"
+          ],
+          "looks_like_equity": true,
+          "note": "RECORDED_NOT_EXCLUDED"
+        },
+        "pre_window_bounded_by": "VENUE_NOTICE",
+        "pre_window_by_notice_min": 14,
+        "pre_window_by_perp_age_min": 12554,
+        "capture_from_ts": 1789710301,
+        "capture_to_ts": 1789718400,
+        "pre_window_available_min": 14,
+        "pre_window_short": true,
+        "armed_at_utc": "2026-09-18T05:45:01Z"
+      },
+      "plan_id": "premarket_forward_depth_20260902_v6",
+      "plan_hash": "32a320a167792263680b4ad4b8ce033df3747fecdf2980dc79fc4734d8d419a4",
+      "footer": {
+        "record": "footer",
+        "finished_at_utc": "2026-09-18T08:00:15Z",
+        "snapshots": 757,
+        "errors": 1,
+        "reached_budget": false,
+        "first_spot_book_rel_min": 0.15,
+        "anchor_tolerance_min": 5.0,
+        "anchor_suspect": false,
+        "anchor_suspect_reason": null
+      },
+      "coverage": {
+        "perp": {
+          "usable_rows": 401,
+          "first_rel_min": -14.85,
+          "last_rel_min": 119.917,
+          "max_gap_sec": 56.0,
+          "gaps_over_two_nominal_intervals": 2,
+          "windows": {
+            "pre": 45,
+            "post_0_30": 90,
+            "post_30_60": 87,
+            "post_60_120": 179
+          },
+          "primary_band_inside_spread_rows": 0,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        },
+        "spot": {
+          "usable_rows": 355,
+          "first_rel_min": 0.15,
+          "last_rel_min": 119.917,
+          "max_gap_sec": 62.0,
+          "gaps_over_two_nominal_intervals": 2,
+          "windows": {
+            "pre": 0,
+            "post_0_30": 90,
+            "post_30_60": 87,
+            "post_60_120": 178
+          },
+          "primary_band_inside_spread_rows": 30,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 12
+        }
+      },
+      "http_error_rows": 1,
+      "unusable_book_rows": 0,
+      "first_spot_rel_min": 0.15,
+      "anchor_suspect": false,
+      "units": {
+        "perp_native_to_base_multiplier": 1.0,
+        "cross_leg_absolute_depth_compared": false
+      },
+      "sampling_gaps_require_review": true
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-STONK-1789383600.jsonl",
+      "file_sha256": "176b4d94a5e409285f572225584f6c818f383800dc7e3f9b35ae8e688aeac8c4",
+      "bytes": 3225217,
+      "integrity_errors": {},
+      "exclusion_reasons": [],
+      "candidate": true,
+      "record_count": 945,
+      "event": {
+        "venue": "gate",
+        "base": "STONK",
+        "spot_symbol": "STONK_USDT",
+        "perp_symbol": "STONK_USDT",
+        "spot_state": "sellable",
+        "schedule_ts": 1789383600,
+        "t0_ts": 1789383600,
+        "perp_launched_ts": 1788754331,
+        "perp_ct_val": "10",
+        "spot_tick": 4,
+        "schedule_field": "buy_start",
+        "trade_open_offset_sec": 0,
+        "t0_utc": "2026-09-14T11:00:00Z",
+        "perp_lead_days": 7.283,
+        "equity_note": {
+          "checked": true,
+          "exact_listed_ticker": false,
+          "contains_listed_ticker": [],
+          "looks_like_equity": false,
+          "note": "RECORDED_NOT_EXCLUDED"
+        },
+        "pre_window_bounded_by": "VENUE_NOTICE",
+        "pre_window_by_notice_min": 74,
+        "pre_window_by_perp_age_min": 10487,
+        "capture_from_ts": 1789379103,
+        "capture_to_ts": 1789390800,
+        "pre_window_available_min": 74,
+        "pre_window_short": true,
+        "armed_at_utc": "2026-09-14T09:45:03Z"
+      },
+      "plan_id": "premarket_forward_depth_20260902_v6",
+      "plan_hash": "32a320a167792263680b4ad4b8ce033df3747fecdf2980dc79fc4734d8d419a4",
+      "footer": {
+        "record": "footer",
+        "finished_at_utc": "2026-09-14T13:00:04Z",
+        "snapshots": 943,
+        "errors": 0,
+        "reached_budget": false,
+        "first_spot_book_rel_min": 0.217,
+        "anchor_tolerance_min": 5.0,
+        "anchor_suspect": false,
+        "anchor_suspect_reason": null
+      },
+      "coverage": {
+        "perp": {
+          "usable_rows": 584,
+          "first_rel_min": -74.783,
+          "last_rel_min": 119.733,
+          "max_gap_sec": 26.0,
+          "gaps_over_two_nominal_intervals": 0,
+          "windows": {
+            "pre": 225,
+            "post_0_30": 90,
+            "post_30_60": 90,
+            "post_60_120": 179
+          },
+          "primary_band_inside_spread_rows": 0,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        },
+        "spot": {
+          "usable_rows": 359,
+          "first_rel_min": 0.217,
+          "last_rel_min": 119.733,
+          "max_gap_sec": 26.0,
+          "gaps_over_two_nominal_intervals": 0,
+          "windows": {
+            "pre": 0,
+            "post_0_30": 90,
+            "post_30_60": 90,
+            "post_60_120": 179
+          },
+          "primary_band_inside_spread_rows": 42,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 18
+        }
+      },
+      "http_error_rows": 0,
+      "unusable_book_rows": 0,
+      "first_spot_rel_min": 0.217,
+      "anchor_suspect": false,
+      "units": {
+        "perp_native_to_base_multiplier": 10.0,
+        "cross_leg_absolute_depth_compared": false
+      },
+      "sampling_gaps_require_review": false
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-TOLLY-1789621200.jsonl",
+      "file_sha256": "fa85cd439bec450bfd266fa3b92b09b65b0a713dffff708800ecbbd5f2073b1a",
+      "bytes": 3002870,
+      "integrity_errors": {},
+      "exclusion_reasons": [],
+      "candidate": true,
+      "record_count": 945,
+      "event": {
+        "venue": "gate",
+        "base": "TOLLY",
+        "spot_symbol": "TOLLY_USDT",
+        "perp_symbol": "TOLLY_USDT",
+        "spot_state": "sellable",
+        "schedule_ts": 1789621200,
+        "t0_ts": 1789621200,
+        "perp_launched_ts": 1789569947,
+        "perp_ct_val": "100",
+        "spot_tick": 6,
+        "schedule_field": "buy_start",
+        "trade_open_offset_sec": 0,
+        "t0_utc": "2026-09-17T05:00:00Z",
+        "perp_lead_days": 0.593,
+        "equity_note": {
+          "checked": true,
+          "exact_listed_ticker": false,
+          "contains_listed_ticker": [
+            "LLY",
+            "TOL"
+          ],
+          "looks_like_equity": true,
+          "note": "RECORDED_NOT_EXCLUDED"
+        },
+        "pre_window_bounded_by": "VENUE_NOTICE",
+        "pre_window_by_notice_min": 74,
+        "pre_window_by_perp_age_min": 854,
+        "capture_from_ts": 1789616701,
+        "capture_to_ts": 1789628400,
+        "pre_window_available_min": 74,
+        "pre_window_short": true,
+        "armed_at_utc": "2026-09-17T03:45:01Z"
+      },
+      "plan_id": "premarket_forward_depth_20260902_v6",
+      "plan_hash": "32a320a167792263680b4ad4b8ce033df3747fecdf2980dc79fc4734d8d419a4",
+      "footer": {
+        "record": "footer",
+        "finished_at_utc": "2026-09-17T07:00:17Z",
+        "snapshots": 943,
+        "errors": 2,
+        "reached_budget": false,
+        "first_spot_book_rel_min": 0.167,
+        "anchor_tolerance_min": 5.0,
+        "anchor_suspect": false,
+        "anchor_suspect_reason": null
+      },
+      "coverage": {
+        "perp": {
+          "usable_rows": 583,
+          "first_rel_min": -74.85,
+          "last_rel_min": 119.95,
+          "max_gap_sec": 41.0,
+          "gaps_over_two_nominal_intervals": 1,
+          "windows": {
+            "pre": 225,
+            "post_0_30": 90,
+            "post_30_60": 88,
+            "post_60_120": 180
+          },
+          "primary_band_inside_spread_rows": 425,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        },
+        "spot": {
+          "usable_rows": 358,
+          "first_rel_min": 0.167,
+          "last_rel_min": 119.95,
+          "max_gap_sec": 41.0,
+          "gaps_over_two_nominal_intervals": 1,
+          "windows": {
+            "pre": 0,
+            "post_0_30": 90,
+            "post_30_60": 88,
+            "post_60_120": 180
+          },
+          "primary_band_inside_spread_rows": 220,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 40
+        }
+      },
+      "http_error_rows": 2,
+      "unusable_book_rows": 0,
+      "first_spot_rel_min": 0.167,
+      "anchor_suspect": false,
+      "units": {
+        "perp_native_to_base_multiplier": 100.0,
+        "cross_leg_absolute_depth_compared": false
+      },
+      "sampling_gaps_require_review": true
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-哈基米-1788685200.jsonl",
+      "file_sha256": "666cc2158cb28042d688e7931c724c2e1def6ae47b4bd7bdaa41d1e9b198ff53",
+      "bytes": 2252598,
+      "integrity_errors": {},
+      "exclusion_reasons": [
+        "HISTORICAL_PLAN_NOT_POOLED",
+        "SPOT_ANCHOR_UNCONFIRMED",
+        "SPOT_POST_WINDOW_MISSING",
+        "SUPERSEDED_SCHEDULE"
+      ],
+      "candidate": false,
+      "record_count": 947,
+      "event": {
+        "venue": "gate",
+        "base": "哈基米",
+        "spot_symbol": "哈基米_USDT",
+        "perp_symbol": "哈基米_USDT",
+        "spot_state": "sellable",
+        "schedule_ts": 1788685200,
+        "t0_ts": 1788685200,
+        "perp_launched_ts": 1788674835,
+        "perp_ct_val": "100",
+        "spot_tick": 5,
+        "schedule_field": "buy_start",
+        "trade_open_offset_sec": 0,
+        "t0_utc": "2026-09-06T09:00:00Z",
+        "perp_lead_days": 0.12,
+        "equity_note": {
+          "checked": true,
+          "exact_listed_ticker": false,
+          "contains_listed_ticker": [],
+          "looks_like_equity": false,
+          "note": "RECORDED_NOT_EXCLUDED"
+        },
+        "pre_window_bounded_by": "VENUE_NOTICE",
+        "pre_window_by_notice_min": 74,
+        "pre_window_by_perp_age_min": 172,
+        "capture_from_ts": 1788680701,
+        "capture_to_ts": 1788692400,
+        "pre_window_available_min": 74,
+        "pre_window_short": true,
+        "armed_at_utc": "2026-09-06T07:45:01Z"
+      },
+      "plan_id": "premarket_forward_depth_20260902_v5",
+      "plan_hash": "0546e08c7e037884a782c35e3b86f44de25059ca572c77f603920bd091a0fcef",
+      "footer": {
+        "record": "footer",
+        "finished_at_utc": "2026-09-06T11:00:14Z",
+        "snapshots": 945,
+        "errors": 0,
+        "reached_budget": false,
+        "first_spot_book_rel_min": null,
+        "anchor_tolerance_min": 5.0,
+        "anchor_suspect": true,
+        "anchor_suspect_reason": "NO_USABLE_SPOT_BOOK_IN_THE_WHOLE_WINDOW"
+      },
+      "coverage": {
+        "perp": {
+          "usable_rows": 585,
+          "first_rel_min": -74.783,
+          "last_rel_min": 119.9,
+          "max_gap_sec": 21.0,
+          "gaps_over_two_nominal_intervals": 0,
+          "windows": {
+            "pre": 225,
+            "post_0_30": 90,
+            "post_30_60": 90,
+            "post_60_120": 180
+          },
+          "primary_band_inside_spread_rows": 0,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        },
+        "spot": {
+          "usable_rows": 0,
+          "first_rel_min": null,
+          "last_rel_min": null,
+          "max_gap_sec": 0,
+          "gaps_over_two_nominal_intervals": 0,
+          "windows": {
+            "pre": 0,
+            "post_0_30": 0,
+            "post_30_60": 0,
+            "post_60_120": 0
+          },
+          "primary_band_inside_spread_rows": 0,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        }
+      },
+      "http_error_rows": 0,
+      "unusable_book_rows": 360,
+      "first_spot_rel_min": null,
+      "anchor_suspect": true,
+      "units": {
+        "perp_native_to_base_multiplier": 100.0,
+        "cross_leg_absolute_depth_compared": false
+      },
+      "sampling_gaps_require_review": false
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-哈基米-1788692400.jsonl",
+      "file_sha256": "e1fa2692849babda959798e5acffaf1ae288cf18df564390ba3da46dc27f3771",
+      "bytes": 4053702,
+      "integrity_errors": {},
+      "exclusion_reasons": [
+        "HISTORICAL_PLAN_NOT_POOLED"
+      ],
+      "candidate": false,
+      "record_count": 1082,
+      "event": {
+        "venue": "gate",
+        "base": "哈基米",
+        "spot_symbol": "哈基米_USDT",
+        "perp_symbol": "哈基米_USDT",
+        "spot_state": "sellable",
+        "schedule_ts": 1788692400,
+        "t0_ts": 1788692400,
+        "perp_launched_ts": 1788674835,
+        "perp_ct_val": "100",
+        "spot_tick": 5,
+        "schedule_field": "buy_start",
+        "trade_open_offset_sec": 0,
+        "t0_utc": "2026-09-06T11:00:00Z",
+        "perp_lead_days": 0.203,
+        "equity_note": {
+          "checked": true,
+          "exact_listed_ticker": false,
+          "contains_listed_ticker": [],
+          "looks_like_equity": false,
+          "note": "RECORDED_NOT_EXCLUDED"
+        },
+        "pre_window_bounded_by": "VENUE_NOTICE",
+        "pre_window_by_notice_min": 119,
+        "pre_window_by_perp_age_min": 292,
+        "capture_from_ts": 1788685202,
+        "capture_to_ts": 1788699600,
+        "pre_window_available_min": 119,
+        "pre_window_short": true,
+        "armed_at_utc": "2026-09-06T09:00:02Z"
+      },
+      "plan_id": "premarket_forward_depth_20260902_v5",
+      "plan_hash": "0546e08c7e037884a782c35e3b86f44de25059ca572c77f603920bd091a0fcef",
+      "footer": {
+        "record": "footer",
+        "finished_at_utc": "2026-09-06T13:00:15Z",
+        "snapshots": 1080,
+        "errors": 0,
+        "reached_budget": false,
+        "first_spot_book_rel_min": 0.233,
+        "anchor_tolerance_min": 5.0,
+        "anchor_suspect": false,
+        "anchor_suspect_reason": null
+      },
+      "coverage": {
+        "perp": {
+          "usable_rows": 720,
+          "first_rel_min": -119.783,
+          "last_rel_min": 119.917,
+          "max_gap_sec": 21.0,
+          "gaps_over_two_nominal_intervals": 0,
+          "windows": {
+            "pre": 360,
+            "post_0_30": 90,
+            "post_30_60": 90,
+            "post_60_120": 180
+          },
+          "primary_band_inside_spread_rows": 0,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        },
+        "spot": {
+          "usable_rows": 360,
+          "first_rel_min": 0.233,
+          "last_rel_min": 119.917,
+          "max_gap_sec": 21.0,
+          "gaps_over_two_nominal_intervals": 0,
+          "windows": {
+            "pre": 0,
+            "post_0_30": 90,
+            "post_30_60": 90,
+            "post_60_120": 180
+          },
+          "primary_band_inside_spread_rows": 4,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 1
+        }
+      },
+      "http_error_rows": 0,
+      "unusable_book_rows": 0,
+      "first_spot_rel_min": 0.233,
+      "anchor_suspect": false,
+      "units": {
+        "perp_native_to_base_multiplier": 100.0,
+        "cross_leg_absolute_depth_compared": false
+      },
+      "sampling_gaps_require_review": false
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\okx-PONS-1789482600.jsonl",
+      "file_sha256": "e89d5715e9fb0c2ce9fbc939acfc33f1cfe9260b1461b5225f08b86589916108",
+      "bytes": 2836731,
+      "integrity_errors": {},
+      "exclusion_reasons": [],
+      "candidate": true,
+      "record_count": 749,
+      "event": {
+        "venue": "okx",
+        "base": "PONS",
+        "spot_symbol": "PONS-USDT",
+        "perp_symbol": "PONS-USDT-SWAP",
+        "spot_state": "preopen",
+        "schedule_ts": 1789479000,
+        "t0_ts": 1789482600,
+        "perp_launched_ts": 1788577200,
+        "perp_ct_val": "10",
+        "spot_tick": "0.0001",
+        "schedule_field": "listTime",
+        "trade_open_offset_sec": 3600,
+        "t0_utc": "2026-09-15T14:30:00Z",
+        "perp_lead_days": 10.479,
+        "equity_note": {
+          "checked": true,
+          "exact_listed_ticker": false,
+          "contains_listed_ticker": [],
+          "looks_like_equity": false,
+          "note": "RECORDED_NOT_EXCLUDED"
+        },
+        "pre_window_bounded_by": "VENUE_NOTICE",
+        "pre_window_by_notice_min": 119,
+        "pre_window_by_perp_age_min": 15090,
+        "capture_from_ts": 1789475401,
+        "capture_to_ts": 1789489800,
+        "pre_window_available_min": 119,
+        "pre_window_short": true,
+        "armed_at_utc": "2026-09-15T12:30:01Z"
+      },
+      "plan_id": "premarket_forward_depth_20260902_v6",
+      "plan_hash": "32a320a167792263680b4ad4b8ce033df3747fecdf2980dc79fc4734d8d419a4",
+      "footer": {
+        "record": "footer",
+        "finished_at_utc": "2026-09-15T16:44:43Z",
+        "snapshots": 747,
+        "errors": 2,
+        "reached_budget": false,
+        "first_spot_book_rel_min": 0.2,
+        "anchor_tolerance_min": 5.0,
+        "anchor_suspect": false,
+        "anchor_suspect_reason": null
+      },
+      "coverage": {
+        "perp": {
+          "usable_rows": 552,
+          "first_rel_min": -119.583,
+          "last_rel_min": 64.2,
+          "max_gap_sec": 22.0,
+          "gaps_over_two_nominal_intervals": 0,
+          "windows": {
+            "pre": 359,
+            "post_0_30": 90,
+            "post_30_60": 90,
+            "post_60_120": 13
+          },
+          "primary_band_inside_spread_rows": 0,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        },
+        "spot": {
+          "usable_rows": 193,
+          "first_rel_min": 0.2,
+          "last_rel_min": 64.2,
+          "max_gap_sec": 20.0,
+          "gaps_over_two_nominal_intervals": 0,
+          "windows": {
+            "pre": 0,
+            "post_0_30": 90,
+            "post_30_60": 90,
+            "post_60_120": 13
+          },
+          "primary_band_inside_spread_rows": 0,
+          "primary_band_truncated_rows": 0,
+          "top25_short_rows": 0
+        }
+      },
+      "http_error_rows": 2,
+      "unusable_book_rows": 0,
+      "first_spot_rel_min": 0.2,
+      "anchor_suspect": false,
+      "units": {
+        "perp_native_to_base_multiplier": 10.0,
+        "cross_leg_absolute_depth_compared": false
+      },
+      "sampling_gaps_require_review": false
+    }
+  ],
+  "summary": {
+    "files": 10,
+    "distinct_venue_base": 8,
+    "current_plan_structural_candidates": 4,
+    "candidate_unique_t0": 3,
+    "candidate_unique_utc_dates": 3,
+    "candidate_files": [
+      "gate-ARGUS-1789621200.jsonl",
+      "gate-STONK-1789383600.jsonl",
+      "gate-TOLLY-1789621200.jsonl",
+      "okx-PONS-1789482600.jsonl"
+    ],
+    "minimum_events_before_any_claim": 12,
+    "mechanism_analysis_performed": false,
+    "pnl_computed": false,
+    "acceptance_capable": false,
+    "complete_statistical_sample_certified": false
+  },
+  "limitations": [
+    "Structural candidates are not independent certified events.",
+    "Cadence gaps are disclosed, not interpolated or assigned a new statistical threshold.",
+    "Historical plans are diagnostics only until separate equivalence review.",
+    "Contract sizes remain native; no cross-leg absolute depth comparison.",
+    "No profitability or hypothesis verdict from this quality audit."
+  ],
+  "report_hash": "6d59cb62cbd95f2445e54e5e67e5f93976760335f0d41cc6a01ba0ad546a9c8f"
+}

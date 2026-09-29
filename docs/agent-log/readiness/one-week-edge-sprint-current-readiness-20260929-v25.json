@@ -1,0 +1,149 @@
+{
+  "schema": "trading_mvp_one_week_edge_sprint_current_readiness_v2",
+  "status": "PARENT_RESEARCH_RECONCILED_OFFLINE_ONLY",
+  "project": "trading_mvp",
+  "goal": "One-Week Historical Edge Sprint",
+  "research_only": true,
+  "generated_at_utc": "2026-09-29T09:56:54.507281+00:00",
+  "readiness_hash_method": "sha256_canonical_json_excluding_readiness_hash",
+  "permissions": {
+    "global_writer_present": false,
+    "identity_offline_implementation_authorized": false,
+    "identity_verification_authorized": false,
+    "pit_extension_activation_authorized": false,
+    "dense_refreeze_implementation_authorized": false,
+    "collector_launch_authorized": false,
+    "evaluator_or_oos_authorized": false,
+    "returns_or_pnl_authorized": false,
+    "grid_or_retune_authorized": false,
+    "execution_probe_authorized": false,
+    "paper_or_live_authorized": false,
+    "private_api_or_real_capital_authorized": false,
+    "leverage_or_margin_authorized": false,
+    "stopped_incomplete_retry_authorized": false
+  },
+  "checkpoint": {
+    "primary_branch": "premarket_forward_depth",
+    "schedules_remain_paused": true,
+    "network_launch_authorized": false,
+    "listing_momentum_scope": "EXTERNAL_PROJECT_NO_PARENT_EXECUTION",
+    "legacy_terminal_runs_reopen_allowed": false,
+    "quality_report": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\strategy-reconciliation-20260929\\depth-quality-v2.json",
+      "file_sha256": "3a168d3e259b99113bc12c0c500de1481f8f19b4cbd2649160dbf610a928dc16",
+      "bytes": 38278
+    },
+    "primary_plan": {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-forward-depth-planonly-20260902-v6.json",
+      "file_sha256": "b9307d631abff2be7be5618db3bcddf9104abaece1f037449344f5dacf4a097a",
+      "bytes": 6147
+    },
+    "evidence": [
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\strategy-reconciliation-20260929\\policy-before.json",
+        "file_sha256": "362352fcd216b5d8f1a389ee487124663dfc71ef97bc0c8e56091853edd76187",
+        "bytes": 73082
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\strategy-reconciliation-20260929\\pointer-before.json",
+        "file_sha256": "56a026f95b469da0816f3af55a26cbb46486198627ea8d892778ffa09d76d9b3",
+        "bytes": 517
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\strategy-reconciliation-20260929\\gate-before.json",
+        "file_sha256": "4670c02f1423da9f537c835f7a4c0df8979c6dec299f416f8e2d96719888f586",
+        "bytes": 1720
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\one-week-edge-sprint-current-readiness-20260818-v24.json",
+        "file_sha256": "782e55bfe98945db2fbbfd9c97d6f3f143ad98385fc67ae74450968fdc414b82",
+        "bytes": 4917
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\strategy-branch-disposition-20260817-v1.json",
+        "file_sha256": "664a9937fe8be409f2cbea3cccbbf1aea45e1ddcf0273d1eb3f486b6876bab09",
+        "bytes": 2303
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\2026-09-29-strategy-audit-and-next-goal-plan.md",
+        "file_sha256": "1a87c22600143464ce2bdbae7273cb67fb415ab0e23947144aee0397c5c82267",
+        "bytes": 41411
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\strategy-reconciliation-20260929\\README.md",
+        "file_sha256": "31d161f93dd2072d750830c43dc9fb71034c8501dddd49479c45ed8447950007",
+        "bytes": 12358
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\strategy-reconciliation-20260929\\schedule-state-before.json",
+        "file_sha256": "a3cc9599c01ee28d5bd8cfc686035615ee730883c87bac4df70bae8cefe83b26",
+        "bytes": 1214
+      }
+    ],
+    "implementation": [
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_forward_depth_quality.py",
+        "file_sha256": "c3a58eafcb5a9ae944b97873e499b4ca18b7a23d91607bd070206b0a8510ce9c",
+        "bytes": 16311
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\research_checkpoint.py",
+        "file_sha256": "90340ff4f557824c2e2033b1f0daa61c19f632c82e20de275672be1c06287b61",
+        "bytes": 3902
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\autopilot_guard.py",
+        "file_sha256": "3bbc0a0dbd52c78b9d142a1aeed0e84391267a646a1ea941294e3310dda6b28e",
+        "bytes": 152211
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\one_week_edge_sprint_readiness.py",
+        "file_sha256": "b4f762403fa3d5c00ec1e9bbfe77c359ab89cb3721cbdbd63dc7fae0951735d2",
+        "bytes": 221830
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\trading_research_checkpoint_status.ps1",
+        "file_sha256": "65464df79c9b80f92b79325e029ae8e34031e9f11bc92a20676f3b8296f2b261",
+        "bytes": 2249
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\trading_goal_status.ps1",
+        "file_sha256": "904bd39eac7801ebf4545a91af81efb44b45d73b6d04304bf736558df653f836",
+        "bytes": 99635
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\trading_next_goal_step.ps1",
+        "file_sha256": "dbc6f42a78d6260231d68063e444581c0738d089baf76e0b1b74592dd55515ab",
+        "bytes": 172696
+      },
+      {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\reconcile_research_checkpoint.py",
+        "file_sha256": "e96d14a939876fd981dc54a907a8678ce56bfff1f265e1cbf28fb995cb63d2e5",
+        "bytes": 9103
+      }
+    ],
+    "branch_dispositions": {
+      "premarket_forward_depth": "INSUFFICIENT_SAMPLE_DESCRIPTIVE_ONLY_SCHEDULE_PAUSED",
+      "listing_momentum": "EXTERNAL_PROJECT",
+      "premarket_perp_impulse": "PAUSED_IMPLEMENTATION_BINDING_REPAIR_REQUIRED",
+      "preipo_perp_event": "PAUSED_INSUFFICIENT_EVENTS",
+      "spot_perp_basis_20260819": "REJECTED_INCOMPLETE_NO_CONSUMPTION",
+      "slow_regime_basis_combo": "INFEASIBLE_ZERO_INTERSECTION",
+      "funding_basis": "WATCHLIST_ONLY_NO_NEW_INDEPENDENT_HOLDOUT",
+      "legacy_dense_pit_windows": "EXPIRED_NOT_ACTIVE_CANDIDATES",
+      "closed_strategies": "PRESERVE_TERMINAL_VERDICTS_NO_RETUNE"
+    },
+    "next_experiment": {
+      "state": "RECOMMENDATION_NOT_ACTIVATED",
+      "hypothesis_changed": false,
+      "plan_hash": "32a320a167792263680b4ad4b8ce033df3747fecdf2980dc79fc4734d8d419a4",
+      "target_min_events_unchanged": 12,
+      "proposed_calendar_horizon_days": 42,
+      "checkpoint_day": 14,
+      "forecast_is_not_guarantee": true,
+      "stop_at_horizon_without_lowering_threshold": true,
+      "prerequisite": "resolve_sampling_gap_and_cluster_protocol_without_return_analysis; explicit_schedule_resume"
+    }
+  },
+  "readiness_hash": "334cd77b50e16dd46c79731a9163e3521965426f509063e884453ddb26c8ee9a"
+}

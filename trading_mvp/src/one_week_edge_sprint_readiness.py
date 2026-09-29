@@ -149,7 +149,9 @@ IDENTITY_PHASE2_CHECKPOINT_ID = "slow_liquidity_identity_execution_phase_2"
 FORWARD_ACCRUAL_READINESS_STATUS = (
     "SLOW_LIQUIDITY_LISTING_MOMENTUM_FORWARD_ACCRUAL_STANDING_RESEARCH"
 )
+PARENT_RECONCILED_READINESS_STATUS = "PARENT_RESEARCH_RECONCILED_OFFLINE_ONLY"
 CURRENT_READINESS_STATUSES = (
+    PARENT_RECONCILED_READINESS_STATUS,
     CURRENT_READINESS_STATUS,
     IDENTITY_PHASE1_READINESS_STATUS,
     IDENTITY_PHASE2_READINESS_STATUS,
@@ -3373,6 +3375,21 @@ def resolve_current_sprint_readiness(
         canonical_hash_without(report, "readiness_hash") == report_hash,
         "readiness canonical hash mismatch",
     )
+
+    if source_status == PARENT_RECONCILED_READINESS_STATUS:
+        from research_checkpoint import resolve_checkpoint
+
+        _current_require(
+            report.get("permissions") == {field: False for field in CURRENT_PERMISSION_FIELDS},
+            "offline checkpoint permissions mismatch",
+        )
+        try:
+            result = resolve_checkpoint(report, pointer_file.parents[2], writer_claim_file)
+        except (OSError, KeyError, ValueError, TypeError) as exc:
+            raise CurrentSprintReadinessError(str(exc)) from exc
+        return {**result, "pointer_path": str(pointer_file), "pointer_file_sha256": pointer_sha,
+                "readiness_path": str(readiness_path), "readiness_file_sha256": report_sha,
+                "generated_at_utc": report["generated_at_utc"]}
 
     if source_status == REQUEST_PLAN_V3_EXECUTION_READINESS_STATUS:
         return _resolve_request_plan_v3_readiness(

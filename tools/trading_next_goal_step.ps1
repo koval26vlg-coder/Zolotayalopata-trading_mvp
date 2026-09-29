@@ -8,6 +8,14 @@ param(
 $ErrorActionPreference = "Stop"
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+$checkpointPolicy = Get-Content -Raw -LiteralPath (Join-Path $repoRoot 'docs/plans/trading-mvp-autopilot-policy-v1.json') | ConvertFrom-Json
+if ($checkpointPolicy.PSObject.Properties.Name -contains 'research_checkpoint') {
+    if ($ExactSlowLiquidityRecollectPlanPath -or $SprintReadinessPath) {
+        throw 'Legacy execution overrides are not allowed in the reconciled offline checkpoint.'
+    }
+    & (Join-Path $PSScriptRoot 'trading_research_checkpoint_status.ps1') -Json:$Json -GatePath $GatePath
+    return
+}
 $gateChecker = Join-Path $repoRoot "tools\check_active_run_gate.ps1"
 $preflightScript = Join-Path $repoRoot "tools\trading_edge_preflight.ps1"
 $swarmStatusScript = Join-Path $repoRoot "tools\trading_swarm_status.ps1"

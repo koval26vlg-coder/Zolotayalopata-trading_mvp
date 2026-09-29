@@ -1,5 +1,15 @@
 # trading_mvp: ЦЕЛЬ — единый документ для Codex
 
+## Текущий маршрут: 29 сентября 2026
+
+Операционная контрольная точка родительского проекта: `docs/agent-log/one-week-edge-sprint-readiness-pointer.json`. Она заменяет старый маршрут Listing Momentum, но не меняет исторические вердикты и финансовые запреты. Listing Momentum ведётся только в отдельном проекте и чате.
+
+Выполняется утверждённый [план согласования и проверки данных](./2026-09-29-strategy-audit-and-next-goal-plan.md). Основной исследовательский кандидат: `premarket_forward_depth_20260902_v6`, только описательная проверка механизма на Gate/OKX. Это отдельная линия, не перенос старого MEXC/Gate Fast-First acceptance contract. Сначала качество существующих файлов, затем решение о достижимости выборки. При пороге ниже 12 событий выводы о механизме, доходность и принятие стратегии запрещены. Паузы расписаний сохраняются; эта контрольная точка не запускает сеть и не включает сбор.
+
+Подробный результат и следующий ограниченный эксперимент: `docs/analysis/strategy-reconciliation-20260929/README.md`. Старые Dense/PIT окна, отклонённый basis-run и закрытые гипотезы ниже сохранены как история; они не являются очередью на запуск.
+
+## Исторические маршруты и неизменяемые контракты
+
 > **Действующий маршрут с 2026-08-01:** [Accelerated Evidence Factory v1](./2026-08-01-trading-mvp-accelerated-evidence-factory-v1.md). Исходные basis-ветки v1/v2 ниже остаются terminal pre-OOS (`INSUFFICIENT_DATA` / `INSUFFICIENT_EXECUTABLE_UNIVERSE`) и не переоткрываются. Текущий materially distinct кандидат — `dense_ws_microstructure_regime_filter_v1`; exact campaign `dense_ws_microstructure_regime_filter_v1_20260803_aef_24h`, plan hash `57231016ac62e79bcbef54c71ba059b330d08254683c3334ed6ae5de40335a8b`, отдельно одобрена пользователем. PIT `PIT_UNIVERSE_V2_FORWARD` продолжается как независимый 20-минутный shadow-track. Разовое 24-часовое окно Dense WS является только exact hash-bound исключением из старого общего лимита трёх часов и не разрешает другие длинные запуски. Authoritative runtime control: `docs/plans/trading-mvp-autopilot-policy-v1.json` и `tools/check_trading_mvp_autopilot.ps1 -Json`. Evaluator semantics/runtime всё ещё требуют отдельного точного разрешения; этот checkpoint не блокирует уже одобренные PIT, campaign quality и causal materialization.
 
 > **Активный спринт с 2026-07-15:** [One-Week Historical Edge Sprint](./2026-07-15-trading-mvp-one-week-historical-edge-sprint.md), продолженный [контрактом v2](./2026-07-16-trading-mvp-one-week-historical-edge-sprint-v2.md). V1 закрыт как `INSUFFICIENT_DATA` из-за retention Gate. V2 `cross_venue_perp_basis_convergence_1h_v2` завершил public collect `120/120`, но закрыт до OOS как `INSUFFICIENT_EXECUTABLE_UNIVERSE`: frozen train-liquidity gate прошли `5/8` активов. OOS, returns и PnL не читались; grid, retune, probe, paper и live запрещены для обеих frozen-веток. Terminal verdict внесён append-only в experiment ledger. PIT membership-drift остаётся отдельным shadow-track: один утверждённый видимый 20-минутный сегмент на новую дату до train gate `20/20`.
