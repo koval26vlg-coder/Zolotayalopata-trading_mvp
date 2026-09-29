@@ -790,19 +790,19 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
         self.assertIn("spot_listing_momentum_expansion_v19", expansion["supersedes"])
         self.assertEqual(
             expansion["canonical_git_commit"],
-            "fe503768d168e1c392807884a6e422eaded08db0",
+            "aac6d5feb0a983ed7069944416e565ee5f440e69",
         )
         self.assertEqual(
             expansion["canonical_plan_id"],
-            "listing_momentum_expansion_automation_20260925_v13",
+            "listing_momentum_expansion_automation_20260929_v14",
         )
         self.assertEqual(
             expansion["canonical_plan_sha256"],
-            "490cbd087c51b2b3c88bc9d235dc6465cefbb9155b86d3df9ad2f827cfbc6ad9",
+            "8e4e2660ba337955f797b9e940c01a384c7110336bd1b59df0b793ae2489b3c4",
         )
         self.assertEqual(
             expansion["canonical_plan_file_sha256"],
-            "e25fb5048ac575c08a3b9427298cefffb9abda1f252b7bccb962c1d73318245c",
+            "aebb941cad17168ab15965a9327072b5b63624273bc261ce815d35d3c61ba863",
         )
         expansion_plan = json.loads(
             Path(expansion["canonical_plan_path"]).read_text(encoding="utf-8")
@@ -811,7 +811,7 @@ class CanonicalStrategyRuntimeTests(unittest.TestCase):
             expansion["implementation_bindings"],
             expansion_plan["implementation"]["files"],
         )
-        self.assertEqual(len(expansion["implementation_bindings"]), 25)
+        self.assertEqual(len(expansion["implementation_bindings"]), 30)
         self.assertTrue(all(not row["scheduler_routable"] for row in runtimes.values()))
         self.assertTrue(
             all(not row["live_trading_allowed"] for row in runtimes.values())
