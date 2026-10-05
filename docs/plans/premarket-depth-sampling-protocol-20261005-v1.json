@@ -1,0 +1,60 @@
+{
+  "schema": "premarket_depth_sampling_quality_protocol_v1",
+  "mode": "OFFLINE_QUALITY_ONLY",
+  "rules": {
+    "purpose": "QUALITY_DIAGNOSTICS_NOT_EVALUATOR",
+    "grid": "T0_ANCHORED_NOMINAL_CADENCE_FULL_HALF_OPEN_SLOTS_ONLY",
+    "missing": "KEEP_MISSING_NO_INTERPOLATION_NO_ZERO_FILL",
+    "attempts": "COUNT_ERRORS_UNUSABLE_AND_NO_ATTEMPT_SEPARATELY",
+    "multiple_attempts": "FLAG_ONLY_NEVER_SELECT_A_PRICE_OR_DEPTH",
+    "fallback_diagnostic": "PER_LEG_USABLE_BOOK_ROWS_BID_INSIDE_SPREAD_TIMES_THREE_GT_COUNT",
+    "fallback_scope": "ONE_ROUTE_FOR_WHOLE_LEG_NOT_PER_ROW_OR_PER_SIDE",
+    "top25": "REQUIRE_25_LEVELS_PER_SIDE_NO_PARTIAL_SUM_AS_FULL_DEPTH",
+    "control": "BID_AND_ASK_OBSERVABILITY_REPORTED_SEPARATELY_AND_PAIRED",
+    "dependency_tags": "CONNECTED_COMPONENTS_OF_OVERLAPPING_CAPTURE_WINDOWS_OR_SAME_BASE",
+    "independence": "COMPONENTS_ARE_REVIEW_TAGS_NOT_CERTIFIED_INDEPENDENT_EVENTS",
+    "acceptance": "UNCHANGED_BASE_PLAN_NO_SAMPLE_OR_STRATEGY_ACCEPTANCE",
+    "method_status": "QUALITY_ONLY_CLARIFICATION_NOT_BOUND_INTO_EVALUATOR"
+  },
+  "limits": {
+    "max_runtime_sec": 300,
+    "max_input_bytes": 134217728,
+    "max_output_bytes": 5242880,
+    "max_line_bytes": 1048576
+  },
+  "base_plan": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-forward-depth-planonly-20260902-v6.json",
+    "file_sha256": "b9307d631abff2be7be5618db3bcddf9104abaece1f037449344f5dacf4a097a",
+    "bytes": 6147
+  },
+  "plan_hash": "32a320a167792263680b4ad4b8ce033df3747fecdf2980dc79fc4734d8d419a4",
+  "quality_audit": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\strategy-reconciliation-20260929\\depth-quality-v2.json",
+    "file_sha256": "3a168d3e259b99113bc12c0c500de1481f8f19b4cbd2649160dbf610a928dc16",
+    "bytes": 38278
+  },
+  "input_manifest_hash": "bdc8bab448790b3dcc5a198f05cecbd13416c82304c6f0869e6b7fd926a54421",
+  "minimum_events_before_any_claim": 12,
+  "hypothesis_modified": false,
+  "network_authorized": false,
+  "evaluator_authorized": false,
+  "schedules_resume_authorized": false,
+  "code": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_depth_sampling_protocol.py",
+      "file_sha256": "564e0ebfcc98599be2a7ce3ef135ce38bdb8908f04c119812e9761bec6ee0dbe",
+      "bytes": 14544
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_forward_depth_quality.py",
+      "file_sha256": "c3a58eafcb5a9ae944b97873e499b4ca18b7a23d91607bd070206b0a8510ce9c",
+      "bytes": 16311
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\research_checkpoint.py",
+      "file_sha256": "90340ff4f557824c2e2033b1f0daa61c19f632c82e20de275672be1c06287b61",
+      "bytes": 3902
+    }
+  ],
+  "protocol_hash": "eb088d8e422e501005cbc8a91771790af52a80272b4c3ddc407319aa166734d7"
+}

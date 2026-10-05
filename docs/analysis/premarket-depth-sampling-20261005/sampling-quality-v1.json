@@ -1,0 +1,395 @@
+{
+  "schema": "premarket_depth_sampling_diagnostics_v1",
+  "status": "OFFLINE_QUALITY_COMPLETE",
+  "protocol_hash": "eb088d8e422e501005cbc8a91771790af52a80272b4c3ddc407319aa166734d7",
+  "input_manifest_hash": "bdc8bab448790b3dcc5a198f05cecbd13416c82304c6f0869e6b7fd926a54421",
+  "events": [
+    {
+      "event_id": "gate:ARGUS:1789621200",
+      "source": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-ARGUS-1789621200.jsonl",
+        "file_sha256": "3ba14a9a02fed353aef1bef6392892f523a4ae6e603091baacbe200ef348dc7f",
+        "bytes": 3258574
+      },
+      "candidate_is_not_final_eligibility": true,
+      "legs": {
+        "perp": {
+          "leg": "perp",
+          "slots": {
+            "expected": 584,
+            "usable": 581,
+            "missing": 3,
+            "no_attempt": 2,
+            "request_error_only": 1,
+            "unusable_only": 0,
+            "mixed_error_unusable": 0,
+            "multiple_attempts": 0
+          },
+          "missing_runs": [
+            {
+              "from_rel_sec": 2260,
+              "to_rel_sec_exclusive": 2280
+            },
+            {
+              "from_rel_sec": 2520,
+              "to_rel_sec_exclusive": 2540
+            },
+            {
+              "from_rel_sec": 3740,
+              "to_rel_sec_exclusive": 3760
+            }
+          ],
+          "partial_boundary_rows": 1,
+          "diagnostic_measure_route": "BAND_1PCT",
+          "measurement_rows": {
+            "usable_book_rows": 582,
+            "bid_inside_spread_rows": 117,
+            "bid_unobservable": 117,
+            "ask_unobservable": 117,
+            "paired_observable": 465
+          },
+          "phases": {
+            "pre": {
+              "usable_book_rows": 225,
+              "paired_observable": 164
+            },
+            "post_0_30": {
+              "usable_book_rows": 90,
+              "paired_observable": 65
+            },
+            "post_30_60": {
+              "usable_book_rows": 88,
+              "paired_observable": 75
+            },
+            "post_60_120": {
+              "usable_book_rows": 179,
+              "paired_observable": 161
+            }
+          },
+          "interpolation_performed": false,
+          "numerical_depth_or_returns_computed": false
+        },
+        "spot": {
+          "leg": "spot",
+          "slots": {
+            "expected": 360,
+            "usable": 357,
+            "missing": 3,
+            "no_attempt": 2,
+            "request_error_only": 1,
+            "unusable_only": 0,
+            "mixed_error_unusable": 0,
+            "multiple_attempts": 0
+          },
+          "missing_runs": [
+            {
+              "from_rel_sec": 2260,
+              "to_rel_sec_exclusive": 2280
+            },
+            {
+              "from_rel_sec": 2520,
+              "to_rel_sec_exclusive": 2540
+            },
+            {
+              "from_rel_sec": 3740,
+              "to_rel_sec_exclusive": 3760
+            }
+          ],
+          "partial_boundary_rows": 0,
+          "diagnostic_measure_route": "TOP25",
+          "measurement_rows": {
+            "usable_book_rows": 357,
+            "bid_inside_spread_rows": 203,
+            "bid_unobservable": 12,
+            "ask_unobservable": 124,
+            "paired_observable": 227
+          },
+          "phases": {
+            "pre": {
+              "usable_book_rows": 0,
+              "paired_observable": 0
+            },
+            "post_0_30": {
+              "usable_book_rows": 90,
+              "paired_observable": 42
+            },
+            "post_30_60": {
+              "usable_book_rows": 88,
+              "paired_observable": 83
+            },
+            "post_60_120": {
+              "usable_book_rows": 179,
+              "paired_observable": 102
+            }
+          },
+          "interpolation_performed": false,
+          "numerical_depth_or_returns_computed": false
+        }
+      }
+    },
+    {
+      "event_id": "gate:STONK:1789383600",
+      "source": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-STONK-1789383600.jsonl",
+        "file_sha256": "176b4d94a5e409285f572225584f6c818f383800dc7e3f9b35ae8e688aeac8c4",
+        "bytes": 3225217
+      },
+      "candidate_is_not_final_eligibility": true,
+      "legs": {
+        "perp": {
+          "leg": "perp",
+          "slots": {
+            "expected": 584,
+            "usable": 583,
+            "missing": 1,
+            "no_attempt": 1,
+            "request_error_only": 0,
+            "unusable_only": 0,
+            "mixed_error_unusable": 0,
+            "multiple_attempts": 0
+          },
+          "missing_runs": [
+            {
+              "from_rel_sec": 5760,
+              "to_rel_sec_exclusive": 5780
+            }
+          ],
+          "partial_boundary_rows": 1,
+          "diagnostic_measure_route": "BAND_1PCT",
+          "measurement_rows": {
+            "usable_book_rows": 584,
+            "bid_inside_spread_rows": 0,
+            "bid_unobservable": 0,
+            "ask_unobservable": 0,
+            "paired_observable": 584
+          },
+          "phases": {
+            "pre": {
+              "usable_book_rows": 225,
+              "paired_observable": 225
+            },
+            "post_0_30": {
+              "usable_book_rows": 90,
+              "paired_observable": 90
+            },
+            "post_30_60": {
+              "usable_book_rows": 90,
+              "paired_observable": 90
+            },
+            "post_60_120": {
+              "usable_book_rows": 179,
+              "paired_observable": 179
+            }
+          },
+          "interpolation_performed": false,
+          "numerical_depth_or_returns_computed": false
+        },
+        "spot": {
+          "leg": "spot",
+          "slots": {
+            "expected": 360,
+            "usable": 359,
+            "missing": 1,
+            "no_attempt": 1,
+            "request_error_only": 0,
+            "unusable_only": 0,
+            "mixed_error_unusable": 0,
+            "multiple_attempts": 0
+          },
+          "missing_runs": [
+            {
+              "from_rel_sec": 5760,
+              "to_rel_sec_exclusive": 5780
+            }
+          ],
+          "partial_boundary_rows": 0,
+          "diagnostic_measure_route": "BAND_1PCT",
+          "measurement_rows": {
+            "usable_book_rows": 359,
+            "bid_inside_spread_rows": 42,
+            "bid_unobservable": 42,
+            "ask_unobservable": 42,
+            "paired_observable": 317
+          },
+          "phases": {
+            "pre": {
+              "usable_book_rows": 0,
+              "paired_observable": 0
+            },
+            "post_0_30": {
+              "usable_book_rows": 90,
+              "paired_observable": 74
+            },
+            "post_30_60": {
+              "usable_book_rows": 90,
+              "paired_observable": 84
+            },
+            "post_60_120": {
+              "usable_book_rows": 179,
+              "paired_observable": 159
+            }
+          },
+          "interpolation_performed": false,
+          "numerical_depth_or_returns_computed": false
+        }
+      }
+    },
+    {
+      "event_id": "gate:TOLLY:1789621200",
+      "source": {
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-forward-depth\\captures\\gate-TOLLY-1789621200.jsonl",
+        "file_sha256": "fa85cd439bec450bfd266fa3b92b09b65b0a713dffff708800ecbbd5f2073b1a",
+        "bytes": 3002870
+      },
+      "candidate_is_not_final_eligibility": true,
+      "legs": {
+        "perp": {
+          "leg": "perp",
+          "slots": {
+            "expected": 584,
+            "usable": 582,
+            "missing": 2,
+            "no_attempt": 1,
+            "request_error_only": 1,
+            "unusable_only": 0,
+            "mixed_error_unusable": 0,
+            "multiple_attempts": 0
+          },
+          "missing_runs": [
+            {
+              "from_rel_sec": 2260,
+              "to_rel_sec_exclusive": 2280
+            },
+            {
+              "from_rel_sec": 2520,
+              "to_rel_sec_exclusive": 2540
+            }
+          ],
+          "partial_boundary_rows": 1,
+          "diagnostic_measure_route": "TOP25",
+          "measurement_rows": {
+            "usable_book_rows": 583,
+            "bid_inside_spread_rows": 425,
+            "bid_unobservable": 0,
+            "ask_unobservable": 554,
+            "paired_observable": 29
+          },
+          "phases": {
+            "pre": {
+              "usable_book_rows": 225,
+              "paired_observable": 0
+            },
+            "post_0_30": {
+              "usable_book_rows": 90,
+              "paired_observable": 26
+            },
+            "post_30_60": {
+              "usable_book_rows": 88,
+              "paired_observable": 1
+            },
+            "post_60_120": {
+              "usable_book_rows": 180,
+              "paired_observable": 2
+            }
+          },
+          "interpolation_performed": false,
+          "numerical_depth_or_returns_computed": false
+        },
+        "spot": {
+          "leg": "spot",
+          "slots": {
+            "expected": 360,
+            "usable": 358,
+            "missing": 2,
+            "no_attempt": 1,
+            "request_error_only": 1,
+            "unusable_only": 0,
+            "mixed_error_unusable": 0,
+            "multiple_attempts": 0
+          },
+          "missing_runs": [
+            {
+              "from_rel_sec": 2260,
+              "to_rel_sec_exclusive": 2280
+            },
+            {
+              "from_rel_sec": 2520,
+              "to_rel_sec_exclusive": 2540
+            }
+          ],
+          "partial_boundary_rows": 0,
+          "diagnostic_measure_route": "TOP25",
+          "measurement_rows": {
+            "usable_book_rows": 358,
+            "bid_inside_spread_rows": 220,
+            "bid_unobservable": 40,
+            "ask_unobservable": 24,
+            "paired_observable": 298
+          },
+          "phases": {
+            "pre": {
+              "usable_book_rows": 0,
+              "paired_observable": 0
+            },
+            "post_0_30": {
+              "usable_book_rows": 90,
+              "paired_observable": 63
+            },
+            "post_30_60": {
+              "usable_book_rows": 88,
+              "paired_observable": 88
+            },
+            "post_60_120": {
+              "usable_book_rows": 180,
+              "paired_observable": 147
+            }
+          },
+          "interpolation_performed": false,
+          "numerical_depth_or_returns_computed": false
+        }
+      }
+    }
+  ],
+  "dependence_review_components": [
+    {
+      "members": [
+        "gate:ARGUS:1789621200",
+        "gate:TOLLY:1789621200"
+      ],
+      "links": [
+        {
+          "a": "gate:TOLLY:1789621200",
+          "b": "gate:ARGUS:1789621200",
+          "overlapping_capture_window": true,
+          "same_base": false
+        }
+      ],
+      "independence_certified": false
+    },
+    {
+      "members": [
+        "gate:STONK:1789383600"
+      ],
+      "links": [],
+      "independence_certified": false
+    }
+  ],
+  "summary": {
+    "structural_candidates": 3,
+    "dependency_components": 2,
+    "minimum_events_before_any_claim": 12,
+    "independent_sample_certified": false,
+    "network_requests": 0,
+    "returns_or_pnl_computed": false,
+    "mechanism_evaluated": false,
+    "schedule_resumed": false
+  },
+  "next_step": "visible_single_writer_runtime_repair_before_any_schedule_resume",
+  "limits": {
+    "max_runtime_sec": 300,
+    "max_input_bytes": 134217728,
+    "max_output_bytes": 5242880,
+    "max_line_bytes": 1048576
+  },
+  "report_hash": "2140d72794dd1dcb04a2c6a75858a9ee832608f491c62b2939b3867fd376cf27"
+}

@@ -205,3 +205,8 @@ trading_mvp/src/autopilot_guard.py -text whitespace=cr-at-eol
 trading_mvp/src/one_week_edge_sprint_readiness.py -text whitespace=cr-at-eol
 trading_mvp/src/premarket_forward_depth_quality.py -text whitespace=cr-at-eol
 trading_mvp/src/research_checkpoint.py -text whitespace=cr-at-eol
+
+# Standalone sampling diagnostics: byte-exact frozen code and evidence.
+trading_mvp/src/premarket_depth_sampling_protocol.py -text whitespace=cr-at-eol
+docs/plans/premarket-depth-sampling-protocol-20261005-v1.json -text whitespace=cr-at-eol
+docs/analysis/premarket-depth-sampling-20261005/* -text whitespace=cr-at-eol

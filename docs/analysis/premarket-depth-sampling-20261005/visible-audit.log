@@ -1,0 +1,15 @@
+OFFLINE_PROTOCOL_FROZEN_NO_LAUNCH
+Audited gate:ARGUS:1789621200: timing/flags only
+Audited gate:STONK:1789383600: timing/flags only
+Audited gate:TOLLY:1789621200: timing/flags only
+{
+  "structural_candidates": 3,
+  "dependency_components": 2,
+  "minimum_events_before_any_claim": 12,
+  "independent_sample_certified": false,
+  "network_requests": 0,
+  "returns_or_pnl_computed": false,
+  "mechanism_evaluated": false,
+  "schedule_resumed": false
+}
+OFFLINE_AUDIT_COMPLETE_NO_COLLECTOR
