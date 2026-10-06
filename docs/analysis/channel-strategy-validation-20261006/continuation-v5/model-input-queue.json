@@ -1,0 +1,392 @@
+{
+  "schema": "historical_model_input_queue_v1",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "model_count": 20,
+  "next_priority": [
+    "long_put",
+    "cash_put",
+    "put_spread"
+  ],
+  "gate_probe_repeat_authorized": false,
+  "new_schedules": false,
+  "new_permanent_collectors": false,
+  "source_availability_not_profitability": true,
+  "models": [
+    {
+      "number": 1,
+      "id": "relative_strength",
+      "model_hash": "722b76604c3bcc8b5a81be6828fc410cddca764343a95ca7d2c13eb0fc8c20aa",
+      "market": "gate",
+      "required_kinds": [
+        "bars_1h",
+        "pit_universe"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "BOUNDED_SEARCH_CLOSED_UNVERIFIED_MEMBERSHIP",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [
+        "../continuation-v4/gate-metadata-audit.json",
+        "../continuation-v3/survivorship-audit.json",
+        "../continuation-v3/trade-turnover-audit.json"
+      ],
+      "next_step": "Defer this input. Reopen only for new historical membership/type/turnover evidence, not the same probes."
+    },
+    {
+      "number": 2,
+      "id": "trend_pullback",
+      "model_hash": "e67d0a99664027e13ae2feacefaebffc497f101f273c23d74e7d7d9e337d439e",
+      "market": "gate",
+      "required_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "BOUNDED_SEARCH_CLOSED_UNVERIFIED_MEMBERSHIP",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [
+        "../continuation-v4/gate-metadata-audit.json",
+        "../continuation-v3/survivorship-audit.json",
+        "../continuation-v3/trade-turnover-audit.json"
+      ],
+      "next_step": "Defer this input. Reopen only for new historical membership/type/turnover evidence, not the same probes."
+    },
+    {
+      "number": 3,
+      "id": "structure_break",
+      "model_hash": "2aed75cff9482d781f1c3df1f5577c5fa92903426a4d99419db5fe70c072c982",
+      "market": "gate",
+      "required_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "BOUNDED_SEARCH_CLOSED_UNVERIFIED_MEMBERSHIP",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [
+        "../continuation-v4/gate-metadata-audit.json",
+        "../continuation-v3/survivorship-audit.json",
+        "../continuation-v3/trade-turnover-audit.json"
+      ],
+      "next_step": "Defer this input. Reopen only for new historical membership/type/turnover evidence, not the same probes."
+    },
+    {
+      "number": 4,
+      "id": "normalized_line",
+      "model_hash": "dc332ad2ab8c84632d5c26b27e19adaf8cfcaade5cc9d8ce1d1313cfa4777d18",
+      "market": "gate",
+      "required_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "BOUNDED_SEARCH_CLOSED_UNVERIFIED_MEMBERSHIP",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [
+        "../continuation-v4/gate-metadata-audit.json",
+        "../continuation-v3/survivorship-audit.json",
+        "../continuation-v3/trade-turnover-audit.json"
+      ],
+      "next_step": "Defer this input. Reopen only for new historical membership/type/turnover evidence, not the same probes."
+    },
+    {
+      "number": 5,
+      "id": "book_continue",
+      "model_hash": "7c46d0c741b3ca856ed89360b71d49f8f0bd1a657818fd9ad3b9ee3e66825c5e",
+      "market": "gate",
+      "required_kinds": [
+        "books",
+        "tape",
+        "pit_universe"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "BOUNDED_SEARCH_CLOSED_UNVERIFIED_MEMBERSHIP",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [
+        "../continuation-v4/gate-metadata-audit.json",
+        "../continuation-v3/survivorship-audit.json",
+        "../continuation-v3/trade-turnover-audit.json"
+      ],
+      "next_step": "Defer this input. Reopen only for new historical membership/type/turnover evidence, not the same probes."
+    },
+    {
+      "number": 6,
+      "id": "book_reclaim",
+      "model_hash": "4456413af176741d31c79299167904083b3dfdc36a5a8d21a63c8e16e742e21c",
+      "market": "gate",
+      "required_kinds": [
+        "books",
+        "bars_1m",
+        "pit_universe"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "BOUNDED_SEARCH_CLOSED_UNVERIFIED_MEMBERSHIP",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [
+        "../continuation-v4/gate-metadata-audit.json",
+        "../continuation-v3/survivorship-audit.json",
+        "../continuation-v3/trade-turnover-audit.json"
+      ],
+      "next_step": "Defer this input. Reopen only for new historical membership/type/turnover evidence, not the same probes."
+    },
+    {
+      "number": 7,
+      "id": "funding_carry",
+      "model_hash": "2a5b8dc95381d0674e04a65f1cc4f7d276620e525f7a458f2b92ba9c54bfe0fb",
+      "market": "gate",
+      "required_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "NOT_YET_AUDITED_IN_THIS_CHECKPOINT",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [],
+      "next_step": "Audit existing immutable paired quotes and funding independently; no closed legacy dataset reuse."
+    },
+    {
+      "number": 8,
+      "id": "funding_cross",
+      "model_hash": "a06d8e6d76b5fded41be97bf98928b924c32cf62180cd4dfb89e905590101813",
+      "market": "gate_mexc",
+      "required_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "NOT_YET_AUDITED_IN_THIS_CHECKPOINT",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [],
+      "next_step": "Audit synchronous Gate/MEXC executable paired quotes and exact leg/inventory history."
+    },
+    {
+      "number": 9,
+      "id": "spot_dislocation",
+      "model_hash": "85e8e7352e223598226c5d97aac09375d25881f34748b9f736fb104a61462868",
+      "market": "gate_mexc",
+      "required_kinds": [
+        "paired_quotes",
+        "inventory"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "NOT_YET_AUDITED_IN_THIS_CHECKPOINT",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [],
+      "next_step": "Audit synchronous Gate/MEXC executable paired quotes and exact leg/inventory history."
+    },
+    {
+      "number": 10,
+      "id": "basis_convergence",
+      "model_hash": "3fc48addb1e9e16a1459f20dcd338fd11e9b7d81ae626cddbaf863416fbe85ba",
+      "market": "gate",
+      "required_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "NOT_YET_AUDITED_IN_THIS_CHECKPOINT",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [],
+      "next_step": "Audit existing immutable paired quotes and funding independently; no closed legacy dataset reuse."
+    },
+    {
+      "number": 11,
+      "id": "long_put",
+      "model_hash": "3ca17e07c45c933d325cc262999f1815ac4a0abedb280fbf24934d5f6ec8ed68",
+      "market": "okx",
+      "required_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "COMPLETE_BTC_CONTAINER_SAMPLED_BOOKS_VERIFIED",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [
+        "census.json",
+        "data-readiness.json",
+        "../continuation-v4/okx-options-source-audit.json"
+      ],
+      "next_step": "Resolve dated specifications/fees and underlying/exit evidence, then normalize selected complete streams. Do not redownload this archive."
+    },
+    {
+      "number": 12,
+      "id": "cash_put",
+      "model_hash": "eacef87fd81f3aefbfc00a06c5d4d3a4c410f3e881af95c5dc6884d74a599289",
+      "market": "okx",
+      "required_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "COMPLETE_BTC_CONTAINER_SAMPLED_BOOKS_VERIFIED",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [
+        "census.json",
+        "data-readiness.json",
+        "../continuation-v4/okx-options-source-audit.json"
+      ],
+      "next_step": "Resolve dated specifications/fees and underlying/exit evidence, then normalize selected complete streams. Do not redownload this archive."
+    },
+    {
+      "number": 13,
+      "id": "put_spread",
+      "model_hash": "7f7b319aee5e0b272745bd20c8cea3a1a601ff1dd1d6ce85c764f0ef2d906857",
+      "market": "okx",
+      "required_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "COMPLETE_BTC_CONTAINER_SAMPLED_BOOKS_VERIFIED",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [
+        "census.json",
+        "data-readiness.json",
+        "../continuation-v4/okx-options-source-audit.json"
+      ],
+      "next_step": "Resolve dated specifications/fees and underlying/exit evidence, then normalize selected complete streams. Do not redownload this archive."
+    },
+    {
+      "number": 14,
+      "id": "fixed_grid",
+      "model_hash": "964340950d39bf7550d6c784a38c0bea81ba8924f2cac7342df96b3aec9b0adc",
+      "market": "gate",
+      "required_kinds": [
+        "bars_1d",
+        "books",
+        "pit_universe"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "BOUNDED_SEARCH_CLOSED_UNVERIFIED_MEMBERSHIP",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [
+        "../continuation-v4/gate-metadata-audit.json",
+        "../continuation-v3/survivorship-audit.json",
+        "../continuation-v3/trade-turnover-audit.json"
+      ],
+      "next_step": "Defer this input. Reopen only for new historical membership/type/turnover evidence, not the same probes."
+    },
+    {
+      "number": 15,
+      "id": "gold_macd",
+      "model_hash": "6afba9d42394bfdb502e88fa6a5811e6aeec045c71002cdce2930875ab4cbb31",
+      "market": "gold",
+      "required_kinds": [
+        "bars_4h",
+        "contract_specs",
+        "calendar"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "NOT_YET_AUDITED_IN_THIS_CHECKPOINT",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [],
+      "next_step": "Audit free intraday gold history plus dated contract, calendar and costs."
+    },
+    {
+      "number": 16,
+      "id": "dax_orb",
+      "model_hash": "0b2cd1b0fc72436a30b3154dafa5161891a7212eed9e037130135fd67ebdd843",
+      "market": "dax",
+      "required_kinds": [
+        "bars_5m",
+        "contract_specs",
+        "calendar"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "NOT_YET_AUDITED_IN_THIS_CHECKPOINT",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [],
+      "next_step": "Audit free 5-minute DAX history, exact session calendar and DST."
+    },
+    {
+      "number": 17,
+      "id": "gap_continue",
+      "model_hash": "29d7bb77e9e49cfdc866bac34098273d8e1845fb47b85ed465c1cafb7bdd412f",
+      "market": "us_equity",
+      "required_kinds": [
+        "bars_5m",
+        "pit_equity_universe",
+        "calendar",
+        "corporate_actions"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "NOT_YET_AUDITED_IN_THIS_CHECKPOINT",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [],
+      "next_step": "Audit free 5-minute equity history including delisted names and corporate actions."
+    },
+    {
+      "number": 18,
+      "id": "gap_fade",
+      "model_hash": "ab3cbc9d819fe96266096de77c81f54504104570039b7573dba9504204f20674",
+      "market": "us_equity",
+      "required_kinds": [
+        "bars_5m",
+        "pit_equity_universe",
+        "calendar",
+        "corporate_actions"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "NOT_YET_AUDITED_IN_THIS_CHECKPOINT",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [],
+      "next_step": "Audit free 5-minute equity history including delisted names and corporate actions."
+    },
+    {
+      "number": 19,
+      "id": "aave_lending",
+      "model_hash": "709c0673bff29cc45dca513898bf22ddc93a5729036879821513926fed3fdd24",
+      "market": "aave_v3_ethereum",
+      "required_kinds": [
+        "lending_index",
+        "gas",
+        "token_quotes",
+        "withdrawal_liquidity"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "NOT_YET_AUDITED_IN_THIS_CHECKPOINT",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [],
+      "next_step": "Audit historical lending index, USDC prices, gas and withdrawal liquidity without credentials."
+    },
+    {
+      "number": 20,
+      "id": "wallet_follow",
+      "model_hash": "07df0a5021ab9960bf99098ac1ff552fdc5d5ec0681ad272e4ebde0888d332dd",
+      "market": "ethereum",
+      "required_kinds": [
+        "dex_swaps",
+        "token_universe",
+        "gas",
+        "execution_quotes"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "source_audit_state": "NOT_YET_AUDITED_IN_THIS_CHECKPOINT",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "metrics": null,
+      "evidence": [],
+      "next_step": "Audit complete historical swaps/token universe, block ordering, gas and executable sell routes."
+    }
+  ]
+}

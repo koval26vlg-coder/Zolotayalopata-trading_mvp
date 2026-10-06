@@ -1,0 +1,9 @@
+{
+  "acquisition_hash": "70808ec45ac6d09f094e5ee6e69090e0dc68fdddbf3aae5f9cfe32af418fac25",
+  "bytes": 255036575,
+  "complete": true,
+  "http_status": 200,
+  "prefix_sha256": "6b1a256c5a97bac12214e6ac353439b5aaf30ac5b88d7431fb037a638fee32b2",
+  "sha256": "aa58f77452e9e2a4aa180a18c22eca4b1b1fc48127ca7d829ef87306c41ae91c",
+  "url": "https://static.okx.com/cdn/okx/match/orderbook/L2/400lv/daily/20250106/BTC-USD-optionchain-L2orderbook-400lv-2025-01-06.tar.gz"
+}

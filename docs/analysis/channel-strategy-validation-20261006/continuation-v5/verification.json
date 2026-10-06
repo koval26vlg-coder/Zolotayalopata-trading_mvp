@@ -1,0 +1,32 @@
+{
+  "errors": 0,
+  "failures": 0,
+  "runtime_binding": {
+    "tools/check_active_run_gate.ps1": "a3b1b735dba6681b18fdb2e9be637079a22391123eced0a316dc2b76855193fd",
+    "tools/check_trading_mvp_autopilot.ps1": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+    "tools/run_channel_strategy_validation_visible.ps1": "fdfa93cfab64ea6cdbca161af47f39263c7b2b0fbaa509ceb4d7a2e7ae0847ef",
+    "trading_mvp/src/channel_validation/__init__.py": "dab9cae823a9b621cc47440d3a73630e9831110efd9f370fe7b689d2206f71e3",
+    "trading_mvp/src/channel_validation/adapters.py": "e3a090521c5da1dc6ff7afe600b4c52aad74f63ef1358a7f674d86af7b4377fe",
+    "trading_mvp/src/channel_validation/archive_audit.py": "fdbb487dc77de23176751e24f642e487d0da00fe05f83f27b92dcdbbba74124a",
+    "trading_mvp/src/channel_validation/contract.py": "d71f4e1834623bc8ea7234dd561604a26d89f010a2978092c9c9858d5f55465c",
+    "trading_mvp/src/channel_validation/data.py": "bf7d11039ac155ee70a21d0a1837e5af5ad7506ae7db3519472ac5d2e5322f61",
+    "trading_mvp/src/channel_validation/execution.py": "b8e119584e4b3b5c3abe2da93900711f74a630b0d94b7c570faf6883c35de4ab",
+    "trading_mvp/src/channel_validation/gate_catalog.py": "920183562362062ba516ea3b9859051f9aecad27f5eb8900d9b59716f11af0dd",
+    "trading_mvp/src/channel_validation/gate_history.py": "7297594b274bc6a9fb239be67e23825e55a6db7e45d65133ba252dcc3cde35df",
+    "trading_mvp/src/channel_validation/gate_metadata.py": "f0eaff7d3edd1d9049a835574c69208451d9b99fbd50a214981bce3da581b866",
+    "trading_mvp/src/channel_validation/gate_survivorship.py": "85cc2300daa78a51159bcccee84f7f5e5ba290e05dff274ea66b26e2ab68e6f9",
+    "trading_mvp/src/channel_validation/gate_trades.py": "c437567a56bc2697183487bf9adf76465617553f17919486a078ca97fa20b9a0",
+    "trading_mvp/src/channel_validation/models.py": "9c1f0b142276e2e78e101036192486a603961422a9b1fb8ac4cf2dad532cc193",
+    "trading_mvp/src/channel_validation/okx_acquire.py": "c13aa5db43a0e56288464b6690ff1d8bb4377d2995c189ccb7861508bb5789b8",
+    "trading_mvp/src/channel_validation/okx_history.py": "83ac9cd0743acd53ee61f53306f18061cc36a9f9d3b54261dbf84f1e9cb6350b",
+    "trading_mvp/src/channel_validation/okx_stream.py": "66f1df2b57673e629b4193995d230b5b1fd861b095a689e3042b953b3aac708f",
+    "trading_mvp/src/channel_validation/portfolio.py": "cb63ff1b53751cec1b248b91c8e70c9686a04259e1f7636bc5be8749025332a4",
+    "trading_mvp/src/channel_validation/runner.py": "ee2d457456802d57c00d8b840af73d409284060e2e1259f9ea55601e85c6bdcd",
+    "trading_mvp/src/channel_validation/sources.py": "e30cde7da64c7aefd58711f3678a9c814acef298a901bba8744d095ee87cdd10",
+    "trading_mvp/src/channel_validation/statistics.py": "e4b6f69e9a057f2ec5a7d33813d725f720239207f7728bd9e101a6cb0a2ce65d",
+    "trading_mvp/src/global_market_writer_claim.py": "bc0604267c9d709a17188eb9daf317417d2633bf4c31266f73db33ac2f5066d2",
+    "trading_mvp/tests/test_channel_validation.py": "c28ea371b9fa3857b11e5c60415db0d5ac3d16eef6ef0a10170581c0be1be862"
+  },
+  "successful": true,
+  "tests": 121
+}

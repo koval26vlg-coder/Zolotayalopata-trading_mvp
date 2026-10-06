@@ -222,7 +222,7 @@ def report(plan, inv, validation, evaluation):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'gate-survivorship-audit', 'gate-trades-audit', 'gate-metadata-audit', 'okx-history-audit', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
+    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'gate-survivorship-audit', 'gate-trades-audit', 'gate-metadata-audit', 'okx-history-audit', 'okx-full-archive', 'okx-archive-census', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
     parser.add_argument('--input-manifest')
     parser.add_argument('--evaluation', type=Path)
     parser.add_argument('--output', type=Path)
@@ -258,6 +258,14 @@ def main(argv=None):
         return 0 if result.wasSuccessful() else 1
     if not args.output:
         parser.error('Explicit isolated output namespace required')
+    if args.stage == 'okx-full-archive':
+        from .okx_acquire import acquire
+        acquire(args.output/'okx-full-archive', check)
+        return 0
+    if args.stage == 'okx-archive-census':
+        from .okx_acquire import local_census
+        local_census(args.output/'okx-archive-census', check)
+        return 0
     if args.stage == 'okx-history-audit':
         if args.max_runtime_sec > 300:
             parser.error('Source audit is bounded to 300 seconds')

@@ -24,6 +24,8 @@ from channel_validation.gate_trades import summarize_trades, reconcile as reconc
 from channel_validation.gate_metadata import parse_metadata, request_plan as metadata_plan
 from channel_validation.okx_history import (parse_catalog as parse_okx_catalog, validate_range, inspect_prefix,
                                             request_plan as okx_plan, DAY, DAY_MS, CAP)
+from channel_validation.okx_stream import Book, census, contract_id
+from channel_validation.okx_acquire import stream_download, MAX_DOWNLOAD
 
 
 def universe(at, members=('BTC', 'ETH')):
@@ -866,6 +868,297 @@ class OptionArchiveSourceTests(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 main(['okx-history-audit', '--max-runtime-sec', '301', '--output', str(output)])
             self.assertFalse(output.exists())
+
+
+class OptionFullArchiveTests(unittest.TestCase):
+    symbol = 'BTC-USD-250207-90000-P'
+
+    def record(self, **changes):
+        value = dict(instId=self.symbol, action='snapshot', ts=str(DAY_MS),
+                     bids=[['0.01', '2', '1']], asks=[['0.02', '3', '1']])
+        value.update(changes)
+        return value
+
+    def book(self):
+        return Book(self.symbol, DAY_MS, DAY_MS+86400000)
+
+    def archive(self, records=None, names=None, body=None):
+        import io
+        import tarfile
+        import gzip
+        if body is None:
+            body = b''.join((json.dumps(r)+'\n').encode() for r in (records or [self.record()]))
+        names = names or [self.symbol+'-L2orderbook-400lv-'+DAY+'.data']
+        buffer = io.BytesIO()
+        with tarfile.open(fileobj=buffer, mode='w', format=tarfile.USTAR_FORMAT) as archive:
+            for name in names:
+                member = tarfile.TarInfo(name)
+                member.size = len(body)
+                archive.addfile(member, io.BytesIO(body))
+        return gzip.compress(buffer.getvalue(), mtime=0)
+
+    def scan(self, raw, **kwargs):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)/'test.tar.gz'
+            path.write_bytes(raw)
+            return census(path, DAY, DAY_MS, **kwargs)
+
+    def test_snapshot_absolute_updates_and_deletion(self):
+        book = self.book()
+        book.apply(self.record())
+        result = book.apply(self.record(action='update', ts=str(DAY_MS+1),
+                            bids=[['0.01', '5', '2']], asks=[]))
+        self.assertEqual('5', result['bid_size'])
+        self.assertEqual('3', result['ask_size'])
+        result = book.apply(self.record(action='update', bids=[['0.01', '0', '0']],
+                            asks=[], ts=str(DAY_MS+2)))
+        self.assertEqual('EMPTY_SIDE', result['status'])
+        self.assertIsNone(result['bid'])
+
+    def test_snapshot_resets_stale_levels(self):
+        book = self.book()
+        book.apply(self.record())
+        result = book.apply(self.record(bids=[['0.005', '1', '1']]))
+        self.assertEqual('0.005', result['bid'])
+
+    def test_crossed_or_one_sided_is_not_fabricated_liquidity(self):
+        for changes, status in ((dict(asks=[]), 'EMPTY_SIDE'),
+                                (dict(asks=[['0.005', '1', '1']]), 'CROSSED_OR_LOCKED')):
+            result = self.book().apply(self.record(**changes))
+            self.assertEqual(status, result['status'])
+            self.assertFalse(result['historical_units_verified'])
+            self.assertIsNone(result['available_at'])
+
+    def test_malformed_prices_units_or_schema_rejected(self):
+        for bids in ([['NaN', '1', '1']], [['0', '1', '1']], [['0.01', '-1', '1']],
+                     [['0.01', '1', '0']], [['0.01', '1', '0.5']], [['0.01', '1', '1', '0']],
+                     [['0.01', '1', '1']]*2):
+            with self.subTest(bids=bids), self.assertRaises(ValueError):
+                self.book().apply(self.record(bids=bids))
+
+    def test_snapshot_required_and_timestamp_checks(self):
+        for changes in (dict(action='update'), dict(ts=str(DAY_MS-1)),
+                        dict(ts=str(DAY_MS+86400000)), dict(ts=str(DAY_MS)+'.5'), dict(instId='wrong')):
+            with self.subTest(changes=changes), self.assertRaises(ValueError):
+                self.book().apply(self.record(**changes))
+        book = self.book()
+        book.apply(self.record(ts=str(DAY_MS+2)))
+        with self.assertRaises(ValueError):
+            book.apply(self.record())
+
+    def test_sequence_gap_and_missing_sequence_not_certified(self):
+        book = self.book()
+        book.apply(self.record(seqId='1'))
+        book.apply(self.record(action='update', seqId='2', prevSeqId='1', bids=[], asks=[]))
+        self.assertTrue(book.sequence_complete)
+        with self.assertRaises(ValueError):
+            book.apply(self.record(action='update', seqId='4', prevSeqId='3'))
+        book = self.book()
+        book.apply(self.record())
+        self.assertFalse(book.sequence_complete)
+
+    def test_contract_metadata_never_invents_historical_specifications(self):
+        result = contract_id(self.symbol)
+        self.assertEqual('2025-02-07', result['expiry_date'])
+        self.assertEqual('P', result['option_type'])
+        self.assertIsNone(result['multiplier'])
+        self.assertIsNone(result['premium_currency'])
+        self.assertFalse(result['expiry_time_verified'])
+        for name in ('BTC-USD-250230-90000-P', 'BTC-USD-250207-0-P', 'ETH-USD-250207-90000-P'):
+            with self.assertRaises(ValueError):
+                contract_id(name)
+
+    def test_complete_container_hashes_are_deterministic_not_trade_eligibility(self):
+        import hashlib
+        raw = self.archive()
+        result = self.scan(raw)
+        self.assertTrue(result['gzip_crc_checked'])
+        self.assertTrue(result['tar_eof_checked'])
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), result['compressed_sha256'])
+        self.assertEqual(1, result['put_count'])
+        self.assertFalse(result['evaluation_eligible'])
+        self.assertFalse(result['entire_day_books_validated'])
+        self.assertEqual(canonical_hash(result), canonical_hash(self.scan(raw)))
+        changed = self.scan(self.archive([self.record(asks=[['0.03', '3', '1']])]))
+        self.assertEqual(result['sampled_rows'], changed['sampled_rows'])
+        self.assertNotEqual(canonical_hash(result), canonical_hash(changed))
+
+    def test_gzip_crc_and_footer_checked_after_tar_terminator(self):
+        import gzip
+        raw = self.archive()
+        corrupted = bytearray(raw)
+        corrupted[-8] ^= 1
+        for value in (raw[:-4], bytes(corrupted)):
+            with self.assertRaises((EOFError, gzip.BadGzipFile)):
+                self.scan(value)
+
+    def test_tar_truncation_and_trailing_nonzero_data_rejected(self):
+        import gzip
+        decoded = gzip.decompress(self.archive())
+        for value in (decoded[:1024], decoded+bytes(100)+b'bad'):
+            with self.assertRaises(ValueError):
+                self.scan(gzip.compress(value))
+
+    def test_unsafe_duplicate_or_wrong_day_members_rejected(self):
+        name = self.symbol+'-L2orderbook-400lv-'+DAY+'.data'
+        for names in ([name, name], ['../'+name], [name.replace(DAY, '2025-01-07')]):
+            with self.assertRaises(ValueError):
+                self.scan(self.archive(names=names))
+
+    def test_invalid_book_sample_is_not_a_container_or_trading_pass(self):
+        result = self.scan(self.archive(body=b'{\n'))
+        self.assertTrue(result['container_complete'])
+        self.assertEqual(1, result['invalid_book_samples'])
+        self.assertEqual('INVALID_BOOK_SAMPLE', result['members'][0]['sample_status'])
+        self.assertFalse(result['members'][0]['trading_eligible'])
+
+    def test_sample_limit_never_claims_unread_book_records_valid(self):
+        body = (json.dumps(self.record())+'\n{malformed later record}\n').encode()
+        result = self.scan(self.archive(body=body), sample_rows=1)
+        self.assertEqual(1, result['sampled_rows'])
+        self.assertEqual(0, result['invalid_book_samples'])
+        self.assertFalse(result['members'][0]['entire_member_book_validated'])
+        self.assertFalse(result['exchange_completeness_certified'])
+
+    def test_scan_limits_and_stop_propagate(self):
+        with self.assertRaises(ValueError):
+            self.scan(self.archive(), scan_limit=100)
+        def stop():
+            raise TimeoutError('STOP')
+        with self.assertRaises(TimeoutError):
+            self.scan(self.archive(), check=stop)
+
+
+class FullDownloadTests(unittest.TestCase):
+    def response(self, raw=b'abcdefgh', status=200, declared='8', encoding='identity'):
+        import io
+        response = io.BytesIO(raw)
+        response.status = status
+        response.headers = {'Content-Encoding': encoding}
+        if declared is not None:
+            response.headers['Content-Length'] = declared
+        return response
+
+    def download(self, response, path, prefix=b'abcd', **kwargs):
+        import hashlib
+        return stream_download(response, path, 8, hashlib.sha256(prefix).hexdigest(),
+                               kwargs.pop('check', lambda: None), prefix_bytes=4, **kwargs)
+
+    def test_full_download_atomic_and_exact_cap_success(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)/'full.gz'
+            result = self.download(self.response(), path, cap=8)
+            self.assertEqual(b'abcdefgh', path.read_bytes())
+            self.assertEqual(hashlib.sha256(b'abcdefgh').hexdigest(), result['sha256'])
+            self.assertFalse(Path(str(path)+'.partial').exists())
+
+    def test_length_prefix_status_and_encoding_fail_without_complete_artifact(self):
+        for response in (self.response(raw=b'abcd'), self.response(raw=b'bad_data'),
+                         self.response(status=206), self.response(declared='9'),
+                         self.response(encoding='gzip'), self.response(raw=b'abcdefghi', declared=None)):
+            with tempfile.TemporaryDirectory() as tmp:
+                path = Path(tmp)/'full.gz'
+                with self.assertRaises(ValueError):
+                    self.download(response, path)
+                self.assertFalse(path.exists())
+
+    def test_unknown_length_eof_required(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)/'full.gz'
+            result = self.download(self.response(declared=None), path)
+            self.assertTrue(result['complete'])
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(ValueError):
+                self.download(self.response(declared=None), Path(tmp)/'full.gz', cap=8)
+
+    def test_no_overwrite_or_blind_resume(self):
+        for suffix in ('', '.partial'):
+            with tempfile.TemporaryDirectory() as tmp:
+                path = Path(tmp)/'full.gz'
+                existing = Path(str(path)+suffix)
+                existing.write_bytes(b'original')
+                with self.assertRaises(FileExistsError):
+                    self.download(self.response(), path)
+                self.assertEqual(b'original', existing.read_bytes())
+
+    def test_stop_propagates_before_body_read(self):
+        def stop():
+            raise TimeoutError('STOP')
+        response = self.response()
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(TimeoutError):
+                self.download(response, Path(tmp)/'full.gz', check=stop)
+        self.assertEqual(0, response.tell())
+
+    def test_acquisition_is_separate_from_one_mb_probe(self):
+        self.assertEqual(300000000, MAX_DOWNLOAD)
+        self.assertEqual(1000000, okx_plan()['per_response_bytes'])
+        self.assertFalse(okx_plan()['full_archive_download'])
+
+    def test_download_cannot_be_retried_under_a_new_namespace(self):
+        from unittest.mock import patch
+        from channel_validation.okx_acquire import acquire
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)/'renamed-retry'
+            with patch('channel_validation.okx_acquire.acquisition_plan') as plan, self.assertRaises(ValueError):
+                acquire(path, lambda: None)
+            plan.assert_not_called()
+            self.assertFalse(path.exists())
+
+    def local_fixture(self, source):
+        import hashlib
+        root = source/'artifacts/okx-full-archive'
+        root.mkdir(parents=True)
+        raw = b'abcdefgh'
+        sha = hashlib.sha256(raw).hexdigest()
+        expected = dict(expected_bytes=len(raw), plan_hash='synthetic-frozen-plan')
+        ah = canonical_hash(expected)
+        (root/'BTC-USD-2025-01-06.tar.gz').write_bytes(raw)
+        write_immutable(root/'acquisition-plan.json', dict(**expected, acquisition_hash=ah, runtime_binding={}))
+        write_immutable(root/'download-receipt.json', dict(acquisition_hash=ah, complete=True, bytes=len(raw), sha256=sha))
+        write_immutable(source/'completion.json', dict(status='STOPPED_INCOMPLETE', plan_hash=expected['plan_hash'],
+                                                     runtime_hash=canonical_hash({})))
+        write_immutable(source/'failure.json', dict(error='Decoded stream budget exceeded', retry_authorized=False))
+        return root, expected, sha
+
+    def test_complete_subartifact_is_readonly_no_network_or_status_rewrite(self):
+        from unittest.mock import patch
+        from channel_validation.okx_acquire import local_census_plan
+        with tempfile.TemporaryDirectory() as tmp:
+            source = Path(tmp)
+            _, expected, sha = self.local_fixture(source)
+            before = {p.name: p.read_bytes() for p in source.glob('*.json')}
+            with patch('channel_validation.okx_acquire.acquisition_plan', return_value=expected), \
+                 patch('channel_validation.okx_acquire.LOCAL_SHA', sha):
+                plan = local_census_plan(source)
+            self.assertEqual(0, plan['max_http_requests'])
+            self.assertFalse(plan['archive_retry'])
+            self.assertFalse(plan['trading_eligible'])
+            self.assertEqual(32*1024**3, plan['max_stream_decoded_bytes'])
+            self.assertEqual(before, {p.name: p.read_bytes() for p in source.glob('*.json')})
+
+    def test_partial_corrupt_or_different_failure_cannot_be_reused(self):
+        from unittest.mock import patch
+        from channel_validation.okx_acquire import local_census_plan
+        for change in ('raw', 'receipt', 'failure', 'binding'):
+            with tempfile.TemporaryDirectory() as tmp:
+                source = Path(tmp)
+                root, expected, sha = self.local_fixture(source)
+                if change == 'raw':
+                    (root/'BTC-USD-2025-01-06.tar.gz').write_bytes(b'abcdefgX')
+                else:
+                    file, key, value = {
+                        'receipt': (root/'download-receipt.json', 'complete', False),
+                        'failure': (source/'failure.json', 'error', 'CRC mismatch'),
+                        'binding': (source/'completion.json', 'runtime_hash', 'changed'),
+                    }[change]
+                    data = json.loads(file.read_text())
+                    data[key] = value
+                    file.write_text(json.dumps(data))
+                with patch('channel_validation.okx_acquire.acquisition_plan', return_value=expected), \
+                     patch('channel_validation.okx_acquire.LOCAL_SHA', sha), self.assertRaises(ValueError):
+                    local_census_plan(source)
 
 
 if __name__ == '__main__':
