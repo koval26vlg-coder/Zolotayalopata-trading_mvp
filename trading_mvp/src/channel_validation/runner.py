@@ -222,7 +222,7 @@ def report(plan, inv, validation, evaluation):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
+    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
     parser.add_argument('--input-manifest')
     parser.add_argument('--evaluation', type=Path)
     parser.add_argument('--output', type=Path)
@@ -258,6 +258,18 @@ def main(argv=None):
         return 0 if result.wasSuccessful() else 1
     if not args.output:
         parser.error('Explicit isolated output namespace required')
+    if args.stage == 'archive-audit':
+        from .archive_audit import archive_audit
+        archive_audit(args.output/'archive-discovery', check)
+        return 0
+    if args.stage == 'gate-history-audit':
+        from .gate_history import download_audit
+        download_audit(args.output/'gate-history-audit', check)
+        return 0
+    if args.stage == 'gate-catalog-audit':
+        from .gate_catalog import catalog_audit
+        catalog_audit(args.output/'gate-catalog-audit', check)
+        return 0
     if args.stage == 'sources':
         from .sources import download_samples
         download_samples(args.output/'public-history-sample', check)

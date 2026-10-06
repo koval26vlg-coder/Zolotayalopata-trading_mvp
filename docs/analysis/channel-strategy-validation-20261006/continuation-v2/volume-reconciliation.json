@@ -1,0 +1,112 @@
+{
+  "comparisons": [
+    {
+      "archive_sha256": "49bf158b779cd52e1fd4ded2b3ad013091f8d126ba9d77398276be57b7fc17c0",
+      "base": "BTC",
+      "comparisons": [
+        {
+          "base_volume_difference": "0E-8",
+          "base_volume_equal": true,
+          "hours": 24,
+          "ohlc_equal": true,
+          "quote_volume_equal": false,
+          "ts": 1735689600
+        },
+        {
+          "base_volume_difference": "0E-8",
+          "base_volume_equal": true,
+          "hours": 24,
+          "ohlc_equal": true,
+          "quote_volume_equal": false,
+          "ts": 1735776000
+        }
+      ],
+      "full_schema_certification": false,
+      "inferred_volume_unit": "BASE_ON_SAMPLED_DAYS",
+      "month": "202501",
+      "rest_sha256": "ee685f08ea424e289cf4328ee86dbbb1f32d0f7397f5db8d926a15d4a0caa2a4"
+    },
+    {
+      "archive_sha256": "8c2789a3b3d051737bd3a85ffeb8aec306bd1e6bd8a189abf8a82f52b89517ac",
+      "base": "BTC",
+      "comparisons": [
+        {
+          "base_volume_difference": "0E-8",
+          "base_volume_equal": true,
+          "hours": 24,
+          "ohlc_equal": true,
+          "quote_volume_equal": false,
+          "ts": 1788220800
+        },
+        {
+          "base_volume_difference": "0E-8",
+          "base_volume_equal": true,
+          "hours": 24,
+          "ohlc_equal": true,
+          "quote_volume_equal": false,
+          "ts": 1788307200
+        }
+      ],
+      "full_schema_certification": false,
+      "inferred_volume_unit": "BASE_ON_SAMPLED_DAYS",
+      "month": "202609",
+      "rest_sha256": "efcf708ebbef6a5226ea67d0f3f1c7f95e9a00972513be30afc7a5e31a031dcb"
+    },
+    {
+      "archive_sha256": "e76d29d9eb0a6c89f605467c55e63551a3456fa9319f347b980643d723d7b8ff",
+      "base": "ETH",
+      "comparisons": [
+        {
+          "base_volume_difference": "0E-8",
+          "base_volume_equal": true,
+          "hours": 24,
+          "ohlc_equal": true,
+          "quote_volume_equal": false,
+          "ts": 1735689600
+        },
+        {
+          "base_volume_difference": "0E-8",
+          "base_volume_equal": true,
+          "hours": 24,
+          "ohlc_equal": true,
+          "quote_volume_equal": false,
+          "ts": 1735776000
+        }
+      ],
+      "full_schema_certification": false,
+      "inferred_volume_unit": "BASE_ON_SAMPLED_DAYS",
+      "month": "202501",
+      "rest_sha256": "528f388fade5919d22e109d2af1547ccadb0452c2bd409eb1922d13bf1d1df3e"
+    },
+    {
+      "archive_sha256": "5351d638a700f8ed270d08e375186a3363ae61cd1e2f6a9d09a109e4f05d492f",
+      "base": "ETH",
+      "comparisons": [
+        {
+          "base_volume_difference": "0E-8",
+          "base_volume_equal": true,
+          "hours": 24,
+          "ohlc_equal": true,
+          "quote_volume_equal": false,
+          "ts": 1788220800
+        },
+        {
+          "base_volume_difference": "0E-8",
+          "base_volume_equal": true,
+          "hours": 24,
+          "ohlc_equal": true,
+          "quote_volume_equal": false,
+          "ts": 1788307200
+        }
+      ],
+      "full_schema_certification": false,
+      "inferred_volume_unit": "BASE_ON_SAMPLED_DAYS",
+      "month": "202609",
+      "rest_sha256": "6c5c6ea1bfae61cf502a82739fba8afbf4ca88087e9c7d63be75fafba9e4295d"
+    }
+  ],
+  "evaluation_eligible": false,
+  "old_sample_audit_sha256": "3028be16e5657afee9570383d076bedc8f9784a456c5af8ec54cf0b1ef388872",
+  "parent_audit_sha256": "af57ce928ae3a4ef848d2533d4288a1d7c98d5ebba41fe2200bc9c39b3fff1d9",
+  "universe_certified": false
+}

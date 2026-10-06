@@ -15,6 +15,9 @@ from channel_validation.statistics import holm, bootstrap_pvalue, summarize, tem
 from channel_validation.runner import inventory, validate, evaluate, report, main
 from channel_validation.sources import sample_requests, inspect_csv_gzip
 from channel_validation.portfolio import replay_opportunities
+from channel_validation.gate_history import requests_plan, normalize_rest, archive_comparison, read_bounded
+from channel_validation.archive_audit import discover, inspect_pit_state
+from channel_validation.gate_catalog import parse_catalog, aggregate_archive, checked_json
 
 
 def universe(at, members=('BTC', 'ETH')):
@@ -435,6 +438,176 @@ class PortfolioTests(unittest.TestCase):
         second = self.opportunity('B', self.at+7200, self.at+10800, size_scale_step=1)
         result = replay_opportunities([first, second], [], self.plan, '2026-01-01', '2026-01-02')
         self.assertEqual(1, len(result['trades']))
+
+
+class HistoryInputTests(unittest.TestCase):
+    def setUp(self):
+        self.spec = dict(base='BTC', step=3600, start=1672531200, end=1672538400)
+        self.rows = [[str(t), '201', '101', '102', '99', '100', '2', 'true']
+                     for t in (1672531200, 1672534800)]
+
+    def test_fixed_request_budget_public_no_current_survivor_selection(self):
+        p = requests_plan()
+        self.assertEqual(10, len(p['requests']))
+        self.assertLessEqual(len(p['requests']), build_plan()['resource_limits']['max_source_probe_requests'])
+        self.assertEqual(0, p['retries'])
+        self.assertFalse(p['universe_certified'])
+        self.assertTrue(all('currency_pairs' not in r['url'] for r in p['requests']))
+
+    def test_rest_preserves_exact_turnover_not_close_times_volume(self):
+        result = normalize_rest(list(reversed(self.rows)), self.spec)
+        self.assertEqual('201', result[0]['quote_volume'])
+        self.assertEqual('2', result[0]['volume'])
+        self.assertNotEqual(float(result[0]['quote_volume']), float(result[0]['close'])*float(result[0]['volume']))
+
+    def test_unclosed_or_legacy_schema_rejected(self):
+        for mutate in (lambda x: x[0].pop(), lambda x: x[0].__setitem__(7, 'false')):
+            rows = copy.deepcopy(self.rows)
+            mutate(rows)
+            with self.assertRaises(ValueError):
+                normalize_rest(rows, self.spec)
+
+    def test_missing_duplicate_or_outside_bar_rejected(self):
+        for rows in (self.rows[:1], self.rows+[self.rows[0]], self.rows[1:]+[self.rows[1]]):
+            with self.assertRaises(ValueError):
+                normalize_rest(rows, self.spec)
+
+    def test_nonfinite_and_unit_swap_rejected(self):
+        for q, v in (('NaN', '2'), ('Infinity', '2'), ('2', '201'), ('201', '0')):
+            rows = copy.deepcopy(self.rows)
+            rows[0][1], rows[0][6] = q, v
+            with self.assertRaises(ValueError):
+                normalize_rest(rows, self.spec)
+
+    def test_csv_volume_is_not_silently_rest_volume_schema(self):
+        import gzip
+        raw = gzip.compress(b'1672531200,2,101,102,99,100\n1672534800,2,101,102,99,100\n')
+        result = archive_comparison(normalize_rest(self.rows, self.spec), raw)
+        self.assertEqual('BASE_VOLUME_MATCHES_API_ON_SAMPLED_ROWS', result['archive_column_1'])
+        self.assertFalse(result['quote_turnover_reconstructible_from_csv'])
+        self.assertFalse(result['global_schema_certified'])
+
+    def response(self, raw, declared=None):
+        import io
+        r = io.BytesIO(raw)
+        r.headers = {} if declared is None else {'Content-Length': str(declared)}
+        return r
+
+    def test_stream_exact_cap_known_length_valid(self):
+        raw, status = read_bounded(self.response(b'1234', 4), lambda: None, 4)
+        self.assertEqual(b'1234', raw)
+        self.assertTrue(status['complete'])
+
+    def test_stream_unknown_length_cap_not_guessed_complete(self):
+        r = self.response(b'123456')
+        raw, status = read_bounded(r, lambda: None, 4)
+        self.assertEqual(4, r.tell())
+        self.assertEqual(4, status['bytes_read'])
+        self.assertFalse(status['complete'])
+
+    def test_declared_oversize_skips_body_and_partial_length_rejected(self):
+        r = self.response(b'123456', 6)
+        raw, status = read_bounded(r, lambda: None, 4)
+        self.assertEqual(0, r.tell())
+        self.assertFalse(status['complete'])
+        self.assertFalse(read_bounded(self.response(b'12', 4), lambda: None, 4)[1]['complete'])
+
+    def test_stop_propagates_before_body_read(self):
+        def stop():
+            raise TimeoutError('STOP')
+        r = self.response(b'1234')
+        with self.assertRaises(TimeoutError):
+            read_bounded(r, stop)
+        self.assertEqual(0, r.tell())
+
+    def test_missing_archive_not_created(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)/'missing'
+            result = discover(path)
+            self.assertFalse(path.exists())
+            self.assertFalse(result['inventory_complete'])
+
+    def test_archive_discovery_never_reads_payload_or_other_listing_project(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)/'daily'
+            folder.mkdir()
+            (folder/'candles.jsonl').write_bytes(b'invalid json, discovery must not read this')
+            (folder/'listing_momentum_other.json').write_text('private other project')
+            (folder/'holdout.jsonl').write_text('do not open')
+            r = discover(tmp)
+            self.assertEqual(['daily/candles.jsonl'], [f['path'] for f in r['files']])
+            self.assertFalse(r['data_payloads_read'])
+            self.assertFalse(r['evaluation_eligible'])
+            self.assertFalse(discover(tmp, max_entries=1)['inventory_complete'])
+
+    def test_perp_snapshot_does_not_certify_historical_spot_universe(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp)/'universe_state.json'
+            state = dict(schema='pit_universe_state_v1', run_id='test', symbols={
+                'gate|BTC': dict(row=dict(exchange='gate', contract_type='linear_perp', snapshot_ts='2026-08-11T00:00:00Z'))})
+            p.write_text(json.dumps(state))
+            r = inspect_pit_state(p)
+            self.assertFalse(r['monthly_spot_membership_certified'])
+            self.assertEqual({'gate:linear_perp': 1}, r['instrument_counts'])
+            state['symbols']['gate|BTC']['row']['contract_type'] = 'spot'
+            p.write_text(json.dumps(state))
+            self.assertNotEqual(r['sha256'], inspect_pit_state(p)['sha256'])
+
+
+class CatalogTests(unittest.TestCase):
+    prefix = 'spot/candlesticks_1d/202301/'
+
+    def xml(self, keys=('BTC_USDT-202301.csv.gz',), truncated='false', marker='', prefix=None):
+        prefix = self.prefix if prefix is None else prefix
+        entries = ''.join(f'<Contents><Key>{prefix}{k}</Key><Size>100</Size></Contents>' for k in keys)
+        return (f'<ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">'
+                f'<Name>gateio-public-data</Name><Prefix>{prefix}</Prefix><Marker>{marker}</Marker>'
+                f'<IsTruncated>{truncated}</IsTruncated>{entries}</ListBucketResult>').encode()
+
+    def test_truncated_page_is_not_complete_and_uses_last_key(self):
+        r = parse_catalog(self.xml(truncated='true'), self.prefix)
+        self.assertTrue(r['is_truncated'])
+        self.assertEqual(self.prefix+'BTC_USDT-202301.csv.gz', r['next_marker'])
+        self.assertIsNone(r['objects'][0]['payload_sha256'])
+
+    def test_empty_complete_catalog_allowed_not_infinite_pagination(self):
+        self.assertFalse(parse_catalog(self.xml(keys=()), self.prefix)['is_truncated'])
+        with self.assertRaises(ValueError):
+            parse_catalog(self.xml(keys=(), truncated='true'), self.prefix)
+
+    def test_wrong_prefix_duplicate_or_repeated_page_rejected(self):
+        for raw, marker in ((self.xml(prefix='wrong/'), ''),
+                            (self.xml(keys=('BTC_USDT-202301.csv.gz',)*2), ''),
+                            (self.xml(marker=self.prefix+'BTC_USDT-202301.csv.gz'), self.prefix+'BTC_USDT-202301.csv.gz')):
+            with self.assertRaises(ValueError):
+                parse_catalog(raw, self.prefix, marker)
+
+    def test_xml_entity_blocked(self):
+        with self.assertRaises(ValueError):
+            parse_catalog(b'<!DOCTYPE x [<!ENTITY x "bad">]>'+self.xml(), self.prefix)
+
+    def test_archive_daily_volume_requires_every_hour(self):
+        import gzip
+        start = 1735689600
+        raw = ''.join(f'{at},1,100,101,99,100\n' for at in range(start, start+86400, 3600)).encode()
+        rest = dict(ts=start, end_ts=start+86400, volume='24', quote_volume='2400',
+                    open='100', high='101', low='99', close='100')
+        r = aggregate_archive(gzip.compress(raw), [rest])
+        self.assertEqual('BASE_ON_SAMPLED_DAYS', r['inferred_volume_unit'])
+        with self.assertRaises(ValueError):
+            aggregate_archive(gzip.compress(raw.split(b'\n', 1)[1]), [rest])
+
+    def test_changed_sealed_input_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp)/'audit.json'
+            value = dict(rows=30, source='A')
+            value['hash'] = canonical_hash(value)
+            p.write_text(json.dumps(value))
+            checked_json(p, 'hash')
+            value['source'] = 'B'
+            p.write_text(json.dumps(value))
+            with self.assertRaises(ValueError):
+                checked_json(p, 'hash')
 
 
 if __name__ == '__main__':
