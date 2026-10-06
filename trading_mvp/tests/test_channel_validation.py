@@ -21,6 +21,9 @@ from channel_validation.gate_catalog import parse_catalog, aggregate_archive, ch
 from channel_validation.gate_survivorship import (request_plan as survivorship_plan, parse_symbols,
                                                   parse_archive, conclusions)
 from channel_validation.gate_trades import summarize_trades, reconcile as reconcile_trades
+from channel_validation.gate_metadata import parse_metadata, request_plan as metadata_plan
+from channel_validation.okx_history import (parse_catalog as parse_okx_catalog, validate_range, inspect_prefix,
+                                            request_plan as okx_plan, DAY, DAY_MS, CAP)
 
 
 def universe(at, members=('BTC', 'ETH')):
@@ -708,6 +711,161 @@ class ArchivedTradeTests(unittest.TestCase):
             raise TimeoutError('STOP')
         with self.assertRaises(TimeoutError):
             summarize_trades(self.zipped('0,1,100,1,1\n'), dict(start=0, end=86400), stop)
+
+
+class ProviderMetadataTests(unittest.TestCase):
+    def payload(self):
+        return dict(id='gate-io', availableSymbols=[dict(id='TRC_USDT', type='spot',
+                    availableSince='2022-06-09T00:00:00Z', availableTo='2026-09-02T03:00:00Z'),
+                    dict(id='BTC_USDT', type='spot', availableSince='2020-07-01T00:00:00Z')])
+
+    def test_provider_dates_and_spot_type_do_not_certify_pit_or_asset_type(self):
+        result = parse_metadata(json.dumps(self.payload()))
+        self.assertEqual(2, result['usdt_symbol_count'])
+        self.assertEqual(1, result['finite_provider_interval_count'])
+        self.assertEqual('TRC_USDT', result['delisted_samples'][0]['symbol'])
+        self.assertIsNone(result['symbols'][0]['provider_available_to'])
+        self.assertTrue(all(r['listing_ts'] is None and r['asset_type'] is None for r in result['symbols']))
+        self.assertFalse(result['historical_membership_complete'])
+        self.assertFalse(result['evaluation_eligible'])
+
+    def test_missing_empty_duplicate_or_wrong_market_rejected(self):
+        for mutate in (lambda p: p.update(id='gate-io-futures'), lambda p: p.update(availableSymbols=[]),
+                       lambda p: p['availableSymbols'].append(p['availableSymbols'][0]),
+                       lambda p: p['availableSymbols'][0].update(type='perpetual'),
+                       lambda p: p['availableSymbols'][0].update(id='../bad')):
+            payload = self.payload()
+            mutate(payload)
+            with self.assertRaises(ValueError):
+                parse_metadata(json.dumps(payload))
+        for raw in ('{"id":"gate-io","id":"gate-io"}', '{'):
+            with self.assertRaises(ValueError):
+                parse_metadata(raw)
+
+    def test_bad_or_reversed_dates_rejected(self):
+        for start, end in ((None, None), ('2023-01-01', None),
+                           ('2026-01-01T00:00:00Z', '2025-01-01T00:00:00Z')):
+            payload = self.payload()
+            payload['availableSymbols'][0].update(availableSince=start, availableTo=end)
+            with self.assertRaises(ValueError):
+                parse_metadata(json.dumps(payload))
+
+    def test_deterministic_sorted_metadata_and_changed_data_binding(self):
+        payload = self.payload()
+        first = canonical_hash(parse_metadata(json.dumps(payload)))
+        payload['availableSymbols'].reverse()
+        self.assertEqual(first, canonical_hash(parse_metadata(json.dumps(payload))))
+        payload['availableSymbols'][0]['availableSince'] = '2021-07-01T00:00:00Z'
+        self.assertNotEqual(first, canonical_hash(parse_metadata(json.dumps(payload))))
+
+    def test_single_request_no_retry_and_runtime_bound(self):
+        plan = metadata_plan()
+        self.assertEqual(1, len(plan['requests']))
+        self.assertEqual(0, plan['retries'])
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp)/'unused'
+            with self.assertRaises(SystemExit):
+                main(['gate-metadata-audit', '--max-runtime-sec', '301', '--output', str(output)])
+            self.assertFalse(output.exists())
+
+    def test_stop_propagates(self):
+        def stop():
+            raise TimeoutError('STOP')
+        with self.assertRaises(TimeoutError):
+            parse_metadata(json.dumps(self.payload()), stop)
+
+
+class OptionArchiveSourceTests(unittest.TestCase):
+    def catalog(self):
+        details = []
+        for family in ('BTC-USD', 'ETH-USD'):
+            filename = f'{family}-optionchain-L2orderbook-400lv-{DAY}.tar.gz'
+            details.append(dict(instType='OPTION', instFamily=family, groupDetails=[dict(
+                dateTs=str(DAY_MS), sizeMB='243.22', filename=filename,
+                url=f'https://static.okx.com/cdn/okx/match/orderbook/L2/400lv/daily/20250106/{filename}')]))
+        return dict(code='0', data=dict(details=details))
+
+    def tar(self, name='BTC-USD-250131-90000-P.txt'):
+        import io
+        import tarfile
+        import gzip
+        data = (json.dumps(dict(instId='BTC-USD-250131-90000-P', action='snapshot',
+                               ts=str(DAY_MS), bids=[['0.01', '1', '1']], asks=[['0.02', '1', '1']]))+'\n').encode()
+        buffer = io.BytesIO()
+        with tarfile.open(fileobj=buffer, mode='w') as archive:
+            member = tarfile.TarInfo(name)
+            member.size = len(data)
+            archive.addfile(member, io.BytesIO(data))
+        return gzip.compress(buffer.getvalue())
+
+    def test_catalog_allows_only_exact_dated_btc_eth_public_files(self):
+        rows = parse_okx_catalog(json.dumps(self.catalog()))
+        self.assertEqual(['BTC-USD', 'ETH-USD'], [r['family'] for r in rows])
+        self.assertEqual([], parse_okx_catalog(json.dumps(dict(code='0', data=dict(details=[])))))
+
+    def test_catalog_does_not_follow_untrusted_urls_or_wrong_dates(self):
+        for field, value in (('url', 'https://example.com/private'), ('dateTs', '0'),
+                             ('sizeMB', 'NaN'), ('filename', '../file.tar.gz')):
+            payload = self.catalog()
+            payload['data']['details'][0]['groupDetails'][0][field] = value
+            with self.assertRaises(ValueError):
+                parse_okx_catalog(json.dumps(payload))
+        payload = self.catalog()
+        payload['data']['details'] *= 2
+        with self.assertRaises(ValueError):
+            parse_okx_catalog(json.dumps(payload))
+
+    def test_utc_date_and_bounded_public_request_budget(self):
+        plan = okx_plan()
+        self.assertEqual(str(DAY_MS+86400000-1), plan['payload']['dateQuery']['begin'])
+        self.assertEqual(3, plan['max_requests'])
+        self.assertFalse(plan['credentials'])
+        self.assertFalse(plan['full_archive_download'])
+        self.assertEqual(0, plan['retries'])
+
+    def test_ignored_oversized_encoded_or_wrong_range_rejected(self):
+        valid = {'Content-Range': f'bytes 0-{CAP-1}/200000000', 'Content-Length': str(CAP)}
+        self.assertFalse(validate_range(206, valid)['entire_archive_in_response'])
+        for status, headers in ((200, valid), (206, {}), (206, dict(valid, **{'Content-Encoding': 'gzip'})),
+                                (206, dict(valid, **{'Content-Length': str(CAP+1)})),
+                                (206, dict(valid, **{'Content-Range': 'bytes 1-99/200'}))):
+            with self.assertRaises(ValueError):
+                validate_range(status, headers)
+
+    def test_tar_prefix_records_real_fields_but_never_certifies_archive(self):
+        result = inspect_prefix(self.tar())
+        self.assertIn('bids', result['sample']['top_level_fields'])
+        self.assertIn('asks', result['sample']['top_level_fields'])
+        self.assertFalse(result['evaluation_eligible'])
+        self.assertFalse(result['archive_complete'])
+        self.assertEqual(canonical_hash(result), canonical_hash(inspect_prefix(self.tar())))
+
+    def test_incomplete_gzip_prefix_can_describe_schema_not_integrity(self):
+        raw = self.tar()
+        result = inspect_prefix(raw[:-8])
+        self.assertFalse(result['gzip_end_seen'])
+        self.assertFalse(result['archive_complete'])
+        self.assertIsNotNone(result['sample'])
+
+    def test_unsafe_tar_member_and_corrupted_header_rejected(self):
+        import gzip
+        with self.assertRaises(ValueError):
+            inspect_prefix(self.tar('../outside'))
+        decoded = bytearray(gzip.decompress(self.tar()))
+        decoded[0] ^= 1
+        with self.assertRaises(ValueError):
+            inspect_prefix(gzip.compress(decoded))
+
+    def test_stop_and_runtime_cap(self):
+        def stop():
+            raise TimeoutError('STOP')
+        with self.assertRaises(TimeoutError):
+            inspect_prefix(self.tar(), stop)
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp)/'unused'
+            with self.assertRaises(SystemExit):
+                main(['okx-history-audit', '--max-runtime-sec', '301', '--output', str(output)])
+            self.assertFalse(output.exists())
 
 
 if __name__ == '__main__':
