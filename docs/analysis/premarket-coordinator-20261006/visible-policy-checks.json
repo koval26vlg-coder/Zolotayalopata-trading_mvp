@@ -1,0 +1,11 @@
+{
+  "pid": 43360,
+  "started_utc": "2026-10-06T10:36:29.5508795Z",
+  "command": "pwsh -NoProfile -NoExit -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-coordinator-20261006\\verify-policy.ps1\"",
+  "window_style": "Normal",
+  "no_exit": true,
+  "network_requests": 0,
+  "purpose": "Preflight blocked, no output/claim, disabled schedule verification and controller regression tests",
+  "status_command": "Get-Content 'C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-coordinator-20261006\\policy-verification.log' -Tail 20",
+  "stop_command": "Ctrl+C in this visible terminal"
+}

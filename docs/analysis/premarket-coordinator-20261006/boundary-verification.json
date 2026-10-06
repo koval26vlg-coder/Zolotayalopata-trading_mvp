@@ -1,0 +1,35 @@
+{
+  "observed_utc": "2026-10-06T10:36:30.1261654Z",
+  "controller_regression_exit_code": 1,
+  "preflight_exit_code": 2,
+  "preflight": {
+    "status": "BLOCKED",
+    "reason": "COLLECTION_DISABLED_OFFLINE_ONLY"
+  },
+  "status": "OFFLINE_BOUNDARY_CHECKS_PASS",
+  "Stop": {
+    "run_id": "premarket_depth_offline_verification",
+    "status": "NOT_STARTED"
+  },
+  "legacy_installer_exit_code": 2,
+  "legacy_installer": {
+    "status": "LEGACY_HIDDEN_CAPTURE_RETIRED",
+    "task": "ZolotyayLopata Premarket Forward Depth Scan",
+    "reason": "Use start_premarket_depth_coordinator_visible.ps1 after technical readiness; schedules remain disabled."
+  },
+  "production_claim_exists": false,
+  "capture_namespace_exists": false,
+  "dispatch_files": [],
+  "schedules": [
+    {
+      "state": "Disabled",
+      "name": "ZolotyayLopata Premarket Forward Depth Scan"
+    },
+    {
+      "state": "Disabled",
+      "name": "PremarketAnnouncementWatch"
+    }
+  ],
+  "runtime_manifest_hash": "7d9b0cb8ddd30b7826205dfb9e847f2d0fa070efbc03b3bd1863113ad3912e5c",
+  "runtime_manifest_file_sha256": "12241263b36db7fd2872a6dd4f3c644742644db559a01f651272afa378a9e50a"
+}

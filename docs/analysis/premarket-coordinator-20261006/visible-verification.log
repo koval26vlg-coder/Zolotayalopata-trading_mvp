@@ -1,0 +1,53 @@
+**********************
+Начало расшифровки PowerShell
+Время начала: 20261006133418
+Имя пользователя: LAPTOP-UN546M00\koval
+Пользователь, от имени которого выполняется запуск: LAPTOP-UN546M00\koval
+Имя конфигурации: 
+Компьютер: LAPTOP-UN546M00 (Microsoft Windows NT 10.0.26200.0)
+Ведущее приложение: C:\Program Files\PowerShell\7\pwsh.dll -NoProfile -NoExit -File C:\Users\koval\Documents\ZolotyayLopata\docs\analysis\premarket-coordinator-20261006\verify-offline.ps1
+Идентификатор процесса: 56152
+PSVersion: 7.6.6
+PSEdition: Core
+GitCommitId: 7.6.6
+OS: Microsoft Windows 10.0.26200
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+OFFLINE ONLY. Stop: Ctrl+C. Expected <300 sec. Synthetic claims use temporary folders only.
+test_permission_escalation_blocks (trading_mvp.tests.test_research_checkpoint.CheckpointTests.test_permission_escalation
+_blocks) ... ok
+test_pointer_hash_mismatch_blocks (trading_mvp.tests.test_research_checkpoint.CheckpointTests.test_pointer_hash_mismatch
+_blocks) ... ok
+test_quota_wins (trading_mvp.tests.test_research_checkpoint.CheckpointTests.test_quota_wins) ... ok
+test_running_gate_wins (trading_mvp.tests.test_research_checkpoint.CheckpointTests.test_running_gate_wins) ... ok
+test_same_count_source_change_invalidates (trading_mvp.tests.test_research_checkpoint.CheckpointTests.test_same_count_so
+urce_change_invalidates) ... ok
+test_unavailable_telemetry_wins (trading_mvp.tests.test_research_checkpoint.CheckpointTests.test_unavailable_telemetry_w
+ins) ... ok
+test_unknown_gate_stays_closed (trading_mvp.tests.test_research_checkpoint.CheckpointTests.test_unknown_gate_stays_close
+d) ... ok
+test_valid_checkpoint_does_not_launch (trading_mvp.tests.test_research_checkpoint.CheckpointTests.test_valid_checkpoint_
+does_not_launch) ... ok
+test_writer_claim_blocks_even_when_gate_ready (trading_mvp.tests.test_research_checkpoint.CheckpointTests.test_writer_cl
+aim_blocks_even_when_gate_ready) ... ok
+test_wrong_policy_binding_blocks (trading_mvp.tests.test_research_checkpoint.CheckpointTests.test_wrong_policy_binding_b
+locks) ... ok
+test_quota_pause_wins_over_running_gate (trading_mvp.tests.test_research_checkpoint.ControllerSmokeTests.test_quota_paus
+e_wins_over_running_gate) ... ok
+test_writer_start_between_guard_and_gate_blocks (trading_mvp.tests.test_research_checkpoint.ControllerSmokeTests.test_wr
+iter_start_between_guard_and_gate_blocks) ... ok
+
+----------------------------------------------------------------------
+Ran 106 tests in 5.271s
+
+OK
+PS>TerminatingError(): "Orphan process survived owner close"
+OFFLINE_VERIFICATION_FAILED: Orphan process survived owner close
+**********************
+Завершение расшифровки PowerShell
+Время окончания: 20261006133429
+**********************

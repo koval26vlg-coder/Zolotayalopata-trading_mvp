@@ -55,6 +55,13 @@ function Emit {
     $payload | ConvertTo-Json -Depth 12
 }
 
+# Historical plans bind the old watcher bytes. Keep them as evidence, but never
+# reinstall its detached per-event launch path. This does not change saved tasks.
+if (-not $Uninstall) {
+    Emit "LEGACY_HIDDEN_CAPTURE_RETIRED" @{ reason = "Use start_premarket_depth_coordinator_visible.ps1 after technical readiness; schedules remain disabled." }
+    exit 2
+}
+
 if ($Uninstall) {
     schtasks /query /TN $TaskName *> $null
     if ($LASTEXITCODE -ne 0) { Emit "NOT_INSTALLED"; exit 0 }

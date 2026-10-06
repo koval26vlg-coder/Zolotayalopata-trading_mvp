@@ -210,3 +210,10 @@ trading_mvp/src/research_checkpoint.py -text whitespace=cr-at-eol
 trading_mvp/src/premarket_depth_sampling_protocol.py -text whitespace=cr-at-eol
 docs/plans/premarket-depth-sampling-protocol-20261005-v1.json -text whitespace=cr-at-eol
 docs/analysis/premarket-depth-sampling-20261005/* -text whitespace=cr-at-eol
+
+# Offline serial coordinator: exact runtime and verification bytes.
+trading_mvp/src/premarket_depth_coordinator.py -text whitespace=cr-at-eol
+tools/start_premarket_depth_coordinator_visible.ps1 -text whitespace=cr-at-eol
+docs/plans/premarket-depth-coordinator-runtime-20261006-v1.json -text whitespace=cr-at-eol
+docs/analysis/premarket-coordinator-20261006/* -text whitespace=cr-at-eol
+docs/analysis/premarket-coordinator-20261006/*.log -text whitespace=-blank-at-eol,cr-at-eol
