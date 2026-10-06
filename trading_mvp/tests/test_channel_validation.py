@@ -18,6 +18,9 @@ from channel_validation.portfolio import replay_opportunities
 from channel_validation.gate_history import requests_plan, normalize_rest, archive_comparison, read_bounded
 from channel_validation.archive_audit import discover, inspect_pit_state
 from channel_validation.gate_catalog import parse_catalog, aggregate_archive, checked_json
+from channel_validation.gate_survivorship import (request_plan as survivorship_plan, parse_symbols,
+                                                  parse_archive, conclusions)
+from channel_validation.gate_trades import summarize_trades, reconcile as reconcile_trades
 
 
 def universe(at, members=('BTC', 'ETH')):
@@ -608,6 +611,103 @@ class CatalogTests(unittest.TestCase):
             p.write_text(json.dumps(value))
             with self.assertRaises(ValueError):
                 checked_json(p, 'hash')
+
+
+class SurvivorshipTests(unittest.TestCase):
+    def test_fixed_public_budget_no_profit_selection(self):
+        plan = survivorship_plan()
+        self.assertEqual(8, len(plan['requests']))
+        self.assertEqual(8, len({r['url'] for r in plan['requests']}))
+        self.assertEqual(0, plan['retries'])
+        self.assertFalse(plan['evaluation_eligible'])
+        self.assertEqual({'TRC', 'EYWA'}, {r['base'] for r in plan['requests'] if 'base' in r})
+
+    def test_current_symbols_never_certify_past_membership(self):
+        result = parse_symbols(dict(code=0, data=dict(spot=['btc_usdt', 'old_usdt'])))
+        self.assertEqual(['BTC_USDT', 'OLD_USDT'], result['pairs'])
+        self.assertFalse(result['historical_membership_complete'])
+        self.assertFalse(result['asset_types_verified'])
+
+    def test_empty_wrong_or_duplicate_symbols_rejected(self):
+        for values in ([], ['BTC_USDT', 'btc_usdt'], ['BTC'], [None], ['BTC_USDT '], ['_USDT']):
+            with self.assertRaises(ValueError):
+                parse_symbols(dict(code=0, data=dict(spot=values)))
+        with self.assertRaises(ValueError):
+            parse_symbols(dict(code=1, data=dict(spot=['BTC_USDT'])))
+
+    def test_absent_pair_and_real_archive_prove_export_omission_only(self):
+        records = [dict(kind='export_symbols', parsed=dict(pairs=['BTC_USDT'])),
+                   dict(kind='hourly_archive', base='TRC', parsed=dict(rows=744, full_requested_grid=True))]
+        result = conclusions(records)
+        self.assertTrue(result['samples'][0]['export_list_missing_historical_pair'])
+        self.assertFalse(result['historical_universe_certified'])
+        self.assertFalse(result['samples'][0]['exact_daily_turnover_observed'])
+
+    def test_failed_list_does_not_mean_absence(self):
+        result = conclusions([dict(kind='export_symbols', status='HTTP_ERROR_NO_RETRY'),
+                              dict(kind='hourly_archive', base='TRC', parsed=dict(rows=744))])
+        self.assertIsNone(result['samples'][0]['absent_from_export_symbols'])
+        self.assertFalse(result['samples'][0]['export_list_missing_historical_pair'])
+
+    def test_partial_archive_explicit_not_complete(self):
+        import gzip
+        spec = dict(start=0, end=7200, step=3600)
+        result = parse_archive(gzip.compress(b'0,1,100,101,99,100\n'), spec)
+        self.assertFalse(result['full_requested_grid'])
+        self.assertEqual(1, result['missing_bars'])
+        self.assertFalse(result['exact_quote_turnover_available'])
+
+    def test_corrupt_archive_rejected(self):
+        import gzip
+        for raw in (b'', b'0,1,100,101,99,100\n'*2, b'1,1,100,101,99,100\n',
+                    b'0,NaN,100,101,99,100\n', b'0,1,100,99,101,100\n', b'0,1,100\n'):
+            with self.assertRaises(ValueError):
+                parse_archive(gzip.compress(raw), dict(start=0, end=7200, step=3600))
+
+    def test_new_stage_rejects_long_runtime_before_creating_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp)/'unused'
+            with self.assertRaises(SystemExit):
+                main(['gate-survivorship-audit', '--max-runtime-sec', '301', '--output', str(output)])
+            self.assertFalse(output.exists())
+
+
+class ArchivedTradeTests(unittest.TestCase):
+    def zipped(self, text):
+        import gzip
+        return gzip.compress(text.encode())
+
+    def test_exact_turnover_not_candle_close_times_volume(self):
+        result = summarize_trades(self.zipped('0.1,1,99,2,1\n1.2,2,101,3,2\n'), dict(start=0, end=86400))
+        self.assertEqual('501', result['days'][0]['quote_turnover'])
+        self.assertEqual('5', result['days'][0]['base_volume'])
+        self.assertFalse(result['historical_completeness_certified'])
+
+    def test_daily_boundary_fractional_timestamp_and_no_fabricated_empty_days(self):
+        result = summarize_trades(self.zipped('86399.9,1,100,1,1\n172800,2,100,1,2\n'), dict(start=0, end=259200))
+        self.assertEqual([0, 172800], [r['ts'] for r in result['days']])
+        self.assertEqual([82800, 172800], [r['ts'] for r in result['hours']])
+
+    def test_schema_duplicate_unit_or_price_errors_rejected(self):
+        for text in ('0,1,100,1,1\n'*2, '0,1,100,1\n', '0,1,100,-1,1\n', '0,1,NaN,1,1\n',
+                     '3600000,1,100,1,1\n', '0,1,100,1,0\n', ''):
+            with self.assertRaises(ValueError):
+                summarize_trades(self.zipped(text), dict(start=0, end=86400))
+
+    def test_cross_archive_consistency_is_not_completeness(self):
+        spec = dict(start=0, end=10800)
+        summary = summarize_trades(self.zipped('0,1,100,2,1\n7200,2,100,1,2\n'), spec)
+        result = reconcile_trades(summary, self.zipped('0,2,100,101,99,100\n7200,3,100,101,99,100\n'), spec)
+        self.assertEqual(1, result['base_volume_matches'])
+        self.assertEqual([7200], result['volume_mismatch_hours'])
+        self.assertEqual(1, result['hours_absent_from_both'])
+        self.assertFalse(result['historical_completeness_certified'])
+
+    def test_stop_request_propagates(self):
+        def stop():
+            raise TimeoutError('STOP')
+        with self.assertRaises(TimeoutError):
+            summarize_trades(self.zipped('0,1,100,1,1\n'), dict(start=0, end=86400), stop)
 
 
 if __name__ == '__main__':

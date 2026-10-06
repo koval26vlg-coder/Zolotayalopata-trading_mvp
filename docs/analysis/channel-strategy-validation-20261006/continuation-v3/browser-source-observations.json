@@ -1,0 +1,36 @@
+{
+  "schema": "gate_export_browser_observation_v1",
+  "observed_date_utc": "2026-10-06",
+  "method": "Read-only official export UI and its observed public response; not an automated immutable HTTP receipt",
+  "page_url": "https://www.gate.com/ru/developer/historical_quotes",
+  "public_frontend_script": "https://www.gate.com/cdn/fe/_next/static/chunks/pages/developer/historical_quotes-6f5afd3a74371e14.js",
+  "observed_symbols_endpoint": "https://www.gate.com/api/web/v1/tst/market_symbols?sub_website_id=0",
+  "browser_http_status": 200,
+  "spot_symbol_count": 2207,
+  "absent_sample_pairs": ["TRC_USDT", "EYWA_USDT", "LIY_USDT", "BICITY_USDT"],
+  "response_keys": ["code", "message", "data", "timestamp"],
+  "business_keys": ["spot", "futures_btc", "futures_usdt"],
+  "raw_browser_response_saved": false,
+  "later_script_probe_status": 403,
+  "http_probe_is_not_relabelled_successful": true,
+  "delisting_sources": [
+    {
+      "url": "https://www.gate.com/announcements/article/101367",
+      "published_utc": "2026-08-26T07:10:00Z",
+      "spot_suspension_utc": "2026-09-02T03:00:00Z",
+      "sample_pairs": ["TRC_USDT", "EYWA_USDT"],
+      "pair_selection": "First two table rows, independent of returns"
+    },
+    {
+      "url": "https://www.gate.com/announcements/article/101119",
+      "published_utc": "2026-08-12T11:33:00Z",
+      "sample_pairs": ["LIY_USDT", "BICITY_USDT"],
+      "precise_delisting_effective_time_inferred": false
+    }
+  ],
+  "trade_schema_observed": ["timestamp", "deal_id", "price", "amount", "side"],
+  "side_codes": {"1": "sell", "2": "buy"},
+  "historical_membership_certified": false,
+  "historical_asset_types_certified": false,
+  "use": "Source diagnosis only; not a historical membership input"
+}

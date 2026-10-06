@@ -222,7 +222,7 @@ def report(plan, inv, validation, evaluation):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
+    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'gate-survivorship-audit', 'gate-trades-audit', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
     parser.add_argument('--input-manifest')
     parser.add_argument('--evaluation', type=Path)
     parser.add_argument('--output', type=Path)
@@ -258,6 +258,18 @@ def main(argv=None):
         return 0 if result.wasSuccessful() else 1
     if not args.output:
         parser.error('Explicit isolated output namespace required')
+    if args.stage == 'gate-trades-audit':
+        if args.max_runtime_sec > 300:
+            parser.error('Source audit is bounded to 300 seconds')
+        from .gate_trades import audit
+        audit(args.output/'gate-trades-audit', check)
+        return 0
+    if args.stage == 'gate-survivorship-audit':
+        if args.max_runtime_sec > 300:
+            parser.error('Source audit is bounded to 300 seconds')
+        from .gate_survivorship import audit
+        audit(args.output/'gate-survivorship-audit', check)
+        return 0
     if args.stage == 'archive-audit':
         from .archive_audit import archive_audit
         archive_audit(args.output/'archive-discovery', check)
