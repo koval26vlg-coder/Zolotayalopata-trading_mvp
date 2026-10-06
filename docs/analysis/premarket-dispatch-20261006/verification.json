@@ -1,0 +1,17 @@
+{
+  "status": "OFFLINE_INTEGRATION_VERIFIED_PILOT_NOT_READY",
+  "observed_utc": "2026-10-06T12:18:46.5063318Z",
+  "test_exit_code": 0,
+  "preflight_exit_code": 2,
+  "preflight": {
+    "status": "BLOCKED",
+    "reason": "OFFLINE_ONLY_NO_LIVE_GATEWAY_OR_CAMPAIGN",
+    "offline_implementation_bound": true,
+    "network_requests": 0,
+    "writer_claim_created": false,
+    "manifest_hash": "dc5dc260d8635547302f8282df2ab7c93b4da38c2f1c854162653a5e6ce59a92"
+  },
+  "production_writer_claim_exists": false,
+  "production_capture_namespace_exists": false,
+  "runtime_file_sha256": "f36b3973b252085f2faea67895d05ad162958cbba12c3e5dbd5729905661497e"
+}

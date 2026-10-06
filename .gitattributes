@@ -217,3 +217,9 @@ tools/start_premarket_depth_coordinator_visible.ps1 -text whitespace=cr-at-eol
 docs/plans/premarket-depth-coordinator-runtime-20261006-v1.json -text whitespace=cr-at-eol
 docs/analysis/premarket-coordinator-20261006/* -text whitespace=cr-at-eol
 docs/analysis/premarket-coordinator-20261006/*.log -text whitespace=-blank-at-eol,cr-at-eol
+
+# Offline discovery/budget integration, preserves historical coordinator bytes.
+trading_mvp/src/premarket_depth_dispatch.py -text whitespace=cr-at-eol
+docs/plans/premarket-depth-dispatch-runtime-20261006-v1.json -text whitespace=cr-at-eol
+docs/analysis/premarket-dispatch-20261006/* -text whitespace=cr-at-eol
+docs/analysis/premarket-dispatch-20261006/*.log -text whitespace=-blank-at-eol,cr-at-eol

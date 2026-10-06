@@ -1,0 +1,40 @@
+{
+  "schema": "premarket_depth_dispatch_runtime_v1",
+  "collection_enabled": false,
+  "schedules_resume_authorized": false,
+  "campaign": null,
+  "scope_changed": false,
+  "base_runtime": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-depth-coordinator-runtime-20261006-v1.json",
+    "file_sha256": "12241263b36db7fd2872a6dd4f3c644742644db559a01f651272afa378a9e50a",
+    "bytes": 3413
+  },
+  "base_runtime_hash": "7d9b0cb8ddd30b7826205dfb9e847f2d0fa070efbc03b3bd1863113ad3912e5c",
+  "budget": {
+    "scans": 4032,
+    "captures": 24,
+    "batches": 24,
+    "metadata_attempts": 16128,
+    "book_attempts": 38400,
+    "total_attempts": 54528,
+    "metadata_bytes": 19327352832,
+    "book_bytes": 6442450944,
+    "total_bytes": 25769803776,
+    "output_bytes": 2147483648
+  },
+  "scan_interval_sec": 900,
+  "scan_runtime_sec": 300,
+  "review_day": 14,
+  "horizon_days": 42,
+  "pilot_batches_before_quality_review": 1,
+  "code": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_depth_dispatch.py",
+      "file_sha256": "3d97fc210af44abebfbe85a8c79577957e77ed25b3c8dde804d9d69c120fbdea",
+      "bytes": 24109
+    }
+  ],
+  "live_gateway_installed": false,
+  "production_ledger_initialized": false,
+  "manifest_hash": "dc5dc260d8635547302f8282df2ab7c93b4da38c2f1c854162653a5e6ce59a92"
+}

@@ -1,0 +1,12 @@
+{
+  "pid": 61620,
+  "started_utc": "2026-10-06T12:18:27.2180699Z",
+  "command": "pwsh -NoProfile -NoExit -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-dispatch-20261006\\verify-offline.ps1\"",
+  "window_style": "Normal",
+  "no_exit": true,
+  "purpose": "Offline synthetic dispatch/budget integration and immutable freeze only",
+  "expected_runtime_sec": 300,
+  "network_requests": 0,
+  "status_command": "Get-Content 'C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-dispatch-20261006\\visible-verification.log' -Tail 15",
+  "stop_command": "Ctrl+C in the visible terminal"
+}
