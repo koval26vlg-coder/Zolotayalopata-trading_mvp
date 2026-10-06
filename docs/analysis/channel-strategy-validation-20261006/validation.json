@@ -1,0 +1,283 @@
+{
+  "creates_trading_results": false,
+  "input_manifest_hash": null,
+  "inventory_hash": "2b14baae3f79ee6c51ea5b591239706ddd30dd5ccca2defd5de018e52cb39afa",
+  "models": [
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "relative_strength",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "bars_1h",
+        "pit_universe"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "trend_pullback",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "structure_break",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "normalized_line",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "book_continue",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "books",
+        "tape",
+        "pit_universe"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "book_reclaim",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "books",
+        "bars_1m",
+        "pit_universe"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "funding_carry",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "funding_cross",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "spot_dislocation",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "paired_quotes",
+        "inventory"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "basis_convergence",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "long_put",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "cash_put",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "put_spread",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "fixed_grid",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "bars_1d",
+        "books",
+        "pit_universe"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "gold_macd",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "bars_4h",
+        "contract_specs",
+        "calendar"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "dax_orb",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "bars_5m",
+        "contract_specs",
+        "calendar"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "gap_continue",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "bars_5m",
+        "pit_equity_universe",
+        "calendar",
+        "corporate_actions"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "gap_fade",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "bars_5m",
+        "pit_equity_universe",
+        "calendar",
+        "corporate_actions"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "aave_lending",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "lending_index",
+        "gas",
+        "token_quotes",
+        "withdrawal_liquidity"
+      ],
+      "status": "BLOCKED_DATA"
+    },
+    {
+      "coverage": {},
+      "datasets": [],
+      "exposure": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "id": "wallet_follow",
+      "independent_oos_certified": false,
+      "missing_kinds": [
+        "dex_swaps",
+        "token_universe",
+        "gas",
+        "execution_quotes"
+      ],
+      "status": "BLOCKED_DATA"
+    }
+  ],
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_binding": {
+    "tools/check_active_run_gate.ps1": "a3b1b735dba6681b18fdb2e9be637079a22391123eced0a316dc2b76855193fd",
+    "tools/check_trading_mvp_autopilot.ps1": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+    "tools/run_channel_strategy_validation_visible.ps1": "a9aa3df8d1801dba3bbba7447c548034b7acc7ba675cd350c6cf426935d49fdb",
+    "trading_mvp/src/channel_validation/__init__.py": "dab9cae823a9b621cc47440d3a73630e9831110efd9f370fe7b689d2206f71e3",
+    "trading_mvp/src/channel_validation/adapters.py": "e3a090521c5da1dc6ff7afe600b4c52aad74f63ef1358a7f674d86af7b4377fe",
+    "trading_mvp/src/channel_validation/contract.py": "d71f4e1834623bc8ea7234dd561604a26d89f010a2978092c9c9858d5f55465c",
+    "trading_mvp/src/channel_validation/data.py": "bf7d11039ac155ee70a21d0a1837e5af5ad7506ae7db3519472ac5d2e5322f61",
+    "trading_mvp/src/channel_validation/execution.py": "b8e119584e4b3b5c3abe2da93900711f74a630b0d94b7c570faf6883c35de4ab",
+    "trading_mvp/src/channel_validation/models.py": "9c1f0b142276e2e78e101036192486a603961422a9b1fb8ac4cf2dad532cc193",
+    "trading_mvp/src/channel_validation/portfolio.py": "cb63ff1b53751cec1b248b91c8e70c9686a04259e1f7636bc5be8749025332a4",
+    "trading_mvp/src/channel_validation/runner.py": "76406e067c656d1f5a0cc369dbbd558e7813ba2f8e9c832cca258edee03e1b64",
+    "trading_mvp/src/channel_validation/sources.py": "e30cde7da64c7aefd58711f3678a9c814acef298a901bba8744d095ee87cdd10",
+    "trading_mvp/src/channel_validation/statistics.py": "e4b6f69e9a057f2ec5a7d33813d725f720239207f7728bd9e101a6cb0a2ce65d",
+    "trading_mvp/src/global_market_writer_claim.py": "bc0604267c9d709a17188eb9daf317417d2633bf4c31266f73db33ac2f5066d2",
+    "trading_mvp/tests/test_channel_validation.py": "b7e88069d46717f192c5a3be284d19bba53959f2acecf3b61e990f709f2d3238"
+  },
+  "stage": "validate",
+  "validation_hash": "99135ef8ae3dc069347a7e40898374b8f7d36652b1e44d1164712b43ddd19905"
+}

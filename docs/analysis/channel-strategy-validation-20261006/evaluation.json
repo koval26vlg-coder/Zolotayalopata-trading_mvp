@@ -1,0 +1,384 @@
+{
+  "family_size": 20,
+  "financial_execution_authorized": false,
+  "input_manifest_hash": null,
+  "models": [
+    {
+      "holm_adjusted_p": null,
+      "id": "relative_strength",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "bars_1h",
+        "pit_universe"
+      ],
+      "model_hash": "722b76604c3bcc8b5a81be6828fc410cddca764343a95ca7d2c13eb0fc8c20aa",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 1,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "trend_pullback",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "model_hash": "e67d0a99664027e13ae2feacefaebffc497f101f273c23d74e7d7d9e337d439e",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 2,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "structure_break",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "model_hash": "2aed75cff9482d781f1c3df1f5577c5fa92903426a4d99419db5fe70c072c982",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 3,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "normalized_line",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "model_hash": "dc332ad2ab8c84632d5c26b27e19adaf8cfcaade5cc9d8ce1d1313cfa4777d18",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 4,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "book_continue",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "books",
+        "tape",
+        "pit_universe"
+      ],
+      "model_hash": "7c46d0c741b3ca856ed89360b71d49f8f0bd1a657818fd9ad3b9ee3e66825c5e",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 5,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "book_reclaim",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "books",
+        "bars_1m",
+        "pit_universe"
+      ],
+      "model_hash": "4456413af176741d31c79299167904083b3dfdc36a5a8d21a63c8e16e742e21c",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 6,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "funding_carry",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "model_hash": "2a5b8dc95381d0674e04a65f1cc4f7d276620e525f7a458f2b92ba9c54bfe0fb",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 7,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "funding_cross",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "model_hash": "a06d8e6d76b5fded41be97bf98928b924c32cf62180cd4dfb89e905590101813",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 8,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "spot_dislocation",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "paired_quotes",
+        "inventory"
+      ],
+      "model_hash": "85e8e7352e223598226c5d97aac09375d25881f34748b9f736fb104a61462868",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 9,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "basis_convergence",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "model_hash": "3fc48addb1e9e16a1459f20dcd338fd11e9b7d81ae626cddbaf863416fbe85ba",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 10,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "long_put",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "model_hash": "3ca17e07c45c933d325cc262999f1815ac4a0abedb280fbf24934d5f6ec8ed68",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 11,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "cash_put",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "model_hash": "eacef87fd81f3aefbfc00a06c5d4d3a4c410f3e881af95c5dc6884d74a599289",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 12,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "put_spread",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "model_hash": "7f7b319aee5e0b272745bd20c8cea3a1a601ff1dd1d6ce85c764f0ef2d906857",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 13,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "fixed_grid",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "bars_1d",
+        "books",
+        "pit_universe"
+      ],
+      "model_hash": "964340950d39bf7550d6c784a38c0bea81ba8924f2cac7342df96b3aec9b0adc",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 14,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "gold_macd",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "bars_4h",
+        "contract_specs",
+        "calendar"
+      ],
+      "model_hash": "6afba9d42394bfdb502e88fa6a5811e6aeec045c71002cdce2930875ab4cbb31",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 15,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "dax_orb",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "bars_5m",
+        "contract_specs",
+        "calendar"
+      ],
+      "model_hash": "0b2cd1b0fc72436a30b3154dafa5161891a7212eed9e037130135fd67ebdd843",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 16,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "gap_continue",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "bars_5m",
+        "pit_equity_universe",
+        "calendar",
+        "corporate_actions"
+      ],
+      "model_hash": "29d7bb77e9e49cfdc866bac34098273d8e1845fb47b85ed465c1cafb7bdd412f",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 17,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "gap_fade",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "bars_5m",
+        "pit_equity_universe",
+        "calendar",
+        "corporate_actions"
+      ],
+      "model_hash": "ab3cbc9d819fe96266096de77c81f54504104570039b7573dba9504204f20674",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 18,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "aave_lending",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "lending_index",
+        "gas",
+        "token_quotes",
+        "withdrawal_liquidity"
+      ],
+      "model_hash": "709c0673bff29cc45dca513898bf22ddc93a5729036879821513926fed3fdd24",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 19,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    },
+    {
+      "holm_adjusted_p": null,
+      "id": "wallet_follow",
+      "limitations": [
+        "No eligible inputs in this environment; not a negative strategy verdict."
+      ],
+      "metrics": null,
+      "missing_kinds": [
+        "dex_swaps",
+        "token_universe",
+        "gas",
+        "execution_quotes"
+      ],
+      "model_hash": "07df0a5021ab9960bf99098ac1ff552fdc5d5ec0681ad272e4ebde0888d332dd",
+      "next_step": "Provide verified free historical files and an input manifest; no forward collector.",
+      "number": 20,
+      "status": "BLOCKED_DATA",
+      "tests": []
+    }
+  ],
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "result_hash": "4fe92f28919e2a3b251dee37c9adcf2d24c7e521cfff31936381206d23278c65",
+  "runtime_binding": {
+    "tools/check_active_run_gate.ps1": "a3b1b735dba6681b18fdb2e9be637079a22391123eced0a316dc2b76855193fd",
+    "tools/check_trading_mvp_autopilot.ps1": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+    "tools/run_channel_strategy_validation_visible.ps1": "a9aa3df8d1801dba3bbba7447c548034b7acc7ba675cd350c6cf426935d49fdb",
+    "trading_mvp/src/channel_validation/__init__.py": "dab9cae823a9b621cc47440d3a73630e9831110efd9f370fe7b689d2206f71e3",
+    "trading_mvp/src/channel_validation/adapters.py": "e3a090521c5da1dc6ff7afe600b4c52aad74f63ef1358a7f674d86af7b4377fe",
+    "trading_mvp/src/channel_validation/contract.py": "d71f4e1834623bc8ea7234dd561604a26d89f010a2978092c9c9858d5f55465c",
+    "trading_mvp/src/channel_validation/data.py": "bf7d11039ac155ee70a21d0a1837e5af5ad7506ae7db3519472ac5d2e5322f61",
+    "trading_mvp/src/channel_validation/execution.py": "b8e119584e4b3b5c3abe2da93900711f74a630b0d94b7c570faf6883c35de4ab",
+    "trading_mvp/src/channel_validation/models.py": "9c1f0b142276e2e78e101036192486a603961422a9b1fb8ac4cf2dad532cc193",
+    "trading_mvp/src/channel_validation/portfolio.py": "cb63ff1b53751cec1b248b91c8e70c9686a04259e1f7636bc5be8749025332a4",
+    "trading_mvp/src/channel_validation/runner.py": "76406e067c656d1f5a0cc369dbbd558e7813ba2f8e9c832cca258edee03e1b64",
+    "trading_mvp/src/channel_validation/sources.py": "e30cde7da64c7aefd58711f3678a9c814acef298a901bba8744d095ee87cdd10",
+    "trading_mvp/src/channel_validation/statistics.py": "e4b6f69e9a057f2ec5a7d33813d725f720239207f7728bd9e101a6cb0a2ce65d",
+    "trading_mvp/src/global_market_writer_claim.py": "bc0604267c9d709a17188eb9daf317417d2633bf4c31266f73db33ac2f5066d2",
+    "trading_mvp/tests/test_channel_validation.py": "b7e88069d46717f192c5a3be284d19bba53959f2acecf3b61e990f709f2d3238"
+  },
+  "stage": "evaluate",
+  "validation_hash": "99135ef8ae3dc069347a7e40898374b8f7d36652b1e44d1164712b43ddd19905"
+}

@@ -1,0 +1,196 @@
+{
+  "inventory_hash": "2b14baae3f79ee6c51ea5b591239706ddd30dd5ccca2defd5de018e52cb39afa",
+  "models": [
+    {
+      "id": "relative_strength",
+      "required_kinds": [
+        "bars_1h",
+        "pit_universe"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "trend_pullback",
+      "required_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "structure_break",
+      "required_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "normalized_line",
+      "required_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "book_continue",
+      "required_kinds": [
+        "books",
+        "tape",
+        "pit_universe"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "book_reclaim",
+      "required_kinds": [
+        "books",
+        "bars_1m",
+        "pit_universe"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "funding_carry",
+      "required_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "funding_cross",
+      "required_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "spot_dislocation",
+      "required_kinds": [
+        "paired_quotes",
+        "inventory"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "basis_convergence",
+      "required_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "long_put",
+      "required_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "cash_put",
+      "required_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "put_spread",
+      "required_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "fixed_grid",
+      "required_kinds": [
+        "bars_1d",
+        "books",
+        "pit_universe"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "gold_macd",
+      "required_kinds": [
+        "bars_4h",
+        "contract_specs",
+        "calendar"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "dax_orb",
+      "required_kinds": [
+        "bars_5m",
+        "contract_specs",
+        "calendar"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "gap_continue",
+      "required_kinds": [
+        "bars_5m",
+        "pit_equity_universe",
+        "calendar",
+        "corporate_actions"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "gap_fade",
+      "required_kinds": [
+        "bars_5m",
+        "pit_equity_universe",
+        "calendar",
+        "corporate_actions"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "aave_lending",
+      "required_kinds": [
+        "lending_index",
+        "gas",
+        "token_quotes",
+        "withdrawal_liquidity"
+      ],
+      "status": "NOT_VALIDATED"
+    },
+    {
+      "id": "wallet_follow",
+      "required_kinds": [
+        "dex_swaps",
+        "token_universe",
+        "gas",
+        "execution_quotes"
+      ],
+      "status": "NOT_VALIDATED"
+    }
+  ],
+  "note": "Availability is not data validity. Public history not downloaded by inventory.",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "roots": [
+    {
+      "input_manifests": [],
+      "path": "E:\\ZolotyayLopata-data",
+      "status": "AVAILABLE"
+    },
+    {
+      "input_manifests": [],
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\exports\\trading-mvp\\normalized",
+      "status": "AVAILABLE"
+    }
+  ],
+  "stage": "inventory"
+}
