@@ -1333,5 +1333,229 @@ class OptionDependencyTests(unittest.TestCase):
             self.assertFalse(list(root.rglob('*.raw')))
 
 
+class GoldSourceTests(unittest.TestCase):
+    def raw(self, ticks=((0, 2010000, 2000000, 1., 2.), (500, 2020000, 2010000, 3., 4.))):
+        import lzma
+        from channel_validation.gold_history import RECORD
+        return lzma.compress(b''.join(RECORD.pack(*t) for t in ticks), format=lzma.FORMAT_ALONE)
+
+    def parse(self, raw=None, **kwargs):
+        from channel_validation.gold_history import inspect_hour
+        return inspect_hour(self.raw() if raw is None else raw, 1672747200000, **kwargs)
+
+    def test_exact_source_budget_and_zero_based_month(self):
+        from channel_validation.gold_history import request_plan
+        plan = request_plan()
+        self.assertEqual(19, plan['max_requests'])
+        self.assertEqual(19, len(plan['requests']))
+        self.assertEqual(16, sum(r['kind']=='hour_ticks' for r in plan['requests']))
+        self.assertIn('/2023/00/03/12h_ticks.bi5', plan['requests'][0]['url'])
+        self.assertIn('/2026/08/01/12h_ticks.bi5', plan['requests'][12]['url'])
+        self.assertEqual(0, plan['retries'])
+        self.assertEqual(300, plan['max_runtime_sec'])
+        self.assertIsNone(plan['price_scale'])
+        for key in ('redirects', 'credentials', 'paid_data', 's3_requester_pays', 'evaluation_eligible'):
+            self.assertFalse(plan[key])
+        self.assertEqual(canonical_hash(plan), canonical_hash(request_plan()))
+
+    def test_raw_points_not_dollars_and_quote_size_not_volume(self):
+        result = self.parse()
+        self.assertEqual(2, result['records'])
+        self.assertEqual(2000000, result['first']['bid_points'])
+        self.assertEqual(500, result['last']['ts_ms']-result['first']['ts_ms'])
+        self.assertEqual([2000000, 2010000, 2000000, 2010000], result['bid_ohlc_points'])
+        self.assertEqual(10000, result['min_spread_points'])
+        self.assertIsNone(result['price_scale'])
+        self.assertIsNone(result['trading_volume'])
+        self.assertFalse(result['price_units_verified'])
+        self.assertFalse(result['quote_sequence_certified'])
+        self.assertFalse(result['evaluation_eligible'])
+
+    def test_empty_archive_not_closed_session_or_zero_return(self):
+        result = self.parse(self.raw(()))
+        self.assertEqual('EMPTY_ARCHIVE_NOT_CALENDAR_EVIDENCE', result['status'])
+        self.assertIsNone(result['first'])
+        self.assertIsNone(result['bid_ohlc_points'])
+        self.assertFalse(result['no_ticks_means_closed'])
+
+    def test_incomplete_concatenated_or_partial_record_rejected(self):
+        import lzma
+        for raw in (self.raw()[:-1], self.raw()+self.raw(), self.raw()+b'extra',
+                    lzma.compress(b'partial', format=lzma.FORMAT_ALONE)):
+            with self.subTest(raw=raw[:10]), self.assertRaises(ValueError):
+                self.parse(raw)
+
+    def test_corrupt_or_wrong_container_rejected(self):
+        import lzma
+        for raw in (b'not lzma', lzma.compress(b'')):
+            with self.assertRaises((lzma.LZMAError, ValueError)):
+                self.parse(raw)
+
+    def test_decoded_budget_and_stop_checked(self):
+        with self.assertRaises(ValueError):
+            self.parse(decoded_cap=20)
+        def stop():
+            raise TimeoutError('synthetic stop')
+        with self.assertRaises(TimeoutError):
+            self.parse(check=stop)
+
+    def test_out_of_hour_backward_crossed_and_nonfinite_rejected(self):
+        cases = (
+            ((3600000, 100, 99, 1., 1.),),
+            ((2, 100, 99, 1., 1.), (1, 100, 99, 1., 1.)),
+            ((0, 98, 99, 1., 1.),), ((0, 100, 0, 1., 1.),),
+            ((0, 100, 99, float('nan'), 1.),), ((0, 100, 99, 1., -1.),),
+        )
+        for ticks in cases:
+            with self.subTest(ticks=ticks), self.assertRaises(ValueError):
+                self.parse(self.raw(ticks))
+
+    def test_same_millisecond_quotes_are_preserved(self):
+        result = self.parse(self.raw(((5, 100, 100, 0., 0.), (5, 101, 100, 1., 2.))))
+        self.assertEqual(2, result['records'])
+        self.assertEqual(1, result['same_timestamp_records'])
+        self.assertEqual(1, result['locked_quotes'])
+
+    def records(self):
+        from channel_validation.gold_history import request_plan, inspect_hour
+        return [dict(request=r, status='RAW_POINT_QUOTES_VALID', parsed=inspect_hour(self.raw(), r['start_ms']))
+                for r in request_plan()['requests'][:4]]
+
+    def test_four_hour_points_no_future_availability(self):
+        from channel_validation.gold_history import four_hour_diagnostics
+        records = self.records()
+        result = four_hour_diagnostics(records)[0]
+        self.assertTrue(result['all_four_files_valid'])
+        self.assertEqual(8, result['records'])
+        self.assertEqual(records[0]['request']['start_ms']+4*3600000, result['available_not_before_ms'])
+        self.assertFalse(result['calendar_certified'])
+        self.assertFalse(result['evaluation_eligible'])
+
+    def test_missing_empty_and_duplicate_hours_not_filled(self):
+        from channel_validation.gold_history import four_hour_diagnostics
+        for change in ('missing','empty','duplicate'):
+            records = self.records()
+            if change == 'missing': records.pop()
+            if change == 'empty': records[0]['status']='EMPTY_ARCHIVE_NOT_CALENDAR_EVIDENCE'
+            if change == 'duplicate': records[0]=records[1]
+            result = four_hour_diagnostics(records)[0]
+            self.assertFalse(result['all_four_files_valid'])
+            self.assertNotIn('bid_ohlc_points', result)
+
+    def test_millisecond_grid_is_explicit(self):
+        from channel_validation.gold_history import inspect_hour
+        with self.assertRaises(ValueError):
+            inspect_hour(self.raw(), 1672747200001)
+
+    def test_named_retry_rejected_before_network(self):
+        from unittest.mock import patch
+        from channel_validation.gold_history import audit
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp)/'retry'
+            with patch('channel_validation.gold_history.request_plan') as plan, self.assertRaises(ValueError):
+                audit(output, lambda: None)
+            plan.assert_not_called()
+            self.assertFalse(output.exists())
+
+    def test_unavailable_source_once_each_not_calendar_evidence(self):
+        from unittest.mock import patch
+        import urllib.error
+        from channel_validation.gold_history import audit, RUN_ID
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            with patch('channel_validation.gold_history.OUTPUT_ROOT', root), \
+                 patch('channel_validation.gold_history.urllib.request.build_opener') as build:
+                build.return_value.open.side_effect=urllib.error.URLError('synthetic unavailable')
+                result=audit(root/'runs'/RUN_ID/'artifacts/gold-history-audit', lambda: None)
+            self.assertEqual(19, build.return_value.open.call_count)
+            self.assertEqual(19, result['requests'])
+            self.assertIsNone(result['metrics'])
+            self.assertFalse(result['historical_calendar_inferred'])
+            self.assertTrue(all(not r['all_four_files_valid'] for r in result['four_hour_samples']))
+
+
+class GoldUnattemptedTests(unittest.TestCase):
+    def parent(self, root, change=None):
+        from datetime import datetime, timezone, timedelta
+        from channel_validation.gold_history import RUN_ID, request_plan
+        parent=root/'runs'/RUN_ID
+        runtime={'synthetic': 'fixture'}
+        rh=canonical_hash(runtime)
+        data={
+            'intent.json':dict(runtime_hash=rh, runtime=runtime),
+            'completion.json':dict(status='STOPPED_INCOMPLETE', exit_code=2, runtime_hash=rh, plan_hash=build_plan()['plan_hash']),
+            'failure.json':dict(error='The read operation timed out', retry_authorized=False),
+            'owner.json':dict(worker_started_utc=(datetime.now(timezone.utc)-timedelta(seconds=10)).isoformat()),
+        }
+        if change == 'error': data['failure.json']['error']='corruption'
+        if change == 'runtime': data['intent.json']['runtime_hash']='bad'
+        if change == 'elapsed': data['owner.json']['worker_started_utc']='2000-01-01T00:00:00Z'
+        for name, value in data.items(): write_immutable(parent/name,value)
+        plan=request_plan()
+        write_immutable(parent/'artifacts/gold-history-audit/request-plan.json', dict(**plan, request_plan_hash=canonical_hash(plan)))
+        if change == 'progress': write_immutable(parent/'artifacts/gold-history-audit/01.receipt.json', {})
+        return rh
+
+    def test_exact_parent_first_request_timeout_required(self):
+        from unittest.mock import patch
+        from channel_validation.gold_history import remaining_preflight
+        for change in (None,'error','runtime','elapsed','progress'):
+            with tempfile.TemporaryDirectory() as tmp:
+                root=Path(tmp)
+                rh=self.parent(root, change)
+                with patch('channel_validation.gold_history.OUTPUT_ROOT',root), \
+                     patch('channel_validation.gold_history.PARENT_RUNTIME',rh):
+                    if change is not None:
+                        with self.assertRaises(ValueError): remaining_preflight()
+                    else:
+                        proof=remaining_preflight()
+                        self.assertTrue(proof['first_request_not_retried'])
+                        self.assertLessEqual(proof['parent_elapsed_sec'],60)
+
+    def test_socket_timeouts_receipted_without_repeating_first_url(self):
+        from unittest.mock import patch
+        from channel_validation.gold_history import audit, request_plan, REMAINING_RUN_ID
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            rh=self.parent(root)
+            with patch('channel_validation.gold_history.OUTPUT_ROOT',root), \
+                 patch('channel_validation.gold_history.PARENT_RUNTIME',rh), \
+                 patch('channel_validation.gold_history.urllib.request.build_opener') as build:
+                build.return_value.open.side_effect=TimeoutError('synthetic socket timeout')
+                output=root/'runs'/REMAINING_RUN_ID/'artifacts/gold-history-audit'
+                result=audit(output,lambda:None,remaining=True)
+            urls=[c.args[0].full_url for c in build.return_value.open.call_args_list]
+            self.assertEqual([r['url'] for r in request_plan()['requests'][1:]],urls)
+            self.assertEqual(18,result['requests'])
+            self.assertEqual(19,result['cumulative_requests'])
+            self.assertEqual(18,len(list(output.glob('*.attempt.json'))))
+            self.assertEqual(18,len(list(output.glob('*.receipt.json'))))
+            self.assertTrue(all(r['bytes_read_unknown'] for r in result['records']))
+            self.assertIsNone(result['metrics'])
+
+    def test_control_stop_is_not_swallowed_as_source_timeout(self):
+        from unittest.mock import patch
+        import io
+        from channel_validation.gold_history import audit, RUN_ID
+        calls=0
+        def check():
+            nonlocal calls
+            calls+=1
+            if calls > 1: raise TimeoutError('synthetic stop')
+        response=io.BytesIO(b'data')
+        response.status=200
+        response.headers={'Content-Length':'4'}
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            with patch('channel_validation.gold_history.OUTPUT_ROOT',root), \
+                 patch('channel_validation.gold_history.urllib.request.build_opener') as build:
+                build.return_value.open.return_value=response
+                with self.assertRaises(TimeoutError):
+                    audit(root/'runs'/RUN_ID/'artifacts/gold-history-audit',check)
+            self.assertEqual(1,build.return_value.open.call_count)
+            self.assertEqual(1,len(list(root.rglob('*.attempt.json'))))
+            self.assertEqual(0,len(list(root.rglob('*.receipt.json'))))
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

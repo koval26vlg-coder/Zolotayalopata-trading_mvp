@@ -222,7 +222,7 @@ def report(plan, inv, validation, evaluation):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'gate-survivorship-audit', 'gate-trades-audit', 'gate-metadata-audit', 'okx-history-audit', 'okx-full-archive', 'okx-archive-census', 'okx-dependencies', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
+    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'gate-survivorship-audit', 'gate-trades-audit', 'gate-metadata-audit', 'okx-history-audit', 'okx-full-archive', 'okx-archive-census', 'okx-dependencies', 'gold-history-audit', 'gold-history-remaining', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
     parser.add_argument('--input-manifest')
     parser.add_argument('--evaluation', type=Path)
     parser.add_argument('--output', type=Path)
@@ -254,10 +254,19 @@ def main(argv=None):
         if args.output:
             write_immutable(args.output/'tests.json', dict(tests=result.testsRun, failures=len(result.failures),
                                                          errors=len(result.errors), successful=result.wasSuccessful(),
+                                                         failure_details=[dict(test=t.id(), traceback=e) for t, e in result.failures],
+                                                         error_details=[dict(test=t.id(), traceback=e) for t, e in result.errors],
                                                          runtime_binding=runtime_binding()))
         return 0 if result.wasSuccessful() else 1
     if not args.output:
         parser.error('Explicit isolated output namespace required')
+    if args.stage in ('gold-history-audit', 'gold-history-remaining'):
+        remaining = args.stage == 'gold-history-remaining'
+        if args.max_runtime_sec > (240 if remaining else 300):
+            parser.error('Gold source audit is bounded to 300 seconds')
+        from .gold_history import audit
+        audit(args.output/'gold-history-audit', check, remaining=remaining)
+        return 0
     if args.stage == 'okx-dependencies':
         if args.max_runtime_sec > 300:
             parser.error('Dependency audit is bounded to 300 seconds')

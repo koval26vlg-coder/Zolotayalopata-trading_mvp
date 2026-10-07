@@ -1,0 +1,162 @@
+{
+  "credentials": false,
+  "cumulative_requests_cap": 19,
+  "cumulative_runtime_sec_cap": 300,
+  "decoder": "LZMA-alone, big-endian >IIIff, milliseconds within explicit UTC hour",
+  "evaluation_eligible": false,
+  "fixed_run_id": "history_gold_unattempted_v7_20261007",
+  "instrument_adopted_for_evaluation": false,
+  "max_requests": 18,
+  "max_runtime_sec": 240,
+  "model_id": "gold_macd",
+  "paid_data": false,
+  "parent": {
+    "file_sha256": {
+      "completion.json": "d0126ad1b3fab62d61399b2cd567b7c16a75f27783354dbf756c9c2d826983a0",
+      "failure.json": "98547fdfe88134a2343eea8f1ac60626d09c12b8e0eed0eefdbb996920460e1b",
+      "intent.json": "ada3250b5adbb4bc440d532613f84472452068273f862bb766a5741c076b0db5",
+      "owner.json": "93d9bf78efa84d2ebf292dff2f7c1f713d48e8541e16351a4cbab22b4c1ccfc2",
+      "request-plan.json": "6635ef6d167eb32b039e2bb4a0d03b9adcd30db0ee604c9aa9b53f280ec5730e"
+    },
+    "first_request_not_retried": true,
+    "first_response_bytes_unknown": true,
+    "parent_elapsed_sec": 10.87885069847107,
+    "reserved_parent_bytes": 1000000,
+    "run_id": "history_gold_source_v7_20261007",
+    "runtime_hash": "807f9a5e9dea2e743f93dd138a39d4043b98b58adef05edbb171c1de7f3556fc"
+  },
+  "per_file_decoded_bytes": 16777216,
+  "per_response_bytes": 1000000,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "price_scale": null,
+  "price_units_verified": false,
+  "proxies": false,
+  "redirects": false,
+  "request_plan_hash": "97026ee84cf208941f4e6f806f5ed05fd95fdbf076c0bf4d02c00246790ba92c",
+  "requests": [
+    {
+      "day": "2023-01-03",
+      "hour": 13,
+      "kind": "hour_ticks",
+      "start_ms": 1672750800000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2023/00/03/13h_ticks.bi5"
+    },
+    {
+      "day": "2023-01-03",
+      "hour": 14,
+      "kind": "hour_ticks",
+      "start_ms": 1672754400000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2023/00/03/14h_ticks.bi5"
+    },
+    {
+      "day": "2023-01-03",
+      "hour": 15,
+      "kind": "hour_ticks",
+      "start_ms": 1672758000000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2023/00/03/15h_ticks.bi5"
+    },
+    {
+      "day": "2024-01-03",
+      "hour": 12,
+      "kind": "hour_ticks",
+      "start_ms": 1704283200000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2024/00/03/12h_ticks.bi5"
+    },
+    {
+      "day": "2024-01-03",
+      "hour": 13,
+      "kind": "hour_ticks",
+      "start_ms": 1704286800000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2024/00/03/13h_ticks.bi5"
+    },
+    {
+      "day": "2024-01-03",
+      "hour": 14,
+      "kind": "hour_ticks",
+      "start_ms": 1704290400000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2024/00/03/14h_ticks.bi5"
+    },
+    {
+      "day": "2024-01-03",
+      "hour": 15,
+      "kind": "hour_ticks",
+      "start_ms": 1704294000000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2024/00/03/15h_ticks.bi5"
+    },
+    {
+      "day": "2025-01-06",
+      "hour": 12,
+      "kind": "hour_ticks",
+      "start_ms": 1736164800000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2025/00/06/12h_ticks.bi5"
+    },
+    {
+      "day": "2025-01-06",
+      "hour": 13,
+      "kind": "hour_ticks",
+      "start_ms": 1736168400000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2025/00/06/13h_ticks.bi5"
+    },
+    {
+      "day": "2025-01-06",
+      "hour": 14,
+      "kind": "hour_ticks",
+      "start_ms": 1736172000000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2025/00/06/14h_ticks.bi5"
+    },
+    {
+      "day": "2025-01-06",
+      "hour": 15,
+      "kind": "hour_ticks",
+      "start_ms": 1736175600000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2025/00/06/15h_ticks.bi5"
+    },
+    {
+      "day": "2026-09-01",
+      "hour": 12,
+      "kind": "hour_ticks",
+      "start_ms": 1788264000000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2026/08/01/12h_ticks.bi5"
+    },
+    {
+      "day": "2026-09-01",
+      "hour": 13,
+      "kind": "hour_ticks",
+      "start_ms": 1788267600000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2026/08/01/13h_ticks.bi5"
+    },
+    {
+      "day": "2026-09-01",
+      "hour": 14,
+      "kind": "hour_ticks",
+      "start_ms": 1788271200000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2026/08/01/14h_ticks.bi5"
+    },
+    {
+      "day": "2026-09-01",
+      "hour": 15,
+      "kind": "hour_ticks",
+      "start_ms": 1788274800000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2026/08/01/15h_ticks.bi5"
+    },
+    {
+      "kind": "current_document",
+      "url": "https://www.dukascopy.com/api/data/get/historical-data-export"
+    },
+    {
+      "kind": "current_document",
+      "url": "https://www.dukascopy.com/swiss/english/forex/forex-trading-accounts/link/"
+    },
+    {
+      "kind": "current_document",
+      "url": "https://www.dukascopy.com/wiki/en/development/strategy-api/orders-and-positions/order-amounts/"
+    }
+  ],
+  "retries": 0,
+  "s3_requester_pays": false,
+  "schema": "gold_public_history_source_probe_v1",
+  "source_candidate": "Dukascopy XAUUSD",
+  "timeout_sec": 10,
+  "total_response_bytes": 18000000,
+  "volume_units_verified": false
+}

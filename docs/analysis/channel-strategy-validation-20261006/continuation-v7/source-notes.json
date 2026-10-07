@@ -1,0 +1,38 @@
+{
+  "schema": "gold_source_notes_v1",
+  "checked_date": "2026-10-07",
+  "manual_document_review_not_dataset_certification": true,
+  "records": [
+    {
+      "url": "https://www.dukascopy.com/api/data/get/historical-data-export",
+      "finding": "Provider offers a historical bid/ask export widget. Does not establish completeness of the probed files.",
+      "raw_sha256": "fc2687ca1d8a8afdd5d12ccbde53dace6e1e874c0442a374cfa7a2cf45c4c542",
+      "historical_coverage_certified": false
+    },
+    {
+      "url": "https://www.dukascopy.com/swiss/english/forex/forex-trading-accounts/link/",
+      "finding": "Current XAU/USD has a daily break with summer/winter times and holiday exceptions. No full 2023-2026 historical calendar inferred.",
+      "raw_sha256": "0b9fed57dcdb0f9077e1f5ea958179f113e37efdd6cc56196a89bd56b4190cbc",
+      "historical_coverage_certified": false
+    },
+    {
+      "url": "https://www.dukascopy.com/wiki/en/development/strategy-api/orders-and-positions/order-amounts/",
+      "finding": "Current documentation describes XAU/USD units in ounces and minimum amount one ounce. This does not establish historical raw point scaling, fees or applicability dates.",
+      "raw_sha256": "c0b082bc96a9d8af399ea6d1a20ba0583256a9d35a2c4462b9a4b26444064d7a",
+      "historical_coverage_certified": false
+    },
+    {
+      "url": "https://www.dukascopy.com/wiki/en/development/data-export/",
+      "finding": "Bulk S3 route requires AWS credentials and requester-pays billing. Not used. Documented binary decoding alone does not verify commodity point scale or hourly time base.",
+      "access": "MANUAL_WEB_RESEARCH",
+      "paid_route_used": false
+    },
+    {
+      "url": "https://ftpsite.histdata.com/f-a-q/",
+      "finding": "Provider lists XAU/USD. Bid/ask is available in Generic ASCII ticks; timestamps use fixed EST without daylight saving. Candidate only, no actual file or completeness confirmed.",
+      "access": "MANUAL_WEB_RESEARCH",
+      "archives_verified": false,
+      "credentials_used": false
+    }
+  ]
+}
