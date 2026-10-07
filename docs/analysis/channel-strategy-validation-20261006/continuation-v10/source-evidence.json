@@ -1,0 +1,45 @@
+{
+  "schema": "bounded_official_documentation_evidence_v1",
+  "checked_date": "2026-10-07",
+  "method": "Public web tool reads and domain-scoped searches; analyst summaries, not raw HTTP snapshots",
+  "raw_source_snapshot_available": false,
+  "page_body_hashes_available": false,
+  "http_request_count_known": false,
+  "full_site_crawl": false,
+  "market_data_downloads": 0,
+  "pages_read": [
+    {
+      "id": "histdata_faq",
+      "url": "https://www.histdata.com/f-a-q/",
+      "facts": [
+        "XAU/USD is listed among available instruments.",
+        "Tick and M1 files are distributed by instrument and period in ZIP archives.",
+        "The documented timezone is fixed EST without daylight-saving adjustments.",
+        "Actual volume data is omitted; Generic ASCII ticks include bid and ask.",
+        "Gap reports and no-certification language do not distinguish every legitimate session pause from a missing quote."
+      ],
+      "not_established_by_this_page": ["Historical executable XAUUSD venue and instrument terms", "Dated instrument-specific session calendar", "Dated all-in trading costs"]
+    },
+    {
+      "id": "histdata_format",
+      "url": "https://www.histdata.com/f-a-q/data-files-detailed-specification/",
+      "facts": ["Generic ASCII tick records contain DateTime, Bid, Ask and Volume fields.", "The timestamp format includes milliseconds and uses fixed EST without DST."],
+      "not_established_by_this_page": ["Executable depth and fills", "Instrument multiplier and dated fee schedule"]
+    },
+    {
+      "id": "histdata_about",
+      "url": "https://www.histdata.com/about-us/",
+      "facts": ["The project describes a group of traders and strategy developers sharing historical data."],
+      "not_established_by_this_page": ["Named upstream provider or venue for this historical XAUUSD file"]
+    }
+  ],
+  "searches": [
+    {"query": "site:histdata.com XAUUSD data source broker liquidity provider", "domains": ["histdata.com"]},
+    {"query": "site:histdata.com XAUUSD trading hours commission swap contract specifications", "domains": ["histdata.com"]},
+    {"query": "site:histdata.com historical data source timezone calendar January 2023", "domains": ["histdata.com"]}
+  ],
+  "search_summary": "Results included the canonical FAQ/specification and mirrors, update notices and download service pages. No usable dated XAUUSD instrument/calendar/cost evidence was established within this bounded search.",
+  "negative_evidence_limit": "Not found in the inspected sources does not prove nonexistence elsewhere. Search snippets are not imported as executable input data.",
+  "paid_services_used": false,
+  "accounts_or_private_api_used": false
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "historical_evidence_index_v1",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "files": [
+    {
+      "file": "data-readiness.json",
+      "bytes": 1664,
+      "sha256": "2709a61d7dfe17b0faa50c23f4f980fb00aadc73d9ed893ee5959d9c8c4a8a0b"
+    },
+    {
+      "file": "model-input-queue.json",
+      "bytes": 15648,
+      "sha256": "a6fda1f0de19bdd707f7bbeb8dabcbb7bc8435f466da28d51a13998df5ce1419"
+    },
+    {
+      "file": "publication-provenance.json",
+      "bytes": 2788,
+      "sha256": "59cd9e25f4165d36c40068f7ccda3e9019c3c8d37a3bec6d6754769cca5fe4df"
+    },
+    {
+      "file": "README.md",
+      "bytes": 7081,
+      "sha256": "165516104dc65a4864f2672c2748c2cf525cb12ac4dea7588f8aac41f6a9c71b"
+    },
+    {
+      "file": "source-evidence.json",
+      "bytes": 2690,
+      "sha256": "a15e9bb2e7fa44df33647e74984bc1fe856c79285dfde42bb7ad94a4072b3e1a"
+    },
+    {
+      "file": "suitability-audit.json",
+      "bytes": 2667,
+      "sha256": "2bde860fcbeeba5f7a64908322f9dee3bb6e78a0ab37f149a513dd573c47dff0"
+    },
+    {
+      "file": "verification.json",
+      "bytes": 1079,
+      "sha256": "9c795fdc68488262919a15612ddc9406297e5abaf540d52a650912eab45bf52c"
+    }
+  ]
+}

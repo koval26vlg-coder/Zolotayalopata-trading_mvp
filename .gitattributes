@@ -233,3 +233,4 @@ tools/check_trading_mvp_autopilot.ps1 -text whitespace=cr-at-eol
 docs/analysis/channel-strategy-validation-20261006/continuation-v8/* -text whitespace=cr-at-eol
 docs/analysis/channel-strategy-validation-20261006/continuation-v9/* -text whitespace=cr-at-eol
 docs/analysis/channel-strategy-validation-20261006/continuation-v9/chunks/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v10/* -text whitespace=cr-at-eol
