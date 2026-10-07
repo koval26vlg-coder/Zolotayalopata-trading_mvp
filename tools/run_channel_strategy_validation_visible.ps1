@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('verify','sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-archive-census','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive','histdata-local','archive-audit','inventory','validate','evaluate','report','pipeline')][string]$Stage = 'pipeline',
+    [ValidateSet('verify','sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-archive-census','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive','histdata-local','histdata-month','archive-audit','inventory','validate','evaluate','report','pipeline')][string]$Stage = 'pipeline',
     [string]$InputManifest = '',
     [string]$EvaluationPath = '',
     [ValidateRange(1,1800)][int]$MaxRuntimeSec = 1800,
@@ -73,6 +73,11 @@ try {
         $reads += (Join-Path $outRoot 'history_histdata_archive_v8_20261007')
         if ($RunId -eq 'history_histdata_local_recovery_v8_20261007') { $reads += (Join-Path $outRoot 'history_histdata_local_v8_20261007') }
     }
+    if ($Stage -eq 'histdata-month') {
+        if ($MaxRuntimeSec -gt 600) { throw 'Full month local validation bounded to 600 seconds' }
+        $reads += (Join-Path $root 'docs\analysis\channel-strategy-validation-20261006\continuation-v8')
+        $reads += (Join-Path $outRoot 'history_histdata_archive_v8_20261007')
+    }
     if ($Stage -eq 'okx-dependencies') { $reads += (Join-Path $root 'docs\analysis\channel-strategy-validation-20261006\continuation-v5') }
     if ($Stage -eq 'okx-full-archive') { $reads += (Join-Path $outRoot 'history_okx_option_source_v4_20261006') }
     if ($Stage -eq 'okx-archive-census') {
@@ -134,6 +139,12 @@ try {
         if ($PreflightOnly -and (Test-Path -LiteralPath $output)) { throw 'HistData archive already attempted' }
         & $python -c 'from channel_validation.histdata import cached_form_preflight; cached_form_preflight()' | Out-Null
         if ($LASTEXITCODE -ne 0) { throw 'Exact cached HistData page preflight failed' }
+    }
+    if ($Stage -eq 'histdata-month') {
+        if ($RunId -ne 'history_histdata_month_v9_20261007') { throw 'Fixed full-month RunId required' }
+        if ($PreflightOnly -and (Test-Path -LiteralPath $output)) { throw 'Full month already attempted; use Status' }
+        & $python -c 'from channel_validation.histdata_month import preflight; preflight()' | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw 'Full-month input binding failed' }
     }
     if ($Stage -eq 'histdata-local') {
         if ($RunId -notin @('history_histdata_local_v8_20261007','history_histdata_local_recovery_v8_20261007')) { throw 'Fixed local census RunId required' }

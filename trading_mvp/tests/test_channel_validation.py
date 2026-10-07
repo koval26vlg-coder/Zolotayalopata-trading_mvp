@@ -1859,5 +1859,82 @@ class HistDataLocalCensusTests(unittest.TestCase):
         self.assertFalse(r['full_month_semantics_verified'])
 
 
+class HistDataMonthTests(unittest.TestCase):
+    def scan(self, body, rows, **kwargs):
+        import io
+        from channel_validation.histdata_month import scan
+        return scan(io.BytesIO(HistDataTests().archive(body)), rows, **kwargs)
+
+    def test_all_rows_chunks_hashes_and_determinism(self):
+        import hashlib
+        from channel_validation.histdata_month import verify_chunks
+        body=b'20230103 000000000,1,2,0\n'*5
+        chunks=[]
+        result=self.scan(body,5,chunk_rows=2,on_chunk=chunks.append)
+        self.assertEqual(result,self.scan(body,5,chunk_rows=2))
+        self.assertEqual(5,result['validated_rows'])
+        self.assertEqual(hashlib.sha256(body).hexdigest(),result['csv_sha256'])
+        self.assertEqual([2,2,1],[c['rows'] for c in chunks])
+        self.assertEqual(4,result['equal_time_ticks'])
+        self.assertEqual(5,verify_chunks(chunks)['rows'])
+        self.assertFalse(result['evaluation_eligible'])
+        self.assertFalse(result['calendar_certified'])
+        self.assertIsNone(result['metrics'])
+        chunks[1]['row_start']=999
+        with self.assertRaises(ValueError): verify_chunks(chunks)
+
+    def test_boundary_time_order_and_bad_tail(self):
+        good=b'20230103 000001000,1,2,0\n'*2
+        for tail in (b'20230103 000000000,1,2,0\n',b'20230103 000002000,3,2,0\n',b'bad\n'):
+            with self.assertRaises(ValueError): self.scan(good+tail,3,chunk_rows=2)
+
+    def test_row_count_exact_not_prefix_acceptance(self):
+        body=b'20230103 000000000,1,2,0\n'*3
+        for expected in (2,4):
+            with self.assertRaises(ValueError): self.scan(body,expected,chunk_rows=2)
+
+    def test_gap_and_utc_month_boundary_not_calendar(self):
+        body=b'20230102 180000000,1,2,0\n20230131 235959999,2,3,0'
+        result=self.scan(body,2,chunk_rows=1)
+        self.assertEqual(1,result['gaps_over_24h'])
+        self.assertEqual(2,len(result['observed_utc_days']))
+        self.assertIn('2023-02-01',result['observed_utc_days'])
+        self.assertEqual(2,result['observed_four_hour_buckets'])
+        self.assertFalse(result['missing_gaps_filled'])
+
+    def test_crc_including_auxiliary_report_and_resource_bounds(self):
+        import io,zipfile
+        from channel_validation.histdata_month import scan
+        from channel_validation.histdata_local import REPORT_MEMBER
+        raw=bytearray(HistDataTests().archive(extras={REPORT_MEMBER:b'report'}))
+        offset=raw.index(b'PK\x01\x02',raw.index(b'PK\x01\x02')+1)
+        raw[offset+16] ^= 1
+        with self.assertRaises(zipfile.BadZipFile): scan(io.BytesIO(raw),2)
+        with self.assertRaises(ValueError): self.scan(b'20230103 000000000,1,2,0\n',1,max_decoded_bytes=10)
+        with self.assertRaises(ValueError): self.scan(b'x'*257,1)
+        with self.assertRaises(ValueError): self.scan(b'',0)
+        with self.assertRaises(ValueError): self.scan(b'20230103 000000000,1,2,0\n',1,chunk_rows=0)
+
+    def test_stop_after_chunk_never_returns_complete_result(self):
+        chunks=[]
+        def check():
+            if chunks: raise TimeoutError('synthetic stop')
+        with self.assertRaises(TimeoutError):
+            self.scan(b'20230103 000000000,1,2,0\n'*5,5,chunk_rows=2,on_chunk=chunks.append,check=check)
+        self.assertEqual(1,len(chunks))
+
+    def test_chunk_chain_rejects_missing_reordered_and_rehashed_gap(self):
+        import copy
+        from channel_validation.histdata_month import verify_chunks
+        chunks=[]
+        self.scan(b'20230103 000000000,1,2,0\n'*5,5,chunk_rows=2,on_chunk=chunks.append)
+        for broken in (chunks[1:],chunks[::-1],[chunks[0],chunks[2]]):
+            with self.assertRaises(ValueError): verify_chunks(broken)
+        broken=copy.deepcopy(chunks)
+        broken[1]['byte_start']+=1
+        broken[1]['chunk_hash']=canonical_hash({k:v for k,v in broken[1].items() if k!='chunk_hash'})
+        with self.assertRaises(ValueError): verify_chunks(broken)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

@@ -1,0 +1,18 @@
+{
+  "chunk_rows": 100000,
+  "evaluation_eligible": false,
+  "expected_csv_bytes": 162418545,
+  "expected_rows": 3609301,
+  "max_decoded_bytes": 268435456,
+  "max_rows": 4000000,
+  "max_runtime_sec": 600,
+  "network_requests": 0,
+  "parent_audit_file_sha256": "09a5e2aff8c1f75ea804d730354819f76ad13045813b35243120f7ff5a42b361",
+  "parent_audit_hash": "e1b68af02fbf1edb374b97670f2f001c15cc304908d4b576199a687cfd851ba6",
+  "parent_completion_sha256": "2d2db7c6d32bc2613db29fade9ccbf4ce862bd79208ea753f73b5a223184e627",
+  "parent_runtime_hash": "5dafb54946c2d79e42bae683b572e9c8240b02d1d8b67747d5875ed304b2cd5a",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "raw_bytes": 25194904,
+  "raw_file_sha256": "4786f42be652e22eb9ae9f567301b744ff0c0bc03b9fd6ff60173cc86c33a4a2",
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96"
+}
