@@ -1557,5 +1557,307 @@ class GoldUnattemptedTests(unittest.TestCase):
             self.assertEqual(0,len(list(root.rglob('*.receipt.json'))))
 
 
+class HistDataTests(unittest.TestCase):
+    def form(self, **changes):
+        from channel_validation.histdata import FIELDS, ACTION
+        fields = dict(FIELDS, tk='a'*32)
+        fields.update(changes)
+        return ('<form id="file_down" method="post" action="'+ACTION+'">'+''.join(
+            f'<input type="hidden" name="{k}" value="{v}">' for k,v in fields.items())+'</form>').encode()
+
+    def archive(self, body=None, extras=None):
+        import io, zipfile
+        from channel_validation.histdata import MEMBER
+        if body is None:
+            body=b'20230103 065959123,1840.01,1840.11,0\n20230103 070000000,1840.02,1840.12,0\n'
+        stream=io.BytesIO()
+        with zipfile.ZipFile(stream,'w',zipfile.ZIP_DEFLATED) as z:
+            z.writestr(MEMBER,body)
+            for name,content in (extras or {}).items(): z.writestr(name,content)
+        return stream.getvalue()
+
+    def response(self, raw):
+        import io
+        value=io.BytesIO(raw)
+        value.status=200
+        value.headers={'Content-Length':str(len(raw))}
+        return value
+
+    def test_fixed_acquisition_not_parameter_change(self):
+        from channel_validation.histdata import request_plan, PAGE
+        p=request_plan()
+        self.assertEqual(2,p['max_requests'])
+        self.assertEqual(0,p['retries'])
+        self.assertEqual(300,p['max_runtime_sec'])
+        self.assertEqual(32*1024**2,p['archive_cap'])
+        self.assertIn('/XAUUSD/2023/1',PAGE)
+        self.assertFalse(p['source_probe'])
+        self.assertFalse(p['evaluation_eligible'])
+        self.assertEqual(canonical_hash(p),canonical_hash(request_plan()))
+
+    def test_exact_form_no_external_post_or_scope_change(self):
+        from channel_validation.histdata import download_form
+        import urllib.parse
+        form=self.form()
+        self.assertEqual(['202301'],urllib.parse.parse_qs(download_form(form).decode())['datemonth'])
+        for raw in (self.form(datemonth='202302'),self.form(fxpair='BTCUSD'),self.form(tk='bad'),
+                    self.form(secret='no'),form.replace(b'www.histdata.com/get.php',b'evil.example/get.php'),
+                    form.replace(b'method="post"',b'method="get"'),form+form,
+                    form.replace(b'</form>',b''),form.replace(b'name="date"',b'name="tk"')):
+            with self.assertRaises(ValueError): download_form(raw)
+
+    def test_public_same_host_http_action_upgraded_only(self):
+        from channel_validation.histdata import download_form
+        self.assertEqual(download_form(self.form()),download_form(self.form().replace(b'https:',b'http:')))
+        with self.assertRaises(ValueError):
+            download_form(self.form().replace(b'https://www.',b'http://user@www.'))
+
+    def test_status_and_payment_forms_are_never_submitted(self):
+        from channel_validation.histdata import download_form
+        good=self.form()
+        status=good.replace(b'file_down',b'file_status').replace(b'/get.php',b'/getStatus.php')
+        payment=b'<form id="payment" method="post" action="https://evil.example"><input type="hidden" name="pay" value="100"></form>'
+        self.assertEqual(download_form(good),download_form(good+status+payment))
+        with self.assertRaises(ValueError): download_form(status+payment)
+
+    def test_cached_archive_phase_does_not_refetch_page(self):
+        from unittest.mock import patch
+        from channel_validation.histdata import acquire, ARCHIVE_RUN_ID, download_form, ACTION
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            with patch('channel_validation.histdata.OUTPUT_ROOT',root), \
+                 patch('channel_validation.histdata.cached_form_preflight',return_value=({'fixture':True},download_form(self.form()))), \
+                 patch('channel_validation.histdata.urllib.request.build_opener') as build:
+                build.return_value.open.return_value=self.response(self.archive())
+                r=acquire(root/'runs'/ARCHIVE_RUN_ID/'artifacts/histdata-sample',lambda:None,cached=True)
+            self.assertEqual(1,build.return_value.open.call_count)
+            request=build.return_value.open.call_args.args[0]
+            self.assertEqual(ACTION,request.full_url)
+            self.assertEqual('POST',request.get_method())
+            self.assertEqual(2,r['cumulative_requests'])
+            self.assertFalse(r['page_refetched'])
+
+    def test_cached_parent_hash_scope_progress_and_budget(self):
+        from unittest.mock import patch
+        from datetime import datetime,timezone,timedelta
+        from channel_validation.histdata import cached_form_preflight, request_plan, RUN_ID, PAGE
+        import hashlib
+        for change in (None,'page','progress','runtime','elapsed','post'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as tmp:
+                root=Path(tmp)
+                parent=root/'runs'/RUN_ID
+                artifacts=parent/'artifacts/histdata-sample'
+                artifacts.mkdir(parents=True)
+                raw=self.form().ljust(31616,b' ')
+                sha=hashlib.sha256(raw).hexdigest()
+                (artifacts/'download-page.html').write_bytes(raw if change!='page' else b'corrupt')
+                runtime={'synthetic':True}
+                rh=canonical_hash(runtime)
+                record=dict(url=PAGE,method='GET',attempts=1,status='SOURCE_UNAVAILABLE_OR_INVALID',
+                            response_cap=1000000,http_status=200,
+                            body=dict(bytes_read=31616,declared_length=None,complete=True,reason='COMPLETE'),
+                            error='Unexpected public download form',raw_file='download-page.html',sha256=sha)
+                audit=dict(runtime_binding=runtime,plan_hash=build_plan()['plan_hash'],records=[record],requests=1,archive_parsed=False)
+                if change=='post': audit['records'].append({'method':'POST'})
+                ah=canonical_hash(audit)
+                write_immutable(artifacts/'audit.json',dict(**audit,audit_hash=ah))
+                write_immutable(artifacts/'01.receipt.json',record)
+                write_immutable(artifacts/'01.attempt.json',{})
+                plan=request_plan()
+                write_immutable(artifacts/'request-plan.json',dict(**plan,request_plan_hash=canonical_hash(plan)))
+                write_immutable(parent/'completion.json',dict(status='COMPLETE',exit_code=0,
+                    runtime_hash='bad' if change=='runtime' else rh,plan_hash=build_plan()['plan_hash']))
+                at=datetime.now(timezone.utc)-timedelta(seconds=100 if change=='elapsed' else 10)
+                write_immutable(parent/'owner.json',dict(worker_started_utc=at.isoformat()))
+                if change=='progress': write_immutable(artifacts/'02.attempt.json',{})
+                with patch('channel_validation.histdata.OUTPUT_ROOT',root), \
+                     patch('channel_validation.histdata.PARENT_RUNTIME',rh), \
+                     patch('channel_validation.histdata.PARENT_AUDIT',ah), \
+                     patch('channel_validation.histdata.PAGE_SHA',sha):
+                    if change is None:
+                        proof,payload=cached_form_preflight()
+                        self.assertFalse(proof['page_refetched'])
+                        self.assertIn(b'fxpair=XAUUSD',payload)
+                    else:
+                        with self.assertRaises(ValueError): cached_form_preflight()
+
+    def test_fixed_est_utc_and_bar_end_not_backtest(self):
+        from channel_validation.histdata import inspect_zip, EST
+        from datetime import datetime,timezone
+        result=inspect_zip(self.archive())
+        self.assertEqual(2,result['rows'])
+        self.assertEqual(2,len(result['four_hour_diagnostics']))
+        self.assertEqual('2023-01-03T11:59:59.123000+00:00',datetime.fromtimestamp(result['first_ms']/1000,timezone.utc).isoformat())
+        self.assertEqual(-18000,datetime(2023,7,1,tzinfo=EST).utcoffset().total_seconds())
+        for bar in result['four_hour_diagnostics']:
+            self.assertGreater(bar['end_ms'],bar['last_tick_ms'])
+            self.assertFalse(bar['complete_session_verified'])
+        self.assertFalse(result['evaluation_eligible'])
+        self.assertIsNone(result['metrics'])
+
+    def test_quotes_invalid_month_schema_crossed_nan_volume(self):
+        from channel_validation.histdata import inspect_zip
+        for row in (b'20230201 000000000,1,2,0', b'20230103 000000,1,2,0',
+                    b'20230103 240000000,1,2,0', b'20230103 000000000,2,1,0',
+                    b'20230103 000000000,NaN,2,0', b'20230103 000000000,1,2,3',
+                    b'20230103 000000000,0,2,0', b''):
+            with self.assertRaises(ValueError): inspect_zip(self.archive(row))
+
+    def test_equal_time_retained_but_reversal_rejected(self):
+        from channel_validation.histdata import inspect_zip
+        row=b'20230103 000000000,1,2,0\n'
+        r=inspect_zip(self.archive(row+row))
+        self.assertEqual(2,r['rows'])
+        self.assertEqual(1,r['equal_time_ticks'])
+        with self.assertRaises(ValueError):
+            inspect_zip(self.archive(b'20230104 000000000,1,2,0\n'+row))
+
+    def test_gap_is_not_calendar_or_synthetic_bars(self):
+        from channel_validation.histdata import inspect_zip
+        r=inspect_zip(self.archive(b'20230103 000000000,1,2,0\n20230105 000000000,1,2,0\n'))
+        self.assertEqual(2,len(r['four_hour_diagnostics']))
+        self.assertEqual(1,r['gaps_over_one_minute'])
+        self.assertEqual(172800000,r['max_observed_gap_ms'])
+        self.assertFalse(r['calendar_certified'])
+        self.assertFalse(r['missing_gaps_filled'])
+
+    def test_zip_crc_truncated_paths_member_budget(self):
+        import zipfile
+        from unittest.mock import patch
+        from channel_validation.histdata import inspect_zip, MEMBER
+        for name in ('../bad.txt','evil.exe','C:bad.txt','dir\\bad.txt','dir/bad.txt'):
+            with self.assertRaises(ValueError): inspect_zip(self.archive(extras={name:b'no'}))
+        with self.assertRaises(zipfile.BadZipFile): inspect_zip(self.archive()[:-15])
+        with patch('channel_validation.histdata.DECODE_CAP',10):
+            with self.assertRaises(ValueError): inspect_zip(self.archive())
+        with patch('channel_validation.histdata.ROW_CAP',1):
+            with self.assertRaises(ValueError): inspect_zip(self.archive())
+        with self.assertRaises(ValueError): inspect_zip(self.archive(b'x'*257))
+        raw=bytearray(self.archive())
+        central=raw.index(b'PK\x01\x02')
+        raw[central+16] ^= 1
+        with self.assertRaises(zipfile.BadZipFile): inspect_zip(bytes(raw))
+        r=inspect_zip(self.archive(extras={'report.txt':b'provider report'}))
+        self.assertEqual(2,r['rows'])
+
+    def test_success_two_requests_and_immutable_receipts(self):
+        from unittest.mock import patch
+        from channel_validation.histdata import acquire, RUN_ID, PAGE, ACTION
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            output=root/'runs'/RUN_ID/'artifacts/histdata-sample'
+            with patch('channel_validation.histdata.OUTPUT_ROOT',root), \
+                 patch('channel_validation.histdata.urllib.request.build_opener') as build:
+                build.return_value.open.side_effect=[self.response(self.form()),self.response(self.archive())]
+                r=acquire(output,lambda:None)
+                with self.assertRaises(FileExistsError): acquire(output,lambda:None)
+                with self.assertRaises(ValueError): acquire(root/'renamed',lambda:None)
+            calls=build.return_value.open.call_args_list
+            self.assertEqual([PAGE,ACTION],[c.args[0].full_url for c in calls])
+            self.assertEqual(['GET','POST'],[c.args[0].get_method() for c in calls])
+            self.assertEqual(2,len(list(output.glob('*.attempt.json'))))
+            self.assertEqual(2,len(list(output.glob('*.receipt.json'))))
+            self.assertTrue(r['archive_parsed'])
+            self.assertIsNone(r['metrics'])
+            self.assertFalse(r['evaluation_eligible'])
+
+    def test_timeout_and_http_failure_no_post_no_retry(self):
+        import urllib.error
+        from unittest.mock import patch
+        from channel_validation.histdata import acquire, RUN_ID
+        for error in (TimeoutError('synthetic timeout'),urllib.error.HTTPError('url',503,'unavailable',{},None)):
+            with tempfile.TemporaryDirectory() as tmp:
+                root=Path(tmp)
+                with patch('channel_validation.histdata.OUTPUT_ROOT',root), \
+                     patch('channel_validation.histdata.urllib.request.build_opener') as build:
+                    build.return_value.open.side_effect=error
+                    r=acquire(root/'runs'/RUN_ID/'artifacts/histdata-sample',lambda:None)
+                self.assertEqual(1,build.return_value.open.call_count)
+                self.assertFalse(r['archive_parsed'])
+                self.assertFalse(r['retry_authorized'])
+
+    def test_wrong_form_and_oversize_archive_no_more_network(self):
+        from unittest.mock import patch
+        from channel_validation.histdata import acquire, RUN_ID, DOWNLOAD_CAP
+        large=self.response(b'not downloaded')
+        large.headers={'Content-Length':str(DOWNLOAD_CAP+1)}
+        for responses in ([self.response(self.form(datemonth='202401'))], [self.response(self.form()),large]):
+            with tempfile.TemporaryDirectory() as tmp:
+                root=Path(tmp)
+                with patch('channel_validation.histdata.OUTPUT_ROOT',root), \
+                     patch('channel_validation.histdata.urllib.request.build_opener') as build:
+                    build.return_value.open.side_effect=responses
+                    r=acquire(root/'runs'/RUN_ID/'artifacts/histdata-sample',lambda:None)
+                self.assertEqual(len(responses),r['requests'])
+                self.assertFalse(r['archive_parsed'])
+                self.assertEqual([],list(root.rglob('*.zip')))
+
+    def test_cooperative_stop_not_misclassified_timeout(self):
+        from unittest.mock import patch
+        from channel_validation.histdata import acquire, RUN_ID
+        calls=0
+        def check():
+            nonlocal calls
+            calls+=1
+            if calls > 1: raise TimeoutError('synthetic stop')
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            with patch('channel_validation.histdata.OUTPUT_ROOT',root), \
+                 patch('channel_validation.histdata.urllib.request.build_opener') as build:
+                build.return_value.open.return_value=self.response(self.form())
+                with self.assertRaises(TimeoutError):
+                    acquire(root/'runs'/RUN_ID/'artifacts/histdata-sample',check)
+            self.assertEqual(1,build.return_value.open.call_count)
+            self.assertEqual([],list(root.rglob('*.receipt.json')))
+
+
+class HistDataLocalCensusTests(unittest.TestCase):
+    def test_named_provider_report_crc_and_no_arbitrary_members(self):
+        import io
+        from channel_validation.histdata_local import census, REPORT_MEMBER
+        good=HistDataTests().archive(extras={REPORT_MEMBER:b'provider claims, not independently certified'})
+        r=census(io.BytesIO(good))
+        self.assertTrue(r['zip_crc_verified'])
+        self.assertFalse(r['provider_claims_independently_verified'])
+        self.assertIn('provider claims',r['provider_report_text'])
+        with self.assertRaises(ValueError):
+            census(io.BytesIO(HistDataTests().archive(extras={'wrong.txt':b'no'})))
+
+    def test_crc_full_file_but_semantics_only_fixed_prefix(self):
+        import io
+        from unittest.mock import patch
+        from channel_validation.histdata_local import census
+        raw=HistDataTests().archive(b'20230103 000000000,1,2,0\n'*5)
+        with patch('channel_validation.histdata_local.SAMPLE_ROWS',2):
+            r=census(io.BytesIO(raw))
+        self.assertTrue(r['zip_crc_verified'])
+        self.assertEqual(5,r['physical_csv_rows'])
+        self.assertEqual(2,r['validated_sample_rows'])
+        self.assertEqual(3,r['unvalidated_rows'])
+        self.assertFalse(r['full_month_semantics_verified'])
+        self.assertFalse(r['evaluation_eligible'])
+
+    def test_bad_crc_or_budget_or_first_sample_rejected(self):
+        import io,zipfile
+        from unittest.mock import patch
+        from channel_validation.histdata_local import census
+        raw=bytearray(HistDataTests().archive())
+        raw[raw.index(b'PK\x01\x02')+16] ^= 1
+        with self.assertRaises(zipfile.BadZipFile): census(io.BytesIO(raw))
+        with patch('channel_validation.histdata_local.DECODE_CAP',1):
+            with self.assertRaises(ValueError): census(io.BytesIO(HistDataTests().archive()))
+        with self.assertRaises(ValueError): census(io.BytesIO(HistDataTests().archive(b'invalid\n')))
+
+    def test_last_row_no_newline_and_invalid_tail_not_certified(self):
+        import io
+        from unittest.mock import patch
+        from channel_validation.histdata_local import census
+        raw=HistDataTests().archive(b'20230103 000000000,1,2,0\ninvalid tail')
+        with patch('channel_validation.histdata_local.SAMPLE_ROWS',1): r=census(io.BytesIO(raw))
+        self.assertEqual(2,r['physical_csv_rows'])
+        self.assertEqual(1,r['unvalidated_rows'])
+        self.assertFalse(r['full_month_semantics_verified'])
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

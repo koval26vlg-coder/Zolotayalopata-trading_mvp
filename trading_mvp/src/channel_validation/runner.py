@@ -222,7 +222,7 @@ def report(plan, inv, validation, evaluation):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'gate-survivorship-audit', 'gate-trades-audit', 'gate-metadata-audit', 'okx-history-audit', 'okx-full-archive', 'okx-archive-census', 'okx-dependencies', 'gold-history-audit', 'gold-history-remaining', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
+    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'gate-survivorship-audit', 'gate-trades-audit', 'gate-metadata-audit', 'okx-history-audit', 'okx-full-archive', 'okx-archive-census', 'okx-dependencies', 'gold-history-audit', 'gold-history-remaining', 'histdata-sample', 'histdata-archive', 'histdata-local', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
     parser.add_argument('--input-manifest')
     parser.add_argument('--evaluation', type=Path)
     parser.add_argument('--output', type=Path)
@@ -260,6 +260,18 @@ def main(argv=None):
         return 0 if result.wasSuccessful() else 1
     if not args.output:
         parser.error('Explicit isolated output namespace required')
+    if args.stage == 'histdata-local':
+        if args.max_runtime_sec > 300:
+            parser.error('Local census bounded to 300 seconds')
+        from .histdata_local import audit
+        audit(args.output/'histdata-local', check)
+        return 0
+    if args.stage in ('histdata-sample', 'histdata-archive'):
+        if args.max_runtime_sec > (240 if args.stage == 'histdata-archive' else 300):
+            parser.error('HistData sample is bounded to 300 seconds')
+        from .histdata import acquire
+        acquire(args.output/'histdata-sample', check, cached=args.stage == 'histdata-archive')
+        return 0
     if args.stage in ('gold-history-audit', 'gold-history-remaining'):
         remaining = args.stage == 'gold-history-remaining'
         if args.max_runtime_sec > (240 if remaining else 300):

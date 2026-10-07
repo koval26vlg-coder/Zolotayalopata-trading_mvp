@@ -1,0 +1,23 @@
+{
+  "archive_crc_verified": false,
+  "claim_sha256": "95638d286307fa408fb90e9b5ac63bc1cdff1540af9f80ef9807bec2a6ae32fb",
+  "deadline_stop_inferred_not_directly_logged": true,
+  "intent_sha256": "a535de1fdda9a29c4bb4c5925f84d86f3f03e065d08698b23eb5db598589d138",
+  "max_runtime_sec": 240,
+  "metrics": null,
+  "network_retry_authorized": false,
+  "observed_at_utc": "2026-10-07T08:25:58.812604+00:00",
+  "output_quarantined": true,
+  "owner_pid": 60028,
+  "owner_sha256": "5df2bcc073e161f33ec13f85c5051c3b717ce47c61a609961b728e4da0b2c94f",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "raw_file_bytes": 25194904,
+  "raw_file_sha256": "4786f42be652e22eb9ae9f567301b744ff0c0bc03b9fd6ff60173cc86c33a4a2",
+  "reason": "WORKER_DEAD_WITHOUT_COMPLETION_AFTER_RUNTIME_WINDOW",
+  "run_id": "history_histdata_archive_v8_20261007",
+  "runtime_hash": "236802f033c6b09af3ad4ba9d769ecdc10b4ea4d42cc87e2b0621c48a9c133e4",
+  "status": "STOPPED_INCOMPLETE",
+  "transport_receipt_missing": true,
+  "verified_row_count": null,
+  "writer_confirmed_dead": true
+}

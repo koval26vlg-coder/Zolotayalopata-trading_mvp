@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('verify','sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-archive-census','okx-dependencies','gold-history-audit','gold-history-remaining','archive-audit','inventory','validate','evaluate','report','pipeline')][string]$Stage = 'pipeline',
+    [ValidateSet('verify','sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-archive-census','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive','histdata-local','archive-audit','inventory','validate','evaluate','report','pipeline')][string]$Stage = 'pipeline',
     [string]$InputManifest = '',
     [string]$EvaluationPath = '',
     [ValidateRange(1,1800)][int]$MaxRuntimeSec = 1800,
@@ -59,10 +59,19 @@ try {
     if ($guard.usage.decision -ne 'CONTINUE' -or $guard.usage.remaining_percent -le 15 -or $guard.status -like 'PAUSED*') { throw 'Quota paused/unavailable' }
     $reads = @((Join-Path $root 'trading_mvp\src\channel_validation'), (Join-Path $root 'trading_mvp\tests\test_channel_validation.py'), (Join-Path $root 'docs\plans\channel-strategy-validation-20261006-v1.json'))
     if ($Stage -eq 'archive-audit') { $reads += 'E:\ZolotyayLopata-data\exports\trading-mvp' }
-    if ($Stage -in @('gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-dependencies','gold-history-audit') -and $MaxRuntimeSec -gt 300) { throw 'History source audit is bounded to 300 seconds' }
+    if ($Stage -in @('gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-dependencies','gold-history-audit','histdata-sample') -and $MaxRuntimeSec -gt 300) { throw 'History source audit is bounded to 300 seconds' }
     if ($Stage -eq 'gold-history-remaining') {
         if ($MaxRuntimeSec -gt 240) { throw 'Remaining gold phase is bounded to 240 seconds' }
         $reads += (Join-Path $outRoot 'history_gold_source_v7_20261007')
+    }
+    if ($Stage -eq 'histdata-archive') {
+        if ($MaxRuntimeSec -gt 240) { throw 'HistData archive phase bounded to 240 seconds' }
+        $reads += (Join-Path $outRoot 'history_histdata_gold_v8_20261007')
+    }
+    if ($Stage -eq 'histdata-local') {
+        if ($MaxRuntimeSec -gt 300) { throw 'Local census bounded to 300 seconds' }
+        $reads += (Join-Path $outRoot 'history_histdata_archive_v8_20261007')
+        if ($RunId -eq 'history_histdata_local_recovery_v8_20261007') { $reads += (Join-Path $outRoot 'history_histdata_local_v8_20261007') }
     }
     if ($Stage -eq 'okx-dependencies') { $reads += (Join-Path $root 'docs\analysis\channel-strategy-validation-20261006\continuation-v5') }
     if ($Stage -eq 'okx-full-archive') { $reads += (Join-Path $outRoot 'history_okx_option_source_v4_20261006') }
@@ -116,7 +125,23 @@ try {
         & $python -c 'from channel_validation.gold_history import remaining_preflight; remaining_preflight()' | Out-Null
         if ($LASTEXITCODE -ne 0) { throw 'Exact failed parent provenance not established' }
     }
-    if ($PreflightOnly) { Emit @{status=$(if($Stage -in @('sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-dependencies','gold-history-audit','gold-history-remaining')){'READY_BOUNDED_PUBLIC_HISTORY'}else{'READY_OFFLINE_ONLY'});public_network_required=($Stage -in @('sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-dependencies','gold-history-audit','gold-history-remaining'));runtime_hash=$runtimeHash;plan_hash=$check.plan_hash;output_created=$false;run_id=$RunId}; exit 0 }
+    if ($Stage -eq 'histdata-sample') {
+        if ($RunId -ne 'history_histdata_gold_v8_20261007') { throw 'HistData RunId is fixed; no renamed retry' }
+        if ($PreflightOnly -and (Test-Path -LiteralPath $output)) { throw 'HistData already attempted; use Status' }
+    }
+    if ($Stage -eq 'histdata-archive') {
+        if ($RunId -ne 'history_histdata_archive_v8_20261007') { throw 'HistData archive RunId fixed; no renamed retry' }
+        if ($PreflightOnly -and (Test-Path -LiteralPath $output)) { throw 'HistData archive already attempted' }
+        & $python -c 'from channel_validation.histdata import cached_form_preflight; cached_form_preflight()' | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw 'Exact cached HistData page preflight failed' }
+    }
+    if ($Stage -eq 'histdata-local') {
+        if ($RunId -notin @('history_histdata_local_v8_20261007','history_histdata_local_recovery_v8_20261007')) { throw 'Fixed local census RunId required' }
+        if ($PreflightOnly -and (Test-Path -LiteralPath $output)) { throw 'Local census already attempted' }
+        & $python -c 'from channel_validation.histdata_local import preflight,RECOVERY_RUN_ID; import sys; preflight(recovery=sys.argv[1]==RECOVERY_RUN_ID)' $RunId | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw 'Local quarantined ZIP binding failed' }
+    }
+    if ($PreflightOnly) { Emit @{status=$(if($Stage -in @('sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive')){'READY_BOUNDED_PUBLIC_HISTORY'}else{'READY_OFFLINE_ONLY'});public_network_required=($Stage -in @('sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive'));runtime_hash=$runtimeHash;plan_hash=$check.plan_hash;output_created=$false;run_id=$RunId}; exit 0 }
     if (-not $VisibleWorker) {
         if (Test-Path -LiteralPath $output) { throw 'Namespace already used; no blind retry' }
         [IO.Directory]::CreateDirectory($output) | Out-Null
@@ -126,8 +151,11 @@ try {
         if ($InputManifest) { $args += @('-InputManifest',(Quote $InputManifest)) }
         if ($EvaluationPath) { $args += @('-EvaluationPath',(Quote $EvaluationPath)) }
         $terminal = Start-Process -FilePath (Get-Command pwsh).Source -ArgumentList $args -WorkingDirectory $root -WindowStyle Normal -PassThru
-        $until = [DateTime]::UtcNow.AddSeconds(60)
+        New-Json (Join-Path $output 'dispatch.json') @{terminal_pid=$terminal.Id;terminal_started_utc=$terminal.StartTime.ToUniversalTime().ToString('o');token=$Token;handshake_timeout_sec=300}
+        # The visible worker repeats fresh guards before claiming a writer.
+        $until = [DateTime]::UtcNow.AddSeconds(300)
         do {
+            if (Test-Path -LiteralPath (Join-Path $output 'launch-failure.json')) { throw 'Visible worker preflight failed; inspect launch-failure.json' }
             if (Test-Path -LiteralPath (Join-Path $output 'owner.json')) {
                 $owner = Read-Json (Join-Path $output 'owner.json')
                 if ($owner.token -ne $Token -or $owner.owner_pid -ne $terminal.Id -or -not $owner.job_assigned) { throw 'Ownership mismatch' }
@@ -189,4 +217,13 @@ public static class HistoryJob {
         if ($null -ne $child -and -not $child.HasExited) { Stop-Process -InputObject $child -Force -ErrorAction SilentlyContinue }
         [HistoryJob]::CloseHandle($job) | Out-Null
     }
-} catch { Emit @{status='BLOCKED';run_id=$RunId;reason=$_.Exception.Message}; exit 2 }
+} catch {
+    $failure = @{status='BLOCKED';run_id=$RunId;reason=$_.Exception.Message}
+    if ($VisibleWorker -and $output -and (Test-Path -LiteralPath (Join-Path $output 'intent.json')) -and -not (Test-Path -LiteralPath (Join-Path $output 'owner.json'))) {
+        $failedIntent = Read-Json (Join-Path $output 'intent.json')
+        if ($Token -and $failedIntent.token -eq $Token -and -not (Test-Path -LiteralPath (Join-Path $output 'launch-failure.json'))) {
+            New-Json (Join-Path $output 'launch-failure.json') $failure
+        }
+    }
+    Emit $failure; exit 2
+}

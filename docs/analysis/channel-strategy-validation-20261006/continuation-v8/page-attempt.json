@@ -1,0 +1,7 @@
+{
+  "attempts": 1,
+  "method": "GET",
+  "response_cap": 1000000,
+  "status": "SOURCE_UNAVAILABLE_OR_INVALID",
+  "url": "https://www.histdata.com/download-free-forex-data/?/ascii/tick-data-quotes/XAUUSD/2023/1"
+}

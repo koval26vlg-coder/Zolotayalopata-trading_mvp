@@ -223,3 +223,11 @@ trading_mvp/src/premarket_depth_dispatch.py -text whitespace=cr-at-eol
 docs/plans/premarket-depth-dispatch-runtime-20261006-v1.json -text whitespace=cr-at-eol
 docs/analysis/premarket-dispatch-20261006/* -text whitespace=cr-at-eol
 docs/analysis/premarket-dispatch-20261006/*.log -text whitespace=-blank-at-eol,cr-at-eol
+
+# Historical validation runtime and v8 evidence use exact-byte SHA256 bindings.
+trading_mvp/src/channel_validation/*.py -text whitespace=cr-at-eol
+trading_mvp/tests/test_channel_validation.py -text whitespace=cr-at-eol
+tools/run_channel_strategy_validation_visible.ps1 -text whitespace=cr-at-eol
+tools/check_active_run_gate.ps1 -text whitespace=cr-at-eol
+tools/check_trading_mvp_autopilot.ps1 -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v8/* -text whitespace=cr-at-eol

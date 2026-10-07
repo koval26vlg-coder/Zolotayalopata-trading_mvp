@@ -1,0 +1,8 @@
+{
+  "local_quality_recovery_scope": "same immutable ZIP only, new isolated output, one visible bounded process",
+  "answer": "Yes, I closed the windows",
+  "question": "Did you close PowerShell windows during this check?",
+  "network_retry_authorized": false,
+  "source": "Direct user answer in current chat",
+  "confirmed_terminal_closure": true
+}
