@@ -1,0 +1,365 @@
+{
+  "audit_hash": "a9a426cb2760f9e1787a1210ad524293395b6d97b8996a10522d5d4a65748592",
+  "dated_terms_complete": false,
+  "evaluation_eligible": false,
+  "exit_quotes_verified": false,
+  "metrics": null,
+  "missing_not_zero": true,
+  "parent": {
+    "census_file_sha256": "9a7b98e4448adee916bc4be1db1cadcd891c1af3a76838d7bdc22b528f33a4fc",
+    "census_hash": "a188c266039dd924a5a8e95ada9c554d259e9474a70f926a7a4791b0399b150e"
+  },
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "records": [
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 152,
+        "complete": true,
+        "declared_length": null,
+        "reason": "COMPLETE"
+      },
+      "http_status": 200,
+      "parsed": {
+        "anchor_ms": 1736121600000,
+        "candles": [
+          {
+            "close": "98333.1",
+            "close_usable_not_before_ms": 1736121600000,
+            "end_ms": 1736121600000,
+            "high": "98333.3",
+            "low": "98307.6",
+            "open": "98311.4",
+            "start_ms": 1736121540000
+          },
+          {
+            "close": "98464.9",
+            "close_usable_not_before_ms": 1736121660000,
+            "end_ms": 1736121660000,
+            "high": "98493",
+            "low": "98333.1",
+            "open": "98333.1",
+            "start_ms": 1736121600000
+          }
+        ],
+        "evaluation_eligible": false,
+        "execution_quote": false,
+        "family": "BTC-USD",
+        "latest_closed_reference": {
+          "close": "98333.1",
+          "close_usable_not_before_ms": 1736121600000,
+          "end_ms": 1736121600000,
+          "high": "98333.3",
+          "low": "98307.6",
+          "open": "98311.4",
+          "start_ms": 1736121540000
+        },
+        "publication_latency_verified": false,
+        "status": "INDEX_REFERENCE_ONLY"
+      },
+      "raw_file": "01.raw",
+      "request": {
+        "anchor_ms": 1736121600000,
+        "family": "BTC-USD",
+        "kind": "index",
+        "url": "https://www.okx.com/api/v5/market/history-index-candles?instId=BTC-USD&bar=1m&after=1736121660000&before=1736121480000&limit=3"
+      },
+      "sha256": "033c50ff15274e36cd432a7a12df871702fcb4f044367b1a801d1a34d9c4c224",
+      "status": "INDEX_REFERENCE_ONLY"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 154,
+        "complete": true,
+        "declared_length": null,
+        "reason": "COMPLETE"
+      },
+      "http_status": 200,
+      "parsed": {
+        "anchor_ms": 1736726400000,
+        "candles": [
+          {
+            "close": "94490.5",
+            "close_usable_not_before_ms": 1736726400000,
+            "end_ms": 1736726400000,
+            "high": "94490.6",
+            "low": "94448.3",
+            "open": "94479.8",
+            "start_ms": 1736726340000
+          },
+          {
+            "close": "94533.4",
+            "close_usable_not_before_ms": 1736726460000,
+            "end_ms": 1736726460000,
+            "high": "94533.4",
+            "low": "94469.3",
+            "open": "94490.6",
+            "start_ms": 1736726400000
+          }
+        ],
+        "evaluation_eligible": false,
+        "execution_quote": false,
+        "family": "BTC-USD",
+        "latest_closed_reference": {
+          "close": "94490.5",
+          "close_usable_not_before_ms": 1736726400000,
+          "end_ms": 1736726400000,
+          "high": "94490.6",
+          "low": "94448.3",
+          "open": "94479.8",
+          "start_ms": 1736726340000
+        },
+        "publication_latency_verified": false,
+        "status": "INDEX_REFERENCE_ONLY"
+      },
+      "raw_file": "02.raw",
+      "request": {
+        "anchor_ms": 1736726400000,
+        "family": "BTC-USD",
+        "kind": "index",
+        "url": "https://www.okx.com/api/v5/market/history-index-candles?instId=BTC-USD&bar=1m&after=1736726460000&before=1736726280000&limit=3"
+      },
+      "sha256": "7a1c421b1b085ac2891228ff5e02d3955e88c498d0891921d1d3d2d5c3d38c2f",
+      "status": "INDEX_REFERENCE_ONLY"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 154,
+        "complete": true,
+        "declared_length": null,
+        "reason": "COMPLETE"
+      },
+      "http_status": 200,
+      "parsed": {
+        "anchor_ms": 1736121600000,
+        "candles": [
+          {
+            "close": "3635.46",
+            "close_usable_not_before_ms": 1736121600000,
+            "end_ms": 1736121600000,
+            "high": "3635.47",
+            "low": "3634.37",
+            "open": "3634.37",
+            "start_ms": 1736121540000
+          },
+          {
+            "close": "3637.14",
+            "close_usable_not_before_ms": 1736121660000,
+            "end_ms": 1736121660000,
+            "high": "3638.64",
+            "low": "3635.47",
+            "open": "3635.47",
+            "start_ms": 1736121600000
+          }
+        ],
+        "evaluation_eligible": false,
+        "execution_quote": false,
+        "family": "ETH-USD",
+        "latest_closed_reference": {
+          "close": "3635.46",
+          "close_usable_not_before_ms": 1736121600000,
+          "end_ms": 1736121600000,
+          "high": "3635.47",
+          "low": "3634.37",
+          "open": "3634.37",
+          "start_ms": 1736121540000
+        },
+        "publication_latency_verified": false,
+        "status": "INDEX_REFERENCE_ONLY"
+      },
+      "raw_file": "03.raw",
+      "request": {
+        "anchor_ms": 1736121600000,
+        "family": "ETH-USD",
+        "kind": "index",
+        "url": "https://www.okx.com/api/v5/market/history-index-candles?instId=ETH-USD&bar=1m&after=1736121660000&before=1736121480000&limit=3"
+      },
+      "sha256": "a7adeab553a83027899f39aa775a2aed471eaef1d3fc16700aafc1b3ab94ec7d",
+      "status": "INDEX_REFERENCE_ONLY"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 152,
+        "complete": true,
+        "declared_length": null,
+        "reason": "COMPLETE"
+      },
+      "http_status": 200,
+      "parsed": {
+        "anchor_ms": 1736726400000,
+        "candles": [
+          {
+            "close": "3265.54",
+            "close_usable_not_before_ms": 1736726400000,
+            "end_ms": 1736726400000,
+            "high": "3265.66",
+            "low": "3264.78",
+            "open": "3265.66",
+            "start_ms": 1736726340000
+          },
+          {
+            "close": "3268.6",
+            "close_usable_not_before_ms": 1736726460000,
+            "end_ms": 1736726460000,
+            "high": "3268.6",
+            "low": "3264.46",
+            "open": "3265.59",
+            "start_ms": 1736726400000
+          }
+        ],
+        "evaluation_eligible": false,
+        "execution_quote": false,
+        "family": "ETH-USD",
+        "latest_closed_reference": {
+          "close": "3265.54",
+          "close_usable_not_before_ms": 1736726400000,
+          "end_ms": 1736726400000,
+          "high": "3265.66",
+          "low": "3264.78",
+          "open": "3265.66",
+          "start_ms": 1736726340000
+        },
+        "publication_latency_verified": false,
+        "status": "INDEX_REFERENCE_ONLY"
+      },
+      "raw_file": "04.raw",
+      "request": {
+        "anchor_ms": 1736726400000,
+        "family": "ETH-USD",
+        "kind": "index",
+        "url": "https://www.okx.com/api/v5/market/history-index-candles?instId=ETH-USD&bar=1m&after=1736726460000&before=1736726280000&limit=3"
+      },
+      "sha256": "533ee98bf8b3a1cc999b51ba26f807ea632d23437d341771a791284cef70f488",
+      "status": "INDEX_REFERENCE_ONLY"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 1053,
+        "complete": true,
+        "declared_length": null,
+        "reason": "COMPLETE"
+      },
+      "http_status": 200,
+      "parsed": {
+        "archive_bytes_downloaded": 0,
+        "archives": [
+          {
+            "advertised_size_mb": "489.53",
+            "family": "BTC-USD",
+            "filename": "BTC-USD-optionchain-L2orderbook-400lv-2025-01-13.tar.gz",
+            "url": "https://static.okx.com/cdn/okx/match/orderbook/L2/400lv/daily/20250113/BTC-USD-optionchain-L2orderbook-400lv-2025-01-13.tar.gz"
+          },
+          {
+            "advertised_size_mb": "454.85",
+            "family": "ETH-USD",
+            "filename": "ETH-USD-optionchain-L2orderbook-400lv-2025-01-13.tar.gz",
+            "url": "https://static.okx.com/cdn/okx/match/orderbook/L2/400lv/daily/20250113/ETH-USD-optionchain-L2orderbook-400lv-2025-01-13.tar.gz"
+          }
+        ],
+        "exit_quotes_verified": false,
+        "status": "EXIT_ARCHIVE_LINKS_ONLY"
+      },
+      "raw_file": "05.raw",
+      "request": {
+        "kind": "catalog",
+        "payload": {
+          "dateQuery": {
+            "begin": "1736812799999",
+            "dateAggrType": "daily",
+            "end": "1736812799999"
+          },
+          "instQueryParam": {
+            "instFamilyList": [
+              "BTC-USD",
+              "ETH-USD"
+            ]
+          },
+          "instType": "OPTION",
+          "module": "4"
+        },
+        "url": "https://www.okx.com/priapi/v5/broker/public/trade-data/download-link"
+      },
+      "sha256": "c9d430cce66a946646ac48f593c832e230adf931df1d7f6227e12f5799565b47",
+      "status": "EXIT_ARCHIVE_LINKS_ONLY"
+    },
+    {
+      "attempts": 1,
+      "error": "HTTP_ERROR_NO_RETRY",
+      "http_status": 302,
+      "request": {
+        "kind": "cap_change",
+        "url": "https://www.okx.com/help/okx-to-adjust-parameters-for-options-fee-calculation"
+      },
+      "status": "SOURCE_UNAVAILABLE_OR_INVALID"
+    },
+    {
+      "attempts": 1,
+      "error": "HTTP_ERROR_NO_RETRY",
+      "http_status": 302,
+      "request": {
+        "kind": "tier_change",
+        "url": "https://www.okx.com/help/okx-to-adjust-options-trading-fees"
+      },
+      "status": "SOURCE_UNAVAILABLE_OR_INVALID"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 96482,
+        "complete": true,
+        "declared_length": null,
+        "reason": "COMPLETE"
+      },
+      "http_status": 200,
+      "parsed": {
+        "date_coverage_certified": false,
+        "evaluation_eligible": false,
+        "historical_values_adopted": false,
+        "jan2025_terms_verified": false,
+        "page_contains_2026_update": true,
+        "status": "CURRENT_SPEC_NOT_HISTORICAL_CERTIFICATE"
+      },
+      "raw_file": "08.raw",
+      "request": {
+        "kind": "current_specs",
+        "url": "https://www.okx.com/en-gb/help/get-started-with-okx-options"
+      },
+      "sha256": "73ddac3bb532b8f7261ee6d23559e9d2f907be3bfcb90859618fa630cda9e09b",
+      "status": "CURRENT_SPEC_NOT_HISTORICAL_CERTIFICATE"
+    }
+  ],
+  "request_plan_hash": "a53f559a811bbb1f0d5c9479c1163065481c731df9b348b4701578593747ed50",
+  "requests": 8,
+  "runtime_binding": {
+    "tools/check_active_run_gate.ps1": "a3b1b735dba6681b18fdb2e9be637079a22391123eced0a316dc2b76855193fd",
+    "tools/check_trading_mvp_autopilot.ps1": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+    "tools/run_channel_strategy_validation_visible.ps1": "5dca491e3f05e6dab52d219b99560e8cf24467d048a845cbc00357f037767cd2",
+    "trading_mvp/src/channel_validation/__init__.py": "dab9cae823a9b621cc47440d3a73630e9831110efd9f370fe7b689d2206f71e3",
+    "trading_mvp/src/channel_validation/adapters.py": "e3a090521c5da1dc6ff7afe600b4c52aad74f63ef1358a7f674d86af7b4377fe",
+    "trading_mvp/src/channel_validation/archive_audit.py": "fdbb487dc77de23176751e24f642e487d0da00fe05f83f27b92dcdbbba74124a",
+    "trading_mvp/src/channel_validation/contract.py": "d71f4e1834623bc8ea7234dd561604a26d89f010a2978092c9c9858d5f55465c",
+    "trading_mvp/src/channel_validation/data.py": "bf7d11039ac155ee70a21d0a1837e5af5ad7506ae7db3519472ac5d2e5322f61",
+    "trading_mvp/src/channel_validation/execution.py": "b8e119584e4b3b5c3abe2da93900711f74a630b0d94b7c570faf6883c35de4ab",
+    "trading_mvp/src/channel_validation/gate_catalog.py": "920183562362062ba516ea3b9859051f9aecad27f5eb8900d9b59716f11af0dd",
+    "trading_mvp/src/channel_validation/gate_history.py": "7297594b274bc6a9fb239be67e23825e55a6db7e45d65133ba252dcc3cde35df",
+    "trading_mvp/src/channel_validation/gate_metadata.py": "f0eaff7d3edd1d9049a835574c69208451d9b99fbd50a214981bce3da581b866",
+    "trading_mvp/src/channel_validation/gate_survivorship.py": "85cc2300daa78a51159bcccee84f7f5e5ba290e05dff274ea66b26e2ab68e6f9",
+    "trading_mvp/src/channel_validation/gate_trades.py": "c437567a56bc2697183487bf9adf76465617553f17919486a078ca97fa20b9a0",
+    "trading_mvp/src/channel_validation/models.py": "9c1f0b142276e2e78e101036192486a603961422a9b1fb8ac4cf2dad532cc193",
+    "trading_mvp/src/channel_validation/okx_acquire.py": "39e5e0c6b0b605cafca91b9f95bfe22e12af46025f2ac2aebadc6f0138281871",
+    "trading_mvp/src/channel_validation/okx_dependencies.py": "3ed27b1e2c805976e9e645024792a3830f7d8bd544cc77bbae0dc665fa5c62bf",
+    "trading_mvp/src/channel_validation/okx_history.py": "24ae82704fa4f6eb77365350848d694eab75d54ca4e777154db46b2b375bb18c",
+    "trading_mvp/src/channel_validation/okx_stream.py": "66f1df2b57673e629b4193995d230b5b1fd861b095a689e3042b953b3aac708f",
+    "trading_mvp/src/channel_validation/portfolio.py": "cb63ff1b53751cec1b248b91c8e70c9686a04259e1f7636bc5be8749025332a4",
+    "trading_mvp/src/channel_validation/runner.py": "0416a81f0411ba383d3154454d02f3aca235cba71086e67142f110d0255a77e9",
+    "trading_mvp/src/channel_validation/sources.py": "e30cde7da64c7aefd58711f3678a9c814acef298a901bba8744d095ee87cdd10",
+    "trading_mvp/src/channel_validation/statistics.py": "e4b6f69e9a057f2ec5a7d33813d725f720239207f7728bd9e101a6cb0a2ce65d",
+    "trading_mvp/src/global_market_writer_claim.py": "bc0604267c9d709a17188eb9daf317417d2633bf4c31266f73db33ac2f5066d2",
+    "trading_mvp/tests/test_channel_validation.py": "3d81dd4af7f182f808206f8736145e30629227fe79d5e76dc28e7b900355d16e"
+  },
+  "schema": "okx_option_dependency_audit_v1"
+}

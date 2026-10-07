@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('verify','sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-archive-census','archive-audit','inventory','validate','evaluate','report','pipeline')][string]$Stage = 'pipeline',
+    [ValidateSet('verify','sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-archive-census','okx-dependencies','archive-audit','inventory','validate','evaluate','report','pipeline')][string]$Stage = 'pipeline',
     [string]$InputManifest = '',
     [string]$EvaluationPath = '',
     [ValidateRange(1,1800)][int]$MaxRuntimeSec = 1800,
@@ -59,7 +59,8 @@ try {
     if ($guard.usage.decision -ne 'CONTINUE' -or $guard.usage.remaining_percent -le 15 -or $guard.status -like 'PAUSED*') { throw 'Quota paused/unavailable' }
     $reads = @((Join-Path $root 'trading_mvp\src\channel_validation'), (Join-Path $root 'trading_mvp\tests\test_channel_validation.py'), (Join-Path $root 'docs\plans\channel-strategy-validation-20261006-v1.json'))
     if ($Stage -eq 'archive-audit') { $reads += 'E:\ZolotyayLopata-data\exports\trading-mvp' }
-    if ($Stage -in @('gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit') -and $MaxRuntimeSec -gt 300) { throw 'History source audit is bounded to 300 seconds' }
+    if ($Stage -in @('gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-dependencies') -and $MaxRuntimeSec -gt 300) { throw 'History source audit is bounded to 300 seconds' }
+    if ($Stage -eq 'okx-dependencies') { $reads += (Join-Path $root 'docs\analysis\channel-strategy-validation-20261006\continuation-v5') }
     if ($Stage -eq 'okx-full-archive') { $reads += (Join-Path $outRoot 'history_okx_option_source_v4_20261006') }
     if ($Stage -eq 'okx-archive-census') {
         $reads += (Join-Path $outRoot 'history_okx_option_source_v4_20261006')
@@ -95,7 +96,13 @@ try {
         & $python -c 'from channel_validation.okx_acquire import local_census_plan; local_census_plan()' | Out-Null
         if ($LASTEXITCODE -ne 0) { throw 'Bound local archive preflight failed' }
     }
-    if ($PreflightOnly) { Emit @{status=$(if($Stage -in @('sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive')){'READY_BOUNDED_PUBLIC_HISTORY'}else{'READY_OFFLINE_ONLY'});public_network_required=($Stage -in @('sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive'));runtime_hash=$runtimeHash;plan_hash=$check.plan_hash;output_created=$false;run_id=$RunId}; exit 0 }
+    if ($Stage -eq 'okx-dependencies') {
+        if ($RunId -ne 'history_okx_dependencies_v6_20261007') { throw 'Dependency audit RunId is fixed; no renamed retry' }
+        if ($PreflightOnly -and (Test-Path -LiteralPath $output)) { throw 'Dependency audit already recorded; use Status' }
+        & $python -c 'from channel_validation.okx_dependencies import preflight; preflight()' | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw 'Bound option dependency preflight failed' }
+    }
+    if ($PreflightOnly) { Emit @{status=$(if($Stage -in @('sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-dependencies')){'READY_BOUNDED_PUBLIC_HISTORY'}else{'READY_OFFLINE_ONLY'});public_network_required=($Stage -in @('sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-dependencies'));runtime_hash=$runtimeHash;plan_hash=$check.plan_hash;output_created=$false;run_id=$RunId}; exit 0 }
     if (-not $VisibleWorker) {
         if (Test-Path -LiteralPath $output) { throw 'Namespace already used; no blind retry' }
         [IO.Directory]::CreateDirectory($output) | Out-Null

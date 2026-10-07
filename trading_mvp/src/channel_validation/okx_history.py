@@ -32,7 +32,7 @@ def request_plan():
                 full_archive_download=False, evaluation_eligible=False)
 
 
-def parse_catalog(raw):
+def parse_catalog(raw, day=DAY, day_ms=DAY_MS):
     value = json.loads(raw, object_pairs_hook=unique_keys)
     if not isinstance(value, dict) or str(value.get('code')) != '0':
         raise ValueError('Public catalog rejected request')
@@ -48,10 +48,10 @@ def parse_catalog(raw):
         if not isinstance(entries, list):
             raise ValueError('Missing daily files')
         for item in entries:
-            filename = f'{family}-optionchain-L2orderbook-400lv-{DAY}.tar.gz'
-            url = f'https://static.okx.com/cdn/okx/match/orderbook/L2/400lv/daily/{DAY.replace("-", "")}/{filename}'
+            filename = f'{family}-optionchain-L2orderbook-400lv-{day}.tar.gz'
+            url = f'https://static.okx.com/cdn/okx/match/orderbook/L2/400lv/daily/{day.replace("-", "")}/{filename}'
             if (item.get('filename') != filename or item.get('url') != url or
-                    str(item.get('dateTs')) != str(DAY_MS) or number(item.get('sizeMB')) <= 0):
+                    str(item.get('dateTs')) != str(day_ms) or number(item.get('sizeMB')) <= 0):
                 raise ValueError('Catalog file/date/host binding mismatch')
             rows.append(dict(family=family, filename=filename, url=url, advertised_size_mb=str(item['sizeMB'])))
     if len({r['family'] for r in rows}) != len(rows) or len(rows) > len(FAMILIES):

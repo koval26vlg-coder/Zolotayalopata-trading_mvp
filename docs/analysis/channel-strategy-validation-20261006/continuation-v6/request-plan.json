@@ -1,0 +1,76 @@
+{
+  "credentials": false,
+  "evaluation_eligible": false,
+  "fixed_run_id": "history_okx_dependencies_v6_20261007",
+  "full_archive_download": false,
+  "max_requests": 8,
+  "max_runtime_sec": 300,
+  "parent": {
+    "census_file_sha256": "9a7b98e4448adee916bc4be1db1cadcd891c1af3a76838d7bdc22b528f33a4fc",
+    "census_hash": "a188c266039dd924a5a8e95ada9c554d259e9474a70f926a7a4791b0399b150e"
+  },
+  "per_response_bytes": 1000000,
+  "proxies": false,
+  "redirects": false,
+  "request_plan_hash": "a53f559a811bbb1f0d5c9479c1163065481c731df9b348b4701578593747ed50",
+  "requests": [
+    {
+      "anchor_ms": 1736121600000,
+      "family": "BTC-USD",
+      "kind": "index",
+      "url": "https://www.okx.com/api/v5/market/history-index-candles?instId=BTC-USD&bar=1m&after=1736121660000&before=1736121480000&limit=3"
+    },
+    {
+      "anchor_ms": 1736726400000,
+      "family": "BTC-USD",
+      "kind": "index",
+      "url": "https://www.okx.com/api/v5/market/history-index-candles?instId=BTC-USD&bar=1m&after=1736726460000&before=1736726280000&limit=3"
+    },
+    {
+      "anchor_ms": 1736121600000,
+      "family": "ETH-USD",
+      "kind": "index",
+      "url": "https://www.okx.com/api/v5/market/history-index-candles?instId=ETH-USD&bar=1m&after=1736121660000&before=1736121480000&limit=3"
+    },
+    {
+      "anchor_ms": 1736726400000,
+      "family": "ETH-USD",
+      "kind": "index",
+      "url": "https://www.okx.com/api/v5/market/history-index-candles?instId=ETH-USD&bar=1m&after=1736726460000&before=1736726280000&limit=3"
+    },
+    {
+      "kind": "catalog",
+      "payload": {
+        "dateQuery": {
+          "begin": "1736812799999",
+          "dateAggrType": "daily",
+          "end": "1736812799999"
+        },
+        "instQueryParam": {
+          "instFamilyList": [
+            "BTC-USD",
+            "ETH-USD"
+          ]
+        },
+        "instType": "OPTION",
+        "module": "4"
+      },
+      "url": "https://www.okx.com/priapi/v5/broker/public/trade-data/download-link"
+    },
+    {
+      "kind": "cap_change",
+      "url": "https://www.okx.com/help/okx-to-adjust-parameters-for-options-fee-calculation"
+    },
+    {
+      "kind": "tier_change",
+      "url": "https://www.okx.com/help/okx-to-adjust-options-trading-fees"
+    },
+    {
+      "kind": "current_specs",
+      "url": "https://www.okx.com/en-gb/help/get-started-with-okx-options"
+    }
+  ],
+  "retries": 0,
+  "schema": "okx_option_dependency_probe_v1",
+  "total_response_bytes": 8000000
+}

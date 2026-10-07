@@ -1,0 +1,65 @@
+{
+  "schema": "historical_validation_evidence_index_v1",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "75f61c368a2867033724acb2f0edb6e3d0305733d9d1379cfb60118e77632b93",
+  "files": [
+    {
+      "file": "audit.json",
+      "sha256": "9597b933fe0554ff44b5e276db89c65240282191ba92e88157954c2d1d5b1d79",
+      "bytes": 13872
+    },
+    {
+      "file": "completion.json",
+      "sha256": "6de4bfd33a7e3e74a77c357f2bd7f33f931e9dff3eb4c82f5399d2ddee9a54b2",
+      "bytes": 266
+    },
+    {
+      "file": "data-readiness.json",
+      "sha256": "d6b24540656118c0d1df906c849c29f5dc418a7f7184862c8d8e0518f4487a91",
+      "bytes": 1997
+    },
+    {
+      "file": "model-input-queue.json",
+      "sha256": "f839bb1872891749c397d895beb155106e6e6a6e15d1cc294e7c0c8f50f68b97",
+      "bytes": 14827
+    },
+    {
+      "file": "publication-provenance.json",
+      "sha256": "334a4cc3fb481bef297592a1da34330912e8751ececfb734aec66df7bf94c9a8",
+      "bytes": 1668
+    },
+    {
+      "file": "raw-references.json",
+      "sha256": "4cc2447c2192d652598535c66e579b4d791d13fd8cd40062ba39cda5d2e3fcff",
+      "bytes": 1717
+    },
+    {
+      "file": "README.md",
+      "sha256": "ab919f24ec3c38d39989a66ce8a80da90337a07e3c1bceb28584d085cd9f0422",
+      "bytes": 9981
+    },
+    {
+      "file": "request-plan.json",
+      "sha256": "bba13a5484d6cc301fca1dd7955b431cab1a74c8fe2fdbf51f32fda9a6f9635e",
+      "bytes": 2472
+    },
+    {
+      "file": "source-notes.json",
+      "sha256": "69383e51e4cdb86924eba0d06e7e31b43318d478de5ef865acd16355532db356",
+      "bytes": 2001
+    },
+    {
+      "file": "verification-completion.json",
+      "sha256": "5c0c17b6a61ab6a66bcb62b3523d6eab92dac5a996f8514267a36b0c532e55eb",
+      "bytes": 273
+    },
+    {
+      "file": "verification.json",
+      "sha256": "e7eb0a240fc8dc40cb144b5fdbed2e8580e49b8b0ea7b44503e9483dda0c343d",
+      "bytes": 3167
+    }
+  ],
+  "all_twenty_models_present": true,
+  "acceptance_status": "NOT_EVALUATED",
+  "parent_checkpoint": "../continuation-v5"
+}

@@ -1,0 +1,33 @@
+{
+  "source_files": [
+    {
+      "file": "audit.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/artifacts/okx-dependencies/audit.json",
+      "sha256": "9597b933fe0554ff44b5e276db89c65240282191ba92e88157954c2d1d5b1d79"
+    },
+    {
+      "file": "request-plan.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/artifacts/okx-dependencies/request-plan.json",
+      "sha256": "bba13a5484d6cc301fca1dd7955b431cab1a74c8fe2fdbf51f32fda9a6f9635e"
+    },
+    {
+      "file": "completion.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/completion.json",
+      "sha256": "6de4bfd33a7e3e74a77c357f2bd7f33f931e9dff3eb4c82f5399d2ddee9a54b2"
+    },
+    {
+      "file": "verification.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_dependencies_v6_20261007/artifacts/tests.json",
+      "sha256": "e7eb0a240fc8dc40cb144b5fdbed2e8580e49b8b0ea7b44503e9483dda0c343d"
+    },
+    {
+      "file": "verification-completion.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_dependencies_v6_20261007/completion.json",
+      "sha256": "5c0c17b6a61ab6a66bcb62b3523d6eab92dac5a996f8514267a36b0c532e55eb"
+    }
+  ],
+  "prior_checkpoint": "../continuation-v5",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "verification_tests": 138,
+  "runtime_hash": "75f61c368a2867033724acb2f0edb6e3d0305733d9d1379cfb60118e77632b93"
+}

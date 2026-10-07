@@ -1161,5 +1161,177 @@ class FullDownloadTests(unittest.TestCase):
                     local_census_plan(source)
 
 
+class OptionDependencyTests(unittest.TestCase):
+    def spec(self):
+        from channel_validation.okx_dependencies import request_plan
+        return request_plan()['requests'][0]
+
+    def row(self, offset=-60000):
+        return [str(DAY_MS+offset), '100', '102', '99', '101', '1']
+
+    def parse(self, rows):
+        from channel_validation.okx_dependencies import parse_index
+        return parse_index(json.dumps(dict(code='0', data=rows)).encode(), self.spec())
+
+    def terms(self):
+        return dict(valid_from='2025-01-01T00:00:00Z', valid_to='2025-02-01T00:00:00Z',
+                    verified=True, evidence_sha256='a'*64, premium_currency='BTC', settlement_currency='BTC',
+                    taker_rate='0.0003', premium_cap='0.125', multiplier='0.01', contract_value='1')
+
+    def test_fixed_eight_requests_and_no_full_archives(self):
+        from channel_validation.okx_dependencies import request_plan, EXIT_MS
+        from urllib.parse import urlparse, parse_qs
+        plan = request_plan()
+        self.assertEqual(8, len(plan['requests']))
+        self.assertEqual(8, plan['max_requests'])
+        self.assertEqual(0, plan['retries'])
+        self.assertEqual(300, plan['max_runtime_sec'])
+        self.assertEqual(1000000, plan['per_response_bytes'])
+        self.assertEqual(8000000, plan['total_response_bytes'])
+        for key in ('redirects', 'proxies', 'credentials', 'full_archive_download', 'evaluation_eligible'):
+            self.assertFalse(plan[key])
+        for request in plan['requests'][:4]:
+            self.assertIn(request['anchor_ms'], (DAY_MS, EXIT_MS))
+            query = parse_qs(urlparse(request['url']).query)
+            self.assertEqual([str(request['anchor_ms']+60000)], query['after'])
+            self.assertEqual([str(request['anchor_ms']-120000)], query['before'])
+            self.assertEqual(['3'], query['limit'])
+        self.assertEqual(str(EXIT_MS+86400000-1), plan['requests'][4]['payload']['dateQuery']['begin'])
+        self.assertEqual(canonical_hash(plan), canonical_hash(request_plan()))
+
+    def test_current_candle_close_not_available_at_entry(self):
+        result = self.parse([self.row(0), self.row(-120000), self.row()])
+        self.assertEqual(DAY_MS-60000, result['latest_closed_reference']['start_ms'])
+        self.assertEqual(DAY_MS, result['latest_closed_reference']['close_usable_not_before_ms'])
+        self.assertEqual(DAY_MS+60000, result['candles'][-1]['close_usable_not_before_ms'])
+        self.assertFalse(result['execution_quote'])
+        self.assertFalse(result['evaluation_eligible'])
+        self.assertFalse(result['publication_latency_verified'])
+
+    def test_empty_and_current_only_are_not_an_entry_quote(self):
+        empty = self.parse([])
+        self.assertEqual('NO_INDEX_HISTORY', empty['status'])
+        self.assertIsNone(empty['latest_closed_reference'])
+        self.assertIsNone(self.parse([self.row(0)])['latest_closed_reference'])
+
+    def test_duplicate_index_candles_rejected(self):
+        with self.assertRaises(ValueError):
+            self.parse([self.row(), self.row()])
+
+    def test_index_schema_grid_and_prices_rejected(self):
+        for row in (self.row()+['extra'], self.row(1), self.row(60000), self.row(-180000),
+                    [str(DAY_MS), '100', '102', '99', '101', '0'],
+                    [str(DAY_MS), 'NaN', '102', '99', '101', '1'],
+                    [str(DAY_MS), '100', '99', '99', '101', '1'],
+                    [str(DAY_MS), '100', '102', '-1', '101', '1']):
+            with self.subTest(row=row), self.assertRaises(ValueError):
+                self.parse([row])
+
+    def test_index_payload_errors_are_not_empty_history(self):
+        from channel_validation.okx_dependencies import parse_index
+        for raw in (b'{"code":"1","data":[]}', b'{"code":"0","code":"0","data":[]}',
+                    b'{"code":"0","data":{}}', b'[]'):
+            with self.subTest(raw=raw), self.assertRaises(ValueError):
+                parse_index(raw, self.spec())
+
+    def test_exit_catalog_date_is_separate_from_entry(self):
+        from channel_validation.okx_dependencies import EXIT_DAY, EXIT_MS
+        filename = 'BTC-USD-optionchain-L2orderbook-400lv-2025-01-13.tar.gz'
+        raw = json.dumps(dict(code='0', data=dict(details=[dict(instType='OPTION', instFamily='BTC-USD',
+            groupDetails=[dict(filename=filename, url='https://static.okx.com/cdn/okx/match/orderbook/L2/400lv/daily/20250113/'+filename,
+                               dateTs=str(EXIT_MS), sizeMB='250')])]))).encode()
+        self.assertEqual('BTC-USD', parse_okx_catalog(raw, EXIT_DAY, EXIT_MS)[0]['family'])
+        with self.assertRaises(ValueError):
+            parse_okx_catalog(raw)
+
+    def test_later_fee_notice_does_not_backfill_january(self):
+        from channel_validation.okx_dependencies import inspect_document
+        raw = b'<article>OKX to adjust parameters for options fee calculation May 15, 2025 7:00 am UTC 12.5% 7%</article>'
+        result = inspect_document(raw, 'cap_change')
+        self.assertEqual('DATED_FEE_CAP_TRANSITION_FOUND', result['status'])
+        self.assertEqual('2025-05-15T07:00:00Z', result['effective_at_utc'])
+        self.assertIsNone(result['previous_effective_from'])
+        self.assertFalse(result['jan2025_terms_verified'])
+        self.assertFalse(result['date_coverage_certified'])
+        self.assertFalse(result['evaluation_eligible'])
+
+    def test_script_markers_do_not_become_document_evidence(self):
+        from channel_validation.okx_dependencies import inspect_document
+        raw = b'<script>OKX to adjust parameters for options fee calculation May 15, 2025 7:00 am UTC 12.5% 7%</script><p>Unavailable</p>'
+        self.assertEqual('DOCUMENT_REQUIRES_REVIEW', inspect_document(raw, 'cap_change')['status'])
+
+    def test_tier_notice_and_current_specs_do_not_certify_old_terms(self):
+        from channel_validation.okx_dependencies import inspect_document
+        result = inspect_document(b'OKX to adjust options trading fees February 10, 2025 10:40 am UTC Lvl 1 0.030%', 'tier_change')
+        self.assertEqual('DATED_FEE_TIER_ANNOUNCEMENT_FOUND', result['status'])
+        self.assertFalse(result['prior_tiers_verified'])
+        current = inspect_document(b'Published 2023 Updated 2026 Contract Multiplier 0.01 0.1', 'current_specs')
+        self.assertEqual('CURRENT_SPEC_NOT_HISTORICAL_CERTIFICATE', current['status'])
+        self.assertFalse(current['historical_values_adopted'])
+
+    def test_dated_fee_native_units_cap_and_rate(self):
+        from decimal import Decimal
+        from channel_validation.okx_dependencies import dated_taker_fee
+        terms = self.terms()
+        at = '2025-01-06T00:00:00Z'
+        self.assertEqual(Decimal('0.0000025'), dated_taker_fee(terms, at, '0.001', '2'))
+        terms['premium_cap'] = '0.07'
+        self.assertEqual(Decimal('0.0000014'), dated_taker_fee(terms, at, '0.001', '2'))
+        self.assertEqual(Decimal('0.000006'), dated_taker_fee(terms, at, '0.01', '2'))
+
+    def test_fee_time_boundary_no_future_backfill(self):
+        from channel_validation.okx_dependencies import dated_taker_fee
+        terms = self.terms()
+        self.assertGreater(dated_taker_fee(terms, terms['valid_from'], '0.001', 1), 0)
+        for at in ('2024-12-31T23:59:59Z', terms['valid_to']):
+            with self.assertRaises(ValueError):
+                dated_taker_fee(terms, at, '0.001', 1)
+
+    def test_fee_requires_explicit_dated_proof_and_native_units(self):
+        from channel_validation.okx_dependencies import dated_taker_fee
+        for key, value in (('valid_from', None), ('valid_to', None), ('verified', False),
+                           ('evidence_sha256', 'not-a-hash'), ('premium_currency', 'USD'),
+                           ('multiplier', 'NaN'), ('taker_rate', '-1'), ('premium_cap', '0')):
+            terms = self.terms()
+            terms[key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                dated_taker_fee(terms, '2025-01-06T00:00:00Z', '0.001', 1)
+
+    def test_fee_rejects_negative_or_fractional_contract_count(self):
+        from channel_validation.okx_dependencies import dated_taker_fee
+        for premium, qty in (('-1', 1), ('0', 1), ('0.001', 0), ('0.001', '-1'), ('0.001', '1.5')):
+            with self.assertRaises(ValueError):
+                dated_taker_fee(self.terms(), '2025-01-06T00:00:00Z', premium, qty)
+
+    def test_renamed_dependency_retry_rejected_before_io(self):
+        from unittest.mock import patch
+        from channel_validation.okx_dependencies import audit
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp)/'retry'
+            with patch('channel_validation.okx_dependencies.preflight') as preflight, self.assertRaises(ValueError):
+                audit(output, lambda: None)
+            preflight.assert_not_called()
+            self.assertFalse(output.exists())
+
+    def test_audit_http_failures_are_once_each_and_no_metrics(self):
+        from unittest.mock import patch
+        import urllib.error
+        from channel_validation.okx_dependencies import audit, RUN_ID
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            with patch('channel_validation.okx_dependencies.OUTPUT_ROOT', root), \
+                 patch('channel_validation.okx_dependencies.preflight', return_value={'census_hash': 'fixture'}), \
+                 patch('channel_validation.okx_dependencies.urllib.request.build_opener') as build:
+                build.return_value.open.side_effect = urllib.error.URLError('synthetic unavailable')
+                result = audit(root/'runs'/RUN_ID/'artifacts/okx-dependencies', lambda: None)
+            self.assertEqual(8, build.return_value.open.call_count)
+            self.assertEqual(8, result['requests'])
+            self.assertTrue(all(r['attempts'] == 1 for r in result['records']))
+            self.assertIsNone(result['metrics'])
+            self.assertFalse(result['dated_terms_complete'])
+            self.assertFalse(result['exit_quotes_verified'])
+            self.assertFalse(list(root.rglob('*.raw')))
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
