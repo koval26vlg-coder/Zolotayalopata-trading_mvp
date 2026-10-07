@@ -1,0 +1,26 @@
+{
+  "schema": "historical_instrument_suitability_audit_v1",
+  "model_id": "dax_orb",
+  "model_hash": "0b2cd1b0fc72436a30b3154dafa5161891a7212eed9e037130135fd67ebdd843",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "audit_status": "BOUNDED_DOCUMENT_AUDIT_COMPLETE_EXPORT_ACCESS_UNRESOLVED",
+  "input_status": "BLOCKED_DATA",
+  "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+  "metrics": null,
+  "requirements": [
+    {"id": "instrument", "status": "CANDIDATES_IDENTIFIED_NOT_BOUND", "evidence_ids": ["eurex_fdxs", "dukascopy_instrument", "dukascopy_kid"], "gap": "Choose and bind one dated execution instrument; do not substitute cash index, futures or CFD."},
+    {"id": "history", "status": "NO_VALIDATED_INPUT", "evidence_ids": ["deutsche_boerse_delayed", "dukascopy_s3_route", "dukascopy_public_export"], "gap": "Free unauthenticated target-period export not verified; no five-minute archive acquired."},
+    {"id": "calendar", "status": "OFFICIAL_SOURCES_FOUND_NOT_MATERIALIZED", "evidence_ids": ["xetra_calendar_archive", "xetra_retail_extension", "xetra_last_session_2024"], "gap": "Bind known-at-time sessions, Europe/Berlin DST, holidays, early closes and phase selection, excluding extended retail hours from the main-session definition."},
+    {"id": "fx", "status": "IMPLEMENTATION_GAP", "code_path": "trading_mvp/src/channel_validation/adapters.py", "function": "sessions", "gap": "Current adapter rejects non-USD price/settlement currency. Need contemporaneous causal FX conversion of prices/units, costs, full reserve, marks and PnL with regression tests; never relabel EUR as USD."},
+    {"id": "lot_and_budget", "status": "UNVERIFIED", "gap": "Check point multiplier, minimum lot and lot step against USD 1000 position reserve and USD 25 risk using contemporaneous FX before bulk acquisition. No fractional-futures or leverage assumption."},
+    {"id": "costs", "status": "DATED_EXECUTION_EVIDENCE_UNVERIFIED", "gap": "Frozen cost assumptions remain available for labelled preliminary candle analysis; they are not observed historical tariffs or fill evidence."}
+  ],
+  "evaluation_allowed_now": false,
+  "new_user_approval_required_for_same_scope_repair": false,
+  "request_paid_route_or_credentials": false,
+  "hypothesis_changed": false,
+  "source_search_exhaustive": false,
+  "dax_reentry_condition": "Accessible public export or new verifiable free archive, followed by bounded visible sample and instrument/calendar/units/FX validation. Do not repeat unchanged source-document queries.",
+  "next_priority": ["gap_continue", "gap_fade"]
+}

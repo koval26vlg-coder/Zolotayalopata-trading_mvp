@@ -1,0 +1,47 @@
+{
+  "schema": "historical_evidence_index_v1",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "files": [
+    {
+      "file": "data-readiness.json",
+      "bytes": 1799,
+      "sha256": "3f2de00d6377d246a42db0d2b73a7e4f7308eae4e8407862771064bb4611aeca"
+    },
+    {
+      "file": "model-input-queue.json",
+      "bytes": 15961,
+      "sha256": "14fccb54eb4b0f9c483946ccddc0b676850faa27daa782c5bf3c66ab73329625"
+    },
+    {
+      "file": "publication-provenance.json",
+      "bytes": 3218,
+      "sha256": "b5d739f272be5cdf003a9257ff3bb187401d88ff03c14821f7f6dee9161bd9a7"
+    },
+    {
+      "file": "README.md",
+      "bytes": 9603,
+      "sha256": "7b9ed254a0a48912003926c5a26e4ac2ffa869308b15afadfb6f24c33c7e4574"
+    },
+    {
+      "file": "source-evidence.json",
+      "bytes": 4679,
+      "sha256": "6c3e237113aa8a0ed64aae4bdbb2492248994463e41c424d25c3824673acfe66"
+    },
+    {
+      "file": "suitability-audit.json",
+      "bytes": 2703,
+      "sha256": "9922e67f3ffd5f1dc8eb873f4625aa442e6ccfda0846b768bdc3e35476ba5a64"
+    },
+    {
+      "file": "verification.json",
+      "bytes": 1010,
+      "sha256": "5a22ab75655e421e32b058446f98e47a9d9ff0fffe3961261920b4a970b47139"
+    },
+    {
+      "file": "verify_checkpoint.py",
+      "bytes": 5826,
+      "sha256": "75a5b069ffab450e10028332ec8f7ada4ccaa9bdf0b110a3c10fde0f95dad2ff"
+    }
+  ]
+}
