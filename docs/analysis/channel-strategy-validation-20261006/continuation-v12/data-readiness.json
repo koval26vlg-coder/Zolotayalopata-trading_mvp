@@ -1,0 +1,27 @@
+{
+  "schema": "historical_family_data_readiness_v1",
+  "model_ids": ["gap_continue", "gap_fade"],
+  "input_status": "BLOCKED_DATA",
+  "technical_audit_complete": true,
+  "backtest_executed": false,
+  "historical_candidate": false,
+  "strategy_rejected": false,
+  "metrics": null,
+  "ready_input_manifest": null,
+  "source_evidence": "source-evidence.json",
+  "suitability_audit": "suitability-audit.json",
+  "local_inventory": "local-inventory.json",
+  "free_history_nonexistence_claimed": false,
+  "validated_equity_rows_this_checkpoint": 0,
+  "remaining_before_backtest": [
+    "Acquire a free permitted historical bundle without shifting fixed periods.",
+    "Validate historical candidate membership and identifiers including delistings and symbol changes.",
+    "Validate corporate-action timing and consistent raw/adjusted prices for gap calculation.",
+    "Validate regular-session calendar, DST, early closes, gaps and halts.",
+    "Supply historical short availability and borrow costs; do not silently remove short entries.",
+    "Create a COMPLETE hash-bound input manifest and run visible validation before evaluation."
+  ],
+  "next_action": "Bounded source and coverage audit for aave_lending: historical USDC lending index, gas, executable token quotes and withdrawal liquidity, not current APY.",
+  "next_model_hash": "709c0673bff29cc45dca513898bf22ddc93a5729036879821513926fed3fdd24",
+  "preserved_exclusions": ["Listing Momentum", "closed legacy runs", "private API", "real capital", "paid data", "new schedules", "permanent collectors", "wallet signatures"]
+}
