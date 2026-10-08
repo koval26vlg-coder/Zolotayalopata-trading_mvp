@@ -1,0 +1,88 @@
+{
+  "schema": "documentation_audit_provenance_v1",
+  "parent_git_commit": "bc7066a091d4f6a873dd245a0cf707286cd12118",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "parent_files": [
+    {
+      "path": "docs/plans/channel-strategy-validation-20261006-v1.json",
+      "bytes": 20102,
+      "sha256": "2d4235d6f779c3181f3a619e2c9414d020346df37d1e23fc6f46ad73679c474c"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/data-readiness.json",
+      "bytes": 1720,
+      "sha256": "0cc265f6b4271129b3348df0ab3a0401fe3a1eb1533dd2d4a7a2077ec82a8a4e"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/evidence-index.json",
+      "bytes": 1647,
+      "sha256": "c4d1829e362fa1ff8137e56b42d55313f9090cf4315aa19c18131fb7b650a0ba"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/matrix.json",
+      "bytes": 18009,
+      "sha256": "69f47b58f69e48e5bae03ea4529341de34ae333bbb8bca1d87425f5c00a3e923"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/matrix.md",
+      "bytes": 9347,
+      "sha256": "7f3e5f0d9260d2604d92f710a39a39f765518a79a8eb70b758cca35b8ceed550"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/model-input-queue.json",
+      "bytes": 18132,
+      "sha256": "a7eeea48830a1b5a85481b75222681c1205059396173f5ed39b2d6fe59657c5b"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/publication-provenance.json",
+      "bytes": 4000,
+      "sha256": "f05eae61c5c33a44d41fe637b90329183847e1a875c552c25413fe70a1012f43"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/README.md",
+      "bytes": 11628,
+      "sha256": "2af532880122d8cbba036ac5e5f4fe9a52768ec1fd7153beaab19c5dd8218d2c"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/source-evidence.json",
+      "bytes": 4667,
+      "sha256": "e5b8e55665840836e4acf896ae6d7902cbec52cd754ce0928d0c6c5e95787307"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/suitability-audit.json",
+      "bytes": 3996,
+      "sha256": "3ae7b1b38b5ae655ed84c60174edf4e8011630de61d29a351dd1d7fbad373da4"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/verification.json",
+      "bytes": 1309,
+      "sha256": "cecefb3e695abc18e4b8c6d3d3c07e9345ba02bd43c6194c750e9b6bf5b98008"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/verify_checkpoint.py",
+      "bytes": 9113,
+      "sha256": "e21b71dd87b9f250dbdb1fc0dc485faeb1a8aefac11d2f2f97747405452f26c8"
+    }
+  ],
+  "guard_observed_at_utc": "2026-10-08T13:02:01.610537Z",
+  "guard_status": "OFFLINE_CHECKPOINT_COMPLETE",
+  "guard_decision": "PREMARKET_DEPTH_QUALITY_COMPLETE_INSUFFICIENT_SAMPLE",
+  "guard_scope_note": "Separate 20-model program directly user-authorized; legacy premarket and rejected basis scopes not reopened",
+  "quota_remaining_percent": 67,
+  "quota_observed_at_utc": "2026-10-08T13:01:59.266166Z",
+  "scoped_gate_status": "READY_FOR_POSTPROCESS",
+  "scoped_gate_decision": "ALLOW_GATE_NOT_RUNNING",
+  "scoped_gate_observed_local": "2026-10-08T16:02:51+03:00",
+  "runtime_code_changed": false,
+  "model_parameters_changed": false,
+  "acceptance_contract_changed": false,
+  "metadata_evidence_path": "local-metadata.json",
+  "web_evidence_path": "source-evidence.json",
+  "web_evidence_semantics": "Hash binds analyst notes, not raw HTTP bodies",
+  "legacy_raw_rows_read": 0,
+  "legacy_pnl_oos_results_read": 0,
+  "new_market_archives_downloaded": 0,
+  "authenticated_requests": 0,
+  "existing_run_restarted": false
+}
