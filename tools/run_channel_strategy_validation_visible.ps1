@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('verify','sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','gate-paired-audit','okx-history-audit','okx-full-archive','okx-archive-census','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive','histdata-local','histdata-month','archive-audit','inventory','validate','evaluate','report','pipeline')][string]$Stage = 'pipeline',
+    [ValidateSet('gate-paired-local','verify','sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','gate-paired-audit','okx-history-audit','okx-full-archive','okx-archive-census','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive','histdata-local','histdata-month','archive-audit','inventory','validate','evaluate','report','pipeline')][string]$Stage = 'pipeline',
     [string]$InputManifest = '',
     [string]$EvaluationPath = '',
     [ValidateRange(1,1800)][int]$MaxRuntimeSec = 1800,
@@ -59,6 +59,12 @@ try {
     if ($guard.usage.decision -ne 'CONTINUE' -or $guard.usage.remaining_percent -le 15 -or $guard.status -like 'PAUSED*') { throw 'Quota paused/unavailable' }
     $reads = @((Join-Path $root 'trading_mvp\src\channel_validation'), (Join-Path $root 'trading_mvp\tests\test_channel_validation.py'), (Join-Path $root 'docs\plans\channel-strategy-validation-20261006-v1.json'))
     if ($Stage -eq 'gate-paired-audit') { $reads += (Join-Path $root 'docs\analysis\channel-strategy-validation-20261006\continuation-v16') }
+    if ($Stage -eq 'gate-paired-local') {
+        if ($MaxRuntimeSec -gt 300) { throw 'Local paired census bounded to 300 seconds' }
+        $reads += (Join-Path $root 'docs\analysis\channel-strategy-validation-20261006\continuation-v16')
+        $reads += (Join-Path $root 'docs\analysis\channel-strategy-validation-20261006\continuation-v17')
+        $reads += (Join-Path $outRoot 'history_gate_paired_v16_20261008')
+    }
     if ($Stage -eq 'archive-audit') { $reads += 'E:\ZolotyayLopata-data\exports\trading-mvp' }
     if ($Stage -in @('gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','gate-paired-audit','okx-history-audit','okx-dependencies','gold-history-audit','histdata-sample') -and $MaxRuntimeSec -gt 300) { throw 'History source audit is bounded to 300 seconds' }
     if ($Stage -eq 'gold-history-remaining') {
@@ -105,6 +111,14 @@ try {
     $hashText = & $python -c 'from channel_validation.contract import *; print(canonical_hash(runtime_binding()))'
     if ($LASTEXITCODE -ne 0) { throw 'Runtime hash failed' }
     $runtimeHash = ($hashText -join '').Trim()
+    if ($Stage -eq 'gate-paired-local') {
+        if ($RunId -ne 'history_gate_paired_local_v17_20261008') { throw 'Fixed local census RunId required' }
+        if ($PreflightOnly -and (Test-Path -LiteralPath $output)) { throw 'Local census already attempted; use Status' }
+        & $python -c 'from channel_validation.gate_paired_local import preflight; preflight()' | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw 'Completed local input hashes changed' }
+        $rebind = Read-Json (Join-Path $root 'docs\analysis\channel-strategy-validation-20261006\continuation-v17\runtime-rebind.json')
+        if ($rebind.runtime_hash -ne $runtimeHash -or $rebind.plan_hash -ne $check.plan_hash) { throw 'Local census runtime rebind mismatch' }
+    }
     if ($Stage -eq 'gate-paired-audit') {
         if ($RunId -ne 'history_gate_paired_v16_20261008') { throw 'Fixed paired probe RunId required; no renamed retry' }
         if ($PreflightOnly -and (Test-Path -LiteralPath $output)) { throw 'Paired probe already attempted; use Status' }

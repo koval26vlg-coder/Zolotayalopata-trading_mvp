@@ -1,0 +1,11 @@
+{
+  "status": "VERIFIED",
+  "tests_passed": 200,
+  "valid_rows": 13440,
+  "crc_verified_files": 6,
+  "parent_evidence_files_verified": 14,
+  "runtime_hash": "4be0b55d43dc7851c8d81910d46ea094aefc4266c8647b7f52eae026552b684f",
+  "real_data_evaluation_run": false,
+  "network_requests": 0,
+  "verification_phase": "PRE_PUBLICATION_INPUT_RUNTIME_PARENT_READBACK"
+}

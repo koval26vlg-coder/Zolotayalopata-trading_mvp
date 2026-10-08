@@ -222,7 +222,7 @@ def report(plan, inv, validation, evaluation):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'gate-survivorship-audit', 'gate-trades-audit', 'gate-metadata-audit', 'gate-paired-audit', 'okx-history-audit', 'okx-full-archive', 'okx-archive-census', 'okx-dependencies', 'gold-history-audit', 'gold-history-remaining', 'histdata-sample', 'histdata-archive', 'histdata-local', 'histdata-month', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
+    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'gate-survivorship-audit', 'gate-trades-audit', 'gate-metadata-audit', 'gate-paired-audit', 'gate-paired-local', 'okx-history-audit', 'okx-full-archive', 'okx-archive-census', 'okx-dependencies', 'gold-history-audit', 'gold-history-remaining', 'histdata-sample', 'histdata-archive', 'histdata-local', 'histdata-month', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
     parser.add_argument('--input-manifest')
     parser.add_argument('--evaluation', type=Path)
     parser.add_argument('--output', type=Path)
@@ -260,6 +260,12 @@ def main(argv=None):
         return 0 if result.wasSuccessful() else 1
     if not args.output:
         parser.error('Explicit isolated output namespace required')
+    if args.stage == 'gate-paired-local':
+        if args.max_runtime_sec > 300:
+            parser.error('Local paired archive census bounded to 300 seconds')
+        from .gate_paired_local import audit
+        audit(args.output/'gate-paired-local', check)
+        return 0
     if args.stage == 'gate-paired-audit':
         if args.max_runtime_sec > 300:
             parser.error('Paired source probe bounded to 300 seconds')

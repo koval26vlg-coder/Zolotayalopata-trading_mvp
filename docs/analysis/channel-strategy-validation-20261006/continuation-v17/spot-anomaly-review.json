@@ -1,0 +1,29 @@
+{
+  "schema": "local_spot_anomaly_review_v1",
+  "raw_inputs_bound_by": "local-input-plan.json",
+  "source_preserved": true,
+  "server_errors": {
+    "month": "202301",
+    "content": {
+      "label": "SERVER_ERROR",
+      "message": "Internal server error"
+    },
+    "lines": [
+      925,
+      1999,
+      2416
+    ]
+  },
+  "first_reversal_202301": {
+    "current_ms": 1672531429346,
+    "previous_current_ms": 1672531429453,
+    "line": 215
+  },
+  "first_reversal_202501": {
+    "current_ms": 1735689607404,
+    "previous_current_ms": 1735689607405,
+    "line": 7
+  },
+  "interpretation": "Archive is not strictly chronological in current; no automatic causal reordering authorized by this diagnostic",
+  "network_requests": 0
+}

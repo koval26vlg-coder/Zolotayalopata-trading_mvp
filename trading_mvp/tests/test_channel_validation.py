@@ -457,6 +457,108 @@ class PairedUniverseTests(unittest.TestCase):
         self.assertEqual(before, plan)
 
 
+class GatePairedLocalTests(unittest.TestCase):
+    def spec(self, kind='orderbooks_slice', market='spot'):
+        return dict(kind=kind, market=market, month='202301', symbol='BTC_USDT')
+
+    def book(self, market='spot', offset=0):
+        if market == 'spot':
+            return dict(current=1672531200123+offset, update=1672531200100+offset,
+                        asks=[['100', '2'], ['101', '3']], bids=[['99', '4'], ['98', '5']])
+        return dict(current='1672531200.123', asks=[dict(p='100', s=2)], bids=[dict(p='99', s=4)])
+
+    def scan(self, raw, spec=None, **kwargs):
+        import gzip
+        from channel_validation.gate_paired_local import scan_archive
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/'fixture.gz'
+            path.write_bytes(gzip.compress(raw))
+            return scan_archive(path, spec or self.spec(), **kwargs)
+
+    def test_time_units_and_raw_sizes_not_execution_evidence(self):
+        from channel_validation.gate_paired_local import normalize_book
+        spot = normalize_book(self.book(), self.spec())
+        perp = normalize_book(self.book('futures_usdt'), self.spec(market='futures_usdt'))
+        self.assertEqual(spot['event_time_us'], perp['event_time_us'])
+        self.assertEqual(1672531200123000, spot['event_time_us'])
+        self.assertIsNone(perp['exchange_update_us'])
+        self.assertFalse(perp['size_unit_verified'])
+        self.assertFalse(spot['eligible_for_evaluation'])
+        self.assertNotIn('available_at', spot)
+
+    def test_bad_books_and_future_update_rejected(self):
+        from channel_validation.gate_paired_local import normalize_book
+        for change in (dict(current=1672531200), dict(update=1672531200124),
+                       dict(asks=[['98', '1']]), dict(bids=[['99', '-1']]),
+                       dict(asks=[['101', '1'], ['100', '1']]), dict(bids=[]),
+                       dict(asks=[['NaN', '2']]), dict(asks=[['100', True]])):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                normalize_book(dict(self.book(), **change), self.spec())
+
+    def test_same_capture_time_is_not_automatically_duplicate(self):
+        a = self.book()
+        b = dict(a, update=a['update']+1)
+        raw = b'\n'.join(json.dumps(x).encode() for x in (a, b, b))+b'\n'
+        result = self.scan(raw)
+        self.assertEqual(3, result['valid_rows'])
+        self.assertEqual(2, result['equal_time_count'])
+        self.assertEqual(1, result['duplicate_record_count'])
+        self.assertTrue(result['gzip_crc_verified'])
+
+    def test_reversals_out_of_hour_and_bad_rows_are_visible(self):
+        rows = [self.book(offset=1000), self.book(), self.book(offset=3600000)]
+        raw = b'\n'.join(json.dumps(x).encode() for x in rows)+b'\nnot-json\n'
+        result = self.scan(raw)
+        self.assertEqual(1, result['time_reversal_count'])
+        self.assertEqual(1, result['out_of_window_count'])
+        self.assertEqual(1, result['invalid_rows'])
+        self.assertFalse(result['structural_clean'])
+
+    def test_funding_seconds_negative_rate_and_no_invented_publication(self):
+        result = self.scan(b'1672531200,-0.00010\n1672560000,0.00020\n', self.spec('funding_applies', 'futures_usdt'))
+        self.assertEqual(2, result['valid_rows'])
+        self.assertEqual({'28800000000': 1}, result['positive_gap_counts_us'])
+        self.assertEqual('-0.00010', result['samples'][0]['row']['rate'])
+        self.assertNotIn('available_at', result['samples'][0]['row'])
+        self.assertFalse(result['eligible_for_evaluation'])
+
+    def test_corrupt_or_truncated_gzip_is_not_accepted(self):
+        import gzip
+        from channel_validation.gate_paired_local import scan_archive
+        good = gzip.compress((json.dumps(self.book())+'\n').encode())
+        for raw in (good[:-4], good[:-8]+b'xxxxxxxx'):
+            with tempfile.TemporaryDirectory() as directory:
+                path = Path(directory)/'bad.gz'
+                path.write_bytes(raw)
+                with self.assertRaises((OSError, EOFError)):
+                    scan_archive(path, self.spec())
+
+    def test_decompression_line_and_row_budgets(self):
+        raw = (json.dumps(self.book())+'\n').encode()
+        for budget in (dict(max_decoded_bytes=8), dict(max_line_bytes=8), dict(max_rows=1)):
+            with self.subTest(budget=budget), self.assertRaises(ValueError):
+                self.scan(raw*2, **budget)
+
+    def test_repeat_scan_is_deterministic_and_stop_propagates(self):
+        raw = (json.dumps(self.book())+'\n').encode()
+        self.assertEqual(self.scan(raw), self.scan(raw))
+        def stop():
+            raise TimeoutError('stop requested')
+        with self.assertRaises(TimeoutError):
+            self.scan(raw, check=stop)
+
+    def test_fixed_local_inputs_exclude_partial_and_forecast_files(self):
+        from channel_validation.gate_paired_local import selected_records
+        records = [dict(self.spec(kind, market), body=dict(complete=complete))
+                   for kind, market, complete in [('orderbooks_slice', 'spot', True),
+                        ('orderbooks_slice', 'futures_usdt', True), ('funding_applies', 'futures_usdt', True),
+                        ('mark_prices', 'futures_usdt', False), ('funding_updates', 'futures_usdt', True)]]
+        self.assertEqual(3, len(selected_records(records)))
+        records[0]['body']['complete'] = False
+        with self.assertRaises(ValueError):
+            selected_records(records)
+
+
 class EvidenceTests(unittest.TestCase):
     def test_paired_probe_fixed_budget_and_no_oos(self):
         from channel_validation.gate_paired import request_plan
