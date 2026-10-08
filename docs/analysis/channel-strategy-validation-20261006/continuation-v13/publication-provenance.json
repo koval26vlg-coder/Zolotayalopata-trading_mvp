@@ -1,0 +1,81 @@
+{
+  "schema": "documentation_audit_provenance_v1",
+  "parent_git_commit": "6a72a3d67dfa115fcacf9a6c9722cdb1ee8d2f82",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "parent_files": [
+    {
+      "path": "docs/plans/channel-strategy-validation-20261006-v1.json",
+      "bytes": 20102,
+      "sha256": "2d4235d6f779c3181f3a619e2c9414d020346df37d1e23fc6f46ad73679c474c"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v12/data-readiness.json",
+      "bytes": 1578,
+      "sha256": "d6561da36c29ef18152976196c106e599eccfae6cc1761a1d98ed136815d882d"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v12/evidence-index.json",
+      "bytes": 1677,
+      "sha256": "cde705ee10fb0a8b48a7fa9d7367017d37622384fef90a408b257a975c45fffa"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v12/local-inventory.json",
+      "bytes": 2374,
+      "sha256": "3644e9a039de000e2a8b8fa2cbedbaeada8934da687c3d83759f592fbaecae06"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v12/model-input-queue.json",
+      "bytes": 16813,
+      "sha256": "b8b9836cc9f35c846ed423a8dc017fb972bcdac6a802aee42c96633c94202c60"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v12/publication-provenance.json",
+      "bytes": 3421,
+      "sha256": "23583c8be8189805e0a08e422e41c5b5205344d83d4baab9a54106825bce42b5"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v12/README.md",
+      "bytes": 9540,
+      "sha256": "7fd3f26c93c7165e0ea794daa7dd514f9c5b48574c727165eea8618a5da8d724"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v12/source-evidence.json",
+      "bytes": 4106,
+      "sha256": "0384bf1b905d71151d65f7802e106fb9bf1e9881cfacf05d8fb132a5f036e514"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v12/suitability-audit.json",
+      "bytes": 2866,
+      "sha256": "28167dc2468a0413ce0cd88431c9e054ffd76560919c4a137150345fd42d145a"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v12/verification.json",
+      "bytes": 1049,
+      "sha256": "0e4d6026513eaef1c071a2ace7377e40dc6ba4fc28e60fe16da0906cd565fdd5"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v12/verify_checkpoint.py",
+      "bytes": 6613,
+      "sha256": "2fea0abe78a678ebf2b44145c77062d6b36de834467719156d1e0ca7b417601f"
+    }
+  ],
+  "web_evidence_path": "source-evidence.json",
+  "web_evidence_hash_semantics": "SHA256 binds analyst summary bytes, not raw HTTP responses",
+  "new_market_data_downloads": 0,
+  "rpc_requests": 0,
+  "runtime_code_changed": false,
+  "model_parameters_changed": false,
+  "acceptance_contract_changed": false,
+  "guard_observed_at_utc": "2026-10-08T06:48:59.421821Z",
+  "guard_status": "OFFLINE_CHECKPOINT_COMPLETE",
+  "guard_decision": "PREMARKET_DEPTH_QUALITY_COMPLETE_INSUFFICIENT_SAMPLE",
+  "guard_scope_note": "Legacy parent premarket is not reopened. The separate 20-model historical program is directly user-authorized.",
+  "quota_remaining_percent": 76,
+  "quota_observed_at_utc": "2026-10-08T06:48:56.767416Z",
+  "scoped_gate_status": "READY_FOR_POSTPROCESS",
+  "scoped_gate_decision": "ALLOW_GATE_NOT_RUNNING",
+  "scoped_gate_observed_local": "2026-10-08T09:51:37+03:00",
+  "legacy_incomplete_dataset_reused": false,
+  "existing_run_restarted": false
+}
