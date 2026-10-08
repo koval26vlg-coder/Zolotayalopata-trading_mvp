@@ -1,0 +1,98 @@
+{
+  "schema": "historical_model_family_suitability_audit_v1",
+  "model_hashes": {
+    "wallet_follow": "07df0a5021ab9960bf99098ac1ff552fdc5d5ec0681ad272e4ebde0888d332dd"
+  },
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "audit_status": "BOUNDED_SOURCE_AUDIT_COMPLETE_NO_VALIDATED_WALLET_INPUT",
+  "input_status": "BLOCKED_DATA",
+  "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+  "metrics": null,
+  "requirements": [
+    {
+      "status": "DOCUMENTED_NOT_VALIDATED",
+      "evidence_ids": [
+        "dune_swaps",
+        "dune_access",
+        "google_schema",
+        "ethereum_logs"
+      ],
+      "gap": "Need complete historical swaps with contract addresses, stable event keys and causal USD notionals; separate economic purchases from pool hops and aggregator duplicates.",
+      "id": "dex_swaps"
+    },
+    {
+      "status": "NO_VALIDATED_INPUT",
+      "evidence_ids": [
+        "google_schema",
+        "graph_history"
+      ],
+      "gap": "Need historical verified ERC20 USDC/WETH-pair membership, decimals/type provenance and disappeared tokens, not current popular pools.",
+      "id": "token_universe"
+    },
+    {
+      "status": "NO_VALIDATED_INPUT",
+      "evidence_ids": [
+        "google_schema",
+        "uniswap_quotes"
+      ],
+      "gap": "Need comparable historical gas, ETH/USD and explicit allowance/transaction-cost assumptions, not zero gas or the copied wallet receipt blindly.",
+      "id": "gas"
+    },
+    {
+      "status": "NO_VALIDATED_INPUT",
+      "evidence_ids": [
+        "uniswap_quotes",
+        "uniswap_tokens",
+        "graph_history"
+      ],
+      "gap": "Need amount/route-aware next-block entry and 24h exit at historical state, fees, impact, sellability and observation timing; historical swaps or current Quoter do not prove these.",
+      "id": "execution_quotes"
+    },
+    {
+      "status": "NORMALIZATION_DEFINITION_UNRESOLVED",
+      "evidence_ids": [
+        "dune_swaps"
+      ],
+      "gap": "Frozen plan does not by itself resolve router, smart-wallet and economic-owner attribution or DEX coverage. Do not silently substitute tx_from or restrict the universe to one DEX. Define semantics before any outcome inspection.",
+      "id": "wallet_attribution"
+    },
+    {
+      "status": "DOCUMENTED_NOT_VALIDATED",
+      "evidence_ids": [
+        "ethereum_logs",
+        "graph_history"
+      ],
+      "gap": "Need canonical block/hash, transaction/log order, removed-log rejection and honest availability assumptions. Dataset ingestion today is not historical observation latency.",
+      "id": "block_provenance"
+    },
+    {
+      "status": "PUBLIC_DATA_ROUTES_REQUIRE_UNVERIFIED_ACCESS_OR_NORMALIZATION",
+      "evidence_ids": [
+        "dune_access",
+        "graph_access",
+        "google_sandbox",
+        "google_cost"
+      ],
+      "gap": "Keyed/free and public/anonymous are distinct. No credentials, project creation, paid queries or source data retrieval occurred.",
+      "id": "source_access"
+    }
+  ],
+  "evaluation_allowed_now": false,
+  "hypothesis_changed": false,
+  "fixed_periods_shifted": false,
+  "credentials_used": false,
+  "new_paid_data": false,
+  "normalization_choice_made": false,
+  "new_dex_scope_selected": false,
+  "candidate_feasibility": "NOT_PROVEN_NO_AAVE_STYLE_HOLD_PERIOD_IMPOSSIBILITY_IDENTIFIED",
+  "local_inventory_snapshot": "../continuation-v13/local-inventory.json",
+  "local_archive_rescanned": false,
+  "reentry_condition": "New complete permissible historical bundle or separately authorized keyed access; certify normalization and historical execution before a visible evaluation. Do not repeat unchanged documentation searches.",
+  "next_priority": [
+    "funding_carry",
+    "funding_cross",
+    "spot_dislocation",
+    "basis_convergence"
+  ]
+}

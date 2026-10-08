@@ -1,0 +1,31 @@
+{
+  "schema": "bounded_primary_source_audit_v1",
+  "date": "2026-10-08",
+  "model_ids": ["wallet_follow"],
+  "evidence_kind": "ANALYST_SUMMARIES_NOT_RAW_HTTP_SNAPSHOTS",
+  "sources": [
+    {"id":"dune_swaps","url":"https://docs.dune.com/data-catalog/curated/dex-trades/evm/dex-trades","finding":"DEX trades records individual pool hops. Aggregator intents may correspond to multiple dex.trades rows. Schema distinguishes taker/maker, tx_from/tx_to, contract addresses, transaction hash, block number and event index.","limitation":"Documentation does not certify a complete export or beneficial-wallet attribution. Counting all hops and aggregator records together double counts economic activity."},
+    {"id":"dune_access","url":"https://docs.dune.com/api-reference/overview/authentication","finding":"Dune API uses API-key authentication; read and read/write scopes are distinguished.","limitation":"No key used, no query executed and no output retrieved. Keyed public data is not automatically paid, but is not anonymous access."},
+    {"id":"graph_access","url":"https://thegraph.com/docs/en/subgraphs/querying/introduction/","finding":"The documented gateway query URLs require an API key. A Free Plan exists.","limitation":"No account or key created. Free plan does not certify full historical coverage or sufficient query budget."},
+    {"id":"graph_history","url":"https://thegraph.com/docs/en/subgraphs/querying/graphql-api/","finding":"Queries support a block number or hash and metadata including deployment and indexing errors. Documentation notes reorg-related limitations for nonfinal blocks.","limitation":"No subgraph deployment selected, no historical query executed; coverage and schema fidelity remain unverified."},
+    {"id":"google_schema","url":"https://docs.cloud.google.com/blockchain-analytics/docs/schema","finding":"Ethereum Mainnet tables include blocks, logs, receipts, token transfers, traces and transactions. Address fields are lowercased.","limitation":"These are not a validated strategy dataset or executable historical sell quotes. Data version, completeness and normalization remain unverified."},
+    {"id":"google_sandbox","url":"https://docs.cloud.google.com/bigquery/docs/sandbox","finding":"Sandbox supports limited free public-dataset queries without a credit card or billing account, but requires Google authentication and a project.","limitation":"No login, project creation or query performed. Do not describe this route as necessarily paid or anonymous."},
+    {"id":"google_cost","url":"https://cloud.google.com/blockchain-analytics/pricing","finding":"Blockchain Analytics uses BigQuery pricing, including a free allowance and charges outside relevant limits.","limitation":"No billable query launched. Whole-period processing size and free-budget feasibility have not been measured."},
+    {"id":"uniswap_quotes","url":"https://developers.uniswap.org/docs/sdks/v3/guides/swapping/quoting","finding":"Quoter/callStatic can simulate output for a specified route, amount and pool fee without executing the swap on-chain.","limitation":"Current quotes do not prove historical fills. Historical state and token/route behavior must be validated; a quote is not guaranteed block inclusion."},
+    {"id":"uniswap_tokens","url":"https://developers.uniswap.org/docs/protocols/v3/concepts/unsupported-tokens","finding":"Documentation distinguishes fee-on-transfer router incompatibility and negative-rebase liquidity-provider risks in v3.","limitation":"Pool existence alone does not certify token sellability; no token behavior or historical exit has been verified."},
+    {"id":"ethereum_logs","url":"https://ethereum.github.io/execution-apis/api/methods/eth_getLogs/","finding":"Log schema includes block/transaction identifiers, transactionIndex, logIndex and removed status.","limitation":"An API schema is not a complete historical bundle or a measured observation-latency series."}
+  ],
+  "unusable_document_fetches": [
+    {"url":"https://docs.uniswap.org/api/subgraph/guides/v3-examples","outcome":"WEB_TOOL_INTERNAL_ERROR","used_as_negative_evidence":false},
+    {"url":"https://docs.cloud.google.com/blockchain-analytics/docs/query-ethereum","outcome":"WEB_TOOL_INTERNAL_ERROR","used_as_negative_evidence":false},
+    {"url":"https://developers.uniswap.org/docs/protocols/v3/guides/swaps/quoting","outcome":"WEB_TOOL_INTERNAL_ERROR","used_as_negative_evidence":false}
+  ],
+  "market_archives_downloaded":0,
+  "rpc_requests":0,
+  "authenticated_queries":0,
+  "credentials_used":false,
+  "wallet_connected":false,
+  "purchases":false,
+  "source_search_exhaustive":false,
+  "free_history_nonexistence_claimed":false
+}
