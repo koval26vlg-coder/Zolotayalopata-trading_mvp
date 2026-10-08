@@ -11,7 +11,7 @@ import time
 import unittest
 
 from .contract import ROOT, PLAN_PATH, OUTPUT_ROOT, build_plan, canonical_hash, runtime_binding, validate_plan
-from .data import ts, validate_manifest, write_immutable
+from .data import ts, validate_manifest, write_immutable, required_input_kinds
 from .models import candle_replay
 from .adapters import MissingEvidence, run_specialized
 from .portfolio import replay_opportunities
@@ -39,7 +39,7 @@ def inventory(plan, roots, check=lambda: None):
         locations.append(dict(path=str(path), status='AVAILABLE' if path.is_dir() else 'UNAVAILABLE',
                               input_manifests=[str(p) for p in candidates if p.is_file()]))
     return sealed(dict(stage='inventory', plan_hash=plan['plan_hash'], roots=locations,
-                       models=[dict(id=m['id'], required_kinds=m['required_kinds'], status='NOT_VALIDATED')
+                       models=[dict(id=m['id'], required_kinds=required_input_kinds(m), status='NOT_VALIDATED')
                                for m in plan['models']],
                        note='Availability is not data validity. Public history not downloaded by inventory.'), 'inventory_hash')
 
@@ -82,7 +82,7 @@ def validate(plan, inv, input_path, check=lambda: None):
     for model in plan['models']:
         check()
         data, selected = model_inputs(model, loaded)
-        missing = [kind for kind in model['required_kinds'] if not data.get(kind)]
+        missing = [kind for kind in required_input_kinds(model) if not data.get(kind)]
         coverage = {kind: dict(first=min(ts(r['ts']) for r in rows), last=max(ts(r.get('end_ts', r['ts'])) for r in rows), rows=len(rows))
                     for kind, rows in data.items()}
         models.append(dict(id=model['id'], status='BLOCKED_DATA' if missing else 'READY_TO_EVALUATE',
@@ -222,7 +222,7 @@ def report(plan, inv, validation, evaluation):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'gate-survivorship-audit', 'gate-trades-audit', 'gate-metadata-audit', 'okx-history-audit', 'okx-full-archive', 'okx-archive-census', 'okx-dependencies', 'gold-history-audit', 'gold-history-remaining', 'histdata-sample', 'histdata-archive', 'histdata-local', 'histdata-month', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
+    parser.add_argument('stage', choices=['freeze', 'preflight', 'verify', 'sources', 'gate-history-audit', 'gate-catalog-audit', 'gate-survivorship-audit', 'gate-trades-audit', 'gate-metadata-audit', 'gate-paired-audit', 'okx-history-audit', 'okx-full-archive', 'okx-archive-census', 'okx-dependencies', 'gold-history-audit', 'gold-history-remaining', 'histdata-sample', 'histdata-archive', 'histdata-local', 'histdata-month', 'archive-audit', 'inventory', 'validate', 'evaluate', 'report', 'pipeline'])
     parser.add_argument('--input-manifest')
     parser.add_argument('--evaluation', type=Path)
     parser.add_argument('--output', type=Path)
@@ -260,6 +260,12 @@ def main(argv=None):
         return 0 if result.wasSuccessful() else 1
     if not args.output:
         parser.error('Explicit isolated output namespace required')
+    if args.stage == 'gate-paired-audit':
+        if args.max_runtime_sec > 300:
+            parser.error('Paired source probe bounded to 300 seconds')
+        from .gate_paired import audit
+        audit(args.output/'gate-paired-audit', check)
+        return 0
     if args.stage == 'histdata-month':
         if args.max_runtime_sec > 600:
             parser.error('Full month local validation bounded to 600 seconds')

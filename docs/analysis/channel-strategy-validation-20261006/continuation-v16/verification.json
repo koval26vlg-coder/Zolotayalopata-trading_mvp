@@ -1,0 +1,12 @@
+{
+  "status": "VERIFIED",
+  "runtime_hash": "8b0518d7e746b8ee9bc31affbbc6848f0109789f87ce85da63cea80e1e6c5d47",
+  "tests_passed": 191,
+  "parent_evidence_files_verified": 11,
+  "requests": 10,
+  "bytes_read": 4354632,
+  "eligible_models": 0,
+  "real_data_evaluation_run": false,
+  "network": false,
+  "verification_phase": "PRE_PUBLICATION_DATA_RUNTIME_AND_PARENT_HASH_READBACK"
+}

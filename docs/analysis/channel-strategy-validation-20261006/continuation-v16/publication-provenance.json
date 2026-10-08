@@ -1,0 +1,35 @@
+{
+  "schema": "checkpoint_publication_provenance_v1",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "8b0518d7e746b8ee9bc31affbbc6848f0109789f87ce85da63cea80e1e6c5d47",
+  "parent_commit": "079e5526bee89debc1cb3939a19437b1a14f80d6",
+  "parent_evidence_index_sha256": "22e575ea4e19cb8dee0b0be3477d76dde3fd11688570d3c817b899b2ea8dd97a",
+  "source_files": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\intent.json",
+      "sha256": "27e59d5d4d165f560b5f74918dcda012569b4242f43fe9a0a6d07bf2a124545a"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\owner.json",
+      "sha256": "81da38966224ec3e48a2fbc1548074d0834b84060ad0e8f6f3f1d55cbf45693c"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\dispatch.json",
+      "sha256": "c5c44184c8029b71e29191ca692862662f48974f215ff890d1f9955bd604b2e6"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\completion.json",
+      "sha256": "9f9b2331a51a196388cbee43a962ddfe226e847a3618bcc8765cf2f06b855074"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\audit.json",
+      "sha256": "bc526f0388ad0fa4a65493950d75953d97756945c57278ee6f0363ae6c78a60b"
+    }
+  ],
+  "terminal_ownership_verified": true,
+  "terminal_pid": 5548,
+  "worker_pid": 2888,
+  "legacy_outputs_not_consumed": true,
+  "listing_project_untouched": true,
+  "request_documentation": "https://www.gate.com/developer/historical_quotes"
+}

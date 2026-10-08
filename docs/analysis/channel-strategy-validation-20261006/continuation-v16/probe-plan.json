@@ -1,0 +1,88 @@
+{
+  "decompressed_bytes_per_response": 1000000,
+  "eligible_for_evaluation": false,
+  "max_requests": 10,
+  "max_runtime_sec": 300,
+  "oversize_policy": "READ_BOUNDED_PREFIX_ONLY_NEVER_CERTIFY_FULL_ARCHIVE",
+  "per_response_bytes": 1000000,
+  "proxies": false,
+  "purpose": "Availability, compression and raw schema only; no returns or signals",
+  "redirects": false,
+  "request_plan_hash": "260606072411fc4d6dbe901f8e1919b30f204a3b9309d38582d41d1d158be38c",
+  "requests": [
+    {
+      "kind": "orderbooks_slice",
+      "market": "spot",
+      "month": "202301",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/spot/orderbooks_slice/202301/BTC_USDT-2023010100.gz"
+    },
+    {
+      "kind": "orderbooks_slice",
+      "market": "futures_usdt",
+      "month": "202301",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/orderbooks_slice/202301/BTC_USDT-2023010100.gz"
+    },
+    {
+      "kind": "funding_applies",
+      "market": "futures_usdt",
+      "month": "202301",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/funding_applies/202301/BTC_USDT-202301.csv.gz"
+    },
+    {
+      "kind": "funding_updates",
+      "market": "futures_usdt",
+      "month": "202301",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/funding_updates/202301/BTC_USDT-202301.csv.gz"
+    },
+    {
+      "kind": "mark_prices",
+      "market": "futures_usdt",
+      "month": "202301",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/mark_prices/202301/BTC_USDT-202301.csv.gz"
+    },
+    {
+      "kind": "orderbooks_slice",
+      "market": "spot",
+      "month": "202501",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/spot/orderbooks_slice/202501/BTC_USDT-2025010100.gz"
+    },
+    {
+      "kind": "orderbooks_slice",
+      "market": "futures_usdt",
+      "month": "202501",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/orderbooks_slice/202501/BTC_USDT-2025010100.gz"
+    },
+    {
+      "kind": "funding_applies",
+      "market": "futures_usdt",
+      "month": "202501",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/funding_applies/202501/BTC_USDT-202501.csv.gz"
+    },
+    {
+      "kind": "funding_updates",
+      "market": "futures_usdt",
+      "month": "202501",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/funding_updates/202501/BTC_USDT-202501.csv.gz"
+    },
+    {
+      "kind": "mark_prices",
+      "market": "futures_usdt",
+      "month": "202501",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/mark_prices/202501/BTC_USDT-202501.csv.gz"
+    }
+  ],
+  "retries": 0,
+  "schema": "gate_paired_archive_probe_v1",
+  "source_documentation": "https://www.gate.com/developer/historical_quotes",
+  "total_response_bytes": 10000000
+}

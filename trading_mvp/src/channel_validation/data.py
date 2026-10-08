@@ -38,6 +38,14 @@ REQUIRED = {
 INTERVALS = {'bars_1m': 60, 'bars_5m': 300, 'bars_1h': 3600, 'bars_4h': 14400, 'bars_1d': 86400}
 
 
+def required_input_kinds(model):
+    # The frozen global crypto-universe rule also applies to both-leg models.
+    kinds = list(model['required_kinds'])
+    if 'paired_quotes' in kinds and 'pit_universe' not in kinds:
+        kinds.append('pit_universe')
+    return kinds
+
+
 def ts(value):
     if isinstance(value, (float, int)) and not isinstance(value, bool):
         if not math.isfinite(value) or value < 0 or value > 4102444800:

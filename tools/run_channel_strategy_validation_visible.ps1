@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('verify','sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-archive-census','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive','histdata-local','histdata-month','archive-audit','inventory','validate','evaluate','report','pipeline')][string]$Stage = 'pipeline',
+    [ValidateSet('verify','sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','gate-paired-audit','okx-history-audit','okx-full-archive','okx-archive-census','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive','histdata-local','histdata-month','archive-audit','inventory','validate','evaluate','report','pipeline')][string]$Stage = 'pipeline',
     [string]$InputManifest = '',
     [string]$EvaluationPath = '',
     [ValidateRange(1,1800)][int]$MaxRuntimeSec = 1800,
@@ -58,8 +58,9 @@ try {
     $guard = ($guardText -join "`n") | ConvertFrom-Json -DateKind String
     if ($guard.usage.decision -ne 'CONTINUE' -or $guard.usage.remaining_percent -le 15 -or $guard.status -like 'PAUSED*') { throw 'Quota paused/unavailable' }
     $reads = @((Join-Path $root 'trading_mvp\src\channel_validation'), (Join-Path $root 'trading_mvp\tests\test_channel_validation.py'), (Join-Path $root 'docs\plans\channel-strategy-validation-20261006-v1.json'))
+    if ($Stage -eq 'gate-paired-audit') { $reads += (Join-Path $root 'docs\analysis\channel-strategy-validation-20261006\continuation-v16') }
     if ($Stage -eq 'archive-audit') { $reads += 'E:\ZolotyayLopata-data\exports\trading-mvp' }
-    if ($Stage -in @('gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-dependencies','gold-history-audit','histdata-sample') -and $MaxRuntimeSec -gt 300) { throw 'History source audit is bounded to 300 seconds' }
+    if ($Stage -in @('gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','gate-paired-audit','okx-history-audit','okx-dependencies','gold-history-audit','histdata-sample') -and $MaxRuntimeSec -gt 300) { throw 'History source audit is bounded to 300 seconds' }
     if ($Stage -eq 'gold-history-remaining') {
         if ($MaxRuntimeSec -gt 240) { throw 'Remaining gold phase is bounded to 240 seconds' }
         $reads += (Join-Path $outRoot 'history_gold_source_v7_20261007')
@@ -104,6 +105,14 @@ try {
     $hashText = & $python -c 'from channel_validation.contract import *; print(canonical_hash(runtime_binding()))'
     if ($LASTEXITCODE -ne 0) { throw 'Runtime hash failed' }
     $runtimeHash = ($hashText -join '').Trim()
+    if ($Stage -eq 'gate-paired-audit') {
+        if ($RunId -ne 'history_gate_paired_v16_20261008') { throw 'Fixed paired probe RunId required; no renamed retry' }
+        if ($PreflightOnly -and (Test-Path -LiteralPath $output)) { throw 'Paired probe already attempted; use Status' }
+        & $python -c 'from channel_validation.gate_paired import preflight; preflight()' | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw 'Fixed paired request binding failed' }
+        $rebind = Read-Json (Join-Path $root 'docs\analysis\channel-strategy-validation-20261006\continuation-v16\runtime-rebind.json')
+        if ($rebind.runtime_hash -ne $runtimeHash -or $rebind.plan_hash -ne $check.plan_hash) { throw 'Paired runtime rebind mismatch' }
+    }
     if ($Stage -eq 'okx-full-archive') {
         if ($RunId -ne 'history_okx_full_btc_v5_20261006') { throw 'One-shot download RunId is fixed; no renamed retry' }
         if ($PreflightOnly -and (Test-Path -LiteralPath $output)) { throw 'Download attempt already recorded; use Status or local census, not another network run' }
@@ -152,7 +161,7 @@ try {
         & $python -c 'from channel_validation.histdata_local import preflight,RECOVERY_RUN_ID; import sys; preflight(recovery=sys.argv[1]==RECOVERY_RUN_ID)' $RunId | Out-Null
         if ($LASTEXITCODE -ne 0) { throw 'Local quarantined ZIP binding failed' }
     }
-    if ($PreflightOnly) { Emit @{status=$(if($Stage -in @('sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive')){'READY_BOUNDED_PUBLIC_HISTORY'}else{'READY_OFFLINE_ONLY'});public_network_required=($Stage -in @('sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','okx-history-audit','okx-full-archive','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive'));runtime_hash=$runtimeHash;plan_hash=$check.plan_hash;output_created=$false;run_id=$RunId}; exit 0 }
+    if ($PreflightOnly) { Emit @{status=$(if($Stage -in @('sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','gate-paired-audit','okx-history-audit','okx-full-archive','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive')){'READY_BOUNDED_PUBLIC_HISTORY'}else{'READY_OFFLINE_ONLY'});public_network_required=($Stage -in @('sources','gate-history-audit','gate-catalog-audit','gate-survivorship-audit','gate-trades-audit','gate-metadata-audit','gate-paired-audit','okx-history-audit','okx-full-archive','okx-dependencies','gold-history-audit','gold-history-remaining','histdata-sample','histdata-archive'));runtime_hash=$runtimeHash;plan_hash=$check.plan_hash;output_created=$false;run_id=$RunId}; exit 0 }
     if (-not $VisibleWorker) {
         if (Test-Path -LiteralPath $output) { throw 'Namespace already used; no blind retry' }
         [IO.Directory]::CreateDirectory($output) | Out-Null

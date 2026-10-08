@@ -174,6 +174,8 @@ def paired(model, data, check):
             venues = {r['long_venue'], r['short_venue']}
             if venues != ({'gate', 'mexc'} if model['market'] == 'gate_mexc' else {'gate'}):
                 raise MissingEvidence('Wrong venue route')
+            if not in_crypto_universe(data, symbol, at):
+                continue
             pair_economics(r, r, 0, [], key)
             fee = max(r['long_fee_bps'], r['short_fee_bps'])/10000
             cost = 2*(r['long_fee_bps']+r['short_fee_bps'])/10000 + (r['long_ask']-r['long_bid'])/r['long_ask'] + (r['short_ask']-r['short_bid'])/r['short_bid'] + 2*(r['long_impact']/r['long_ask']+r['short_impact']/r['short_bid'])
@@ -202,6 +204,9 @@ def paired(model, data, check):
             entry = first_after(rows[i+1:], at+0.000001, 60)
             if entry is None:
                 raise MissingEvidence('Pair lacks next synchronized executable quote')
+            # A next quote can cross the monthly rebalance boundary.
+            if not in_crypto_universe(data, symbol, ts(entry['ts'])):
+                continue
             q = 1000/(entry['long_ask']+entry['short_ask'])/(1+fee)
             if entry['long_size'] < q or entry['short_size'] < q:
                 continue

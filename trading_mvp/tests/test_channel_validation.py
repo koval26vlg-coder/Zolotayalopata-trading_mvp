@@ -10,7 +10,7 @@ from channel_validation.contract import build_plan, canonical_hash, validate_pla
 from channel_validation.data import validate_manifest, write_immutable, select_universe, validate_row, ts
 from channel_validation.models import (confirmed_pivots, atr, bar_exit, option_pnl, pair_pnl, grid_fill,
                                       candle_replay, causal_funding_forecast, choose_option, wallet_ranking, lending_pnl)
-from channel_validation.adapters import (MissingEvidence, pair_economics, wallets, grid, run_specialized, first_after)
+from channel_validation.adapters import (MissingEvidence, pair_economics, paired, wallets, grid, run_specialized, first_after)
 from channel_validation.statistics import holm, bootstrap_pvalue, summarize, temporal_groups, candidate_status
 from channel_validation.runner import inventory, validate, evaluate, report, main
 from channel_validation.sources import sample_requests, inspect_csv_gzip
@@ -369,7 +369,153 @@ class EconomicsTests(unittest.TestCase):
             self.assertEqual(([], []), run_specialized(model, data))
 
 
+class PairedUniverseTests(unittest.TestCase):
+    def fixture(self, model, at=None):
+        at = at or ts('2023-02-02T00:00:00Z')
+        row = dict(ts=at, available_at=at, symbol='BTC', long_ask=100, long_bid=99.99,
+                   short_bid=102, short_ask=102.01, long_size=100, short_size=100,
+                   long_venue='gate', short_venue='mexc' if model['market'] == 'gate_mexc' else 'gate',
+                   long_market='perp' if model['id'] == 'funding_cross' else 'spot',
+                   short_market='spot' if model['id'] == 'spot_dislocation' else 'perp',
+                   long_fee_bps=1, short_fee_bps=1, long_impact=0, short_impact=0,
+                   fee_source='synthetic', base_units_verified=True)
+        funding = [dict(ts=at-1, available_at=at-1, settlement_ts=at-1, period_seconds=28800,
+                        rate=.01 if venue == row['short_venue'] else 0, symbol='BTC', venue=venue,
+                        mark_price=100) for venue in {row['long_venue'], row['short_venue']}]
+        data = dict(paired_quotes=[row, dict(row, ts=at+1, available_at=at+1),
+                                  dict(row, ts=at+86401, available_at=at+86401,
+                                       long_bid=103, long_ask=103.01, short_bid=100, short_ask=100.01)],
+                    funding=funding, inventory=[dict(ts=at-1, available_at=at-1, symbol='BTC',
+                    venue=v, base_quantity=100, cash=10000) for v in ('gate', 'mexc')])
+        return data
+
+    def test_all_four_missing_or_stale_universe_blocked(self):
+        for model in build_plan()['models'][6:10]:
+            for snapshots in ([], [universe(ts('2023-01-01T00:00:00Z'))]):
+                with self.subTest(model=model['id'], snapshots=bool(snapshots)):
+                    data = self.fixture(model)
+                    data['pit_universe'] = snapshots
+                    with self.assertRaisesRegex(MissingEvidence, 'monthly'):
+                        paired(model, data, lambda: None)
+
+    def test_future_published_universe_not_used(self):
+        model = build_plan()['models'][6]
+        data = self.fixture(model)
+        snapshot = universe(ts('2023-02-01T00:00:00Z'))
+        snapshot['available_at'] = ts('2023-02-03T00:00:00Z')
+        data['pit_universe'] = [snapshot]
+        with self.assertRaises(MissingEvidence):
+            paired(model, data, lambda: None)
+
+    def test_excluded_asset_does_not_open_position(self):
+        for model in build_plan()['models'][6:10]:
+            data = self.fixture(model)
+            data['pit_universe'] = [universe(ts('2023-02-01T00:00:00Z'), ('ETH',))]
+            self.assertEqual(([], []), paired(model, data, lambda: None))
+
+    def test_valid_universe_preserves_pair_opportunities(self):
+        for model in build_plan()['models'][6:9]:
+            data = self.fixture(model)
+            data['pit_universe'] = [universe(ts('2023-02-01T00:00:00Z'))]
+            trades, exposed = paired(model, data, lambda: None)
+            self.assertEqual(1, len(trades), model['id'])
+            self.assertFalse(exposed)
+
+    def test_entry_in_new_month_requires_new_observable_universe(self):
+        model = build_plan()['models'][6]
+        at = ts('2023-02-28T23:59:59Z')
+        data = self.fixture(model, at)
+        data['pit_universe'] = [universe(ts('2023-02-01T00:00:00Z'))]
+        with self.assertRaises(MissingEvidence):
+            paired(model, data, lambda: None)
+        data['pit_universe'].append(universe(at+1, ('ETH',)))
+        self.assertEqual(([], []), paired(model, data, lambda: None))
+
+    def test_existing_position_can_close_after_month_rollover(self):
+        model = build_plan()['models'][6]
+        data = self.fixture(model, ts('2023-02-28T12:00:00Z'))
+        data['pit_universe'] = [universe(ts('2023-02-01T00:00:00Z'))]
+        self.assertEqual(1, len(paired(model, data, lambda: None)[0]))
+
+    def test_readiness_requires_universe_without_mutating_frozen_plan(self):
+        from unittest.mock import patch
+        plan = build_plan()
+        before = copy.deepcopy(plan)
+        inv = inventory(plan, [])
+        loaded = []
+        for model in plan['models'][6:10]:
+            for kind, rows in self.fixture(model).items():
+                loaded.append(dict(entry=dict(id=model['id']+kind, kind=kind, market=model['market'],
+                                              model_ids=[model['id']]), rows=rows))
+        with patch('channel_validation.runner.load_inputs', return_value=(None, loaded)):
+            result = validate(plan, inv, None)
+        for row in result['models'][6:10]:
+            self.assertEqual('BLOCKED_DATA', row['status'])
+            self.assertIn('pit_universe', row['missing_kinds'])
+        for row in inv['models'][6:10]:
+            self.assertIn('pit_universe', row['required_kinds'])
+        self.assertEqual(before, plan)
+
+
 class EvidenceTests(unittest.TestCase):
+    def test_paired_probe_fixed_budget_and_no_oos(self):
+        from channel_validation.gate_paired import request_plan
+        p = request_plan()
+        self.assertEqual(10, len(p['requests']))
+        self.assertEqual(10, len({r['url'] for r in p['requests']}))
+        self.assertEqual(1000000, p['per_response_bytes'])
+        self.assertEqual(0, p['retries'])
+        self.assertFalse(p['redirects'])
+        self.assertEqual({'202301', '202501'}, {r['month'] for r in p['requests']})
+
+    def test_paired_probe_prefix_and_gzip_are_not_full_evidence(self):
+        import gzip
+        from channel_validation.gate_paired import inspect_archive
+        raw = gzip.compress(b'time,rate\n1672531200,0.001\n')
+        complete = inspect_archive(raw, True)
+        self.assertTrue(complete['gzip_complete'])
+        self.assertEqual(2, complete['sample_csv_widths'][0])
+        partial = inspect_archive(raw[:-6], False)
+        self.assertFalse(partial['gzip_complete'])
+        self.assertFalse(partial['eligible_for_evaluation'])
+        with self.assertRaises(ValueError):
+            inspect_archive(raw[:-6], True)
+        with self.assertRaises(ValueError):
+            inspect_archive(b'<html>error</html>', True)
+        large = inspect_archive(gzip.compress(b'x'*10000), True, decompressed_cap=100)
+        self.assertTrue(large['decompressed_truncated'])
+        self.assertLessEqual(large['decompressed_bytes'], 100)
+
+    def test_paired_probe_body_cap_no_extra_read(self):
+        import io
+        from channel_validation.gate_paired import read_prefix
+        stream = io.BytesIO(b'x'*20)
+        stream.headers = {'Content-Length': '20'}
+        raw, metadata = read_prefix(stream, lambda: None, cap=10)
+        self.assertEqual(10, stream.tell())
+        self.assertEqual(10, len(raw))
+        self.assertFalse(metadata['complete'])
+        self.assertEqual(20, metadata['declared_length'])
+        stream = io.BytesIO(b'x'*5)
+        stream.headers = {'Content-Length': '5'}
+        self.assertTrue(read_prefix(stream, lambda: None, cap=10)[1]['complete'])
+
+    def test_paired_probe_http_error_is_one_attempt_and_no_body_read(self):
+        import urllib.error
+        from channel_validation.gate_paired import probe_one, request_plan
+        class Opener:
+            calls = 0
+            def open(self, request, timeout):
+                self.calls += 1
+                raise urllib.error.HTTPError(request.full_url, 302, 'redirect', {}, None)
+        opener = Opener()
+        with tempfile.TemporaryDirectory() as folder:
+            record = probe_one(request_plan()['requests'][0], opener, Path(folder), 1, lambda: None)
+        self.assertEqual(1, opener.calls)
+        self.assertEqual(302, record['http_status'])
+        self.assertEqual(0, record['body']['bytes_read'])
+        self.assertFalse(record['eligible_for_evaluation'])
+
     def test_source_probe_is_fixed_small_and_reference_not_execution(self):
         urls = sample_requests()
         self.assertEqual(12, len(urls))
