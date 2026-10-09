@@ -1,0 +1,8 @@
+{
+  "exit_code": 0,
+  "max_runtime_sec": 120,
+  "no_market_replay": true,
+  "run_id": "history_evidence_content_v22_20261009",
+  "status": "COMPLETE",
+  "worker_pid": 30572
+}

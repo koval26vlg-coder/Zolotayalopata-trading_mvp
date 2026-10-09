@@ -1,0 +1,990 @@
+{
+  "accepted_identity_records": 0,
+  "audit_hash": "eb3497e2f29eea05bde4e61e3f934b65541eb711b522b6303322a1178b0692a0",
+  "audit_scope_exhaustive": false,
+  "automation_disposition": "DO_NOT_REPEAT_WITHOUT_NEW_EVIDENCE_OR_SUBSTANTIVE_CONTRACT_DECISION",
+  "binding_hash": "fbac746dab7c0cbb4b606df6f936518eea51d185c12b1cd84907c1e3aa8a8110",
+  "certificates_issued": 0,
+  "exposure_review": {
+    "all_human_or_external_access_history_available": false,
+    "engineering_inspection_is_not_proven_strategy_selection": true,
+    "historical_raw_files_read": false,
+    "independently_unseen": false,
+    "legacy_raw_or_results_reopened": false,
+    "program_empty_results_are_not_backtests": true,
+    "runs": [
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_archive_discovery_v2_20261006",
+        "stage": "archive-audit"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_gate_catalog_v2_20261006",
+        "stage": "gate-catalog-audit"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_gate_metadata_v4_20261006",
+        "stage": "gate-metadata-audit"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_gate_paired_local_v17_20261008",
+        "stage": "gate-paired-local"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_gate_paired_v16_20261008",
+        "stage": "gate-paired-audit"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_gate_pairing_v18_20261009",
+        "stage": "gate-pairing"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_gate_survivorship_v3_20261006",
+        "stage": "gate-survivorship-audit"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_gate_trades_v3_20261006",
+        "stage": "gate-trades-audit"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_gate_units_v2_20261006",
+        "stage": "gate-history-audit"
+      },
+      {
+        "completion_status": "STOPPED_INCOMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_gold_source_v7_20261007",
+        "stage": "gold-history-audit"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_gold_unattempted_v7_20261007",
+        "stage": "gold-history-remaining"
+      },
+      {
+        "completion_status": "STOPPED_INCOMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_histdata_archive_v8_20261007",
+        "stage": "histdata-archive"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_histdata_gold_v8_20261007",
+        "stage": "histdata-sample"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_histdata_local_recovery_v8_20261007",
+        "stage": "histdata-local"
+      },
+      {
+        "completion_status": "STOPPED_INCOMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_histdata_local_v8_20261007",
+        "stage": "histdata-local"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_histdata_month_v9_20261007",
+        "stage": "histdata-month"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "EMPTY_INPUT_MATRIX_NO_MARKET_METRICS",
+        "run_id": "history_inventory_matrix_final_20261006",
+        "stage": "pipeline"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "EMPTY_INPUT_MATRIX_NO_MARKET_METRICS",
+        "run_id": "history_inventory_matrix_v1_20261006",
+        "stage": "pipeline"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "EMPTY_INPUT_MATRIX_NO_MARKET_METRICS",
+        "run_id": "history_matrix_release_20261006",
+        "stage": "pipeline"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_okx_dependencies_v6_20261007",
+        "stage": "okx-dependencies"
+      },
+      {
+        "completion_status": "STOPPED_INCOMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_okx_full_btc_v5_20261006",
+        "stage": "okx-full-archive"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_okx_local_census_v5_20261006",
+        "stage": "okx-archive-census"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_okx_option_source_v4_20261006",
+        "stage": "okx-history-audit"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "EMPTY_INPUT_MATRIX_NO_MARKET_METRICS",
+        "run_id": "history_report_v1_20261006",
+        "stage": "report"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_sources_v1_20261006",
+        "stage": "sources"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_catalog_v2_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_final_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_gate_audit_v2_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_gold_fixed_v7_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_gold_remaining_v7_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "STOPPED_INCOMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_gold_v7_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_histdata_cached_form_v8_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "STOPPED_INCOMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_histdata_handshake_v8_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_histdata_local_v8_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_histdata_month_green_v9_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "STOPPED_INCOMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_histdata_month_red_v9_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_histdata_recovery_v8_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_histdata_report_v8_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_histdata_strict_time_v8_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "MISSING_RECEIPT",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_histdata_v8_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_metadata_v4_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_okx_dependencies_v6_20261007",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_okx_final_v5_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_okx_local_v5_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_okx_stream_v5_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_options_source_v4_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_release_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_survivorship_v3_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_trades_v3_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_v16_20261008",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_v17_20261008",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_v18_20261009",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_v1_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_v21_final_20261009",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_v21_green_20261009",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "STOPPED_INCOMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_v21_red_20261009",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_v2_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_v3_20261006",
+        "stage": "verify"
+      },
+      {
+        "completion_status": "COMPLETE",
+        "outcome_inspection": "NO_MARKET_EVALUATION_STAGE",
+        "run_id": "history_verify_v4_20261006",
+        "stage": "verify"
+      }
+    ],
+    "schema": "bounded_exposure_review_v1",
+    "scope": "Only the frozen local program receipts. No global access ledger and no proof of non-access.",
+    "stage_counts": {
+      "archive-audit": 1,
+      "gate-catalog-audit": 1,
+      "gate-history-audit": 1,
+      "gate-metadata-audit": 1,
+      "gate-paired-audit": 1,
+      "gate-paired-local": 1,
+      "gate-pairing": 1,
+      "gate-survivorship-audit": 1,
+      "gate-trades-audit": 1,
+      "gold-history-audit": 1,
+      "gold-history-remaining": 1,
+      "histdata-archive": 1,
+      "histdata-local": 2,
+      "histdata-month": 1,
+      "histdata-sample": 1,
+      "okx-archive-census": 1,
+      "okx-dependencies": 1,
+      "okx-full-archive": 1,
+      "okx-history-audit": 1,
+      "pipeline": 3,
+      "report": 1,
+      "sources": 1,
+      "verify": 34
+    },
+    "status": "UNKNOWN_OR_PREVIOUSLY_VIEWED"
+  },
+  "findings": [
+    {
+      "conclusion": "Current symbols/archive filenames do not establish dated membership and canonical asset types.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "gate_identity",
+      "observed": false,
+      "pointer": "historical_universe_certified",
+      "source": {
+        "bytes": 3749,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v4/gate-metadata-audit.json",
+        "sha256": "18f8ec1de1be76f0694a7dcc1e6b985b8281c73b64b50abfdbd4514e429c4aec"
+      }
+    },
+    {
+      "conclusion": "No complete provider metadata body was retained; this response cannot identify the universe.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "gate_metadata_body",
+      "observed": 0,
+      "pointer": "record/body/bytes_read",
+      "source": {
+        "bytes": 3749,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v4/gate-metadata-audit.json",
+        "sha256": "18f8ec1de1be76f0694a7dcc1e6b985b8281c73b64b50abfdbd4514e429c4aec"
+      }
+    },
+    {
+      "conclusion": "Synthetic pairing frontier does not prove historical receipt time.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "gate_quote_time",
+      "observed": false,
+      "pointer": "historical_observation_time_verified",
+      "source": {
+        "bytes": 1401,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v18/data-readiness.json",
+        "sha256": "e80ba07debdb33dc1bcd6c1136a84358c9b55af05c792c5abe6a74ce8d259c8e"
+      }
+    },
+    {
+      "conclusion": "Observed book sizes cannot be converted to executable base quantity without dated units.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "gate_units",
+      "observed": false,
+      "pointer": "size_unit_verified",
+      "source": {
+        "bytes": 1401,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v18/data-readiness.json",
+        "sha256": "e80ba07debdb33dc1bcd6c1136a84358c9b55af05c792c5abe6a74ce8d259c8e"
+      }
+    },
+    {
+      "conclusion": "No dated multiplier/fee rows were accepted for either January sample.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "gate_terms",
+      "observed": 0,
+      "pointer": "accepted_historical_parameter_rows",
+      "source": {
+        "bytes": 1999,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v19/data-readiness.json",
+        "sha256": "93fdbbbf911317b83cd9ee8694b9d6b145701f1b09923b6699b64b5298059ee0"
+      }
+    },
+    {
+      "conclusion": "Analyst notes are not retained primary page bytes or historical tariff snapshots.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "gate_document_archiving",
+      "observed": false,
+      "pointer": "raw_pages_archived",
+      "source": {
+        "bytes": 5800,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v19/source-evidence.json",
+        "sha256": "15982c240c1b98b8e675a6e8f0405918f8990d4f391033980bafa3df59a5a776"
+      }
+    },
+    {
+      "conclusion": "2024 notice does not establish January 2023 or uninterrupted 2025 validity/account eligibility.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "gate_spot_fee_interval",
+      "observed": false,
+      "pointer": "sources/0/accepted_for_dataset_binding",
+      "source": {
+        "bytes": 5800,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v19/source-evidence.json",
+        "sha256": "15982c240c1b98b8e675a6e8f0405918f8990d4f391033980bafa3df59a5a776"
+      }
+    },
+    {
+      "conclusion": "Saved review reports a 2024 header and 2023 footer; do not choose the convenient year.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "gate_perp_date_conflict",
+      "observed": false,
+      "pointer": "sources/1/publication_dates_consistent",
+      "source": {
+        "bytes": 5800,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v19/source-evidence.json",
+        "sha256": "15982c240c1b98b8e675a6e8f0405918f8990d4f391033980bafa3df59a5a776"
+      }
+    },
+    {
+      "conclusion": "A later example contract response cannot prove earlier contract state.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "gate_example_not_state",
+      "observed": false,
+      "pointer": "sources/4/accepted_for_dataset_binding",
+      "source": {
+        "bytes": 5800,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v19/source-evidence.json",
+        "sha256": "15982c240c1b98b8e675a6e8f0405918f8990d4f391033980bafa3df59a5a776"
+      }
+    },
+    {
+      "conclusion": "An exit catalog is not a validated exit quote.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "okx_exit",
+      "observed": false,
+      "pointer": "exit_quotes_verified",
+      "source": {
+        "bytes": 1997,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v6/data-readiness.json",
+        "sha256": "d6b24540656118c0d1df906c849c29f5dc418a7f7184862c8d8e0518f4487a91"
+      }
+    },
+    {
+      "conclusion": "Current terms and later fee announcements do not establish the selected historical terms.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "okx_terms",
+      "observed": false,
+      "pointer": "dated_terms_complete",
+      "source": {
+        "bytes": 1997,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v6/data-readiness.json",
+        "sha256": "d6b24540656118c0d1df906c849c29f5dc418a7f7184862c8d8e0518f4487a91"
+      }
+    },
+    {
+      "conclusion": "All local CSV quote rows were checked; this verifies file semantics, not a trading instrument.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "gold_format",
+      "observed": true,
+      "pointer": "full_csv_quote_semantics_verified",
+      "source": {
+        "bytes": 12467,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v9/audit.json",
+        "sha256": "96d473d7514803253a18471da53ac377c9212fa81aa49dce30b139f8cc66b097"
+      }
+    },
+    {
+      "conclusion": "XAUUSD label lacks a dated executable venue/instrument/lot mapping.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "gold_identity",
+      "observed": "UNVERIFIED",
+      "pointer": "requirements/1/status",
+      "source": {
+        "bytes": 2667,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v10/suitability-audit.json",
+        "sha256": "2bde860fcbeeba5f7a64908322f9dee3bb6e78a0ab37f149a513dd573c47dff0"
+      }
+    },
+    {
+      "conclusion": "Index, futures and CFD candidates are not interchangeable execution instruments.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "dax_identity",
+      "observed": "CANDIDATES_IDENTIFIED_NOT_BOUND",
+      "pointer": "requirements/0/status",
+      "source": {
+        "bytes": 2703,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v11/suitability-audit.json",
+        "sha256": "9922e67f3ffd5f1dc8eb873f4625aa442e6ccfda0846b768bdc3e35476ba5a64"
+      }
+    },
+    {
+      "conclusion": "No dated full security-id universe including delisted securities is bound.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "equity_identity",
+      "observed": "REFERENCE_ROUTES_DOCUMENTED_NOT_VALIDATED",
+      "pointer": "requirements/1/status",
+      "source": {
+        "bytes": 2866,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v12/suitability-audit.json",
+        "sha256": "28167dc2468a0413ce0cd88431c9e054ffd76560919c4a137150345fd42d145a"
+      }
+    },
+    {
+      "conclusion": "Reported Ethereum v3 launch is later than the development start; do not fabricate prelaunch data.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "aave_lifetime",
+      "observed": "STRUCTURAL_PRELAUNCH_ABSENCE",
+      "pointer": "requirements/4/status",
+      "source": {
+        "bytes": 3396,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v13/suitability-audit.json",
+        "sha256": "c932c9607968424008c1d555e56fb247e2bf3419beb6a3031c2ed32fcb6ddfe3"
+      }
+    },
+    {
+      "conclusion": "Router/transaction sender cannot silently replace the economic owner.",
+      "evidence_level": "LOCAL_REVIEW_OR_RECEIPT_NOT_REMOTE_REVALIDATION",
+      "id": "wallet_attribution",
+      "observed": "NORMALIZATION_DEFINITION_UNRESOLVED",
+      "pointer": "requirements/4/status",
+      "source": {
+        "bytes": 3996,
+        "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/suitability-audit.json",
+        "sha256": "3ae7b1b38b5ae655ed84c60174edf4e8011630de61d29a351dd1d7fbad373da4"
+      }
+    }
+  ],
+  "models": [
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "gate_identity",
+        "gate_metadata_body",
+        "gate_quote_time"
+      ],
+      "id": "relative_strength",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "722b76604c3bcc8b5a81be6828fc410cddca764343a95ca7d2c13eb0fc8c20aa",
+      "number": 1,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Complete dated Gate membership/types/turnover plus causal historical quotes and costs.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "gate_identity",
+        "gate_metadata_body",
+        "gate_quote_time"
+      ],
+      "id": "trend_pullback",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "e67d0a99664027e13ae2feacefaebffc497f101f273c23d74e7d7d9e337d439e",
+      "number": 2,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Complete dated Gate membership/types/turnover plus causal historical quotes and costs.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "gate_identity",
+        "gate_metadata_body",
+        "gate_quote_time"
+      ],
+      "id": "structure_break",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "2aed75cff9482d781f1c3df1f5577c5fa92903426a4d99419db5fe70c072c982",
+      "number": 3,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Complete dated Gate membership/types/turnover plus causal historical quotes and costs.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "gate_identity",
+        "gate_metadata_body",
+        "gate_quote_time"
+      ],
+      "id": "normalized_line",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "dc332ad2ab8c84632d5c26b27e19adaf8cfcaade5cc9d8ce1d1313cfa4777d18",
+      "number": 4,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Complete dated Gate membership/types/turnover plus causal historical quotes and costs.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "gate_identity",
+        "gate_metadata_body",
+        "gate_quote_time"
+      ],
+      "id": "book_continue",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "7c46d0c741b3ca856ed89360b71d49f8f0bd1a657818fd9ad3b9ee3e66825c5e",
+      "number": 5,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Complete dated Gate membership/types/turnover plus causal historical quotes and costs.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "gate_identity",
+        "gate_metadata_body",
+        "gate_quote_time"
+      ],
+      "id": "book_reclaim",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "4456413af176741d31c79299167904083b3dfdc36a5a8d21a63c8e16e742e21c",
+      "number": 6,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Complete dated Gate membership/types/turnover plus causal historical quotes and costs.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "gate_identity",
+        "gate_quote_time",
+        "gate_units",
+        "gate_terms",
+        "gate_document_archiving",
+        "gate_spot_fee_interval",
+        "gate_perp_date_conflict",
+        "gate_example_not_state"
+      ],
+      "id": "funding_carry",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "2a5b8dc95381d0674e04a65f1cc4f7d276620e525f7a458f2b92ba9c54bfe0fb",
+      "number": 7,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Joint dated unit/cost/availability ledger for both legs and periods; cross-venue models additionally need MEXC.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "gate_identity",
+        "gate_quote_time",
+        "gate_units",
+        "gate_terms",
+        "gate_document_archiving",
+        "gate_spot_fee_interval",
+        "gate_perp_date_conflict",
+        "gate_example_not_state"
+      ],
+      "id": "funding_cross",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "a06d8e6d76b5fded41be97bf98928b924c32cf62180cd4dfb89e905590101813",
+      "number": 8,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Joint dated unit/cost/availability ledger for both legs and periods; cross-venue models additionally need MEXC.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "gate_identity",
+        "gate_quote_time",
+        "gate_units",
+        "gate_terms",
+        "gate_document_archiving",
+        "gate_spot_fee_interval",
+        "gate_perp_date_conflict",
+        "gate_example_not_state"
+      ],
+      "id": "spot_dislocation",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "85e8e7352e223598226c5d97aac09375d25881f34748b9f736fb104a61462868",
+      "number": 9,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Joint dated unit/cost/availability ledger for both legs and periods; cross-venue models additionally need MEXC.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "gate_identity",
+        "gate_quote_time",
+        "gate_units",
+        "gate_terms",
+        "gate_document_archiving",
+        "gate_spot_fee_interval",
+        "gate_perp_date_conflict",
+        "gate_example_not_state"
+      ],
+      "id": "basis_convergence",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "3fc48addb1e9e16a1459f20dcd338fd11e9b7d81ae626cddbaf863416fbe85ba",
+      "number": 10,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Joint dated unit/cost/availability ledger for both legs and periods; cross-venue models additionally need MEXC.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "okx_exit",
+        "okx_terms"
+      ],
+      "id": "long_put",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "3ca17e07c45c933d325cc262999f1815ac4a0abedb280fbf24934d5f6ec8ed68",
+      "number": 11,
+      "protocol_status": "STRUCTURAL_ACCEPTANCE_CONFLICT",
+      "required_new_evidence": "Complete entry/exit option books with dated contract/fee/settlement terms and executable underlying quotes.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "okx_exit",
+        "okx_terms"
+      ],
+      "id": "cash_put",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "eacef87fd81f3aefbfc00a06c5d4d3a4c410f3e881af95c5dc6884d74a599289",
+      "number": 12,
+      "protocol_status": "STRUCTURAL_ACCEPTANCE_CONFLICT",
+      "required_new_evidence": "Complete entry/exit option books with dated contract/fee/settlement terms and executable underlying quotes.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "okx_exit",
+        "okx_terms"
+      ],
+      "id": "put_spread",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "7f7b319aee5e0b272745bd20c8cea3a1a601ff1dd1d6ce85c764f0ef2d906857",
+      "number": 13,
+      "protocol_status": "STRUCTURAL_ACCEPTANCE_CONFLICT",
+      "required_new_evidence": "Complete entry/exit option books with dated contract/fee/settlement terms and executable underlying quotes.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "gate_identity",
+        "gate_metadata_body",
+        "gate_quote_time"
+      ],
+      "id": "fixed_grid",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "964340950d39bf7550d6c784a38c0bea81ba8924f2cac7342df96b3aec9b0adc",
+      "number": 14,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Complete dated Gate membership/types/turnover plus causal historical quotes and costs.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "gold_format",
+        "gold_identity"
+      ],
+      "id": "gold_macd",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "6afba9d42394bfdb502e88fa6a5811e6aeec045c71002cdce2930875ab4cbb31",
+      "number": 15,
+      "protocol_status": "STRUCTURAL_ACCEPTANCE_CONFLICT",
+      "required_new_evidence": "Bind retained quotes to a dated actual instrument, units, sessions and costs before acquiring more months.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "dax_identity"
+      ],
+      "id": "dax_orb",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "0b2cd1b0fc72436a30b3154dafa5161891a7212eed9e037130135fd67ebdd843",
+      "number": 16,
+      "protocol_status": "STRUCTURAL_ACCEPTANCE_CONFLICT",
+      "required_new_evidence": "One dated execution instrument, regular sessions, complete history and causal FX/lot-reserve checks.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "equity_identity"
+      ],
+      "id": "gap_continue",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "29d7bb77e9e49cfdc866bac34098273d8e1845fb47b85ed465c1cafb7bdd412f",
+      "number": 17,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Dated security IDs, delistings, corporate actions, sessions, 5m history and borrowability.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "equity_identity"
+      ],
+      "id": "gap_fade",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "ab3cbc9d819fe96266096de77c81f54504104570039b7573dba9504204f20674",
+      "number": 18,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Dated security IDs, delistings, corporate actions, sessions, 5m history and borrowability.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "aave_lifetime"
+      ],
+      "id": "aave_lending",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "709c0673bff29cc45dca513898bf22ddc93a5729036879821513926fed3fdd24",
+      "number": 19,
+      "protocol_status": "STRUCTURAL_ACCEPTANCE_CONFLICT",
+      "required_new_evidence": "Exact deployment/activation, historical reserve indices/flags/liquidity, gas and executable USDC quotes.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    },
+    {
+      "execution_certified": false,
+      "exposure_status": "UNKNOWN_OR_PREVIOUSLY_VIEWED",
+      "findings": [
+        "wallet_attribution"
+      ],
+      "id": "wallet_follow",
+      "independent_oos_certified": false,
+      "input_status": "BLOCKED_DATA",
+      "metrics": null,
+      "model_hash": "07df0a5021ab9960bf99098ac1ff552fdc5d5ec0681ad272e4ebde0888d332dd",
+      "number": 20,
+      "protocol_status": "NOT_RULED_OUT_NOT_YET_VALIDATED",
+      "required_new_evidence": "Pre-outcome economic-owner/route semantics plus canonical blocks, dated token identities and executable next-block quotes.",
+      "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS"
+    }
+  ],
+  "network_requests": 0,
+  "new_candidates": 0,
+  "new_strategy_rejections": 0,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "4c5f7500923c732f984792ecff8b2efa226e0150f91cbf296e5791701f4dc700",
+  "schema": "existing_evidence_content_audit_v1",
+  "status": "REVIEW_COMPLETE_NO_CERTIFIABLE_INPUT",
+  "substantive_contract_conflicts": [
+    "long_put",
+    "cash_put",
+    "put_spread",
+    "gold_macd",
+    "dax_orb",
+    "aave_lending"
+  ],
+  "tested_on_real_history": 0
+}
