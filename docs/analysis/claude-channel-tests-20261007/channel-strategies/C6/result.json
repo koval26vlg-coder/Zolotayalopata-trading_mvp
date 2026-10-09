@@ -1,0 +1,1154 @@
+{
+ "id": "C6",
+ "verdict": "INCONCLUSIVE",
+ "verdict_why": [
+  "OOS trades 17 < 30"
+ ],
+ "results": {
+  "IS": {
+   "top": {
+    "trades": 26,
+    "win_rate_pct": 65.38461538461539,
+    "pf": 1.038,
+    "net_return_pct": 6.01,
+    "cagr_pct": 1.97,
+    "max_dd_pct": -58.03,
+    "exposure_pct": 33.21,
+    "net_return_2x_cost_pct": -4.49,
+    "legs": 78,
+    "forced_close_trades": 0
+   },
+   "bottom": {
+    "trades": 26,
+    "win_rate_pct": 57.692307692307686,
+    "pf": 1.048,
+    "net_return_pct": 8.85,
+    "cagr_pct": 2.87,
+    "max_dd_pct": -57.12,
+    "exposure_pct": 33.21,
+    "net_return_2x_cost_pct": -1.93,
+    "legs": 78,
+    "forced_close_trades": 0
+   },
+   "BTC": {
+    "trades": 26,
+    "win_rate_pct": 53.84615384615385,
+    "pf": 1.068,
+    "net_return_pct": 11.38,
+    "cagr_pct": 3.66,
+    "max_dd_pct": -47.44,
+    "exposure_pct": 33.21,
+    "net_return_2x_cost_pct": 0.34,
+    "legs": 26,
+    "forced_close_trades": 0
+   },
+   "bench_ew": {
+    "net_return_pct": 379.91,
+    "cagr_pct": 68.66,
+    "max_dd_pct": -86.52
+   },
+   "bench_btc_bh": {
+    "net_return_pct": 128.99,
+    "max_dd_pct": -76.63
+   }
+  },
+  "OOS": {
+   "top": {
+    "trades": 17,
+    "win_rate_pct": 64.70588235294117,
+    "pf": 1.224,
+    "net_return_pct": 25.88,
+    "cagr_pct": 6.31,
+    "max_dd_pct": -50.46,
+    "exposure_pct": 17.31,
+    "net_return_2x_cost_pct": 17.58,
+    "legs": 51,
+    "forced_close_trades": 0
+   },
+   "bottom": {
+    "trades": 17,
+    "win_rate_pct": 41.17647058823529,
+    "pf": 2.139,
+    "net_return_pct": 63.04,
+    "cagr_pct": 13.87,
+    "max_dd_pct": -40.54,
+    "exposure_pct": 17.31,
+    "net_return_2x_cost_pct": 52.29,
+    "legs": 51,
+    "forced_close_trades": 0
+   },
+   "BTC": {
+    "trades": 17,
+    "win_rate_pct": 58.82352941176471,
+    "pf": 2.662,
+    "net_return_pct": 110.62,
+    "cagr_pct": 21.88,
+    "max_dd_pct": -26.2,
+    "exposure_pct": 17.31,
+    "net_return_2x_cost_pct": 96.73,
+    "legs": 17,
+    "forced_close_trades": 0
+   },
+   "bench_ew": {
+    "net_return_pct": 244.16,
+    "cagr_pct": 38.86,
+    "max_dd_pct": -56.93
+   },
+   "bench_btc_bh": {
+    "net_return_pct": 415.11,
+    "max_dd_pct": -52.97
+   }
+  },
+  "FULL": {
+   "top": {
+    "trades": 43,
+    "win_rate_pct": 65.11627906976744,
+    "pf": 1.118,
+    "net_return_pct": 33.46,
+    "cagr_pct": 4.36,
+    "max_dd_pct": -58.03,
+    "exposure_pct": 24.36,
+    "net_return_2x_cost_pct": 12.31,
+    "legs": 129,
+    "forced_close_trades": 0
+   },
+   "bottom": {
+    "trades": 43,
+    "win_rate_pct": 51.162790697674424,
+    "pf": 1.317,
+    "net_return_pct": 77.47,
+    "cagr_pct": 8.85,
+    "max_dd_pct": -57.12,
+    "exposure_pct": 24.36,
+    "net_return_2x_cost_pct": 49.35,
+    "legs": 129,
+    "forced_close_trades": 0
+   },
+   "BTC": {
+    "trades": 43,
+    "win_rate_pct": 55.81395348837209,
+    "pf": 1.56,
+    "net_return_pct": 134.58,
+    "cagr_pct": 13.43,
+    "max_dd_pct": -47.44,
+    "exposure_pct": 24.36,
+    "net_return_2x_cost_pct": 97.41,
+    "legs": 43,
+    "forced_close_trades": 0
+   },
+   "bench_ew": {
+    "net_return_pct": 1081.68,
+    "cagr_pct": 44.06,
+    "max_dd_pct": -86.52
+   },
+   "bench_btc_bh": {
+    "net_return_pct": 1084.23,
+    "max_dd_pct": -76.63
+   }
+  }
+ },
+ "checks": {
+  "signal_before_entry_all": true,
+  "no_overlapping_trades": true,
+  "truncated_data_reproduces_signals_and_ranks": true,
+  "future_poisoning_invariant": true,
+  "intrabar_stop_first": "N/A: no stops/targets in C6 (time exit at open only)",
+  "universe_all_listed_2020_01_01": true,
+  "missing_daily_closes_in_window": {
+   "ETH": 0,
+   "BNB": 0,
+   "XRP": 0,
+   "ADA": 0,
+   "DOGE": 0,
+   "LTC": 0,
+   "LINK": 0,
+   "BCH": 0,
+   "TRX": 0,
+   "XLM": 0,
+   "EOS": 1,
+   "ATOM": 0,
+   "XTZ": 0,
+   "ETC": 0,
+   "NEO": 0,
+   "VET": 0,
+   "ZEC": 0,
+   "DASH": 0,
+   "IOTA": 0,
+   "ONT": 0,
+   "BTC": 0
+  },
+  "eos_stitch": "EOSUSDT to 2025-05-26 (halted 03:00 UTC) + AUSDT (Vaulta, 1:1 swap) from 2025-05-28; A first open 0.7799 == EOS last close 0.7799; 2025-05-27 no bar (marks forward-filled, excluded from ranking if needed)",
+  "trades_straddling_IS_OOS": []
+ },
+ "trades": [
+  {
+   "signal": "2020-02-28",
+   "entry": "2020-02-29",
+   "exit": "2020-03-14",
+   "btc_r7_pct": -10.17,
+   "top3": [
+    "LINK",
+    "EOS",
+    "VET"
+   ],
+   "bottom3": [
+    "ATOM",
+    "ETC",
+    "XTZ"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -44.35,
+   "bottom3_ret_pct": -40.57,
+   "btc_ret_pct": -36.1
+  },
+  {
+   "signal": "2020-03-14",
+   "entry": "2020-03-15",
+   "exit": "2020-03-29",
+   "btc_r7_pct": -41.8,
+   "top3": [
+    "DOGE",
+    "XLM",
+    "XRP"
+   ],
+   "bottom3": [
+    "VET",
+    "ONT",
+    "LINK"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 11.89,
+   "bottom3_ret_pct": 8.33,
+   "btc_ret_pct": 20.09
+  },
+  {
+   "signal": "2020-04-15",
+   "entry": "2020-04-16",
+   "exit": "2020-04-30",
+   "btc_r7_pct": -10.05,
+   "top3": [
+    "LINK",
+    "BNB",
+    "DOGE"
+   ],
+   "bottom3": [
+    "BCH",
+    "ONT",
+    "LTC"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 24.4,
+   "bottom3_ret_pct": 26.23,
+   "btc_ret_pct": 32.05
+  },
+  {
+   "signal": "2020-09-03",
+   "entry": "2020-09-04",
+   "exit": "2020-09-18",
+   "btc_r7_pct": -10.5,
+   "top3": [
+    "TRX",
+    "NEO",
+    "ETH"
+   ],
+   "bottom3": [
+    "ATOM",
+    "ONT",
+    "VET"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 1.95,
+   "bottom3_ret_pct": 15.86,
+   "btc_ret_pct": 7.48
+  },
+  {
+   "signal": "2021-01-16",
+   "entry": "2021-01-17",
+   "exit": "2021-01-31",
+   "btc_r7_pct": -10.21,
+   "top3": [
+    "ATOM",
+    "ZEC",
+    "LINK"
+   ],
+   "bottom3": [
+    "EOS",
+    "LTC",
+    "BCH"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -5.41,
+   "bottom3_ret_pct": -5.84,
+   "btc_ret_pct": -5.19
+  },
+  {
+   "signal": "2021-02-26",
+   "entry": "2021-02-27",
+   "exit": "2021-03-13",
+   "btc_r7_pct": -17.22,
+   "top3": [
+    "ADA",
+    "DOGE",
+    "ATOM"
+   ],
+   "bottom3": [
+    "DASH",
+    "ZEC",
+    "BNB"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -3.42,
+   "bottom3_ret_pct": 16.32,
+   "btc_ret_pct": 23.16
+  },
+  {
+   "signal": "2021-03-24",
+   "entry": "2021-03-25",
+   "exit": "2021-04-08",
+   "btc_r7_pct": -11.22,
+   "top3": [
+    "VET",
+    "IOTA",
+    "XRP"
+   ],
+   "bottom3": [
+    "ADA",
+    "LINK",
+    "DASH"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 44.06,
+   "bottom3_ret_pct": 22.07,
+   "btc_ret_pct": 6.55
+  },
+  {
+   "signal": "2021-04-20",
+   "entry": "2021-04-21",
+   "exit": "2021-05-05",
+   "btc_r7_pct": -11.25,
+   "top3": [
+    "DOGE",
+    "VET",
+    "NEO"
+   ],
+   "bottom3": [
+    "XRP",
+    "XLM",
+    "XTZ"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 10.77,
+   "bottom3_ret_pct": -3.3,
+   "btc_ret_pct": -6.08
+  },
+  {
+   "signal": "2021-05-12",
+   "entry": "2021-05-13",
+   "exit": "2021-05-27",
+   "btc_r7_pct": -13.59,
+   "top3": [
+    "EOS",
+    "ETH",
+    "ADA"
+   ],
+   "bottom3": [
+    "DOGE",
+    "XRP",
+    "VET"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -16.54,
+   "bottom3_ret_pct": -16.64,
+   "btc_ret_pct": -21.1
+  },
+  {
+   "signal": "2021-06-21",
+   "entry": "2021-06-22",
+   "exit": "2021-07-06",
+   "btc_r7_pct": -21.98,
+   "top3": [
+    "ADA",
+    "TRX",
+    "XTZ"
+   ],
+   "bottom3": [
+    "DOGE",
+    "NEO",
+    "ONT"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 17.52,
+   "bottom3_ret_pct": 18.39,
+   "btc_ret_pct": 6.14
+  },
+  {
+   "signal": "2021-09-10",
+   "entry": "2021-09-11",
+   "exit": "2021-09-25",
+   "btc_r7_pct": -10.3,
+   "top3": [
+    "ATOM",
+    "XTZ",
+    "IOTA"
+   ],
+   "bottom3": [
+    "DASH",
+    "VET",
+    "ONT"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 12.82,
+   "bottom3_ret_pct": -15.64,
+   "btc_ret_pct": -4.91
+  },
+  {
+   "signal": "2021-09-25",
+   "entry": "2021-09-26",
+   "exit": "2021-10-10",
+   "btc_r7_pct": -11.64,
+   "top3": [
+    "XTZ",
+    "ADA",
+    "ATOM"
+   ],
+   "bottom3": [
+    "EOS",
+    "IOTA",
+    "NEO"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -0.54,
+   "bottom3_ret_pct": 20.44,
+   "btc_ret_pct": 28.26
+  },
+  {
+   "signal": "2021-10-27",
+   "entry": "2021-10-28",
+   "exit": "2021-11-11",
+   "btc_r7_pct": -11.5,
+   "top3": [
+    "LINK",
+    "ATOM",
+    "VET"
+   ],
+   "bottom3": [
+    "XTZ",
+    "XLM",
+    "BCH"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 11.71,
+   "bottom3_ret_pct": 11.24,
+   "btc_ret_pct": 10.63
+  },
+  {
+   "signal": "2021-11-16",
+   "entry": "2021-11-17",
+   "exit": "2021-12-01",
+   "btc_r7_pct": -10.29,
+   "top3": [
+    "TRX",
+    "IOTA",
+    "BNB"
+   ],
+   "bottom3": [
+    "ATOM",
+    "NEO",
+    "ADA"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 0.19,
+   "bottom3_ret_pct": -11.08,
+   "btc_ret_pct": -5.55
+  },
+  {
+   "signal": "2021-12-04",
+   "entry": "2021-12-05",
+   "exit": "2021-12-19",
+   "btc_r7_pct": -10.18,
+   "top3": [
+    "ATOM",
+    "ETH",
+    "BNB"
+   ],
+   "bottom3": [
+    "ONT",
+    "ZEC",
+    "DASH"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -9.57,
+   "bottom3_ret_pct": -13.4,
+   "btc_ret_pct": -5.1
+  },
+  {
+   "signal": "2022-01-07",
+   "entry": "2022-01-08",
+   "exit": "2022-01-22",
+   "btc_r7_pct": -10.06,
+   "top3": [
+    "LINK",
+    "ATOM",
+    "DASH"
+   ],
+   "bottom3": [
+    "IOTA",
+    "ETH",
+    "BNB"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -21.9,
+   "bottom3_ret_pct": -19.39,
+   "btc_ret_pct": -12.67
+  },
+  {
+   "signal": "2022-01-22",
+   "entry": "2022-01-23",
+   "exit": "2022-02-06",
+   "btc_r7_pct": -18.6,
+   "top3": [
+    "TRX",
+    "ADA",
+    "XRP"
+   ],
+   "bottom3": [
+    "LINK",
+    "ZEC",
+    "VET"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 9.72,
+   "bottom3_ret_pct": 15.88,
+   "btc_ret_pct": 17.52
+  },
+  {
+   "signal": "2022-02-21",
+   "entry": "2022-02-22",
+   "exit": "2022-03-08",
+   "btc_r7_pct": -13.0,
+   "top3": [
+    "NEO",
+    "TRX",
+    "ONT"
+   ],
+   "bottom3": [
+    "XTZ",
+    "ETC",
+    "VET"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 0.5,
+   "bottom3_ret_pct": 1.09,
+   "btc_ret_pct": 2.24
+  },
+  {
+   "signal": "2022-03-08",
+   "entry": "2022-03-09",
+   "exit": "2022-03-23",
+   "btc_r7_pct": -12.81,
+   "top3": [
+    "ZEC",
+    "TRX",
+    "DASH"
+   ],
+   "bottom3": [
+    "ADA",
+    "NEO",
+    "LINK"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 21.64,
+   "bottom3_ret_pct": 18.17,
+   "btc_ret_pct": 8.94
+  },
+  {
+   "signal": "2022-04-11",
+   "entry": "2022-04-12",
+   "exit": "2022-04-26",
+   "btc_r7_pct": -15.14,
+   "top3": [
+    "DOGE",
+    "BNB",
+    "ETH"
+   ],
+   "bottom3": [
+    "NEO",
+    "VET",
+    "EOS"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 6.72,
+   "bottom3_ret_pct": 2.65,
+   "btc_ret_pct": 1.86
+  },
+  {
+   "signal": "2022-05-08",
+   "entry": "2022-05-09",
+   "exit": "2022-05-23",
+   "btc_r7_pct": -11.52,
+   "top3": [
+    "TRX",
+    "XTZ",
+    "ETC"
+   ],
+   "bottom3": [
+    "IOTA",
+    "ATOM",
+    "LINK"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -18.5,
+   "bottom3_ret_pct": -26.72,
+   "btc_ret_pct": -11.36
+  },
+  {
+   "signal": "2022-06-12",
+   "entry": "2022-06-13",
+   "exit": "2022-06-27",
+   "btc_r7_pct": -11.18,
+   "top3": [
+    "NEO",
+    "TRX",
+    "ZEC"
+   ],
+   "bottom3": [
+    "LTC",
+    "ETC",
+    "ATOM"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -17.79,
+   "bottom3_ret_pct": 10.52,
+   "btc_ret_pct": -21.15
+  },
+  {
+   "signal": "2022-07-02",
+   "entry": "2022-07-03",
+   "exit": "2022-07-17",
+   "btc_r7_pct": -10.42,
+   "top3": [
+    "TRX",
+    "DOGE",
+    "ONT"
+   ],
+   "bottom3": [
+    "ZEC",
+    "DASH",
+    "NEO"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 0.55,
+   "bottom3_ret_pct": 10.84,
+   "btc_ret_pct": 9.65
+  },
+  {
+   "signal": "2022-08-19",
+   "entry": "2022-08-20",
+   "exit": "2022-09-03",
+   "btc_r7_pct": -14.63,
+   "top3": [
+    "EOS",
+    "DOGE",
+    "TRX"
+   ],
+   "bottom3": [
+    "LINK",
+    "ETC",
+    "VET"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 2.99,
+   "bottom3_ret_pct": -2.79,
+   "btc_ret_pct": -4.62
+  },
+  {
+   "signal": "2022-09-18",
+   "entry": "2022-09-19",
+   "exit": "2022-10-03",
+   "btc_r7_pct": -11.04,
+   "top3": [
+    "XRP",
+    "TRX",
+    "LINK"
+   ],
+   "bottom3": [
+    "EOS",
+    "ETH",
+    "ETC"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 6.28,
+   "bottom3_ret_pct": -7.71,
+   "btc_ret_pct": -2.24
+  },
+  {
+   "signal": "2022-11-09",
+   "entry": "2022-11-10",
+   "exit": "2022-11-24",
+   "btc_r7_pct": -20.99,
+   "top3": [
+    "TRX",
+    "VET",
+    "LINK"
+   ],
+   "bottom3": [
+    "DOGE",
+    "ZEC",
+    "ETH"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 0.32,
+   "bottom3_ret_pct": 12.83,
+   "btc_ret_pct": 3.86
+  },
+  {
+   "signal": "2023-03-09",
+   "entry": "2023-03-10",
+   "exit": "2023-03-24",
+   "btc_r7_pct": -13.22,
+   "top3": [
+    "XRP",
+    "BNB",
+    "ADA"
+   ],
+   "bottom3": [
+    "VET",
+    "DASH",
+    "ZEC"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 18.99,
+   "bottom3_ret_pct": 14.12,
+   "btc_ret_pct": 38.41
+  },
+  {
+   "signal": "2023-04-21",
+   "entry": "2023-04-22",
+   "exit": "2023-05-06",
+   "btc_r7_pct": -10.52,
+   "top3": [
+    "TRX",
+    "BNB",
+    "LINK"
+   ],
+   "bottom3": [
+    "DASH",
+    "EOS",
+    "NEO"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 3.71,
+   "bottom3_ret_pct": -3.09,
+   "btc_ret_pct": 7.79
+  },
+  {
+   "signal": "2023-08-18",
+   "entry": "2023-08-19",
+   "exit": "2023-09-02",
+   "btc_r7_pct": -11.46,
+   "top3": [
+    "TRX",
+    "ATOM",
+    "BNB"
+   ],
+   "bottom3": [
+    "LTC",
+    "XRP",
+    "EOS"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -3.33,
+   "bottom3_ret_pct": -1.04,
+   "btc_ret_pct": -1.35
+  },
+  {
+   "signal": "2024-01-18",
+   "entry": "2024-01-19",
+   "exit": "2024-02-02",
+   "btc_r7_pct": -10.82,
+   "top3": [
+    "TRX",
+    "BNB",
+    "LINK"
+   ],
+   "bottom3": [
+    "ETC",
+    "BCH",
+    "VET"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 6.29,
+   "bottom3_ret_pct": -0.64,
+   "btc_ret_pct": 3.83
+  },
+  {
+   "signal": "2024-03-19",
+   "entry": "2024-03-20",
+   "exit": "2024-04-03",
+   "btc_r7_pct": -13.32,
+   "top3": [
+    "BNB",
+    "TRX",
+    "XRP"
+   ],
+   "bottom3": [
+    "IOTA",
+    "ZEC",
+    "XTZ"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 3.74,
+   "bottom3_ret_pct": 7.65,
+   "btc_ret_pct": 5.27
+  },
+  {
+   "signal": "2024-04-15",
+   "entry": "2024-04-16",
+   "exit": "2024-04-30",
+   "btc_r7_pct": -11.45,
+   "top3": [
+    "BNB",
+    "NEO",
+    "TRX"
+   ],
+   "bottom3": [
+    "IOTA",
+    "EOS",
+    "ATOM"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 2.44,
+   "bottom3_ret_pct": 2.35,
+   "btc_ret_pct": 0.3
+  },
+  {
+   "signal": "2024-07-07",
+   "entry": "2024-07-08",
+   "exit": "2024-07-22",
+   "btc_r7_pct": -11.01,
+   "top3": [
+    "TRX",
+    "XLM",
+    "ZEC"
+   ],
+   "bottom3": [
+    "ONT",
+    "BCH",
+    "NEO"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 34.52,
+   "bottom3_ret_pct": 29.12,
+   "btc_ret_pct": 21.55
+  },
+  {
+   "signal": "2024-08-03",
+   "entry": "2024-08-04",
+   "exit": "2024-08-18",
+   "btc_r7_pct": -10.6,
+   "top3": [
+    "ZEC",
+    "XRP",
+    "BCH"
+   ],
+   "bottom3": [
+    "ONT",
+    "ATOM",
+    "IOTA"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 10.52,
+   "bottom3_ret_pct": -3.72,
+   "btc_ret_pct": -2.38
+  },
+  {
+   "signal": "2024-09-01",
+   "entry": "2024-09-02",
+   "exit": "2024-09-16",
+   "btc_r7_pct": -10.77,
+   "top3": [
+    "LTC",
+    "TRX",
+    "XRP"
+   ],
+   "bottom3": [
+    "ZEC",
+    "ONT",
+    "VET"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -0.58,
+   "bottom3_ret_pct": 2.38,
+   "btc_ret_pct": 2.78
+  },
+  {
+   "signal": "2024-12-23",
+   "entry": "2024-12-24",
+   "exit": "2025-01-07",
+   "btc_r7_pct": -10.54,
+   "top3": [
+    "ZEC",
+    "BNB",
+    "XTZ"
+   ],
+   "bottom3": [
+    "ATOM",
+    "DOGE",
+    "EOS"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 0.81,
+   "bottom3_ret_pct": 11.23,
+   "btc_ret_pct": 7.32
+  },
+  {
+   "signal": "2025-02-26",
+   "entry": "2025-02-27",
+   "exit": "2025-03-13",
+   "btc_r7_pct": -12.82,
+   "top3": [
+    "ZEC",
+    "DASH",
+    "ATOM"
+   ],
+   "bottom3": [
+    "DOGE",
+    "XRP",
+    "ADA"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -16.3,
+   "bottom3_ret_pct": -0.31,
+   "btc_ret_pct": -1.07
+  },
+  {
+   "signal": "2025-04-08",
+   "entry": "2025-04-09",
+   "exit": "2025-04-23",
+   "btc_r7_pct": -10.38,
+   "top3": [
+    "EOS",
+    "TRX",
+    "ATOM"
+   ],
+   "bottom3": [
+    "ETH",
+    "LINK",
+    "XLM"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 3.06,
+   "bottom3_ret_pct": 22.27,
+   "btc_ret_pct": 21.94
+  },
+  {
+   "signal": "2025-10-15",
+   "entry": "2025-10-16",
+   "exit": "2025-10-30",
+   "btc_r7_pct": -10.17,
+   "top3": [
+    "DASH",
+    "ZEC",
+    "TRX"
+   ],
+   "bottom3": [
+    "EOS",
+    "DOGE",
+    "IOTA"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 15.27,
+   "bottom3_ret_pct": -3.52,
+   "btc_ret_pct": -1.07
+  },
+  {
+   "signal": "2025-11-04",
+   "entry": "2025-11-05",
+   "exit": "2025-11-19",
+   "btc_r7_pct": -10.1,
+   "top3": [
+    "DASH",
+    "ZEC",
+    "TRX"
+   ],
+   "bottom3": [
+    "ADA",
+    "ATOM",
+    "LINK"
+   ],
+   "n_ranked": 20,
+   "ret_pct": 2.03,
+   "bottom3_ret_pct": -1.98,
+   "btc_ret_pct": -8.78
+  },
+  {
+   "signal": "2025-11-20",
+   "entry": "2025-11-21",
+   "exit": "2025-12-05",
+   "btc_r7_pct": -13.1,
+   "top3": [
+    "ZEC",
+    "DASH",
+    "TRX"
+   ],
+   "bottom3": [
+    "ADA",
+    "VET",
+    "IOTA"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -25.02,
+   "bottom3_ret_pct": -5.62,
+   "btc_ret_pct": 5.86
+  },
+  {
+   "signal": "2026-01-31",
+   "entry": "2026-02-01",
+   "exit": "2026-02-15",
+   "btc_r7_pct": -11.75,
+   "top3": [
+    "TRX",
+    "BNB",
+    "LTC"
+   ],
+   "bottom3": [
+    "DASH",
+    "XTZ",
+    "EOS"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -9.15,
+   "bottom3_ret_pct": -7.61,
+   "btc_ret_pct": -11.68
+  },
+  {
+   "signal": "2026-06-02",
+   "entry": "2026-06-03",
+   "exit": "2026-06-17",
+   "btc_r7_pct": -12.08,
+   "top3": [
+    "XLM",
+    "ZEC",
+    "BNB"
+   ],
+   "bottom3": [
+    "BCH",
+    "ATOM",
+    "DASH"
+   ],
+   "n_ranked": 20,
+   "ret_pct": -9.28,
+   "bottom3_ret_pct": -4.36,
+   "btc_ret_pct": -2.02
+  }
+ ],
+ "cost_per_side": 0.002,
+ "periods": {
+  "IS": [
+   "2020-01-01",
+   "2022-12-31"
+  ],
+  "OOS": [
+   "2023-01-01",
+   "2026-10-06"
+  ],
+  "FULL": [
+   "2020-01-01",
+   "2026-10-06"
+  ]
+ },
+ "data_sources": [
+  {
+   "name": "ADAUSDT_1d.json",
+   "sha256": "4433574f28c3f0c80986d35d04db84fb851d585e24f5e3fe5a84e572e0a2f009"
+  },
+  {
+   "name": "ATOMUSDT_1d.json",
+   "sha256": "e883186057c93c810a5f493d760f4abd0139b0845664b31fac9c7d8b108b3947"
+  },
+  {
+   "name": "AUSDT_1d.json",
+   "sha256": "07fbe7a74b826c410a07ae897ffc9223356ba5f6c390c89015542e292f9eace3"
+  },
+  {
+   "name": "BCHUSDT_1d.json",
+   "sha256": "3b82eba83eb02f7d9c86967d15df6c89e9ff623713687807816b470315ebe7c0"
+  },
+  {
+   "name": "BNBUSDT_1d.json",
+   "sha256": "6a15ebd47f6039cd70d4f0310c3eee0a089601d71d9de4e9b3ef29d0e20ba6da"
+  },
+  {
+   "name": "BTCUSDT_1d.json",
+   "sha256": "05e66a34c4d3d277738ec2b919fe4bc6eb07cec5dbca85acc8d671afae5c4173"
+  },
+  {
+   "name": "DASHUSDT_1d.json",
+   "sha256": "bbe81215e8837d640948b80e6c1d63c233f2a4740b0a10091fdadcd837b96297"
+  },
+  {
+   "name": "DOGEUSDT_1d.json",
+   "sha256": "f7ef616ba64bff03f5c0620da236a8b1c9fad7c7970ad026c67a0551594d8ea2"
+  },
+  {
+   "name": "EOSUSDT_1d.json",
+   "sha256": "dda48b4fdd976a3145d67bb080cab7f100992a0d5b58bfb78e5be0a46f815b5c"
+  },
+  {
+   "name": "ETCUSDT_1d.json",
+   "sha256": "ad58afdf584bd62b56bd50de4f67a011b3c67f2008aba6d7d05705a1462a69f2"
+  },
+  {
+   "name": "ETHUSDT_1d.json",
+   "sha256": "c5a6257dcc5724abcdf03c7fd4f985fc49e8a8140811c3312b7c65b73b8ccdfd"
+  },
+  {
+   "name": "IOTAUSDT_1d.json",
+   "sha256": "191b3680c1c805836b95921fba68db22f2eb8714678ccf33e058e091de8ae3eb"
+  },
+  {
+   "name": "LINKUSDT_1d.json",
+   "sha256": "ab08172c4c0a2459df8026944b511d69a32ace822b6bff4a8bd2316d9bc67e8b"
+  },
+  {
+   "name": "LTCUSDT_1d.json",
+   "sha256": "3b5dcb68dcf630197f0951cc4bddb307a6cc0c000275c279da3b9c6b0fd1745e"
+  },
+  {
+   "name": "NEOUSDT_1d.json",
+   "sha256": "4463fe0f4fc2f3642fa6caee00519d42d0e26ffc533283ffd345d1a25ffb487f"
+  },
+  {
+   "name": "ONTUSDT_1d.json",
+   "sha256": "002eb363e02ac5c531e6807bfb291eb3cb0ab81c7d4b5363c42c94f58bbfe27d"
+  },
+  {
+   "name": "TRXUSDT_1d.json",
+   "sha256": "302c0e4ebd9315053d70f8d14919aa5003df46e0e74c054678960c64ab95b12d"
+  },
+  {
+   "name": "VETUSDT_1d.json",
+   "sha256": "ef26b6e5f922c171a6893d59c38fbadae53d4f24689c48412d5d121d9c855513"
+  },
+  {
+   "name": "XLMUSDT_1d.json",
+   "sha256": "1771d618728e4c75df2ea7a21f0f17a20ee353a6348481f6ef3672c5f80d410f"
+  },
+  {
+   "name": "XRPUSDT_1d.json",
+   "sha256": "99033bbf7f45f6d2594798d31b46fc2a17ff273e3d0d747cd11e54c7e3972eae"
+  },
+  {
+   "name": "XTZUSDT_1d.json",
+   "sha256": "9953ada89e139e2cbe809292ec64455c5d32b59513dbe71797c94a6489d04729"
+  },
+  {
+   "name": "ZECUSDT_1d.json",
+   "sha256": "ff4d5b5e7b70e52e18accb3fc69ec34cab66dbb4421cec253c8176ef776f8bda"
+  },
+  {
+   "name": "exchangeInfo_spot.json",
+   "sha256": "04d07bf5e64648d3eca522d534e5f22ae2fc2dce9ea79c7a8b8dbb6571c09238"
+  }
+ ]
+}

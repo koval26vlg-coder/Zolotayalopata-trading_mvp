@@ -1,0 +1,234 @@
+{
+  "strategy": "C9 BREAKOUT_TREND_4H",
+  "data_sources": [
+    {
+      "name": "Binance spot BTCUSDT 4h klines (api/v3/klines)",
+      "url": "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=4h&startTime=<paged>&endTime=1791331199999&limit=1000",
+      "start": "2017-08-17 04:00:00+00:00",
+      "end": "2026-10-06 23:59:59.999000+00:00",
+      "rows": 20011,
+      "sha256": "017e67da6049ecae90a61f888312e224955c7372e7efbe7de25d7cc52dbfea6d",
+      "file": "C:\\Users\\koval\\AppData\\Local\\Temp\\claude\\C--Users-koval------------\\c3d42fa1-b83c-49f0-8567-13ebcd1f7317\\scratchpad\\st\\C9\\data\\BTCUSDT_4h_binance_spot.csv"
+    },
+    {
+      "name": "Binance spot ETHUSDT 4h klines (api/v3/klines)",
+      "url": "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=4h&startTime=<paged>&endTime=1791331199999&limit=1000",
+      "start": "2017-08-17 04:00:00+00:00",
+      "end": "2026-10-06 23:59:59.999000+00:00",
+      "rows": 20011,
+      "sha256": "e6a1ef2380d590d264d48cb9dfd019affbea0fba1818b1ee453987f6c0d7672f",
+      "file": "C:\\Users\\koval\\AppData\\Local\\Temp\\claude\\C--Users-koval------------\\c3d42fa1-b83c-49f0-8567-13ebcd1f7317\\scratchpad\\st\\C9\\data\\ETHUSDT_4h_binance_spot.csv"
+    },
+    {
+      "name": "Binance spot SOLUSDT 4h klines (api/v3/klines)",
+      "url": "https://api.binance.com/api/v3/klines?symbol=SOLUSDT&interval=4h&startTime=<paged>&endTime=1791331199999&limit=1000",
+      "start": "2020-08-11 04:00:00+00:00",
+      "end": "2026-10-06 23:59:59.999000+00:00",
+      "rows": 13487,
+      "sha256": "34a429e1518a02f000812f833a9afb446248959275811af757b4f8dda172db18",
+      "file": "C:\\Users\\koval\\AppData\\Local\\Temp\\claude\\C--Users-koval------------\\c3d42fa1-b83c-49f0-8567-13ebcd1f7317\\scratchpad\\st\\C9\\data\\SOLUSDT_4h_binance_spot.csv"
+    }
+  ],
+  "data_quality": {
+    "BTCUSDT": {
+      "rows": 20011,
+      "gaps_gt_4h": 8,
+      "max_gap_h": 32.0,
+      "ohlc_bad": 0
+    },
+    "ETHUSDT": {
+      "rows": 20011,
+      "gaps_gt_4h": 8,
+      "max_gap_h": 32.0,
+      "ohlc_bad": 0
+    },
+    "SOLUSDT": {
+      "rows": 13487,
+      "gaps_gt_4h": 0,
+      "max_gap_h": 4.0,
+      "ohlc_bad": 0
+    }
+  },
+  "self_checks": {
+    "indicator_prior_bars_only": true,
+    "truncation_invariance": true,
+    "signal_bar_before_execution_bar": true,
+    "stop_first_intrabar": "N/A: no intrabar stops/targets, exits only on closed-bar signal at next open"
+  },
+  "verdict": {
+    "verdict": "INCONCLUSIVE",
+    "oos_ret": 209.8159617812289,
+    "oos_pf": 1.4590320746172893,
+    "oos_mdd": -43.53410065141774,
+    "bench_ret": 548.5398749861317,
+    "bench_mdd": -68.571577477167,
+    "ratio": 4.81957726567612,
+    "bench_ratio": 7.999522472248576,
+    "oos_ret_2x": 149.3257287396961,
+    "oos_trades": 162,
+    "fail_cond": false,
+    "inconclusive_cond": false,
+    "pass_cond": false,
+    "rule_order": "FAIL checked first, then INCONCLUSIVE(<30 OOS trades), then PASS_CANDIDATE; if neither FAIL nor PASS conditions hold, the case is not covered by the rule -> reported as INCONCLUSIVE",
+    "reason_ru": "OOS: +209.8% net, PF 1.46, 162 сделки, maxDD -43.5%, при 2x издержках +149.3%. FAIL не срабатывает (доходность >0, PF>=1, maxDD лучше бенчмарка). PASS_CANDIDATE не выполнен: отношение доходность/maxDD 4.82 < 8.00 у бенчмарка (EW B&H BTC/ETH/SOL: +548.5%, maxDD -68.6%). Случай не покрыт правилом -> INCONCLUSIVE."
+  },
+  "notes": {
+    "method": "Continuous signal state on full history; each period simulated from fresh equal 1/3 sleeves; if state at period start is long, entry at first bar open of the period (carried_in); open position liquidated at last close of period with cost. Benchmark: 1/3 per asset bought at first open in period (SOL sleeve in cash until SOL listing 2020-08-11), sold at last close, 20 bps each side.",
+    "metrics": "PF/win rate on $ P&L per round trip (entry by bar time); maxDD on daily (UTC) equity marks; exposure = mean invested share of total portfolio equity over 4h bars.",
+    "bias": "Asset list (BTC/ETH/SOL) chosen ex post (survivors/winners); Binance spot only; no RUB->USDT spread, withdrawal fees or taxes.",
+    "feasibility_100usd": "Yes by order size: $33 per sleeve vs Binance spot min notional ~5 USDT, lot steps 0.00001 BTC / 0.0001 ETH / 0.001 SOL. Practical issues: execution right after each 4h close (6x/day) needs alerts/bot; Binance not available to RF residents."
+  },
+  "periods": {
+    "IS": {
+      "ret": 422.8545894556655,
+      "cagr": 36.043723063716484,
+      "mdd": -42.030103463582556,
+      "yrs": 5.373944786675793,
+      "bret": 276.89547525020953,
+      "bcagr": 28.00441319654965,
+      "bmdd": -90.62530970045182,
+      "expo": 30.857541327615472,
+      "trades": 178,
+      "wr": 40.44943820224719,
+      "pf": 1.3654338078734969,
+      "start": "2017-08-17 07:59:59.999000+00:00",
+      "end": "2022-12-31 23:59:59.999000+00:00",
+      "n_forced": 0,
+      "n_carried": 0,
+      "ret_2x": 306.99585943370204,
+      "pf_2x": 1.2950352389148454,
+      "cagr_2x": 29.847729684611004,
+      "per_asset": {
+        "BTCUSDT": {
+          "trades": 71,
+          "pnl": 169.82258441373116,
+          "pf": 1.4192070828126988,
+          "win_rate": 38.028169014084504
+        },
+        "ETHUSDT": {
+          "trades": 76,
+          "pnl": 159.39733258267546,
+          "pf": 1.3459724789408276,
+          "win_rate": 43.42105263157895
+        },
+        "SOLUSDT": {
+          "trades": 31,
+          "pnl": 93.63467245925901,
+          "pf": 1.3214332859840623,
+          "win_rate": 38.70967741935484
+        }
+      }
+    },
+    "OOS": {
+      "ret": 209.8159617812289,
+      "cagr": 35.03769761910998,
+      "mdd": -43.53410065141774,
+      "yrs": 3.7645448323066395,
+      "bret": 548.5398749861317,
+      "bcagr": 64.31602039555197,
+      "bmdd": -68.571577477167,
+      "expo": 36.28082065742869,
+      "trades": 162,
+      "wr": 41.358024691358025,
+      "pf": 1.4590320746172893,
+      "start": "2023-01-01 03:59:59.999000+00:00",
+      "end": "2026-10-06 23:59:59.999000+00:00",
+      "n_forced": 1,
+      "n_carried": 0,
+      "ret_2x": 149.3257287396961,
+      "pf_2x": 1.343006750943884,
+      "cagr_2x": 27.466414253497963,
+      "per_asset": {
+        "BTCUSDT": {
+          "trades": 52,
+          "pnl": 54.93140132516837,
+          "pf": 1.673515468461001,
+          "win_rate": 40.38461538461539
+        },
+        "ETHUSDT": {
+          "trades": 55,
+          "pnl": 9.502533097526403,
+          "pf": 1.1163175306511655,
+          "win_rate": 36.36363636363637
+        },
+        "SOLUSDT": {
+          "trades": 55,
+          "pnl": 145.3820273585341,
+          "pf": 1.4947837100751735,
+          "win_rate": 47.27272727272727
+        }
+      }
+    },
+    "FULL": {
+      "ret": 1366.3526356432412,
+      "cagr": 34.1585298926216,
+      "mdd": -42.030103463582556,
+      "yrs": 9.138489618982431,
+      "bret": 2270.072746309297,
+      "bcagr": 41.395771375563875,
+      "bmdd": -90.62530970045182,
+      "expo": 33.079226964440025,
+      "trades": 340,
+      "wr": 40.88235294117647,
+      "pf": 1.4209643006932626,
+      "start": "2017-08-17 07:59:59.999000+00:00",
+      "end": "2026-10-06 23:59:59.999000+00:00",
+      "n_forced": 1,
+      "n_carried": 0,
+      "ret_2x": 856.9350957361953,
+      "pf_2x": 1.3204607783919724,
+      "cagr_2x": 28.0369426983722,
+      "per_asset": {
+        "BTCUSDT": {
+          "trades": 123,
+          "pnl": 504.61176189413675,
+          "pf": 1.5593240124804493,
+          "win_rate": 39.02439024390244
+        },
+        "ETHUSDT": {
+          "trades": 131,
+          "pnl": 214.34021853593063,
+          "pf": 1.2297137760994663,
+          "win_rate": 40.458015267175576
+        },
+        "SOLUSDT": {
+          "trades": 86,
+          "pnl": 647.400655213174,
+          "pf": 1.458982802622571,
+          "win_rate": 44.18604651162791
+        }
+      }
+    }
+  },
+  "independent_verification": {
+    "script": "verify/verify.py",
+    "verdict": "INCONCLUSIVE",
+    "diffs": {
+      "IS": {
+        "ret_diff": 0.0,
+        "pf_diff": 0.0,
+        "mdd_diff": 0.0,
+        "trades_equal": true,
+        "bench_ret_diff": 0.0,
+        "ret2x_diff": 0.0
+      },
+      "OOS": {
+        "ret_diff": 0.0,
+        "pf_diff": 0.0,
+        "mdd_diff": 0.0,
+        "trades_equal": true,
+        "bench_ret_diff": 0.0,
+        "ret2x_diff": 0.0
+      },
+      "FULL": {
+        "ret_diff": 0.0,
+        "pf_diff": 0.0,
+        "mdd_diff": 0.0,
+        "trades_equal": true,
+        "bench_ret_diff": 0.0,
+        "ret2x_diff": 0.0
+      }
+    },
+    "note": "Независимая реализация (verify/verify.py) дала те же сделки, доходности, PF, maxDD и вердикт."
+  }
+}

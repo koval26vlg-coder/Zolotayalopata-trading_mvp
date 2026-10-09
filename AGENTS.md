@@ -241,3 +241,14 @@
 - Если действие не приближает доказательство или отбраковку edge, его не делать без явного запроса пользователя.
 
 <!-- /codex-trading-edge-scope-rule -->
+
+<!-- channel-validation-closure-rule -->
+
+## Channel Strategy Validation Closure Rule
+
+- Решение пользователя 2026-10-09: программа `docs/analysis/channel-strategy-validation-20261006` закрыта. Текущий реестр закрытия — `closure-20261009.json` и корневой `model-input-queue.json` в этой папке; статус `CLOSED_BY_USER_DECISION_20261009`.
+- Передача `docs/plans/2026-10-09-channel-strategy-validation-closure-handoff.md` применена к реестру и журналу проекта. Не выполнять её заново. Результаты Claude (`docs/analysis/claude-channel-tests-20261007/`, `docs/analysis/claude-control-tests-20261009/ИТОГ.md`) перенесены как итоги его версий/прокси, не как тесты точных замороженных моделей Codex. Старые snapshots и evaluation не переписывать.
+- Не продолжать аудиты источников, сертификацию входов, загрузки и collectors для этих моделей; No-Idle Autopilot не должен создавать по ним новые задачи.
+- Общий принцип пользователя для стратегий из внешних источников: сначала тестировать на уже доступных публичных данных с объявленными прокси и замороженными правилами, а не собирать и сертифицировать данные до первого расчёта.
+
+<!-- /channel-validation-closure-rule -->

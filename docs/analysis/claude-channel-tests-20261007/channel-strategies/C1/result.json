@@ -1,0 +1,387 @@
+{
+ "strategy": "C1 FUNDING_CARRY",
+ "params": {
+  "enter_mean_gt": 0.0001,
+  "exit_mean_lt": 0.0,
+  "window_settlements": 9,
+  "cost_spot_side": 0.002,
+  "cost_perp_side": 0.001,
+  "notional_frac_of_sleeve": 0.5
+ },
+ "data_start_common": "2019-11-27 00:00:00+00:00",
+ "results": {
+  "IS": {
+   "trades": 12,
+   "win_rate_pct": 91.66666666666666,
+   "pf": 2050.374224954812,
+   "net_return_pct": 78.79364585669919,
+   "cagr_pct": 20.64120466601773,
+   "max_dd_pct": -1.158805914318073,
+   "exposure_pct": 52.048334806955495,
+   "years": 3.0965092402464065,
+   "net_return_2x_cost_pct": 75.25008167577873,
+   "cagr_2x_cost_pct": 19.86379824527895,
+   "start": "2019-11-27 00:00:00+00:00",
+   "end": "2023-01-01 00:00:00+00:00",
+   "per_asset": {
+    "BTCUSDT": {
+     "sleeve_return_pct": 53.74749843472213,
+     "trades": 7,
+     "funding_usd": 27.742674307574383,
+     "basis_usd": 0.44739487491985575,
+     "costs_usd": 1.3163199651331519,
+     "max_perp_rise_in_trade_pct": 316.8194369169294,
+     "avg_hold_days": 78.95238095238095
+    },
+    "ETHUSDT": {
+     "sleeve_return_pct": 103.83979327867623,
+     "trades": 5,
+     "funding_usd": 53.92589337741948,
+     "basis_usd": -0.3856846606064752,
+     "costs_usd": 1.6203120774748974,
+     "max_perp_rise_in_trade_pct": 1067.5945182104197,
+     "avg_hold_days": 124.93333333333335
+    }
+   },
+   "max_dd_8h_marks_pct": -1.2408821919751567,
+   "trades_perp_rise_ge_90pct": 4
+  },
+  "OOS": {
+   "trades": 8,
+   "win_rate_pct": 100.0,
+   "pf": null,
+   "net_return_pct": 12.45845018454701,
+   "cagr_pct": 3.168081480495699,
+   "max_dd_pct": -0.3120736986002459,
+   "exposure_pct": 40.945454545454545,
+   "years": 3.7645448323066395,
+   "net_return_2x_cost_pct": 11.066309496047456,
+   "cagr_2x_cost_pct": 2.8272751392593776,
+   "start": "2023-01-01 00:00:00+00:00",
+   "end": "2026-10-07 00:00:00+00:00",
+   "per_asset": {
+    "BTCUSDT": {
+     "sleeve_return_pct": 12.287183907761934,
+     "trades": 4,
+     "funding_usd": 6.652166515339985,
+     "basis_usd": 0.17396113691134796,
+     "costs_usd": 0.6825356983703604,
+     "max_perp_rise_in_trade_pct": 98.91872972281679,
+     "avg_hold_days": 152.08333333333331
+    },
+    "ETHUSDT": {
+     "sleeve_return_pct": 12.629716461332086,
+     "trades": 4,
+     "funding_usd": 6.830666926524911,
+     "basis_usd": 0.12600530059668974,
+     "costs_usd": 0.6418139964555507,
+     "max_perp_rise_in_trade_pct": 121.76387836814197,
+     "avg_hold_days": 129.41666666666666
+    }
+   },
+   "max_dd_8h_marks_pct": -0.3435245808245502,
+   "trades_perp_rise_ge_90pct": 2,
+   "pf_note": "no losing trades (PF infinite)"
+  },
+  "FULL": {
+   "trades": 20,
+   "win_rate_pct": 95.0,
+   "pf": 2630.8468002540963,
+   "net_return_pct": 101.11145876305913,
+   "cagr_pct": 10.719974349472693,
+   "max_dd_pct": -1.158805914318073,
+   "exposure_pct": 45.95637137536579,
+   "years": 6.861054072553046,
+   "net_return_2x_cost_pct": 94.69577455207848,
+   "cagr_2x_cost_pct": 10.198014949251299,
+   "start": "2019-11-27 00:00:00+00:00",
+   "end": "2026-10-07 00:00:00+00:00",
+   "per_asset": {
+    "BTCUSDT": {
+     "sleeve_return_pct": 72.63873632097982,
+     "trades": 11,
+     "funding_usd": 37.97021391662184,
+     "basis_usd": 0.7148557711696553,
+     "costs_usd": 2.3657015273015416,
+     "max_perp_rise_in_trade_pct": 316.8194369169294,
+     "avg_hold_days": 105.54545454545455
+    },
+    "ETHUSDT": {
+     "sleeve_return_pct": 129.5841812051385,
+     "trades": 9,
+     "funding_usd": 67.84951072000274,
+     "basis_usd": -0.12883571635000912,
+     "costs_usd": 2.9285844010835023,
+     "max_perp_rise_in_trade_pct": 1067.5945182104197,
+     "avg_hold_days": 126.92592592592592
+    }
+   },
+   "max_dd_8h_marks_pct": -1.2408821919751567,
+   "trades_perp_rise_ge_90pct": 6,
+   "calendar_year_return_pct": {
+    "2019": 0.0,
+    "2020": 14.341318171063344,
+    "2021": 56.353760503544194,
+    "2022": 0.00933850076727527,
+    "2023": 2.888882324366504,
+    "2024": 8.887546982363158,
+    "2025": 0.4010077963795933,
+    "2026": 0.0
+   }
+  }
+ },
+ "self_checks": {
+  "BTCUSDT_truncation_signal_identical": true,
+  "BTCUSDT_funding_stamp_eq_bar_close": true,
+  "BTCUSDT_float_vs_exact_threshold_agree": true,
+  "BTCUSDT_bars_with_mean_exactly_0.01pct": 952,
+  "ETHUSDT_truncation_signal_identical": true,
+  "ETHUSDT_funding_stamp_eq_bar_close": true,
+  "ETHUSDT_float_vs_exact_threshold_agree": true,
+  "ETHUSDT_bars_with_mean_exactly_0.01pct": 928,
+  "all_trades_signal_bar_before_execution_bar": true,
+  "funding_only_within_(entry,exit]": true,
+  "equity_reconciles_with_trade_pnl": true
+ },
+ "verdict": "INCONCLUSIVE",
+ "verdict_inputs": {
+  "oos_net": 12.45845018454701,
+  "oos_cagr": 3.168081480495699,
+  "oos_maxdd": -0.3120736986002459,
+  "oos_2x": 11.066309496047456,
+  "fail": false,
+  "pass": false
+ },
+ "data_sha256": {
+  "fapi_exchangeInfo.json": "7908f17747ac6df6c9b17d085f090ca24722122b37773acb0d2bf1e292b5dc04",
+  "funding_BTCUSDT.json": "0233ed631f31ba460a1cc9a19909961e8e2ab1c1190a704c2a7a229588557d0f",
+  "funding_ETHUSDT.json": "7ecaa2bc7108707cb3072d3193237c98bf06b82a5e7fe0936533c189f74a7eeb",
+  "perp_klines_8h_BTCUSDT.json": "d62f4778b0b47d52a1a509109bc10789d6fb1d03e31dbc28e18abbae56614524",
+  "perp_klines_8h_ETHUSDT.json": "0f3f2f37616e6fd8e3b93dad83d72a7e742a623873ba90d3918e0bcea34b3c58",
+  "spot_exchangeInfo.json": "dd4cf97925d90aa0dd4d825561ab8318496a2b7656f51886e8033dffd8fd0e6e",
+  "spot_klines_8h_BTCUSDT.json": "480f42e091b58eb0c9a0afaa36cfef094786d3c7a42b5d7fe0a7110f9d39e1a4",
+  "spot_klines_8h_ETHUSDT.json": "b99a6671766ff03cea9d5c52e90266522ef7f18067324da54a5f9b7b790fec1d"
+ },
+ "trades_full": [
+  {
+   "asset": "BTCUSDT",
+   "entry": "2020-01-08 00:00:00+00:00",
+   "exit": "2020-03-13 08:00:00+00:00",
+   "pnl": 1.8900555926908638,
+   "funding": 1.9678165229376519,
+   "basis": 0.04678254220982403,
+   "cost": 0.12454347245661167,
+   "forced": false,
+   "max_rise_pct": 29.310873645855075
+  },
+  {
+   "asset": "BTCUSDT",
+   "entry": "2020-04-30 00:00:00+00:00",
+   "exit": "2020-05-28 00:00:00+00:00",
+   "pnl": 0.15735795546278553,
+   "funding": 0.2798871242060003,
+   "basis": 0.03687671889224342,
+   "cost": 0.15940588763546273,
+   "forced": false,
+   "max_rise_pct": 14.753445164815782
+  },
+  {
+   "asset": "BTCUSDT",
+   "entry": "2020-06-02 00:00:00+00:00",
+   "exit": "2020-06-17 16:00:00+00:00",
+   "pnl": 0.03810685549761672,
+   "funding": 0.10263541368573535,
+   "basis": 0.08537984539809562,
+   "cost": 0.149908403586213,
+   "forced": false,
+   "max_rise_pct": 0.29211104715309855
+  },
+  {
+   "asset": "BTCUSDT",
+   "entry": "2020-06-24 08:00:00+00:00",
+   "exit": "2020-09-16 00:00:00+00:00",
+   "pnl": 1.4094344977568625,
+   "funding": 1.5344576049141065,
+   "basis": 0.04164204711303254,
+   "cost": 0.16666515427027764,
+   "forced": false,
+   "max_rise_pct": 31.31187702754947
+  },
+  {
+   "asset": "BTCUSDT",
+   "entry": "2020-11-07 00:00:00+00:00",
+   "exit": "2021-05-22 00:00:00+00:00",
+   "pnl": 20.40548759312089,
+   "funding": 20.54078684551865,
+   "basis": 0.13672656096692037,
+   "cost": 0.2720258133646761,
+   "forced": false,
+   "max_rise_pct": 316.8194369169294
+  },
+  {
+   "asset": "BTCUSDT",
+   "entry": "2021-05-29 16:00:00+00:00",
+   "exit": "2021-06-12 00:00:00+00:00",
+   "pnl": -0.038447661192009264,
+   "funding": 0.11695677979559842,
+   "basis": 0.07561245998372712,
+   "cost": 0.23101690097132754,
+   "forced": false,
+   "max_rise_pct": 14.56469335005217
+  },
+  {
+   "asset": "BTCUSDT",
+   "entry": "2021-08-16 16:00:00+00:00",
+   "exit": "2022-01-14 08:00:00+00:00",
+   "pnl": 3.0117543840240586,
+   "funding": 3.2001340165166425,
+   "basis": 0.024374700356012635,
+   "cost": 0.21275433284858303,
+   "forced": false,
+   "max_rise_pct": 49.29343182857684
+  },
+  {
+   "asset": "BTCUSDT",
+   "entry": "2023-01-14 08:00:00+00:00",
+   "exit": "2023-03-12 16:00:00+00:00",
+   "pnl": 0.3947200484191029,
+   "funding": 0.5726492222102918,
+   "basis": 0.049675009947540705,
+   "cost": 0.2276041837387081,
+   "forced": false,
+   "max_rise_pct": 21.204992110170707
+  },
+  {
+   "asset": "BTCUSDT",
+   "entry": "2023-03-15 00:00:00+00:00",
+   "exit": "2023-08-21 00:00:00+00:00",
+   "pnl": 1.1071928534739044,
+   "funding": 1.3039357316084523,
+   "basis": 0.04215947285654975,
+   "cost": 0.2389023509910947,
+   "forced": false,
+   "max_rise_pct": 29.03879266686924
+  },
+  {
+   "asset": "BTCUSDT",
+   "entry": "2023-11-09 16:00:00+00:00",
+   "exit": "2024-08-15 00:00:00+00:00",
+   "pnl": 6.4668893541939525,
+   "funding": 6.6371693520132675,
+   "basis": 0.13318791770101157,
+   "cost": 0.3034679155203299,
+   "forced": false,
+   "max_rise_pct": 98.91872972281679
+  },
+  {
+   "asset": "BTCUSDT",
+   "entry": "2024-11-10 08:00:00+00:00",
+   "exit": "2025-03-03 00:00:00+00:00",
+   "pnl": 1.4768166870418753,
+   "funding": 1.7137853032154422,
+   "basis": 0.04243849574469749,
+   "cost": 0.27940711191825696,
+   "forced": false,
+   "max_rise_pct": 39.49088363670488
+  },
+  {
+   "asset": "ETHUSDT",
+   "entry": "2020-01-15 00:00:00+00:00",
+   "exit": "2020-03-13 08:00:00+00:00",
+   "pnl": 2.7909143562762537,
+   "funding": 2.9091407700301612,
+   "basis": 0.014358865062190418,
+   "cost": 0.13258527881609722,
+   "forced": false,
+   "max_rise_pct": 94.87179487179486
+  },
+  {
+   "asset": "ETHUSDT",
+   "entry": "2020-04-30 08:00:00+00:00",
+   "exit": "2020-10-06 00:00:00+00:00",
+   "pnl": 3.7540856370856517,
+   "funding": 3.908029418047947,
+   "basis": 0.052301848259558525,
+   "cost": 0.20624562922185596,
+   "forced": false,
+   "max_rise_pct": 121.95409598113037
+  },
+  {
+   "asset": "ETHUSDT",
+   "entry": "2020-10-10 08:00:00+00:00",
+   "exit": "2021-05-19 16:00:00+00:00",
+   "pnl": 40.7461202927738,
+   "funding": 42.03572994641324,
+   "basis": -0.583967349860302,
+   "cost": 0.7056423037791336,
+   "forced": false,
+   "max_rise_pct": 1067.5945182104197
+  },
+  {
+   "asset": "ETHUSDT",
+   "entry": "2021-05-22 16:00:00+00:00",
+   "exit": "2021-06-20 16:00:00+00:00",
+   "pnl": 0.19053362778419114,
+   "funding": 0.40121670286571404,
+   "basis": 0.06534212355849345,
+   "cost": 0.2760251986400195,
+   "forced": false,
+   "max_rise_pct": 22.994426617125473
+  },
+  {
+   "asset": "ETHUSDT",
+   "entry": "2021-08-07 16:00:00+00:00",
+   "exit": "2022-01-12 00:00:00+00:00",
+   "pnl": 4.438242725418206,
+   "funding": 4.67177654006241,
+   "basis": 0.06627985237358436,
+   "cost": 0.2998136670177912,
+   "forced": false,
+   "max_rise_pct": 58.144496357275564
+  },
+  {
+   "asset": "ETHUSDT",
+   "entry": "2023-01-14 08:00:00+00:00",
+   "exit": "2023-03-12 16:00:00+00:00",
+   "pnl": 0.5412481448627346,
+   "funding": 0.7507361810067518,
+   "basis": 0.08658474659524851,
+   "cost": 0.2960727827392843,
+   "forced": false,
+   "max_rise_pct": 12.164855654857586
+  },
+  {
+   "asset": "ETHUSDT",
+   "entry": "2023-03-15 00:00:00+00:00",
+   "exit": "2023-06-16 08:00:00+00:00",
+   "pnl": 0.5470877051724159,
+   "funding": 0.8135567594301566,
+   "basis": 0.03831394967676727,
+   "cost": 0.30478300393450164,
+   "forced": false,
+   "max_rise_pct": 26.246374850729136
+  },
+  {
+   "asset": "ETHUSDT",
+   "entry": "2023-11-02 00:00:00+00:00",
+   "exit": "2024-08-06 08:00:00+00:00",
+   "pnl": 9.77894936795515,
+   "funding": 10.063857350675763,
+   "basis": 0.08062372174071442,
+   "cost": 0.36553170446131533,
+   "forced": false,
+   "max_rise_pct": 121.76387836814197
+  },
+  {
+   "asset": "ETHUSDT",
+   "entry": "2024-11-07 08:00:00+00:00",
+   "exit": "2025-02-04 00:00:00+00:00",
+   "pnl": 2.00490874524084,
+   "funding": 2.2954670514705953,
+   "basis": 0.051326526243735904,
+   "cost": 0.34188483247350354,
+   "forced": false,
+   "max_rise_pct": 45.66013261838013
+  }
+ ]
+}

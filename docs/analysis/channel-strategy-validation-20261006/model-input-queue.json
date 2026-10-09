@@ -1,0 +1,223 @@
+{
+  "schema": "historical_model_input_queue_v2",
+  "status": "CLOSED_BY_USER_DECISION_20261009",
+  "authoritative_closure": "closure-20261009.json",
+  "supersedes_archived_queue": "continuation-v20/model-input-queue.json",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "next_action_kind": "NONE_CLOSED",
+  "next_priority": [],
+  "pending_tasks": [],
+  "no_idle_refill_allowed": false,
+  "new_market_downloads_needed_for_next_action": false,
+  "new_permanent_collectors": false,
+  "new_schedules": false,
+  "cancelled_work": [
+    "Gate PIT universe for models 1-4",
+    "Gate contract terms and historical fees audit",
+    "DAX, gold and US equities source audits",
+    "Aave, wallets and options source audits",
+    "Repeated source certification and downloads for all 20 models"
+  ],
+  "models": [
+    {
+      "number": 1,
+      "id": "relative_strength",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "INCONCLUSIVE",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 2,
+      "id": "trend_pullback",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 3,
+      "id": "structure_break",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "INCONCLUSIVE",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 4,
+      "id": "normalized_line",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "NO_EDGE_AFTER_HOLM",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 5,
+      "id": "book_continue",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 6,
+      "id": "book_reclaim",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 7,
+      "id": "funding_carry",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL_VS_TBILL",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 8,
+      "id": "funding_cross",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 9,
+      "id": "spot_dislocation",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 10,
+      "id": "basis_convergence",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 11,
+      "id": "long_put",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 12,
+      "id": "cash_put",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "INCONCLUSIVE_PROXY",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 13,
+      "id": "put_spread",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 14,
+      "id": "fixed_grid",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 15,
+      "id": "gold_macd",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "NO_TIMING_EDGE",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 16,
+      "id": "dax_orb",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 17,
+      "id": "gap_continue",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 18,
+      "id": "gap_fade",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 19,
+      "id": "aave_lending",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "NO_EXCESS_VS_TBILL",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    },
+    {
+      "number": 20,
+      "id": "wallet_follow",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "task_status": "CANCELLED_BY_PROGRAM_CLOSURE",
+      "next_action": "NONE_CLOSED"
+    }
+  ]
+}
