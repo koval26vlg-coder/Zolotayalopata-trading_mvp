@@ -60,10 +60,16 @@ def summarize(trades, daily_equity, initial=10000):
     positive = sum(max(t['pnl'], 0) for t in trades)
     negative = -sum(min(t['pnl'], 0) for t in trades)
     net = sum(t['pnl'] for t in trades)
-    bases, events = {}, {}
+    bases, events, symbols = {}, {}, {}
+    identity_complete = bool(trades)
     groups = temporal_group_ids(trades)
     for index, t in enumerate(trades):
-        bases[t['symbol']] = bases.get(t['symbol'], 0)+max(t['pnl'], 0)
+        symbols[t['symbol']] = symbols.get(t['symbol'], 0)+max(t['pnl'], 0)
+        base = t.get('economic_base_id')
+        if not isinstance(base, str) or not base.strip() or base != base.strip():
+            identity_complete = False
+        else:
+            bases[base] = bases.get(base, 0)+max(t['pnl'], 0)
         events[groups[index]] = events.get(groups[index], 0)+max(t['pnl'], 0)
     peak, dd, previous, deltas = initial, 0, initial, []
     ordered = sorted(daily_equity.items())
@@ -88,7 +94,9 @@ def summarize(trades, daily_equity, initial=10000):
                 calendar_complete=complete_calendar, bootstrap_p=pvalue,
                 turnover=sum(t.get('turnover', 0) for t in trades),
                 single_event_positive_share=max(events.values(), default=0)/positive if positive else None,
-                single_base_positive_share=max(bases.values(), default=0)/positive if positive else None)
+                economic_base_identity_complete=identity_complete,
+                single_symbol_positive_share=max(symbols.values(), default=0)/positive if positive else None,
+                single_base_positive_share=max(bases.values(), default=0)/positive if positive and identity_complete else None)
 
 
 def period_metrics(replay, start, end, initial=10000):
@@ -116,9 +124,12 @@ def candidate_status(result, adjusted_p, plan):
         return 'INCONCLUSIVE_OPEN_EXPOSURE'
     if result.get('partial_periods'):
         return 'INCONCLUSIVE_PARTIAL_COVERAGE'
-    if result.get('exposure') != 'UNSEEN_CERTIFIED' or result.get('execution_quality') != 'EXECUTABLE_CERTIFIED':
+    if (result.get('exposure') != 'UNSEEN_CERTIFIED' or result.get('execution_quality') != 'EXECUTABLE_CERTIFIED'
+            or result.get('independent_oos_certified') is not True or result.get('execution_certified') is not True):
         return 'EXPLORATORY_ONLY'
     m, s = result['oos'], plan['statistics']
+    if not m.get('economic_base_identity_complete'):
+        return 'INCONCLUSIVE_IDENTITY'
     if (m['trades'] < s['min_oos_trades'] or m['temporal_groups'] < s['min_temporal_groups']
             or m['calendar_days'] < s['min_oos_calendar_days'] or not m['calendar_complete']):
         return 'INSUFFICIENT_DATA'

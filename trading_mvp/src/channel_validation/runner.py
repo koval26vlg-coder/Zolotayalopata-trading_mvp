@@ -16,6 +16,7 @@ from .models import candle_replay
 from .adapters import MissingEvidence, run_specialized
 from .portfolio import replay_opportunities
 from .statistics import holm, period_metrics, walk_forward, candidate_status
+from .evidence import load_evidence, bind_replay, strict_json
 
 
 def sealed(value, field):
@@ -48,9 +49,13 @@ def load_inputs(plan, input_path, check):
     if input_path is None:
         return None, []
     path = Path(input_path)
-    manifest = json.loads(path.read_text(encoding='utf-8-sig'))
+    manifest = strict_json(path.read_bytes())
     if manifest.get('plan_hash') != plan['plan_hash']:
         raise ValueError('Input manifest bound to a different research plan')
+    refs = manifest.get('research_evidence', {})
+    if (not isinstance(refs, dict) or set(refs)-{m['id'] for m in plan['models']}
+            or any(not isinstance(ref, dict) for ref in refs.values())):
+        raise ValueError('Research evidence must reference known models and non-null file bindings')
     loaded = validate_manifest(manifest, path.parent, plan['resource_limits']['max_input_bytes'],
                                plan['resource_limits']['max_rows'], check)
     return manifest, loaded
@@ -72,6 +77,12 @@ def model_inputs(model, loaded):
     return out, selected
 
 
+def model_evidence(plan, model, selected, manifest, input_path, check):
+    reference = (manifest or {}).get('research_evidence', {}).get(model['id'])
+    return load_evidence(plan, model, selected, reference,
+                         Path(input_path).parent if input_path else ROOT, check)
+
+
 def validate(plan, inv, input_path, check=lambda: None):
     validate_plan(plan)
     assert_sealed(inv, 'inventory_hash')
@@ -82,6 +93,7 @@ def validate(plan, inv, input_path, check=lambda: None):
     for model in plan['models']:
         check()
         data, selected = model_inputs(model, loaded)
+        evidence = model_evidence(plan, model, selected, manifest, input_path, check)
         missing = [kind for kind in required_input_kinds(model) if not data.get(kind)]
         coverage = {kind: dict(first=min(ts(r['ts']) for r in rows), last=max(ts(r.get('end_ts', r['ts'])) for r in rows), rows=len(rows))
                     for kind, rows in data.items()}
@@ -89,7 +101,8 @@ def validate(plan, inv, input_path, check=lambda: None):
                            missing_kinds=missing, coverage=coverage,
                            datasets=[d['entry']['id'] for d in selected],
                            exposure='UNKNOWN_OR_PREVIOUSLY_VIEWED',
-                           independent_oos_certified=False))
+                           independent_oos_certified=False, execution_certified=False,
+                           research_evidence=evidence))
     return sealed(dict(stage='validate', plan_hash=plan['plan_hash'], inventory_hash=inv['inventory_hash'],
                        input_manifest_hash=manifest['manifest_hash'] if manifest else None,
                        runtime_binding=runtime_binding(), models=models, creates_trading_results=False), 'validation_hash')
@@ -128,15 +141,19 @@ def evaluate(plan, validation, input_path, check=lambda: None):
     for model in plan['models']:
         check()
         ready = ready_by_id[model['id']]
+        data, selected = model_inputs(model, loaded)
+        evidence = model_evidence(plan, model, selected, manifest, input_path, check)
+        if evidence != ready.get('research_evidence'):
+            raise ValueError('Research evidence changed since validation')
         r = dict(id=model['id'], number=model['number'], model_hash=model['model_hash'],
-                 status=ready['status'], metrics=None, tests=[], limitations=[], next_step='')
+                 status=ready['status'], metrics=None, tests=[], limitations=[], next_step='',
+                 research_evidence=evidence, independent_oos_certified=False, execution_certified=False)
         if ready['status'] != 'READY_TO_EVALUATE':
             r.update(missing_kinds=ready['missing_kinds'],
                      next_step='Provide verified free historical files and an input manifest; no forward collector.',
                      limitations=['No eligible inputs in this environment; not a negative strategy verdict.'])
             results.append(r)
             continue
-        data, _ = model_inputs(model, loaded)
         try:
             if model['number'] <= 4:
                 bars = data['bars_1h' if model['number'] == 1 else 'bars_4h']
@@ -144,6 +161,7 @@ def evaluate(plan, validation, input_path, check=lambda: None):
                 stress = candle_replay(model, bars, data['pit_universe'], plan, stress=True, check=check)
                 normal = restrict_observed_days(normal, model, data)
                 stress = restrict_observed_days(stress, model, data)
+                normal, stress = bind_replay(normal, evidence, check), bind_replay(stress, evidence, check)
                 r.update(oos=period_metrics(normal, *plan['periods']['final']),
                          stress_oos=period_metrics(stress, *plan['periods']['final']), folds=walk_forward(normal),
                          metrics=period_metrics(normal, *plan['periods']['development']),
@@ -164,6 +182,7 @@ def evaluate(plan, validation, input_path, check=lambda: None):
                 stress = replay_opportunities(opportunities, exposures, plan, plan['periods']['development'][0], plan['periods']['final'][1], stress=True, check=check)
                 normal = restrict_observed_days(normal, model, data)
                 stress = restrict_observed_days(stress, model, data)
+                normal, stress = bind_replay(normal, evidence, check), bind_replay(stress, evidence, check)
                 r.update(status='EXPLORATORY_ONLY',
                          metrics=period_metrics(normal, *plan['periods']['development']),
                          oos=period_metrics(normal, *plan['periods']['final']), folds=walk_forward(normal),
@@ -197,7 +216,10 @@ def report(plan, inv, validation, evaluation):
         assert_sealed(value, key)
         if value['plan_hash'] != plan['plan_hash']:
             raise ValueError('Report plan mismatch')
-    if evaluation['validation_hash'] != validation['validation_hash']:
+    if (evaluation['validation_hash'] != validation['validation_hash']
+            or validation['inventory_hash'] != inv['inventory_hash']
+            or evaluation['runtime_binding'] != validation['runtime_binding']
+            or evaluation['input_manifest_hash'] != validation['input_manifest_hash']):
         raise ValueError('Report provenance mismatch')
     lines = ['# Historical Strategy Validation', '',
              'Research only. No live permission and no claim of a profitable strategy.', '',
@@ -366,9 +388,9 @@ def main(argv=None):
         ev = json.loads(args.evaluation.read_text(encoding='utf-8'))
         if ev['runtime_binding'] != runtime_binding():
             raise ValueError('Stale report code binding')
-        manifest, _ = load_inputs(plan, args.input_manifest, check)
-        if (manifest['manifest_hash'] if manifest else None) != ev['input_manifest_hash']:
-            raise ValueError('Report input binding changed/unavailable')
+        fresh = validate(plan, inv, args.input_manifest, check)
+        if fresh['validation_hash'] != val['validation_hash']:
+            raise ValueError('Report input/evidence binding changed/unavailable')
         markdown = report(plan, inv, val, ev)
         args.output.mkdir(parents=True, exist_ok=True)
         with (args.output/'report.md').open('xb') as f:

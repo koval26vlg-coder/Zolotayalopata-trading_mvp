@@ -110,6 +110,239 @@ class StatisticsTests(unittest.TestCase):
         self.assertIsNone(r['profit_factor'])
 
 
+class EconomicConcentrationRegressionTests(unittest.TestCase):
+    def test_aliases_of_one_base_do_not_diversify(self):
+        rows = [dict(symbol='GOLD_'+str(i), economic_base_id='commodity:gold',
+                     entry_ts=1700000000+i*86400, exit_ts=1700000100+i*86400, pnl=1)
+                for i in range(4)]
+        self.assertEqual(1, summarize(rows, {})['single_base_positive_share'])
+
+    def test_missing_identity_is_not_a_ticker_fallback(self):
+        rows = [dict(symbol='ALIAS_'+str(i), entry_ts=1700000000+i*86400,
+                     exit_ts=1700000100+i*86400, pnl=1) for i in range(4)]
+        self.assertIsNone(summarize(rows, {})['single_base_positive_share'])
+
+    def test_even_a_losing_unknown_trade_makes_identity_incomplete(self):
+        rows = [dict(symbol='A', economic_base_id='asset:a', entry_ts=1700000000,
+                     exit_ts=1700000100, pnl=1),
+                dict(symbol='UNKNOWN', entry_ts=1700100000, exit_ts=1700100100, pnl=-1)]
+        self.assertIsNone(summarize(rows, {})['single_base_positive_share'])
+
+    def test_certificate_labels_alone_never_promote_candidate(self):
+        for flag in (None, False, 'true', 1):
+            result = dict(exposure='UNSEEN_CERTIFIED', execution_quality='EXECUTABLE_CERTIFIED',
+                          independent_oos_certified=flag, execution_certified=flag)
+            self.assertEqual('EXPLORATORY_ONLY', candidate_status(result, .001, build_plan()))
+
+
+class ResearchEvidenceTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        self.plan = build_plan()
+        self.model = self.plan['models'][14]
+        self.selected = [dict(entry=dict(id='gold', sha256='a'*64, rows=4))]
+        (self.root/'source.txt').write_text('Synthetic dated instrument evidence, not a real source.', encoding='utf-8')
+        self.proof = dict(path='source.txt', sha256=file_hash(self.root/'source.txt'))
+
+    def bundle(self):
+        from channel_validation.contract import runtime_binding
+        from channel_validation.evidence import dataset_binding
+        return dict(schema='channel_research_evidence_v1', plan_hash=self.plan['plan_hash'],
+                    model_hash=self.model['model_hash'], runtime_hash=canonical_hash(runtime_binding()),
+                    dataset_binding_hash=dataset_binding(self.selected),
+                    identities=[dict(symbol='GOLD_1', economic_base_id='commodity:gold', identity_key='gold',
+                                     valid_from=100, valid_to=1000, available_at=100, evidence_refs=[self.proof])],
+                    certificates=[])
+
+    def write_bundle(self, value):
+        (self.root/'evidence.json').write_text(json.dumps(value), encoding='utf-8')
+        return dict(path='evidence.json', sha256=file_hash(self.root/'evidence.json'))
+
+    def load(self, bundle):
+        from channel_validation.evidence import load_evidence
+        return load_evidence(self.plan, self.model, self.selected, self.write_bundle(bundle), self.root)
+
+    def test_bound_aliases_share_one_economic_base(self):
+        from channel_validation.evidence import bind_replay
+        bundle = self.bundle()
+        bundle['identities'].append(dict(bundle['identities'][0], symbol='GOLD_2'))
+        evidence = self.load(bundle)
+        replay = dict(trades=[dict(symbol=s, entry_ts=200, exit_ts=300, pnl=1) for s in ('GOLD_1','GOLD_2')])
+        bound = bind_replay(replay, evidence)
+        self.assertEqual(1, summarize(bound['trades'], {})['single_base_positive_share'])
+        self.assertNotIn('economic_base_id', replay['trades'][0])
+
+    def test_missing_evidence_clears_untrusted_trade_identity(self):
+        from channel_validation.evidence import bind_replay, load_evidence
+        evidence = load_evidence(self.plan, self.model, self.selected, None, self.root)
+        bound = bind_replay(dict(trades=[dict(symbol='GOLD', economic_base_id='fake', entry_ts=200, exit_ts=300)]), evidence)
+        self.assertIsNone(bound['trades'][0]['economic_base_id'])
+
+    def test_wrong_fixed_model_base_rejected(self):
+        bundle = self.bundle(); bundle['identities'][0]['economic_base_id'] = 'asset:btc'
+        with self.assertRaises(ValueError): self.load(bundle)
+
+    def test_conflicting_identity_key_rejected(self):
+        self.model = self.plan['models'][0]
+        bundle = self.bundle(); bundle['identities'][0]['economic_base_id'] = 'asset:btc'
+        bundle['identities'].append(dict(bundle['identities'][0], symbol='OTHER', economic_base_id='asset:eth'))
+        with self.assertRaises(ValueError): self.load(bundle)
+
+    def test_overlapping_symbol_intervals_rejected(self):
+        bundle = self.bundle(); bundle['identities'].append(dict(bundle['identities'][0]))
+        with self.assertRaises(ValueError): self.load(bundle)
+
+    def test_future_or_expired_identity_not_bound(self):
+        from channel_validation.evidence import bind_replay
+        bundle = self.bundle(); bundle['identities'][0]['available_at'] = 250
+        evidence = self.load(bundle)
+        for entry, end in ((200, 300), (900, 1000)):
+            r = bind_replay(dict(trades=[dict(symbol='GOLD_1', entry_ts=entry, exit_ts=end)]), evidence)
+            self.assertIsNone(r['trades'][0]['economic_base_id'])
+
+    def test_wrong_plan_model_runtime_or_dataset_rejected(self):
+        for field in ('plan_hash','model_hash','runtime_hash','dataset_binding_hash'):
+            with self.subTest(field=field):
+                b = self.bundle(); b[field] = '0'*64
+                with self.assertRaises(ValueError): self.load(b)
+
+    def test_modified_evidence_bytes_rejected_even_same_length(self):
+        from channel_validation.evidence import load_evidence
+        b = self.bundle(); ref = self.write_bundle(b)
+        p = self.root/'source.txt'; p.write_bytes(p.read_bytes().replace(b'dated', b'faked'))
+        with self.assertRaises(ValueError): load_evidence(self.plan, self.model, self.selected, ref, self.root)
+
+    def test_path_escape_rejected(self):
+        b = self.bundle(); b['identities'][0]['evidence_refs'][0] = dict(path='../escape', sha256='0'*64)
+        with self.assertRaises(ValueError): self.load(b)
+
+    def test_duplicate_json_keys_rejected(self):
+        from channel_validation.evidence import load_evidence
+        p = self.root/'bad.json'; p.write_text('{"schema":"one","schema":"two"}')
+        with self.assertRaises(ValueError):
+            load_evidence(self.plan, self.model, self.selected, dict(path='bad.json',sha256=file_hash(p)), self.root)
+
+    def test_certificate_is_bound_evidence_not_an_automatic_promotion(self):
+        b = self.bundle()
+        b['certificates'] = [dict(kind='exposure', claim='UNSEEN_CERTIFIED', periods=self.plan['periods'],
+                                  reviewer='synthetic reviewer', method='synthetic ledger audit', evidence_refs=[self.proof])]
+        evidence = self.load(b)
+        self.assertEqual('BOUND_NOT_INDEPENDENTLY_CERTIFIED', evidence['certificates'][0]['status'])
+        self.assertFalse(evidence['independent_oos_certified'])
+        self.assertFalse(evidence['execution_certified'])
+
+    def test_certificate_wrong_period_or_missing_evidence_rejected(self):
+        for change in ('periods', 'evidence_refs'):
+            b = self.bundle()
+            certificate = dict(kind='execution', claim='EXECUTABLE_CERTIFIED', periods=self.plan['periods'],
+                               reviewer='reviewer', method='audit', evidence_refs=[self.proof])
+            certificate[change] = {} if change == 'periods' else []
+            b['certificates'] = [certificate]
+            with self.assertRaises(ValueError): self.load(b)
+
+    def test_metadata_changes_same_row_count_change_binding(self):
+        from channel_validation.evidence import dataset_binding
+        changed = copy.deepcopy(self.selected); changed[0]['entry']['sha256'] = 'b'*64
+        self.assertNotEqual(dataset_binding(self.selected), dataset_binding(changed))
+
+    def test_empty_or_oversized_source_rejected(self):
+        from channel_validation.evidence import FILE_CAP
+        for raw in (b'', b'x'*(FILE_CAP+1)):
+            (self.root/'source.txt').write_bytes(raw)
+            self.proof['sha256'] = file_hash(self.root/'source.txt')
+            with self.assertRaises(ValueError): self.load(self.bundle())
+
+    def test_total_and_reference_budgets(self):
+        from unittest.mock import patch
+        for field, value in (('TOTAL_CAP', 1), ('REF_CAP', 1), ('IDENTITY_CAP', 0)):
+            with patch('channel_validation.evidence.'+field, value):
+                with self.assertRaises(ValueError): self.load(self.bundle())
+
+    def test_receipt_tamper_and_stop_rejected(self):
+        from channel_validation.evidence import bind_replay, load_evidence
+        evidence = self.load(self.bundle())
+        evidence['identities'][0]['economic_base_id'] = 'fake'
+        with self.assertRaises(ValueError): bind_replay(dict(trades=[]), evidence)
+        def stop(): raise TimeoutError('synthetic stop')
+        with self.assertRaises(TimeoutError):
+            load_evidence(self.plan, self.model, self.selected, None, self.root, stop)
+
+    def test_mutation_during_read_not_certified(self):
+        from channel_validation.evidence import load_evidence
+        ref = self.write_bundle(self.bundle())
+        calls = 0
+        def mutate():
+            nonlocal calls
+            calls += 1
+            if calls == 5: (self.root/'source.txt').write_bytes(b'changed')
+        with self.assertRaises(ValueError):
+            load_evidence(self.plan, self.model, self.selected, ref, self.root, mutate)
+
+    def test_adjacent_identity_intervals_not_stitched_over_position(self):
+        from channel_validation.evidence import bind_replay
+        b = self.bundle()
+        b['identities'][0]['valid_to'] = 300
+        b['identities'].append(dict(b['identities'][0], valid_from=300, valid_to=1000))
+        evidence = self.load(b)
+        bound = bind_replay(dict(trades=[dict(symbol='GOLD_1', entry_ts=200, exit_ts=400)]), evidence)
+        self.assertIsNone(bound['trades'][0]['economic_base_id'])
+
+    def test_fixed_options_base_cannot_be_contract_ticker(self):
+        self.model = self.plan['models'][10]
+        b = self.bundle(); b['identities'][0].update(symbol='BTC', economic_base_id='asset:btc')
+        self.assertEqual('asset:btc', self.load(b)['identities'][0]['economic_base_id'])
+        b['identities'][0]['economic_base_id'] = 'option:btc-put'
+        with self.assertRaises(ValueError): self.load(b)
+
+    def test_duplicate_unknown_or_nonfinite_certificate_rejected(self):
+        b = self.bundle()
+        cert = dict(kind='execution', claim='EXECUTABLE_CERTIFIED', periods=self.plan['periods'],
+                    reviewer='reviewer', method='audit', evidence_refs=[self.proof])
+        for certs in ([cert, cert], [dict(cert, kind='other')], [dict(cert, method='')],
+                      [dict(cert, reviewer=float('nan'))]):
+            b['certificates'] = certs
+            with self.assertRaises(ValueError): self.load(b)
+
+    def test_identity_bound_in_both_runner_paths_and_stress(self):
+        from unittest.mock import patch
+        from channel_validation.evidence import dataset_binding, load_evidence
+        from channel_validation.statistics import period_metrics
+        start = ts('2023-02-01T00:00:00Z')
+        for number in (0, 14):
+            self.model = self.plan['models'][number]
+            b = self.bundle()
+            b['identities'][0].update(valid_from=start-1, available_at=start-1, valid_to=start+1000)
+            b['identities'].append(dict(b['identities'][0], symbol='GOLD_2'))
+            data = [dict(entry=dict(id=kind, kind=kind, market=self.model['market'], model_ids=[self.model['id']]),
+                         rows=[dict(ts=start, symbol='GOLD_1')]) for kind in self.model['required_kinds']]
+            b['dataset_binding_hash'] = dataset_binding(data)
+            evidence = load_evidence(self.plan, self.model, data, self.write_bundle(b), self.root)
+            replay = dict(trades=[dict(symbol=s, entry_ts=start+10, exit_ts=start+20, pnl=1)
+                                 for s in ('GOLD_1', 'GOLD_2')], daily_equity={}, open_positions=[],
+                          execution_quality='UNVERIFIED')
+            def choose(plan, model, selected, manifest, path, check):
+                return evidence if model['id'] == self.model['id'] else load_evidence(plan, model, selected, None, self.root)
+            with patch('channel_validation.runner.load_inputs', return_value=(None, data)), \
+                 patch('channel_validation.runner.model_evidence', side_effect=choose), \
+                 patch('channel_validation.runner.candle_replay', return_value=replay), \
+                 patch('channel_validation.runner.run_specialized', return_value=([], [])), \
+                 patch('channel_validation.runner.replay_opportunities', return_value=replay), \
+                 patch('channel_validation.runner.period_metrics', wraps=period_metrics) as metrics:
+                inv = inventory(self.plan, [])
+                val = validate(self.plan, inv, None)
+                result = evaluate(self.plan, val, None)['models'][number]
+            self.assertEqual(1, result['metrics']['single_base_positive_share'])
+            self.assertEqual(.5, result['metrics']['single_symbol_positive_share'])
+            self.assertTrue(all(t['economic_base_id'] == 'commodity:gold' for t in result['trades']))
+            self.assertFalse(result['independent_oos_certified'])
+            self.assertFalse(result['execution_certified'])
+            for call in metrics.call_args_list:
+                self.assertTrue(all(t['economic_base_id'] == 'commodity:gold' for t in call.args[0]['trades']))
+            self.assertNotIn('economic_base_id', replay['trades'][0])
+
+
 class PipelineTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -158,6 +391,74 @@ class PipelineTests(unittest.TestCase):
         mp = self.root/'one.channel-input.json'
         mp.write_text(json.dumps(manifest), encoding='utf-8')
         return mp, manifest
+
+    def evidence_manifest(self):
+        from channel_validation.evidence import dataset_binding
+        from channel_validation.contract import runtime_binding
+        path, manifest = self.make_manifest()
+        (self.root/'proof.txt').write_bytes(b'synthetic proof')
+        proof = dict(path='proof.txt', sha256=file_hash(self.root/'proof.txt'))
+        bundle = dict(schema='channel_research_evidence_v1', plan_hash=self.plan['plan_hash'],
+                      model_hash=self.plan['models'][0]['model_hash'], runtime_hash=canonical_hash(runtime_binding()),
+                      dataset_binding_hash=dataset_binding([dict(entry=e) for e in manifest['datasets']]),
+                      identities=[dict(symbol='BTC', economic_base_id='asset:btc', identity_key='btc',
+                                       valid_from=0, valid_to=2000000000, available_at=0, evidence_refs=[proof])],
+                      certificates=[])
+        (self.root/'evidence.json').write_text(json.dumps(bundle), encoding='utf-8')
+        manifest['research_evidence'] = {'relative_strength': dict(path='evidence.json', sha256=file_hash(self.root/'evidence.json'))}
+        manifest.pop('manifest_hash')
+        manifest['manifest_hash'] = canonical_hash(manifest)
+        path.write_text(json.dumps(manifest), encoding='utf-8')
+        return path, manifest
+
+    def test_evidence_readiness_deterministic_no_results_or_promotion(self):
+        path, _ = self.evidence_manifest()
+        inv = inventory(self.plan, [self.root])
+        before = sorted(p.name for p in self.root.iterdir())
+        val = validate(self.plan, inv, path)
+        self.assertEqual(before, sorted(p.name for p in self.root.iterdir()))
+        self.assertEqual(val, validate(self.plan, inv, path))
+        row = val['models'][0]
+        self.assertEqual('BLOCKED_DATA', row['status'])
+        self.assertEqual('BOUND_NOT_INDEPENDENTLY_CERTIFIED', row['research_evidence']['status'])
+        self.assertFalse(row['independent_oos_certified'])
+        ev = evaluate(self.plan, val, path)
+        self.assertEqual(ev, evaluate(self.plan, val, path))
+        self.assertIsNone(ev['models'][0]['metrics'])
+
+    def test_changed_auxiliary_source_blocks_evaluate_and_report(self):
+        path, _ = self.evidence_manifest()
+        inv = inventory(self.plan, [self.root])
+        val = validate(self.plan, inv, path)
+        ev = evaluate(self.plan, val, path)
+        for name, value in [('inventory', inv), ('validation', val), ('evaluation', ev)]:
+            write_immutable(self.root/(name+'.json'), value)
+        (self.root/'proof.txt').write_bytes(b'synthetic spoof')
+        with self.assertRaisesRegex(ValueError, 'hash mismatch'): evaluate(self.plan, val, path)
+        with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+            main(['report', '--evaluation', str(self.root/'evaluation.json'), '--input-manifest', str(path),
+                  '--output', str(self.root/'reported')])
+        self.assertFalse((self.root/'reported').exists())
+
+    def test_invalid_manifest_evidence_model_not_silently_ignored(self):
+        from channel_validation.runner import load_inputs
+        path, manifest = self.evidence_manifest()
+        for refs in ({'typo': manifest['research_evidence']['relative_strength']}, {'relative_strength': None}, []):
+            manifest['research_evidence'] = refs
+            manifest.pop('manifest_hash')
+            manifest['manifest_hash'] = canonical_hash(manifest)
+            path.write_text(json.dumps(manifest), encoding='utf-8')
+            with self.assertRaises(ValueError): load_inputs(self.plan, path, lambda: None)
+
+    def test_report_rejects_resealed_cross_bindings(self):
+        from channel_validation.runner import sealed
+        inv = inventory(self.plan, [])
+        val = validate(self.plan, inv, None)
+        ev = evaluate(self.plan, val, None)
+        for key in ('input_manifest_hash', 'runtime_binding'):
+            changed = copy.deepcopy(ev); changed.pop('result_hash'); changed[key] = 'different'
+            sealed(changed, 'result_hash')
+            with self.assertRaises(ValueError): report(self.plan, inv, val, changed)
 
     def test_same_rows_changed_content_invalidates_result(self):
         path, _ = self.make_manifest()
@@ -638,8 +939,8 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(1, temporal_groups(trades))
 
     def test_profit_concentration_is_group_not_individual_ticket(self):
-        trades = [dict(symbol='A', entry_ts=100, exit_ts=100000, pnl=10),
-                  dict(symbol='B', entry_ts=90000, exit_ts=200000, pnl=10)]
+        trades = [dict(symbol='A', economic_base_id='asset:a', entry_ts=100, exit_ts=100000, pnl=10),
+                  dict(symbol='B', economic_base_id='asset:b', entry_ts=90000, exit_ts=200000, pnl=10)]
         metrics = summarize(trades, {})
         self.assertEqual(1, metrics['single_event_positive_share'])
         self.assertEqual(.5, metrics['single_base_positive_share'])

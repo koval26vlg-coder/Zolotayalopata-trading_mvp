@@ -1,0 +1,15 @@
+{
+  "errors": 0,
+  "expected_red_failures": 3,
+  "failures": 0,
+  "historical_evaluation_run": false,
+  "independent_certification_implemented": false,
+  "old_evidence_bytes_verified": true,
+  "readiness_hash": "c260406655450cbde840772566e4b4203bae33c3fcfbc2c040da459adc2bac25",
+  "rebind_hash": "861221683fd22335cdc84067664000218cc24b1291b0cce062e113184d334657",
+  "research_contract_unchanged": true,
+  "runtime_hash": "4c5f7500923c732f984792ecff8b2efa226e0150f91cbf296e5791701f4dc700",
+  "status": "VERIFIED",
+  "synthetic_tests": 242,
+  "visible_owner_verified": true
+}

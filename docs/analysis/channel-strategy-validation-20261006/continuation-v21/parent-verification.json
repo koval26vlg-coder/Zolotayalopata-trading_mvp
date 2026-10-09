@@ -1,0 +1,16 @@
+{
+  "acceptance_contract_unchanged": true,
+  "audit_hash": "2c601dcf27701bda34958f1eaac30ccd315d3d3df6eb160c927e6718ba71cab9",
+  "candidate_path_blocked_count": 20,
+  "fresh_synthetic_assertions": 15,
+  "frozen_models_verified": 20,
+  "full_previous_suite_rerun": false,
+  "no_market_evaluation": true,
+  "other_models_not_proven_feasible": 14,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "f3dcc73efb368406c962868520206344569c516c80d45f427812e6a91c510e59",
+  "runtime_unchanged": true,
+  "status": "VERIFIED",
+  "structural_conflict_count": 6,
+  "visible_owner_verified": true
+}
