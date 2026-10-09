@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "market_evaluation_run": false,
+  "max_runtime_sec": 120,
+  "finished_utc": "2026-10-09T09:11:50.2907772Z",
+  "status": "COMPLETE",
+  "owner_pid": 33696,
+  "worker_pid": 55160
+}

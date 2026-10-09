@@ -1,0 +1,46 @@
+{
+  "activated": false,
+  "prohibited_shortcuts": [
+    "lowering thresholds silently",
+    "current metadata substituted for historical",
+    "dropping blocked tests from Holm family",
+    "new long collectors",
+    "paid data or private credentials"
+  ],
+  "same_scope_technical_next_steps": [
+    "Bind canonical economic_base_id to verified instrument metadata; fail closed for missing or ambiguous mappings; regression for aliases and changed metadata.",
+    "Design independently audited, hash-bound exposure/execution certificates. Unknown or previously used data must stay exploratory; never promote by a boolean alone.",
+    "Require input/certificate/code hashes and coverage at the acceptance boundary. Preserve all existing signal/cost/risk/acceptance thresholds."
+  ],
+  "schema": "protocol_repair_recommendation_v1",
+  "separate_substantive_decisions": [
+    {
+      "auto_apply": false,
+      "models": [
+        "aave_lending",
+        "cash_put",
+        "dax_orb",
+        "gold_macd",
+        "long_put",
+        "put_spread"
+      ],
+      "proposal": "Keep these six models descriptive-only under the current program. If candidacy is desired, preregister model-appropriate concentration/sample rules separately before outcomes."
+    },
+    {
+      "auto_apply": false,
+      "models": [
+        "cash_put",
+        "long_put",
+        "put_spread"
+      ],
+      "proposal": "Explicitly decide the temporal grouping contract; changing > to >= just to obtain twenty groups is not an authorized technical fix."
+    },
+    {
+      "auto_apply": false,
+      "models": [
+        "aave_lending"
+      ],
+      "proposal": "Do not split one 30-day deposit into pseudo-trades or extend final dates to manufacture sample size."
+    }
+  ]
+}

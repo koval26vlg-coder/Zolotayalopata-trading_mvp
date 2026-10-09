@@ -1,0 +1,311 @@
+{
+  "all_models_candidate_path_blocked": true,
+  "audit_hash": "2c601dcf27701bda34958f1eaac30ccd315d3d3df6eb160c927e6718ba71cab9",
+  "bounds": {
+    "concentration_cap": 0.25,
+    "final_days": 273,
+    "min_positive_bases_required": 4,
+    "option_max_separated_groups": 19,
+    "option_two_base_trade_ceiling": 76,
+    "option_weekly_completed_slots_per_base": 38,
+    "serial_lending_trade_ceiling": 9
+  },
+  "caveats": [
+    "14 not ruled out is not 14 feasible/profitable/ready models.",
+    "Group count is an operational clustering rule, not proof of statistical independence.",
+    "Concentration is semantic: single-index contract aliases do not create new bases.",
+    "No historical returns, new data source search, or closed OOS were consumed."
+  ],
+  "changes": {
+    "acceptance": false,
+    "costs": false,
+    "periods": false,
+    "risk": false,
+    "runtime": false,
+    "signal": false
+  },
+  "findings": [
+    {
+      "description": "With positive gross profits, at most two bases imply a largest share of at least 50%; one implies 100%. Both exceed 25%. This is a mathematical bound, not observed PnL.",
+      "evidence": [
+        {
+          "end_line": 91,
+          "function": "summarize",
+          "line": 59,
+          "path": "trading_mvp/src/channel_validation/statistics.py"
+        },
+        {
+          "end_line": 132,
+          "function": "candidate_status",
+          "line": 114,
+          "path": "trading_mvp/src/channel_validation/statistics.py"
+        },
+        {
+          "end_line": 311,
+          "function": "options",
+          "line": 254,
+          "path": "trading_mvp/src/channel_validation/adapters.py"
+        }
+      ],
+      "id": "CONCENTRATION",
+      "severity": "CONTRACT"
+    },
+    {
+      "description": "The option adapter starts Mondays at 00:00 and holds at least 7 days. Touching intervals merge. Thirty-eight completed weekly slots permit at most nineteen separated components in the fixed final period.",
+      "evidence": [
+        {
+          "end_line": 311,
+          "function": "options",
+          "line": 254,
+          "path": "trading_mvp/src/channel_validation/adapters.py"
+        },
+        {
+          "end_line": 52,
+          "function": "temporal_group_ids",
+          "line": 40,
+          "path": "trading_mvp/src/channel_validation/statistics.py"
+        },
+        {
+          "end_line": 104,
+          "function": "period_metrics",
+          "line": 94,
+          "path": "trading_mvp/src/channel_validation/statistics.py"
+        }
+      ],
+      "id": "WEEKLY_GROUPS",
+      "severity": "CONTRACT"
+    },
+    {
+      "description": "Serial 30-day positions fit at most nine full times in 273 final days. No trade splitting or combining WF with final changes the frozen requirement.",
+      "evidence": [
+        {
+          "end_line": 565,
+          "function": "lending",
+          "line": 519,
+          "path": "trading_mvp/src/channel_validation/adapters.py"
+        },
+        {
+          "end_line": 104,
+          "function": "period_metrics",
+          "line": 94,
+          "path": "trading_mvp/src/channel_validation/statistics.py"
+        }
+      ],
+      "id": "LENDING_SAMPLE",
+      "severity": "CONTRACT"
+    },
+    {
+      "description": "validate always assigns unknown exposure. Replay returns proxy/uncertified execution. No implemented promotion path exists; directly flipping flags is not a valid repair.",
+      "evidence": [
+        {
+          "end_line": 95,
+          "function": "validate",
+          "line": 75,
+          "path": "trading_mvp/src/channel_validation/runner.py"
+        },
+        {
+          "end_line": 192,
+          "function": "evaluate",
+          "line": 118,
+          "path": "trading_mvp/src/channel_validation/runner.py"
+        },
+        {
+          "end_line": 84,
+          "function": "replay_opportunities",
+          "line": 13,
+          "path": "trading_mvp/src/channel_validation/portfolio.py"
+        },
+        {
+          "end_line": 132,
+          "function": "candidate_status",
+          "line": 114,
+          "path": "trading_mvp/src/channel_validation/statistics.py"
+        }
+      ],
+      "id": "CERTIFICATION_PATH",
+      "severity": "IMPLEMENTATION"
+    },
+    {
+      "description": "Concentration uses raw symbol, not verified economic base. Contract rolls, venue aliases or token wrappers must not count as diversification.",
+      "evidence": [
+        {
+          "end_line": 91,
+          "function": "summarize",
+          "line": 59,
+          "path": "trading_mvp/src/channel_validation/statistics.py"
+        }
+      ],
+      "id": "ECONOMIC_BASE_IDENTITY",
+      "severity": "IMPLEMENTATION"
+    },
+    {
+      "description": "Sessions reject non-USD specifications. Instrument/lot and native-currency signal versus USD valuation evidence must precede any DAX run. Gold and options also require exact instrument and settlement terms.",
+      "evidence": [
+        {
+          "end_line": 464,
+          "function": "sessions",
+          "line": 382,
+          "path": "trading_mvp/src/channel_validation/adapters.py"
+        },
+        {
+          "end_line": 516,
+          "function": "gold",
+          "line": 467,
+          "path": "trading_mvp/src/channel_validation/adapters.py"
+        },
+        {
+          "end_line": 311,
+          "function": "options",
+          "line": 254,
+          "path": "trading_mvp/src/channel_validation/adapters.py"
+        }
+      ],
+      "id": "NATIVE_INSTRUMENT_ACCOUNTING",
+      "severity": "READINESS"
+    }
+  ],
+  "historical_rows_read": 0,
+  "market_evaluation_run": false,
+  "model_count": 20,
+  "network_requests": 0,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "f3dcc73efb368406c962868520206344569c516c80d45f427812e6a91c510e59",
+  "schema": "all_model_protocol_feasibility_v1",
+  "structural_conflict_models": [
+    "long_put",
+    "cash_put",
+    "put_spread",
+    "gold_macd",
+    "dax_orb",
+    "aave_lending"
+  ],
+  "synthetic_checks": [
+    {
+      "evidence": {
+        "cap": 0.25,
+        "share": 1.0
+      },
+      "name": "one_economic_base_conflicts_with_quarter_cap",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "best_balanced_share": 0.5,
+        "cap": 0.25
+      },
+      "name": "two_economic_bases_conflict_with_quarter_cap",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "share": 0.25
+      },
+      "name": "four_balanced_bases_reach_cap_boundary",
+      "passed": true
+    },
+    {
+      "evidence": "Fabricated assertion fixture only; not a model result or profitability estimate",
+      "name": "candidate_gate_has_a_synthetic_passing_boundary",
+      "passed": true
+    },
+    {
+      "evidence": "Exposure is mandatory",
+      "name": "unknown_exposure_cannot_become_candidate",
+      "passed": true
+    },
+    {
+      "evidence": "Execution evidence is mandatory",
+      "name": "normalized_quotes_do_not_certify_execution",
+      "passed": true
+    },
+    {
+      "evidence": "Mock input metadata only; load_inputs patched, no historical rows loaded",
+      "name": "validate_always_assigns_unknown_exposure",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "final_days": 273,
+        "slots_per_base": 38,
+        "two_base_trade_ceiling": 76
+      },
+      "name": "weekly_options_have_38_completed_entry_slots",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "continuous_fixture_trades": 76,
+        "groups": 1
+      },
+      "name": "touching_weekly_positions_merge_transitively",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "best_separated_groups": 19,
+        "proof": "Equal weekly entry grid and at least 7-day hold: each later group must skip the next touching slot. Additional assets cannot split a component.",
+        "required": 20
+      },
+      "name": "weekly_options_have_at_most_19_separated_groups",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "contract_not_changed": true,
+        "positive_gap_groups": 2,
+        "touching_groups": 1
+      },
+      "name": "strict_endpoint_rule_is_visible",
+      "passed": true
+    },
+    {
+      "evidence": "Two non-overlapping intraday positions",
+      "name": "same_entry_day_is_not_two_independent_groups",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "final_days": 273,
+        "holding_days": 30,
+        "required": 30,
+        "upper_bound": 9
+      },
+      "name": "serial_lending_sample_ceiling_is_nine",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "canonical_economic_base_share": 1.0,
+        "note": "Synthetic naming counterexample, not four independent assets",
+        "raw_symbol_share": 0.25
+      },
+      "name": "symbol_aliases_can_hide_economic_concentration",
+      "passed": true
+    },
+    {
+      "evidence": {
+        "adjusted_p": 0.02,
+        "family_size": 20,
+        "submitted_tests": 1
+      },
+      "name": "blocked_models_do_not_shrink_holm_family",
+      "passed": true
+    }
+  ],
+  "unknown_feasibility_models": [
+    "relative_strength",
+    "trend_pullback",
+    "structure_break",
+    "normalized_line",
+    "book_continue",
+    "book_reclaim",
+    "funding_carry",
+    "funding_cross",
+    "spot_dislocation",
+    "basis_convergence",
+    "fixed_grid",
+    "gap_continue",
+    "gap_fade",
+    "wallet_follow"
+  ]
+}
