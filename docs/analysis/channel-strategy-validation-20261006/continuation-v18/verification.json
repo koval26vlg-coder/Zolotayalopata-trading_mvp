@@ -1,0 +1,20 @@
+{
+  "crc_verified_files": 4,
+  "diagnostic_pairs": 12696,
+  "dispositions": {
+    "ACCEPTED": 12753,
+    "DUPLICATE_NOT_APPLIED": 354,
+    "INVALID_RECORD_INVALIDATED": 3,
+    "LATE_NOT_APPLIED": 130,
+    "TIME_CONFLICT_INVALIDATED": 13,
+    "UPDATE_REGRESSION_INVALIDATED": 4
+  },
+  "evidence_index_sealing": "Verification record precedes immutable evidence index; final readback verifies that index",
+  "missing_leg_frames": 58,
+  "network_requests": 0,
+  "parent_evidence_files_verified": 16,
+  "real_data_evaluation_run": false,
+  "runtime_hash": "f3dcc73efb368406c962868520206344569c516c80d45f427812e6a91c510e59",
+  "status": "VERIFIED",
+  "tests_passed": 213
+}

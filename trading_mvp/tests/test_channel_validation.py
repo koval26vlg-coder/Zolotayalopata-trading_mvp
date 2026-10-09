@@ -2184,5 +2184,152 @@ class HistDataMonthTests(unittest.TestCase):
         with self.assertRaises(ValueError): verify_chunks(broken)
 
 
+class GatePairingTests(unittest.TestCase):
+    START = 1672531200000000
+
+    def book(self, seconds, update=None, price=100):
+        return dict(current=self.START//1000+seconds*1000,
+                    update=self.START//1000+(seconds if update is None else update)*1000,
+                    bids=[[str(price), '2']], asks=[[str(price+1), '3']])
+
+    def pair(self, spot, perp, mutate=None, **kwargs):
+        import gzip
+        from channel_validation.gate_pairing import pair_archives
+        with tempfile.TemporaryDirectory() as temp:
+            specs = []
+            for market, records in [('spot', spot), ('futures_usdt', perp)]:
+                converted = []
+                for item in records:
+                    if isinstance(item, bytes):
+                        converted.append(item)
+                        continue
+                    row = dict(item)
+                    if market == 'futures_usdt':
+                        row['current'] /= 1000
+                        row['update'] /= 1000
+                        for side in ('bids', 'asks'):
+                            row[side] = [dict(p=p, s=s) for p, s in row[side]]
+                    converted.append(json.dumps(row).encode()+b'\n')
+                path = Path(temp)/(market+'.gz')
+                path.write_bytes(gzip.compress(b''.join(converted), mtime=0))
+                specs.append(dict(path=str(path), sha256=file_hash(path), bytes=path.stat().st_size,
+                                  market=market, kind='orderbooks_slice', symbol='BTC_USDT', month='202301'))
+            if mutate:
+                mutate(specs)
+            return pair_archives(specs, **kwargs)
+
+    def test_pairing_feature_present(self):
+        from importlib.util import find_spec
+        self.assertIsNotNone(find_spec('channel_validation.gate_pairing'))
+
+    def test_no_future_leg_and_age_not_fabricated_availability(self):
+        r = self.pair([self.book(1), self.book(5)], [self.book(3)])
+        self.assertEqual(1, r['missing_leg_frames'])
+        self.assertEqual(2, r['paired_frames'])
+        self.assertEqual(2000000, r['age_us']['spot']['capture']['max'])
+        for frame in r['samples']:
+            for leg in frame['legs'].values():
+                self.assertLessEqual(leg['event_time_us'], frame['synthetic_frontier_us'])
+                self.assertNotIn('available_at', leg)
+        self.assertFalse(r['eligible_for_evaluation'])
+        self.assertFalse(r['historical_observation_time_verified'])
+
+    def test_duplicate_and_backward_rows_do_not_refresh_or_rollback(self):
+        r = self.pair([self.book(2), self.book(1), self.book(2), self.book(8)], [self.book(7)])
+        self.assertEqual(1, r['sources']['spot']['dispositions']['LATE_NOT_APPLIED'])
+        self.assertEqual(1, r['sources']['spot']['dispositions']['DUPLICATE_NOT_APPLIED'])
+        self.assertEqual(5000000, r['age_us']['spot']['capture']['max'])
+        self.assertEqual(2, r['paired_frames'])
+
+    def test_same_timestamp_different_content_invalidates_until_newer(self):
+        r = self.pair([self.book(1), self.book(1, price=99), self.book(3)], [self.book(1)])
+        self.assertEqual(1, r['sources']['spot']['dispositions']['TIME_CONFLICT_INVALIDATED'])
+        self.assertEqual(1, r['paired_frames'])
+        self.assertEqual(self.START+3000000, r['samples'][0]['synthetic_frontier_us'])
+
+    def test_invalid_record_blocks_carry_and_duplicate_cannot_restore(self):
+        r = self.pair([self.book(1), b'{"label":"SERVER_ERROR"}\n', self.book(1), self.book(4)],
+                      [self.book(1), self.book(2)])
+        self.assertEqual(1, r['sources']['spot']['dispositions']['INVALID_RECORD_INVALIDATED'])
+        self.assertEqual(1, r['paired_frames'])
+        self.assertEqual(self.START+4000000, r['samples'][0]['synthetic_frontier_us'])
+
+    def test_update_age_and_regression_separate_from_capture_age(self):
+        r = self.pair([self.book(2, update=1), self.book(7, update=1)], [self.book(7)])
+        self.assertEqual(0, r['age_us']['spot']['capture']['max'])
+        self.assertEqual(6000000, r['age_us']['spot']['exchange_update']['max'])
+        r = self.pair([self.book(2), self.book(3, update=1), self.book(5)], [self.book(4)])
+        self.assertEqual(1, r['sources']['spot']['dispositions']['UPDATE_REGRESSION_INVALIDATED'])
+        self.assertEqual(1, r['paired_frames'])
+
+    def test_stale_quote_reported_not_refreshed_or_expired_by_invented_threshold(self):
+        r = self.pair([self.book(1)], [self.book(2), self.book(100)])
+        self.assertEqual(99000000, r['age_us']['spot']['capture']['max'])
+        self.assertEqual(2, r['paired_frames'])
+        self.assertIsNone(r['freshness_acceptance_threshold_us'])
+
+    def test_ties_grouped_blank_lines_ignored_and_content_hash_deterministic(self):
+        rows = [self.book(1), self.book(2)]
+        r = self.pair(rows, [b'\n', *rows])
+        self.assertEqual(2, r['paired_frames'])
+        self.assertEqual(1, r['sources']['futures_usdt']['blank_lines'])
+        self.assertEqual(r, self.pair(rows, [b'\n', *rows]))
+        changed = self.pair([self.book(1, price=99), self.book(2)], [b'\n', *rows])
+        self.assertEqual(r['paired_frames'], changed['paired_frames'])
+        self.assertNotEqual(r['pair_sequence_hash'], changed['pair_sequence_hash'])
+
+    def test_bounds_stop_and_out_of_window_fail_closed(self):
+        with self.assertRaises(ValueError): self.pair([self.book(3600)], [self.book(1)])
+        with self.assertRaises(ValueError): self.pair([self.book(1)], [self.book(1)], max_decoded_bytes=5)
+        with self.assertRaises(ValueError): self.pair([self.book(1)]*2, [self.book(1)], max_rows=1)
+        def stop(): raise TimeoutError('synthetic stop')
+        with self.assertRaises(TimeoutError): self.pair([self.book(1)], [self.book(1)], check=stop)
+
+    def test_missing_update_is_not_fresh(self):
+        row = self.book(1)
+        del row['update']
+        r = self.pair([row], [self.book(1)])
+        self.assertEqual(0, r['paired_frames'])
+        self.assertEqual(1, r['sources']['spot']['dispositions']['MISSING_UPDATE_INVALIDATED'])
+
+    def test_crc_truncation_and_changed_input_hash_never_return_complete(self):
+        def mutate(specs, mode):
+            path = Path(specs[0]['path'])
+            raw = bytearray(path.read_bytes())
+            if mode == 'crc': raw[-8] ^= 1
+            else: del raw[-5:]
+            path.write_bytes(raw)
+            if mode != 'hash':
+                specs[0].update(sha256=file_hash(path), bytes=len(raw))
+        for mode in ('crc', 'truncated', 'hash'):
+            with self.assertRaises((ValueError, EOFError, OSError)):
+                self.pair([self.book(1)], [self.book(1)], mutate=lambda s: mutate(s, mode))
+
+    def test_wrong_symbol_month_market_and_schema_rejected(self):
+        for key, value in [('symbol', 'ETH_USDT'), ('month', '202501'),
+                           ('market', 'spot'), ('kind', 'funding_applies')]:
+            with self.assertRaises(ValueError):
+                self.pair([self.book(1)], [self.book(1)], mutate=lambda s: s[1].update({key: value}))
+
+    def test_changed_input_during_scan_and_no_alternate_run_namespace(self):
+        from channel_validation.gate_pairing import pair_archives, audit
+        with tempfile.TemporaryDirectory() as temp:
+            with self.assertRaises(ValueError): audit(Path(temp)/'renamed', lambda: None)
+        def mutate(specs):
+            calls = 0
+            def check():
+                nonlocal calls
+                calls += 1
+                if calls == 4:
+                    path = Path(specs[0]['path'])
+                    path.write_bytes(path.read_bytes()+b'x')
+            with self.assertRaises((ValueError, OSError)):
+                pair_archives(specs, check=check)
+            # Restore exact test bytes for the outer fixture read.
+            path = Path(specs[0]['path'])
+            path.write_bytes(path.read_bytes()[:-1])
+        self.pair([self.book(1)], [self.book(1)], mutate=mutate)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

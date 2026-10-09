@@ -1,0 +1,75 @@
+{
+  "files": [
+    {
+      "bytes": 1401,
+      "file": "data-readiness.json",
+      "sha256": "e80ba07debdb33dc1bcd6c1136a84358c9b55af05c792c5abe6a74ce8d259c8e"
+    },
+    {
+      "bytes": 4080,
+      "file": "local-input-plan.json",
+      "sha256": "d54ffaf182365fb68b18c56db2bb74a73eb30edde7427c3e80eb1609de656997"
+    },
+    {
+      "bytes": 20134,
+      "file": "matrix.json",
+      "sha256": "01c6eb59dec6e65b39b680f1dcd958a4e6e41d2a9368fd2c3a0844e673bccf54"
+    },
+    {
+      "bytes": 9293,
+      "file": "matrix.md",
+      "sha256": "1018debfecec861146dc5c36b04a82fcede4260e56fb1241c0ea7edcd1deefa8"
+    },
+    {
+      "bytes": 20439,
+      "file": "model-input-queue.json",
+      "sha256": "3046fa69671deb59e944b842daef524f8e08f37e97c3bc699975eabef1daf12c"
+    },
+    {
+      "bytes": 27329,
+      "file": "pairing-audit.json",
+      "sha256": "dd0d406548bbb50e55e4835b730eb06c2ec209f727e8cca187447ed327329bd0"
+    },
+    {
+      "bytes": 263,
+      "file": "pairing-completion.json",
+      "sha256": "5ab29db2dc212505a7a7a4f481277ebe9eb0b70206070af18cb2d0579dd67ec5"
+    },
+    {
+      "bytes": 3224,
+      "file": "publication-provenance.json",
+      "sha256": "b55aba8261c269373c9e22c5d62eccee300222869db72fef67b691898121587b"
+    },
+    {
+      "bytes": 6682,
+      "file": "README.md",
+      "sha256": "20e6622cae3962232b10a8b84f6f038d5dbc6f0004000b65d18cfe8618ed4718"
+    },
+    {
+      "bytes": 4827,
+      "file": "runtime-rebind.json",
+      "sha256": "d30ec9de1fc6297fb014d9226041338e71b678f32b79ae472b0c0cdd1ce4af61"
+    },
+    {
+      "bytes": 257,
+      "file": "test-completion.json",
+      "sha256": "9671f750971102bcba33059ac4959746d7cf9fb3308beb9ebaa2f5cc62a6d5b6"
+    },
+    {
+      "bytes": 4101,
+      "file": "tests.json",
+      "sha256": "3db5e31d1c423bead6f82b3dd0ca5a6f38fbf040e6ce1736d65b1d28f5d31991"
+    },
+    {
+      "bytes": 667,
+      "file": "verification.json",
+      "sha256": "1e4ea98fc5968632d689ce2f1db57e38c6340ecab595caddd06922ea528511c6"
+    },
+    {
+      "bytes": 8063,
+      "file": "verify_checkpoint.py",
+      "sha256": "a9567c3eebfd612781cd9429deb7151bc96dc4ea884a842d68ef8ebe058bbeaa"
+    }
+  ],
+  "schema": "checkpoint_evidence_index_v1"
+}

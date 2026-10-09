@@ -1,0 +1,593 @@
+{
+  "audit_hash": "ac0edec632e3e8d3ce8645ce613a004dcb39a1eaaa219842ad6e2c3e8efb9227",
+  "eligible_for_evaluation": false,
+  "historical_observation_time_verified": false,
+  "input_binding_hash": "41475362e6f6eb15dfb9c0f1b37be21c94f3c36397be9f06cb6135891d2b13f8",
+  "metrics": null,
+  "network_requests": 0,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "reports": [
+    {
+      "age_us": {
+        "futures_usdt": {
+          "capture": {
+            "count": 6360,
+            "max": 3613000,
+            "min": 0,
+            "p50": 0,
+            "p95": 962000,
+            "p99": 1060000
+          },
+          "exchange_update": {
+            "count": 6360,
+            "max": 3629000,
+            "min": 0,
+            "p50": 21000,
+            "p95": 969000,
+            "p99": 1067000
+          }
+        },
+        "spot": {
+          "capture": {
+            "count": 6360,
+            "max": 2957000,
+            "min": 0,
+            "p50": 49000,
+            "p95": 1450000,
+            "p99": 1968000
+          },
+          "exchange_update": {
+            "count": 6360,
+            "max": 2971000,
+            "min": 0,
+            "p50": 60000,
+            "p95": 1460000,
+            "p99": 1973000
+          }
+        }
+      },
+      "eligible_for_evaluation": false,
+      "freshness_acceptance_threshold_us": null,
+      "historical_observation_time_verified": false,
+      "ignored_events": 264,
+      "metrics": null,
+      "missing_leg_frames": 43,
+      "month": "202301",
+      "pair_sequence_hash": "c8bbe56624bb43ce1af8a99ca88a9d519bb45e9bbdc41605335ad6df5c6f5621",
+      "paired_frames": 6360,
+      "policy": {
+        "age": "Separate current and exchange update age at state-changing frames; not time weighted",
+        "duplicate": "Exact normalized record hash; do not refresh or restore quote",
+        "eligible_for_evaluation": false,
+        "eof": "No extrapolated events; retained leg may age as other stream advances; no certified freshness",
+        "exchange_update": "Missing or regressing update invalidates; newer current must not disguise old update",
+        "freshness_acceptance_threshold_us": null,
+        "frontier": "Synthetic max(current timestamps seen, window start), not historical arrival time",
+        "historical_observation_time_verified": false,
+        "invalid": "Unknown-time error invalidates at preceding frontier; earliest conservative diagnostic boundary",
+        "late": "current below source frontier: keep prior state, do not apply late record",
+        "same_time_conflict": "Different record at accepted current: invalidate until strictly newer record",
+        "source_order": "Never sort, interpolate or rewrite input records",
+        "tie": "Process all same-frontier source events before emitting at most one frame"
+      },
+      "samples": [
+        {
+          "eligible_for_evaluation": false,
+          "legs": {
+            "futures_usdt": {
+              "capture_age_us": 344000,
+              "event_time_us": 1672531203667000,
+              "exchange_update_us": 1672531203663000,
+              "line": 1,
+              "source_row_hash": "ea1d596ffae4fbb2e5ab8b5ae59b578a1f61b4daeb0e7947138544b491e8f647",
+              "update_age_us": 348000
+            },
+            "spot": {
+              "capture_age_us": 0,
+              "event_time_us": 1672531204011000,
+              "exchange_update_us": 1672531203994000,
+              "line": 3,
+              "source_row_hash": "9be3f4af020aa6ea19319c9be0fd6b2143808d0c30479a07048a1569ec25461f",
+              "update_age_us": 17000
+            }
+          },
+          "synthetic_frontier_us": 1672531204011000
+        },
+        {
+          "eligible_for_evaluation": false,
+          "legs": {
+            "futures_usdt": {
+              "capture_age_us": 0,
+              "event_time_us": 1672531204743000,
+              "exchange_update_us": 1672531204716000,
+              "line": 3,
+              "source_row_hash": "c90c9d47f877fd4f1afd60bb285d5244fb67a3487991d010aef4c9a205b7ff42",
+              "update_age_us": 27000
+            },
+            "spot": {
+              "capture_age_us": 732000,
+              "event_time_us": 1672531204011000,
+              "exchange_update_us": 1672531203994000,
+              "line": 3,
+              "source_row_hash": "9be3f4af020aa6ea19319c9be0fd6b2143808d0c30479a07048a1569ec25461f",
+              "update_age_us": 749000
+            }
+          },
+          "synthetic_frontier_us": 1672531204743000
+        },
+        {
+          "eligible_for_evaluation": false,
+          "legs": {
+            "futures_usdt": {
+              "capture_age_us": 338000,
+              "event_time_us": 1672531204743000,
+              "exchange_update_us": 1672531204716000,
+              "line": 3,
+              "source_row_hash": "c90c9d47f877fd4f1afd60bb285d5244fb67a3487991d010aef4c9a205b7ff42",
+              "update_age_us": 365000
+            },
+            "spot": {
+              "capture_age_us": 0,
+              "event_time_us": 1672531205081000,
+              "exchange_update_us": 1672531205062000,
+              "line": 4,
+              "source_row_hash": "71a5ca5e9961cc8645766d9997cfd908bb5550a55ca0dbce1ab072978c47e196",
+              "update_age_us": 19000
+            }
+          },
+          "synthetic_frontier_us": 1672531205081000
+        },
+        {
+          "eligible_for_evaluation": false,
+          "legs": {
+            "futures_usdt": {
+              "capture_age_us": 0,
+              "event_time_us": 1672534799229000,
+              "exchange_update_us": 1672534799218000,
+              "line": 6677,
+              "source_row_hash": "a2c6aa339aef3be4c4345b8ca0811898298522a2f587b38bfca1d4b266c6805a",
+              "update_age_us": 11000
+            },
+            "spot": {
+              "capture_age_us": 476000,
+              "event_time_us": 1672534798753000,
+              "exchange_update_us": 1672534798752000,
+              "line": 3341,
+              "source_row_hash": "a2e71211b29480ddb495f477362d72c0e11160dfcbd404123955457d835b317a",
+              "update_age_us": 477000
+            }
+          },
+          "synthetic_frontier_us": 1672534799229000
+        }
+      ],
+      "schema": "gate_conditional_pair_diagnostic_v1",
+      "sources": {
+        "futures_usdt": {
+          "anomaly_examples": [],
+          "blank_lines": 3339,
+          "decoded_bytes": 1956630,
+          "decoded_sha256": "5d0cd68b138d5debf29f8feab00d456788cb18c83d0a5f538e7071a41c016bee",
+          "dispositions": {
+            "ACCEPTED": 3339
+          },
+          "event_sequence_hash": "bd00976b1849c5189b1dd70ee6281c26cdaa771a7bb568284b6c2b4f74a8000b",
+          "gzip_crc_verified": true,
+          "physical_lines": 6678
+        },
+        "spot": {
+          "anomaly_examples": [
+            {
+              "disposition": "TIME_CONFLICT_INVALIDATED",
+              "frontier_us": 1672531202443000,
+              "line": 2,
+              "raw_line_sha256": "f9d565841c15fd3fdb3ae70c673cfca20907ece8bed45ab0fcbaefce923017e0",
+              "source_row_hash": "3ad7a9745e4c1adba999f0f5c942c9d52bbb774bac2ca477331e0d0adf76c8d9"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1672531221344000,
+              "line": 19,
+              "raw_line_sha256": "cff8d60d3705375af95136fad4448012e88a2ed8cddc7737f51ab30cfcfb1acc",
+              "source_row_hash": "9859db82dbc153dee27013b41a3cf5621c2cbf7d2ba7163691cf6af46d2317d6"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1672531234155000,
+              "line": 31,
+              "raw_line_sha256": "e29cca5539853439ae9fd0878c100399abf4973106b9716110464bbedfb3c0b8",
+              "source_row_hash": "e408fbfab998e0e2fed599c1b10ebbee907f1c14538b81b5cf2b0f8a26e1c17b"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1672531241167000,
+              "line": 38,
+              "raw_line_sha256": "e4a0030eb56947f41d66cd4e1bdcd429820243f4763495e013c5d4305c48df16",
+              "source_row_hash": "644321969e154f87a754508e22613994c5db97ff6228b042bacb6cea1e971d0e"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1672531245328000,
+              "line": 42,
+              "raw_line_sha256": "e05b134d3d2408a0d197cb444893eecb3bf4bee9ab65a7d5b3ac8059b79ca6f6",
+              "source_row_hash": "33b7a24bb71d25dbe70d950861c69d8076678f2b6785049fdb2bf741576cfe97"
+            },
+            {
+              "disposition": "TIME_CONFLICT_INVALIDATED",
+              "frontier_us": 1672531254108000,
+              "line": 50,
+              "raw_line_sha256": "f70d3b2211e0f4a64edefa22d209b3a5c7dfbe94fee563b4c7f4e3042563eb22",
+              "source_row_hash": "97f9ab31114a344450fbdccdbfbcfd16533af8d2f94bd38931fe7589b381cdf0"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1672531269173000,
+              "line": 64,
+              "raw_line_sha256": "6ec071a4ce4a82d5bd77c07c9f63527d6ca7036355343ee71122c4f8bbefd6f0",
+              "source_row_hash": "ad8cb8364dda528d7ea9539ec0aade3639c2ee739b8822332ee5fa80ee7d878d"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1672531278585000,
+              "line": 73,
+              "raw_line_sha256": "c97e35c347d9f10f672829a7e401ed71a4d8e89e0224e3ba99da1f3fd585420c",
+              "source_row_hash": "1c3acb5c25a5a542c798bcfabc569267d3527b908f6592bafd6de3156d2a279a"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1672531283394000,
+              "line": 78,
+              "raw_line_sha256": "eeaeb2b4fe674e7c7baf260012a6450103f22975d76f22dcf82fc6d366103bb3",
+              "source_row_hash": "a1c0e8221d92cf8caedeac529454ad19fc241b5eac148afa88327a9230273ade"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1672531288385000,
+              "line": 83,
+              "raw_line_sha256": "934a3b8e4cc06f8e4d6c902ccbdf4d68f8e07f77ce8fdc10e02ec74d47b9ef96",
+              "source_row_hash": "4fcdd5ced9f7807739af46e8115039fc4b4ac1ff749a568a48e912af10456201"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1672531299163000,
+              "line": 93,
+              "raw_line_sha256": "294181d7f26bc4016c6e9067c0c0bea8aae36a59b4d30f8ba1dcc21b0c902e01",
+              "source_row_hash": "0c1950342cada04a1dc1ccc41fe59a8757427301b71e52b1884060ba40bdb400"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1672531304898000,
+              "line": 98,
+              "raw_line_sha256": "9d1e151efe69813c08c45acee9914cc3373281eea563e45a758b2851bf07f5e4",
+              "source_row_hash": "1b8a97b88771147be63321afdad2b4152cd1b6995eb3d90ba10e02b66d5daced"
+            }
+          ],
+          "blank_lines": 0,
+          "decoded_bytes": 2987870,
+          "decoded_sha256": "6f5d47fd1646475e534a561ba6f2a3b681a2af88c734c10106a11ff177abbc8d",
+          "dispositions": {
+            "ACCEPTED": 3062,
+            "DUPLICATE_NOT_APPLIED": 190,
+            "INVALID_RECORD_INVALIDATED": 3,
+            "LATE_NOT_APPLIED": 74,
+            "TIME_CONFLICT_INVALIDATED": 9,
+            "UPDATE_REGRESSION_INVALIDATED": 3
+          },
+          "event_sequence_hash": "ecda963a24a997a8258a4d0173b801e86cf01d91766590b6ed05f09002538724",
+          "gzip_crc_verified": true,
+          "physical_lines": 3341
+        }
+      },
+      "state_change_frames": 6403,
+      "symbol": "BTC_USDT"
+    },
+    {
+      "age_us": {
+        "futures_usdt": {
+          "capture": {
+            "count": 6336,
+            "max": 4165000,
+            "min": 0,
+            "p50": 0,
+            "p95": 980000,
+            "p99": 1064000
+          },
+          "exchange_update": {
+            "count": 6336,
+            "max": 4198000,
+            "min": 0,
+            "p50": 39000,
+            "p95": 991000,
+            "p99": 1079000
+          }
+        },
+        "spot": {
+          "capture": {
+            "count": 6336,
+            "max": 2851000,
+            "min": 0,
+            "p50": 51000,
+            "p95": 1469000,
+            "p99": 1991000
+          },
+          "exchange_update": {
+            "count": 6336,
+            "max": 2861000,
+            "min": 0,
+            "p50": 95000,
+            "p95": 1493000,
+            "p99": 2012000
+          }
+        }
+      },
+      "eligible_for_evaluation": false,
+      "freshness_acceptance_threshold_us": null,
+      "historical_observation_time_verified": false,
+      "ignored_events": 220,
+      "metrics": null,
+      "missing_leg_frames": 15,
+      "month": "202501",
+      "pair_sequence_hash": "05a0b356891283cba821c28ec53d12241441c5e47255cb505b7416f1b0f23d90",
+      "paired_frames": 6336,
+      "policy": {
+        "age": "Separate current and exchange update age at state-changing frames; not time weighted",
+        "duplicate": "Exact normalized record hash; do not refresh or restore quote",
+        "eligible_for_evaluation": false,
+        "eof": "No extrapolated events; retained leg may age as other stream advances; no certified freshness",
+        "exchange_update": "Missing or regressing update invalidates; newer current must not disguise old update",
+        "freshness_acceptance_threshold_us": null,
+        "frontier": "Synthetic max(current timestamps seen, window start), not historical arrival time",
+        "historical_observation_time_verified": false,
+        "invalid": "Unknown-time error invalidates at preceding frontier; earliest conservative diagnostic boundary",
+        "late": "current below source frontier: keep prior state, do not apply late record",
+        "same_time_conflict": "Different record at accepted current: invalidate until strictly newer record",
+        "source_order": "Never sort, interpolate or rewrite input records",
+        "tie": "Process all same-frontier source events before emitting at most one frame"
+      },
+      "samples": [
+        {
+          "eligible_for_evaluation": false,
+          "legs": {
+            "futures_usdt": {
+              "capture_age_us": 0,
+              "event_time_us": 1735689602168000,
+              "exchange_update_us": 1735689602167000,
+              "line": 1,
+              "source_row_hash": "e2b07f8464acf410010b3fe799e1da700899ca8b92b2046fea39fbde8becf78c",
+              "update_age_us": 1000
+            },
+            "spot": {
+              "capture_age_us": 1277000,
+              "event_time_us": 1735689600891000,
+              "exchange_update_us": 1735689600833000,
+              "line": 1,
+              "source_row_hash": "42c2669485f0e45b7cc4af6d30203901f2effc4d77c456568a89f2e0419e4314",
+              "update_age_us": 1335000
+            }
+          },
+          "synthetic_frontier_us": 1735689602168000
+        },
+        {
+          "eligible_for_evaluation": false,
+          "legs": {
+            "futures_usdt": {
+              "capture_age_us": 100000,
+              "event_time_us": 1735689602168000,
+              "exchange_update_us": 1735689602167000,
+              "line": 1,
+              "source_row_hash": "e2b07f8464acf410010b3fe799e1da700899ca8b92b2046fea39fbde8becf78c",
+              "update_age_us": 101000
+            },
+            "spot": {
+              "capture_age_us": 0,
+              "event_time_us": 1735689602268000,
+              "exchange_update_us": 1735689602261000,
+              "line": 2,
+              "source_row_hash": "8153377169ad79c5fb774b94b583923bcc2a945f643d80d29336624e5fc95645",
+              "update_age_us": 7000
+            }
+          },
+          "synthetic_frontier_us": 1735689602268000
+        },
+        {
+          "eligible_for_evaluation": false,
+          "legs": {
+            "futures_usdt": {
+              "capture_age_us": 0,
+              "event_time_us": 1735689603309000,
+              "exchange_update_us": 1735689603270000,
+              "line": 2,
+              "source_row_hash": "4616ab947c9784cef8977fc5840ce157bc273aa967b05833d5a69f77e7aff104",
+              "update_age_us": 39000
+            },
+            "spot": {
+              "capture_age_us": 1041000,
+              "event_time_us": 1735689602268000,
+              "exchange_update_us": 1735689602261000,
+              "line": 2,
+              "source_row_hash": "8153377169ad79c5fb774b94b583923bcc2a945f643d80d29336624e5fc95645",
+              "update_age_us": 1048000
+            }
+          },
+          "synthetic_frontier_us": 1735689603309000
+        },
+        {
+          "eligible_for_evaluation": false,
+          "legs": {
+            "futures_usdt": {
+              "capture_age_us": 0,
+              "event_time_us": 1735693199892000,
+              "exchange_update_us": 1735693199881000,
+              "line": 3315,
+              "source_row_hash": "3c624e94fcce3e631c0a83c058050b84bdcd7b679d1b2f2140f59a4414e5dd09",
+              "update_age_us": 11000
+            },
+            "spot": {
+              "capture_age_us": 1694000,
+              "event_time_us": 1735693198198000,
+              "exchange_update_us": 1735693198148000,
+              "line": 3262,
+              "source_row_hash": "79df07b3573efe4ca1fbbf8f93a3c6263dff35de3bac6e9fc3eee3ee0a14e28e",
+              "update_age_us": 1744000
+            }
+          },
+          "synthetic_frontier_us": 1735693199892000
+        }
+      ],
+      "schema": "gate_conditional_pair_diagnostic_v1",
+      "sources": {
+        "futures_usdt": {
+          "anomaly_examples": [],
+          "blank_lines": 0,
+          "decoded_bytes": 1827835,
+          "decoded_sha256": "8a95af6d72cca8000618ef3c8de3b2059c91132193f2f0f342e3b5e9ae978cfc",
+          "dispositions": {
+            "ACCEPTED": 3315
+          },
+          "event_sequence_hash": "9b0cc119620fbe7ba96fe7467cf45e2cee5898d0c46ca3bfe0c85882a902a06d",
+          "gzip_crc_verified": true,
+          "physical_lines": 3315
+        },
+        "spot": {
+          "anomaly_examples": [
+            {
+              "disposition": "LATE_NOT_APPLIED",
+              "frontier_us": 1735689607405000,
+              "line": 7,
+              "raw_line_sha256": "942f37da32f70112e27f93217151db45a84ad8b7938d60bcc4c43354ea6facdc",
+              "source_row_hash": "a98f8121ae7702deef32235ed801686f227614de8663c5d95dc62c173e0be6fa"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1735689623119000,
+              "line": 21,
+              "raw_line_sha256": "5fecd3e3b4a8292b953267f86c4071c4cbc231456c0059b03fc2b15c895f5c1d",
+              "source_row_hash": "e289ba9256696f63b8b4ea7d804e282a87442cd2199bf8d0364c6f828c359f12"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1735689694897000,
+              "line": 86,
+              "raw_line_sha256": "2c5a3e7a945c908a445f2fbbbabd44cc8b2897e3bfb2b15330118e925e97b129",
+              "source_row_hash": "7cd11a9a6066211fe6fd704ac69d5bd39e76effff092493f6d9e02a76d862a06"
+            },
+            {
+              "disposition": "TIME_CONFLICT_INVALIDATED",
+              "frontier_us": 1735689698961000,
+              "line": 90,
+              "raw_line_sha256": "ad9e413c5ca94a65356d53d03007ed003f3344a88d309dacaf9284dfe9e67f86",
+              "source_row_hash": "b107aa36bae0eb28f76405a371e300261b7b08693274158899d465bf153c2f74"
+            },
+            {
+              "disposition": "LATE_NOT_APPLIED",
+              "frontier_us": 1735689708381000,
+              "line": 98,
+              "raw_line_sha256": "4286bade1d2afbbc697fd54194f95eb960c109e75b16dd82ab1f796a28d1d57d",
+              "source_row_hash": "bad751d1198319b8f20c5f3cc1852e2deda11ab7c1b2a434d2cc2075089af818"
+            },
+            {
+              "disposition": "LATE_NOT_APPLIED",
+              "frontier_us": 1735689730175000,
+              "line": 118,
+              "raw_line_sha256": "b507efdf9e7f5922ede00ca453b7694884076a1969b13b8944c76353fb5fbc85",
+              "source_row_hash": "a152c5e59feb90afa42efe98d557b19a4abd8c8d53433bb40a1dea96abd3f5f7"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1735689737164000,
+              "line": 124,
+              "raw_line_sha256": "8b4b0fd56b2c4e914f8c8d21e0d5d669ede93d8658a09ae07e629f7a4104c3aa",
+              "source_row_hash": "83b4b23fb47a638fdc07ef900b0817efd8b841ca5f61de1f4a7ca0fc2489474a"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1735689742677000,
+              "line": 129,
+              "raw_line_sha256": "6304297f824f50872e72c7219560194b884fe85885fdf05d2c335c268b94b469",
+              "source_row_hash": "15a058abf714a6d829a924cea04d419d7f1e8a261315ab2af0ca58c34b8c8724"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1735689748109000,
+              "line": 134,
+              "raw_line_sha256": "498a15e6c82fd144f5dad9689f4e4c1c019570ca1aa3fbcece882109b2a2e80d",
+              "source_row_hash": "d0bb3560f340f26b09f3bc5ef0a66152f9e46888d71cb3e0c1b243285bafe984"
+            },
+            {
+              "disposition": "LATE_NOT_APPLIED",
+              "frontier_us": 1735689764627000,
+              "line": 149,
+              "raw_line_sha256": "dc0065613bcb1b547147f680a8e67d9e3a43f4386e9ff399d274fa0ad8623b9a",
+              "source_row_hash": "4712207f5bf089b2ecf3cef505ebcc21221bb6be63397c182bad46aa0e350c8d"
+            },
+            {
+              "disposition": "DUPLICATE_NOT_APPLIED",
+              "frontier_us": 1735689768793000,
+              "line": 153,
+              "raw_line_sha256": "f1f0baa389d5e6c6ef29987c5ed678e121b4497dd6e79eb8ff68820d9724d9a4",
+              "source_row_hash": "1c549544923f173d421500ab3eed28d3955a4ecf31ae4da9fad14e77d7770005"
+            },
+            {
+              "disposition": "LATE_NOT_APPLIED",
+              "frontier_us": 1735689771921000,
+              "line": 156,
+              "raw_line_sha256": "fd034d20a45aaa3d59a9c4ccf6e09019478da3303aca2e7b94f155b558446851",
+              "source_row_hash": "5dd7b07b029d4c8ca58e628fc435d6d14d5f87a9cc17c777088d408b081bb45f"
+            }
+          ],
+          "blank_lines": 0,
+          "decoded_bytes": 3092239,
+          "decoded_sha256": "fe6e2636e25a3e620963527980d6ddfd0a37caf49e05c6f0c29b3aa662ee3647",
+          "dispositions": {
+            "ACCEPTED": 3037,
+            "DUPLICATE_NOT_APPLIED": 164,
+            "LATE_NOT_APPLIED": 56,
+            "TIME_CONFLICT_INVALIDATED": 4,
+            "UPDATE_REGRESSION_INVALIDATED": 1
+          },
+          "event_sequence_hash": "c9f030ff76d371f2a16b8b4e2aba4661c3c9472dbe767ca36a0a5c15affb1c70",
+          "gzip_crc_verified": true,
+          "physical_lines": 3262
+        }
+      },
+      "state_change_frames": 6351,
+      "symbol": "BTC_USDT"
+    }
+  ],
+  "runtime_binding": {
+    "tools/check_active_run_gate.ps1": "a3b1b735dba6681b18fdb2e9be637079a22391123eced0a316dc2b76855193fd",
+    "tools/check_trading_mvp_autopilot.ps1": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+    "tools/run_channel_strategy_validation_visible.ps1": "9e188fa55cec86f78d42b05d9e16e88c0f28f7d57b7d4cc6d7893f73c90a7ae6",
+    "trading_mvp/src/channel_validation/__init__.py": "dab9cae823a9b621cc47440d3a73630e9831110efd9f370fe7b689d2206f71e3",
+    "trading_mvp/src/channel_validation/adapters.py": "4868034eda3ce734bb3166402e90743f676263a4e35c5b9d41a1747bd1597f92",
+    "trading_mvp/src/channel_validation/archive_audit.py": "fdbb487dc77de23176751e24f642e487d0da00fe05f83f27b92dcdbbba74124a",
+    "trading_mvp/src/channel_validation/contract.py": "d71f4e1834623bc8ea7234dd561604a26d89f010a2978092c9c9858d5f55465c",
+    "trading_mvp/src/channel_validation/data.py": "d87c540faba04e2c6f8fe6eecdb76a85bf6b9d747c42c01478e70bb328996227",
+    "trading_mvp/src/channel_validation/execution.py": "b8e119584e4b3b5c3abe2da93900711f74a630b0d94b7c570faf6883c35de4ab",
+    "trading_mvp/src/channel_validation/gate_catalog.py": "920183562362062ba516ea3b9859051f9aecad27f5eb8900d9b59716f11af0dd",
+    "trading_mvp/src/channel_validation/gate_history.py": "7297594b274bc6a9fb239be67e23825e55a6db7e45d65133ba252dcc3cde35df",
+    "trading_mvp/src/channel_validation/gate_metadata.py": "f0eaff7d3edd1d9049a835574c69208451d9b99fbd50a214981bce3da581b866",
+    "trading_mvp/src/channel_validation/gate_paired.py": "dd796be51eae60e23d61b25431c400383e6975fafc76a571d6e122fad13f6f4e",
+    "trading_mvp/src/channel_validation/gate_paired_local.py": "b45fbeafd231f8cea6bd335cbae6119f64fffbddee8ed4eb5411981a2eba0f26",
+    "trading_mvp/src/channel_validation/gate_pairing.py": "0eb3fc0c9a74c718652b1d5277d951d3ca7aa70eb9f886a5f46626509091f9e8",
+    "trading_mvp/src/channel_validation/gate_survivorship.py": "85cc2300daa78a51159bcccee84f7f5e5ba290e05dff274ea66b26e2ab68e6f9",
+    "trading_mvp/src/channel_validation/gate_trades.py": "c437567a56bc2697183487bf9adf76465617553f17919486a078ca97fa20b9a0",
+    "trading_mvp/src/channel_validation/gold_history.py": "30052dc72da45730d881a089ce3249bd4652c93fa4305b1c28b864483162f3cc",
+    "trading_mvp/src/channel_validation/histdata.py": "0766d8bf4478387916e684b5d077543a1b244b6f4ea1e5516469fea6cc9d0f18",
+    "trading_mvp/src/channel_validation/histdata_local.py": "d25a94a843cf63b403b1c3bd22a7bc3cd1c5e739b2b05443979a8896893d5b25",
+    "trading_mvp/src/channel_validation/histdata_month.py": "8d99f697b05b9e3b80516242d6ea9207e7c1e2be6708c34b5a1b6052a901137e",
+    "trading_mvp/src/channel_validation/models.py": "9c1f0b142276e2e78e101036192486a603961422a9b1fb8ac4cf2dad532cc193",
+    "trading_mvp/src/channel_validation/okx_acquire.py": "39e5e0c6b0b605cafca91b9f95bfe22e12af46025f2ac2aebadc6f0138281871",
+    "trading_mvp/src/channel_validation/okx_dependencies.py": "3ed27b1e2c805976e9e645024792a3830f7d8bd544cc77bbae0dc665fa5c62bf",
+    "trading_mvp/src/channel_validation/okx_history.py": "24ae82704fa4f6eb77365350848d694eab75d54ca4e777154db46b2b375bb18c",
+    "trading_mvp/src/channel_validation/okx_stream.py": "66f1df2b57673e629b4193995d230b5b1fd861b095a689e3042b953b3aac708f",
+    "trading_mvp/src/channel_validation/portfolio.py": "cb63ff1b53751cec1b248b91c8e70c9686a04259e1f7636bc5be8749025332a4",
+    "trading_mvp/src/channel_validation/runner.py": "e699dd3ccde89915f03e138a0f6fca020100d5d50ae336a5a1ca0afc24ba5c1c",
+    "trading_mvp/src/channel_validation/sources.py": "e30cde7da64c7aefd58711f3678a9c814acef298a901bba8744d095ee87cdd10",
+    "trading_mvp/src/channel_validation/statistics.py": "e4b6f69e9a057f2ec5a7d33813d725f720239207f7728bd9e101a6cb0a2ce65d",
+    "trading_mvp/src/global_market_writer_claim.py": "bc0604267c9d709a17188eb9daf317417d2633bf4c31266f73db33ac2f5066d2",
+    "trading_mvp/tests/test_channel_validation.py": "87449448b2a875ee69c51b2b74976cb73f88d94acf4560e523fba420a213281b"
+  },
+  "schema": "gate_pairing_audit_v1",
+  "source_order_preserved": true,
+  "status": "CONDITIONAL_DIAGNOSTIC_NOT_EXECUTION_HISTORY"
+}
