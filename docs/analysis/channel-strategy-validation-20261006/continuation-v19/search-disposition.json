@@ -1,0 +1,18 @@
+{
+  "acceptance_contract_changed": false,
+  "bulk_download_authorized": false,
+  "funding_or_pnl_calculated": false,
+  "input_search_status": "CLOSED_BLOCKED_DATA",
+  "models": [
+    "funding_carry",
+    "basis_convergence"
+  ],
+  "next_action_kind": "ALL_MODEL_PROTOCOL_FEASIBILITY_RECONCILIATION",
+  "partial_findings_preserved": "source-evidence.json",
+  "reason": "Reviewed dated terms do not certify the selected archives; independent coverage and PIT gaps remain",
+  "reopening_requires": "New concrete dated evidence, not another identical query or current-API substitution",
+  "repeat_same_search": false,
+  "schema": "bounded_input_search_disposition_v1",
+  "signal_changed": false,
+  "strategy_rejected": false
+}

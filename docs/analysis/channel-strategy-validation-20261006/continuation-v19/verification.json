@@ -1,0 +1,17 @@
+{
+  "accepted_historical_parameter_rows": 0,
+  "frozen_models_verified": 20,
+  "full_unit_suite_rerun": false,
+  "inherited_tests_bound": 213,
+  "market_archive_downloads": 0,
+  "market_evaluation_run": false,
+  "network_called_by_verifier": false,
+  "official_source_records": 6,
+  "partial_dated_fee_notices": 1,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_changed": false,
+  "runtime_hash": "f3dcc73efb368406c962868520206344569c516c80d45f427812e6a91c510e59",
+  "scope": "Local consistency and hash verification, not independent authentication of remote page history",
+  "status": "VERIFIED",
+  "unrelated_model_rows_unchanged": 18
+}

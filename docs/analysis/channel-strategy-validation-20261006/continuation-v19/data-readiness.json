@@ -1,0 +1,63 @@
+{
+  "accepted_historical_parameter_rows": 0,
+  "evaluation_allowed": false,
+  "evidence_scope": "Six reviewed official source records plus previously frozen local metadata audit; not a recursive archive inventory",
+  "independent_remaining_gaps": [
+    "Historical availability/receive-time evidence",
+    "Complete fixed protocol periods and funding history",
+    "As-of membership, asset types and turnover",
+    "MEXC paired executable inputs for cross-venue models"
+  ],
+  "market_archive_downloads": 0,
+  "no_global_absence_claim": true,
+  "partial_dated_fee_notices": 1,
+  "partial_fee_announcement_not_discarded": true,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "protocol_periods": {
+    "development": [
+      "2023-01-01",
+      "2025-01-01"
+    ],
+    "final": [
+      "2026-01-01",
+      "2026-10-01"
+    ],
+    "walk_forward": [
+      "2025-01-01",
+      "2026-01-01"
+    ],
+    "warmup_start": "2022-11-01"
+  },
+  "public_document_research_performed": true,
+  "sample_checks": [
+    {
+      "eligible_for_evaluation": false,
+      "end_utc": "2023-01-01T01:00:00Z",
+      "reason": "No joint dated unit-and-cost binding established by the reviewed evidence",
+      "routes": [
+        "spot",
+        "futures_usdt"
+      ],
+      "start_utc": "2023-01-01T00:00:00Z",
+      "symbol": "BTC_USDT",
+      "verified_all_leg_fees": null,
+      "verified_multiplier": null
+    },
+    {
+      "eligible_for_evaluation": false,
+      "end_utc": "2025-01-01T01:00:00Z",
+      "reason": "No joint dated unit-and-cost binding established by the reviewed evidence",
+      "routes": [
+        "spot",
+        "futures_usdt"
+      ],
+      "start_utc": "2025-01-01T00:00:00Z",
+      "symbol": "BTC_USDT",
+      "verified_all_leg_fees": null,
+      "verified_multiplier": null
+    }
+  ],
+  "schema": "dated_gate_input_readiness_v1",
+  "source_evidence_sha256": "15982c240c1b98b8e675a6e8f0405918f8990d4f391033980bafa3df59a5a776",
+  "status": "BLOCKED_DATA"
+}
