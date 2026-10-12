@@ -1,0 +1,74 @@
+{
+  "schema": "archive_discovery_summary_v1",
+  "source_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_archive_discovery_v2_20261006\\artifacts\\archive-discovery\\audit.json",
+  "source_file_sha256": "21271023e24fe7efeb0345029d6dd9a9310ca872906afee1e6a93fbc17ebda33",
+  "source_audit_hash": "0c4630e823f1495814cb8dd551bb66c2af5495417e6250e48e46462dae38215f",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "exists": true,
+  "inventory_complete": true,
+  "files_count": 11919,
+  "files_by_scope": {
+    "daily": 8814,
+    "funding": 136,
+    "gate-spot-perp-v2": 1474,
+    "historical-basis": 1147,
+    "historical-basis-1h-v2": 250,
+    "normalized": 31,
+    "pit-universe-v2": 50,
+    "universe": 17
+  },
+  "inspected_pit_metadata": [
+    {
+      "instrument_counts": {
+        "gateio:linear_perp": 834,
+        "mexc:linear_perp": 863
+      },
+      "monthly_spot_membership_certified": false,
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260714_n01\\universe_state.json",
+      "reason": "Forward instrument snapshots are not a complete 2023-2026 spot membership ledger",
+      "run_id": "pit_universe_v2_forward_20260714_n01",
+      "schema": "pit_universe_state_v1",
+      "sha256": "e5a7c1076fcc408ca0a5bc7b510863ae5041bfeef67b4b9d9361285ee15a7005",
+      "snapshot_first": "2026-07-14T23:15:09.180227+03:00",
+      "snapshot_last": "2026-07-14T23:15:09.180227+03:00",
+      "symbols": 1697
+    },
+    {
+      "instrument_counts": {
+        "gateio:linear_perp": 899,
+        "mexc:linear_perp": 963
+      },
+      "monthly_spot_membership_certified": false,
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\pit-universe-v2\\pit_universe_v2_forward_20260811_n14\\universe_state.json",
+      "reason": "Forward instrument snapshots are not a complete 2023-2026 spot membership ledger",
+      "run_id": "pit_universe_v2_forward_20260811_n14",
+      "schema": "pit_universe_state_v1",
+      "sha256": "1d5b6125c5bd3f33b57f1b3dc47f0f86d49844c78cdc240832f0be2f06ed9296",
+      "snapshot_first": "2026-08-11T01:15:11.731515+03:00",
+      "snapshot_last": "2026-08-11T01:15:11.731515+03:00",
+      "symbols": 1862
+    }
+  ],
+  "scoped_directories": [
+    "universe",
+    "pit-universe-v2",
+    "normalized",
+    "daily",
+    "funding",
+    "historical-basis",
+    "historical-basis-1h-v2",
+    "gate-spot-perp-v2"
+  ],
+  "excluded_names": [
+    "listing_momentum",
+    "listing-momentum",
+    "evaluation",
+    "backtest",
+    "replay",
+    "oos",
+    "holdout"
+  ],
+  "eligibility": "DISCOVERY_ONLY_NOT_VALIDATED_INPUT",
+  "trading_results_created": false,
+  "all_data_files_hashed": false
+}

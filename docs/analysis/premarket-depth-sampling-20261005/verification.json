@@ -1,0 +1,18 @@
+{
+  "schema": "sampling_protocol_verification_v1",
+  "observed_at_utc": "2026-10-05T12:19:46.6073908Z",
+  "test_command": "python -m unittest test_autopilot_guard test_one_week_edge_sprint_readiness test_research_checkpoint test_premarket_forward_depth_quality test_premarket_depth_sampling_protocol -v",
+  "tests_run": 118,
+  "tests_passed": 117,
+  "tests_failed": 1,
+  "new_protocol_tests_passed": 24,
+  "known_baseline_failure": "test_forward_accrual_inputs_bind_v2_monitor_plan",
+  "isolated_failure_reproduced": true,
+  "failing_test_and_implementation_unchanged_from_head": true,
+  "complete_project_suite_run": false,
+  "network_collection_run": false,
+  "old_checkpoint_unchanged": true,
+  "protocol_hash": "eb088d8e422e501005cbc8a91771790af52a80272b4c3ddc407319aa166734d7",
+  "report_hash": "2140d72794dd1dcb04a2c6a75858a9ee832608f491c62b2939b3867fd376cf27",
+  "test_log_sha256": "545bed3551e15268979d78021832ca83d1a639f234a6d2d8c8aff6b0c6bfff4a"
+}

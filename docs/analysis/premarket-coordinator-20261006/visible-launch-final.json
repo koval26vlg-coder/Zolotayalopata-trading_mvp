@@ -1,0 +1,13 @@
+{
+  "pid": 55480,
+  "started_utc": "2026-10-06T10:35:29.4494834Z",
+  "command": "pwsh -NoProfile -NoExit -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-coordinator-20261006\\verify-offline.ps1\" -Attempt final",
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "window_style": "Normal",
+  "no_exit": true,
+  "expected_runtime_sec": 300,
+  "network_requests": 0,
+  "status_command": "Get-Content 'C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-coordinator-20261006\\visible-verification-final.log' -Tail 20",
+  "stop_command": "Ctrl+C in this visible terminal",
+  "purpose": "Repeat synthetic verification after native Job Object bugfix, offline freeze only"
+}

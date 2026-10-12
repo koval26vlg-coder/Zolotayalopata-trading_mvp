@@ -1,0 +1,39 @@
+{
+  "schema": "research_schedule_snapshot_v1",
+  "observed_at_utc": "2026-09-29T09:56:24.8253832Z",
+  "windows_tasks": [
+    {
+      "name": "ZolotyayLopata Listing Strategy Due Coordinator",
+      "path": "\\",
+      "state": "Disabled"
+    },
+    {
+      "name": "ZolotyayLopata Premarket Forward Depth Scan",
+      "path": "\\",
+      "state": "Disabled"
+    },
+    {
+      "name": "PremarketAnnouncementWatch",
+      "path": "\\ZolotyayLopata\\",
+      "state": "Disabled"
+    }
+  ],
+  "codex_automations": [
+    {
+      "id": "zolotyaylopata-listing-momentum-monitor",
+      "status_line": "status = \"PAUSED\"",
+      "file_sha256": "7bb1d58b1270c36aefbff1fb5ed3d4529a8abb2737f40a08aba39d3d5edb64c6"
+    },
+    {
+      "id": "zolotyaylopata-pre-ipo-perpetual-event-monitor",
+      "status_line": "status = \"PAUSED\"",
+      "file_sha256": "bce2d2460df2b0bcb42c09f3c637f6fe617c2d93d0dcf342201f3d9a5cbc869e"
+    },
+    {
+      "id": "zolotyaylopata-pre-market-perpetual-listing-impulse-monitor",
+      "status_line": "status = \"PAUSED\"",
+      "file_sha256": "3e7e3fe4851e978e81fd34b92d8f8851175303fdaed88491060f53f3e2c81698"
+    }
+  ],
+  "changes_performed": false
+}

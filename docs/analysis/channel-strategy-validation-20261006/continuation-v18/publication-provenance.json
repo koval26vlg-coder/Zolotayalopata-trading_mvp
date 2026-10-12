@@ -1,0 +1,53 @@
+{
+  "legacy_outputs_not_consumed": true,
+  "listing_project_untouched": true,
+  "market_network_requests": 0,
+  "parent_commit": "6931a2b655c3c67d3dcec48b86a9426f63182e98",
+  "parent_evidence_index_sha256": "e5c16bcb1840ef63f2c24d3f987cd355f87fbccbce62e827e8f5320a73ca8372",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "f3dcc73efb368406c962868520206344569c516c80d45f427812e6a91c510e59",
+  "schema": "checkpoint_publication_provenance_v1",
+  "source_files": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_pairing_v18_20261009\\intent.json",
+      "sha256": "24ef890c0ddec1143735d813c9a4a7ccbb33eeffcbf55323f53096c533ce0281"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_pairing_v18_20261009\\dispatch.json",
+      "sha256": "09cb5d5e0071fc6cd23d6755fa0b924f6b41f539dc600e31f1ee270adc7ef2b0"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_pairing_v18_20261009\\owner.json",
+      "sha256": "74ff9c9879c9139ca785b85c78fd9693022bec5ebcea13a9713dbe73c8921c98"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_pairing_v18_20261009\\completion.json",
+      "sha256": "5ab29db2dc212505a7a7a4f481277ebe9eb0b70206070af18cb2d0579dd67ec5"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_verify_v18_20261009\\intent.json",
+      "sha256": "e4626ada6e9bcee8bd357094c2827c87c7767a8db723833a21ea1c24b60b9391"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_verify_v18_20261009\\dispatch.json",
+      "sha256": "c64d92446b0a63c1d4dc16600ed111b5177a72e0c76e6ea21bdf4292caea87de"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_verify_v18_20261009\\owner.json",
+      "sha256": "708f2c81c2fcbef90e78ab5642aa61b545106b2ea2c09c7be706698b7a7df312"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_verify_v18_20261009\\completion.json",
+      "sha256": "9671f750971102bcba33059ac4959746d7cf9fb3308beb9ebaa2f5cc62a6d5b6"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_pairing_v18_20261009\\artifacts\\gate-pairing\\audit.json",
+      "sha256": "dd0d406548bbb50e55e4835b730eb06c2ec209f727e8cca187447ed327329bd0"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_verify_v18_20261009\\artifacts\\tests.json",
+      "sha256": "3db5e31d1c423bead6f82b3dd0ca5a6f38fbf040e6ce1736d65b1d28f5d31991"
+    }
+  ],
+  "terminal_ownership_verified": true
+}

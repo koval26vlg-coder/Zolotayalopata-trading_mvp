@@ -1,0 +1,14 @@
+{
+  "initial_tests": 151,
+  "initial_errors": 1,
+  "initial_failures": 0,
+  "test": "GoldSourceTests.test_corrupt_or_wrong_container_rejected",
+  "cause": "Damaged input was rejected as incomplete ValueError, while the test required only LZMAError.",
+  "fix": "Test accepts either valid rejection type. Parser protection not loosened.",
+  "later_improvement": "Persist unittest tracebacks. Distinguish socket timeout from cooperative stop and durably record each request attempt before IO.",
+  "final_tests": 154,
+  "final_errors": 0,
+  "final_failures": 0,
+  "hypothesis_changed": false,
+  "paid_or_private_requests": 0
+}

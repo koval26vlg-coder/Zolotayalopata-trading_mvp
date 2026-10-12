@@ -1,0 +1,118 @@
+{
+  "schema": "trading_mvp_premarket_descriptive_history_planonly_v1",
+  "plan_id": "premarket_descriptive_history_20260831_v4",
+  "mode": "PlanOnly",
+  "status": "READY_FOR_ONE_BOUNDED_PUBLIC_DESCRIPTIVE_HISTORY_NOT_EXECUTED",
+  "generated_at_utc": "2026-09-01T10:04:15Z",
+  "research_only": true,
+  "public_data_only": true,
+  "private_api": false,
+  "authenticated": false,
+  "live_orders": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "writes_market_data": false,
+  "supersedes": {
+    "plan_id": "premarket_descriptive_history_20260831_v3",
+    "plan_hash": "6e84e45f5c67fde5b0823b4ed6e1b77fc6e7fd81cfc37cc07fb2453e24e6f55a",
+    "plan_file_sha256": "78f1e490f7f810fc146c365355a6f57fa2d2926027644de11216cf3f50620f1e",
+    "plan_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-descriptive-history-planonly-20260831-v3.json"
+  },
+  "scope_change": {
+    "declared": false,
+    "sources_added": [],
+    "sources_removed": [],
+    "reason": ""
+  },
+  "question": "Around the moment a token starts trading on spot, does the pre-market perpetual move systematically, and over what horizon? Read from public post-hoc candles, without fees, spread or slippage - an idealised upper bound whose only decisive outcome is a negative one.",
+  "why_this_before_the_expensive_one": "The execution question needs a live listing and second-precision official anchors. Measured arrival on the watched venues is 4 eligible instruments in 14.1 days from a single venue, 95% interval 1.2 to 11 months to thirty events. This question needs neither, and if it answers no, the other stops being worth asking.",
+  "temporal_anchor": {
+    "t0_kind": "PROXY_FIRST_TRADED_SPOT_BAR",
+    "t0_source_class": "PROXY_MARKET_DATA_NOT_OFFICIAL_ANNOUNCEMENT",
+    "t0_precision_sec": 60,
+    "why_a_proxy_is_enough_here": "Minute precision cannot support a claim about a fill, and this plan makes none. It is enough to ask whether a distribution has a shape.",
+    "why_not_the_perp_first_bar": "The perpetual starts trading before the spot listing, so its own first bar anchors on the perp launch - a different event."
+  },
+  "discovery": {
+    "sources": {
+      "bybit": {
+        "endpoint": "https://api.bybit.com/v5/announcements/index",
+        "fixed_query": {
+          "locale": "en-US",
+          "type": "new_crypto",
+          "limit": "20"
+        }
+      },
+      "okx": {
+        "endpoint": "https://www.okx.com/api/v5/public/instruments",
+        "fixed_query": {
+          "instType": "SPOT"
+        }
+      },
+      "okx_swap": {
+        "endpoint": "https://www.okx.com/api/v5/public/instruments",
+        "fixed_query": {
+          "instType": "SWAP"
+        }
+      }
+    },
+    "article_body_requests": 0,
+    "max_index_requests": 9,
+    "authority_boundary": {
+      "index_gives": "TICKER_AND_PUBLICATION_TIME_ONLY",
+      "ticker_match": "DISCOVERY_HEURISTIC_NOT_ASSET_IDENTITY_PROOF",
+      "t0_never_from_index": true
+    }
+  },
+  "measurement": {
+    "spot_candles": {
+      "bybit": "https://api.bybit.com/v5/market/kline",
+      "okx": "https://www.okx.com/api/v5/market/history-candles"
+    },
+    "perp_candles": {
+      "bybit": "https://api.bybit.com/v5/market/kline",
+      "okx": "https://www.okx.com/api/v5/market/history-candles"
+    },
+    "interval": "1m",
+    "window_before_min": 60,
+    "window_after_min": 120,
+    "max_events": 40,
+    "max_candle_requests": 90
+  },
+  "bounds": {
+    "request_timeout_sec": 20,
+    "max_runtime_sec": 600,
+    "min_interval_between_requests_sec": 1,
+    "max_retries_per_request": 0,
+    "pagination_beyond_declared_pages": false,
+    "redirects": "FORBIDDEN_OFF_HOST"
+  },
+  "outcome_contract": {
+    "produces": "descriptive_price_path_distribution",
+    "evidence_use": "DESCRIPTIVE_ONLY",
+    "acceptance_capable": false,
+    "execution_evidence": false,
+    "may_edit_declared_registry": false,
+    "may_accept_a_listing": false,
+    "may_authorise_paper_forward": false,
+    "may_authorise_live_trading": false,
+    "decisive_outcome": "NEGATIVE_ONLY",
+    "human_review_required": true
+  },
+  "implementation": {
+    "files": [
+      {
+        "role": "descriptive_history_collector",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_descriptive_history_collect.py",
+        "sha256": "8fb11a65a2ce30253eb82baae274b40dc2ed881b8e30a0ada6fe5dd1ff79c7eb"
+      },
+      {
+        "role": "descriptive_history_plan_generator",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_descriptive_history_plan.py",
+        "sha256": "ccc4caddc1aae2f96b745ba047ad1957c11eba1c7d18dcc86ecc7f04bc4c1f11"
+      }
+    ]
+  },
+  "plan_hash_method": "sha256_canonical_json_excluding_plan_hash",
+  "plan_hash": "cd7ca043bd7d49bae213e8f292837574581c836a04537357434e7aefb4e16e55"
+}

@@ -1,0 +1,143 @@
+{
+  "source_files": [
+    {
+      "file": "local-audit.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_recovery_v8_20261007/artifacts/histdata-local/audit.json",
+      "sha256": "09a5e2aff8c1f75ea804d730354819f76ad13045813b35243120f7ff5a42b361"
+    },
+    {
+      "file": "input-binding.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_recovery_v8_20261007/artifacts/histdata-local/input-binding.json",
+      "sha256": "06eee6071223d5f236b8fd0b7c6943644183956e35c2bcd908dc6afb6fe3e9e4"
+    },
+    {
+      "file": "local-completion.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_recovery_v8_20261007/completion.json",
+      "sha256": "2d2db7c6d32bc2613db29fade9ccbf4ce862bd79208ea753f73b5a223184e627"
+    },
+    {
+      "file": "local-intent.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_recovery_v8_20261007/intent.json",
+      "sha256": "82285fa7f1aca0b52e9202d14e97ccbc286ef98701e6edf6b7572b536e67ab62"
+    },
+    {
+      "file": "local-owner.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_recovery_v8_20261007/owner.json",
+      "sha256": "84162b7799f4b672d37b2a3f40cbab587b0476673b334d5332f69c70e7f3f6d5"
+    },
+    {
+      "file": "verification.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_recovery_v8_20261007/artifacts/tests.json",
+      "sha256": "363a17c0d7955b1e795da4e54b815d06c28311d037618b46718ea64cae770232"
+    },
+    {
+      "file": "verification-completion.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_recovery_v8_20261007/completion.json",
+      "sha256": "770f48f8b14ea9e60d092cc0c617d83233137efdf46498efc678fa430b867678"
+    },
+    {
+      "file": "page-audit.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_gold_v8_20261007/artifacts/histdata-sample/audit.json",
+      "sha256": "2aa23a0dcbf76bf244ade05d4ce24931be1003a42e233118e7c1a2e10294c33d"
+    },
+    {
+      "file": "page-request-plan.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_gold_v8_20261007/artifacts/histdata-sample/request-plan.json",
+      "sha256": "7cbd63056a3fc960cebb28fe6d2629b520849fc28001abf518375d308120f4a9"
+    },
+    {
+      "file": "page-attempt.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_gold_v8_20261007/artifacts/histdata-sample/01.attempt.json",
+      "sha256": "7271ad1c964cfe421fc7db521a6c6468d9902a1734b7747ca1db93345eb18358"
+    },
+    {
+      "file": "page-receipt.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_gold_v8_20261007/artifacts/histdata-sample/01.receipt.json",
+      "sha256": "81371ac98cc2608a2c29a5b43c3990c69d63ea0c844bda8fcc3febd8e402d91f"
+    },
+    {
+      "file": "page-completion.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_gold_v8_20261007/completion.json",
+      "sha256": "c6eb8f10b159997b26dfeb5a6a1a406905665e6f3b32890db59d3d0270185e11"
+    },
+    {
+      "file": "page-owner.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_gold_v8_20261007/owner.json",
+      "sha256": "6b1d67526e714617e717cc459a19ae498c8e34767f904da7f3e546c9e539fffa"
+    },
+    {
+      "file": "archive-request-plan.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_archive_v8_20261007/artifacts/histdata-sample/request-plan.json",
+      "sha256": "851f6fd0f14e6fdea1e7051e6cd96ab4116f275b3495e20facf75c998f4d7b6f"
+    },
+    {
+      "file": "archive-attempt.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_archive_v8_20261007/artifacts/histdata-sample/02.attempt.json",
+      "sha256": "4156c0aed5b1e848c5ef3d32c7db414097a765ca61777e25905e04a5ce9fddda"
+    },
+    {
+      "file": "archive-completion.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_archive_v8_20261007/completion.json",
+      "sha256": "e03301e42c9ad13c6ee0da5d538450b50b1fcd35bd586a5b56d3c28eedab878d"
+    },
+    {
+      "file": "archive-reconciliation.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_archive_v8_20261007/supervisor-reconciliation.json",
+      "sha256": "0d8d2b82d26642dc494b34357c445d8bf938df4b488b26b92afc54cc2f25c311"
+    },
+    {
+      "file": "archive-intent.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_archive_v8_20261007/intent.json",
+      "sha256": "a535de1fdda9a29c4bb4c5925f84d86f3f03e065d08698b23eb5db598589d138"
+    },
+    {
+      "file": "archive-owner.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_archive_v8_20261007/owner.json",
+      "sha256": "5df2bcc073e161f33ec13f85c5051c3b717ce47c61a609961b728e4da0b2c94f"
+    },
+    {
+      "file": "interrupted-local-completion.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_v8_20261007/completion.json",
+      "sha256": "0e9c130109e6023e56507954425b92b9ba908053d5c47c7d4e42518620acb4dd"
+    },
+    {
+      "file": "interrupted-local-reconciliation.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_v8_20261007/supervisor-reconciliation.json",
+      "sha256": "7ef5e5f84a077d8f31b979559fb66ef737a179914269ad32bee90e085df64d81"
+    },
+    {
+      "file": "interrupted-local-intent.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_v8_20261007/intent.json",
+      "sha256": "48f5de93ef23194312752a6b3bae9f679cfb93a32d73b7c4c0b2742c930943d1"
+    },
+    {
+      "file": "interrupted-local-owner.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_v8_20261007/owner.json",
+      "sha256": "5a5abc0882bf2402fb2ac02a402ac08afdab4a1ce50b8988e1a0df77608bf372"
+    },
+    {
+      "file": "user-stop-context.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_v8_20261007/user-stop-context.json",
+      "sha256": "c11e4849492b481b73c19139b0d00883aadd5202309f11f30f2890ed72f6a4bb"
+    },
+    {
+      "file": "initial-verification.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_handshake_v8_20261007/artifacts/tests.json",
+      "sha256": "9e8087c04d074072872e968660e267f7fc03428622616ad53420eec3dddaa3cf"
+    },
+    {
+      "file": "initial-verification-completion.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_handshake_v8_20261007/completion.json",
+      "sha256": "8c3eb6ee6de8d993a3909719fa15faf204868cb69fed969fe60f707b006169f6"
+    },
+    {
+      "file": "initial-launch-intent.json",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_v8_20261007/intent.json",
+      "sha256": "0c3c3d837b5e06b30244a43569937b8b5760977a0ff946d8cb59c61fa62b6db7"
+    }
+  ],
+  "prior_checkpoint": "../continuation-v7",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "5dafb54946c2d79e42bae683b572e9c8240b02d1d8b67747d5875ed304b2cd5a",
+  "source_run_status_not_rewritten": true
+}

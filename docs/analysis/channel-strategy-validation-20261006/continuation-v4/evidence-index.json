@@ -1,0 +1,43 @@
+{
+  "schema": "historical_source_evidence_index_v1",
+  "recorded_at_utc": "2026-10-06T19:15:09.8628754Z",
+  "evidence": [
+    {
+      "name": "gate-metadata-audit.json",
+      "origin": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_metadata_v4_20261006\\artifacts\\gate-metadata-audit\\audit.json",
+      "sha256": "18f8ec1de1be76f0694a7dcc1e6b985b8281c73b64b50abfdbd4514e429c4aec",
+      "completion": {
+        "exit_code": 0,
+        "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+        "run_id": "history_gate_metadata_v4_20261006",
+        "runtime_hash": "01a5f9e7e72c8aae9825a7ea888c579fcfe0b795781001473850712699fc3074",
+        "status": "COMPLETE"
+      }
+    },
+    {
+      "name": "okx-options-source-audit.json",
+      "origin": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_okx_option_source_v4_20261006\\artifacts\\okx-history-audit\\audit.json",
+      "sha256": "ae048882fd3575480778a24423f6ef47e6de84ef3fae0f4f694868556fa95bf2",
+      "completion": {
+        "exit_code": 0,
+        "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+        "run_id": "history_okx_option_source_v4_20261006",
+        "runtime_hash": "1725e7dde27f9df60378d6d529934d65ffb55a1ff4f0a515be0ec24abdad84c9",
+        "status": "COMPLETE"
+      }
+    },
+    {
+      "name": "verification.json",
+      "origin": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_verify_options_source_v4_20261006\\artifacts\\tests.json",
+      "sha256": "8c83abafad5a02b464deabf795a715044b294aa707458b9db3fac2536760e054",
+      "completion": {
+        "exit_code": 0,
+        "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+        "run_id": "history_verify_options_source_v4_20261006",
+        "runtime_hash": "1725e7dde27f9df60378d6d529934d65ffb55a1ff4f0a515be0ec24abdad84c9",
+        "status": "COMPLETE"
+      }
+    }
+  ],
+  "raw_files_stay_in_origin_directory": true
+}

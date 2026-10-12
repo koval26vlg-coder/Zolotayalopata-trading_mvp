@@ -1,0 +1,767 @@
+{
+ "id": "C3",
+ "verdict": "FAIL",
+ "verdict_reason": "OOS net -0.108% <= 0; PF 0.0 < 1.0; хуже кэша и по доходности, и по просадке",
+ "rows": [
+  {
+   "period": "IS",
+   "trades": 35,
+   "win_rate_pct": 28.57,
+   "pf": 0.868,
+   "net_return_pct": -0.824,
+   "cagr_pct": -0.3,
+   "max_dd_pct": -3.284,
+   "exposure_pct": 32.15,
+   "bench_net_return_pct": 0.0,
+   "bench_max_dd_pct": 0.0,
+   "net_return_2x_cost_pct": -7.645
+  },
+  {
+   "period": "OOS",
+   "trades": 3,
+   "win_rate_pct": 0.0,
+   "pf": 0.0,
+   "net_return_pct": -0.108,
+   "cagr_pct": -0.029,
+   "max_dd_pct": -0.225,
+   "exposure_pct": 2.98,
+   "bench_net_return_pct": 0.0,
+   "bench_max_dd_pct": 0.0,
+   "net_return_2x_cost_pct": -0.735
+  },
+  {
+   "period": "FULL",
+   "trades": 38,
+   "win_rate_pct": 26.32,
+   "pf": 0.853,
+   "net_return_pct": -0.931,
+   "cagr_pct": -0.143,
+   "max_dd_pct": -3.284,
+   "exposure_pct": 15.3,
+   "bench_net_return_pct": 0.0,
+   "bench_max_dd_pct": 0.0,
+   "net_return_2x_cost_pct": -8.324
+  }
+ ],
+ "detail": {
+  "IS": {
+   "metrics": {
+    "trades": 35,
+    "win_rate_pct": 28.57142857142857,
+    "pf": 0.868,
+    "net_return_pct": -0.824,
+    "cagr_pct": -0.3,
+    "max_dd_pct": -3.284,
+    "max_dd_8h_pct": -3.486,
+    "exposure_pct": 32.15,
+    "days": 1004.7,
+    "start": "2020-04-01 08:00:00",
+    "end": "2023-01-01 00:00:00"
+   },
+   "metrics_2x": {
+    "trades": 35,
+    "win_rate_pct": 14.285714285714285,
+    "pf": 0.339,
+    "net_return_pct": -7.645,
+    "cagr_pct": -2.85,
+    "max_dd_pct": -7.824,
+    "max_dd_8h_pct": -7.977,
+    "exposure_pct": 32.15,
+    "days": 1004.7,
+    "start": "2020-04-01 08:00:00",
+    "end": "2023-01-01 00:00:00"
+   },
+   "pnl_components_pct_of_start": {
+    "funding": 6.8989,
+    "price": -0.5981,
+    "cost": -7.1247
+   },
+   "sides": {
+    "+1(short Bybit/long Binance)": 18,
+    "-1(long Bybit/short Binance)": 17
+   },
+   "trade_list": [
+    {
+     "entry": "2020-04-01 08:00:00",
+     "exit": "2020-04-03 08:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.6983,
+     "m_at_signal_pct": 0.02524
+    },
+    {
+     "entry": "2020-04-03 08:00:00",
+     "exit": "2020-04-10 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.1558,
+     "m_at_signal_pct": -0.01263
+    },
+    {
+     "entry": "2020-04-16 08:00:00",
+     "exit": "2020-04-25 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.0721,
+     "m_at_signal_pct": -0.01112
+    },
+    {
+     "entry": "2020-05-09 08:00:00",
+     "exit": "2020-05-16 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.0795,
+     "m_at_signal_pct": -0.0102
+    },
+    {
+     "entry": "2020-07-27 00:00:00",
+     "exit": "2020-08-16 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": 0.7428,
+     "m_at_signal_pct": -0.01093
+    },
+    {
+     "entry": "2020-08-18 08:00:00",
+     "exit": "2020-08-27 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.0028,
+     "m_at_signal_pct": 0.01486
+    },
+    {
+     "entry": "2020-09-08 16:00:00",
+     "exit": "2020-09-10 08:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.2203,
+     "m_at_signal_pct": 0.01026
+    },
+    {
+     "entry": "2020-10-06 08:00:00",
+     "exit": "2020-10-16 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.1436,
+     "m_at_signal_pct": -0.01008
+    },
+    {
+     "entry": "2020-10-21 16:00:00",
+     "exit": "2020-10-23 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.2223,
+     "m_at_signal_pct": -0.01183
+    },
+    {
+     "entry": "2020-10-24 00:00:00",
+     "exit": "2020-12-01 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 2.7626,
+     "m_at_signal_pct": 0.01406
+    },
+    {
+     "entry": "2020-12-13 08:00:00",
+     "exit": "2020-12-19 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.2517,
+     "m_at_signal_pct": -0.01041
+    },
+    {
+     "entry": "2020-12-28 00:00:00",
+     "exit": "2021-01-06 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.2855,
+     "m_at_signal_pct": 0.01523
+    },
+    {
+     "entry": "2021-01-08 08:00:00",
+     "exit": "2021-01-17 08:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.208,
+     "m_at_signal_pct": 0.0212
+    },
+    {
+     "entry": "2021-01-18 00:00:00",
+     "exit": "2021-01-20 08:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.3431,
+     "m_at_signal_pct": -0.01009
+    },
+    {
+     "entry": "2021-01-25 16:00:00",
+     "exit": "2021-01-29 16:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.3763,
+     "m_at_signal_pct": 0.01077
+    },
+    {
+     "entry": "2021-01-29 16:00:00",
+     "exit": "2021-01-30 08:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.322,
+     "m_at_signal_pct": -0.01301
+    },
+    {
+     "entry": "2021-02-06 16:00:00",
+     "exit": "2021-02-08 08:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.2435,
+     "m_at_signal_pct": -0.01034
+    },
+    {
+     "entry": "2021-02-10 00:00:00",
+     "exit": "2021-03-02 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.8312,
+     "m_at_signal_pct": 0.01421
+    },
+    {
+     "entry": "2021-03-08 16:00:00",
+     "exit": "2021-03-29 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.4651,
+     "m_at_signal_pct": 0.01097
+    },
+    {
+     "entry": "2021-03-31 08:00:00",
+     "exit": "2021-04-11 16:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.1831,
+     "m_at_signal_pct": 0.0104
+    },
+    {
+     "entry": "2021-04-13 08:00:00",
+     "exit": "2021-04-14 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.273,
+     "m_at_signal_pct": 0.01074
+    },
+    {
+     "entry": "2021-04-16 16:00:00",
+     "exit": "2021-04-25 16:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.0825,
+     "m_at_signal_pct": 0.01471
+    },
+    {
+     "entry": "2021-05-13 08:00:00",
+     "exit": "2021-05-20 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.2512,
+     "m_at_signal_pct": 0.01131
+    },
+    {
+     "entry": "2021-06-10 00:00:00",
+     "exit": "2021-06-17 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.1919,
+     "m_at_signal_pct": -0.01473
+    },
+    {
+     "entry": "2021-07-21 08:00:00",
+     "exit": "2021-07-23 16:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.2933,
+     "m_at_signal_pct": 0.01155
+    },
+    {
+     "entry": "2021-07-26 08:00:00",
+     "exit": "2021-08-01 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.2644,
+     "m_at_signal_pct": -0.01279
+    },
+    {
+     "entry": "2021-08-31 00:00:00",
+     "exit": "2021-09-03 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.2464,
+     "m_at_signal_pct": 0.0106
+    },
+    {
+     "entry": "2021-09-07 16:00:00",
+     "exit": "2021-09-15 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.2841,
+     "m_at_signal_pct": -0.01189
+    },
+    {
+     "entry": "2021-09-19 00:00:00",
+     "exit": "2021-09-30 08:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.1467,
+     "m_at_signal_pct": -0.01067
+    },
+    {
+     "entry": "2021-10-06 00:00:00",
+     "exit": "2021-10-08 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.2696,
+     "m_at_signal_pct": -0.01159
+    },
+    {
+     "entry": "2021-10-13 00:00:00",
+     "exit": "2021-10-16 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.2809,
+     "m_at_signal_pct": 0.0108
+    },
+    {
+     "entry": "2021-10-18 00:00:00",
+     "exit": "2021-11-12 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.3321,
+     "m_at_signal_pct": 0.0102
+    },
+    {
+     "entry": "2021-11-19 08:00:00",
+     "exit": "2021-12-09 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.0039,
+     "m_at_signal_pct": 0.01003
+    },
+    {
+     "entry": "2022-11-16 16:00:00",
+     "exit": "2022-12-08 08:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": 0.0311,
+     "m_at_signal_pct": -0.01029
+    },
+    {
+     "entry": "2022-12-14 00:00:00",
+     "exit": "2022-12-22 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.0862,
+     "m_at_signal_pct": -0.01206
+    }
+   ],
+   "spread_stats_pct_per_8h": {
+    "mean": 0.00301,
+    "std": 0.03412,
+    "share_m_gt_+0.01%": 16.49,
+    "share_m_lt_-0.01%": 9.26,
+    "share_abs_m_lt_0.003%": 41.44
+   }
+  },
+  "OOS": {
+   "metrics": {
+    "trades": 3,
+    "win_rate_pct": 0.0,
+    "pf": 0.0,
+    "net_return_pct": -0.108,
+    "cagr_pct": -0.029,
+    "max_dd_pct": -0.225,
+    "max_dd_8h_pct": -0.265,
+    "exposure_pct": 2.98,
+    "days": 1374.7,
+    "start": "2023-01-01 00:00:00",
+    "end": "2026-10-06 16:00:00"
+   },
+   "metrics_2x": {
+    "trades": 3,
+    "win_rate_pct": 0.0,
+    "pf": 0.0,
+    "net_return_pct": -0.735,
+    "cagr_pct": -0.196,
+    "max_dd_pct": -0.735,
+    "max_dd_8h_pct": -0.757,
+    "exposure_pct": 2.98,
+    "days": 1374.7,
+    "start": "2023-01-01 00:00:00",
+    "end": "2026-10-06 16:00:00"
+   },
+   "pnl_components_pct_of_start": {
+    "funding": 0.4621,
+    "price": 0.0592,
+    "cost": -0.629
+   },
+   "sides": {
+    "+1(short Bybit/long Binance)": 1,
+    "-1(long Bybit/short Binance)": 2
+   },
+   "trade_list": [
+    {
+     "entry": "2023-01-12 16:00:00",
+     "exit": "2023-01-26 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.0188,
+     "m_at_signal_pct": -0.01005
+    },
+    {
+     "entry": "2024-06-27 08:00:00",
+     "exit": "2024-07-10 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.0232,
+     "m_at_signal_pct": -0.01037
+    },
+    {
+     "entry": "2024-11-19 00:00:00",
+     "exit": "2024-12-02 16:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.0657,
+     "m_at_signal_pct": 0.01015
+    }
+   ],
+   "spread_stats_pct_per_8h": {
+    "mean": 0.00017,
+    "std": 0.00604,
+    "share_m_gt_+0.01%": 0.15,
+    "share_m_lt_-0.01%": 1.24,
+    "share_abs_m_lt_0.003%": 77.04
+   }
+  },
+  "FULL": {
+   "metrics": {
+    "trades": 38,
+    "win_rate_pct": 26.31578947368421,
+    "pf": 0.853,
+    "net_return_pct": -0.931,
+    "cagr_pct": -0.143,
+    "max_dd_pct": -3.284,
+    "max_dd_8h_pct": -3.486,
+    "exposure_pct": 15.3,
+    "days": 2379.3,
+    "start": "2020-04-01 08:00:00",
+    "end": "2026-10-06 16:00:00"
+   },
+   "metrics_2x": {
+    "trades": 38,
+    "win_rate_pct": 13.157894736842104,
+    "pf": 0.32,
+    "net_return_pct": -8.324,
+    "cagr_pct": -1.325,
+    "max_dd_pct": -8.502,
+    "max_dd_8h_pct": -8.654,
+    "exposure_pct": 15.3,
+    "days": 2379.3,
+    "start": "2020-04-01 08:00:00",
+    "end": "2026-10-06 16:00:00"
+   },
+   "pnl_components_pct_of_start": {
+    "funding": 7.3572,
+    "price": -0.5393,
+    "cost": -7.7485
+   },
+   "sides": {
+    "+1(short Bybit/long Binance)": 19,
+    "-1(long Bybit/short Binance)": 19
+   },
+   "trade_list": [
+    {
+     "entry": "2020-04-01 08:00:00",
+     "exit": "2020-04-03 08:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.6983,
+     "m_at_signal_pct": 0.02524
+    },
+    {
+     "entry": "2020-04-03 08:00:00",
+     "exit": "2020-04-10 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.1558,
+     "m_at_signal_pct": -0.01263
+    },
+    {
+     "entry": "2020-04-16 08:00:00",
+     "exit": "2020-04-25 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.0721,
+     "m_at_signal_pct": -0.01112
+    },
+    {
+     "entry": "2020-05-09 08:00:00",
+     "exit": "2020-05-16 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.0795,
+     "m_at_signal_pct": -0.0102
+    },
+    {
+     "entry": "2020-07-27 00:00:00",
+     "exit": "2020-08-16 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": 0.7428,
+     "m_at_signal_pct": -0.01093
+    },
+    {
+     "entry": "2020-08-18 08:00:00",
+     "exit": "2020-08-27 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.0028,
+     "m_at_signal_pct": 0.01486
+    },
+    {
+     "entry": "2020-09-08 16:00:00",
+     "exit": "2020-09-10 08:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.2203,
+     "m_at_signal_pct": 0.01026
+    },
+    {
+     "entry": "2020-10-06 08:00:00",
+     "exit": "2020-10-16 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.1436,
+     "m_at_signal_pct": -0.01008
+    },
+    {
+     "entry": "2020-10-21 16:00:00",
+     "exit": "2020-10-23 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.2223,
+     "m_at_signal_pct": -0.01183
+    },
+    {
+     "entry": "2020-10-24 00:00:00",
+     "exit": "2020-12-01 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 2.7626,
+     "m_at_signal_pct": 0.01406
+    },
+    {
+     "entry": "2020-12-13 08:00:00",
+     "exit": "2020-12-19 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.2517,
+     "m_at_signal_pct": -0.01041
+    },
+    {
+     "entry": "2020-12-28 00:00:00",
+     "exit": "2021-01-06 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.2855,
+     "m_at_signal_pct": 0.01523
+    },
+    {
+     "entry": "2021-01-08 08:00:00",
+     "exit": "2021-01-17 08:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.208,
+     "m_at_signal_pct": 0.0212
+    },
+    {
+     "entry": "2021-01-18 00:00:00",
+     "exit": "2021-01-20 08:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.3431,
+     "m_at_signal_pct": -0.01009
+    },
+    {
+     "entry": "2021-01-25 16:00:00",
+     "exit": "2021-01-29 16:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.3763,
+     "m_at_signal_pct": 0.01077
+    },
+    {
+     "entry": "2021-01-29 16:00:00",
+     "exit": "2021-01-30 08:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.322,
+     "m_at_signal_pct": -0.01301
+    },
+    {
+     "entry": "2021-02-06 16:00:00",
+     "exit": "2021-02-08 08:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.2435,
+     "m_at_signal_pct": -0.01034
+    },
+    {
+     "entry": "2021-02-10 00:00:00",
+     "exit": "2021-03-02 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.8312,
+     "m_at_signal_pct": 0.01421
+    },
+    {
+     "entry": "2021-03-08 16:00:00",
+     "exit": "2021-03-29 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.4651,
+     "m_at_signal_pct": 0.01097
+    },
+    {
+     "entry": "2021-03-31 08:00:00",
+     "exit": "2021-04-11 16:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.1831,
+     "m_at_signal_pct": 0.0104
+    },
+    {
+     "entry": "2021-04-13 08:00:00",
+     "exit": "2021-04-14 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.273,
+     "m_at_signal_pct": 0.01074
+    },
+    {
+     "entry": "2021-04-16 16:00:00",
+     "exit": "2021-04-25 16:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.0825,
+     "m_at_signal_pct": 0.01471
+    },
+    {
+     "entry": "2021-05-13 08:00:00",
+     "exit": "2021-05-20 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.2512,
+     "m_at_signal_pct": 0.01131
+    },
+    {
+     "entry": "2021-06-10 00:00:00",
+     "exit": "2021-06-17 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.1919,
+     "m_at_signal_pct": -0.01473
+    },
+    {
+     "entry": "2021-07-21 08:00:00",
+     "exit": "2021-07-23 16:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.2933,
+     "m_at_signal_pct": 0.01155
+    },
+    {
+     "entry": "2021-07-26 08:00:00",
+     "exit": "2021-08-01 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.2644,
+     "m_at_signal_pct": -0.01279
+    },
+    {
+     "entry": "2021-08-31 00:00:00",
+     "exit": "2021-09-03 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.2464,
+     "m_at_signal_pct": 0.0106
+    },
+    {
+     "entry": "2021-09-07 16:00:00",
+     "exit": "2021-09-15 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.2841,
+     "m_at_signal_pct": -0.01189
+    },
+    {
+     "entry": "2021-09-19 00:00:00",
+     "exit": "2021-09-30 08:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.1467,
+     "m_at_signal_pct": -0.01067
+    },
+    {
+     "entry": "2021-10-06 00:00:00",
+     "exit": "2021-10-08 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.2696,
+     "m_at_signal_pct": -0.01159
+    },
+    {
+     "entry": "2021-10-13 00:00:00",
+     "exit": "2021-10-16 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.2809,
+     "m_at_signal_pct": 0.0108
+    },
+    {
+     "entry": "2021-10-18 00:00:00",
+     "exit": "2021-11-12 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.3321,
+     "m_at_signal_pct": 0.0102
+    },
+    {
+     "entry": "2021-11-19 08:00:00",
+     "exit": "2021-12-09 00:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": 0.0039,
+     "m_at_signal_pct": 0.01003
+    },
+    {
+     "entry": "2022-11-16 16:00:00",
+     "exit": "2022-12-08 08:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": 0.0311,
+     "m_at_signal_pct": -0.01029
+    },
+    {
+     "entry": "2022-12-14 00:00:00",
+     "exit": "2022-12-22 00:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.0862,
+     "m_at_signal_pct": -0.01206
+    },
+    {
+     "entry": "2023-01-12 16:00:00",
+     "exit": "2023-01-26 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.0188,
+     "m_at_signal_pct": -0.01005
+    },
+    {
+     "entry": "2024-06-27 08:00:00",
+     "exit": "2024-07-10 16:00:00",
+     "side": -1,
+     "pnl_pct_of_equity_at_entry": -0.0232,
+     "m_at_signal_pct": -0.01037
+    },
+    {
+     "entry": "2024-11-19 00:00:00",
+     "exit": "2024-12-02 16:00:00",
+     "side": 1,
+     "pnl_pct_of_equity_at_entry": -0.0657,
+     "m_at_signal_pct": 0.01015
+    }
+   ],
+   "spread_stats_pct_per_8h": {
+    "mean": 0.00137,
+    "std": 0.02268,
+    "share_m_gt_+0.01%": 7.05,
+    "share_m_lt_-0.01%": 4.62,
+    "share_abs_m_lt_0.003%": 62.01
+   }
+  }
+ },
+ "gaps": {
+  "bin_missing": 0,
+  "byb_missing": 0,
+  "bin_multi": 0,
+  "byb_multi": 0
+ },
+ "checks": {
+  "signal_uses_only_settlements_le_bar_open": true,
+  "perturb_positions_before_X_identical": true,
+  "perturb_equity_before_X_identical": true,
+  "perturb_after_X_differs(sanity)": true,
+  "entry_after_signal_bar_close_and_first_funding_at_T+8h": true,
+  "stop_first_intrabar": "не применимо (нет стопов/тейков)",
+  "max_abs_close_to_next_open_gap_bin_pct": 0.0695,
+  "max_abs_close_to_next_open_gap_byb_pct": 0.0486,
+  "median_abs_venue_price_diff_pct": 0.0137
+ },
+ "data_sources": [
+  {
+   "name": "binance_funding_BTCUSDT.json",
+   "url": "https://fapi.binance.com/fapi/v1/fundingRate?symbol=BTCUSDT",
+   "rows": 7753,
+   "sha256": "8bf8c585058ff10baf73afc564ca9a8dd028e023ebe2d2aefc04faa25b016633"
+  },
+  {
+   "name": "bybit_funding_BTCUSDT.json",
+   "url": "https://api.bybit.com/v5/market/funding/history?category=linear&symbol=BTCUSDT",
+   "rows": 7161,
+   "sha256": "7b875eb8638a77212fdc10b682289a251a0cd6c224a722a0877066aa4d4593c9"
+  },
+  {
+   "name": "binance_perp_klines_8h_BTCUSDT.json",
+   "url": "https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval=8h",
+   "rows": 7758,
+   "sha256": "407adbf8f5ba72f41927c2ba81c3590e371df29e99910c6e4abab5e949d7b5a2"
+  },
+  {
+   "name": "bybit_perp_klines_4h_BTCUSDT.json",
+   "url": "https://api.bybit.com/v5/market/kline?category=linear&symbol=BTCUSDT&interval=240",
+   "rows": 14323,
+   "sha256": "8ddd7ba1fc8f6fbfc22d3e57d2ec7bc420af49a7e87287516414acff7bcd2091"
+  }
+ ],
+ "first_signal_bar": "2020-04-01 08:00:00",
+ "end_forced_exit": "2026-10-06 16:00:00",
+ "feasible_100usd": {
+  "ok": false,
+  "why": "Мин. объём BTCUSDT-перпа 0.001 BTC (~$84 при цене ~$84k) на обеих биржах, у Binance ещё мин. notional 100 USDT; при $100 нога = $50 -> ниже минимума без плеча; нужны 2 аккаунта с KYC."
+ }
+}

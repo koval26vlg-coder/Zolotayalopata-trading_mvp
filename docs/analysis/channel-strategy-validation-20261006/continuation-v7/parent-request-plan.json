@@ -1,0 +1,152 @@
+{
+  "credentials": false,
+  "decoder": "LZMA-alone, big-endian >IIIff, milliseconds within explicit UTC hour",
+  "evaluation_eligible": false,
+  "fixed_run_id": "history_gold_source_v7_20261007",
+  "instrument_adopted_for_evaluation": false,
+  "max_requests": 19,
+  "max_runtime_sec": 300,
+  "model_id": "gold_macd",
+  "paid_data": false,
+  "per_file_decoded_bytes": 16777216,
+  "per_response_bytes": 1000000,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "price_scale": null,
+  "price_units_verified": false,
+  "proxies": false,
+  "redirects": false,
+  "request_plan_hash": "4d87984f5d4160c9a59ae0a71e1b62a8a07b6a7a12116cc9f1e4129dab4ddfef",
+  "requests": [
+    {
+      "day": "2023-01-03",
+      "hour": 12,
+      "kind": "hour_ticks",
+      "start_ms": 1672747200000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2023/00/03/12h_ticks.bi5"
+    },
+    {
+      "day": "2023-01-03",
+      "hour": 13,
+      "kind": "hour_ticks",
+      "start_ms": 1672750800000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2023/00/03/13h_ticks.bi5"
+    },
+    {
+      "day": "2023-01-03",
+      "hour": 14,
+      "kind": "hour_ticks",
+      "start_ms": 1672754400000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2023/00/03/14h_ticks.bi5"
+    },
+    {
+      "day": "2023-01-03",
+      "hour": 15,
+      "kind": "hour_ticks",
+      "start_ms": 1672758000000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2023/00/03/15h_ticks.bi5"
+    },
+    {
+      "day": "2024-01-03",
+      "hour": 12,
+      "kind": "hour_ticks",
+      "start_ms": 1704283200000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2024/00/03/12h_ticks.bi5"
+    },
+    {
+      "day": "2024-01-03",
+      "hour": 13,
+      "kind": "hour_ticks",
+      "start_ms": 1704286800000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2024/00/03/13h_ticks.bi5"
+    },
+    {
+      "day": "2024-01-03",
+      "hour": 14,
+      "kind": "hour_ticks",
+      "start_ms": 1704290400000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2024/00/03/14h_ticks.bi5"
+    },
+    {
+      "day": "2024-01-03",
+      "hour": 15,
+      "kind": "hour_ticks",
+      "start_ms": 1704294000000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2024/00/03/15h_ticks.bi5"
+    },
+    {
+      "day": "2025-01-06",
+      "hour": 12,
+      "kind": "hour_ticks",
+      "start_ms": 1736164800000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2025/00/06/12h_ticks.bi5"
+    },
+    {
+      "day": "2025-01-06",
+      "hour": 13,
+      "kind": "hour_ticks",
+      "start_ms": 1736168400000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2025/00/06/13h_ticks.bi5"
+    },
+    {
+      "day": "2025-01-06",
+      "hour": 14,
+      "kind": "hour_ticks",
+      "start_ms": 1736172000000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2025/00/06/14h_ticks.bi5"
+    },
+    {
+      "day": "2025-01-06",
+      "hour": 15,
+      "kind": "hour_ticks",
+      "start_ms": 1736175600000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2025/00/06/15h_ticks.bi5"
+    },
+    {
+      "day": "2026-09-01",
+      "hour": 12,
+      "kind": "hour_ticks",
+      "start_ms": 1788264000000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2026/08/01/12h_ticks.bi5"
+    },
+    {
+      "day": "2026-09-01",
+      "hour": 13,
+      "kind": "hour_ticks",
+      "start_ms": 1788267600000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2026/08/01/13h_ticks.bi5"
+    },
+    {
+      "day": "2026-09-01",
+      "hour": 14,
+      "kind": "hour_ticks",
+      "start_ms": 1788271200000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2026/08/01/14h_ticks.bi5"
+    },
+    {
+      "day": "2026-09-01",
+      "hour": 15,
+      "kind": "hour_ticks",
+      "start_ms": 1788274800000,
+      "url": "https://datafeed.dukascopy.com/datafeed/XAUUSD/2026/08/01/15h_ticks.bi5"
+    },
+    {
+      "kind": "current_document",
+      "url": "https://www.dukascopy.com/api/data/get/historical-data-export"
+    },
+    {
+      "kind": "current_document",
+      "url": "https://www.dukascopy.com/swiss/english/forex/forex-trading-accounts/link/"
+    },
+    {
+      "kind": "current_document",
+      "url": "https://www.dukascopy.com/wiki/en/development/strategy-api/orders-and-positions/order-amounts/"
+    }
+  ],
+  "retries": 0,
+  "s3_requester_pays": false,
+  "schema": "gold_public_history_source_probe_v1",
+  "source_candidate": "Dukascopy XAUUSD",
+  "timeout_sec": 10,
+  "total_response_bytes": 19000000,
+  "volume_units_verified": false
+}

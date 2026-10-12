@@ -1,0 +1,304 @@
+{
+  "id": "C2",
+  "data_sources": [
+    {
+      "name": "Binance USD-M BTCUSDT funding (fapi/v1/fundingRate)",
+      "url": "https://fapi.binance.com/fapi/v1/fundingRate?symbol=BTCUSDT",
+      "file": "C:\\Users\\koval\\AppData\\Local\\Temp\\claude\\C--Users-koval------------\\c3d42fa1-b83c-49f0-8567-13ebcd1f7317\\scratchpad\\st\\C2\\data\\binance_fapi_fundingRate_BTCUSDT.json",
+      "sha256": "0233ed631f31ba460a1cc9a19909961e8e2ab1c1190a704c2a7a229588557d0f",
+      "rows": 7751,
+      "start": "2019-09-10 08:00:00+00:00",
+      "end": "2026-10-06 16:00:00+00:00"
+    },
+    {
+      "name": "Binance spot BTCUSDT 1d klines (api/v3/klines)",
+      "url": "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d",
+      "file": "C:\\Users\\koval\\AppData\\Local\\Temp\\claude\\C--Users-koval------------\\c3d42fa1-b83c-49f0-8567-13ebcd1f7317\\scratchpad\\st\\C2\\data\\binance_spot_klines_BTCUSDT_1d.json",
+      "sha256": "1cebf2e8f9fc7f4c4a2558f4542a81de7d29daff0fc2ce689acdc0bb2f11016b",
+      "rows": 3338,
+      "start": "2017-08-17",
+      "end": "2026-10-06"
+    }
+  ],
+  "eval_start": "2019-09-18",
+  "rows": [
+    {
+      "trades": 7,
+      "win_rate_pct": 71.43,
+      "pf": 1.278,
+      "net_return_pct": 115.49,
+      "cagr_pct": 26.3,
+      "max_dd_pct": -68.96,
+      "exposure_pct": 72.69,
+      "net_return_2x_cost_pct": 109.52,
+      "bench_net_return_pct": 61.73,
+      "bench_max_dd_pct": -76.63,
+      "bench_cagr_pct": 15.74,
+      "period": "IS",
+      "start": "2019-09-18",
+      "end": "2022-12-31",
+      "n_days": 1201,
+      "trade_list": [
+        {
+          "entry": "2019-09-18",
+          "exit": "2019-11-02",
+          "ret_pct": -9.75,
+          "forced_end": false
+        },
+        {
+          "entry": "2019-11-15",
+          "exit": "2020-01-30",
+          "ret_pct": 7.15,
+          "forced_end": false
+        },
+        {
+          "entry": "2020-03-14",
+          "exit": "2020-07-29",
+          "ret_pct": 94.81,
+          "forced_end": false
+        },
+        {
+          "entry": "2020-09-15",
+          "exit": "2020-11-23",
+          "ret_pct": 71.86,
+          "forced_end": false
+        },
+        {
+          "entry": "2020-12-13",
+          "exit": "2020-12-22",
+          "ret_pct": 20.31,
+          "forced_end": false
+        },
+        {
+          "entry": "2021-05-25",
+          "exit": "2021-10-22",
+          "ret_pct": 59.61,
+          "forced_end": false
+        },
+        {
+          "entry": "2021-12-10",
+          "exit": "2022-12-31",
+          "ret_pct": -65.34,
+          "forced_end": true
+        }
+      ]
+    },
+    {
+      "trades": 3,
+      "win_rate_pct": 100.0,
+      "pf": null,
+      "net_return_pct": 402.52,
+      "cagr_pct": 53.55,
+      "max_dd_pct": -52.97,
+      "exposure_pct": 94.47,
+      "net_return_2x_cost_pct": 396.51,
+      "bench_net_return_pct": 415.11,
+      "bench_max_dd_pct": -52.97,
+      "bench_cagr_pct": 54.56,
+      "period": "OOS",
+      "start": "2023-01-01",
+      "end": "2026-10-06",
+      "n_days": 1375,
+      "trade_list": [
+        {
+          "entry": "2023-01-01",
+          "exit": "2023-12-31",
+          "ret_pct": 153.73,
+          "forced_end": false
+        },
+        {
+          "entry": "2024-01-28",
+          "exit": "2024-03-02",
+          "ret_pct": 47.53,
+          "forced_end": false
+        },
+        {
+          "entry": "2024-04-19",
+          "exit": "2026-10-06",
+          "ret_pct": 34.25,
+          "forced_end": true
+        }
+      ]
+    },
+    {
+      "trades": 9,
+      "win_rate_pct": 77.78,
+      "pf": 12.963,
+      "net_return_pct": 987.17,
+      "cagr_pct": 40.26,
+      "max_dd_pct": -68.96,
+      "exposure_pct": 84.32,
+      "net_return_2x_cost_pct": 948.62,
+      "bench_net_return_pct": 736.4,
+      "bench_max_dd_pct": -76.63,
+      "bench_cagr_pct": 35.14,
+      "period": "FULL",
+      "start": "2019-09-18",
+      "end": "2026-10-06",
+      "n_days": 2576,
+      "trade_list": [
+        {
+          "entry": "2019-09-18",
+          "exit": "2019-11-02",
+          "ret_pct": -9.75,
+          "forced_end": false
+        },
+        {
+          "entry": "2019-11-15",
+          "exit": "2020-01-30",
+          "ret_pct": 7.15,
+          "forced_end": false
+        },
+        {
+          "entry": "2020-03-14",
+          "exit": "2020-07-29",
+          "ret_pct": 94.81,
+          "forced_end": false
+        },
+        {
+          "entry": "2020-09-15",
+          "exit": "2020-11-23",
+          "ret_pct": 71.86,
+          "forced_end": false
+        },
+        {
+          "entry": "2020-12-13",
+          "exit": "2020-12-22",
+          "ret_pct": 20.31,
+          "forced_end": false
+        },
+        {
+          "entry": "2021-05-25",
+          "exit": "2021-10-22",
+          "ret_pct": 59.61,
+          "forced_end": false
+        },
+        {
+          "entry": "2021-12-10",
+          "exit": "2023-12-31",
+          "ret_pct": -11.7,
+          "forced_end": false
+        },
+        {
+          "entry": "2024-01-28",
+          "exit": "2024-03-02",
+          "ret_pct": 47.53,
+          "forced_end": false
+        },
+        {
+          "entry": "2024-04-19",
+          "exit": "2026-10-06",
+          "ret_pct": 34.25,
+          "forced_end": true
+        }
+      ]
+    }
+  ],
+  "self_checks": {
+    "signal_time_lt_execution_time": true,
+    "min_settlements_in_window": 21,
+    "max_settlements_in_window": 21,
+    "truncation_test_positions_identical": true,
+    "last_daily_bar": "2026-10-06",
+    "last_funding_used": "2026-10-06 16:00:00+00:00",
+    "funding_interval_hours_counts": {
+      "8.0": 7750
+    },
+    "intrabar_stop_rule": "N/A (no stops/TP; switches only at daily open)"
+  },
+  "switches": [
+    {
+      "date": "2019-11-02",
+      "to": "USDT",
+      "mean8h_pct": 0.0309
+    },
+    {
+      "date": "2019-11-15",
+      "to": "BTC",
+      "mean8h_pct": 0.008591
+    },
+    {
+      "date": "2020-01-30",
+      "to": "USDT",
+      "mean8h_pct": 0.030209
+    },
+    {
+      "date": "2020-03-14",
+      "to": "BTC",
+      "mean8h_pct": -0.001024
+    },
+    {
+      "date": "2020-07-29",
+      "to": "USDT",
+      "mean8h_pct": 0.035741
+    },
+    {
+      "date": "2020-09-15",
+      "to": "BTC",
+      "mean8h_pct": 0.009565
+    },
+    {
+      "date": "2020-11-23",
+      "to": "USDT",
+      "mean8h_pct": 0.032174
+    },
+    {
+      "date": "2020-12-13",
+      "to": "BTC",
+      "mean8h_pct": 0.009151
+    },
+    {
+      "date": "2020-12-22",
+      "to": "USDT",
+      "mean8h_pct": 0.032291
+    },
+    {
+      "date": "2021-05-25",
+      "to": "BTC",
+      "mean8h_pct": 0.003413
+    },
+    {
+      "date": "2021-10-22",
+      "to": "USDT",
+      "mean8h_pct": 0.031843
+    },
+    {
+      "date": "2021-12-10",
+      "to": "BTC",
+      "mean8h_pct": 0.009967
+    },
+    {
+      "date": "2023-12-31",
+      "to": "USDT",
+      "mean8h_pct": 0.031937
+    },
+    {
+      "date": "2024-01-28",
+      "to": "BTC",
+      "mean8h_pct": 0.00987
+    },
+    {
+      "date": "2024-03-02",
+      "to": "USDT",
+      "mean8h_pct": 0.035542
+    },
+    {
+      "date": "2024-04-19",
+      "to": "BTC",
+      "mean8h_pct": 0.008377
+    }
+  ],
+  "ret_over_maxdd": {
+    "strategy": 7.599018312252218,
+    "bench": 7.836700018878611
+  },
+  "verdict": "INCONCLUSIVE",
+  "fail_reasons": [],
+  "pass_criteria": {
+    "net_positive": true,
+    "pf_ge_1.2": true,
+    "beats_bench_ret_over_maxdd": false,
+    "net_positive_2x_cost": true,
+    "oos_trades_ge_30": false
+  }
+}

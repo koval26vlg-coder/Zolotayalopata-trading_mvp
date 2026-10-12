@@ -1,0 +1,12 @@
+{
+  "schema": "audit_visible_dispatch_v1",
+  "terminal_pid": 33696,
+  "network_allowed": false,
+  "script": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\continuation-v20\\run_audit_visible.ps1",
+  "no_exit": true,
+  "earlier_terminal_pid": 14404,
+  "window_style": "Normal",
+  "script_sha256": "d7db67ce716708ecd6fa52025cf563a02076a4bc15a030b923150e3695a0d5c6",
+  "earlier_worker_started": false,
+  "earlier_failure": "Unsupported Set-Content -NoClobber before worker/owner creation"
+}

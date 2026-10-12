@@ -1,0 +1,35 @@
+{
+  "schema": "paired_historical_readiness_v2",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "status": "BLOCKED_DATA",
+  "paired_pit_runtime_gap_fixed": true,
+  "runtime_fully_certified": false,
+  "tests_passed": 191,
+  "models": [
+    "funding_carry",
+    "funding_cross",
+    "spot_dislocation",
+    "basis_convergence"
+  ],
+  "http_requests": 10,
+  "http_200": 10,
+  "response_bytes": 4354632,
+  "complete_http_bodies": 8,
+  "gzip_integrity_verified": 2,
+  "partial_http_bodies": 2,
+  "backtest_executed": false,
+  "metrics": null,
+  "strategy_rejected": false,
+  "technical_next": "Offline streaming validation of the complete downloaded archives only; no PnL",
+  "missing": [
+    "historical PIT membership and types",
+    "synchronized full fixed periods",
+    "historical contract size units",
+    "dated per-leg fees and impact",
+    "funding publication/settlement semantics",
+    "MEXC multi-year executable quotes"
+  ],
+  "repeat_probe_authorized": false,
+  "model_periods_unchanged": true,
+  "holm_family_size": 20
+}

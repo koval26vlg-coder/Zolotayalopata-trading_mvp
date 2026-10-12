@@ -1,0 +1,29 @@
+{
+  "schema": "historical_model_family_suitability_audit_v1",
+  "model_hashes": {
+    "gap_continue": "29d7bb77e9e49cfdc866bac34098273d8e1845fb47b85ed465c1cafb7bdd412f",
+    "gap_fade": "ab3cbc9d819fe96266096de77c81f54504104570039b7573dba9504204f20674"
+  },
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "audit_status": "BOUNDED_SOURCE_AUDIT_COMPLETE_NO_VALIDATED_FREE_ANONYMOUS_INPUT",
+  "input_status": "BLOCKED_DATA",
+  "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+  "metrics": null,
+  "requirements": [
+    {"id": "bars_5m", "status": "NO_VALIDATED_INPUT", "evidence_ids": ["alpaca_faq", "massive_bars", "massive_flat", "alpha_vantage", "stooq_access"], "gap": "No free unauthenticated complete input for fixed periods acquired. Paid API, keyed free API, and unresolved public archive access are distinct conditions."},
+    {"id": "pit_equity_universe", "status": "REFERENCE_ROUTES_DOCUMENTED_NOT_VALIDATED", "evidence_ids": ["massive_tickers", "alpha_vantage", "nasdaq_current_directory"], "gap": "Need dated full candidate membership, delistings and stable security identifiers. Do not construct past membership from current survivors."},
+    {"id": "corporate_actions", "status": "NO_VALIDATED_INPUT", "evidence_ids": ["nyse_actions", "massive_bars", "alpha_vantage"], "gap": "Need causally known effective events and consistent price adjustment basis across previous close and current open, not an unproven corporate_actions_verified flag."},
+    {"id": "calendar", "status": "OFFICIAL_SOURCE_FOUND_NOT_MATERIALIZED", "evidence_ids": ["nyse_sessions"], "gap": "Need historical regular sessions, short days, extraordinary closures, halts, DST and prior regular close; exclude extended hours from opening range."},
+    {"id": "borrowability", "status": "NO_VALIDATED_INPUT", "code_path": "trading_mvp/src/channel_validation/adapters.py", "function": "sessions", "gap": "Short entries require historical borrow_cost_evidence and borrow_bps. No silent long-only restriction or zero borrow cost."},
+    {"id": "cost_and_fill_evidence", "status": "PRELIMINARY_ASSUMPTIONS_ONLY", "gap": "Frozen fee assumptions may support labelled candle analysis after data validation, not confirmed liquidity or fills. No new cost or risk rules introduced."}
+  ],
+  "evaluation_allowed_now": false,
+  "hypothesis_changed": false,
+  "fixed_periods_shifted": false,
+  "credentials_used": false,
+  "new_paid_data": false,
+  "local_archive_inventory": "local-inventory.json",
+  "reentry_condition": "New verified historical bundle, accessible anonymous archive, or separately authorized credentialed market-data access with unchanged research contract; do not repeat unchanged documentation probes.",
+  "next_priority": ["aave_lending"]
+}

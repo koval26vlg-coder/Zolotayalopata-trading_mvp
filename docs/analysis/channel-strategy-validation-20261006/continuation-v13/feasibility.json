@@ -1,0 +1,41 @@
+{
+  "schema": "frozen_model_candidate_feasibility_v1",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "model_hash": "709c0673bff29cc45dca513898bf22ddc93a5729036879821513926fed3fdd24",
+  "status": "CANDIDATE_UNREACHABLE_UNDER_FROZEN_IMPLEMENTATION_AND_CRITERIA",
+  "derived_constraints": {
+    "final_period_days": 273,
+    "hold_days": 30,
+    "max_completed_nonoverlapping_final_positions": 9,
+    "wf_plus_final_days": 638,
+    "wf_plus_final_upper_bound_diagnostic_only": 21,
+    "required_oos_trades": 30,
+    "required_temporal_groups": 20,
+    "single_base_share_if_positive": 1.0,
+    "allowed_single_base_share": 0.25
+  },
+  "derivation": "Calendar upper bounds, not observed trades: floor(period_days / hold_days), with serial nonoverlapping positions and both entry and exit inside the period. No combination of WF and final is executed.",
+  "implementation_evidence": [
+    {
+      "function": "lending",
+      "path": "trading_mvp/src/channel_validation/adapters.py",
+      "finding": "ready advances to the 30-day exit timestamp; new positions before ready are skipped"
+    },
+    {
+      "function": "period_metrics",
+      "path": "trading_mvp/src/channel_validation/statistics.py",
+      "finding": "Only trades fully inside the split count toward OOS trade count"
+    },
+    {
+      "function": "candidate_status",
+      "path": "trading_mvp/src/channel_validation/statistics.py",
+      "finding": "Insufficient sample is checked before the 25% single-base concentration guard"
+    }
+  ],
+  "real_market_metrics_computed": false,
+  "strategy_rejected": false,
+  "acceptance_contract_changed": false,
+  "fixed_periods_shifted": false,
+  "repeated_staggered_positions_added": false,
+  "disposition": "Keep the model in the 20-member family. Do not bulk-download merely to pursue an unreachable candidate verdict. Any future descriptive data study remains distinct from candidate acceptance."
+}

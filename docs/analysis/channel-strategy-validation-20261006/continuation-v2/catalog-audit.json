@@ -1,0 +1,239 @@
+{
+  "audit_hash": "9b29514e62f0c8818884e5da194fbe0a3d774bb8ca5033e8971e221c82074160",
+  "evaluation_eligible": false,
+  "months": [
+    {
+      "asset_types_verified": false,
+      "catalog_listing_complete": false,
+      "error": "Catalog prefix/marker/completeness mismatch",
+      "historical_membership_complete": false,
+      "month": "202301",
+      "next_marker": "",
+      "objects": [],
+      "pages": 1,
+      "prefix": "spot/candlesticks_1d/202301/",
+      "receipts": [
+        {
+          "attempt": 1,
+          "body": {
+            "bytes_read": 264044,
+            "complete": true,
+            "declared_length": null,
+            "reason": "COMPLETE"
+          },
+          "error": "Catalog prefix/marker/completeness mismatch",
+          "http_status": 200,
+          "marker": "",
+          "month": "202301",
+          "page": 1,
+          "raw_file": "202301-1.xml",
+          "sha256": "65e565d8c40ce67d7c3698b2d2d0de55663c2c962f4c32e3c7f3cca898818808",
+          "url": "https://download.gatedata.org/?prefix=spot%2Fcandlesticks_1d%2F202301%2F&marker=&max-keys=1000"
+        }
+      ],
+      "usdt_archive_pairs": [],
+      "warning": "File presence does not prove exact listing/delisting time or historical asset type"
+    },
+    {
+      "asset_types_verified": false,
+      "catalog_listing_complete": false,
+      "error": "Catalog prefix/marker/completeness mismatch",
+      "historical_membership_complete": false,
+      "month": "202501",
+      "next_marker": "",
+      "objects": [],
+      "pages": 1,
+      "prefix": "spot/candlesticks_1d/202501/",
+      "receipts": [
+        {
+          "attempt": 1,
+          "body": {
+            "bytes_read": 264044,
+            "complete": true,
+            "declared_length": null,
+            "reason": "COMPLETE"
+          },
+          "error": "Catalog prefix/marker/completeness mismatch",
+          "http_status": 200,
+          "marker": "",
+          "month": "202501",
+          "page": 1,
+          "raw_file": "202501-1.xml",
+          "sha256": "65e565d8c40ce67d7c3698b2d2d0de55663c2c962f4c32e3c7f3cca898818808",
+          "url": "https://download.gatedata.org/?prefix=spot%2Fcandlesticks_1d%2F202501%2F&marker=&max-keys=1000"
+        }
+      ],
+      "usdt_archive_pairs": [],
+      "warning": "File presence does not prove exact listing/delisting time or historical asset type"
+    },
+    {
+      "asset_types_verified": false,
+      "catalog_listing_complete": false,
+      "error": "Catalog prefix/marker/completeness mismatch",
+      "historical_membership_complete": false,
+      "month": "202609",
+      "next_marker": "",
+      "objects": [],
+      "pages": 1,
+      "prefix": "spot/candlesticks_1d/202609/",
+      "receipts": [
+        {
+          "attempt": 1,
+          "body": {
+            "bytes_read": 264044,
+            "complete": true,
+            "declared_length": null,
+            "reason": "COMPLETE"
+          },
+          "error": "Catalog prefix/marker/completeness mismatch",
+          "http_status": 200,
+          "marker": "",
+          "month": "202609",
+          "page": 1,
+          "raw_file": "202609-1.xml",
+          "sha256": "65e565d8c40ce67d7c3698b2d2d0de55663c2c962f4c32e3c7f3cca898818808",
+          "url": "https://download.gatedata.org/?prefix=spot%2Fcandlesticks_1d%2F202609%2F&marker=&max-keys=1000"
+        }
+      ],
+      "usdt_archive_pairs": [],
+      "warning": "File presence does not prove exact listing/delisting time or historical asset type"
+    }
+  ],
+  "next_step": "Resolve listing lifecycle, as-of asset types and preceding 30-day exact turnover before ranking",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "request_plan_hash": "bf0371a6fad318714154622750e096447dc915dca0fd9524305acd3354622052",
+  "requests": 3,
+  "runtime_binding": {
+    "tools/check_active_run_gate.ps1": "a3b1b735dba6681b18fdb2e9be637079a22391123eced0a316dc2b76855193fd",
+    "tools/check_trading_mvp_autopilot.ps1": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+    "tools/run_channel_strategy_validation_visible.ps1": "385ccc1c0fae7fcd16f50786fed9a35e9b2e3054be9bd31b7e5032192ca67b98",
+    "trading_mvp/src/channel_validation/__init__.py": "dab9cae823a9b621cc47440d3a73630e9831110efd9f370fe7b689d2206f71e3",
+    "trading_mvp/src/channel_validation/adapters.py": "e3a090521c5da1dc6ff7afe600b4c52aad74f63ef1358a7f674d86af7b4377fe",
+    "trading_mvp/src/channel_validation/archive_audit.py": "fdbb487dc77de23176751e24f642e487d0da00fe05f83f27b92dcdbbba74124a",
+    "trading_mvp/src/channel_validation/contract.py": "d71f4e1834623bc8ea7234dd561604a26d89f010a2978092c9c9858d5f55465c",
+    "trading_mvp/src/channel_validation/data.py": "bf7d11039ac155ee70a21d0a1837e5af5ad7506ae7db3519472ac5d2e5322f61",
+    "trading_mvp/src/channel_validation/execution.py": "b8e119584e4b3b5c3abe2da93900711f74a630b0d94b7c570faf6883c35de4ab",
+    "trading_mvp/src/channel_validation/gate_catalog.py": "920183562362062ba516ea3b9859051f9aecad27f5eb8900d9b59716f11af0dd",
+    "trading_mvp/src/channel_validation/gate_history.py": "7297594b274bc6a9fb239be67e23825e55a6db7e45d65133ba252dcc3cde35df",
+    "trading_mvp/src/channel_validation/models.py": "9c1f0b142276e2e78e101036192486a603961422a9b1fb8ac4cf2dad532cc193",
+    "trading_mvp/src/channel_validation/portfolio.py": "cb63ff1b53751cec1b248b91c8e70c9686a04259e1f7636bc5be8749025332a4",
+    "trading_mvp/src/channel_validation/runner.py": "fd6099658f7a651bca9b06ed7cdb738ffab735fd26bc2f3db9b4677544ccdbaf",
+    "trading_mvp/src/channel_validation/sources.py": "e30cde7da64c7aefd58711f3678a9c814acef298a901bba8744d095ee87cdd10",
+    "trading_mvp/src/channel_validation/statistics.py": "e4b6f69e9a057f2ec5a7d33813d725f720239207f7728bd9e101a6cb0a2ce65d",
+    "trading_mvp/src/global_market_writer_claim.py": "bc0604267c9d709a17188eb9daf317417d2633bf4c31266f73db33ac2f5066d2",
+    "trading_mvp/tests/test_channel_validation.py": "3bf998714f89f8fdeda00a6b8fa7b0b7a37fad8898969ee0d10e4ac0332ff6fb"
+  },
+  "schema": "gate_monthly_archive_catalog_v1",
+  "source_reconciliation": {
+    "comparisons": [
+      {
+        "archive_sha256": "49bf158b779cd52e1fd4ded2b3ad013091f8d126ba9d77398276be57b7fc17c0",
+        "base": "BTC",
+        "comparisons": [
+          {
+            "base_volume_difference": "0E-8",
+            "base_volume_equal": true,
+            "hours": 24,
+            "ohlc_equal": true,
+            "quote_volume_equal": false,
+            "ts": 1735689600
+          },
+          {
+            "base_volume_difference": "0E-8",
+            "base_volume_equal": true,
+            "hours": 24,
+            "ohlc_equal": true,
+            "quote_volume_equal": false,
+            "ts": 1735776000
+          }
+        ],
+        "full_schema_certification": false,
+        "inferred_volume_unit": "BASE_ON_SAMPLED_DAYS",
+        "month": "202501",
+        "rest_sha256": "ee685f08ea424e289cf4328ee86dbbb1f32d0f7397f5db8d926a15d4a0caa2a4"
+      },
+      {
+        "archive_sha256": "8c2789a3b3d051737bd3a85ffeb8aec306bd1e6bd8a189abf8a82f52b89517ac",
+        "base": "BTC",
+        "comparisons": [
+          {
+            "base_volume_difference": "0E-8",
+            "base_volume_equal": true,
+            "hours": 24,
+            "ohlc_equal": true,
+            "quote_volume_equal": false,
+            "ts": 1788220800
+          },
+          {
+            "base_volume_difference": "0E-8",
+            "base_volume_equal": true,
+            "hours": 24,
+            "ohlc_equal": true,
+            "quote_volume_equal": false,
+            "ts": 1788307200
+          }
+        ],
+        "full_schema_certification": false,
+        "inferred_volume_unit": "BASE_ON_SAMPLED_DAYS",
+        "month": "202609",
+        "rest_sha256": "efcf708ebbef6a5226ea67d0f3f1c7f95e9a00972513be30afc7a5e31a031dcb"
+      },
+      {
+        "archive_sha256": "e76d29d9eb0a6c89f605467c55e63551a3456fa9319f347b980643d723d7b8ff",
+        "base": "ETH",
+        "comparisons": [
+          {
+            "base_volume_difference": "0E-8",
+            "base_volume_equal": true,
+            "hours": 24,
+            "ohlc_equal": true,
+            "quote_volume_equal": false,
+            "ts": 1735689600
+          },
+          {
+            "base_volume_difference": "0E-8",
+            "base_volume_equal": true,
+            "hours": 24,
+            "ohlc_equal": true,
+            "quote_volume_equal": false,
+            "ts": 1735776000
+          }
+        ],
+        "full_schema_certification": false,
+        "inferred_volume_unit": "BASE_ON_SAMPLED_DAYS",
+        "month": "202501",
+        "rest_sha256": "528f388fade5919d22e109d2af1547ccadb0452c2bd409eb1922d13bf1d1df3e"
+      },
+      {
+        "archive_sha256": "5351d638a700f8ed270d08e375186a3363ae61cd1e2f6a9d09a109e4f05d492f",
+        "base": "ETH",
+        "comparisons": [
+          {
+            "base_volume_difference": "0E-8",
+            "base_volume_equal": true,
+            "hours": 24,
+            "ohlc_equal": true,
+            "quote_volume_equal": false,
+            "ts": 1788220800
+          },
+          {
+            "base_volume_difference": "0E-8",
+            "base_volume_equal": true,
+            "hours": 24,
+            "ohlc_equal": true,
+            "quote_volume_equal": false,
+            "ts": 1788307200
+          }
+        ],
+        "full_schema_certification": false,
+        "inferred_volume_unit": "BASE_ON_SAMPLED_DAYS",
+        "month": "202609",
+        "rest_sha256": "6c5c6ea1bfae61cf502a82739fba8afbf4ca88087e9c7d63be75fafba9e4295d"
+      }
+    ],
+    "evaluation_eligible": false,
+    "old_sample_audit_sha256": "3028be16e5657afee9570383d076bedc8f9784a456c5af8ec54cf0b1ef388872",
+    "parent_audit_sha256": "af57ce928ae3a4ef848d2533d4288a1d7c98d5ebba41fe2200bc9c39b3fff1d9",
+    "universe_certified": false
+  }
+}

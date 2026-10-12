@@ -166,7 +166,7 @@ exit 0
 }
 
 function Invoke-FixtureInstaller {
-    param([object]$Fixture)
+    param([object]$Fixture, [switch]$InstallDisabled)
     $script:installerIntegrationCases += 1
     $arguments = @("-NoProfile","-NonInteractive","-ExecutionPolicy","Bypass","-File",$Fixture.installer,"-DryRun","-Json",
         "-RegistryPath",$Fixture.registry,"-ReceiptPath",$Fixture.receipt,
@@ -174,6 +174,7 @@ function Invoke-FixtureInstaller {
         "-ExpectedInstallerSha256",(Get-FixtureSha $Fixture.installer),"-ExpectedCoordinatorSha256",(Get-FixtureSha $Fixture.coordinator),
         "-ExpectedValidatorSha256",(Get-FixtureSha $Fixture.validator),"-ExpectedControlPlaneGitCommit",$Fixture.commit,
         "-CodexAutomationsRoot",$Fixture.legacy)
+    if ($InstallDisabled) { $arguments += "-InstallDisabled" }
     $output = & $pwsh @arguments 2>&1 | Out-String
     $exitCode = $LASTEXITCODE
     try { $payload = $output | ConvertFrom-Json -DateKind String -ErrorAction Stop }
@@ -322,6 +323,10 @@ try {
     $activeResult = Invoke-FixtureInstaller $active
     Assert-True ($activeResult.exit_code -eq 0 -and $activeResult.payload.status -ceq "ACTIVE_DRY_RUN_OK") "ACTIVE installer dry-run was not accepted: $($activeResult.payload | ConvertTo-Json -Compress -Depth 10)"
     Assert-True ($activeResult.payload.execution_performed -eq $false -and $activeResult.payload.registration_attempted -eq $false) "ACTIVE dry-run performed execution or registration"
+    Assert-True ($activeResult.payload.scheduler_enabled -eq $true) "default dry-run does not report intended enabled state"
+    $disabledResult = Invoke-FixtureInstaller $active -InstallDisabled
+    Assert-True ($disabledResult.exit_code -eq 0 -and $disabledResult.payload.status -ceq "ACTIVE_DRY_RUN_OK" -and $disabledResult.payload.scheduler_enabled -eq $false) "disabled dry-run does not report intended disabled state"
+    Assert-True ($disabledResult.payload.execution_performed -eq $false -and $disabledResult.payload.registration_attempted -eq $false) "disabled dry-run performed execution or registration"
     Assert-True ((Get-Content -LiteralPath (Join-Path $active.root "preflight.marker") -Raw) -ceq "PreflightOnly") "installer did not use read-only preflight"
     Assert-True ($activeResult.payload.action_arguments -match '-ScheduledTick' -and $activeResult.payload.action_arguments -notmatch '-PreflightOnly') "installed action is not a scheduled tick"
     Write-FixtureJson $active.state @{status="RETRY_NEXT_INTERVAL";next_interval_at_utc="2030-01-01T00:00:00Z"}

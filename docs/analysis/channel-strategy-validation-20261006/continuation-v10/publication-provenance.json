@@ -1,0 +1,62 @@
+{
+  "schema": "documentation_audit_provenance_v1",
+  "parent_git_commit": "867c8bd7d4eaa09484d3b198d1d6d2b6637a333d",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "parent_files": [
+    {
+      "path": "docs/plans/channel-strategy-validation-20261006-v1.json",
+      "bytes": 20102,
+      "sha256": "2d4235d6f779c3181f3a619e2c9414d020346df37d1e23fc6f46ad73679c474c"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v9/audit.json",
+      "bytes": 12467,
+      "sha256": "96d473d7514803253a18471da53ac377c9212fa81aa49dce30b139f8cc66b097"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v9/data-readiness.json",
+      "bytes": 1917,
+      "sha256": "94fb3dc7ddaf9534982ccd5722aa33457552d689b3b720f2dc7cf0401dd2d783"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v9/input-binding.json",
+      "bytes": 893,
+      "sha256": "0852fe2e8bb6c515dedfc5cf7ea76ddd8218b16ca2639823fd45079ab201d4d2"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v9/completion.json",
+      "bytes": 264,
+      "sha256": "c06a3c01692b2a19a06848b79d45093c30374e8caddbf0fdf0228db0c75130ee"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v9/verification.json",
+      "bytes": 3719,
+      "sha256": "da123ae4aea6c253d264fa7074edd89b8f8d1fbdbb2b01ea8c3e081c7eb9ed17"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v9/evidence-index.json",
+      "bytes": 8290,
+      "sha256": "ff8219bec53338360b5c1b5e259f5d2d81840a1078e0c4979089b1d08eb1afa8"
+    },
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v9/model-input-queue.json",
+      "bytes": 15422,
+      "sha256": "d3bfd0752466951eadfb8633517cf15e67799ecf50c61de8872c383de843d31c"
+    }
+  ],
+  "web_evidence_path": "source-evidence.json",
+  "web_evidence_hash_semantics": "SHA256 binds analyst summary bytes, not unavailable raw web response bodies",
+  "raw_market_archive_copied": false,
+  "new_market_data_downloads": 0,
+  "code_changed": false,
+  "model_parameters_changed": false,
+  "guard_observed_at_utc": "2026-10-07T10:14:38.463426Z",
+  "guard_status": "OFFLINE_CHECKPOINT_COMPLETE",
+  "guard_decision": "PREMARKET_DEPTH_QUALITY_COMPLETE_INSUFFICIENT_SAMPLE",
+  "quota_remaining_percent": 83,
+  "scoped_gate_status": "READY_FOR_POSTPROCESS",
+  "scoped_gate_decision": "ALLOW_GATE_NOT_RUNNING",
+  "legacy_incomplete_dataset_reused": false,
+  "existing_run_restarted": false
+}

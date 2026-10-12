@@ -1,0 +1,34 @@
+{
+  "active_writer_claim_absent": true,
+  "archive_metadata_files_verified": 6,
+  "bounded_source_checks_recorded_models": 20,
+  "frozen_models_verified": 20,
+  "full_unit_suite_rerun": false,
+  "known_runtime_gaps_reproduced": [
+    "PAIRED_MONTHLY_UNIVERSE_NOT_ENFORCED"
+  ],
+  "market_evaluation_executed": false,
+  "other_model_queue_entries_unchanged": true,
+  "paired_synthetic_check_names": [
+    "future_settlement_excluded",
+    "late_publication_excluded",
+    "stale_funding_rejected",
+    "funding_period_normalized",
+    "all_four_execution_fees",
+    "funding_entry_exclusive_exit_inclusive_both_legs",
+    "unverified_contract_units_rejected",
+    "missing_fee_evidence_rejected",
+    "missing_settlement_mark_rejected",
+    "wrong_instrument_route_rejected"
+  ],
+  "paired_synthetic_checks_passed": 10,
+  "parent_index_files_verified": 10,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_binding_file_count": 29,
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "runtime_ready_for_paired_evaluation": false,
+  "schema": "paired_source_checkpoint_verification_v1",
+  "successful": true,
+  "underlying_market_files_read": 0,
+  "observed_at_utc": "2026-10-08T13:14:28.9476530Z"
+}

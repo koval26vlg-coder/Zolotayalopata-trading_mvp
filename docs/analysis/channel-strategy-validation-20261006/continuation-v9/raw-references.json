@@ -1,0 +1,15 @@
+{
+  "schema": "historical_raw_references_v1",
+  "files": [
+    {
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_archive_v8_20261007/artifacts/histdata-sample/XAUUSD-202301.zip",
+      "bytes": 25194904,
+      "sha256": "4786f42be652e22eb9ae9f567301b744ff0c0bc03b9fd6ff60173cc86c33a4a2",
+      "stored_in_git": false,
+      "csv_member": "DAT_ASCII_XAUUSD_T_202301.csv",
+      "csv_sha256": "2fdbc864828e0e58c7630ee8379ecd1262c73849501c945437e1156ac4dd148b"
+    }
+  ],
+  "downloaded_again": false,
+  "evaluator_input": false
+}

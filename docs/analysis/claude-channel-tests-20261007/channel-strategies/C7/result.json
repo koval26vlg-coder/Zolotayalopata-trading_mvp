@@ -1,0 +1,398 @@
+{
+  "id": "C7",
+  "strategy": "TREND_PULLBACK_4H",
+  "verdict": "FAIL",
+  "verdict_inputs": {
+    "oos_net": -10.130894316476347,
+    "oos_pf": 0.8655625237745825,
+    "oos_trades": 329,
+    "ratio": -0.6113563692940454,
+    "bench_ratio": 7.9995603038104575,
+    "worse_both": false,
+    "net_2x": -27.05218640778
+  },
+  "rows": [
+    {
+      "period": "IS",
+      "trades": 304,
+      "win_rate_pct": 37.82894736842105,
+      "pf": 0.9895770112489042,
+      "net_return_pct": -0.7677957320835316,
+      "cagr_pct": -0.1457838687171198,
+      "max_dd_pct": -10.541893974385452,
+      "exposure_pct": 23.64311424765468,
+      "bench_net_return_pct": 283.57596654971536,
+      "bench_max_dd_pct": -89.58175854782178,
+      "net_return_2x_cost_pct": -13.18497970071222
+    },
+    {
+      "period": "OOS",
+      "trades": 329,
+      "win_rate_pct": 36.474164133738604,
+      "pf": 0.8655625237745825,
+      "net_return_pct": -10.130894316476347,
+      "cagr_pct": -2.797543481967768,
+      "max_dd_pct": -16.571176526998233,
+      "exposure_pct": 30.153535353535354,
+      "bench_net_return_pct": 548.5424691560083,
+      "bench_max_dd_pct": -68.571577477167,
+      "net_return_2x_cost_pct": -27.05218640778
+    },
+    {
+      "period": "FULL",
+      "trades": 633,
+      "win_rate_pct": 37.124802527646125,
+      "pf": 0.9271586025301527,
+      "net_return_pct": -10.811000956453853,
+      "cagr_pct": -1.2565880763894421,
+      "max_dd_pct": -22.990715400809457,
+      "exposure_pct": 26.327186713973983,
+      "bench_net_return_pct": 2163.280477881671,
+      "bench_max_dd_pct": -89.58175854782178,
+      "net_return_2x_cost_pct": -36.38915623425895
+    }
+  ],
+  "details": {
+    "IS": {
+      "start": "2017-09-19 08:00:00+00:00",
+      "end": "2022-12-31 23:59:59.999000+00:00",
+      "days": 1929.7,
+      "trades": 304,
+      "win_rate_pct": 37.82894736842105,
+      "pf": 0.9895770112489042,
+      "net_return_pct": -0.7677957320835316,
+      "cagr_pct": -0.1457838687171198,
+      "max_dd_pct": -10.541893974385452,
+      "max_dd_4h_pct": -10.830863300735471,
+      "exposure_time_pct": 23.64311424765468,
+      "exposure_notional_pct": 3.638901540619352,
+      "bench_net_return_pct": 283.57596654971536,
+      "bench_cagr_pct": 28.976980577091084,
+      "bench_max_dd_pct": -89.58175854782178,
+      "ambiguous_bars": 7,
+      "exits": {
+        "stop": 189,
+        "tp": 115,
+        "period_end": 0
+      },
+      "per_asset": {
+        "BTCUSDT": {
+          "trades": 124,
+          "pnl_usd_on_100": 0.6576551640020665,
+          "win_rate_pct": 39.516129032258064
+        },
+        "ETHUSDT": {
+          "trades": 133,
+          "pnl_usd_on_100": -0.7180931199809117,
+          "win_rate_pct": 37.59398496240601
+        },
+        "SOLUSDT": {
+          "trades": 47,
+          "pnl_usd_on_100": -0.7073577761045758,
+          "win_rate_pct": 34.04255319148936
+        }
+      },
+      "avg_R_multiple": 0.1348684210526316,
+      "median_notional_pct_of_sleeve": 23.04715540071897,
+      "share_notional_capped_pct": 7.565789473684211
+    },
+    "OOS": {
+      "start": "2023-01-01 00:00:00+00:00",
+      "end": "2026-10-06 23:59:59.999000+00:00",
+      "days": 1375.0,
+      "trades": 329,
+      "win_rate_pct": 36.474164133738604,
+      "pf": 0.8655625237745825,
+      "net_return_pct": -10.130894316476347,
+      "cagr_pct": -2.797543481967768,
+      "max_dd_pct": -16.571176526998233,
+      "max_dd_4h_pct": -16.571176526998233,
+      "exposure_time_pct": 30.153535353535354,
+      "exposure_notional_pct": 7.151828902852615,
+      "bench_net_return_pct": 548.5424691560083,
+      "bench_cagr_pct": 64.31619498992139,
+      "bench_max_dd_pct": -68.571577477167,
+      "ambiguous_bars": 3,
+      "exits": {
+        "stop": 209,
+        "tp": 118,
+        "period_end": 2
+      },
+      "per_asset": {
+        "BTCUSDT": {
+          "trades": 111,
+          "pnl_usd_on_100": -3.141343767592562,
+          "win_rate_pct": 36.93693693693694
+        },
+        "ETHUSDT": {
+          "trades": 116,
+          "pnl_usd_on_100": -4.171059242796627,
+          "win_rate_pct": 37.06896551724138
+        },
+        "SOLUSDT": {
+          "trades": 102,
+          "pnl_usd_on_100": -2.818491306087129,
+          "win_rate_pct": 35.294117647058826
+        }
+      },
+      "avg_R_multiple": 0.08781926938739204,
+      "median_notional_pct_of_sleeve": 38.86024777546574,
+      "share_notional_capped_pct": 14.893617021276595
+    },
+    "FULL": {
+      "start": "2017-09-19 08:00:00+00:00",
+      "end": "2026-10-06 23:59:59.999000+00:00",
+      "days": 3304.7,
+      "trades": 633,
+      "win_rate_pct": 37.124802527646125,
+      "pf": 0.9271586025301527,
+      "net_return_pct": -10.811000956453853,
+      "cagr_pct": -1.2565880763894421,
+      "max_dd_pct": -22.990715400809457,
+      "max_dd_4h_pct": -23.2394723003458,
+      "exposure_time_pct": 26.327186713973983,
+      "exposure_notional_pct": 5.113283394981408,
+      "bench_net_return_pct": 2163.280477881671,
+      "bench_cagr_pct": 41.166992676680735,
+      "bench_max_dd_pct": -89.58175854782178,
+      "ambiguous_bars": 10,
+      "exits": {
+        "stop": 398,
+        "tp": 233,
+        "period_end": 2
+      },
+      "per_asset": {
+        "BTCUSDT": {
+          "trades": 235,
+          "pnl_usd_on_100": -2.5456662321103805,
+          "win_rate_pct": 38.297872340425535
+        },
+        "ETHUSDT": {
+          "trades": 249,
+          "pnl_usd_on_100": -4.799296094418978,
+          "win_rate_pct": 37.34939759036144
+        },
+        "SOLUSDT": {
+          "trades": 149,
+          "pnl_usd_on_100": -3.4660386299243884,
+          "win_rate_pct": 34.899328859060404
+        }
+      },
+      "avg_R_multiple": 0.11041475454731751,
+      "median_notional_pct_of_sleeve": 30.36368421052632,
+      "share_notional_capped_pct": 11.374407582938389
+    }
+  },
+  "details_2x": {
+    "IS": {
+      "start": "2017-09-19 08:00:00+00:00",
+      "end": "2022-12-31 23:59:59.999000+00:00",
+      "days": 1929.7,
+      "trades": 304,
+      "win_rate_pct": 37.17105263157895,
+      "pf": 0.8282493275232639,
+      "net_return_pct": -13.18497970071222,
+      "cagr_pct": -2.640765283856661,
+      "max_dd_pct": -17.41517266237841,
+      "max_dd_4h_pct": -17.41517266237841,
+      "exposure_time_pct": 23.64311424765468,
+      "exposure_notional_pct": 3.5701495490272266,
+      "bench_net_return_pct": 282.0447129407057,
+      "bench_cagr_pct": 28.879364852740185,
+      "bench_max_dd_pct": -89.58175854782178,
+      "ambiguous_bars": 7,
+      "exits": {
+        "stop": 189,
+        "tp": 115,
+        "period_end": 0
+      },
+      "per_asset": {
+        "BTCUSDT": {
+          "trades": 124,
+          "pnl_usd_on_100": -4.972137512112263,
+          "win_rate_pct": 37.903225806451616
+        },
+        "ETHUSDT": {
+          "trades": 133,
+          "pnl_usd_on_100": -6.255839523826718,
+          "win_rate_pct": 37.59398496240601
+        },
+        "SOLUSDT": {
+          "trades": 47,
+          "pnl_usd_on_100": -1.9570026647731675,
+          "win_rate_pct": 34.04255319148936
+        }
+      },
+      "avg_R_multiple": 0.1348684210526316,
+      "median_notional_pct_of_sleeve": 23.047155400718978,
+      "share_notional_capped_pct": 7.565789473684211
+    },
+    "OOS": {
+      "start": "2023-01-01 00:00:00+00:00",
+      "end": "2026-10-06 23:59:59.999000+00:00",
+      "days": 1375.0,
+      "trades": 329,
+      "win_rate_pct": 36.474164133738604,
+      "pf": 0.6632101772188295,
+      "net_return_pct": -27.05218640778,
+      "cagr_pct": -8.037434133827537,
+      "max_dd_pct": -30.659460360102475,
+      "max_dd_4h_pct": -30.689158419056284,
+      "exposure_time_pct": 30.153535353535354,
+      "exposure_notional_pct": 7.126005961673274,
+      "bench_net_return_pct": 545.953456592411,
+      "bench_cagr_pct": 64.14169265988141,
+      "bench_max_dd_pct": -68.571577477167,
+      "ambiguous_bars": 3,
+      "exits": {
+        "stop": 209,
+        "tp": 118,
+        "period_end": 2
+      },
+      "per_asset": {
+        "BTCUSDT": {
+          "trades": 111,
+          "pnl_usd_on_100": -10.17856599888783,
+          "win_rate_pct": 36.93693693693694
+        },
+        "ETHUSDT": {
+          "trades": 116,
+          "pnl_usd_on_100": -10.383284442771394,
+          "win_rate_pct": 37.06896551724138
+        },
+        "SOLUSDT": {
+          "trades": 102,
+          "pnl_usd_on_100": -6.49033596612079,
+          "win_rate_pct": 35.294117647058826
+        }
+      },
+      "avg_R_multiple": 0.08781926938739204,
+      "median_notional_pct_of_sleeve": 38.86024777546574,
+      "share_notional_capped_pct": 14.893617021276595
+    },
+    "FULL": {
+      "start": "2017-09-19 08:00:00+00:00",
+      "end": "2026-10-06 23:59:59.999000+00:00",
+      "days": 3304.7,
+      "trades": 633,
+      "win_rate_pct": 36.808846761453395,
+      "pf": 0.7514988751585301,
+      "net_return_pct": -36.38915623425895,
+      "cagr_pct": -4.877078776587485,
+      "max_dd_pct": -41.340160074480394,
+      "max_dd_4h_pct": -41.346189584078154,
+      "exposure_time_pct": 26.327186713973983,
+      "exposure_notional_pct": 5.017566257359472,
+      "bench_net_return_pct": 2154.2453539370417,
+      "bench_cagr_pct": 41.104595667458725,
+      "bench_max_dd_pct": -89.58175854782178,
+      "ambiguous_bars": 10,
+      "exits": {
+        "stop": 398,
+        "tp": 233,
+        "period_end": 2
+      },
+      "per_asset": {
+        "BTCUSDT": {
+          "trades": 235,
+          "pnl_usd_on_100": -13.632426616322654,
+          "win_rate_pct": 37.4468085106383
+        },
+        "ETHUSDT": {
+          "trades": 249,
+          "pnl_usd_on_100": -14.690439130471402,
+          "win_rate_pct": 37.34939759036144
+        },
+        "SOLUSDT": {
+          "trades": 149,
+          "pnl_usd_on_100": -8.066290487464807,
+          "win_rate_pct": 34.899328859060404
+        }
+      },
+      "avg_R_multiple": 0.11041475454731751,
+      "median_notional_pct_of_sleeve": 30.36368421052632,
+      "share_notional_capped_pct": 11.374407582938389
+    }
+  },
+  "self_checks": {
+    "entry_is_next_bar": true,
+    "signal_close_before_entry_open": true,
+    "stop_window_before_entry": true,
+    "exit_fills_consistent": true,
+    "ambiguous_bars_resolved_stop_first": true,
+    "ambiguous_bar_count_full": 10,
+    "missed_exit_bars": 0,
+    "ema_causal_max_abs_err": 0.0,
+    "perturb_signals_unchanged_upto_K": true,
+    "perturb_trades_unchanged_upto_K": true,
+    "all_passed": true
+  },
+  "feasibility_100usd": {
+    "IS": {
+      "trades": 304,
+      "below_min_notional": 92,
+      "median_notional_usd": 7.914933741710341,
+      "median_risk_usd": 0.3514275612036593
+    },
+    "OOS": {
+      "trades": 329,
+      "below_min_notional": 36,
+      "median_notional_usd": 12.275958326417506,
+      "median_risk_usd": 0.31479108827667773
+    },
+    "FULL": {
+      "trades": 633,
+      "below_min_notional": 130,
+      "median_notional_usd": 9.971453944666242,
+      "median_risk_usd": 0.33178808487226674
+    }
+  },
+  "data_sources": [
+    {
+      "name": "Binance spot BTCUSDT 4h klines (api.binance.com/api/v3/klines)",
+      "url": "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=4h",
+      "rows": 20011,
+      "start": "2017-08-17 04:00:00+00:00",
+      "end": "2026-10-06 23:59:59.999000+00:00",
+      "sha256": "0f4ca7b36651d2efc70e09c12b321473c7b3dcebeae04ad553b53152c4d6bdbc",
+      "gaps_non4h": 8,
+      "file": "C:\\Users\\koval\\AppData\\Local\\Temp\\claude\\C--Users-koval------------\\c3d42fa1-b83c-49f0-8567-13ebcd1f7317\\scratchpad\\st\\C7\\data\\BTCUSDT_4h.json"
+    },
+    {
+      "name": "Binance spot ETHUSDT 4h klines (api.binance.com/api/v3/klines)",
+      "url": "https://api.binance.com/api/v3/klines?symbol=ETHUSDT&interval=4h",
+      "rows": 20011,
+      "start": "2017-08-17 04:00:00+00:00",
+      "end": "2026-10-06 23:59:59.999000+00:00",
+      "sha256": "5ae26c322c24312ce49c25d8748efd7b4ba5c147751166b6771b180bbbacba38",
+      "gaps_non4h": 8,
+      "file": "C:\\Users\\koval\\AppData\\Local\\Temp\\claude\\C--Users-koval------------\\c3d42fa1-b83c-49f0-8567-13ebcd1f7317\\scratchpad\\st\\C7\\data\\ETHUSDT_4h.json"
+    },
+    {
+      "name": "Binance spot SOLUSDT 4h klines (api.binance.com/api/v3/klines)",
+      "url": "https://api.binance.com/api/v3/klines?symbol=SOLUSDT&interval=4h",
+      "rows": 13487,
+      "start": "2020-08-11 04:00:00+00:00",
+      "end": "2026-10-06 23:59:59.999000+00:00",
+      "sha256": "d019b46a477d1b7f82890728aed0d5e99f4f713988a7705c8376e5dbc986f0be",
+      "gaps_non4h": 0,
+      "file": "C:\\Users\\koval\\AppData\\Local\\Temp\\claude\\C--Users-koval------------\\c3d42fa1-b83c-49f0-8567-13ebcd1f7317\\scratchpad\\st\\C7\\data\\SOLUSDT_4h.json"
+    },
+    {
+      "name": "Binance spot exchangeInfo (min notional / lot size)",
+      "url": "https://api.binance.com/api/v3/exchangeInfo",
+      "rows": null,
+      "sha256": "7204daddcd5f0554b5159e42f48c373506f74c64d7c2a3b3ad888d4f62278960",
+      "file": "C:\\Users\\koval\\AppData\\Local\\Temp\\claude\\C--Users-koval------------\\c3d42fa1-b83c-49f0-8567-13ebcd1f7317\\scratchpad\\st\\C7\\data\\exchangeInfo.json"
+    }
+  ],
+  "conventions": {
+    "warmup_bars": 200,
+    "cost_per_side": 0.002,
+    "min_notional_usd": 5.0,
+    "period_runs": "each period simulated independently from $100 (1/3 per sleeve); open position force-closed at last close of the period; indicators use full prior history (causal)",
+    "sol_sleeve": "SOL sleeve holds cash until SOLUSDT has 200 bars (2020-09); benchmark SOL sleeve buys at the same bar",
+    "exposure": "time-in-market averaged over the 3 sleeves; notional exposure in details",
+    "max_dd": "portfolio equity marked at 4h closes, sampled at daily (UTC) last mark"
+  }
+}

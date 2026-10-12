@@ -1,0 +1,11 @@
+{
+  "pid": 51188,
+  "started_utc": "2026-10-06T10:38:45.2653804Z",
+  "command": "pwsh -NoProfile -NoExit -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-coordinator-20261006\\verify-policy.ps1\"",
+  "window_style": "Normal",
+  "no_exit": true,
+  "network_requests": 0,
+  "purpose": "Final boundary report with distinct status_check and stop_check fields",
+  "status_command": "Get-Content 'C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-coordinator-20261006\\policy-verification-final.log' -Tail 20",
+  "stop_command": "Ctrl+C in this visible terminal"
+}

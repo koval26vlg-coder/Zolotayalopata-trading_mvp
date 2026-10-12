@@ -27,6 +27,8 @@ docs/plans/preipo-perpetual-event-planonly-20260825-v9.json -text whitespace=cr-
 docs/plans/preipo-perpetual-event-planonly-20260825-v10.json -text whitespace=cr-at-eol
 docs/plans/preipo-perpetual-event-planonly-20260826-v11.json -text whitespace=cr-at-eol
 tools/install_listing_strategy_due_coordinator_task.ps1 -text whitespace=cr-at-eol
+tools/refresh_listing_strategy_due_coordinator.ps1 -text whitespace=cr-at-eol
+tools/test_listing_coordinator_install_disabled.ps1 -text whitespace=cr-at-eol
 tools/invoke_listing_strategy_due_coordinator.ps1 -text whitespace=cr-at-eol
 tools/start_listing_momentum_exchange_expansion_preflight_visible.ps1 -text whitespace=cr-at-eol
 tools/start_listing_momentum_forward_expansion_tick_visible.ps1 -text whitespace=cr-at-eol
@@ -141,3 +143,119 @@ docs/plans/listing-spot-crypto-identity-probe-planonly-20260827-v8.json -text wh
 docs/plans/listing-spot-crypto-identity-probe-planonly-20260828-v9.json -text whitespace=cr-at-eol
 docs/plans/listing-spot-crypto-identity-probe-planonly-20260831-v10.json -text whitespace=cr-at-eol
 trading_mvp/src/listing_runtime_declared_identity.py -text whitespace=cr-at-eol
+trading_mvp/src/premarket_descriptive_history_plan.py -text whitespace=cr-at-eol
+trading_mvp/src/premarket_descriptive_history_collect.py -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v1.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v2.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v3.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v4.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v5.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v6.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v7.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v8.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v9.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v10.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v11.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v12.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v13.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v14.json -text whitespace=cr-at-eol
+
+# Pre-market descriptive history v15-v21 and the whole forward-depth lineage. Both plan
+# families bind their modules by sha256 over the bytes as they sit in the working tree, and
+# core.autocrlf=true rewrites unmarked text on checkout - which would make every one of
+# these plans fail its own --plan-check on a fresh clone. The v1-v14 plans above were
+# protected when they were written; these were not, and the gap is the whole reason to add
+# them before the first commit rather than after.
+docs/plans/premarket-descriptive-history-planonly-20260831-v15.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v16.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v17.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v18.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v19.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v20.json -text whitespace=cr-at-eol
+docs/plans/premarket-descriptive-history-planonly-20260831-v21.json -text whitespace=cr-at-eol
+trading_mvp/src/premarket_forward_depth_plan.py -text whitespace=cr-at-eol
+trading_mvp/src/premarket_forward_depth_watch.py -text whitespace=cr-at-eol
+docs/plans/premarket-forward-depth-planonly-20260902-v1.json -text whitespace=cr-at-eol
+docs/plans/premarket-forward-depth-planonly-20260902-v2.json -text whitespace=cr-at-eol
+docs/plans/premarket-forward-depth-planonly-20260902-v3.json -text whitespace=cr-at-eol
+tools/install_premarket_forward_depth_scan_task.ps1 -text whitespace=cr-at-eol
+
+# Collected data. Not bound by any plan, but every record carries the sha256 of the venue
+# response it came from, and a rewritten file is no longer the artifact those digests were
+# computed over.
+docs/analysis/premarket-descriptive-history/*.json -text
+docs/analysis/premarket-descriptive-history/runs/*.json -text
+docs/analysis/premarket-forward-depth/*.json -text
+docs/analysis/premarket-forward-depth/captures/*.jsonl -text
+docs/plans/premarket-forward-depth-planonly-20260902-v4.json -text whitespace=cr-at-eol
+docs/plans/premarket-forward-depth-planonly-20260902-v5.json -text whitespace=cr-at-eol
+docs/plans/premarket-forward-depth-planonly-20260902-v6.json -text whitespace=cr-at-eol
+
+# Parent research checkpoint: preserve the exact bytes used by audit bindings.
+docs/analysis/strategy-reconciliation-20260929/* -text whitespace=cr-at-eol
+docs/agent-log/readiness/one-week-edge-sprint-current-readiness-20260929-*.json -text whitespace=cr-at-eol
+docs/agent-log/one-week-edge-sprint-readiness-pointer.json -text whitespace=cr-at-eol
+docs/plans/trading-mvp-autopilot-policy-v1.json -text whitespace=cr-at-eol
+docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md -text whitespace=cr-at-eol
+tools/reconcile_research_checkpoint.py -text whitespace=cr-at-eol
+tools/trading_research_checkpoint_status.ps1 -text whitespace=cr-at-eol
+tools/trading_goal_status.ps1 -text whitespace=cr-at-eol
+tools/trading_next_goal_step.ps1 -text whitespace=cr-at-eol
+trading_mvp/src/autopilot_guard.py -text whitespace=cr-at-eol
+trading_mvp/src/one_week_edge_sprint_readiness.py -text whitespace=cr-at-eol
+trading_mvp/src/premarket_forward_depth_quality.py -text whitespace=cr-at-eol
+trading_mvp/src/research_checkpoint.py -text whitespace=cr-at-eol
+
+# Standalone sampling diagnostics: byte-exact frozen code and evidence.
+trading_mvp/src/premarket_depth_sampling_protocol.py -text whitespace=cr-at-eol
+docs/plans/premarket-depth-sampling-protocol-20261005-v1.json -text whitespace=cr-at-eol
+docs/analysis/premarket-depth-sampling-20261005/* -text whitespace=cr-at-eol
+
+# Offline serial coordinator: exact runtime and verification bytes.
+trading_mvp/src/premarket_depth_coordinator.py -text whitespace=cr-at-eol
+tools/start_premarket_depth_coordinator_visible.ps1 -text whitespace=cr-at-eol
+docs/plans/premarket-depth-coordinator-runtime-20261006-v1.json -text whitespace=cr-at-eol
+docs/analysis/premarket-coordinator-20261006/* -text whitespace=cr-at-eol
+docs/analysis/premarket-coordinator-20261006/*.log -text whitespace=-blank-at-eol,cr-at-eol
+
+# Offline discovery/budget integration, preserves historical coordinator bytes.
+trading_mvp/src/premarket_depth_dispatch.py -text whitespace=cr-at-eol
+docs/plans/premarket-depth-dispatch-runtime-20261006-v1.json -text whitespace=cr-at-eol
+docs/analysis/premarket-dispatch-20261006/* -text whitespace=cr-at-eol
+docs/analysis/premarket-dispatch-20261006/*.log -text whitespace=-blank-at-eol,cr-at-eol
+
+# Historical validation runtime and v8 evidence use exact-byte SHA256 bindings.
+trading_mvp/src/channel_validation/*.py -text whitespace=cr-at-eol
+trading_mvp/tests/test_channel_validation.py -text whitespace=cr-at-eol
+tools/run_channel_strategy_validation_visible.ps1 -text whitespace=cr-at-eol
+tools/check_active_run_gate.ps1 -text whitespace=cr-at-eol
+tools/check_trading_mvp_autopilot.ps1 -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v8/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v9/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v9/chunks/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v10/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v11/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v12/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v13/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v14/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v15/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v16/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v17/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v18/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v19/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v20/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v21/* -text whitespace=cr-at-eol
+docs/analysis/channel-strategy-validation-20261006/continuation-v22/** -text whitespace=cr-at-eol
+docs/analysis/claude-channel-tests-20261007/** -text whitespace=cr-at-eol
+docs/analysis/claude-control-tests-20261009/** -text whitespace=cr-at-eol
+docs/plans/2026-10-09-channel-strategy-validation-closure-handoff.md -text whitespace=cr-at-eol
+docs/analysis/claude-channel-tests-20261007/channel-strategies/final_digest.txt whitespace=cr-at-eol,-blank-at-eol
+docs/analysis/claude-control-tests-20261009/digest.txt whitespace=cr-at-eol,-blank-at-eol
+
+# Offline budgeted gateway: exact runtime and verification bytes.
+trading_mvp/src/premarket_depth_gateway.py -text whitespace=cr-at-eol
+trading_mvp/tests/test_premarket_depth_gateway.py -text whitespace=cr-at-eol
+tools/start_premarket_depth_gateway_visible.ps1 -text whitespace=cr-at-eol
+docs/plans/premarket-depth-gateway-runtime-20261012-v1.json -text whitespace=cr-at-eol
+docs/analysis/premarket-gateway-20261012/* -text whitespace=cr-at-eol
+docs/analysis/premarket-gateway-20261012/*.log -text whitespace=-blank-at-eol,cr-at-eol

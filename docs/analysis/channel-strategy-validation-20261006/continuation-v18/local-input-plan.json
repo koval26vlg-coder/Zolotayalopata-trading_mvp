@@ -1,0 +1,73 @@
+{
+  "eligible_for_evaluation": false,
+  "input_binding_hash": "41475362e6f6eb15dfb9c0f1b37be21c94f3c36397be9f06cb6135891d2b13f8",
+  "inputs": [
+    {
+      "bytes": 303768,
+      "kind": "orderbooks_slice",
+      "market": "spot",
+      "month": "202301",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\01.quarantined.gz-part",
+      "sha256": "761fed48af785841dbab140bc1cda3284fe0cc3c12abea59936a442679b84fe9",
+      "source_url": "https://download.gatedata.org/spot/orderbooks_slice/202301/BTC_USDT-2023010100.gz",
+      "symbol": "BTC_USDT"
+    },
+    {
+      "bytes": 140117,
+      "kind": "orderbooks_slice",
+      "market": "futures_usdt",
+      "month": "202301",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\02.quarantined.gz-part",
+      "sha256": "fbfa64b80a53c9a3c7ba7a70d2c0a3f09e181698693f039e138799e175ee2011",
+      "source_url": "https://download.gatedata.org/futures_usdt/orderbooks_slice/202301/BTC_USDT-2023010100.gz",
+      "symbol": "BTC_USDT"
+    },
+    {
+      "bytes": 288455,
+      "kind": "orderbooks_slice",
+      "market": "spot",
+      "month": "202501",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\06.quarantined.gz-part",
+      "sha256": "c012bde5936b494bcbcd69a70d6097a17b23a8c97c7e4a75e470af55eeb2524a",
+      "source_url": "https://download.gatedata.org/spot/orderbooks_slice/202501/BTC_USDT-2025010100.gz",
+      "symbol": "BTC_USDT"
+    },
+    {
+      "bytes": 173710,
+      "kind": "orderbooks_slice",
+      "market": "futures_usdt",
+      "month": "202501",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\07.quarantined.gz-part",
+      "sha256": "948b25b33d1752fa59b3f1a0d0c34594ad67fa5fbc4e92afeac1f6a70db69afe",
+      "source_url": "https://download.gatedata.org/futures_usdt/orderbooks_slice/202501/BTC_USDT-2025010100.gz",
+      "symbol": "BTC_USDT"
+    }
+  ],
+  "max_decoded_bytes_per_file": 33554432,
+  "max_rows_per_file": 200000,
+  "max_runtime_sec": 300,
+  "max_total_decoded_bytes": 134217728,
+  "network_requests": 0,
+  "parent_hashes": {
+    "evidence-index.json": "e5c16bcb1840ef63f2c24d3f987cd355f87fbccbce62e827e8f5320a73ca8372",
+    "local-census.json": "80e2189fde2c690a69bb286ddb2d8ca2065cf0e4b9b74c3f66f50fc560e7394f",
+    "local-completion.json": "3d36109c8904d0ab85d0beef203c251c088321cf00f9c7470bcb52d9759b3625"
+  },
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "policy": {
+    "age": "Separate current and exchange update age at state-changing frames; not time weighted",
+    "duplicate": "Exact normalized record hash; do not refresh or restore quote",
+    "eligible_for_evaluation": false,
+    "eof": "No extrapolated events; retained leg may age as other stream advances; no certified freshness",
+    "exchange_update": "Missing or regressing update invalidates; newer current must not disguise old update",
+    "freshness_acceptance_threshold_us": null,
+    "frontier": "Synthetic max(current timestamps seen, window start), not historical arrival time",
+    "historical_observation_time_verified": false,
+    "invalid": "Unknown-time error invalidates at preceding frontier; earliest conservative diagnostic boundary",
+    "late": "current below source frontier: keep prior state, do not apply late record",
+    "same_time_conflict": "Different record at accepted current: invalidate until strictly newer record",
+    "source_order": "Never sort, interpolate or rewrite input records",
+    "tie": "Process all same-frontier source events before emitting at most one frame"
+  },
+  "schema": "gate_pairing_input_plan_v1"
+}

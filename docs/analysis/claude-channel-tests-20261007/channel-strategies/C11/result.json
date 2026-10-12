@@ -1,0 +1,192 @@
+{
+ "strategy": "C11 CASH_SECURED_PUT_BTC",
+ "proxy": true,
+ "checks": {
+  "iv_signal_close_before_entry": true,
+  "iv_signal_strictly_prior_daily_bar": true,
+  "entry_before_expiry": true,
+  "marks_use_only_past_iv": true,
+  "entries_are_monday_0800_utc": true,
+  "norm_cdf_matches_scipy": "True",
+  "no_trade_overlap": true,
+  "last_expiry_within_usable_data": "2026-10-05 08:00:00+00:00",
+  "put_call_parity_max_err": 3.637978807091713e-12,
+  "intrinsic_at_expiry_ok": true,
+  "stop_first_intrabar": "n/a: European put settled at expiry, no stops/TP",
+  "spot_fallbacks_used": [
+   [
+    "2021-09-29 08:00:00+00:00",
+    "2021-09-29 09:00:00+00:00"
+   ]
+  ]
+ },
+ "periods": {
+  "IS": {
+   "trades": 92,
+   "win_rate_pct": 77.17,
+   "pf": 1.094,
+   "net_return_pct": 16.7,
+   "cagr_pct": 9.15,
+   "max_dd_pct": -35.7,
+   "max_dd_weekly_settle_pct": -29.69,
+   "exposure_pct": 100.0,
+   "years": 1.763,
+   "assigned_weeks": 24,
+   "worst_week_pct": -15.96,
+   "best_week_pct": 6.18,
+   "avg_prem_pct_spot": 2.369,
+   "start": "2021-03-29 08:00:00+00:00",
+   "end": "2023-01-02 08:00:00+00:00",
+   "net_return_2x_cost_pct": -24.36,
+   "net_return_2x_fee_only_pct": 13.35,
+   "pf_2x_cost": 0.839,
+   "diag_breakeven_premium_fraction_of_model": 0.793,
+   "bench_btc": {
+    "net_return_pct": -70.21,
+    "cagr_pct": -49.69,
+    "max_dd_pct": -76.77,
+    "net_return_2x_cost_pct": -70.33,
+    "trades": 1,
+    "exposure_pct": 100.0
+   },
+   "bench_cash": {
+    "net_return_pct": 0.0,
+    "max_dd_pct": 0.0
+   },
+   "ann_net_pct": 9.15,
+   "ret_dd_ratio": 0.468,
+   "bench_ret_dd_ratio": -0.915,
+   "info_cagr_dd_ratio": 0.256,
+   "info_bench_cagr_dd_ratio": -0.647,
+   "by_year_net_pct": {
+    "2021": 35.83,
+    "2022": -14.09
+   }
+  },
+  "OOS": {
+   "trades": 196,
+   "win_rate_pct": 90.31,
+   "pf": 1.813,
+   "net_return_pct": 134.43,
+   "cagr_pct": 25.46,
+   "max_dd_pct": -22.47,
+   "max_dd_weekly_settle_pct": -21.57,
+   "exposure_pct": 100.0,
+   "years": 3.756,
+   "assigned_weeks": 26,
+   "worst_week_pct": -19.18,
+   "best_week_pct": 2.35,
+   "avg_prem_pct_spot": 0.957,
+   "start": "2023-01-02 08:00:00+00:00",
+   "end": "2026-10-05 08:00:00+00:00",
+   "net_return_2x_cost_pct": 55.84,
+   "net_return_2x_fee_only_pct": 120.41,
+   "pf_2x_cost": 1.418,
+   "diag_breakeven_premium_fraction_of_model": 0.482,
+   "bench_btc": {
+    "net_return_pct": 413.77,
+    "cagr_pct": 54.6,
+    "max_dd_pct": -52.88,
+    "net_return_2x_cost_pct": 411.71,
+    "trades": 1,
+    "exposure_pct": 100.0
+   },
+   "bench_cash": {
+    "net_return_pct": 0.0,
+    "max_dd_pct": 0.0
+   },
+   "ann_net_pct": 25.46,
+   "ret_dd_ratio": 5.983,
+   "bench_ret_dd_ratio": 7.825,
+   "info_cagr_dd_ratio": 1.133,
+   "info_bench_cagr_dd_ratio": 1.033,
+   "by_year_net_pct": {
+    "2023": 48.4,
+    "2024": 33.55,
+    "2025": 16.62,
+    "2026": 1.43
+   }
+  },
+  "FULL": {
+   "trades": 288,
+   "win_rate_pct": 86.11,
+   "pf": 1.467,
+   "net_return_pct": 173.57,
+   "cagr_pct": 20.0,
+   "max_dd_pct": -35.7,
+   "max_dd_weekly_settle_pct": -29.69,
+   "exposure_pct": 100.0,
+   "years": 5.52,
+   "assigned_weeks": 50,
+   "worst_week_pct": -19.18,
+   "best_week_pct": 6.18,
+   "avg_prem_pct_spot": 1.408,
+   "start": "2021-03-29 08:00:00+00:00",
+   "end": "2026-10-05 08:00:00+00:00",
+   "net_return_2x_cost_pct": 17.88,
+   "net_return_2x_fee_only_pct": 149.85,
+   "pf_2x_cost": 1.071,
+   "diag_breakeven_premium_fraction_of_model": 0.649,
+   "bench_btc": {
+    "net_return_pct": 53.65,
+    "cagr_pct": 8.09,
+    "max_dd_pct": -76.77,
+    "net_return_2x_cost_pct": 53.03,
+    "trades": 1,
+    "exposure_pct": 100.0
+   },
+   "bench_cash": {
+    "net_return_pct": 0.0,
+    "max_dd_pct": 0.0
+   },
+   "ann_net_pct": 20.0,
+   "ret_dd_ratio": 4.862,
+   "bench_ret_dd_ratio": 0.699,
+   "info_cagr_dd_ratio": 0.56,
+   "info_bench_cagr_dd_ratio": 0.105,
+   "by_year_net_pct": {
+    "2021": 35.83,
+    "2022": -14.09,
+    "2023": 48.4,
+    "2024": 33.55,
+    "2025": 16.62,
+    "2026": 1.43
+   }
+  }
+ },
+ "verdict": {
+  "verdict": "INCONCLUSIVE",
+  "fail_reasons": [],
+  "pass_checks": {
+   "net_positive": true,
+   "pf_ge_1.2": true,
+   "beats_btc_bh_on_ret_dd_ratio": false,
+   "net_positive_at_2x_costs": true
+  },
+  "carry_criterion_info": {
+   "ann_net_gt_4": true,
+   "max_dd_lt_10": false
+  }
+ },
+ "data_sources": [
+  {
+   "name": "Deribit DVOL BTC 1D (public/get_volatility_index_data)",
+   "file": "C:\\Users\\koval\\AppData\\Local\\Temp\\claude\\C--Users-koval------------\\c3d42fa1-b83c-49f0-8567-13ebcd1f7317\\scratchpad\\st\\C11\\data\\deribit_dvol_btc_1D.json",
+   "sha256": "e93693c49dd4fe2e238f454bedac0d2bc1d734ea2aca4597453573d90c446d9f",
+   "rows": 2023,
+   "start": "2021-03-24 00:00:00+00:00",
+   "end": "2026-10-07 00:00:00+00:00",
+   "url": "https://www.deribit.com/api/v2/public/get_volatility_index_data?currency=BTC&resolution=1D"
+  },
+  {
+   "name": "Binance BTCUSDT 1h klines (api/v3/klines)",
+   "file": "C:\\Users\\koval\\AppData\\Local\\Temp\\claude\\C--Users-koval------------\\c3d42fa1-b83c-49f0-8567-13ebcd1f7317\\scratchpad\\st\\C11\\data\\binance_btcusdt_1h.json",
+   "sha256": "80eedd6c74afb1fa0fc70e16016214e736608437e9d4cd0f10779af823587bbc",
+   "rows": 49091,
+   "start": "2021-03-01 00:00:00+00:00",
+   "end": "2026-10-07 00:00:00+00:00",
+   "url": "https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h"
+  }
+ ],
+ "n_weeks": 288
+}

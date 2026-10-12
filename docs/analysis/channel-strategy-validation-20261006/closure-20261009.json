@@ -1,0 +1,827 @@
+{
+  "schema": "channel_program_closure_v1",
+  "status": "CLOSED_BY_USER_DECISION_20261009",
+  "closed_on": "2026-10-09",
+  "basis": "User-provided Claude closure handoff; administrative closure with attributed family/proxy results",
+  "source_handoff": "docs/plans/2026-10-09-channel-strategy-validation-closure-handoff.md",
+  "plan_path": "docs/plans/channel-strategy-validation-20261006-v1.json",
+  "plan_file_sha256": "2d4235d6f779c3181f3a619e2c9414d020346df37d1e23fc6f46ad73679c474c",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "recalculation_performed": false,
+  "independent_reproduction_by_codex": false,
+  "exact_original_models_evaluated": 0,
+  "reported_results_count": 13,
+  "blocked_data_closed_count": 7,
+  "positive_edge_confirmed": false,
+  "universal_no_edge_claim_supported": false,
+  "timing_note": "Failure to reject the random-timing null does not prove absence of edge. Six OOS timing tests plus 19 p=1 placeholders form the reported Holm family of 25.",
+  "rolling_windows_note": "The 21 windows overlap; not 21 independent replications or a guarantee of future drawdown reduction.",
+  "benchmark_note": "Historical benchmark and friction scenarios from the supplied report, not verified current rates, tariffs or investment advice.",
+  "pending_tasks": [],
+  "next_action": "NONE_CLOSED",
+  "new_downloads_allowed": false,
+  "source_audits_allowed": false,
+  "no_idle_refill_allowed": false,
+  "autonomous_reopen_allowed": false,
+  "excluded_tracks": [
+    "Listing Momentum",
+    "paused premarket-depth"
+  ],
+  "models": [
+    {
+      "number": 1,
+      "id": "relative_strength",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "INCONCLUSIVE",
+      "reported_claude_status": "INCONCLUSIVE",
+      "reported_claude_model": "C6",
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "Binance daily 7-day selloff, 14-day hold and fixed survivor universe; not Gate hourly 24-hour signal.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C6/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 2,
+      "id": "trend_pullback",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL",
+      "reported_claude_status": "FAIL",
+      "reported_claude_model": "C7",
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "Different trend condition, stop, sizing and universe; not the fixed 2/4 ATR Gate model.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C7/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 3,
+      "id": "structure_break",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "INCONCLUSIVE",
+      "reported_claude_status": "INCONCLUSIVE",
+      "reported_claude_model": "C8",
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "Impulse/Fibonacci pullback proxy; not the confirmed-pivot continuation model.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C8/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 4,
+      "id": "normalized_line",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "NO_EDGE_AFTER_HOLM",
+      "reported_claude_status": "NO_EDGE_AFTER_HOLM",
+      "reported_claude_model": "C9",
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "55/20-bar breakout family proxy; not the 0.1 ATR-per-bar normalized line.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C9/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 5,
+      "id": "book_continue",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_model": null,
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "No historical orderbook test in the imported series.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 6,
+      "id": "book_reclaim",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_model": null,
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "No historical orderbook test in the imported series.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 7,
+      "id": "funding_carry",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL_VS_TBILL",
+      "reported_claude_status": "FAIL_VS_TBILL",
+      "reported_claude_model": "C1",
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "Binance trailing three-day funding carry; different signal, venues and holding rules.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C1/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 8,
+      "id": "funding_cross",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL",
+      "reported_claude_status": "FAIL",
+      "reported_claude_model": "C3",
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "Binance/Bybit trailing seven-day funding spread; not Gate/MEXC fixed 24-hour carry.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C3/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 9,
+      "id": "spot_dislocation",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_model": null,
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "Not tested in the imported series; related carry results are not an exact spot test.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 10,
+      "id": "basis_convergence",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_model": null,
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "Not tested in the imported series; carry is not the exact basis z-score model.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 11,
+      "id": "long_put",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_model": null,
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "No historical long-put chain test; short-put proxy does not test this model.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 12,
+      "id": "cash_put",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "INCONCLUSIVE_PROXY",
+      "reported_claude_status": "INCONCLUSIVE_PROXY",
+      "reported_claude_model": "C11",
+      "feasibility_note": "NOT_FEASIBLE_100USD",
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "DVOL/Black-76 synthetic weekly 95% put; not historical 30-day 90% bid/ask contracts.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C11/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 13,
+      "id": "put_spread",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_model": null,
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "No historical put-spread chain test; short-put proxy does not test this model.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 14,
+      "id": "fixed_grid",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL",
+      "reported_claude_status": "FAIL",
+      "reported_claude_model": "C10",
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "Fixed percent weekly grid with candle-touch fills; not ATR grid with executable quotes.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C10/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 15,
+      "id": "gold_macd",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "NO_TIMING_EDGE",
+      "reported_claude_status": "NO_TIMING_EDGE",
+      "reported_claude_model": "C13",
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "Daily GC=F MACD state filter; not 4h crossover with stop, target and time limit.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C13/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 16,
+      "id": "dax_orb",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL",
+      "reported_claude_status": "FAIL",
+      "reported_claude_model": "C14",
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "Hourly index proxy; not five-minute executable DAX instrument history.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C14/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 17,
+      "id": "gap_continue",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL",
+      "reported_claude_status": "FAIL",
+      "reported_claude_model": "C15A",
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "Daily positive-gap open-to-close survivor-stock proxy; no 30-minute breakout.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C15/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 18,
+      "id": "gap_fade",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "FAIL",
+      "reported_claude_status": "FAIL",
+      "reported_claude_model": "C15B",
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "Daily positive-gap short open-to-close proxy without borrow; no 30-minute fade rule.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C15/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 19,
+      "id": "aave_lending",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "NO_EXCESS_VS_TBILL",
+      "reported_claude_status": "NO_EXCESS_VS_TBILL",
+      "reported_claude_model": "C16",
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "DefiLlama APY proxy with assumed gas; no full 30-day reserve/withdrawal history.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+        "docs/analysis/claude-channel-tests-20261007/channel-strategies/C16/result.json"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    },
+    {
+      "number": 20,
+      "id": "wallet_follow",
+      "program_status": "CLOSED_BY_USER_DECISION_20261009",
+      "status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_status": "BLOCKED_DATA_CLOSED",
+      "reported_claude_model": null,
+      "feasibility_note": null,
+      "status_basis": "IMPORTED_CLAUDE_REPORT_NOT_RERUN",
+      "exact_model_evaluated": false,
+      "exact_model_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+      "prior_codex_input_status": "BLOCKED_DATA",
+      "exact_contract_equivalence": false,
+      "scope_difference": "No block-level wallet-following test in the imported series.",
+      "sources": [
+        "docs/analysis/claude-control-tests-20261009/ИТОГ.md"
+      ],
+      "new_evaluation_metrics": null,
+      "next_action": "NONE_CLOSED",
+      "automatic_reopen_allowed": false
+    }
+  ],
+  "source_files": [
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/backtest_implA.py",
+      "bytes": 23453,
+      "sha256": "eec757f17cbe611ed238907700921a3b093cdbaa15fb29d5492a161194a14aa8"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/backtest_implB.py",
+      "bytes": 25108,
+      "sha256": "0a05d9bcffcd9d9e967543bc5b67761833944f14c29a70e799c5ac249cfe0cb4"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C1/result.json",
+      "bytes": 11981,
+      "sha256": "e1a60dd1edd9c23175418b02a60457c392531c2bb923d90f192b212a3902b7da"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C1/run.py",
+      "bytes": 15303,
+      "sha256": "df2b48447ee1064370787baa23d2574403ddfdd1b0500e1d4670c05dfe1de946"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C1/verify.py",
+      "bytes": 9864,
+      "sha256": "27d93ff8292e0ce2eabea3d5f4e2f7cedbde4d00f1d9f50b3c8c78f3c47a58a6"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C10/result.json",
+      "bytes": 12534,
+      "sha256": "d7dc372dc7d5a097f728c3835bc1b94b95aff952a3e83f8914d0bc9fca677a40"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C10/run.py",
+      "bytes": 17700,
+      "sha256": "899a1458d49e77b800fd56f18aadc9d56d10e2ecfba4e672a14a23be7056bcb5"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C10/verify.py",
+      "bytes": 14324,
+      "sha256": "05ea365bb69033df1ca7f837a39e3a141ffcf890bf4be3c3d020da6487848b6a"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C11/result.json",
+      "bytes": 5527,
+      "sha256": "5180f90346799539aa0e09a7f4ed6fc514f1e5821a5b800b2d6c02c63d5ca0e8"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C11/run.py",
+      "bytes": 13172,
+      "sha256": "640f44e88e47aa6f5d33ec0b47b7943126c1f5bab32923e43b89faddf970163b"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C11/verify.py",
+      "bytes": 8695,
+      "sha256": "d1ee8e0dd7cf7755f01fc692851a23111b586bacf1a534ff45159288f71b15a3"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C13/result.json",
+      "bytes": 150261,
+      "sha256": "06ab080136e699bef6d59bcf93992875d35043469a5ce40840c41140645f760e"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C13/run.py",
+      "bytes": 13810,
+      "sha256": "dfdbd8458619bc7e8e61e7642085457f11e68a3b71837ddb7b00221116bfca56"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C13/verify.py",
+      "bytes": 9305,
+      "sha256": "af20e6e5af2035176c9553eac309d96d58646f68bdb193590c0c41111c45c95a"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C14/result.json",
+      "bytes": 2047,
+      "sha256": "92a2c6b9ae48905868f048c47dab52018faf9fea34e7caa3f9d4491d2b3da58a"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C14/run.py",
+      "bytes": 9702,
+      "sha256": "2660aed87850d7dbee868aecc1475fa5d02b66ebcee1429df729adb785758697"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C14/verify.py",
+      "bytes": 6904,
+      "sha256": "42142137908edc72aece32ffbdde7068d58d71df72cb6defd121635d10f924d5"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C15/result.json",
+      "bytes": 22283,
+      "sha256": "4a1bc7eca400942f8b83ed4d6c566870a3cda46a207a812d7ade5540f5dd179e"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C15/run.py",
+      "bytes": 11102,
+      "sha256": "53f176d0f9c8ede77f42bfd6e69e635882bc239564374ddd8775568163d604c1"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C15/verify.py",
+      "bytes": 9266,
+      "sha256": "8229a947d2c9193fba2cd06d24fe1bfc0fcbd45561503d9665e417653a5cb048"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C16/result.json",
+      "bytes": 5606,
+      "sha256": "3269f664125ea5d26d1151af6d53a9f134de1c473b08fd8a4e52d653b842bbb9"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C16/run.py",
+      "bytes": 10712,
+      "sha256": "708e912628b483092850c0e44d0bb91cc5845496bd26f71a0708a7c02a1d1f3f"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C16/verify.py",
+      "bytes": 6329,
+      "sha256": "f806d27ae159a744c394b6b02a71453d1165caf549d15236459f42f840d54656"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C2/result.json",
+      "bytes": 7765,
+      "sha256": "1d37d484944b222b255ec497799c36847d9b756646140e81d511b7c259b74de8"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C2/run.py",
+      "bytes": 15146,
+      "sha256": "cb197ad4f169cc0b61354a3c01187d6018cd73312b271be4640e665d90210a7f"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C2/verify.py",
+      "bytes": 9527,
+      "sha256": "1242d45f1957750d4d9060f28b820f6ffcf845779699d9e838cd7658c28dc628"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C3/result.json",
+      "bytes": 20504,
+      "sha256": "31469e012523aed652ad475fbe278a375d7e579ac5675026c28fa4459e98da8f"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C3/run.py",
+      "bytes": 15130,
+      "sha256": "bb7f96e2e6b2217e9660d1ac6ad3b59de72805b071732e2ac76847568768d5f6"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C3/verify.py",
+      "bytes": 9288,
+      "sha256": "9b646c7b8559690978ca8ab65125f417f3aeebc279b69fc3d909b3d4c68c3938"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C5/result.json",
+      "bytes": 11210,
+      "sha256": "283df28e146f2c20d6a946f428f05619885e478f048e5c93624edbce6a14fec9"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C5/run.py",
+      "bytes": 13827,
+      "sha256": "1392ee9b58b36ce7524147a117a6764887df3aa28fd7ef13e30fb6bc7fdc71c8"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C5/verify.py",
+      "bytes": 8043,
+      "sha256": "20845e7c26f10426c312601b26928ac1fa58da8c7d85c3eeb00d3eeee34839ff"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C6/result.json",
+      "bytes": 21590,
+      "sha256": "eae77f093022bbc2cf0592e39ebaeb04e9c4d147ed0d8e892dbd7548b95ee46e"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C6/run.py",
+      "bytes": 14752,
+      "sha256": "41063975e8f43ee8495148a0d1bdaa88057c6793018da64921a5ba2317a7b084"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C6/verify.py",
+      "bytes": 14703,
+      "sha256": "d90f7d3ca2cf32ae93130627183a3ff8578070075ee0993aae8237f1ec06430d"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C7/result.json",
+      "bytes": 14095,
+      "sha256": "49d23b264e99584dff4a20784aae044bdf403f3a52dbc82ca62a8b0f51fcfdba"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C7/run.py",
+      "bytes": 18277,
+      "sha256": "4ad9e8cddd9d12a2d4e3b434df850e8484f251f4378a6bb35ca30e8f2191a30e"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C7/verify.py",
+      "bytes": 9510,
+      "sha256": "aca58c120aa53c3cd431bc9226d9d72cac13d8f21b8298278c3a3f3df1195dd0"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C8/result.json",
+      "bytes": 7358,
+      "sha256": "33798a17e8fb2d9ea031124e36c240144264ffae70efc4028ae8a68e0a448eed"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C8/run.py",
+      "bytes": 20326,
+      "sha256": "feae8960bb6f62974699dbe6f66cd76098378147821d4afd8bd573302821fae9"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C8/verify.py",
+      "bytes": 11320,
+      "sha256": "f1d139b5ee07279620727fcbab564e876020c38eefefc83b0755ec0a6242b948"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C9/result.json",
+      "bytes": 9094,
+      "sha256": "c76529e0a4f2b838d8ba0d2c3ba7ff7a93e5cfaea7f5ba818d22821d6b851842"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C9/run.py",
+      "bytes": 14835,
+      "sha256": "723a4c36b8540a690a35016aefc4497fa556a50abaf9c997e5ea4c548014701f"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/C9/verify.py",
+      "bytes": 10140,
+      "sha256": "365f4d2cec1e6cf4c3314646fa52b2839f1a89c87efa01e32b0c03381f00fadd"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/final_digest.txt",
+      "bytes": 58339,
+      "sha256": "e23ab00d99b4e612bac5cc2155033fc6cba5640d0374b47c4450dba66d60f878"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/channel-strategies/SPEC2.md",
+      "bytes": 10267,
+      "sha256": "e7cbdc36263c7c4e6274172d6ee483860de12e618d6c10fb0b0435215e4e98a5"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/final_rows.json",
+      "bytes": 19616,
+      "sha256": "1ccee06254003db3c71e0db32c17acc7e98e80ce8a80290c0e2580f0042c6673"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/sens_results.json",
+      "bytes": 76109,
+      "sha256": "858a6b2868bad544e73072fd0e559dc5a2973884eae8f7f7af21ff6d030b46d8"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/SPEC.md",
+      "bytes": 4730,
+      "sha256": "ead70520d44cb170097f74375642eb305fe534d868ff7f0d4341f30d7b5bdab8"
+    },
+    {
+      "path": "docs/analysis/claude-channel-tests-20261007/verification_digest.txt",
+      "bytes": 33421,
+      "sha256": "e5b51656c0458e52fcdd0ac5eaf6c1222614b4c2e64ed3fb18a21f636e8cd960"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/ИТОГ.md",
+      "bytes": 4205,
+      "sha256": "d09a31a9e899680e8e22cc8f4efb6d99e362246baae339c04ac702bf10c50d06"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/digest.txt",
+      "bytes": 68613,
+      "sha256": "f6e2360246f24093bcef8ba58300a21b7b1947fd059bdcce0f8d0f943fb09422"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/SPEC3.md",
+      "bytes": 4720,
+      "sha256": "0b692f878898a2c5becc5326d0413cca6710a78501702301d4d42d32d63b294f"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T1/result.json",
+      "bytes": 36586,
+      "sha256": "08fbf584328218cea67ee755e47be8ad4b3fdddf6213569105b9a2a5222d434c"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T1/run.py",
+      "bytes": 28680,
+      "sha256": "e527083a6c62e18cf0a80ff196ba871b62522ed372b183d9b2229c87e19402d3"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T1/verify/exact_small.py",
+      "bytes": 1069,
+      "sha256": "3d0daf7de51ab075c99d99dae802c8fb2c4cc5ed38fbf7e97550e97ff3f0fd45"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T1/verify/verify_result_n2000_s4242.json",
+      "bytes": 18923,
+      "sha256": "99f2e8a979b4c67e00d2cfae779e5627612eb1a8566c4b5f775ee63a0772d6bb"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T1/verify/verify_result_n20000_s99.json",
+      "bytes": 18945,
+      "sha256": "1bd362444904a98e41c694c869975ba16ac7e45f2a7d69456f9046c28d4e6133"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T1/verify/verify_t1.py",
+      "bytes": 22060,
+      "sha256": "7a58a145c47d2c411534d085b7baae320fbfc39f1a7176d47df96557ee616dd4"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T2/result.json",
+      "bytes": 85591,
+      "sha256": "cf9fbedd6ae0512662829e1d39e3de8e89fc459bae68a2c5ece3397f1c04b6d7"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T2/run.py",
+      "bytes": 27357,
+      "sha256": "8486e517ae9c8261c7801e7adb3f35f1c30e6512f731cbbe414f6334072a82fd"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T2/verify/compare_repro.py",
+      "bytes": 2234,
+      "sha256": "aecd96d775da215e7da82f37f376d486f20087d1ec4eba9fc6025e3a3d05ba0c"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T2/verify/summary_out.json",
+      "bytes": 3155,
+      "sha256": "00793bcca09859dd01b825f0c83160a4cc5e78c1a1d91f68e0394e36db85b310"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T2/verify/t2_verify.py",
+      "bytes": 18375,
+      "sha256": "9472740d9ad222320d391e1295ea245194822cf5847e4cdd41ea93728749af20"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T2/verify/verify_result.json",
+      "bytes": 62354,
+      "sha256": "28b078440202ac0fdc0b511579d54d19ac8f057f22238c7090b1f91e832c4278"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T3/result.json",
+      "bytes": 16815,
+      "sha256": "ad625e1b05e58f1b203dd5daf184065a0bc025a9dda896645d3bfd1b641d5295"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T3/run.py",
+      "bytes": 24043,
+      "sha256": "baccc17df748aa6f4f085ee7451a2c5d0383ff251a01c295511e123268e2347b"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T3/verify/cmp_repro.py",
+      "bytes": 1416,
+      "sha256": "9587d3201e940990b7b37f03c0a92663917f6e0a63a8804b47fd84bd7c3c05bf"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T3/verify/qroll.py",
+      "bytes": 1470,
+      "sha256": "f1112e15e81a3f841aed95d4895020924bf2ce7861fb1bf687a1a6ab39d7125c"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T3/verify/verify_result.json",
+      "bytes": 6041,
+      "sha256": "3685b978cbbe30053b07642bdaa9444921c2cc30e36a0d0be372227b717eab5d"
+    },
+    {
+      "path": "docs/analysis/claude-control-tests-20261009/T3/verify/verify_t3.py",
+      "bytes": 12489,
+      "sha256": "d653928b9a7bb14da5381c32ffb5570448e500f09b7025dc51d1513b7c667ba7"
+    },
+    {
+      "path": "docs/plans/2026-10-09-channel-strategy-validation-closure-handoff.md",
+      "bytes": 5401,
+      "sha256": "d03f5ba1fc347959939ce4ae0feb8546ff86cd0aeb530a99d7c5e99dc398a922"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "schema": "premarket_depth_serial_coordinator_runtime_v1",
+  "mode": "OFFLINE_IMPLEMENTED_NOT_ENABLED",
+  "collection_enabled": false,
+  "schedules_resume_authorized": false,
+  "base_plan": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\premarket-forward-depth-planonly-20260902-v6.json",
+    "file_sha256": "b9307d631abff2be7be5618db3bcddf9104abaece1f037449344f5dacf4a097a",
+    "bytes": 6147
+  },
+  "base_plan_hash": "32a320a167792263680b4ad4b8ce033df3747fecdf2980dc79fc4734d8d419a4",
+  "limits": {
+    "max_events": 2,
+    "max_runtime_sec": 14400,
+    "max_http_attempts": 3200,
+    "max_response_total_bytes": 268435456,
+    "max_output_bytes": 67108864,
+    "min_free_bytes": 1073741824
+  },
+  "batch": null,
+  "code": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_depth_coordinator.py",
+      "file_sha256": "94e43e043b733738b4ff923fbfbe59cfc7117b00cf326e094f3acff7a5e194a1",
+      "bytes": 23810
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\global_market_writer_claim.py",
+      "file_sha256": "bc0604267c9d709a17188eb9daf317417d2633bf4c31266f73db33ac2f5066d2",
+      "bytes": 36747
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_forward_depth_plan.py",
+      "file_sha256": "c6a0c42d5b00bbd088e067789fda24ee007733952e464f56348a1874addff73d",
+      "bytes": 23188
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_forward_depth_watch.py",
+      "file_sha256": "d459cdac7bd83b450f55e1f3cd5ad9d5b8174433bf447ace5cbd05873f435a16",
+      "bytes": 32653
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\premarket_forward_depth_quality.py",
+      "file_sha256": "c3a58eafcb5a9ae944b97873e499b4ca18b7a23d91607bd070206b0a8510ce9c",
+      "bytes": 16311
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\trading_mvp\\src\\research_checkpoint.py",
+      "file_sha256": "90340ff4f557824c2e2033b1f0daa61c19f632c82e20de275672be1c06287b61",
+      "bytes": 3902
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\start_premarket_depth_coordinator_visible.ps1",
+      "file_sha256": "8712a0c7ef7638017cf6f2cf945524a96bbcb317c6bd8b854c6e9aabb513619f",
+      "bytes": 10565
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_active_run_gate.ps1",
+      "file_sha256": "a3b1b735dba6681b18fdb2e9be637079a22391123eced0a316dc2b76855193fd",
+      "bytes": 43527
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\check_trading_mvp_autopilot.ps1",
+      "file_sha256": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+      "bytes": 9294
+    }
+  ],
+  "legacy_installer": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\tools\\install_premarket_forward_depth_scan_task.ps1",
+    "file_sha256": "3bebe4f4f5fcb250185e40636d951c5bc1576ec423210ed91f14117d53a23b18",
+    "bytes": 7989
+  },
+  "scope_changed": false,
+  "minimum_events_before_any_claim": 12,
+  "no_retry": true,
+  "no_proxies": true,
+  "no_redirects": true,
+  "capture_namespace": "docs/analysis/premarket-depth-coordinator-runs",
+  "raw_response_saved": false,
+  "manifest_hash": "7d9b0cb8ddd30b7826205dfb9e847f2d0fa070efbc03b3bd1863113ad3912e5c"
+}

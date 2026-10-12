@@ -1,0 +1,21 @@
+{
+  "schema": "bounded_official_source_notes_v1",
+  "observed_date": "2026-10-08",
+  "semantics": "Analyst paraphrases of official documentation; hashes bind notes, not HTTP payloads. No market endpoints invoked.",
+  "credentials_used": false,
+  "market_archives_downloaded": 0,
+  "sources": [
+    {"id": "gate_archive", "url": "https://www.gate.com/developer/historical_quotes", "finding": "Documents UTC hourly orderbooks/orderbooks_slice for spot and futures_usdt, plus mark_prices, funding_applies and funding_updates.", "limitation": "Documentation is not a verified download, coverage certificate or point-in-time universe."},
+    {"id": "gate_futures", "url": "https://www.gate.com/docs/developers/apiv4/en/futures/", "finding": "Public historical funding endpoint; contract type, quanto_multiplier and funding_interval fields.", "limitation": "Current contract metadata cannot certify historical multiplier, fee or interval changes."},
+    {"id": "mexc_funding", "url": "https://www.mexc.com/api-docs/futures/market-endpoints/get-funding-rate-history", "finding": "Paginated fundingRate, settleTime and collectCycle; page size up to 1000.", "limitation": "Full period coverage and historical publication latency not verified."},
+    {"id": "mexc_specs", "url": "https://www.mexc.com/api-docs/futures/market-endpoints/get-contract-info", "finding": "Contract size, settlement asset, price/volume increments, current fee and state fields.", "limitation": "Not a dated historical contract specification archive."},
+    {"id": "mexc_spot_archive", "url": "https://mexcdevelop.github.io/apidocs/spot_v3_en/#download-historical-market-data", "finding": "Official documentation describes spot kline and trade downloads from January 2023.", "limitation": "Not proof of historical bid/ask coverage, unavailable/delisted assets or a complete universe."},
+    {"id": "mexc_spot_book", "url": "https://www.mexc.com/api-docs/spot-v3/market-data-endpoints/order-book", "finding": "Public spot order book endpoint.", "limitation": "A current snapshot does not provide a multi-year archive."},
+    {"id": "mexc_perp_book", "url": "https://www.mexc.com/api-docs/futures/market-endpoints/get-contract-order-book-depth", "finding": "Current contract depth endpoint.", "limitation": "No multi-year paired snapshot history established by this page."},
+    {"id": "mexc_recent_depth", "url": "https://www.mexc.com/api-docs/futures/market-endpoints/get-the-last-n-depth-snapshots", "finding": "Last N contract depth snapshots, versioned asks/bids, symbol and limit parameters.", "limitation": "Not evidence of arbitrary historical-date queries or complete 2023-2026 order books."}
+  ],
+  "unusable_fetches_not_negative_data_evidence": [
+    "https://www.gate.com/historical-data",
+    "https://www.mexc.com/api-docs/futures/market-endpoints/get-depth"
+  ]
+}

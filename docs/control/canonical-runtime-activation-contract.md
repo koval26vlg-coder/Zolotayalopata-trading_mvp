@@ -15,12 +15,20 @@ execution. Успешная проверка или публикация registr
 | Read-only coordinator preflight | `invoke_listing_strategy_due_coordinator.ps1 -PreflightOnly` | Проверить publication, bindings, runtime и policy; без claim, state/ledger writes и launcher. |
 | Installer dry-run | `install_listing_strategy_due_coordinator_task.ps1 -DryRun` | Проверить будущую Task Scheduler action через read-only preflight; без регистрации и worker. |
 | Explicit installation | Installer без `-DryRun` | Зарегистрировать hash-bound scheduled action после всех проверок. Это отдельное операционное действие. |
+| Installation without activation | Installer или refresh с `-InstallDisabled` | Зарегистрировать определение сразу отключённым; проверить `State=Disabled` и `Settings.Enabled=false`. Сбор не запускается. |
 | Scheduled wake | Coordinator `-ScheduledTick` | Повторно проверить bindings/topology/due-state; запускать только выбранный runtime, только когда due. |
 
 Внутреннее поле registry `activation_status=ACTIVE_INSTALLED` обозначает ACTIVE
 ветку контракта, но само по себе **не доказывает установку Windows task**. Факт
 установки подтверждается отдельным результатом installer и readback Task
 Scheduler. Promoter всегда сообщает `execution_performed=false`.
+
+Для установки без запуска использовать `refresh_listing_strategy_due_coordinator.ps1
+-Apply -InstallDisabled -ActiveStrategyId <reviewed strategy id>`. Флаг не
+останавливает уже работающий worker: перед установкой требуется проверка отсутствия
+активных процессов. Без флага прежнее поведение установки с включённым расписанием
+сохранено. `launch_allowed=true` в publication означает готовность маршрута, а не
+разрешение игнорировать пользовательскую паузу или подтверждение фактического сбора.
 
 ## Что связывает activation receipt
 

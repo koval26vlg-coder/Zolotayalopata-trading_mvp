@@ -1,5 +1,6 @@
 param(
     [switch]$Apply,
+    [switch]$InstallDisabled,
     [string]$PublicationRoot = "",
     [string]$ActivePublicationRoot = "",
     [string]$ActiveStrategyId = "",
@@ -126,6 +127,7 @@ if (-not $Apply) {
         publication_root     = $PublicationRoot
         active_root          = $ActivePublicationRoot
         bound_files_clean    = $true
+        scheduler_enabled    = -not [bool]$InstallDisabled
         would                = @("materialize", "promote", "install")
     }
     if ($Json) {
@@ -247,6 +249,7 @@ $installArguments = @{
     ExpectedCoordinatorSha256     = (Get-RawSha256 $coordinator)
     ExpectedValidatorSha256       = (Get-RawSha256 $validator)
     ExpectedControlPlaneGitCommit = $commit
+    InstallDisabled               = $InstallDisabled
     Json                          = $true
 }
 

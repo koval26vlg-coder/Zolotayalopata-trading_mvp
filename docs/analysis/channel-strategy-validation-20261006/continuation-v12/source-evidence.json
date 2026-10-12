@@ -1,0 +1,26 @@
+{
+  "schema": "bounded_primary_source_audit_v1",
+  "date": "2026-10-07",
+  "model_ids": ["gap_continue", "gap_fade"],
+  "evidence_kind": "ANALYST_SUMMARIES_NOT_RAW_HTTP_SNAPSHOTS",
+  "sources": [
+    {"id": "alpaca_faq", "url": "https://docs.alpaca.markets/us/docs/market-data-faq", "finding": "Historical SIP queries ending at least 15 minutes ago are documented as available without subscription. Requests require API key and secret headers. IEX is a single-venue feed, not consolidated SIP.", "limitation": "No credentials used or history retrieved. OTC and inactive-symbol coverage require separate validation; free live IEX restrictions must not be incorrectly generalized to all historical SIP requests."},
+    {"id": "massive_bars", "url": "https://massive.com/docs/rest/stocks/aggregates/custom-bars", "finding": "REST supports configurable intervals including five minutes. Basic has two years of history with end-of-day availability and API-key access. Split adjustment defaults to true; intervals with no qualifying trades produce no bar.", "limitation": "Two years at audit date cannot cover all fixed 2023-2024 development data. End-of-day recency does not mean only daily bars. No request to the market-data endpoint was made."},
+    {"id": "massive_flat", "url": "https://massive.com/docs/flat-files/stocks/minute-aggregates", "finding": "Minute flat files are explicitly not included in Stocks Basic.", "limitation": "A displayed file catalogue is not free download entitlement. No paid route used."},
+    {"id": "massive_tickers", "url": "https://massive.com/docs/rest/stocks/tickers/all-tickers", "finding": "Reference API supports a historical date, active filter, delisted_utc and pagination. Default active=true is not an all-history security master.", "limitation": "Documented capability only. No complete point-in-time membership or ticker-identity dataset was validated."},
+    {"id": "alpha_vantage", "url": "https://www.alphavantage.co/documentation/", "finding": "Historical intraday including five-minute intervals is marked premium and needs an API key. Listing-status utility documents active or delisted symbols as of a historical date.", "limitation": "Reference capability does not supply a free anonymous intraday bundle. Neither subscription nor key was obtained."},
+    {"id": "nasdaq_current_directory", "url": "https://nasdaqtrader.com/trader.aspx?id=symbollookup", "finding": "Symbol Lookup explicitly describes information as of the current trading day.", "limitation": "Current membership cannot certify the historical universe or eliminate survivorship bias."},
+    {"id": "nyse_sessions", "url": "https://www.nyse.com/trade/hours-calendars", "finding": "Core equity session is distinguished from early/late trading; regular core hours are 09:30-16:00 ET and calendar lists shortened days.", "limitation": "Current page is not a validated complete known-at-time 2023-2026 calendar. America/New_York conversion and historical exceptions remain required."},
+    {"id": "nyse_actions", "url": "https://www.nyse.com/market-data/corporate-actions", "finding": "Corporate Actions package covers dividends, splits, new listings, suspensions and delistings.", "limitation": "Complete free historical delivery was not established by the product description. No data order placed."},
+    {"id": "stooq_access", "url": "https://stooq.com/db/h/", "finding": "Text fetch returned a JavaScript browser-verification requirement instead of historical-download details.", "limitation": "ACCESS_UNRESOLVED, not proof of absent history. No challenge bypass or repeated probe."}
+  ],
+  "unusable_document_fetches": [
+    {"url": "https://docs.alpaca.markets/us/reference/corporateactions", "outcome": "WEB_TOOL_INTERNAL_ERROR", "used_as_negative_evidence": false},
+    {"url": "https://docs.alpaca.markets/us/docs/corporate-actions", "outcome": "WEB_TOOL_INTERNAL_ERROR", "used_as_negative_evidence": false}
+  ],
+  "market_archives_downloaded": 0,
+  "credentials_used": false,
+  "purchases": false,
+  "source_search_exhaustive": false,
+  "free_history_nonexistence_claimed": false
+}

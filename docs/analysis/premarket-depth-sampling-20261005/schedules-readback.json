@@ -1,0 +1,35 @@
+{
+  "schema": "research_schedule_snapshot_v1",
+  "observed_at_utc": "2026-10-05T12:18:48.1084879Z",
+  "windows_tasks": [
+    {
+      "name": "ZolotyayLopata Premarket Forward Depth Scan",
+      "path": "\\",
+      "state": "Disabled"
+    },
+    {
+      "name": "PremarketAnnouncementWatch",
+      "path": "\\ZolotyayLopata\\",
+      "state": "Disabled"
+    },
+    {
+      "name": "Trading MVP Weekly Forward Collect",
+      "path": "\\",
+      "state": "Disabled"
+    }
+  ],
+  "codex_automations": [
+    {
+      "id": "zolotyaylopata-pre-ipo-perpetual-event-monitor",
+      "status_line": "status = \"PAUSED\"",
+      "file_sha256": "bce2d2460df2b0bcb42c09f3c637f6fe617c2d93d0dcf342201f3d9a5cbc869e"
+    },
+    {
+      "id": "zolotyaylopata-pre-market-perpetual-listing-impulse-monitor",
+      "status_line": "status = \"PAUSED\"",
+      "file_sha256": "3e7e3fe4851e978e81fd34b92d8f8851175303fdaed88491060f53f3e2c81698"
+    }
+  ],
+  "listing_momentum_inspected": false,
+  "changes_performed": false
+}

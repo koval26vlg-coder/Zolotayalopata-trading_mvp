@@ -1,0 +1,631 @@
+{
+ "id": "C15",
+ "rows": [
+  {
+   "period": "A-IS",
+   "trades": 2772,
+   "win_rate_pct": 50.61,
+   "pf": 0.965,
+   "net_return_pct": -38.87,
+   "cagr_pct": -3.72,
+   "max_dd_pct": -57.39,
+   "exposure_pct": 36.52,
+   "bench_net_return_pct": 688.24,
+   "bench_max_dd_pct": -47.79,
+   "net_return_2x_cost_pct": -81.49,
+   "note": "2010-01-04..2022-12-30; avg trade net 2.9 bps; 0-cost net 102.0%; PF@2x 0.884; bench EW B&H adjclose 28 names (excl META,TSLA), bench CAGR 17.23%"
+  },
+  {
+   "period": "A-OOS",
+   "trades": 1065,
+   "win_rate_pct": 46.29,
+   "pf": 0.874,
+   "net_return_pct": -50.61,
+   "cagr_pct": -17.12,
+   "max_dd_pct": -60.57,
+   "exposure_pct": 49.52,
+   "bench_net_return_pct": 186.45,
+   "bench_max_dd_pct": -23.0,
+   "net_return_2x_cost_pct": -69.04,
+   "note": "2023-01-03..2026-10-06; avg trade net -25.3 bps; 0-cost net -21.2%; PF@2x 0.800; bench EW B&H adjclose 30 names (excl -), bench CAGR 32.33%"
+  },
+  {
+   "period": "A-FULL",
+   "trades": 3837,
+   "win_rate_pct": 49.41,
+   "pf": 0.948,
+   "net_return_pct": -69.81,
+   "cagr_pct": -6.9,
+   "max_dd_pct": -75.5,
+   "exposure_pct": 39.43,
+   "bench_net_return_pct": 3452.41,
+   "bench_max_dd_pct": -47.79,
+   "net_return_2x_cost_pct": -94.27,
+   "note": "2010-01-04..2026-10-06; avg trade net -4.9 bps; 0-cost net 59.1%; PF@2x 0.877; bench EW B&H adjclose 28 names (excl META,TSLA), bench CAGR 23.75%"
+  },
+  {
+   "period": "B-IS",
+   "trades": 2772,
+   "win_rate_pct": 46.46,
+   "pf": 0.802,
+   "net_return_pct": -94.32,
+   "cagr_pct": -19.82,
+   "max_dd_pct": -95.93,
+   "exposure_pct": 36.52,
+   "bench_net_return_pct": 688.24,
+   "bench_max_dd_pct": -47.79,
+   "net_return_2x_cost_pct": -98.29,
+   "note": "2010-01-04..2022-12-30; avg trade net -23.0 bps; 0-cost net -81.1%; PF@2x 0.737; bench EW B&H adjclose 28 names (excl META,TSLA), bench CAGR 17.23%"
+  },
+  {
+   "period": "B-OOS",
+   "trades": 1065,
+   "win_rate_pct": 50.05,
+   "pf": 0.895,
+   "net_return_pct": -42.06,
+   "cagr_pct": -13.52,
+   "max_dd_pct": -47.55,
+   "exposure_pct": 49.52,
+   "bench_net_return_pct": 186.45,
+   "bench_max_dd_pct": -23.0,
+   "net_return_2x_cost_pct": -63.75,
+   "note": "2023-01-03..2026-10-06; avg trade net 5.3 bps; 0-cost net -7.5%; PF@2x 0.811; bench EW B&H adjclose 30 names (excl -), bench CAGR 32.33%"
+  },
+  {
+   "period": "B-FULL",
+   "trades": 3837,
+   "win_rate_pct": 47.46,
+   "pf": 0.806,
+   "net_return_pct": -96.71,
+   "cagr_pct": -18.44,
+   "max_dd_pct": -97.61,
+   "exposure_pct": 39.43,
+   "bench_net_return_pct": 3452.41,
+   "bench_max_dd_pct": -47.79,
+   "net_return_2x_cost_pct": -99.38,
+   "note": "2010-01-04..2026-10-06; avg trade net -15.1 bps; 0-cost net -82.5%; PF@2x 0.738; bench EW B&H adjclose 28 names (excl META,TSLA), bench CAGR 23.75%"
+  }
+ ],
+ "verdicts": {
+  "A": "FAIL",
+  "B": "FAIL"
+ },
+ "metrics": {
+  "A": {
+   "IS": {
+    "trades": 2772,
+    "win_rate_pct": 50.61327561327561,
+    "pf": 0.9646130684190326,
+    "net_return_pct": -38.86578396265051,
+    "cagr_pct": -3.7186574550768903,
+    "max_dd_pct": -57.39272345069079,
+    "exposure_pct": 36.52200488997555,
+    "signal_days": 1195,
+    "avg_trade_net_bps": 2.9417683155412715,
+    "avg_names_per_signal_day": 2.319665271966527,
+    "start": "2010-01-04",
+    "end": "2022-12-30",
+    "net_return_2x_cost_pct": -81.49444396959676,
+    "pf_2x_cost": 0.8842213345836066,
+    "net_return_zero_cost_pct": 101.96043454558281,
+    "bench": {
+     "net_return_pct": 688.2419325127023,
+     "cagr_pct": 17.233075129173425,
+     "max_dd_pct": -47.78806167568078,
+     "n_names": 28,
+     "excluded": [
+      "META",
+      "TSLA"
+     ]
+    }
+   },
+   "OOS": {
+    "trades": 1065,
+    "win_rate_pct": 46.29107981220657,
+    "pf": 0.8738328537103454,
+    "net_return_pct": -50.61134716672042,
+    "cagr_pct": -17.12218640844214,
+    "max_dd_pct": -60.571424208237424,
+    "exposure_pct": 49.52279957582185,
+    "signal_days": 467,
+    "avg_trade_net_bps": -25.319164764559584,
+    "avg_names_per_signal_day": 2.28051391862955,
+    "start": "2023-01-03",
+    "end": "2026-10-06",
+    "net_return_2x_cost_pct": -69.0392452807606,
+    "pf_2x_cost": 0.8002527239485879,
+    "net_return_zero_cost_pct": -21.21514862143711,
+    "bench": {
+     "net_return_pct": 186.4501532303477,
+     "cagr_pct": 32.334877975996456,
+     "max_dd_pct": -23.004061015435862,
+     "n_names": 30,
+     "excluded": []
+    }
+   },
+   "FULL": {
+    "trades": 3837,
+    "win_rate_pct": 49.41360437842064,
+    "pf": 0.9480429867489562,
+    "net_return_pct": -69.80663427896634,
+    "cagr_pct": -6.898788267443168,
+    "max_dd_pct": -75.49941367117246,
+    "exposure_pct": 39.430604982206404,
+    "signal_days": 1662,
+    "avg_trade_net_bps": -4.902353063220107,
+    "avg_names_per_signal_day": 2.308664259927798,
+    "start": "2010-01-04",
+    "end": "2026-10-06",
+    "net_return_2x_cost_pct": -94.27054018799545,
+    "pf_2x_cost": 0.8772267481890844,
+    "net_return_zero_cost_pct": 59.114228200236994,
+    "bench": {
+     "net_return_pct": 3452.412207481542,
+     "cagr_pct": 23.75207363935623,
+     "max_dd_pct": -47.78806167568078,
+     "n_names": 28,
+     "excluded": [
+      "META",
+      "TSLA"
+     ]
+    }
+   }
+  },
+  "B": {
+   "IS": {
+    "trades": 2772,
+    "win_rate_pct": 46.464646464646464,
+    "pf": 0.8018930895825154,
+    "net_return_pct": -94.31955222091304,
+    "cagr_pct": -19.817938891795517,
+    "max_dd_pct": -95.93050733059991,
+    "exposure_pct": 36.52200488997555,
+    "signal_days": 1195,
+    "avg_trade_net_bps": -22.967672750128635,
+    "avg_names_per_signal_day": 2.319665271966527,
+    "start": "2010-01-04",
+    "end": "2022-12-30",
+    "net_return_2x_cost_pct": -98.29412578681026,
+    "pf_2x_cost": 0.7369439333073817,
+    "net_return_zero_cost_pct": -81.13011178953474,
+    "bench": {
+     "net_return_pct": 688.2419325127023,
+     "cagr_pct": 17.233075129173425,
+     "max_dd_pct": -47.78806167568078,
+     "n_names": 28,
+     "excluded": [
+      "META",
+      "TSLA"
+     ]
+    }
+   },
+   "OOS": {
+    "trades": 1065,
+    "win_rate_pct": 50.046948356807505,
+    "pf": 0.8948307202599799,
+    "net_return_pct": -42.057527516366264,
+    "cagr_pct": -13.521981316051379,
+    "max_dd_pct": -47.54608671023727,
+    "exposure_pct": 49.52279957582185,
+    "signal_days": 467,
+    "avg_trade_net_bps": 5.349838760418273,
+    "avg_names_per_signal_day": 2.28051391862955,
+    "start": "2023-01-03",
+    "end": "2026-10-06",
+    "net_return_2x_cost_pct": -63.745450128770706,
+    "pf_2x_cost": 0.8114145078486156,
+    "net_return_zero_cost_pct": -7.482608322138374,
+    "bench": {
+     "net_return_pct": 186.4501532303477,
+     "cagr_pct": 32.334877975996456,
+     "max_dd_pct": -23.004061015435862,
+     "n_names": 30,
+     "excluded": []
+    }
+   },
+   "FULL": {
+    "trades": 3837,
+    "win_rate_pct": 47.458952306489444,
+    "pf": 0.8061254693828301,
+    "net_return_pct": -96.70860810865535,
+    "cagr_pct": -18.43558632985739,
+    "max_dd_pct": -97.6090372892476,
+    "exposure_pct": 39.430604982206404,
+    "signal_days": 1662,
+    "avg_trade_net_bps": -15.107847428592938,
+    "avg_names_per_signal_day": 2.308664259927798,
+    "start": "2010-01-04",
+    "end": "2026-10-06",
+    "net_return_2x_cost_pct": -99.38154298263868,
+    "pf_2x_cost": 0.7380756630752185,
+    "net_return_zero_cost_pct": -82.54207161514923,
+    "bench": {
+     "net_return_pct": 3452.412207481542,
+     "cagr_pct": 23.75207363935623,
+     "max_dd_pct": -47.78806167568078,
+     "n_names": 28,
+     "excluded": [
+      "META",
+      "TSLA"
+     ]
+    }
+   }
+  }
+ },
+ "day_level_diag": {
+  "long-IS": {
+   "signal_days": 1195,
+   "mean_day_net_pct": -0.0013572316221531506,
+   "std_day_pct": 2.831971575801981,
+   "one_name_day_share": 0.6175732217573222
+  },
+  "short-IS": {
+   "signal_days": 1195,
+   "mean_day_net_pct": -0.1988402012981425,
+   "std_day_pct": 2.8376411871475264,
+   "one_name_day_share": 0.6175732217573222
+  },
+  "long-OOS": {
+   "signal_days": 467,
+   "mean_day_net_pct": -0.11733545868841753,
+   "std_day_pct": 2.5992026972116395,
+   "one_name_day_share": 0.5074946466809421
+  },
+  "short-OOS": {
+   "signal_days": 467,
+   "mean_day_net_pct": -0.08262978564720821,
+   "std_day_pct": 2.6044063049128607,
+   "one_name_day_share": 0.5074946466809421
+  },
+  "long-FULL": {
+   "signal_days": 1662,
+   "mean_day_net_pct": -0.03394557821658483,
+   "std_day_pct": 2.768262120114112,
+   "one_name_day_share": 0.5866425992779783
+  },
+  "short-FULL": {
+   "signal_days": 1662,
+   "mean_day_net_pct": -0.16618661278491367,
+   "std_day_pct": 2.7738041850337423,
+   "one_name_day_share": 0.5866425992779783
+  }
+ },
+ "notes": {
+  "survivorship": "Universe = current US megacaps chosen with hindsight (survivorship/selection bias in favour of longs).",
+  "borrow": "C15B ignores borrow cost/locate (intraday short of megacaps; overnight borrow fee not incurred).",
+  "benchmark": "Equal-weight buy&hold on Yahoo adjclose (total return), names with data on period start day; 5 bps in/out.",
+  "fills": "Entry at daily open price, exit at daily close; real opening-auction/closing-auction fills assumed.",
+  "unresolved_verdict_rule": "If not FAIL and not all PASS criteria -> INCONCLUSIVE."
+ },
+ "data_sources": [
+  {
+   "name": "Yahoo chart API daily AAPL",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "4f2bcdddaed7db4e14e82c40eded2e0ffbceb46f5fbea1092ffe43a03bad7a47"
+  },
+  {
+   "name": "Yahoo chart API daily MSFT",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/MSFT?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "5d9b7b80c1bc451390554fed3b3702685685424050d0f9d824b82d4c396e7f44"
+  },
+  {
+   "name": "Yahoo chart API daily AMZN",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/AMZN?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "24425115d4557ee54c7f358967f574004c65eb2c97d624419503d20c4f32e8ae"
+  },
+  {
+   "name": "Yahoo chart API daily GOOGL",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/GOOGL?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "03a74b46f19c4287c9caf074e72f3cc1f1d07975bcfa2559a8a31ddcfe92c2c8"
+  },
+  {
+   "name": "Yahoo chart API daily META",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/META?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2012-05-18",
+   "end": "2026-10-06",
+   "rows": 3616,
+   "sha256": "0cb8d5049a784b171b232e1f1b5972a14ea88d60921a60f1dc413622d75078a4"
+  },
+  {
+   "name": "Yahoo chart API daily NVDA",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/NVDA?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "275637cff05410ac6c6f4d844e8c6cfc046f034248cba26795d71eb4fbada076"
+  },
+  {
+   "name": "Yahoo chart API daily TSLA",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/TSLA?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-06-29",
+   "end": "2026-10-06",
+   "rows": 4093,
+   "sha256": "b0b1738cfbf36d2a08f81223b22389ca19dbd9f6e5861ed714f5adb723738f70"
+  },
+  {
+   "name": "Yahoo chart API daily JPM",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/JPM?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "0ff597e3698bb6ec64266170295d8a2f96191027f254287627bf2c85141209c3"
+  },
+  {
+   "name": "Yahoo chart API daily BAC",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/BAC?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "ea85e649f3616d10fcb22220dab22375054c1d73d0f5b6bd243b31f454df280e"
+  },
+  {
+   "name": "Yahoo chart API daily XOM",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/XOM?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "e551babaa9a6bc332fe94b33a78cf0af943e40e384327069c97b5d66156d4c39"
+  },
+  {
+   "name": "Yahoo chart API daily CVX",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/CVX?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "9e9516073c7e9b4ed910cb51190945531a058959b73188e51e2a1bcaf8a46c7c"
+  },
+  {
+   "name": "Yahoo chart API daily JNJ",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/JNJ?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "b48a8a5c15231b59cbb0645c74b74fb62c2c4614ab287e75e424c11a72ad65b9"
+  },
+  {
+   "name": "Yahoo chart API daily PFE",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/PFE?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "5e068491837c7af52609ddb17cbb291861f95b67d10da1554ba5299a57ccf59b"
+  },
+  {
+   "name": "Yahoo chart API daily KO",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/KO?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "191bf58791f2cdb40bae2248a62fbf13dbe3005e4dc1e4f2481d19e0d98003e7"
+  },
+  {
+   "name": "Yahoo chart API daily PEP",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/PEP?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "a6b824fdcde3eeb6993100fae190501553f248a49260eee8feab64bf978a0b03"
+  },
+  {
+   "name": "Yahoo chart API daily WMT",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/WMT?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "a1f52c99b5550d06e9fb36978e3ee8d45370f30dce2106f6841fcf2c3324bfad"
+  },
+  {
+   "name": "Yahoo chart API daily HD",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/HD?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "69c56d1c926eac38dce7010d601ad6417815aeeb7cabaa4df3c00749d394e419"
+  },
+  {
+   "name": "Yahoo chart API daily DIS",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/DIS?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "3763c50cf519b79adb48da2a6e10a0c77a9da21f76b74deb5895d1be85e5e487"
+  },
+  {
+   "name": "Yahoo chart API daily INTC",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/INTC?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "867912b1b4a111659d831606e1c4bf3b86bdeb32f4e5d187ad6d1ca19155dc92"
+  },
+  {
+   "name": "Yahoo chart API daily CSCO",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/CSCO?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "dff8278a48d91ee13009e7b3532cb452f3410bf94d64bb46103fa24627827496"
+  },
+  {
+   "name": "Yahoo chart API daily ORCL",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/ORCL?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "00be0934268ad5d9c633c92d745bf18b93a34a88467fb82f154b3c878df2f891"
+  },
+  {
+   "name": "Yahoo chart API daily NFLX",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/NFLX?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "8e98a668c8c2a8970e48d28b229901c22eeb279207e70225a54dd4168cae0cbf"
+  },
+  {
+   "name": "Yahoo chart API daily ADBE",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/ADBE?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "d43b307b37407fc206fa12995a9ebe9c52af2afcf141b04dbea37b46ea9817b4"
+  },
+  {
+   "name": "Yahoo chart API daily CRM",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/CRM?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "f5a9d057ed3aa2347597055b009bc206dd3aa1059b16004d4263d21bbf611696"
+  },
+  {
+   "name": "Yahoo chart API daily AMD",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/AMD?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "c74b6b1b5a055a50b5253a5b92f500a5f2dfa55e1e21df16c2a23528acaf5a3f"
+  },
+  {
+   "name": "Yahoo chart API daily QCOM",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/QCOM?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "7ed210bbd4d2c422de807a0d151e91758a3d7a8ebd9c89dadff631f850bc5116"
+  },
+  {
+   "name": "Yahoo chart API daily T",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/T?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "04fa57683ffb3c34dea046b6b2d593f39602a6779384a63c67459eca418ce57b"
+  },
+  {
+   "name": "Yahoo chart API daily VZ",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/VZ?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "dacbba8b506de3d810630f04eca068db22a13dce588ee9482c047bfeffe519b4"
+  },
+  {
+   "name": "Yahoo chart API daily MRK",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/MRK?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "8eff80515c3f025daa6ac67c379ff61be8c30573f52089dcfb80ac79f9f5401d"
+  },
+  {
+   "name": "Yahoo chart API daily BA",
+   "url": "https://query1.finance.yahoo.com/v8/finance/chart/BA?period1=1262304000&period2=1791331200&interval=1d&events=div%2Csplit&includeAdjustedClose=true",
+   "start": "2010-01-04",
+   "end": "2026-10-06",
+   "rows": 4215,
+   "sha256": "52b75ec9bb01d120eb7f2712dfcba51130c615a77c89a15c51f2ce9bae93563a"
+  }
+ ],
+ "self_checks": {
+  "signal_bar_before_execution_bar": true,
+  "signals_invariant_to_same_day_high_low": true,
+  "signals_invariant_to_same_day_close": true,
+  "intrabar_stop_rule": "not applicable: no stop, exit at same-day close",
+  "note": "gap uses open_t and close_{t-1}; entry fills at open_t (idealised: fill at opening print)"
+ },
+ "largest_gaps": [
+  {
+   "date": "2013-01-24",
+   "ticker": "NFLX",
+   "gap_pct": 39.44,
+   "prev_close": 1.4751,
+   "open": 2.057,
+   "close": 2.098
+  },
+  {
+   "date": "2025-10-06",
+   "ticker": "AMD",
+   "gap_pct": 37.52,
+   "prev_close": 164.67,
+   "open": 226.45,
+   "close": 203.71
+  },
+  {
+   "date": "2025-09-10",
+   "ticker": "ORCL",
+   "gap_pct": 32.16,
+   "prev_close": 241.51,
+   "open": 319.19,
+   "close": 328.33
+  },
+  {
+   "date": "2025-09-18",
+   "ticker": "INTC",
+   "gap_pct": 27.63,
+   "prev_close": 24.9,
+   "open": 31.78,
+   "close": 30.57
+  },
+  {
+   "date": "2013-07-25",
+   "ticker": "META",
+   "gap_pct": 26.52,
+   "prev_close": 26.51,
+   "open": 33.54,
+   "close": 34.36
+  },
+  {
+   "date": "2023-05-25",
+   "ticker": "NVDA",
+   "gap_pct": 26.15,
+   "prev_close": 30.538,
+   "open": 38.523,
+   "close": 37.98
+  },
+  {
+   "date": "2013-05-09",
+   "ticker": "TSLA",
+   "gap_pct": 25.69,
+   "prev_close": 3.7193,
+   "open": 4.6747,
+   "close": 4.6267
+  },
+  {
+   "date": "2012-10-24",
+   "ticker": "META",
+   "gap_pct": 23.74,
+   "prev_close": 19.5,
+   "open": 24.13,
+   "close": 23.23
+  },
+  {
+   "date": "2013-04-23",
+   "ticker": "NFLX",
+   "gap_pct": 23.63,
+   "prev_close": 2.491,
+   "open": 3.0796,
+   "close": 3.0999
+  },
+  {
+   "date": "2026-04-24",
+   "ticker": "INTC",
+   "gap_pct": 23.09,
+   "prev_close": 66.78,
+   "open": 82.2,
+   "close": 82.54
+  }
+ ]
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "visible_console": true,
+  "job_kill_on_close_verified": true,
+  "fixture_pid": 37852,
+  "network_requests": 0,
+  "production_writer_claim_created": false,
+  "observed_utc": "2026-10-06T10:35:36.0601611Z"
+}

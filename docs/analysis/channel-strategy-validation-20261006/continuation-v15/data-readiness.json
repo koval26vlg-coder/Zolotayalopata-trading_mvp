@@ -1,0 +1,24 @@
+{
+  "schema": "paired_historical_readiness_v1",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "model_ids": [
+    "funding_carry",
+    "funding_cross",
+    "spot_dislocation",
+    "basis_convergence"
+  ],
+  "status": "BLOCKED_DATA",
+  "metrics": null,
+  "backtest_executed": false,
+  "strategy_rejected": false,
+  "source_absence_globally_claimed": false,
+  "runtime_ready": false,
+  "technical_next": "Repair paired PIT monthly-universe enforcement with synthetic tests and technical provenance rebind; do not change signal/cost/risk/acceptance rules.",
+  "data_next": "One bounded visible Gate paired-book/actual-funding/mark archive format-and-coverage probe, with exact URLs and budget frozen before launch.",
+  "max_source_probe_requests": 12,
+  "max_source_response_bytes": 1000000,
+  "no_cap_expansion": true,
+  "schedules_remain_unchanged": true,
+  "model_periods_unchanged": true,
+  "holm_family_size": 20
+}

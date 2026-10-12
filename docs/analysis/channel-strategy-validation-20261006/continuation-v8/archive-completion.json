@@ -1,0 +1,10 @@
+{
+  "exit_code": 2,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "reconciliation_sha256": "0d8d2b82d26642dc494b34357c445d8bf938df4b488b26b92afc54cc2f25c311",
+  "retry_authorized": false,
+  "run_id": "history_histdata_archive_v8_20261007",
+  "runtime_hash": "236802f033c6b09af3ad4ba9d769ecdc10b4ea4d42cc87e2b0621c48a9c133e4",
+  "status": "STOPPED_INCOMPLETE",
+  "supervisor_reconciled": true
+}

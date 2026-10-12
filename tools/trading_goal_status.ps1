@@ -5,6 +5,11 @@ param(
 $ErrorActionPreference = "Stop"
 
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+$checkpointPolicy = Get-Content -Raw -LiteralPath (Join-Path $repoRoot 'docs/plans/trading-mvp-autopilot-policy-v1.json') | ConvertFrom-Json
+if ($checkpointPolicy.PSObject.Properties.Name -contains 'research_checkpoint') {
+    & (Join-Path $PSScriptRoot 'trading_research_checkpoint_status.ps1') -Json:$Json
+    return
+}
 $gateChecker = Join-Path $repoRoot "tools\check_active_run_gate.ps1"
 $scorecardPath = Join-Path $repoRoot "exports\trading-mvp\analysis\anufriev_strategy_scorecard_current_20260628.csv"
 $thresholdPath = Join-Path $repoRoot "exports\trading-mvp\analysis\funding_economic_thresholds_20260617.csv"

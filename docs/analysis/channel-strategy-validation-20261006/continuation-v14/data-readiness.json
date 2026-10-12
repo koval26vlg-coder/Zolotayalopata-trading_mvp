@@ -1,0 +1,43 @@
+{
+  "schema": "historical_family_data_readiness_v1",
+  "model_ids": [
+    "wallet_follow"
+  ],
+  "input_status": "BLOCKED_DATA",
+  "bounded_source_audit_complete": true,
+  "backtest_executed": false,
+  "historical_candidate": false,
+  "strategy_rejected": false,
+  "metrics": null,
+  "ready_input_manifest": null,
+  "source_evidence": "source-evidence.json",
+  "suitability_audit": "suitability-audit.json",
+  "local_inventory_snapshot": "../continuation-v13/local-inventory.json",
+  "local_archive_rescanned": false,
+  "free_history_nonexistence_claimed": false,
+  "validated_market_rows_this_checkpoint": 0,
+  "remaining_before_backtest": [
+    "Establish historical economic-wallet attribution and DEX/token-universe semantics before outcomes.",
+    "Acquire complete causally normalized swaps, point-in-time token universe, gas and historical amount-aware execution quotes.",
+    "Verify next-block availability, actual sell routes, token restrictions and open exposures.",
+    "Create COMPLETE hash-bound input manifest and validate visibly without changing fixed periods or model rules."
+  ],
+  "next_model_ids": [
+    "funding_carry",
+    "funding_cross",
+    "spot_dislocation",
+    "basis_convergence"
+  ],
+  "next_action": "Audit immutable source manifests/provenance for the four still-unreviewed paired-market families. Exclude incomplete/closed legacy experiments; do not reopen old PnL or run a collector automatically.",
+  "program_complete": false,
+  "preserved_exclusions": [
+    "Listing Momentum",
+    "closed legacy runs",
+    "private API",
+    "real capital",
+    "paid data",
+    "new schedules",
+    "permanent collectors",
+    "wallet signatures"
+  ]
+}

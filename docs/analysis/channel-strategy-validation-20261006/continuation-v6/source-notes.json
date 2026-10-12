@@ -1,0 +1,38 @@
+{
+  "schema": "official_option_source_notes_v1",
+  "checked_date": "2026-10-07",
+  "note": "Manual primary-source web research, separate from the eight-request acquisition. Later notices are discovery evidence, not January input certification.",
+  "jan2025_terms_verified": false,
+  "records": [
+    {
+      "url": "https://www.okx.com/help/okx-to-adjust-parameters-for-options-fee-calculation",
+      "published_date": "2025-05-08",
+      "announced_effective_utc": "2025-05-15T07:00:00Z",
+      "finding": "Option trading fee premium cap changed from 12.5 percent to 7 percent. No verified start date for the previous cap.",
+      "bounded_receipt_http_status": 302,
+      "body_archived_by_bounded_run": false,
+      "historical_schedule_complete": false
+    },
+    {
+      "url": "https://www.okx.com/help/okx-to-adjust-options-trading-fees",
+      "published_date": "2025-01-28",
+      "announced_effective_utc": "2025-02-10T10:40:00Z",
+      "finding": "New options fee tiers announced, including level-1 maker/taker 0.030 percent. Prior January tiers not established.",
+      "bounded_receipt_http_status": 302,
+      "body_archived_by_bounded_run": false,
+      "historical_schedule_complete": false
+    },
+    {
+      "url": "https://www.okx.com/en-gb/help/get-started-with-okx-options",
+      "finding": "Current contract page includes 2026 updates. Not an immutable January 2025 contract certificate.",
+      "bounded_receipt_http_status": 200,
+      "raw_sha256": "73ddac3bb532b8f7261ee6d23559e9d2f907be3bfcb90859618fa630cda9e09b",
+      "historical_schedule_complete": false
+    },
+    {
+      "url": "https://app.okx.com/docs-v5/en/#rest-api-market-data-get-index-candlesticks-history",
+      "finding": "Index history uses six fields ts/open/high/low/close/confirm; after/before select older/newer timestamps. Completed one-minute candles are reference observations, not executable bid/ask.",
+      "historical_schedule_complete": false
+    }
+  ]
+}

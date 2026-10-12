@@ -1,0 +1,52 @@
+**********************
+Начало расшифровки PowerShell
+Время начала: 20261006133845
+Имя пользователя: LAPTOP-UN546M00\koval
+Пользователь, от имени которого выполняется запуск: LAPTOP-UN546M00\koval
+Имя конфигурации: 
+Компьютер: LAPTOP-UN546M00 (Microsoft Windows NT 10.0.26200.0)
+Ведущее приложение: C:\Program Files\PowerShell\7\pwsh.dll -NoProfile -NoExit -File C:\Users\koval\Documents\ZolotyayLopata\docs\analysis\premarket-coordinator-20261006\verify-policy.ps1
+Идентификатор процесса: 51188
+PSVersion: 7.6.6
+PSEdition: Core
+GitCommitId: 7.6.6
+OS: Microsoft Windows 10.0.26200
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+test_rejects_primary_basis_reopen_permission (trading_mvp.tests.test_one_week_edge_sprint_readiness.OneWeekEdgeSprintRea
+dinessTests.test_rejects_primary_basis_reopen_permission) ... ok
+test_rejects_primary_basis_reversed_gate_evidence (trading_mvp.tests.test_one_week_edge_sprint_readiness.OneWeekEdgeSpri
+ntReadinessTests.test_rejects_primary_basis_reversed_gate_evidence) ... ok
+test_rejects_primary_basis_terminal_semantic_rewrite (trading_mvp.tests.test_one_week_edge_sprint_readiness.OneWeekEdgeS
+printReadinessTests.test_rejects_primary_basis_terminal_semantic_rewrite) ... ok
+test_rejects_primary_basis_true_permission_alias (trading_mvp.tests.test_one_week_edge_sprint_readiness.OneWeekEdgeSprin
+tReadinessTests.test_rejects_primary_basis_true_permission_alias) ... ok
+test_rejects_quality_provenance_substitution (trading_mvp.tests.test_one_week_edge_sprint_readiness.OneWeekEdgeSprintRea
+dinessTests.test_rejects_quality_provenance_substitution) ... ok
+test_writes_immutable_report_and_pointer_last (trading_mvp.tests.test_one_week_edge_sprint_readiness.OneWeekEdgeSprintRe
+adinessTests.test_writes_immutable_report_and_pointer_last) ... ok
+
+======================================================================
+FAIL: test_forward_accrual_inputs_bind_v2_monitor_plan (trading_mvp.tests.test_one_week_edge_sprint_readiness.OneWeekEdg
+eSprintReadinessTests.test_forward_accrual_inputs_bind_v2_monitor_plan)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\koval\Documents\ZolotyayLopata\trading_mvp\tests\test_one_week_edge_sprint_readiness.py", line 899, in
+test_forward_accrual_inputs_bind_v2_monitor_plan
+    self.assertIsNotNone(refs)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^
+AssertionError: unexpectedly None
+
+----------------------------------------------------------------------
+Ran 61 tests in 0.686s
+
+FAILED (failures=1)
+OFFLINE_BOUNDARY_CHECKS_PASS. Inspect controller regression log separately.
+**********************
+Завершение расшифровки PowerShell
+Время окончания: 20261006133852
+**********************

@@ -1,0 +1,85 @@
+{
+  "schema": "bounded_local_manifest_inventory_v1",
+  "observed_at_utc": "2026-10-07T18:41:05.7491001+00:00",
+  "recursive_scan": false,
+  "raw_market_files_read": 0,
+  "excluded_directory_name_pattern": "(?i)listing|momentum",
+  "entire_archive_absence_claimed": false,
+  "root_created_or_modified": false,
+  "roots": [
+    {
+      "path": "E:\\ZolotyayLopata-data",
+      "accessible": true,
+      "direct_input_manifests": [],
+      "child_dirs": [
+        "exports",
+        "work"
+      ]
+    },
+    {
+      "path": "E:\\ZolotyayLopata-data\\exports",
+      "accessible": true,
+      "direct_input_manifests": [],
+      "child_dirs": [
+        "trading-mvp"
+      ]
+    },
+    {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp",
+      "accessible": true,
+      "direct_input_manifests": [],
+      "child_dirs": [
+        "analysis",
+        "autopilot",
+        "backtests",
+        "daily",
+        "experiments",
+        "fast-edge",
+        "fast-edge-track",
+        "fast-edge-v2",
+        "fast-edge-v3",
+        "fast-edge-v4",
+        "fast-edge-v5",
+        "fast-edge-v6",
+        "forward-oos",
+        "funding",
+        "funding-regime-persistence-v2",
+        "gate-spot-perp-v2",
+        "historical-basis",
+        "historical-basis-1h-v2",
+        "normalized",
+        "pit-universe-v2",
+        "preipo-perp",
+        "premarket-perp",
+        "raw",
+        "raw-durable",
+        "run",
+        "slow-liquidity-calendar-first-gate-currency-json",
+        "slow-liquidity-identity-request-plan",
+        "slow-liquidity-official-currentness-topology",
+        "slow-liquidity-spot-v2-official-currency-json",
+        "slow-liquidity-spot-v2-official-page-discovery",
+        "spot-pit-event-forward",
+        "universe"
+      ]
+    },
+    {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\raw",
+      "accessible": true,
+      "direct_input_manifests": [],
+      "child_dirs": []
+    },
+    {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\normalized",
+      "accessible": true,
+      "direct_input_manifests": [],
+      "child_dirs": []
+    },
+    {
+      "path": "E:\\ZolotyayLopata-data\\exports\\trading-mvp\\universe",
+      "accessible": true,
+      "direct_input_manifests": [],
+      "child_dirs": []
+    }
+  ]
+}

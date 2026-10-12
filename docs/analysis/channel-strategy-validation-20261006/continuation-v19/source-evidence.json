@@ -1,0 +1,101 @@
+{
+  "schema": "dated_contract_cost_document_audit_v1",
+  "reviewed_date": "2026-10-09",
+  "scope": "Gate BTC_USDT spot and USDT-settled perpetual; documentary review only",
+  "acquisition": "Public official pages read through web research; no exchange API or market archive acquisition",
+  "raw_pages_archived": false,
+  "remote_response_sha256_available": false,
+  "network_http_attempt_count": null,
+  "network_count_note": "The browser/search service does not expose its underlying HTTP attempt count.",
+  "historical_validity_not_implied_by_access_date": true,
+  "sources": [
+    {
+      "id": "spot_fee_34105",
+      "url": "https://www.gate.com/announcements/article/34105",
+      "kind": "DATED_FEE_CHANGE_NOTICE",
+      "publication_header_utc": "2024-01-19T06:11:00Z",
+      "publication_footer_date": "2024-01-19",
+      "publication_dates_consistent": true,
+      "announced_effective_date": "2024-01-29",
+      "effective_time_utc_verified": false,
+      "documented_terms": {
+        "market": "spot",
+        "vip": 0,
+        "base_maker_percent": "0.1000",
+        "base_taker_percent": "0.1000",
+        "gt_debit_maker_percent": "0.0900",
+        "gt_debit_taker_percent": "0.0900"
+      },
+      "finding": "A dated spot fee adjustment exists. The notice also anticipates currency-class tiering; it is not a complete subsequent fee-change ledger.",
+      "accepted_for_dataset_binding": false,
+      "exclusion": "No January 2023 coverage; no verified uninterrupted validity through January 2025, pair class, or account discount assumptions. No extrapolation of the announced rate."
+    },
+    {
+      "id": "perp_fee_36485",
+      "url": "https://www.gate.com/announcements/article/36485",
+      "kind": "FEE_NOTICE_WITH_CONFLICTING_DATES",
+      "publication_header_utc": "2024-05-09T12:30:00Z",
+      "publication_footer_date": "2023-05-09",
+      "publication_dates_consistent": false,
+      "announced_month_day_time": "May 20, 08:00-12:00 UTC; body does not independently establish year",
+      "accepted_effective_from": null,
+      "documented_terms": {"market": "USDT-M perpetual", "vip": 0, "maker_percent": "0.020", "taker_percent": "0.0500"},
+      "finding": "The served publication header and footer disagree by one year. The rate table cannot resolve its own effective year.",
+      "accepted_for_dataset_binding": false,
+      "exclusion": "Conflicting publication year and no complete historical validity interval."
+    },
+    {
+      "id": "campaign_30500",
+      "url": "https://www.gate.com/announcements/article/30500",
+      "kind": "MARKET_SPECIFIC_CAMPAIGN_NOTICE",
+      "publication_header_utc": "2023-04-26T05:58:00Z",
+      "publication_footer_date": "2023-04-26",
+      "publication_dates_consistent": true,
+      "finding": "Delivery-futures changes, BTC-M perpetual zero fees, and BTC/USDT spot maker relief are different scopes. Spot taker fees remain VIP-dependent.",
+      "accepted_for_dataset_binding": false,
+      "exclusion": "BTC-M is not the USDT-settled perpetual route; maker relief does not establish taker costs. Neither selected January sample is covered by a verified interval."
+    },
+    {
+      "id": "vip_42112",
+      "url": "https://www.gate.com/announcements/article/42112",
+      "kind": "VIP_QUALIFICATION_NOTICE_NOT_FEE_TABLE",
+      "publication_header_utc": "2024-12-27T02:54:00Z",
+      "announced_effective_utc": "2024-12-27T01:30:00Z",
+      "finding": "The change concerns GT holdings needed for VIP qualification, not a dated BTC_USDT execution fee series.",
+      "accepted_for_dataset_binding": false,
+      "exclusion": "No historical fee ledger and no evidence of a simulated account's eligibility for discounts."
+    },
+    {
+      "id": "contract_example_46587",
+      "url": "https://www.gate.com/announcements/article/46587",
+      "kind": "API_FIELD_CHANGE_WITH_ILLUSTRATIVE_RESPONSE",
+      "publication_header_utc": "2025-08-13T12:57:00Z",
+      "announced_rollout_utc": ["2025-08-15T07:00:00Z", "2025-08-15T09:00:00Z"],
+      "example_only": {"name": "BTC_USDT", "quanto_multiplier": "0.0001", "config_change_time": 1754991140},
+      "finding": "The new funding-rate-limit field is illustrated with a contract response. This is not an archived contract-state capture for either January sample.",
+      "accepted_for_dataset_binding": false,
+      "exclusion": "Later illustrative response cannot establish earlier contract units or an unchanged interval."
+    },
+    {
+      "id": "api_schema",
+      "url": "https://www.gate.com/docs/apiv4/index.html",
+      "kind": "LIVE_DOCUMENTATION_WITH_EXAMPLES",
+      "immutable_asof_snapshot": false,
+      "example_only": {"name": "BTC_USDT", "quanto_multiplier": "0.0001", "config_change_time": 1609899548},
+      "finding": "For USDT-settled contracts, multiplier times token price gives per-contract notional. Book current and update have different meanings. The single-contract endpoint documents settle and contract parameters, not an as-of-date selector.",
+      "accepted_for_dataset_binding": false,
+      "exclusion": "Schema and example timestamps establish semantics, not a verified historical parameter interval or actual receive-time history."
+    }
+  ],
+  "discovery_only_sources": [
+    {
+      "url": "https://www.gate.com/announcements/article/35904",
+      "use": "Followed the link to the original spot fee notice 34105. Bot promotion rates are not imported into model costs."
+    }
+  ],
+  "limits": [
+    "Bounded review of selected official notices, not exhaustive proof that no historical evidence exists anywhere.",
+    "Only paraphrased facts and URLs are retained; this is not an immutable archive of remote page bytes.",
+    "No rate, multiplier, discount or effective interval from this audit is inserted into trading inputs."
+  ]
+}

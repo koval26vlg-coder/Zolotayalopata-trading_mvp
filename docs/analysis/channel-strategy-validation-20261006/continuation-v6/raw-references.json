@@ -1,0 +1,38 @@
+[
+  {
+    "file": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/artifacts/okx-dependencies/01.raw",
+    "sha256": "033c50ff15274e36cd432a7a12df871702fcb4f044367b1a801d1a34d9c4c224",
+    "bytes": 152,
+    "tracked_in_git": false
+  },
+  {
+    "file": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/artifacts/okx-dependencies/02.raw",
+    "sha256": "7a1c421b1b085ac2891228ff5e02d3955e88c498d0891921d1d3d2d5c3d38c2f",
+    "bytes": 154,
+    "tracked_in_git": false
+  },
+  {
+    "file": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/artifacts/okx-dependencies/03.raw",
+    "sha256": "a7adeab553a83027899f39aa775a2aed471eaef1d3fc16700aafc1b3ab94ec7d",
+    "bytes": 154,
+    "tracked_in_git": false
+  },
+  {
+    "file": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/artifacts/okx-dependencies/04.raw",
+    "sha256": "533ee98bf8b3a1cc999b51ba26f807ea632d23437d341771a791284cef70f488",
+    "bytes": 152,
+    "tracked_in_git": false
+  },
+  {
+    "file": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/artifacts/okx-dependencies/05.raw",
+    "sha256": "c9d430cce66a946646ac48f593c832e230adf931df1d7f6227e12f5799565b47",
+    "bytes": 1053,
+    "tracked_in_git": false
+  },
+  {
+    "file": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/artifacts/okx-dependencies/08.raw",
+    "sha256": "73ddac3bb532b8f7261ee6d23559e9d2f907be3bfcb90859618fa630cda9e09b",
+    "bytes": 96482,
+    "tracked_in_git": false
+  }
+]

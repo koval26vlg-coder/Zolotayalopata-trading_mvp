@@ -1,0 +1,20 @@
+[
+  {
+    "file": "docs/analysis/channel-strategy-validation-20261006/runs/history_gold_unattempted_v7_20261007/artifacts/gold-history-audit/17.raw",
+    "sha256": "fc2687ca1d8a8afdd5d12ccbde53dace6e1e874c0442a374cfa7a2cf45c4c542",
+    "bytes": 5922,
+    "tracked_in_git": false
+  },
+  {
+    "file": "docs/analysis/channel-strategy-validation-20261006/runs/history_gold_unattempted_v7_20261007/artifacts/gold-history-audit/18.raw",
+    "sha256": "0b9fed57dcdb0f9077e1f5ea958179f113e37efdd6cc56196a89bd56b4190cbc",
+    "bytes": 155308,
+    "tracked_in_git": false
+  },
+  {
+    "file": "docs/analysis/channel-strategy-validation-20261006/runs/history_gold_unattempted_v7_20261007/artifacts/gold-history-audit/19.raw",
+    "sha256": "c0b082bc96a9d8af399ea6d1a20ba0583256a9d35a2c4462b9a4b26444064d7a",
+    "bytes": 217165,
+    "tracked_in_git": false
+  }
+]

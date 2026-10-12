@@ -1,0 +1,477 @@
+{
+  "eligibility": "NOT_A_BACKTEST_INPUT",
+  "official_documentation": "https://www.gate.com/developer/historical_quotes",
+  "paid_data": false,
+  "records": [
+    {
+      "archive_verified": true,
+      "attempts": 1,
+      "bytes": 17198,
+      "csv_rows": 744,
+      "first_rows": [
+        [
+          "1672531200",
+          "127.6277864111",
+          "16529.5",
+          "16546.2",
+          "16509.4",
+          "16543.0"
+        ],
+        [
+          "1672534800",
+          "113.3561011425",
+          "16551.1",
+          "16558.3",
+          "16526.2",
+          "16529.4"
+        ]
+      ],
+      "http_status": 200,
+      "last_row": [
+        "1675206000",
+        "53.4512795463",
+        "23125.7",
+        "23184.4",
+        "23086.1",
+        "23179.8"
+      ],
+      "normalized_input_eligible": false,
+      "path": "01-79ec2450f19ec14256212b667579722911f14fec7ab8040139786bfdaf0dfadb.csv.gz",
+      "reason": "Coverage/schema probe only; no historical universe, fee, or exposure certification",
+      "sha256": "79ec2450f19ec14256212b667579722911f14fec7ab8040139786bfdaf0dfadb",
+      "uncompressed_bytes": 42970,
+      "url": "https://download.gatedata.org/spot/candlesticks_1h/202301/BTC_USDT-202301.csv.gz"
+    },
+    {
+      "archive_verified": true,
+      "attempts": 1,
+      "bytes": 4622,
+      "csv_rows": 186,
+      "first_rows": [
+        [
+          "1672531200",
+          "473.7315298269",
+          "16533.3",
+          "16561.6",
+          "16509.4",
+          "16543.0"
+        ],
+        [
+          "1672545600",
+          "380.6717294283",
+          "16525.5",
+          "16550.6",
+          "16499.6",
+          "16533.3"
+        ]
+      ],
+      "http_status": 200,
+      "last_row": [
+        "1675195200",
+        "293.4753546345",
+        "23125.7",
+        "23310.5",
+        "22819.7",
+        "23167.0"
+      ],
+      "normalized_input_eligible": false,
+      "path": "02-633b34e9644a1189bf4da23141fe794d69dd7ac9926362fe156a41ede99aed11.csv.gz",
+      "reason": "Coverage/schema probe only; no historical universe, fee, or exposure certification",
+      "sha256": "633b34e9644a1189bf4da23141fe794d69dd7ac9926362fe156a41ede99aed11",
+      "uncompressed_bytes": 10877,
+      "url": "https://download.gatedata.org/spot/candlesticks_4h/202301/BTC_USDT-202301.csv.gz"
+    },
+    {
+      "archive_verified": true,
+      "attempts": 1,
+      "bytes": 15882,
+      "csv_rows": 744,
+      "first_rows": [
+        [
+          "1735689600",
+          "46.28202",
+          "94381.0",
+          "94473.8",
+          "93489.4",
+          "93585.9"
+        ],
+        [
+          "1735693200",
+          "23.71302",
+          "93617.1",
+          "94392.2",
+          "93593.8",
+          "94388.7"
+        ]
+      ],
+      "http_status": 200,
+      "last_row": [
+        "1738364400",
+        "35.0169",
+        "102431.0",
+        "102440.5",
+        "101954.0",
+        "102266.4"
+      ],
+      "normalized_input_eligible": false,
+      "path": "03-49bf158b779cd52e1fd4ded2b3ad013091f8d126ba9d77398276be57b7fc17c0.csv.gz",
+      "reason": "Coverage/schema probe only; no historical universe, fee, or exposure certification",
+      "sha256": "49bf158b779cd52e1fd4ded2b3ad013091f8d126ba9d77398276be57b7fc17c0",
+      "uncompressed_bytes": 40568,
+      "url": "https://download.gatedata.org/spot/candlesticks_1h/202501/BTC_USDT-202501.csv.gz"
+    },
+    {
+      "archive_verified": true,
+      "attempts": 1,
+      "bytes": 4293,
+      "csv_rows": 186,
+      "first_rows": [
+        [
+          "1735689600",
+          "105.32033",
+          "93836.9",
+          "94473.8",
+          "93489.4",
+          "93585.9"
+        ],
+        [
+          "1735704000",
+          "44.51331",
+          "93685.5",
+          "93923.2",
+          "93535.4",
+          "93836.9"
+        ]
+      ],
+      "http_status": 200,
+      "last_row": [
+        "1738353600",
+        "387.3778",
+        "102431.0",
+        "102490.3",
+        "101555.9",
+        "102308.4"
+      ],
+      "normalized_input_eligible": false,
+      "path": "04-2d54ae2ca11cc94ad2277670d8e15c37bfcc8ca4c1e1c95ebc04da9d1fd6c564.csv.gz",
+      "reason": "Coverage/schema probe only; no historical universe, fee, or exposure certification",
+      "sha256": "2d54ae2ca11cc94ad2277670d8e15c37bfcc8ca4c1e1c95ebc04da9d1fd6c564",
+      "uncompressed_bytes": 10329,
+      "url": "https://download.gatedata.org/spot/candlesticks_4h/202501/BTC_USDT-202501.csv.gz"
+    },
+    {
+      "archive_verified": true,
+      "attempts": 1,
+      "bytes": 15584,
+      "csv_rows": 720,
+      "first_rows": [
+        [
+          "1788220800",
+          "111.669767",
+          "78651.0",
+          "78893.7",
+          "78555.4",
+          "78583.2"
+        ],
+        [
+          "1788224400",
+          "207.802688",
+          "78406.3",
+          "78791.6",
+          "78372.1",
+          "78651.1"
+        ]
+      ],
+      "http_status": 200,
+      "last_row": [
+        "1790809200",
+        "224.487126",
+        "83616.5",
+        "83827.0",
+        "83525.1",
+        "83686.8"
+      ],
+      "normalized_input_eligible": false,
+      "path": "05-8c2789a3b3d051737bd3a85ffeb8aec306bd1e6bd8a189abf8a82f52b89517ac.csv.gz",
+      "reason": "Coverage/schema probe only; no historical universe, fee, or exposure certification",
+      "sha256": "8c2789a3b3d051737bd3a85ffeb8aec306bd1e6bd8a189abf8a82f52b89517ac",
+      "uncompressed_bytes": 38671,
+      "url": "https://download.gatedata.org/spot/candlesticks_1h/202609/BTC_USDT-202609.csv.gz"
+    },
+    {
+      "archive_verified": true,
+      "attempts": 1,
+      "bytes": 4195,
+      "csv_rows": 180,
+      "first_rows": [
+        [
+          "1788220800",
+          "722.11909",
+          "78676.9",
+          "78893.7",
+          "78184.6",
+          "78583.2"
+        ],
+        [
+          "1788235200",
+          "609.03787",
+          "78634.3",
+          "79213.6",
+          "78508.8",
+          "78677.0"
+        ]
+      ],
+      "http_status": 200,
+      "last_row": [
+        "1790798400",
+        "567.509817",
+        "83616.5",
+        "83840.3",
+        "83521.9",
+        "83596.3"
+      ],
+      "normalized_input_eligible": false,
+      "path": "06-439b687b617da643aa510fc364e7894ae1a6d046b7f374403a240c45a5b503ff.csv.gz",
+      "reason": "Coverage/schema probe only; no historical universe, fee, or exposure certification",
+      "sha256": "439b687b617da643aa510fc364e7894ae1a6d046b7f374403a240c45a5b503ff",
+      "uncompressed_bytes": 9810,
+      "url": "https://download.gatedata.org/spot/candlesticks_4h/202609/BTC_USDT-202609.csv.gz"
+    },
+    {
+      "archive_verified": true,
+      "attempts": 1,
+      "bytes": 16927,
+      "csv_rows": 744,
+      "first_rows": [
+        [
+          "1672531200",
+          "243.1237431329",
+          "1194.16",
+          "1196.67",
+          "1192.9",
+          "1196.1"
+        ],
+        [
+          "1672534800",
+          "143.2388820298",
+          "1196.03",
+          "1196.44",
+          "1193.78",
+          "1194.16"
+        ]
+      ],
+      "http_status": 200,
+      "last_row": [
+        "1675206000",
+        "841.0875519956",
+        "1585.28",
+        "1591.15",
+        "1581.25",
+        "1590.62"
+      ],
+      "normalized_input_eligible": false,
+      "path": "07-92dacb0358c0067c0778b340f3fb6f82e6cf8fcc12b7992fb934dd7cc7bad0e3.csv.gz",
+      "reason": "Coverage/schema probe only; no historical universe, fee, or exposure certification",
+      "sha256": "92dacb0358c0067c0778b340f3fb6f82e6cf8fcc12b7992fb934dd7cc7bad0e3",
+      "uncompressed_bytes": 42891,
+      "url": "https://download.gatedata.org/spot/candlesticks_1h/202301/ETH_USDT-202301.csv.gz"
+    },
+    {
+      "archive_verified": true,
+      "attempts": 1,
+      "bytes": 4589,
+      "csv_rows": 186,
+      "first_rows": [
+        [
+          "1672531200",
+          "656.8433716643",
+          "1194.23",
+          "1197.11",
+          "1192.27",
+          "1196.1"
+        ],
+        [
+          "1672545600",
+          "742.85015544",
+          "1195.47",
+          "1195.93",
+          "1191.09",
+          "1194.24"
+        ]
+      ],
+      "http_status": 200,
+      "last_row": [
+        "1675195200",
+        "4754.5105723848",
+        "1585.28",
+        "1600.58",
+        "1564.27",
+        "1597.48"
+      ],
+      "normalized_input_eligible": false,
+      "path": "08-ac2a20a7c4ee9b567dc60ac9c2fbf077d5d5fc2d0612bf758d9a906260985269.csv.gz",
+      "reason": "Coverage/schema probe only; no historical universe, fee, or exposure certification",
+      "sha256": "ac2a20a7c4ee9b567dc60ac9c2fbf077d5d5fc2d0612bf758d9a906260985269",
+      "uncompressed_bytes": 10840,
+      "url": "https://download.gatedata.org/spot/candlesticks_4h/202301/ETH_USDT-202301.csv.gz"
+    },
+    {
+      "archive_verified": true,
+      "attempts": 1,
+      "bytes": 15332,
+      "csv_rows": 744,
+      "first_rows": [
+        [
+          "1735689600",
+          "785.813",
+          "3363.38",
+          "3365.0",
+          "3336.32",
+          "3337.37"
+        ],
+        [
+          "1735693200",
+          "711.3687",
+          "3346.6",
+          "3365.7",
+          "3342.7",
+          "3363.39"
+        ]
+      ],
+      "http_status": 200,
+      "last_row": [
+        "1738364400",
+        "1360.2365",
+        "3300.83",
+        "3302.85",
+        "3278.87",
+        "3296.45"
+      ],
+      "normalized_input_eligible": false,
+      "path": "09-e76d29d9eb0a6c89f605467c55e63551a3456fa9319f347b980643d723d7b8ff.csv.gz",
+      "reason": "Coverage/schema probe only; no historical universe, fee, or exposure certification",
+      "sha256": "e76d29d9eb0a6c89f605467c55e63551a3456fa9319f347b980643d723d7b8ff",
+      "uncompressed_bytes": 39004,
+      "url": "https://download.gatedata.org/spot/candlesticks_1h/202501/ETH_USDT-202501.csv.gz"
+    },
+    {
+      "archive_verified": true,
+      "attempts": 1,
+      "bytes": 4123,
+      "csv_rows": 186,
+      "first_rows": [
+        [
+          "1735689600",
+          "2435.4364",
+          "3354.74",
+          "3367.76",
+          "3336.32",
+          "3337.37"
+        ],
+        [
+          "1735704000",
+          "2056.565",
+          "3346.73",
+          "3355.77",
+          "3336.54",
+          "3354.75"
+        ]
+      ],
+      "http_status": 200,
+      "last_row": [
+        "1738353600",
+        "11426.2326",
+        "3300.83",
+        "3339.28",
+        "3278.58",
+        "3339.28"
+      ],
+      "normalized_input_eligible": false,
+      "path": "10-56d3b99a4557a4f5fc17ea0bd6028d768f6481ce856b24f84ae729587b65f89e.csv.gz",
+      "reason": "Coverage/schema probe only; no historical universe, fee, or exposure certification",
+      "sha256": "56d3b99a4557a4f5fc17ea0bd6028d768f6481ce856b24f84ae729587b65f89e",
+      "uncompressed_bytes": 9873,
+      "url": "https://download.gatedata.org/spot/candlesticks_4h/202501/ETH_USDT-202501.csv.gz"
+    },
+    {
+      "archive_verified": true,
+      "attempts": 1,
+      "bytes": 14370,
+      "csv_rows": 720,
+      "first_rows": [
+        [
+          "1788220800",
+          "1969.421",
+          "2471.46",
+          "2477.22",
+          "2465.69",
+          "2467.59"
+        ],
+        [
+          "1788224400",
+          "2575.8602",
+          "2462.98",
+          "2476.06",
+          "2458.46",
+          "2471.46"
+        ]
+      ],
+      "http_status": 200,
+      "last_row": [
+        "1790809200",
+        "2757.4419",
+        "2685.79",
+        "2694.15",
+        "2684.42",
+        "2687.21"
+      ],
+      "normalized_input_eligible": false,
+      "path": "11-5351d638a700f8ed270d08e375186a3363ae61cd1e2f6a9d09a109e4f05d492f.csv.gz",
+      "reason": "Coverage/schema probe only; no historical universe, fee, or exposure certification",
+      "sha256": "5351d638a700f8ed270d08e375186a3363ae61cd1e2f6a9d09a109e4f05d492f",
+      "uncompressed_bytes": 37795,
+      "url": "https://download.gatedata.org/spot/candlesticks_1h/202609/ETH_USDT-202609.csv.gz"
+    },
+    {
+      "archive_verified": true,
+      "attempts": 1,
+      "bytes": 3934,
+      "csv_rows": 180,
+      "first_rows": [
+        [
+          "1788220800",
+          "11087.8411",
+          "2472.02",
+          "2482.66",
+          "2455.08",
+          "2467.59"
+        ],
+        [
+          "1788235200",
+          "9277.6514",
+          "2472.4",
+          "2485.09",
+          "2466.86",
+          "2472.02"
+        ]
+      ],
+      "http_status": 200,
+      "last_row": [
+        "1790798400",
+        "9642.2381",
+        "2685.79",
+        "2694.15",
+        "2668.55",
+        "2670.01"
+      ],
+      "normalized_input_eligible": false,
+      "path": "12-4869db625bcfda662f3d3a1debe52274c24caf831ca73ada041eafc9835915ec.csv.gz",
+      "reason": "Coverage/schema probe only; no historical universe, fee, or exposure certification",
+      "sha256": "4869db625bcfda662f3d3a1debe52274c24caf831ca73ada041eafc9835915ec",
+      "uncompressed_bytes": 9602,
+      "url": "https://download.gatedata.org/spot/candlesticks_4h/202609/ETH_USDT-202609.csv.gz"
+    }
+  ],
+  "requests": 12,
+  "retries": 0
+}

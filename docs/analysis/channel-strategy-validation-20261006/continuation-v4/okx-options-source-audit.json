@@ -1,0 +1,261 @@
+{
+  "audit_hash": "e24e6c13f9af96471f507f0f2b1194e973fa13b3d634dbe4a9cb55fd0315bd23",
+  "evaluation_eligible": false,
+  "historical_universe_certified": false,
+  "no_authentication": true,
+  "no_full_archive_download": true,
+  "option_history_complete": false,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "records": [
+    {
+      "archives": [
+        {
+          "advertised_size_mb": "243.22",
+          "family": "BTC-USD",
+          "filename": "BTC-USD-optionchain-L2orderbook-400lv-2025-01-06.tar.gz",
+          "url": "https://static.okx.com/cdn/okx/match/orderbook/L2/400lv/daily/20250106/BTC-USD-optionchain-L2orderbook-400lv-2025-01-06.tar.gz"
+        },
+        {
+          "advertised_size_mb": "238.97",
+          "family": "ETH-USD",
+          "filename": "ETH-USD-optionchain-L2orderbook-400lv-2025-01-06.tar.gz",
+          "url": "https://static.okx.com/cdn/okx/match/orderbook/L2/400lv/daily/20250106/ETH-USD-optionchain-L2orderbook-400lv-2025-01-06.tar.gz"
+        }
+      ],
+      "attempts": 1,
+      "body": {
+        "bytes_read": 1053,
+        "complete": true,
+        "declared_length": null,
+        "reason": "COMPLETE"
+      },
+      "http_status": 200,
+      "method": "POST",
+      "raw_file": "catalog.json",
+      "sha256": "69df286bbd0e039831ad4736b32ec476a901a8a9d277d0b46f20e16ccf7d2246",
+      "status": "PUBLIC_ARCHIVE_CATALOG_CHECKED",
+      "url": "https://www.okx.com/priapi/v5/broker/public/trade-data/download-link"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 1000000,
+        "complete": true,
+        "declared_length": 1000000,
+        "reason": "COMPLETE"
+      },
+      "http_status": 206,
+      "method": "GET",
+      "parsed": {
+        "archive_complete": false,
+        "decoded_prefix_bytes": 8388608,
+        "decompression_capped": true,
+        "evaluation_eligible": false,
+        "gzip_end_seen": false,
+        "members_seen": [
+          {
+            "declared_bytes": 9159177,
+            "name": "BTC-USD-250106-100000-C-L2orderbook-400lv-2025-01-06.data",
+            "type": "0"
+          }
+        ],
+        "option_chain_complete": false,
+        "sample": {
+          "member": "BTC-USD-250106-100000-C-L2orderbook-400lv-2025-01-06.data",
+          "record": {
+            "action": "snapshot",
+            "asks": [
+              [
+                "0.0004",
+                "298.0",
+                "1"
+              ],
+              [
+                "0.0005",
+                "217.0",
+                "1"
+              ],
+              [
+                "0.0006",
+                "138.0",
+                "1"
+              ],
+              [
+                "0.0007",
+                "863.0",
+                "6"
+              ],
+              [
+                "0.0008",
+                "2910.0",
+                "2"
+              ],
+              [
+                "0.0009",
+                "5.0",
+                "1"
+              ],
+              [
+                "0.001",
+                "270.0",
+                "1"
+              ],
+              [
+                "0.0011",
+                "5.0",
+                "1"
+              ],
+              [
+                "0.0019",
+                "9975.0",
+                "1"
+              ],
+              [
+                "0.0021",
+                "1000.0",
+                "1"
+              ],
+              [
+                "0.003",
+                "55.0",
+                "1"
+              ],
+              [
+                "0.0095",
+                "100.0",
+                "1"
+              ]
+            ],
+            "bids": [
+              [
+                "0.0003",
+                "578.0",
+                "3"
+              ],
+              [
+                "0.0002",
+                "239.0",
+                "2"
+              ],
+              [
+                "0.0001",
+                "3854.0",
+                "5"
+              ]
+            ],
+            "instId": "BTC-USD-250106-100000-C",
+            "ts": "1736121600026"
+          },
+          "top_level_fields": [
+            "action",
+            "asks",
+            "bids",
+            "instId",
+            "ts"
+          ]
+        }
+      },
+      "range": {
+        "end": 999999,
+        "entire_archive_in_response": false,
+        "start": 0,
+        "total_archive_bytes": 255036575
+      },
+      "raw_file": "BTC-USD.tar.gz.prefix",
+      "sha256": "6b1a256c5a97bac12214e6ac353439b5aaf30ac5b88d7431fb037a638fee32b2",
+      "status": "PREFIX_ONLY_NOT_BACKTEST_INPUT",
+      "url": "https://static.okx.com/cdn/okx/match/orderbook/L2/400lv/daily/20250106/BTC-USD-optionchain-L2orderbook-400lv-2025-01-06.tar.gz"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 1000000,
+        "complete": true,
+        "declared_length": 1000000,
+        "reason": "COMPLETE"
+      },
+      "http_status": 206,
+      "method": "GET",
+      "parsed": {
+        "archive_complete": false,
+        "decoded_prefix_bytes": 8388608,
+        "decompression_capped": true,
+        "evaluation_eligible": false,
+        "gzip_end_seen": false,
+        "members_seen": [
+          {
+            "declared_bytes": 130189,
+            "name": "ETH-USD-250106-3000-C-L2orderbook-400lv-2025-01-06.data",
+            "type": "0"
+          }
+        ],
+        "option_chain_complete": false,
+        "sample": {
+          "member": "ETH-USD-250106-3000-C-L2orderbook-400lv-2025-01-06.data",
+          "record": {
+            "action": "snapshot",
+            "asks": [],
+            "bids": [
+              [
+                "0.005",
+                "400.0",
+                "2"
+              ],
+              [
+                "0.0003",
+                "40.0",
+                "1"
+              ]
+            ],
+            "instId": "ETH-USD-250106-3000-C",
+            "ts": "1736123069135"
+          },
+          "top_level_fields": [
+            "action",
+            "asks",
+            "bids",
+            "instId",
+            "ts"
+          ]
+        }
+      },
+      "range": {
+        "end": 999999,
+        "entire_archive_in_response": false,
+        "start": 0,
+        "total_archive_bytes": 250576137
+      },
+      "raw_file": "ETH-USD.tar.gz.prefix",
+      "sha256": "fd4b8dd4682c668d3f916d02179101ad14142d96666a5fb1f5c817e7f9107801",
+      "status": "PREFIX_ONLY_NOT_BACKTEST_INPUT",
+      "url": "https://static.okx.com/cdn/okx/match/orderbook/L2/400lv/daily/20250106/ETH-USD-optionchain-L2orderbook-400lv-2025-01-06.tar.gz"
+    }
+  ],
+  "request_plan_hash": "6e8ac0b76f4e487f3c10d973ad596bf1bbd01681be21be32245dba30963fe5bf",
+  "requests": 3,
+  "runtime_binding": {
+    "tools/check_active_run_gate.ps1": "a3b1b735dba6681b18fdb2e9be637079a22391123eced0a316dc2b76855193fd",
+    "tools/check_trading_mvp_autopilot.ps1": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+    "tools/run_channel_strategy_validation_visible.ps1": "0ccb78bf3a2ac571ec4a29b2144f79fa4b54977ba3c1aaff8b54016697b0ac86",
+    "trading_mvp/src/channel_validation/__init__.py": "dab9cae823a9b621cc47440d3a73630e9831110efd9f370fe7b689d2206f71e3",
+    "trading_mvp/src/channel_validation/adapters.py": "e3a090521c5da1dc6ff7afe600b4c52aad74f63ef1358a7f674d86af7b4377fe",
+    "trading_mvp/src/channel_validation/archive_audit.py": "fdbb487dc77de23176751e24f642e487d0da00fe05f83f27b92dcdbbba74124a",
+    "trading_mvp/src/channel_validation/contract.py": "d71f4e1834623bc8ea7234dd561604a26d89f010a2978092c9c9858d5f55465c",
+    "trading_mvp/src/channel_validation/data.py": "bf7d11039ac155ee70a21d0a1837e5af5ad7506ae7db3519472ac5d2e5322f61",
+    "trading_mvp/src/channel_validation/execution.py": "b8e119584e4b3b5c3abe2da93900711f74a630b0d94b7c570faf6883c35de4ab",
+    "trading_mvp/src/channel_validation/gate_catalog.py": "920183562362062ba516ea3b9859051f9aecad27f5eb8900d9b59716f11af0dd",
+    "trading_mvp/src/channel_validation/gate_history.py": "7297594b274bc6a9fb239be67e23825e55a6db7e45d65133ba252dcc3cde35df",
+    "trading_mvp/src/channel_validation/gate_metadata.py": "f0eaff7d3edd1d9049a835574c69208451d9b99fbd50a214981bce3da581b866",
+    "trading_mvp/src/channel_validation/gate_survivorship.py": "85cc2300daa78a51159bcccee84f7f5e5ba290e05dff274ea66b26e2ab68e6f9",
+    "trading_mvp/src/channel_validation/gate_trades.py": "c437567a56bc2697183487bf9adf76465617553f17919486a078ca97fa20b9a0",
+    "trading_mvp/src/channel_validation/models.py": "9c1f0b142276e2e78e101036192486a603961422a9b1fb8ac4cf2dad532cc193",
+    "trading_mvp/src/channel_validation/okx_history.py": "83ac9cd0743acd53ee61f53306f18061cc36a9f9d3b54261dbf84f1e9cb6350b",
+    "trading_mvp/src/channel_validation/portfolio.py": "cb63ff1b53751cec1b248b91c8e70c9686a04259e1f7636bc5be8749025332a4",
+    "trading_mvp/src/channel_validation/runner.py": "c0b68d9c5312e0e5de2a8e7315edbd8364185b945f6c53d44b170befc3c0446f",
+    "trading_mvp/src/channel_validation/sources.py": "e30cde7da64c7aefd58711f3678a9c814acef298a901bba8744d095ee87cdd10",
+    "trading_mvp/src/channel_validation/statistics.py": "e4b6f69e9a057f2ec5a7d33813d725f720239207f7728bd9e101a6cb0a2ce65d",
+    "trading_mvp/src/global_market_writer_claim.py": "bc0604267c9d709a17188eb9daf317417d2633bf4c31266f73db33ac2f5066d2",
+    "trading_mvp/tests/test_channel_validation.py": "cc2ebe2835faf4eb2fc8844d902749c7ff72410ae5afdab53b1901897d3007b9"
+  },
+  "schema": "okx_option_archive_source_audit_v1"
+}

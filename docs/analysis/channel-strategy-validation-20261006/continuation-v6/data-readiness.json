@@ -1,0 +1,46 @@
+{
+  "schema": "okx_option_historical_dependency_readiness_v1",
+  "checked_date": "2026-10-07",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "audit_hash": "a9a426cb2760f9e1787a1210ad524293395b6d97b8996a10522d5d4a65748592",
+  "runtime_hash": "75f61c368a2867033724acb2f0edb6e3d0305733d9d1379cfb60118e77632b93",
+  "models": [
+    "long_put",
+    "cash_put",
+    "put_spread"
+  ],
+  "input_status": "BLOCKED_DATA",
+  "source_audit_state": "BOUNDED_SEARCH_CLOSED_UNVERIFIED_DATED_TERMS",
+  "bounded_run_requests": 8,
+  "retries": 0,
+  "followed_redirects": 0,
+  "complete_response_body_bytes": 98147.0,
+  "completed_index_queries": 4,
+  "index_candles": 8,
+  "index_is_executable_quote": false,
+  "publication_latency_verified": false,
+  "exit_catalog_families": [
+    "BTC-USD",
+    "ETH-USD"
+  ],
+  "exit_catalog_date": "2025-01-13",
+  "exit_archive_bytes_downloaded": 0,
+  "exit_quotes_verified": false,
+  "current_contract_page_historical_certificate": false,
+  "dated_fee_pages_in_bounded_run": "HTTP_302_NOT_FOLLOWED",
+  "dated_terms_complete": false,
+  "previous_census_hash": "a188c266039dd924a5a8e95ada9c554d259e9474a70f926a7a4791b0399b150e",
+  "previous_archive_reference": "../continuation-v5/census.json",
+  "missing": [
+    "Dated January 2025 contract units, fee tier and premium cap, settlement rules and exact expiry time",
+    "Executable underlying quotes and defensible historical availability timestamps",
+    "Validated complete entry and exit books with sequence/gap provenance",
+    "ETH and the remaining frozen weekly dates across the registered periods"
+  ],
+  "evaluation_eligible": false,
+  "metrics": null,
+  "historical_candidate": false,
+  "no_new_full_archives": true,
+  "no_old_run_retry": true,
+  "next_step": "Keep options BLOCKED_DATA. No repeated same probes or mass archive download. Reopen on new dated evidence; audit free gold history next without changing its frozen model."
+}

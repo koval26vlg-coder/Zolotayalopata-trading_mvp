@@ -1,0 +1,23 @@
+{
+  "schema": "histdata_source_notes_v1",
+  "checked_date": "2026-10-07",
+  "source_is_execution_venue": false,
+  "sources": [
+    {
+      "url": "https://www.histdata.com/f-a-q/data-files-detailed-specification/",
+      "use": "ASCII tick bid/ask, millisecond timestamp, fixed EST without DST; volume is not executed trade volume"
+    },
+    {
+      "url": "https://www.histdata.com/f-a-q/",
+      "use": "Provider does not certify error-free data; gap report is not an independently verified calendar"
+    },
+    {
+      "url": "https://www.histdata.com/about-us/",
+      "use": "Community historical-data project, not evidence of a dated executable instrument/fee contract"
+    }
+  ],
+  "historical_contract_verified": false,
+  "calendar_verified": false,
+  "costs_verified": false,
+  "documentation_requests_not_market_data": true
+}

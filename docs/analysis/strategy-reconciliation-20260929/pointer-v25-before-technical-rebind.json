@@ -1,0 +1,9 @@
+{
+  "schema": "trading_mvp_one_week_edge_sprint_readiness_pointer_v1",
+  "status": "ACTIVE",
+  "project": "trading_mvp",
+  "readiness_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\one-week-edge-sprint-current-readiness-20260929-v25.json",
+  "readiness_file_sha256": "efa34bbb09f48c0f38c744042d2c33039aae05c9579b0ff3f5de34f6c05b0644",
+  "readiness_hash": "334cd77b50e16dd46c79731a9163e3521965426f509063e884453ddb26c8ee9a",
+  "updated_at_utc": "2026-09-29T09:56:54.507281+00:00"
+}

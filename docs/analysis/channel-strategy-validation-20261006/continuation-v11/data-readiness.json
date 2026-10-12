@@ -1,0 +1,28 @@
+{
+  "schema": "historical_data_readiness_v1",
+  "model_id": "dax_orb",
+  "input_status": "BLOCKED_DATA",
+  "technical_audit_complete": true,
+  "backtest_executed": false,
+  "historical_candidate": false,
+  "strategy_rejected": false,
+  "metrics": null,
+  "ready_input_manifest": null,
+  "source_evidence": "source-evidence.json",
+  "suitability_audit": "suitability-audit.json",
+  "free_history_nonexistence_claimed": false,
+  "validated_historical_rows": 0,
+  "validated_historical_rows_semantics": "No DAX quote file acquired or validated in this checkpoint; not a market-wide row count.",
+  "remaining_before_backtest": [
+    "Verify usable free public export without credentials or payments.",
+    "Bind exact instrument, dated units/minimum lot, full-reserve budget feasibility and causal currency conversion.",
+    "Build verified main-session calendar with DST and exceptional phases, not a fixed UTC offset.",
+    "Acquire and validate a bounded visible sample before bulk downloads.",
+    "Verify fixed development/walk-forward/final periods and prior-exposure labels without shifting periods.",
+    "Test EUR/USD implementation, create immutable runtime refreeze and input manifest before evaluation."
+  ],
+  "same_scope_technical_repair_needs_extra_approval_token": false,
+  "next_action": "Bounded free-history suitability audit for frozen gap_continue and gap_fade; do not wait for DAX tools or launch a permanent collector.",
+  "next_audit_required_evidence": ["five_minute_history", "point_in_time_equity_membership_including_delistings", "corporate_actions", "regular_and_shortened_sessions", "short_borrowability_and_costs"],
+  "preserved_exclusions": ["Listing Momentum", "closed legacy runs", "private API", "real capital", "paid data", "new schedules", "permanent collectors"]
+}

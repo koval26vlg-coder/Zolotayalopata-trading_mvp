@@ -1,0 +1,23 @@
+{
+  "active_writer_claim_absent": true,
+  "all_queue_evidence_paths_exist": true,
+  "all_source_references_resolved": true,
+  "evaluation_executed": false,
+  "frozen_models_verified": 20,
+  "historical_test_record": "../continuation-v9/verification.json",
+  "market_data_downloads": 0,
+  "model_parameters_unchanged": true,
+  "other_model_queue_entries_unchanged": true,
+  "parent_file_bindings_verified": 9,
+  "parent_index_files_verified": 7,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "raw_market_inputs_rescanned": false,
+  "runtime_binding_file_count": 29,
+  "runtime_binding_matches_prior_180_test_record": true,
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "schema": "documentation_checkpoint_verification_v1",
+  "source_evidence_is_analyst_summary_not_http_snapshot": true,
+  "successful": true,
+  "tests_rerun_this_checkpoint": false,
+  "checked_at_utc": "2026-10-07T18:08:31.4723317+00:00"
+}

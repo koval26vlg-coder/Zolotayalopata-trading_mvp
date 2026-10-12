@@ -1,0 +1,36 @@
+{
+  "active_writer_claim_absent": true,
+  "all_queue_evidence_paths_exist": true,
+  "bounded_source_checks_recorded_models": 16,
+  "frozen_models_verified": 20,
+  "full_unit_suite_rerun": false,
+  "local_archive_rescanned": false,
+  "market_evaluation_executed": false,
+  "other_model_queue_entries_unchanged": true,
+  "parent_aave_synthetic_checks_passed": 3,
+  "parent_file_bindings_verified": 12,
+  "parent_index_files_verified": 10,
+  "pending_source_audits": [
+    "funding_carry",
+    "funding_cross",
+    "spot_dislocation",
+    "basis_convergence"
+  ],
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_binding_file_count": 29,
+  "runtime_binding_matches_prior_180_test_record": true,
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "schema": "wallet_source_checkpoint_verification_v1",
+  "successful": true,
+  "wallet_synthetic_check_names": [
+    "future_purchase_excluded",
+    "late_publication_excluded",
+    "exact_thirty_day_lookback",
+    "top_ten_deterministic_ties",
+    "same_block_quote_rejected",
+    "unavailable_quote_rejected",
+    "unsellable_exit_remains_open_once"
+  ],
+  "wallet_synthetic_checks_passed": 7,
+  "observed_at_utc": "2026-10-08T12:48:25.4898797Z"
+}

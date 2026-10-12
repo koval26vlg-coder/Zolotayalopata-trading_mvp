@@ -1,0 +1,22 @@
+{
+  "schema": "trading_mvp_global_market_writer_claim_v1",
+  "project": "trading_mvp",
+  "status": "RELEASED",
+  "run_id": "history_evidence_content_v22_20261009",
+  "owner_pid": null,
+  "writer_pid": null,
+  "terminal_pid": 32140,
+  "owner_kind": "visible_offline_evidence_audit",
+  "ownership_token": "934f36305a8ddcf5af196e77511a90b0",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "output_namespace": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\continuation-v22",
+  "claimed_at_utc": "2026-10-09T09:59:54.060099+00:00",
+  "owner_process_started_at_utc": "2026-10-09T09:59:53.893269+00:00",
+  "research_only": true,
+  "live_orders": false,
+  "private_api_keys": false,
+  "real_capital": false,
+  "leverage_or_margin": false,
+  "final_status": "COMPLETE",
+  "released_at_utc": "2026-10-09T09:59:54.654186+00:00"
+}

@@ -1,0 +1,158 @@
+{
+ "S1": {
+  "n": 21,
+  "beats_net": 33.3,
+  "beats_dd": 47.6,
+  "dd_ties": 11,
+  "beats_ratio": 38.1,
+  "beats_cagr_dd": 38.1,
+  "worst_net": -6.92,
+  "worst_q": "2021-01-01",
+  "bh_worst": 22.23,
+  "med_net": 122.31,
+  "bh_med_net": 142.11,
+  "med_dd": -62.32,
+  "bh_med_dd": -66.73,
+  "verdicts": {
+   "PASS_CANDIDATE": 8,
+   "INCONCLUSIVE": 11,
+   "FAIL": 2
+  },
+  "verdicts_strict_tie": {
+   "PASS_CANDIDATE": 8,
+   "INCONCLUSIVE": 3,
+   "FAIL": 10
+  },
+  "survivor_rule_gt50pass_0fail": false
+ },
+ "S2": {
+  "n": 21,
+  "beats_net": 66.7,
+  "beats_dd": 100.0,
+  "dd_ties": 0,
+  "beats_ratio": 66.7,
+  "beats_cagr_dd": 76.2,
+  "worst_net": 77.26,
+  "worst_q": "2021-04-01",
+  "bh_worst": 22.23,
+  "med_net": 272.19,
+  "bh_med_net": 142.11,
+  "med_dd": -50.32,
+  "bh_med_dd": -66.73,
+  "verdicts": {
+   "PASS_CANDIDATE": 14,
+   "INCONCLUSIVE": 7,
+   "FAIL": 0
+  },
+  "verdicts_strict_tie": {
+   "PASS_CANDIDATE": 14,
+   "INCONCLUSIVE": 7,
+   "FAIL": 0
+  },
+  "survivor_rule_gt50pass_0fail": true
+ },
+ "S6": {
+  "n": 21,
+  "beats_net": 52.4,
+  "beats_dd": 100.0,
+  "dd_ties": 0,
+  "beats_ratio": 71.4,
+  "beats_cagr_dd": 76.2,
+  "worst_net": 70.6,
+  "worst_q": "2021-10-01",
+  "bh_worst": 6.72,
+  "med_net": 192.65,
+  "bh_med_net": 286.79,
+  "med_dd": -53.08,
+  "bh_med_dd": -71.0,
+  "verdicts": {
+   "PASS_CANDIDATE": 15,
+   "INCONCLUSIVE": 6,
+   "FAIL": 0
+  },
+  "verdicts_strict_tie": {
+   "PASS_CANDIDATE": 15,
+   "INCONCLUSIVE": 6,
+   "FAIL": 0
+  },
+  "survivor_rule_gt50pass_0fail": true
+ },
+ "C5": {
+  "n": 21,
+  "beats_net": 33.3,
+  "beats_dd": 81.0,
+  "dd_ties": 4,
+  "beats_ratio": 33.3,
+  "beats_cagr_dd": 33.3,
+  "worst_net": -41.52,
+  "worst_q": "2019-07-01",
+  "bh_worst": 17.99,
+  "med_net": 36.78,
+  "bh_med_net": 135.38,
+  "med_dd": -62.68,
+  "bh_med_dd": -66.93,
+  "verdicts": {
+   "PASS_CANDIDATE": 7,
+   "INCONCLUSIVE": 9,
+   "FAIL": 5
+  },
+  "verdicts_strict_tie": {
+   "PASS_CANDIDATE": 7,
+   "INCONCLUSIVE": 6,
+   "FAIL": 8
+  },
+  "survivor_rule_gt50pass_0fail": false
+ },
+ "C2": {
+  "n": 16,
+  "beats_net": 31.2,
+  "beats_dd": 56.2,
+  "dd_ties": 7,
+  "beats_ratio": 31.2,
+  "beats_cagr_dd": 37.5,
+  "worst_net": 40.92,
+  "worst_q": "2021-01-01",
+  "bh_worst": 17.99,
+  "med_net": 124.18,
+  "bh_med_net": 131.81,
+  "med_dd": -67.94,
+  "bh_med_dd": -74.64,
+  "verdicts": {
+   "PASS_CANDIDATE": 5,
+   "INCONCLUSIVE": 11,
+   "FAIL": 0
+  },
+  "verdicts_strict_tie": {
+   "PASS_CANDIDATE": 5,
+   "INCONCLUSIVE": 4,
+   "FAIL": 7
+  },
+  "survivor_rule_gt50pass_0fail": false
+ },
+ "C9": {
+  "n": 21,
+  "beats_net": 23.8,
+  "beats_dd": 100.0,
+  "dd_ties": 0,
+  "beats_ratio": 42.9,
+  "beats_cagr_dd": 61.9,
+  "worst_net": 78.56,
+  "worst_q": "2023-07-01",
+  "bh_worst": 12.14,
+  "med_net": 215.15,
+  "bh_med_net": 413.15,
+  "med_dd": -37.0,
+  "bh_med_dd": -77.1,
+  "verdicts": {
+   "PASS_CANDIDATE": 9,
+   "INCONCLUSIVE": 12,
+   "FAIL": 0
+  },
+  "verdicts_strict_tie": {
+   "PASS_CANDIDATE": 9,
+   "INCONCLUSIVE": 12,
+   "FAIL": 0
+  },
+  "survivor_rule_gt50pass_0fail": false
+ }
+}

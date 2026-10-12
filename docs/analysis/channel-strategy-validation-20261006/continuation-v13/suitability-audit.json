@@ -1,0 +1,80 @@
+{
+  "schema": "historical_model_family_suitability_audit_v1",
+  "model_hashes": {
+    "aave_lending": "709c0673bff29cc45dca513898bf22ddc93a5729036879821513926fed3fdd24"
+  },
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "audit_status": "BOUNDED_SOURCE_AND_CONTRACT_FEASIBILITY_AUDIT_COMPLETE",
+  "input_status": "BLOCKED_DATA",
+  "strategy_verdict": "NOT_TESTED_ON_ELIGIBLE_HISTORICAL_INPUTS",
+  "metrics": null,
+  "candidate_feasibility": "CANDIDATE_UNREACHABLE_UNDER_FROZEN_IMPLEMENTATION_AND_CRITERIA",
+  "feasibility_evidence": "feasibility.json",
+  "requirements": [
+    {
+      "gap": "Need exact historical normalized-income RAY values, block/hash/timestamp and upgrade-specific ABI. Last-year APY does not demonstrate complete fixed-period coverage.",
+      "evidence_ids": [
+        "aave_pool",
+        "aave_rates",
+        "aave_reserve_logic",
+        "ethereum_archive",
+        "publicnode"
+      ],
+      "id": "lending_index",
+      "status": "DOCUMENTED_NOT_VALIDATED"
+    },
+    {
+      "gap": "Need causal cost estimates for comparable supply/withdraw, initial allowance where needed, and ETH/USD. Receipts are actual past costs, not automatic hypothetical fill costs.",
+      "evidence_ids": [
+        "ethereum_rpc",
+        "aave_pool"
+      ],
+      "id": "gas",
+      "status": "NO_VALIDATED_INPUT"
+    },
+    {
+      "gap": "Need USDC historical executable bid/ask with reserve identity and time. Do not assume peg equals one or substitute an oracle mark for execution.",
+      "evidence_ids": [
+        "aave_addresses"
+      ],
+      "id": "token_quotes",
+      "status": "NO_VALIDATED_INPUT"
+    },
+    {
+      "gap": "Need available underlying balance and reserve flags at entry and exit, bound to deployed versions. Frozen and paused are not interchangeable. Unavailable exit remains open exposure.",
+      "evidence_ids": [
+        "aave_withdraw",
+        "aave_validation_logic",
+        "ethereum_archive"
+      ],
+      "id": "withdrawal_liquidity",
+      "status": "DOCUMENTED_NOT_VALIDATED"
+    },
+    {
+      "gap": "Ethereum v3 launch dated 2023-01-27; exact USDC activation block not verified. No v3 operating history before launch; no substitution of v2 or fake warmup.",
+      "evidence_ids": [
+        "aave_launch"
+      ],
+      "id": "protocol_lifetime",
+      "status": "STRUCTURAL_PRELAUNCH_ABSENCE"
+    },
+    {
+      "gap": "At most nine complete serial 30-day final positions vs minimum thirty; single-USDC positive-profit share is 100% vs 25% cap. Not an empirical negative verdict.",
+      "evidence_ids": [],
+      "id": "acceptance_feasibility",
+      "status": "UNREACHABLE_UNCHANGED_CONTRACT"
+    }
+  ],
+  "evaluation_allowed_now": false,
+  "hypothesis_changed": false,
+  "fixed_periods_shifted": false,
+  "credentials_used": false,
+  "new_paid_data": false,
+  "rpc_requests": 0,
+  "local_archive_inventory": "local-inventory.json",
+  "reentry_condition": "A genuinely new verified input may enable an explicitly descriptive study, but cannot remove the frozen acceptance conflict. A change of acceptance contract is a separate substantive decision, not an automatic technical rebind.",
+  "next_priority": [
+    "wallet_follow"
+  ]
+}

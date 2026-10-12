@@ -1,0 +1,84 @@
+{
+  "id": "C14",
+  "verdict": "FAIL",
+  "data": {
+    "file": "data\\gdaxi_60m_730d.json",
+    "sha256": "04ba87fd5d8ff8af300f240d8a4361fce8d42f61bd4f2f46fbdb70a9094c3f58",
+    "first_date": "2023-11-21",
+    "last_date": "2026-10-06",
+    "sessions": 729,
+    "bars": 6550,
+    "skipped_days_no_0900_bar": [
+      "2026-04-20"
+    ]
+  },
+  "full": {
+    "trades": 674,
+    "win_rate_pct": 41.39,
+    "pf": 0.82,
+    "net_return_pct": -23.61,
+    "cagr_pct": -8.94,
+    "max_dd_pct": -25.27,
+    "exposure_pct": 52.79
+  },
+  "full_2x_cost": {
+    "trades": 674,
+    "win_rate_pct": 36.65,
+    "pf": 0.609,
+    "net_return_pct": -49.04,
+    "cagr_pct": -20.9,
+    "max_dd_pct": -49.63,
+    "exposure_pct": 52.79
+  },
+  "benchmark": {
+    "net_return_pct": 59.92,
+    "cagr_pct": 17.74,
+    "max_dd_pct": -16.08
+  },
+  "ret_dd_ratio": -0.934,
+  "bench_ret_dd_ratio": 3.726,
+  "by_year": {
+    "2023": {
+      "trades": 24,
+      "compounded_ret_pct": 1.3,
+      "win_rate_pct": 54.2
+    },
+    "2024": {
+      "trades": 223,
+      "compounded_ret_pct": -4.24,
+      "win_rate_pct": 43.5
+    },
+    "2025": {
+      "trades": 240,
+      "compounded_ret_pct": -4.9,
+      "win_rate_pct": 41.7
+    },
+    "2026": {
+      "trades": 187,
+      "compounded_ret_pct": -17.19,
+      "win_rate_pct": 36.9
+    }
+  },
+  "by_side": {
+    "-1": {
+      "trades": 311,
+      "compounded_ret_pct": -12.74,
+      "win_rate_pct": 38.9,
+      "mean_ret_bps": -4.24
+    },
+    "1": {
+      "trades": 363,
+      "compounded_ret_pct": -12.46,
+      "win_rate_pct": 43.5,
+      "mean_ret_bps": -3.56
+    }
+  },
+  "exit_reasons": {
+    "session_close": 517,
+    "stop": 157
+  },
+  "mean_gross_ret_bps": 2.13,
+  "mean_net_ret_bps": -3.87,
+  "days_with_trade_pct": 92.46,
+  "self_checks": "passed: entry_bar>signal_bar; signal identical on truncated data; signal bar>=1 (after 09:00 range bar); exit same session; one trade/day; stop-first incl. gap-through at open; last bar <= 2026-10-06"
+}

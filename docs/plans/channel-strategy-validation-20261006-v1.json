@@ -1,0 +1,562 @@
+{
+  "atr_period": 14,
+  "authorization": "User explicitly requested implementation of the complete historical validation plan on 2026-10-06",
+  "excluded": {
+    "ai": "NO_REPRODUCIBLE_SPEC_WITHOUT_FIXED_RULES",
+    "closed_runs": "NO_REOPEN",
+    "listing_momentum": "EXTERNAL_PROJECT",
+    "premarket_depth": "UNCHANGED_PAUSED",
+    "prop": "RISK_OVERLAY_ONLY_NO_CHALLENGE_PURCHASE"
+  },
+  "execution": {
+    "ambiguous_bar": "STOP_FIRST",
+    "candle_touch_is_fill": false,
+    "default_fee_bps": 10,
+    "fallback_adverse_bps_per_order": 10,
+    "gap_stop": "WORSE_OPEN",
+    "missing_quote": "EXPLORATORY_ONLY",
+    "next_bar": true,
+    "no_midprice_fills": true,
+    "no_synthetic_options": true,
+    "stop_exit_costs": true,
+    "stress_execution_multiplier": 2
+  },
+  "models": [
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "relative_strength",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "gate",
+      "model_hash": "722b76604c3bcc8b5a81be6828fc410cddca764343a95ca7d2c13eb0fc8c20aa",
+      "number": 1,
+      "parameters": {
+        "asset_return_min": 0,
+        "hold_hours": 24,
+        "lookback_hours": 24,
+        "market_drop": -0.03,
+        "stop_atr": 2,
+        "top_n": 3
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "bars_1h",
+        "pit_universe"
+      ],
+      "source": "docs/analysis/2026-10-06-anufriev-july-october-audit.md",
+      "title": "Relative strength"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "trend_pullback",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "gate",
+      "model_hash": "e67d0a99664027e13ae2feacefaebffc497f101f273c23d74e7d7d9e337d439e",
+      "number": 2,
+      "parameters": {
+        "ema_fast": 50,
+        "ema_slow": 200,
+        "hold_hours": 72,
+        "stop_atr": 2,
+        "target_atr": 4
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "source": "docs/analysis/2026-10-06-anufriev-july-october-audit.md",
+      "title": "Trend pullback"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "structure_break",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "gate",
+      "model_hash": "2aed75cff9482d781f1c3df1f5577c5fa92903426a4d99419db5fe70c072c982",
+      "number": 3,
+      "parameters": {
+        "hold_hours": 72,
+        "pivot_left": 2,
+        "pivot_right": 2,
+        "stop_atr": 2,
+        "target_atr": 4
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "source": "docs/analysis/2026-10-06-anufriev-july-october-audit.md",
+      "title": "Causal structure continuation"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "normalized_line",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "gate",
+      "model_hash": "dc332ad2ab8c84632d5c26b27e19adaf8cfcaade5cc9d8ce1d1313cfa4777d18",
+      "number": 4,
+      "parameters": {
+        "hold_hours": 72,
+        "pivot_left": 2,
+        "pivot_right": 2,
+        "slope_atr": 0.1,
+        "stop_atr": 2,
+        "target_atr": 4
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "bars_4h",
+        "pit_universe"
+      ],
+      "source": "docs/analysis/2026-10-06-anufriev-july-october-audit.md",
+      "title": "ATR-normalized trend line"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "book_continue",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "gate",
+      "model_hash": "7c46d0c741b3ca856ed89360b71d49f8f0bd1a657818fd9ad3b9ee3e66825c5e",
+      "number": 5,
+      "parameters": {
+        "buy_fraction": 0.6,
+        "hold_seconds": 60,
+        "imbalance": 0.6,
+        "levels": 10,
+        "tape_seconds": 30
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "books",
+        "tape",
+        "pit_universe"
+      ],
+      "source": "D:/AionUi-Paperclip/docs/agent-log/2026-10-06--claude-code-анализ-youtube-хедлайнеры-ануфриев.md",
+      "title": "Orderbook continuation"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "book_reclaim",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "gate",
+      "model_hash": "4456413af176741d31c79299167904083b3dfdc36a5a8d21a63c8e16e742e21c",
+      "number": 6,
+      "parameters": {
+        "drop_atr": 3,
+        "drop_minutes": 5,
+        "hold_seconds": 60,
+        "imbalance": 0.6,
+        "levels": 10
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "books",
+        "bars_1m",
+        "pit_universe"
+      ],
+      "source": "D:/AionUi-Paperclip/docs/agent-log/2026-10-06--claude-code-анализ-youtube-хедлайнеры-ануфриев.md",
+      "title": "Orderbook reclaim"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "funding_carry",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "gate",
+      "model_hash": "2a5b8dc95381d0674e04a65f1cc4f7d276620e525f7a458f2b92ba9c54bfe0fb",
+      "number": 7,
+      "parameters": {
+        "extra_bps": 10,
+        "forecast": "last_published_period_constant_rate",
+        "hold_hours": 24
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "source": "D:/AionUi-Paperclip/docs/agent-log/2026-10-06--claude-code-анализ-youtube-хедлайнеры-ануфриев.md",
+      "title": "Spot-perpetual funding carry"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "funding_cross",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "gate_mexc",
+      "model_hash": "a06d8e6d76b5fded41be97bf98928b924c32cf62180cd4dfb89e905590101813",
+      "number": 8,
+      "parameters": {
+        "extra_bps": 10,
+        "hold_hours": 24,
+        "prefunded": true
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "source": "D:/AionUi-Paperclip/docs/agent-log/2026-10-06--claude-code-анализ-youtube-хедлайнеры-ануфриев.md",
+      "title": "Cross-venue funding carry"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "spot_dislocation",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "gate_mexc",
+      "model_hash": "85e8e7352e223598226c5d97aac09375d25881f34748b9f736fb104a61462868",
+      "number": 9,
+      "parameters": {
+        "extra_bps": 5,
+        "prefunded": true,
+        "rebalance": "explicit_costed_reverse_route_only"
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "paired_quotes",
+        "inventory"
+      ],
+      "source": "D:/AionUi-Paperclip/docs/agent-log/2026-10-06--claude-code-анализ-youtube-хедлайнеры-ануфриев.md",
+      "title": "Prefunded spot dislocation"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "basis_convergence",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "gate",
+      "model_hash": "3fc48addb1e9e16a1459f20dcd338fd11e9b7d81ae626cddbaf863416fbe85ba",
+      "number": 10,
+      "parameters": {
+        "enter_z": 2,
+        "exit_z": 0.5,
+        "hold_hours": 24,
+        "lookback_hours": 24,
+        "min_observations": 24
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "source": "D:/AionUi-Paperclip/docs/agent-log/2026-10-06--claude-code-анализ-youtube-хедлайнеры-ануфриев.md",
+      "title": "Positive spot-perpetual basis convergence"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "long_put",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "okx",
+      "model_hash": "3ca17e07c45c933d325cc262999f1815ac4a0abedb280fbf24934d5f6ec8ed68",
+      "number": 11,
+      "parameters": {
+        "entry_hour_utc": 0,
+        "entry_weekday": 0,
+        "hold_days": 7,
+        "strike_ratio": 1,
+        "target_dte": 30
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "source": "D:/AionUi-Paperclip/docs/agent-log/2026-10-06--claude-code-анализ-youtube-хедлайнеры-ануфриев.md",
+      "title": "Long ATM put"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "cash_put",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "okx",
+      "model_hash": "eacef87fd81f3aefbfc00a06c5d4d3a4c410f3e881af95c5dc6884d74a599289",
+      "number": 12,
+      "parameters": {
+        "entry_hour_utc": 0,
+        "entry_weekday": 0,
+        "hold_days": 7,
+        "strike_ratio": 0.9,
+        "target_dte": 30
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "source": "D:/AionUi-Paperclip/docs/agent-log/2026-10-06--claude-code-анализ-youtube-хедлайнеры-ануфриев.md",
+      "title": "Cash-reserved short put"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "put_spread",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "okx",
+      "model_hash": "7f7b319aee5e0b272745bd20c8cea3a1a601ff1dd1d6ce85c764f0ef2d906857",
+      "number": 13,
+      "parameters": {
+        "entry_hour_utc": 0,
+        "entry_weekday": 0,
+        "hold_days": 7,
+        "long_strike_ratio": 1,
+        "short_strike_ratio": 0.9,
+        "target_dte": 30
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "option_chain",
+        "underlying_quotes",
+        "contract_specs"
+      ],
+      "source": "D:/AionUi-Paperclip/docs/agent-log/2026-10-06--claude-code-анализ-youtube-хедлайнеры-ануфриев.md",
+      "title": "Bear put spread"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "fixed_grid",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "gate",
+      "model_hash": "964340950d39bf7550d6c784a38c0bea81ba8924f2cac7342df96b3aec9b0adc",
+      "number": 14,
+      "parameters": {
+        "borrow": false,
+        "exit_on_breach": true,
+        "levels": 7,
+        "recenter": false,
+        "width_atr": 3
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "bars_1d",
+        "books",
+        "pit_universe"
+      ],
+      "source": "D:/AionUi-Paperclip/docs/agent-log/2026-10-06--claude-code-анализ-youtube-хедлайнеры-ануфриев.md",
+      "title": "Spot-only weekly fixed grid"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "gold_macd",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "gold",
+      "model_hash": "6afba9d42394bfdb502e88fa6a5811e6aeec045c71002cdce2930875ab4cbb31",
+      "number": 15,
+      "parameters": {
+        "ema": 220,
+        "hold_sessions": 20,
+        "macd_fast": 12,
+        "macd_signal": 9,
+        "macd_slow": 26,
+        "stop_atr": 2,
+        "target_atr": 6
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "bars_4h",
+        "contract_specs",
+        "calendar"
+      ],
+      "source": "docs/analysis/2026-10-06-anufriev-july-october-audit.md",
+      "title": "Gold MACD trend proxy"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "dax_orb",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "dax",
+      "model_hash": "0b2cd1b0fc72436a30b3154dafa5161891a7212eed9e037130135fd67ebdd843",
+      "number": 16,
+      "parameters": {
+        "exit": "session_close",
+        "range_minutes": 60,
+        "stop": "opposite_range",
+        "trades_per_session": 1
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "bars_5m",
+        "contract_specs",
+        "calendar"
+      ],
+      "source": "docs/analysis/2026-10-06-anufriev-july-october-audit.md",
+      "title": "DAX opening-range breakout"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "gap_continue",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "us_equity",
+      "model_hash": "29d7bb77e9e49cfdc866bac34098273d8e1845fb47b85ed465c1cafb7bdd412f",
+      "number": 17,
+      "parameters": {
+        "exit": "session_close",
+        "gap_min": 0.02,
+        "range_minutes": 30,
+        "trades_per_session": 1
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "bars_5m",
+        "pit_equity_universe",
+        "calendar",
+        "corporate_actions"
+      ],
+      "source": "docs/analysis/2026-10-06-anufriev-july-october-audit.md",
+      "title": "US equity gap continuation"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "gap_fade",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "us_equity",
+      "model_hash": "ab3cbc9d819fe96266096de77c81f54504104570039b7573dba9504204f20674",
+      "number": 18,
+      "parameters": {
+        "exit": "session_close",
+        "gap_min": 0.02,
+        "range_minutes": 30,
+        "target": "previous_close",
+        "trades_per_session": 1
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "bars_5m",
+        "pit_equity_universe",
+        "calendar",
+        "corporate_actions"
+      ],
+      "source": "docs/analysis/2026-10-06-anufriev-july-october-audit.md",
+      "title": "US equity gap fade"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "aave_lending",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "aave_v3_ethereum",
+      "model_hash": "709c0673bff29cc45dca513898bf22ddc93a5729036879821513926fed3fdd24",
+      "number": 19,
+      "parameters": {
+        "borrow": false,
+        "hold_days": 30,
+        "recursive": false,
+        "token": "USDC"
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "lending_index",
+        "gas",
+        "token_quotes",
+        "withdrawal_liquidity"
+      ],
+      "source": "D:/AionUi-Paperclip/docs/agent-log/2026-10-06--claude-code-анализ-youtube-хедлайнеры-ануфриев.md",
+      "title": "Aave v3 Ethereum USDC lending"
+    },
+    {
+      "difference": "Separate fixed model, liquid/as-of universe; never consume a terminally rejected legacy run",
+      "id": "wallet_follow",
+      "interpretation": "OWN_FIXED_PROXY_NOT_GUEST_REPLICATION",
+      "market": "ethereum",
+      "model_hash": "07df0a5021ab9960bf99098ac1ff552fdc5d5ec0681ad272e4ebde0888d332dd",
+      "number": 20,
+      "parameters": {
+        "delay_blocks": 1,
+        "hold_hours": 24,
+        "rank_days": 30,
+        "universe": "verified_erc20_usdc_weth_pairs_asof",
+        "wallets": 10
+      },
+      "prior_evidence": "docs/plans/2026-09-29-strategy-audit-and-next-goal-plan.md",
+      "required_kinds": [
+        "dex_swaps",
+        "token_universe",
+        "gas",
+        "execution_quotes"
+      ],
+      "source": "D:/AionUi-Paperclip/docs/agent-log/2026-10-06--claude-code-анализ-youtube-хедлайнеры-ануфриев.md",
+      "title": "Ethereum causal wallet following"
+    }
+  ],
+  "periods": {
+    "development": [
+      "2023-01-01",
+      "2025-01-01"
+    ],
+    "final": [
+      "2026-01-01",
+      "2026-10-01"
+    ],
+    "walk_forward": [
+      "2025-01-01",
+      "2026-01-01"
+    ],
+    "warmup_start": "2022-11-01"
+  },
+  "permissions": {
+    "actual_leverage": false,
+    "live_orders": false,
+    "long_forward_collection": false,
+    "paid_data": false,
+    "private_api": false,
+    "public_history": true,
+    "real_capital": false,
+    "schedules": false
+  },
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "portfolio": {
+    "independent_models": true,
+    "initial_cash": 10000,
+    "max_gross_fraction": 1,
+    "max_position_fraction": 0.1,
+    "risk_fraction": 0.0025,
+    "spot_short": false
+  },
+  "program_id": "channel_strategy_validation_20261006_v1",
+  "resource_limits": {
+    "max_input_bytes": 2147483648,
+    "max_rows": 2000000,
+    "max_runtime_sec": 1800,
+    "max_source_probe_requests": 12,
+    "max_source_response_bytes": 1000000
+  },
+  "result_ceiling": "HISTORICAL_CANDIDATE_NOT_LIVE",
+  "schema": "channel_validation_plan_v1",
+  "statistics": {
+    "alpha": 0.05,
+    "block_days": 7,
+    "bootstrap_replicates": 5000,
+    "causal_certification_required": true,
+    "correction": "HOLM",
+    "family_size": 20,
+    "max_drawdown": 0.1,
+    "max_positive_pnl_single_base": 0.25,
+    "max_positive_pnl_single_event": 0.25,
+    "min_oos_calendar_days": 90,
+    "min_oos_trades": 30,
+    "min_pf": 1.2,
+    "min_temporal_groups": 20,
+    "positive_wf_folds": 4,
+    "seed": 20261006
+  },
+  "universe": {
+    "additional": 8,
+    "binance": "REFERENCE_ONLY_NOT_EXECUTION",
+    "core": [
+      "BTC",
+      "ETH"
+    ],
+    "exclude": [
+      "stablecoin",
+      "wrapped",
+      "staked",
+      "derivative"
+    ],
+    "historical_delisted_required": true,
+    "legacy_non_binance": "ISOLATED",
+    "primary": "gate",
+    "quote": "USDT",
+    "rank": "previous_30_completed_UTC_days_median_quote_turnover",
+    "rebalance": "month_start_UTC",
+    "require_asof_types": true,
+    "unknown_type": "exclude_and_report"
+  },
+  "unresolved_default": "BLOCKED_DATA_NOT_ZERO_RETURN"
+}

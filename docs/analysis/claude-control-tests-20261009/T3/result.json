@@ -1,0 +1,467 @@
+{
+ "test": "T3 carry/yield vs 3M T-bill (FRED DTB3) and $100 retail frictions",
+ "reproduction_check": {
+  "C1": {
+   "numeric_leaves_compared": 197,
+   "other_leaves_compared": 110,
+   "max_rel_diff": 0.0,
+   "max_rel_diff_at": null,
+   "mismatches": [],
+   "n_mismatches": 0,
+   "match_within_0.5pct": true
+  },
+  "C11": {
+   "numeric_leaves_compared": 106,
+   "other_leaves_compared": 37,
+   "max_rel_diff": 0.0,
+   "max_rel_diff_at": null,
+   "mismatches": [],
+   "n_mismatches": 0,
+   "match_within_0.5pct": true
+  },
+  "C16": {
+   "numeric_leaves_compared": 81,
+   "other_leaves_compared": 42,
+   "max_rel_diff": 0.0,
+   "max_rel_diff_at": null,
+   "mismatches": [],
+   "n_mismatches": 0,
+   "match_within_0.5pct": true
+  }
+ },
+ "tbill_source": {
+  "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTB3",
+  "file": "data_fred/DTB3.csv",
+  "sha256": "125fab62f5908dd34d493a11e65353f3c2113b87ecfb707f1fe8a361fa8ff1a0",
+  "fallback_used": false,
+  "last_obs": "2026-10-07",
+  "annual_mean_dtb3_pct": {
+   "2019": 2.062,
+   "2020": 0.355,
+   "2021": 0.045,
+   "2022": 2.025,
+   "2023": 5.071,
+   "2024": 4.97,
+   "2025": 4.065,
+   "2026": 3.681
+  },
+  "method": "discount->BEY y=365d/(360-91d), calendar-day growth 1+y/365 compounded; day d uses rate of last business day <= d-1"
+ },
+ "rows": {
+  "C1|IS": {
+   "start": "2019-11-27 00:00:00+00:00",
+   "end": "2023-01-01 00:00:00+00:00",
+   "years": 3.0965092402464065,
+   "net_pct": 78.79364585669919,
+   "cagr_pct": 20.64120466601773,
+   "max_dd_pct": -1.158805914318073,
+   "pf": 2050.374224954812,
+   "trades": 12,
+   "exposure_pct": 52.048334806955495,
+   "net_2x_pct": 75.25008167577873,
+   "cagr_2x_pct": 19.86379824527895,
+   "tbill_cagr_pct": 0.8480454800098736,
+   "tbill_total_pct": 2.649397155059985,
+   "excess_cagr_pct": 19.79315918600786,
+   "excess_cagr_2x_pct": 19.015752765269077,
+   "sharpe_excess_ann": 6.853267598362132,
+   "mean_daily_excess_bp": 4.9169672058695415,
+   "vol_excess_ann_pct": 2.620534286991885,
+   "n_obs": 1131,
+   "obs_per_year": 365.25,
+   "verdict_vs_tbill": "PASS_CANDIDATE",
+   "verdict_vs_tbill_lenient": "PASS_CANDIDATE",
+   "info_excess_cagr_discount_basis": 19.810472983552362,
+   "info_excess_cagr_fallback_path": 19.788299154216006,
+   "info_posthoc_excess_cagr_quarterly_roll": 19.795999748082238,
+   "info_excess_range_all_tbill_conventions_pp": [
+    19.788299154216006,
+    19.810472983552362
+   ],
+   "info_verdict_flips_under_alt_tbill": false
+  },
+  "C1|OOS": {
+   "start": "2023-01-01 00:00:00+00:00",
+   "end": "2026-10-07 00:00:00+00:00",
+   "years": 3.7645448323066395,
+   "net_pct": 12.45845018454701,
+   "cagr_pct": 3.168081480495699,
+   "max_dd_pct": -0.3120736986002459,
+   "pf": null,
+   "trades": 8,
+   "exposure_pct": 40.945454545454545,
+   "net_2x_pct": 11.066309496047456,
+   "cagr_2x_pct": 2.8272751392593776,
+   "tbill_cagr_pct": 4.718483143136343,
+   "tbill_total_pct": 18.953923646648917,
+   "excess_cagr_pct": -1.5504016626406436,
+   "excess_cagr_2x_pct": -1.8912080038769652,
+   "sharpe_excess_ann": -3.4537836853800465,
+   "mean_daily_excess_bp": -0.4081590769895296,
+   "vol_excess_ann_pct": 0.43164284868645797,
+   "n_obs": 1375,
+   "obs_per_year": 365.25,
+   "verdict_vs_tbill": "FAIL",
+   "verdict_vs_tbill_lenient": "FAIL",
+   "info_excess_cagr_discount_basis": -1.4291759270230742,
+   "info_excess_cagr_fallback_path": -1.3780277716553435,
+   "info_posthoc_excess_cagr_quarterly_roll": -1.5226380155215935,
+   "info_excess_range_all_tbill_conventions_pp": [
+    -1.5504016626406436,
+    -1.3780277716553435
+   ],
+   "info_verdict_flips_under_alt_tbill": false
+  },
+  "C1|FULL": {
+   "start": "2019-11-27 00:00:00+00:00",
+   "end": "2026-10-07 00:00:00+00:00",
+   "years": 6.861054072553046,
+   "net_pct": 101.11145876305913,
+   "cagr_pct": 10.719974349472693,
+   "max_dd_pct": -1.158805914318073,
+   "pf": 2630.8468002540963,
+   "trades": 20,
+   "exposure_pct": 45.95637137536579,
+   "net_2x_pct": 94.69577455207848,
+   "cagr_2x_pct": 10.198014949251299,
+   "tbill_cagr_pct": 2.953631232012932,
+   "tbill_total_pct": 22.105485515575474,
+   "excess_cagr_pct": 7.766343117459761,
+   "excess_cagr_2x_pct": 7.2443837172383665,
+   "sharpe_excess_ann": 3.920750713066759,
+   "mean_daily_excess_bp": 1.996012966639625,
+   "vol_excess_ann_pct": 1.8594493489102102,
+   "n_obs": 2506,
+   "obs_per_year": 365.25,
+   "verdict_vs_tbill": "PASS_CANDIDATE",
+   "verdict_vs_tbill_lenient": "PASS_CANDIDATE",
+   "info_excess_cagr_discount_basis": 7.839726203214069,
+   "info_excess_cagr_fallback_path": 7.857125215768778,
+   "info_posthoc_excess_cagr_quarterly_roll": 7.78262930512612,
+   "info_excess_range_all_tbill_conventions_pp": [
+    7.766343117459761,
+    7.857125215768778
+   ],
+   "info_verdict_flips_under_alt_tbill": false
+  },
+  "C11|IS": {
+   "start": "2021-03-29 08:00:00+00:00",
+   "end": "2023-01-02 08:00:00+00:00",
+   "years": 1.7631759069130732,
+   "net_pct": 16.695293666754196,
+   "cagr_pct": 9.151539313675961,
+   "max_dd_pct": -35.70166685810364,
+   "pf": 1.0935776273814246,
+   "trades": 92,
+   "exposure_pct": 100.0,
+   "net_2x_pct": -24.35646018255113,
+   "cagr_2x_pct": -14.641959892792865,
+   "tbill_cagr_pct": 1.1960274039382934,
+   "tbill_total_pct": 2.1184220246201813,
+   "excess_cagr_pct": 7.955511909737668,
+   "excess_cagr_2x_pct": -15.837987296731159,
+   "sharpe_excess_ann": 0.3966740320519894,
+   "mean_daily_excess_bp": 3.666664613629483,
+   "vol_excess_ann_pct": 33.76195923893102,
+   "n_obs": 644,
+   "obs_per_year": 365.25,
+   "verdict_vs_tbill": "INCONCLUSIVE",
+   "verdict_vs_tbill_lenient": "INCONCLUSIVE",
+   "info_excess_cagr_discount_basis": 7.981111688763588,
+   "info_excess_cagr_fallback_path": 7.990047417377789,
+   "info_bench_btc_bh": {
+    "net_return_pct": -70.21,
+    "cagr_pct": -49.69,
+    "max_dd_pct": -76.77,
+    "net_return_2x_cost_pct": -70.33,
+    "trades": 1,
+    "exposure_pct": 100.0
+   },
+   "proxy_note": "PROXY: DVOL-based option prices, not real quotes",
+   "info_posthoc_excess_cagr_quarterly_roll": 7.960099250379661,
+   "info_excess_range_all_tbill_conventions_pp": [
+    7.955511909737668,
+    7.990047417377789
+   ],
+   "info_verdict_flips_under_alt_tbill": false
+  },
+  "C11|OOS": {
+   "start": "2023-01-02 08:00:00+00:00",
+   "end": "2026-10-05 08:00:00+00:00",
+   "years": 3.756331279945243,
+   "net_pct": 134.4302226520374,
+   "cagr_pct": 25.459624971170914,
+   "max_dd_pct": -22.468840339165553,
+   "pf": 1.8126912854245887,
+   "trades": 196,
+   "exposure_pct": 100.0,
+   "net_2x_pct": 55.83571661271021,
+   "cagr_2x_pct": 12.535947059956598,
+   "tbill_cagr_pct": 4.719292085769733,
+   "tbill_total_pct": 18.91233603075193,
+   "excess_cagr_pct": 20.74033288540118,
+   "excess_cagr_2x_pct": 7.816654974186865,
+   "sharpe_excess_ann": 1.106906794248893,
+   "mean_daily_excess_bp": 5.391391000094061,
+   "vol_excess_ann_pct": 17.790166010504866,
+   "n_obs": 1372,
+   "obs_per_year": 365.25,
+   "verdict_vs_tbill": "INCONCLUSIVE",
+   "verdict_vs_tbill_lenient": "INCONCLUSIVE",
+   "info_excess_cagr_discount_basis": 20.861590205910897,
+   "info_excess_cagr_fallback_path": 20.91305289960117,
+   "info_bench_btc_bh": {
+    "net_return_pct": 413.77,
+    "cagr_pct": 54.6,
+    "max_dd_pct": -52.88,
+    "net_return_2x_cost_pct": 411.71,
+    "trades": 1,
+    "exposure_pct": 100.0
+   },
+   "proxy_note": "PROXY: DVOL-based option prices, not real quotes",
+   "info_posthoc_excess_cagr_quarterly_roll": 20.768106634789763,
+   "info_excess_range_all_tbill_conventions_pp": [
+    20.74033288540118,
+    20.91305289960117
+   ],
+   "info_verdict_flips_under_alt_tbill": false
+  },
+  "C11|FULL": {
+   "start": "2021-03-29 08:00:00+00:00",
+   "end": "2026-10-05 08:00:00+00:00",
+   "years": 5.519507186858316,
+   "net_pct": 173.56903676742076,
+   "cagr_pct": 20.001275785962626,
+   "max_dd_pct": -35.70166685810364,
+   "pf": 1.467285493439699,
+   "trades": 288,
+   "exposure_pct": 100.0,
+   "net_2x_pct": 17.879652345742024,
+   "cagr_2x_pct": 3.025083577097032,
+   "tbill_cagr_pct": 3.5806710416682375,
+   "tbill_total_pct": 21.431401147217755,
+   "excess_cagr_pct": 16.420604744294387,
+   "excess_cagr_2x_pct": -0.5555874645712056,
+   "sharpe_excess_ann": 0.7346779611024086,
+   "mean_daily_excess_bp": 4.840436737751214,
+   "vol_excess_ann_pct": 24.064550892621494,
+   "n_obs": 2016,
+   "obs_per_year": 365.25,
+   "verdict_vs_tbill": "INCONCLUSIVE",
+   "verdict_vs_tbill_lenient": "INCONCLUSIVE",
+   "info_excess_cagr_discount_basis": 16.510609453760864,
+   "info_excess_cagr_fallback_path": 16.548183655489026,
+   "info_bench_btc_bh": {
+    "net_return_pct": 53.65,
+    "cagr_pct": 8.09,
+    "max_dd_pct": -76.77,
+    "net_return_2x_cost_pct": 53.03,
+    "trades": 1,
+    "exposure_pct": 100.0
+   },
+   "proxy_note": "PROXY: DVOL-based option prices, not real quotes",
+   "info_posthoc_excess_cagr_quarterly_roll": 16.440801281921093,
+   "info_excess_range_all_tbill_conventions_pp": [
+    16.420604744294387,
+    16.548183655489026
+   ],
+   "info_verdict_flips_under_alt_tbill": false
+  },
+  "C16|FULL_$10000": {
+   "start": "2023-02-06 23:01:24.670000+00:00",
+   "end": "2026-10-06 23:01:10.597000+00:00",
+   "years": 3.6657529490106544,
+   "net_pct": 18.155372204890764,
+   "cagr_pct": 4.65620038450687,
+   "max_dd_pct": -0.05,
+   "pf": 364.1074440978151,
+   "trades": 1,
+   "exposure_pct": 100.0,
+   "net_2x_pct": 18.10081972371924,
+   "cagr_2x_pct": 4.643016732622618,
+   "tbill_cagr_pct": 4.7143665714258765,
+   "tbill_total_pct": 18.39627619756097,
+   "excess_cagr_pct": -0.058166186919006435,
+   "excess_cagr_2x_pct": -0.07134983880325851,
+   "sharpe_excess_ann": -0.36295054978842306,
+   "mean_daily_excess_bp": -0.01519191833376273,
+   "vol_excess_ann_pct": 0.15288167630914756,
+   "n_obs": 1338,
+   "obs_per_year": 365.2500444638546,
+   "verdict_vs_tbill": "FAIL",
+   "verdict_vs_tbill_lenient": "FAIL",
+   "info_excess_cagr_discount_basis": 0.06297205602603384,
+   "info_excess_cagr_fallback_path": 0.12584694407193897,
+   "info_gross_cagr_pct": 4.66937961070526,
+   "info_maxdd_usdt_marked_pct": -4.076261815903541,
+   "info_posthoc_excess_cagr_quarterly_roll": -0.030416838510327615,
+   "info_excess_range_all_tbill_conventions_pp": [
+    -0.058166186919006435,
+    0.12584694407193897
+   ],
+   "info_verdict_flips_under_alt_tbill": true
+  },
+  "C16|FULL_$100": {
+   "start": "2023-02-06 23:01:24.670000+00:00",
+   "end": "2026-10-06 23:01:10.597000+00:00",
+   "years": 3.6657529490106544,
+   "net_pct": 12.754676568910718,
+   "cagr_pct": 3.3289607486965966,
+   "max_dd_pct": -5.0,
+   "pf": 3.550935313782142,
+   "trades": 1,
+   "exposure_pct": 100.0,
+   "net_2x_pct": 7.299428451759149,
+   "cagr_2x_pct": 1.9405160569653246,
+   "tbill_cagr_pct": 4.7143665714258765,
+   "tbill_total_pct": 18.39627619756097,
+   "excess_cagr_pct": -1.3854058227292798,
+   "excess_cagr_2x_pct": -2.773850514460552,
+   "sharpe_excess_ann": -0.494961922846078,
+   "mean_daily_excess_bp": -0.3552113722663488,
+   "vol_excess_ann_pct": 2.6212313215596024,
+   "n_obs": 1338,
+   "obs_per_year": 365.2500444638546,
+   "verdict_vs_tbill": "FAIL",
+   "verdict_vs_tbill_lenient": "FAIL",
+   "info_excess_cagr_discount_basis": -1.2642675797842395,
+   "info_excess_cagr_fallback_path": -1.2013926917383344,
+   "info_gross_cagr_pct": 4.66937961070526,
+   "info_maxdd_usdt_marked_pct": -8.824274214357715,
+   "info_posthoc_excess_cagr_quarterly_roll": -1.357656474320601,
+   "info_excess_range_all_tbill_conventions_pp": [
+    -1.3854058227292798,
+    -1.2013926917383344
+   ],
+   "info_verdict_flips_under_alt_tbill": false
+  }
+ },
+ "frictions_100usd": {
+  "C1": {
+   "period": "OOS",
+   "start": "2023-01-01 00:00:00+00:00",
+   "end": "2026-10-07 00:00:00+00:00",
+   "years": 3.7645448323066395,
+   "moves": "нет on-chain переводов (P2P-покупка USDT и стратегия на одной бирже)",
+   "tbill_cagr_pct": 4.718483143136343,
+   "final_no_frictions_usd": 112.458450184547,
+   "ann_no_frictions_pct": 3.168081480495699,
+   "scenarios": {
+    "2.0%": {
+     "final_usd": 110.22052702587453,
+     "ann_net_pct": 2.618686716193963,
+     "excess_vs_tbill_pp": -2.0997964269423797,
+     "beats_tbill": false,
+     "net_positive": true
+    },
+    "3.5%": {
+     "final_usd": 108.55684482845689,
+     "ann_net_pct": 2.20493166395479,
+     "excess_vs_tbill_pp": -2.5135514791815528,
+     "beats_tbill": false,
+     "net_positive": true
+    },
+    "5.0%": {
+     "final_usd": 106.905814206685,
+     "ann_net_pct": 1.7896934973095746,
+     "excess_vs_tbill_pp": -2.928789645826768,
+     "beats_tbill": false,
+     "net_positive": true
+    }
+   },
+   "breakeven_roundtrip_cost_vs_tbill_pct": null,
+   "breakeven_note": "даже при 0% конвертации и только сетевых комиссиях не обгоняет T-bill"
+  },
+  "C11": {
+   "period": "OOS",
+   "start": "2023-01-02 08:00:00+00:00",
+   "end": "2026-10-05 08:00:00+00:00",
+   "years": 3.756331279945243,
+   "moves": "перевод на Deribit $1 туда / $1 обратно",
+   "tbill_cagr_pct": 4.719292085769733,
+   "final_no_frictions_usd": 234.4302226520374,
+   "ann_no_frictions_pct": 25.459624971170914,
+   "scenarios": {
+    "2.0%": {
+     "final_usd": 226.45420201700665,
+     "ann_net_pct": 24.308802908419015,
+     "excess_vs_tbill_pp": 19.58951082264928,
+     "beats_tbill": true,
+     "net_positive": true
+    },
+    "3.5%": {
+     "final_usd": 223.01118217734702,
+     "ann_net_pct": 23.8028216930789,
+     "excess_vs_tbill_pp": 19.083529607309167,
+     "beats_tbill": true,
+     "net_positive": true
+    },
+    "5.0%": {
+     "final_usd": 219.59453573773567,
+     "ann_net_pct": 23.295017718363866,
+     "excess_vs_tbill_pp": 18.575725632594132,
+     "beats_tbill": true,
+     "net_positive": true
+    }
+   },
+   "breakeven_roundtrip_cost_vs_tbill_pct": 56.12475346159444
+  },
+  "C16": {
+   "period": "FULL",
+   "start": "2023-02-06 23:01:24.670000+00:00",
+   "end": "2026-10-06 23:01:10.597000+00:00",
+   "years": 3.6657529490106544,
+   "moves": "сеть $1 туда / $1 обратно + газ $5 за круг (2.5+2.5, как в SPEC2)",
+   "tbill_cagr_pct": 4.7143665714258765,
+   "final_no_frictions_usd": 112.75467656891071,
+   "ann_no_frictions_pct": 3.3289607486965966,
+   "scenarios": {
+    "2.0%": {
+     "final_usd": 108.29657329443756,
+     "ann_net_pct": 2.19807838308419,
+     "excess_vs_tbill_pp": -2.5162881883416865,
+     "beats_tbill": false,
+     "net_positive": true
+    },
+    "3.5%": {
+     "final_usd": 106.60508532634321,
+     "ann_net_pct": 1.7601375314164613,
+     "excess_vs_tbill_pp": -2.954229040009415,
+     "beats_tbill": false,
+     "net_positive": true
+    },
+    "5.0%": {
+     "final_usd": 104.92689597477606,
+     "ann_net_pct": 1.3206172361759805,
+     "excess_vs_tbill_pp": -3.393749335249896,
+     "beats_tbill": false,
+     "net_positive": true
+    }
+   },
+   "breakeven_roundtrip_cost_vs_tbill_pct": null,
+   "breakeven_note": "даже при 0% конвертации и только сетевых комиссиях не обгоняет T-bill"
+  }
+ },
+ "feasibility_100usd": {
+  "C1": {
+   "feasible_at_100": false,
+   "why": "на $100: рукав $50 на актив, шорт-перп = 50% рукава = $25. BTCUSDT-перп: MIN_NOTIONAL 50 USDT и minQty 0.001 BTC (~$86 по последнему close) -> BTC-нога невыполнима; ETHUSDT-перп: MIN_NOTIONAL 20 USDT, minQty 0.001 ETH (~$2.7) -> ETH-нога выполнима. Правило 50/50 BTC/ETH целиком на $100 не исполнимо; минимум для BTC-ноги ~$342 капитала."
+  },
+  "C11": {
+   "feasible_at_100": false,
+   "why": "Deribit: минимальный контракт 0.1 BTC (SPEC2) -> обеспечение 0.1*0.95*спот ~ $8,127 по последнему close; с $100 невозможно (доля контракта не продаётся)."
+  },
+  "C16": {
+   "feasible_at_100": true,
+   "why": "Aave v3 без минимума депозита -> технически да, но газ $5 за круг = 5% капитала; прежний расчёт: безубыток $100 за 1.48 г. при ставке последних 365 дней."
+  }
+ },
+ "primary_period": {
+  "C1": "C1|OOS",
+  "C11": "C11|OOS",
+  "C16_10000": "C16|FULL_$10000",
+  "C16_100": "C16|FULL_$100"
+ },
+ "survivors_vs_tbill": [],
+ "survivors_retail_100usd_3.5pct": []
+}

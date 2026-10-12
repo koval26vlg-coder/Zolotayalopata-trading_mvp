@@ -1,0 +1,25 @@
+{
+  "schema": "bounded_primary_source_audit_v1",
+  "date": "2026-10-08",
+  "model_ids": ["aave_lending"],
+  "evidence_kind": "ANALYST_SUMMARIES_NOT_RAW_HTTP_SNAPSHOTS",
+  "sources": [
+    {"id": "aave_pool", "url": "https://aave.com/docs/aave-v3/smart-contracts/pool", "finding": "getReserveNormalizedIncome is a view returning normalized income in RAY units (1e27). Standard supply requires underlying allowance; supplyWithPermit is a distinct signed route.", "limitation": "Documentation only, not historical state. No signing or transaction performed."},
+    {"id": "aave_rates", "url": "https://www.aave.com/docs/aave-v3/markets/data", "finding": "Documented APY history windows range from LastDay to LastYear.", "limitation": "Does not demonstrate complete 2023-2026 index coverage; APY is not a validated index-return series."},
+    {"id": "aave_launch", "url": "https://governance.aave.com/t/aave-labs-contributions-report/24155", "finding": "Aave Labs dates the Ethereum v3 launch to January 27, 2023.", "limitation": "Date-level evidence, not a verified USDC reserve activation block. Pre-launch warmup/development must not be invented or filled from v2."},
+    {"id": "aave_addresses", "url": "https://raw.githubusercontent.com/bgd-labs/aave-address-book/main/src/AaveV3Ethereum.sol", "finding": "Current address book identifies USDC underlying 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48, decimals 6, and aToken 0x98C23E9d8f34FEFb1B7BD6a91B7FF122F4e16F5c.", "limitation": "Mutable current source, not a code-bound historical deployment or upgrade certificate."},
+    {"id": "aave_reserve_logic", "url": "https://raw.githubusercontent.com/aave/aave-v3-core/master/contracts/protocol/libraries/logic/ReserveLogic.sol", "finding": "Normalized income in this source accrues currentLiquidityRate since lastUpdateTimestamp onto liquidityIndex. ReserveDataUpdated includes the index and rates.", "limitation": "Past deployed versions and integer rounding must be verified. Stored index events alone are not arbitrary-time normalized income."},
+    {"id": "aave_validation_logic", "url": "https://raw.githubusercontent.com/aave/aave-v3-core/master/contracts/protocol/libraries/logic/ValidationLogic.sol", "finding": "Supply checks active, paused, frozen and cap. Withdraw checks active and paused but not frozen in this implementation.", "limitation": "Not proof of identical semantics across upgrades. Current paused status cannot stand in for past withdrawal availability."},
+    {"id": "aave_withdraw", "url": "https://aave.com/help/supplying/withdraw-tokens", "finding": "Underlying withdrawals depend on available pool liquidity not currently borrowed.", "limitation": "No historical liquidity amounts acquired; no actual withdrawal attempted."},
+    {"id": "ethereum_archive", "url": "https://ethereum.org/developers/docs/nodes-and-clients/archive-nodes/", "finding": "Archive nodes expose historical states; regular node access alone does not establish complete historical state availability.", "limitation": "No archive node provisioned; provider coverage remains untested."},
+    {"id": "publicnode", "url": "https://ethereum.publicnode.com/", "finding": "Official site advertises public Ethereum RPC at ethereum-rpc.publicnode.com and an Archive Access option.", "limitation": "Anonymous archive entitlement and required block coverage not verified. No RPC request made; do not call the endpoint unavailable or paid based on the button alone."},
+    {"id": "ethereum_rpc", "url": "https://ethereum.org/developers/docs/apis/json-rpc/", "finding": "Historical blocks/calls and transaction receipts are documented; receipts include gasUsed and effectiveGasPrice.", "limitation": "A receipt describes an actual past transaction, not exact gas for an unexecuted hypothetical supply/withdraw. Need causal assumptions and ETH/USD conversion."}
+  ],
+  "market_archives_downloaded": 0,
+  "rpc_requests": 0,
+  "credentials_used": false,
+  "wallet_connected": false,
+  "purchases": false,
+  "source_search_exhaustive": false,
+  "free_history_nonexistence_claimed": false
+}

@@ -1,0 +1,40 @@
+{
+  "schema": "historical_family_data_readiness_v1",
+  "model_ids": [
+    "aave_lending"
+  ],
+  "input_status": "BLOCKED_DATA",
+  "technical_audit_complete": true,
+  "candidate_feasibility": "CANDIDATE_UNREACHABLE_UNDER_FROZEN_IMPLEMENTATION_AND_CRITERIA",
+  "backtest_executed": false,
+  "historical_candidate": false,
+  "strategy_rejected": false,
+  "metrics": null,
+  "ready_input_manifest": null,
+  "source_evidence": "source-evidence.json",
+  "suitability_audit": "suitability-audit.json",
+  "feasibility_audit": "feasibility.json",
+  "local_inventory": "local-inventory.json",
+  "free_history_nonexistence_claimed": false,
+  "validated_market_rows_this_checkpoint": 0,
+  "remaining_before_descriptive_backtest": [
+    "Verify activation blocks and deployed versions without synthesizing pre-launch history.",
+    "Acquire historical normalized index, USDC quotes, comparable gas/ETHUSD and reserve-liquidity/flag evidence.",
+    "Retain blocked withdrawals as open exposure and distinguish cost assumptions from execution proof.",
+    "Build a complete hash-bound manifest and validate visibly; do not relabel a descriptive study as a candidate."
+  ],
+  "bulk_acquisition_started": false,
+  "bulk_acquisition_not_started_reason": "Even perfect data cannot meet the unchanged sample and concentration criteria for this serial single-asset model.",
+  "next_action": "Bounded historical source audit for wallet_follow: complete swaps, as-of token universe, historical block ordering, gas, executable sell routes and disappeared tokens; no wallet or signing.",
+  "next_model_hash": "07df0a5021ab9960bf99098ac1ff552fdc5d5ec0681ad272e4ebde0888d332dd",
+  "preserved_exclusions": [
+    "Listing Momentum",
+    "closed legacy runs",
+    "private API",
+    "real capital",
+    "paid data",
+    "new schedules",
+    "permanent collectors",
+    "wallet signatures"
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "schema": "checkpoint_evidence_index_v1",
+  "files": [
+    {
+      "file": "data-readiness.json",
+      "bytes": 1234,
+      "sha256": "dbaa76a862f3a6a0a036297ae3a22dfc2b52c1f503afdbd486d415c09665b3bd"
+    },
+    {
+      "file": "diagnostic-samples.json",
+      "bytes": 54153,
+      "sha256": "5003dae6240351948b7a20be3a21dcc4f52b9b6d7a756a1fa5b55a157e34bae0"
+    },
+    {
+      "file": "local-census.json",
+      "bytes": 62924,
+      "sha256": "80e2189fde2c690a69bb286ddb2d8ca2065cf0e4b9b74c3f66f50fc560e7394f"
+    },
+    {
+      "file": "local-completion.json",
+      "bytes": 268,
+      "sha256": "3d36109c8904d0ab85d0beef203c251c088321cf00f9c7470bcb52d9759b3625"
+    },
+    {
+      "file": "local-input-plan.json",
+      "bytes": 3984,
+      "sha256": "ae19cba73af12bfea48a5e82ce37cff8b163b6e5cfab78cf7e5d1e5ea70979a5"
+    },
+    {
+      "file": "matrix.json",
+      "bytes": 20201,
+      "sha256": "ddf9bf8619caf3ce12669b00a961ebfda490c2f681d26b5c0e6db9ddbf990dc5"
+    },
+    {
+      "file": "matrix.md",
+      "bytes": 9080,
+      "sha256": "bd78a31b5160e947bbfc1d17202706ce724263c85f4629d118be626da4b2aedd"
+    },
+    {
+      "file": "model-input-queue.json",
+      "bytes": 20480,
+      "sha256": "1e878fe7fa21bf36040f2221afc9f6b7a19900a1372e4167871c5bc94f614f6a"
+    },
+    {
+      "file": "publication-provenance.json",
+      "bytes": 2026,
+      "sha256": "b932a5ec2bb882bb7677b892c0feb708accb02ee041f127bf8817ba0501d5beb"
+    },
+    {
+      "file": "README.md",
+      "bytes": 5885,
+      "sha256": "8f25b4a0ef935caf037c653b6841afba8406716895371342ecf393b28a3be0ef"
+    },
+    {
+      "file": "runtime-rebind.json",
+      "bytes": 4689,
+      "sha256": "3f443df39a87238fc4b94da278d99810314012edb0faab410603d9ffc81460e4"
+    },
+    {
+      "file": "spot-anomaly-review.json",
+      "bytes": 760,
+      "sha256": "0bfdf4290d203d45702484d2d3f7ff978a179d7aea8c8ef24396785a37e4dad0"
+    },
+    {
+      "file": "test-completion.json",
+      "bytes": 257,
+      "sha256": "8282ae29835ab678bd6cb5b1a3d99ffc231ee39c8b315e47e7bb998d9bd558f6"
+    },
+    {
+      "file": "tests.json",
+      "bytes": 3975,
+      "sha256": "86dedf9503d1ee003e94d54582fad25431000ec076c63623d340da1b78d3be37"
+    },
+    {
+      "file": "verification.json",
+      "bytes": 371,
+      "sha256": "8c21be2ebae19f3f95db757c2e615fc2411c6ffa1844be0d48868651a54ebcb3"
+    },
+    {
+      "file": "verify_checkpoint.py",
+      "bytes": 6331,
+      "sha256": "2379264a3e94a1ea781e77d575f817ced8b1e359594953fd669c4e9fd0099858"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "trading_mvp_offline_reconciliation_receipt_v1",
+  "created_at_utc": "2026-09-29T09:56:54.507281+00:00",
+  "policy": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\plans\\trading-mvp-autopilot-policy-v1.json",
+    "file_sha256": "170f73019ab0aa8cecae18b64681b147c8b0b5fbdddf44aca75557730e163caf",
+    "bytes": 72250
+  },
+  "pointer": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\one-week-edge-sprint-readiness-pointer.json",
+    "file_sha256": "a9dea7ec31e9467284d2d484af10bc12c1dca5d0a56648927838d532735edd1f",
+    "bytes": 514
+  },
+  "readiness": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\agent-log\\readiness\\one-week-edge-sprint-current-readiness-20260929-v25.json",
+    "file_sha256": "efa34bbb09f48c0f38c744042d2c33039aae05c9579b0ff3f5de34f6c05b0644",
+    "bytes": 7138
+  },
+  "preimages": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\strategy-reconciliation-20260929\\policy-before.json",
+      "file_sha256": "362352fcd216b5d8f1a389ee487124663dfc71ef97bc0c8e56091853edd76187",
+      "bytes": 73082
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\strategy-reconciliation-20260929\\pointer-before.json",
+      "file_sha256": "56a026f95b469da0816f3af55a26cbb46486198627ea8d892778ffa09d76d9b3",
+      "bytes": 517
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\strategy-reconciliation-20260929\\gate-before.json",
+      "file_sha256": "4670c02f1423da9f537c835f7a4c0df8979c6dec299f416f8e2d96719888f586",
+      "bytes": 1720
+    }
+  ],
+  "network_requests": 0,
+  "collectors_launched": 0,
+  "schedules_changed": false,
+  "raw_data_modified": false,
+  "quality_report": {
+    "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\strategy-reconciliation-20260929\\depth-quality-v2.json",
+    "file_sha256": "3a168d3e259b99113bc12c0c500de1481f8f19b4cbd2649160dbf610a928dc16",
+    "bytes": 38278
+  },
+  "receipt_hash": "b5e94315d029c971de6e2b4943dc60f13368cdd5702ef6f59ff0c5702e32990f"
+}

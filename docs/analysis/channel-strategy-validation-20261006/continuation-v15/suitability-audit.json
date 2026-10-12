@@ -1,0 +1,113 @@
+{
+  "schema": "paired_historical_input_suitability_v1",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "4ca109803999d2eab7d2e1d100d11d2a94ea81c817a7e22c375dd7532dc21c96",
+  "status": "BOUNDED_METADATA_AND_SOURCE_AUDIT_COMPLETE_NO_ELIGIBLE_INPUT",
+  "models": {
+    "funding_carry": {
+      "model_hash": "2a5b8dc95381d0674e04a65f1cc4f7d276620e525f7a458f2b92ba9c54bfe0fb",
+      "required_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "evaluation_allowed_now": false,
+      "metrics": null,
+      "source_ids": [
+        "gate_archive",
+        "gate_futures"
+      ],
+      "finding": "Gate spot/perp snapshots and actual funding documented; no complete normalized input, PIT membership, historical leg costs or interval provenance verified.",
+      "common_missing": [
+        "causal paired bid/ask and per-leg age/size",
+        "PIT monthly membership and asset identity",
+        "dated fees, impact, units and contract increments",
+        "fixed period coverage and exposure-history audit"
+      ],
+      "runtime_blocker": "PAIRED_MONTHLY_UNIVERSE_NOT_ENFORCED"
+    },
+    "funding_cross": {
+      "model_hash": "a06d8e6d76b5fded41be97bf98928b924c32cf62180cd4dfb89e905590101813",
+      "required_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "evaluation_allowed_now": false,
+      "metrics": null,
+      "source_ids": [
+        "gate_archive",
+        "gate_futures",
+        "mexc_funding",
+        "mexc_specs",
+        "mexc_perp_book",
+        "mexc_recent_depth"
+      ],
+      "finding": "Funding APIs documented; multi-year synchronized executable MEXC/Gate perp quotes, PIT contracts and dated costs not verified.",
+      "common_missing": [
+        "causal paired bid/ask and per-leg age/size",
+        "PIT monthly membership and asset identity",
+        "dated fees, impact, units and contract increments",
+        "fixed period coverage and exposure-history audit"
+      ],
+      "runtime_blocker": "PAIRED_MONTHLY_UNIVERSE_NOT_ENFORCED"
+    },
+    "spot_dislocation": {
+      "model_hash": "85e8e7352e223598226c5d97aac09375d25881f34748b9f736fb104a61462868",
+      "required_kinds": [
+        "paired_quotes",
+        "inventory"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "evaluation_allowed_now": false,
+      "metrics": null,
+      "source_ids": [
+        "gate_archive",
+        "mexc_spot_archive",
+        "mexc_spot_book"
+      ],
+      "finding": "Gate book archives documented; matched MEXC historical executable spot quotes not verified. Prefunded inventory must be an explicit simulation ledger, not private account history.",
+      "common_missing": [
+        "causal paired bid/ask and per-leg age/size",
+        "PIT monthly membership and asset identity",
+        "dated fees, impact, units and contract increments",
+        "fixed period coverage and exposure-history audit"
+      ],
+      "runtime_blocker": "PAIRED_MONTHLY_UNIVERSE_NOT_ENFORCED"
+    },
+    "basis_convergence": {
+      "model_hash": "3fc48addb1e9e16a1459f20dcd338fd11e9b7d81ae626cddbaf863416fbe85ba",
+      "required_kinds": [
+        "paired_quotes",
+        "funding"
+      ],
+      "input_status": "BLOCKED_DATA",
+      "evaluation_allowed_now": false,
+      "metrics": null,
+      "source_ids": [
+        "gate_archive",
+        "gate_futures"
+      ],
+      "finding": "Local 1h trade/mark/index candles do not provide executable bid/ask basis. Gate historical depth route documented, full periods and PIT membership unverified.",
+      "common_missing": [
+        "causal paired bid/ask and per-leg age/size",
+        "PIT monthly membership and asset identity",
+        "dated fees, impact, units and contract increments",
+        "fixed period coverage and exposure-history audit"
+      ],
+      "runtime_blocker": "PAIRED_MONTHLY_UNIVERSE_NOT_ENFORCED"
+    }
+  },
+  "known_runtime_gaps": [
+    "PAIRED_MONTHLY_UNIVERSE_NOT_ENFORCED"
+  ],
+  "runtime_gap_references": [
+    "trading_mvp/src/channel_validation/adapters.py:155",
+    "trading_mvp/src/channel_validation/runner.py:86",
+    "docs/plans/channel-strategy-validation-20261006-v1.json"
+  ],
+  "snapshot_marker_caveat": "WS completed state and stitched manifest coexist with older STOPPED_INCOMPLETE marker; no automatic corruption verdict or resume.",
+  "underlying_market_data_certified": false,
+  "legacy_run_consumption_allowed": false,
+  "new_market_requests_executed": 0
+}

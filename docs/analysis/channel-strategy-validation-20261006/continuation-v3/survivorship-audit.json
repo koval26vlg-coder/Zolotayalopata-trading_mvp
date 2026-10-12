@@ -1,0 +1,223 @@
+{
+  "audit_hash": "cf2621ddc591e2ac3b1202779d392f2f79d336339416734bef72078e9fb7095f",
+  "evaluation_eligible": false,
+  "historical_universe_certified": false,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "reason": "Sample availability is not complete historical membership, as-of types or 30-day ranking coverage",
+  "records": [
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 420,
+        "complete": true,
+        "declared_length": 420,
+        "reason": "COMPLETE"
+      },
+      "http_status": 403,
+      "kind": "export_symbols",
+      "raw_file": "01.raw",
+      "sha256": "fb0fd214d76ba0db163a0abdd53f937186dc39665483377a31d7d7d1f59047e2",
+      "status": "HTTP_ERROR_NO_RETRY",
+      "url": "https://www.gate.com/api/web/v1/tst/market_symbols?sub_website_id=0"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 402,
+        "complete": true,
+        "declared_length": 402,
+        "reason": "COMPLETE"
+      },
+      "http_status": 403,
+      "kind": "notice",
+      "raw_file": "02.raw",
+      "sha256": "e5bbc373d1f65b982e7cfe235ec1a8845a50250a06aba97b511d26cbb919d9cb",
+      "status": "HTTP_ERROR_NO_RETRY",
+      "url": "https://www.gate.com/announcements/article/101367"
+    },
+    {
+      "attempts": 1,
+      "base": "TRC",
+      "body": {
+        "bytes_read": 7105,
+        "complete": true,
+        "declared_length": 7105,
+        "reason": "COMPLETE"
+      },
+      "end": 1788220800,
+      "http_status": 200,
+      "kind": "hourly_archive",
+      "parsed": {
+        "exact_quote_turnover_available": false,
+        "first": 1785542400,
+        "full_requested_grid": false,
+        "historical_membership_complete": false,
+        "last": 1788217200,
+        "missing_bars": 312,
+        "rows": 432
+      },
+      "raw_file": "03.raw",
+      "sha256": "969a64b051479d762ec79f591ff6d1e5499f37cd83f80130819c0fbcff169062",
+      "start": 1785542400,
+      "status": "ARCHIVE_SCHEMA_CHECKED",
+      "step": 3600,
+      "url": "https://download.gatedata.org/spot/candlesticks_1h/202608/TRC_USDT-202608.csv.gz"
+    },
+    {
+      "api_error": {
+        "label": "INVALID_CURRENCY_PAIR",
+        "message": "Invalid currency pair TRC_USDT"
+      },
+      "attempts": 1,
+      "base": "TRC",
+      "body": {
+        "bytes_read": 76,
+        "complete": true,
+        "declared_length": 76,
+        "reason": "COMPLETE"
+      },
+      "end": 1785715200,
+      "http_status": 400,
+      "kind": "daily_rest",
+      "raw_file": "04.raw",
+      "sha256": "504880cc64f03e5b2c7ab9468b3ef66aa6c7de5a56a0afd16699910cc0641809",
+      "start": 1785542400,
+      "status": "HTTP_ERROR_NO_RETRY",
+      "step": 86400,
+      "url": "https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=TRC_USDT&interval=1d&from=1785542400&to=1785715199"
+    },
+    {
+      "api_error": {
+        "label": "INVALID_CURRENCY",
+        "message": "currency TRC is delisted"
+      },
+      "attempts": 1,
+      "base": "TRC",
+      "body": {
+        "bytes_read": 65,
+        "complete": true,
+        "declared_length": 65,
+        "reason": "COMPLETE"
+      },
+      "http_status": 400,
+      "kind": "current_pair",
+      "raw_file": "05.raw",
+      "sha256": "0fd68e11132460cde32bdc72993747410f47174ef42e521e03a5094773c09cb8",
+      "status": "HTTP_ERROR_NO_RETRY",
+      "url": "https://api.gateio.ws/api/v4/spot/currency_pairs/TRC_USDT"
+    },
+    {
+      "attempts": 1,
+      "base": "EYWA",
+      "body": {
+        "bytes_read": 6073,
+        "complete": true,
+        "declared_length": 6073,
+        "reason": "COMPLETE"
+      },
+      "end": 1788220800,
+      "http_status": 200,
+      "kind": "hourly_archive",
+      "parsed": {
+        "exact_quote_turnover_available": false,
+        "first": 1785542400,
+        "full_requested_grid": false,
+        "historical_membership_complete": false,
+        "last": 1788210000,
+        "missing_bars": 317,
+        "rows": 427
+      },
+      "raw_file": "06.raw",
+      "sha256": "1721fb51a668b97aed4e04a6e6532613d5a227fc7699c97f2ce55fff5d9ccf92",
+      "start": 1785542400,
+      "status": "ARCHIVE_SCHEMA_CHECKED",
+      "step": 3600,
+      "url": "https://download.gatedata.org/spot/candlesticks_1h/202608/EYWA_USDT-202608.csv.gz"
+    },
+    {
+      "api_error": {
+        "label": "INVALID_CURRENCY_PAIR",
+        "message": "Invalid currency pair EYWA_USDT"
+      },
+      "attempts": 1,
+      "base": "EYWA",
+      "body": {
+        "bytes_read": 77,
+        "complete": true,
+        "declared_length": 77,
+        "reason": "COMPLETE"
+      },
+      "end": 1785715200,
+      "http_status": 400,
+      "kind": "daily_rest",
+      "raw_file": "07.raw",
+      "sha256": "dd4011af75619bff8bed0200d2296606f98f6a79104a8a51e17d649c8bbd14ef",
+      "start": 1785542400,
+      "status": "HTTP_ERROR_NO_RETRY",
+      "step": 86400,
+      "url": "https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=EYWA_USDT&interval=1d&from=1785542400&to=1785715199"
+    },
+    {
+      "api_error": {
+        "label": "INVALID_CURRENCY",
+        "message": "currency EYWA is delisted"
+      },
+      "attempts": 1,
+      "base": "EYWA",
+      "body": {
+        "bytes_read": 66,
+        "complete": true,
+        "declared_length": 66,
+        "reason": "COMPLETE"
+      },
+      "http_status": 400,
+      "kind": "current_pair",
+      "raw_file": "08.raw",
+      "sha256": "615c2e08ce87ab705332fddacc4c13cc56cb3466d55cd604d0a01cc02ac0f732",
+      "status": "HTTP_ERROR_NO_RETRY",
+      "url": "https://api.gateio.ws/api/v4/spot/currency_pairs/EYWA_USDT"
+    }
+  ],
+  "request_plan_hash": "b7cdf5134d26388defe18f14fa7a6a0cacedebd77f3bfa4a5e83e3ec8fa0ad69",
+  "requests": 8,
+  "runtime_binding": {
+    "tools/check_active_run_gate.ps1": "a3b1b735dba6681b18fdb2e9be637079a22391123eced0a316dc2b76855193fd",
+    "tools/check_trading_mvp_autopilot.ps1": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+    "tools/run_channel_strategy_validation_visible.ps1": "7090168995b1ffc0aa27fc3e2d08b813d6b76db783b687e64766627d0a25e2b4",
+    "trading_mvp/src/channel_validation/__init__.py": "dab9cae823a9b621cc47440d3a73630e9831110efd9f370fe7b689d2206f71e3",
+    "trading_mvp/src/channel_validation/adapters.py": "e3a090521c5da1dc6ff7afe600b4c52aad74f63ef1358a7f674d86af7b4377fe",
+    "trading_mvp/src/channel_validation/archive_audit.py": "fdbb487dc77de23176751e24f642e487d0da00fe05f83f27b92dcdbbba74124a",
+    "trading_mvp/src/channel_validation/contract.py": "d71f4e1834623bc8ea7234dd561604a26d89f010a2978092c9c9858d5f55465c",
+    "trading_mvp/src/channel_validation/data.py": "bf7d11039ac155ee70a21d0a1837e5af5ad7506ae7db3519472ac5d2e5322f61",
+    "trading_mvp/src/channel_validation/execution.py": "b8e119584e4b3b5c3abe2da93900711f74a630b0d94b7c570faf6883c35de4ab",
+    "trading_mvp/src/channel_validation/gate_catalog.py": "920183562362062ba516ea3b9859051f9aecad27f5eb8900d9b59716f11af0dd",
+    "trading_mvp/src/channel_validation/gate_history.py": "7297594b274bc6a9fb239be67e23825e55a6db7e45d65133ba252dcc3cde35df",
+    "trading_mvp/src/channel_validation/gate_survivorship.py": "85cc2300daa78a51159bcccee84f7f5e5ba290e05dff274ea66b26e2ab68e6f9",
+    "trading_mvp/src/channel_validation/models.py": "9c1f0b142276e2e78e101036192486a603961422a9b1fb8ac4cf2dad532cc193",
+    "trading_mvp/src/channel_validation/portfolio.py": "cb63ff1b53751cec1b248b91c8e70c9686a04259e1f7636bc5be8749025332a4",
+    "trading_mvp/src/channel_validation/runner.py": "899fa7050ba319d26f727f93ff29df7ff1c514fc348ee491797438d8934af344",
+    "trading_mvp/src/channel_validation/sources.py": "e30cde7da64c7aefd58711f3678a9c814acef298a901bba8744d095ee87cdd10",
+    "trading_mvp/src/channel_validation/statistics.py": "e4b6f69e9a057f2ec5a7d33813d725f720239207f7728bd9e101a6cb0a2ce65d",
+    "trading_mvp/src/global_market_writer_claim.py": "bc0604267c9d709a17188eb9daf317417d2633bf4c31266f73db33ac2f5066d2",
+    "trading_mvp/tests/test_channel_validation.py": "487399eadc93c52c86417f5ef163340120d83ec62e3916f05e3decd4d727f069"
+  },
+  "samples": [
+    {
+      "absent_from_export_symbols": null,
+      "exact_daily_turnover_observed": false,
+      "export_list_missing_historical_pair": false,
+      "full_requested_archive_grid": false,
+      "historical_archive_observed": true,
+      "pair": "TRC_USDT"
+    },
+    {
+      "absent_from_export_symbols": null,
+      "exact_daily_turnover_observed": false,
+      "export_list_missing_historical_pair": false,
+      "full_requested_archive_grid": false,
+      "historical_archive_observed": true,
+      "pair": "EYWA_USDT"
+    }
+  ],
+  "schema": "gate_survivorship_audit_v1"
+}

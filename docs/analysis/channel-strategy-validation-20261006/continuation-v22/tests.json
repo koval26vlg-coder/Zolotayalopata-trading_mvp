@@ -1,0 +1,23 @@
+{
+  "checks": [
+    "exact_false",
+    "no_boolean_coercion_0",
+    "no_boolean_coercion_'false'",
+    "no_boolean_coercion_True",
+    "no_boolean_coercion_None",
+    "missing_proof",
+    "changed_content",
+    "empty_result_not_market_test",
+    "no_false_unseen_metrics",
+    "no_false_unseen_status",
+    "no_false_unseen_trades",
+    "no_false_unseen_oos",
+    "stale_result_hash",
+    "no_self_issued_certificate_0",
+    "no_self_issued_certificate_1",
+    "no_self_issued_certificate_7"
+  ],
+  "errors": 0,
+  "failures": 0,
+  "tests": 16
+}

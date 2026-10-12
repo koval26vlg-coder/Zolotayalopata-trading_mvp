@@ -1,0 +1,72 @@
+{
+  "schema": "bounded_primary_source_audit_v1",
+  "date": "2026-10-07",
+  "model_id": "dax_orb",
+  "evidence_kind": "ANALYST_SUMMARIES_NOT_RAW_HTTP_SNAPSHOTS",
+  "historical_coverage_verified": false,
+  "free_history_nonexistence_claimed": false,
+  "sources": [
+    {
+      "id": "eurex_fdxs",
+      "url": "https://www.eurex.com/ex-en/markets/idx/dax/Micro-DAX-Futures-2615492",
+      "finding": "Current Micro-DAX FDXS specifications state EUR 1 per index point. Distinct from FDAX and FDXM; futures have expiry and settlement rules.",
+      "limitation": "Current specifications do not establish every historical effective date or free five-minute coverage. No futures series was acquired."
+    },
+    {
+      "id": "dukascopy_instrument",
+      "url": "https://www.dukascopy.com/swiss/english/cfd/range-of-markets/",
+      "finding": "DEU.IDX/EUR is listed as Germany 40 Index CFD. The table's definition of point uses the second decimal; it must not be mistaken for an entire index point.",
+      "limitation": "Historical lot sizes, all effective contract terms and target-period coverage remain unverified."
+    },
+    {
+      "id": "dukascopy_kid",
+      "url": "https://www.dukascopy.com/media/pdf/swiss/KID/KID%20-%20CFD%20on%20Stock%20Index.pdf",
+      "document_date": "2022-01-01",
+      "finding": "The stock-index CFD KID describes a product linked to current-period futures without its own expiry.",
+      "limitation": "A general KID does not establish a complete dated DEU.IDX/EUR execution specification or actual historical prices."
+    },
+    {
+      "id": "deutsche_boerse_delayed",
+      "url": "https://www.mds.deutsche-boerse.com/mds-en/real-time-data/Delayed-data",
+      "finding": "Free delayed pre/post-trade feed has 15-minute delay, minute updates and retention until midnight of the following business day; timestamps are UTC.",
+      "limitation": "This service is not a ready 2023-2026 archive. No ongoing collector authorized by this historical program was started."
+    },
+    {
+      "id": "dukascopy_s3_route",
+      "url": "https://www.dukascopy.com/wiki/en/development/data-export/",
+      "finding": "The documented S3 historical-data route uses Requester Pays and requires valid AWS credentials.",
+      "limitation": "Not used because this program excludes paid data and credentials. This does not establish that all other Dukascopy routes are paid. No commands on this page were executed."
+    },
+    {
+      "id": "dukascopy_public_export",
+      "url": "https://www.dukascopy.com/api/data/get/historical-data-export",
+      "finding": "Text extraction did not expose export parameters. One visible browser navigation timed out; reading the same tab timed out on Emulation.setFocusEmulationEnabled.",
+      "limitation": "TOOL_ACCESS_UNRESOLVED, not a site denial or a negative history-availability finding. No export submitted, authentication used or second tab launched."
+    },
+    {
+      "id": "xetra_calendar_archive",
+      "url": "https://www.cashmarket.deutsche-boerse.com/cash-en/trading/trading-calendar-and-trading-hours/trading-calendar",
+      "finding": "Official archive links historical calendars and year-end session notices including 2023 and 2024.",
+      "limitation": "Links are discovered evidence, not a normalized complete point-in-time session dataset. Color-coded calendar was not transcribed from incomplete text extraction."
+    },
+    {
+      "id": "xetra_retail_extension",
+      "url": "https://www.eurex.com/ec-en/find/circulars/Eurex-Clearing-Readiness-Newsflash-C7-SCS-Introduction-of-Xetra-Trading-Hours-Extension-4742716",
+      "document_date": "2025-10-29",
+      "effective_date": "2025-12-01",
+      "finding": "Notice adds retail early trading 08:00-09:00 CET and late trading 17:30-22:00 CET.",
+      "limitation": "Additional trading phases must not silently redefine this model's first hour of the main session."
+    },
+    {
+      "id": "xetra_last_session_2024",
+      "url": "https://www.cashmarket.deutsche-boerse.com/resource/blob/4064970/4beb98bd98c44f58e1fb68e3f3bb9746/data/Final%20trading%20session%202024.pdf",
+      "session_date": "2024-12-30",
+      "finding": "Official attachment specifies Xetra closing auction call at 14:00 CET, earliest price determination at 14:05, then trade-at-close until 14:15.",
+      "limitation": "These are distinct phases, not an interchangeable close price. Notice publication time was not verified. It is not yet an evaluator calendar row. PDF screenshot tool failed; the textual phase list was readable."
+    }
+  ],
+  "credentials_used": false,
+  "purchases": false,
+  "market_archives_downloaded": 0,
+  "network_source_audit_only": true
+}

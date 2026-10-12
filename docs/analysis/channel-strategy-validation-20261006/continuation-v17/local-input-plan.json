@@ -1,0 +1,76 @@
+{
+  "eligible_for_evaluation": false,
+  "input_binding_hash": "6fa24e7838758114d14e4f0b9cfdb791006c9440150164b01a83fc0ff40fcff5",
+  "inputs": [
+    {
+      "bytes": 303768,
+      "kind": "orderbooks_slice",
+      "market": "spot",
+      "month": "202301",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\01.quarantined.gz-part",
+      "sha256": "761fed48af785841dbab140bc1cda3284fe0cc3c12abea59936a442679b84fe9",
+      "source_url": "https://download.gatedata.org/spot/orderbooks_slice/202301/BTC_USDT-2023010100.gz",
+      "symbol": "BTC_USDT"
+    },
+    {
+      "bytes": 140117,
+      "kind": "orderbooks_slice",
+      "market": "futures_usdt",
+      "month": "202301",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\02.quarantined.gz-part",
+      "sha256": "fbfa64b80a53c9a3c7ba7a70d2c0a3f09e181698693f039e138799e175ee2011",
+      "source_url": "https://download.gatedata.org/futures_usdt/orderbooks_slice/202301/BTC_USDT-2023010100.gz",
+      "symbol": "BTC_USDT"
+    },
+    {
+      "bytes": 473,
+      "kind": "funding_applies",
+      "market": "futures_usdt",
+      "month": "202301",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\03.quarantined.gz-part",
+      "sha256": "062c1d564d5db9c8fb50cfd2cf0040eed21a176981077c08d252f988ea6ef5a1",
+      "source_url": "https://download.gatedata.org/futures_usdt/funding_applies/202301/BTC_USDT-202301.csv.gz",
+      "symbol": "BTC_USDT"
+    },
+    {
+      "bytes": 288455,
+      "kind": "orderbooks_slice",
+      "market": "spot",
+      "month": "202501",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\06.quarantined.gz-part",
+      "sha256": "c012bde5936b494bcbcd69a70d6097a17b23a8c97c7e4a75e470af55eeb2524a",
+      "source_url": "https://download.gatedata.org/spot/orderbooks_slice/202501/BTC_USDT-2025010100.gz",
+      "symbol": "BTC_USDT"
+    },
+    {
+      "bytes": 173710,
+      "kind": "orderbooks_slice",
+      "market": "futures_usdt",
+      "month": "202501",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\07.quarantined.gz-part",
+      "sha256": "948b25b33d1752fa59b3f1a0d0c34594ad67fa5fbc4e92afeac1f6a70db69afe",
+      "source_url": "https://download.gatedata.org/futures_usdt/orderbooks_slice/202501/BTC_USDT-2025010100.gz",
+      "symbol": "BTC_USDT"
+    },
+    {
+      "bytes": 449,
+      "kind": "funding_applies",
+      "market": "futures_usdt",
+      "month": "202501",
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\08.quarantined.gz-part",
+      "sha256": "3b761b0f5ce04bc4056e364391518c70ded8c4930ef55974e64930e7a942d0fc",
+      "source_url": "https://download.gatedata.org/futures_usdt/funding_applies/202501/BTC_USDT-202501.csv.gz",
+      "symbol": "BTC_USDT"
+    }
+  ],
+  "max_decoded_bytes_per_file": 33554432,
+  "max_line_bytes": 1048576,
+  "max_rows_per_file": 200000,
+  "max_runtime_sec": 300,
+  "max_total_decoded_bytes": 134217728,
+  "network_requests": 0,
+  "parent_audit_sha256": "bc526f0388ad0fa4a65493950d75953d97756945c57278ee6f0363ae6c78a60b",
+  "parent_completion_sha256": "9f9b2331a51a196388cbee43a962ddfe226e847a3618bcc8765cf2f06b855074",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "schema": "gate_paired_local_input_binding_v1"
+}

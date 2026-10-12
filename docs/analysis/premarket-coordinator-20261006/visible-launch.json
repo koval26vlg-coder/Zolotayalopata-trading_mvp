@@ -1,0 +1,13 @@
+{
+  "pid": 56152,
+  "started_utc": "2026-10-06T10:34:16.4400525Z",
+  "command": "pwsh -NoProfile -NoExit -File \"C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-coordinator-20261006\\verify-offline.ps1\"",
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "window_style": "Normal",
+  "no_exit": true,
+  "expected_runtime_sec": 300,
+  "network_requests": 0,
+  "status_command": "Get-Content 'C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-coordinator-20261006\\visible-verification.log' -Tail 20",
+  "stop_command": "Ctrl+C in this visible terminal",
+  "purpose": "Synthetic verification and offline runtime freeze; no market collection"
+}

@@ -1,0 +1,197 @@
+{
+  "id": "C16",
+  "pool": "aa70268e-4b52-42bf-a116-608b370f9501",
+  "data_start": "2023-02-06 23:01:24.670000+00:00",
+  "data_end": "2026-10-06 23:01:10.597000+00:00",
+  "n_snapshots_used": 1339,
+  "n_snapshots_raw": 1340,
+  "days": 1338.0,
+  "years": 3.6658,
+  "periods_note": "Data start 2023-02-06 > 2022 -> FULL only (whole sample lies inside the OOS window)",
+  "gross_compound_return_pct": 18.209924686062262,
+  "gross_cagr_pct": 4.66937961070526,
+  "lookahead_diag_gross_return_pct": 18.236862885619786,
+  "apy_stats": {
+    "mean": 4.718634055265124,
+    "median": 3.80773,
+    "min": 0.30325,
+    "max": 56.67768,
+    "last": 3.887,
+    "by_year": {
+      "2023": 3.819,
+      "2024": 7.166,
+      "2025": 4.124,
+      "2026": 3.348
+    }
+  },
+  "gross_ann_by_year_pct": {
+    "2023": 3.768,
+    "2024": 7.085,
+    "2025": 4.115,
+    "2026": 3.335
+  },
+  "gross_ann_last365d_pct": 3.4252840279958896,
+  "spike_gt15_share_of_gross_growth": 0.04745751852324728,
+  "diag_gross_cagr_if_spike_days_earn_zero_pct": 4.442932837790514,
+  "max_single_day_apy_drop": {
+    "pp": 39.84997,
+    "from_ts": "2023-07-30 21:00:58.178000+00:00",
+    "to_ts": "2023-07-31 23:00:58.702000+00:00",
+    "from_apy": 56.67768,
+    "to_apy": 16.82771
+  },
+  "days_apy_below_1pct": [
+    {
+      "ts": "2023-03-11T23:01:00.449Z",
+      "apy": 0.4533
+    },
+    {
+      "ts": "2023-03-12T23:01:15.883Z",
+      "apy": 0.3033
+    },
+    {
+      "ts": "2023-03-13T23:01:06.739Z",
+      "apy": 0.8253
+    }
+  ],
+  "low_available_liquidity_days": [
+    {
+      "ts": "2023-07-30T21:00:58.178Z",
+      "apy": 56.678,
+      "available_liquidity_usd": 195802.0
+    },
+    {
+      "ts": "2026-04-19T23:01:30.284Z",
+      "apy": 12.599,
+      "available_liquidity_usd": 22589.0
+    },
+    {
+      "ts": "2026-04-20T23:01:34.154Z",
+      "apy": 12.6,
+      "available_liquidity_usd": 7888.0
+    },
+    {
+      "ts": "2026-04-22T19:01:26.800Z",
+      "apy": 12.599,
+      "available_liquidity_usd": 15056.0
+    }
+  ],
+  "diag_usdt_marked": {
+    "100": {
+      "maxdd_pct_usdt_marked_daily_close": -8.824274214357715,
+      "final_usdt": 112.75698166244207,
+      "net_pct_usdt": 12.75698166244208
+    },
+    "10000": {
+      "maxdd_pct_usdt_marked_daily_close": -4.076261815903541,
+      "final_usdt": 11815.773581233485,
+      "net_pct_usdt": 18.157735812334842
+    },
+    "usdc_min_daily_close": {
+      "date": "2023-03-11",
+      "close": 0.9592
+    },
+    "usdc_min_intraday_low": {
+      "date": "2024-01-03",
+      "low": 0.76
+    },
+    "note": "USDC==1.0 assumed before 2023-03-11 (no Binance pair); USDT used as USD proxy"
+  },
+  "diag_100usd_1y_hold_last365d_final": 98.33032765320527,
+  "diag_100usd_breakeven_years_at_last365d_rate": 1.4849020405539155,
+  "diag_100usd_breakeven_years_at_full_cagr": 1.0958442572705496,
+  "snapshot_gaps_gt_1_4d": [
+    {
+      "after": "2023-12-17 11:01:05.354000+00:00",
+      "days": 1.5
+    },
+    {
+      "after": "2024-03-26 07:01:10.149000+00:00",
+      "days": 1.667
+    },
+    {
+      "after": "2024-10-08 12:02:21.989000+00:00",
+      "days": 1.458
+    },
+    {
+      "after": "2024-12-19 11:02:03.210000+00:00",
+      "days": 1.5
+    }
+  ],
+  "results": {
+    "100": {
+      "x1": {
+        "final": 112.75467656891071,
+        "net_pct": 12.754676568910718,
+        "cagr_pct": 3.3289607486965966,
+        "maxdd_pct": -5.0,
+        "pf": 3.550935313782142,
+        "interest_usd": 17.75467656891071,
+        "gas_usd": 5.0
+      },
+      "x2": {
+        "final": 107.29942845175916,
+        "net_pct": 7.299428451759149,
+        "cagr_pct": 1.9405160569653246,
+        "maxdd_pct": -10.0,
+        "pf": 1.7299428451759156,
+        "interest_usd": 17.299428451759155,
+        "gas_usd": 10.0
+      },
+      "verdict": "INCONCLUSIVE",
+      "verdict_conds": {
+        "net_pos": true,
+        "ann_gt_4": false,
+        "dd_lt_10": true,
+        "beats_ratio": true,
+        "pos_2x": true
+      }
+    },
+    "10000": {
+      "x1": {
+        "final": 11815.537220489075,
+        "net_pct": 18.155372204890764,
+        "cagr_pct": 4.65620038450687,
+        "maxdd_pct": -0.05,
+        "pf": 364.1074440978151,
+        "interest_usd": 1820.5372204890755,
+        "gas_usd": 5.0
+      },
+      "x2": {
+        "final": 11810.081972371923,
+        "net_pct": 18.10081972371924,
+        "cagr_pct": 4.643016732622618,
+        "maxdd_pct": -0.1,
+        "pf": 182.00819723719232,
+        "interest_usd": 1820.0819723719233,
+        "gas_usd": 10.0
+      },
+      "verdict": "PASS_CANDIDATE",
+      "verdict_conds": {
+        "net_pos": true,
+        "ann_gt_4": true,
+        "dd_lt_10": true,
+        "beats_ratio": true,
+        "pos_2x": true
+      }
+    }
+  },
+  "combined_verdict": {
+    "verdict": "PASS_CANDIDATE",
+    "basis": "research math = $10,000 sleeve (fixed gas negligible); $100 reported separately as feasibility",
+    "per_capital": {
+      "100": "INCONCLUSIVE",
+      "10000": "PASS_CANDIDATE"
+    }
+  },
+  "self_checks": {
+    "rate_observed_at_or_before_interval_start": true,
+    "cutoff_applied": "2026-10-06 23:59:59+00:00",
+    "dropped_after_cutoff": 1
+  },
+  "sha256": {
+    "binance_USDCUSDT_1d.json": "b51fcdf75fd4d779a05848fe67fe184c8989ad2a78f8bedc664df92d70ea194b",
+    "chart_aa70268e.json": "4af1d137f1917eb1705a8cc5955fa65b8932722f4fe65a375277f267c9d1e8a3",
+    "pools.json": "90030a369feed818cb411c0054bd7e6fdeed1ca3dd57ff0c13d77a9faf18fdb7"
+  }
+}

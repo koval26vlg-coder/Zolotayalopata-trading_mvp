@@ -1,0 +1,14 @@
+{
+  "byte_end": 90000000,
+  "byte_start": 85500000,
+  "chunk_hash": "823d255ef9cf7ca9b2fc3cd69a4b7bc5a57917be6be34cfdfdc3945a388376b4",
+  "first_ms": 1673966791065,
+  "input_binding_hash": "759b1a9c2314d8184cbcb108dc69ceb0f8abe134c9e0836bf88d5d080e29a222",
+  "last_ms": 1674022508343,
+  "previous_chunk_hash": "2fb73de26632b016a1046c80e3703cd8938f193043f30f7ff564315ad569b008",
+  "raw_chunk_sha256": "1bc9048649614d9b793acbb61269477b2e1a57970cbbe9f46304f5462712ab06",
+  "row_end": 2000000,
+  "row_start": 1900001,
+  "rows": 100000,
+  "sequence": 20
+}

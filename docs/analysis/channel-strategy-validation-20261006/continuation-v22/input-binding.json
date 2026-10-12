@@ -1,0 +1,1615 @@
+{
+  "binding_hash": "fbac746dab7c0cbb4b606df6f936518eea51d185c12b1cd84907c1e3aa8a8110",
+  "files": [
+    {
+      "bytes": 2667,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v10/suitability-audit.json",
+      "sha256": "2bde860fcbeeba5f7a64908322f9dee3bb6e78a0ab37f149a513dd573c47dff0"
+    },
+    {
+      "bytes": 2703,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v11/suitability-audit.json",
+      "sha256": "9922e67f3ffd5f1dc8eb873f4625aa442e6ccfda0846b768bdc3e35476ba5a64"
+    },
+    {
+      "bytes": 2866,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v12/suitability-audit.json",
+      "sha256": "28167dc2468a0413ce0cd88431c9e054ffd76560919c4a137150345fd42d145a"
+    },
+    {
+      "bytes": 3396,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v13/suitability-audit.json",
+      "sha256": "c932c9607968424008c1d555e56fb247e2bf3419beb6a3031c2ed32fcb6ddfe3"
+    },
+    {
+      "bytes": 3996,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v14/suitability-audit.json",
+      "sha256": "3ae7b1b38b5ae655ed84c60174edf4e8011630de61d29a351dd1d7fbad373da4"
+    },
+    {
+      "bytes": 6235,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v15/local-metadata.json",
+      "sha256": "f73f3b1b4053b7d727db36f6c10d380fbf9117b72475830121680583632bbe1c"
+    },
+    {
+      "bytes": 1401,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v18/data-readiness.json",
+      "sha256": "e80ba07debdb33dc1bcd6c1136a84358c9b55af05c792c5abe6a74ce8d259c8e"
+    },
+    {
+      "bytes": 1999,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v19/data-readiness.json",
+      "sha256": "93fdbbbf911317b83cd9ee8694b9d6b145701f1b09923b6699b64b5298059ee0"
+    },
+    {
+      "bytes": 5800,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v19/source-evidence.json",
+      "sha256": "15982c240c1b98b8e675a6e8f0405918f8990d4f391033980bafa3df59a5a776"
+    },
+    {
+      "bytes": 15248,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v21/readiness.json",
+      "sha256": "f3db615f8617bf8264fa0a7dc5d96b9f77c26b7d360efdc29de8850722b60154"
+    },
+    {
+      "bytes": 5967,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v21/runtime-rebind.json",
+      "sha256": "c3c972dcd3696045ffe0ee2496b815e46917bd92df7afb511f67e20a97135ec3"
+    },
+    {
+      "bytes": 19997,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v22/audit_evidence.py",
+      "sha256": "3af4e2c9865f7bf1bd83c1daea55f377764a351385da5cb583c397d5d08e7ba0"
+    },
+    {
+      "bytes": 5731,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v22/run_audit_visible.ps1",
+      "sha256": "1de42a6694bf487a24eca0d8fe8d4de782c0927486524aa4f351ea2c9d7744c4"
+    },
+    {
+      "bytes": 8628,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v3/survivorship-audit.json",
+      "sha256": "f4c5ba22f3b9adfb7f8d92ed537c277d9f1f1dcb07ba7fdb67ea7360c8f1d199"
+    },
+    {
+      "bytes": 3749,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v4/gate-metadata-audit.json",
+      "sha256": "18f8ec1de1be76f0694a7dcc1e6b985b8281c73b64b50abfdbd4514e429c4aec"
+    },
+    {
+      "bytes": 1997,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v6/data-readiness.json",
+      "sha256": "d6b24540656118c0d1df906c849c29f5dc418a7f7184862c8d8e0518f4487a91"
+    },
+    {
+      "bytes": 2001,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v6/source-notes.json",
+      "sha256": "69383e51e4cdb86924eba0d06e7e31b43318d478de5ef865acd16355532db356"
+    },
+    {
+      "bytes": 12467,
+      "path": "docs/analysis/channel-strategy-validation-20261006/continuation-v9/audit.json",
+      "sha256": "96d473d7514803253a18471da53ac377c9212fa81aa49dce30b139f8cc66b097"
+    },
+    {
+      "bytes": 7970,
+      "path": "docs/analysis/channel-strategy-validation-20261006/evidence-registry.md",
+      "sha256": "c41b01e7f8f9d0322cd01d812e736214fbe45dc86278d6fd39257bd349930432"
+    },
+    {
+      "bytes": 13047,
+      "path": "docs/analysis/channel-strategy-validation-20261006/gate-source-audit.json",
+      "sha256": "3028be16e5657afee9570383d076bedc8f9784a456c5af8ec54cf0b1ef388872"
+    },
+    {
+      "bytes": 267,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_archive_discovery_v2_20261006/completion.json",
+      "sha256": "de2564deff81389c80facb4732b57a5caa3c942ec07546918538f53fccf0b65d"
+    },
+    {
+      "bytes": 2421,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_archive_discovery_v2_20261006/intent.json",
+      "sha256": "163efe4825414660d65bdd62726f8dfec0c56e5da434088f4dff6a89fa3496a1"
+    },
+    {
+      "bytes": 262,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_catalog_v2_20261006/completion.json",
+      "sha256": "d27584d884a1d8d2e8abba175c5f19e9eb35492d4e824b9adcb86dc484208248"
+    },
+    {
+      "bytes": 2553,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_catalog_v2_20261006/intent.json",
+      "sha256": "41b2c692d4dfbd020f43d07509cb55887cfe18f41727524d8084ae5d6a4f4389"
+    },
+    {
+      "bytes": 263,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_metadata_v4_20261006/completion.json",
+      "sha256": "0b0e6e659abac67982114ea5117b28abd0263b4435cdcd26410d29bded2ae19a"
+    },
+    {
+      "bytes": 2940,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_metadata_v4_20261006/intent.json",
+      "sha256": "5d56c566290609695b1f8e012c61ea438ad078a1537518cbe3e56e0a544f772d"
+    },
+    {
+      "bytes": 268,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_paired_local_v17_20261008/completion.json",
+      "sha256": "3d36109c8904d0ab85d0beef203c251c088321cf00f9c7470bcb52d9759b3625"
+    },
+    {
+      "bytes": 4212,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_paired_local_v17_20261008/intent.json",
+      "sha256": "3e166015e06ed0c32fd5e4e97a75ef064c20bef8f075d2b0185f0a3327a6c2fd"
+    },
+    {
+      "bytes": 262,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_paired_v16_20261008/completion.json",
+      "sha256": "9f9b2331a51a196388cbee43a962ddfe226e847a3618bcc8765cf2f06b855074"
+    },
+    {
+      "bytes": 4080,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_paired_v16_20261008/intent.json",
+      "sha256": "27e59d5d4d165f560b5f74918dcda012569b4242f43fe9a0a6d07bf2a124545a"
+    },
+    {
+      "bytes": 263,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_pairing_v18_20261009/completion.json",
+      "sha256": "5ab29db2dc212505a7a7a4f481277ebe9eb0b70206070af18cb2d0579dd67ec5"
+    },
+    {
+      "bytes": 4334,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_pairing_v18_20261009/intent.json",
+      "sha256": "24ef890c0ddec1143735d813c9a4a7ccbb33eeffcbf55323f53096c533ce0281"
+    },
+    {
+      "bytes": 267,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_survivorship_v3_20261006/completion.json",
+      "sha256": "9dd1cffd26b082aa6093b9626e661c68e03ee5cd8daa335db6a09d2c67542f7c"
+    },
+    {
+      "bytes": 2690,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_survivorship_v3_20261006/intent.json",
+      "sha256": "0b04a228b2bb81d87319ae9c558ece4235506e8a7ff01b5e2d7154aa5acd099d"
+    },
+    {
+      "bytes": 261,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_trades_v3_20261006/completion.json",
+      "sha256": "26a22b5c9d6c311ce651c82b5a1eaba97db7e344e49eba6cd014521dbf7c44af"
+    },
+    {
+      "bytes": 2810,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_trades_v3_20261006/intent.json",
+      "sha256": "76fd8a57008c8d50b8480f25c1d9bf982870aeffb6a0a65a0be91ba3711e47a3"
+    },
+    {
+      "bytes": 260,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_units_v2_20261006/completion.json",
+      "sha256": "41707a6a62eb0693f9b7fa1990ff08de5fdacd180d44bc17547d334f678ec53a"
+    },
+    {
+      "bytes": 2426,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_units_v2_20261006/intent.json",
+      "sha256": "0c8701686eb5266945469d63bf3971fd119f162ea9cdc77ce7d1419ffcbef2fc"
+    },
+    {
+      "bytes": 271,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gold_source_v7_20261007/completion.json",
+      "sha256": "d0126ad1b3fab62d61399b2cd567b7c16a75f27783354dbf756c9c2d826983a0"
+    },
+    {
+      "bytes": 3574,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gold_source_v7_20261007/intent.json",
+      "sha256": "ada3250b5adbb4bc440d532613f84472452068273f862bb766a5741c076b0db5"
+    },
+    {
+      "bytes": 266,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gold_unattempted_v7_20261007/completion.json",
+      "sha256": "84f8441bad702711dc3b295a07a4045852dfb46788c2ef9d0f4b9043515413b2"
+    },
+    {
+      "bytes": 3578,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gold_unattempted_v7_20261007/intent.json",
+      "sha256": "b1af06d84903ca3e0042b015a8c397fb12bf7f12401ce858908666a0fbbc0bc9"
+    },
+    {
+      "bytes": 433,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_archive_v8_20261007/completion.json",
+      "sha256": "e03301e42c9ad13c6ee0da5d538450b50b1fcd35bd586a5b56d3c28eedab878d"
+    },
+    {
+      "bytes": 3695,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_archive_v8_20261007/intent.json",
+      "sha256": "a535de1fdda9a29c4bb4c5925f84d86f3f03e065d08698b23eb5db598589d138"
+    },
+    {
+      "bytes": 263,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_gold_v8_20261007/completion.json",
+      "sha256": "c6eb8f10b159997b26dfeb5a6a1a406905665e6f3b32890db59d3d0270185e11"
+    },
+    {
+      "bytes": 3694,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_gold_v8_20261007/intent.json",
+      "sha256": "1669842172d9c963148baeeec63d3e43efdc0cc5008af7bed15e6aea48247a67"
+    },
+    {
+      "bytes": 273,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_recovery_v8_20261007/completion.json",
+      "sha256": "2d2db7c6d32bc2613db29fade9ccbf4ce862bd79208ea753f73b5a223184e627"
+    },
+    {
+      "bytes": 3822,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_recovery_v8_20261007/intent.json",
+      "sha256": "82285fa7f1aca0b52e9202d14e97ccbc286ef98701e6edf6b7572b536e67ab62"
+    },
+    {
+      "bytes": 431,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_v8_20261007/completion.json",
+      "sha256": "0e9c130109e6023e56507954425b92b9ba908053d5c47c7d4e42518620acb4dd"
+    },
+    {
+      "bytes": 3822,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_v8_20261007/intent.json",
+      "sha256": "48f5de93ef23194312752a6b3bae9f679cfb93a32d73b7c4c0b2742c930943d1"
+    },
+    {
+      "bytes": 264,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_month_v9_20261007/completion.json",
+      "sha256": "c06a3c01692b2a19a06848b79d45093c30374e8caddbf0fdf0228db0c75130ee"
+    },
+    {
+      "bytes": 3951,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_month_v9_20261007/intent.json",
+      "sha256": "29f1cff30ca6d89cec45812603443d3248ed7f2c205a04c4d432c45af3f7f529"
+    },
+    {
+      "bytes": 13635,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_final_20261006/artifacts/evaluation.json",
+      "sha256": "b22d82f9c586cf513af1f374f1251958575e54be30b23e8363929bfab3186245"
+    },
+    {
+      "bytes": 269,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_final_20261006/completion.json",
+      "sha256": "b3750e82153405d6d3fc6fb88e455f7a54a0291b25c60589761c048024bf49f6"
+    },
+    {
+      "bytes": 2161,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_final_20261006/intent.json",
+      "sha256": "3c7246a3b2734687cf430a358a9b4f8c8215ed9fa2f23727760ece499391404b"
+    },
+    {
+      "bytes": 13635,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_v1_20261006/artifacts/evaluation.json",
+      "sha256": "3c3a34dc28f0fce02f4a321bd5c568e9289d9405ce5b565c0a6833c0013cb68c"
+    },
+    {
+      "bytes": 266,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_v1_20261006/completion.json",
+      "sha256": "e80a59f46bd3df2abefe0c7f041ecdf9e8ea80b5992e203e7602332266616a06"
+    },
+    {
+      "bytes": 2161,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_v1_20261006/intent.json",
+      "sha256": "905ecf1ed76ec5618e3a833a18f671ee94c2c36fbabb523e73fd0c621122c861"
+    },
+    {
+      "bytes": 13635,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_matrix_release_20261006/artifacts/evaluation.json",
+      "sha256": "e0db5a49cfb62f291ae47e188511094a46def7d645c97f25226ba73e720690e6"
+    },
+    {
+      "bytes": 261,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_matrix_release_20261006/completion.json",
+      "sha256": "f2bb94475f35f1d6a049542e2fd4ba9048453de194763a1bcaaa2ff89a1d0fe7"
+    },
+    {
+      "bytes": 2161,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_matrix_release_20261006/intent.json",
+      "sha256": "682304253105760ce5f03b4a7714780aef4763b5ce018d2185a2ba670e059bed"
+    },
+    {
+      "bytes": 266,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/completion.json",
+      "sha256": "6de4bfd33a7e3e74a77c357f2bd7f33f931e9dff3eb4c82f5399d2ddee9a54b2"
+    },
+    {
+      "bytes": 3445,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/intent.json",
+      "sha256": "9061057e050ab7e2c01ce661905652bbfab70f37a7b0a9d6a423947ab0187035"
+    },
+    {
+      "bytes": 272,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_full_btc_v5_20261006/completion.json",
+      "sha256": "4b9a2603c527f371786d6aa95a8a1dc76401a9c6b7019d32f1f4d7a7ff8a1f91"
+    },
+    {
+      "bytes": 3315,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_full_btc_v5_20261006/intent.json",
+      "sha256": "82e55fc1368ca7cc9ece20f2bb5f39b2bb45da51ddd75c340d4ead91a8283b5d"
+    },
+    {
+      "bytes": 266,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_local_census_v5_20261006/completion.json",
+      "sha256": "455331b8ecbb72e565dff8700f5da0648b118dead474d6da4df91af2d2a4daca"
+    },
+    {
+      "bytes": 3317,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_local_census_v5_20261006/intent.json",
+      "sha256": "5a7a418028de14b96ad817dedb17f5df45d667f02ab37355c64201630c396631"
+    },
+    {
+      "bytes": 267,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_option_source_v4_20261006/completion.json",
+      "sha256": "6305a164e98e636ebb21b15a24eae6de42e3a3c720792660b31fe5e679d2141e"
+    },
+    {
+      "bytes": 3064,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_option_source_v4_20261006/intent.json",
+      "sha256": "096f373aa2995d442417dcff6ca98f27e4e7ffa62e5797e47981c25a0362a1f2"
+    },
+    {
+      "bytes": 256,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_report_v1_20261006/completion.json",
+      "sha256": "ba657de631391e18467565d2a50cd9b6d457e2b9898105ad13ba6e756b7bc5e2"
+    },
+    {
+      "bytes": 2328,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_report_v1_20261006/intent.json",
+      "sha256": "e9a5449d895d22381a3b429a15cf154d140992b6b4de7e36723641b4bdc421a9"
+    },
+    {
+      "bytes": 257,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_sources_v1_20261006/completion.json",
+      "sha256": "7a45318d895a3902b97a9040ab43aa02e7d1744340e5b1a7b286fab9ce30a6d8"
+    },
+    {
+      "bytes": 2010,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_sources_v1_20261006/intent.json",
+      "sha256": "8b7bf9127da8721830bfc17b27af3cab80182481a960673e29af171214fe74d7"
+    },
+    {
+      "bytes": 264,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_catalog_v2_20261006/completion.json",
+      "sha256": "1e07b5add3a6b1a5bfcc697edd9c3c9ff61513e22737094889b21a9697bdc4c8"
+    },
+    {
+      "bytes": 2541,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_catalog_v2_20261006/intent.json",
+      "sha256": "bd9c91be2ca56cd5b3b9cd3e87f7773eb68eb4112029f562a7607dd0b7ca7790"
+    },
+    {
+      "bytes": 259,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_final_20261006/completion.json",
+      "sha256": "7cd8f433802509b68b45aaa32316ff9cdd21867093a40692c3a8ad78df07ea5e"
+    },
+    {
+      "bytes": 2159,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_final_20261006/intent.json",
+      "sha256": "a9713e6028dd6f574b3407062920f409da320979824bffe6b693bf6dd400cb92"
+    },
+    {
+      "bytes": 267,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gate_audit_v2_20261006/completion.json",
+      "sha256": "f4e6fb5f38f9023ba363393430adfc1ce792a3f39551b45f3b03da76f286c044"
+    },
+    {
+      "bytes": 2414,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gate_audit_v2_20261006/intent.json",
+      "sha256": "cfaf408c43e10a46a5b5630f7600e2cf3626dde2c0847c4dffe51a4836a7eb1c"
+    },
+    {
+      "bytes": 267,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gold_fixed_v7_20261007/completion.json",
+      "sha256": "71c5e0fca0748544f03e26e9b39085cf93dfa5fa9145d6460c4f2b5716ad6e3f"
+    },
+    {
+      "bytes": 3562,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gold_fixed_v7_20261007/intent.json",
+      "sha256": "983e767c5158d74a5e91ba5ec688fcb77b3c4f0700f6c3ee051600fb60ea1498"
+    },
+    {
+      "bytes": 271,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gold_remaining_v7_20261007/completion.json",
+      "sha256": "622b90cdc8dd1292f4430e110b326f770fc3a3e316a032b1a5aa77d2a0c77e77"
+    },
+    {
+      "bytes": 3562,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gold_remaining_v7_20261007/intent.json",
+      "sha256": "0e0049a50e03cc97a29d49284e084fd3533fe58b95abfc510793a95d6dd4da27"
+    },
+    {
+      "bytes": 271,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gold_v7_20261007/completion.json",
+      "sha256": "25cce662361003eb6ec375d0160d9b9c0aeeb2406a5f26850b0869fba991f6e2"
+    },
+    {
+      "bytes": 3562,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gold_v7_20261007/intent.json",
+      "sha256": "f7499df67fe96d4241dab0bb46a97cfcd3f11087691869158cb8147bd31e88ed"
+    },
+    {
+      "bytes": 277,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_cached_form_v8_20261007/completion.json",
+      "sha256": "526ebd60ede8a1f07afca78337eab0f62572bcc0a273a73a72e86eb0ff31e6cf"
+    },
+    {
+      "bytes": 3685,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_cached_form_v8_20261007/intent.json",
+      "sha256": "0e228079751aece2668440355354580b82b7feaa3a5d17714bed795483c7d953"
+    },
+    {
+      "bytes": 285,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_handshake_v8_20261007/completion.json",
+      "sha256": "8c3eb6ee6de8d993a3909719fa15faf204868cb69fed969fe60f707b006169f6"
+    },
+    {
+      "bytes": 3685,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_handshake_v8_20261007/intent.json",
+      "sha256": "b92697788013b4c1b484ecc937413287dc2e4239f71bbe2d753db1ffeaa6fd5e"
+    },
+    {
+      "bytes": 271,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_local_v8_20261007/completion.json",
+      "sha256": "16ea75ed38107243019715e0ddef7f3fa080dbc5c3eab8b495f22a5c6c5302f3"
+    },
+    {
+      "bytes": 3814,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_local_v8_20261007/intent.json",
+      "sha256": "eb965507715a1aac62a8da25b5052175a3ef7b0c11d59b175434b94f2a68913e"
+    },
+    {
+      "bytes": 277,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_month_green_v9_20261007/completion.json",
+      "sha256": "9efd4c8d38c7e24833d7283365c30173e316c58a088acd0c08b3dd870b57e1e3"
+    },
+    {
+      "bytes": 3943,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_month_green_v9_20261007/intent.json",
+      "sha256": "1ab16a3a94406e3434facfa5e20f968b349559344a4b64c7e1815571632d4cd7"
+    },
+    {
+      "bytes": 285,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_month_red_v9_20261007/completion.json",
+      "sha256": "63c0506027102041a0f65fc90ba48d0c40e8bfcc0650da52e073714f270747ce"
+    },
+    {
+      "bytes": 3814,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_month_red_v9_20261007/intent.json",
+      "sha256": "2b35210276782a35bc55dac5a18a4d7a4320e0a6e4917eca7cfe3291353c712f"
+    },
+    {
+      "bytes": 274,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_recovery_v8_20261007/completion.json",
+      "sha256": "770f48f8b14ea9e60d092cc0c617d83233137efdf46498efc678fa430b867678"
+    },
+    {
+      "bytes": 3814,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_recovery_v8_20261007/intent.json",
+      "sha256": "9cee27b21b91c9a2c3a27e0c5971b6d16d597ba91366151f363d48cca5618db3"
+    },
+    {
+      "bytes": 272,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_report_v8_20261007/completion.json",
+      "sha256": "7ce75a8bcc816007819a36cc2c91542583d68cec4fa7357e3196572f0bb99ede"
+    },
+    {
+      "bytes": 3814,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_report_v8_20261007/intent.json",
+      "sha256": "f751c5d273ce88a4b846e978c5c7841719bab9e64dd514b71d9ce76866030842"
+    },
+    {
+      "bytes": 277,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_strict_time_v8_20261007/completion.json",
+      "sha256": "9fa175278035f0e903087628a3a160ff9bf9853e6965bcaa78ad193495b89f7e"
+    },
+    {
+      "bytes": 3685,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_strict_time_v8_20261007/intent.json",
+      "sha256": "31e3957c19ec75c75ae096f7971b3168dc24fa236a3c92efc05edcce8d326656"
+    },
+    {
+      "bytes": 3685,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_v8_20261007/intent.json",
+      "sha256": "0c3c3d837b5e06b30244a43569937b8b5760977a0ff946d8cb59c61fa62b6db7"
+    },
+    {
+      "bytes": 265,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_metadata_v4_20261006/completion.json",
+      "sha256": "2309bfb2aefb6282eb615c9375b4c17e28e94a4ce86e6ae408bfa61ca7c3ab99"
+    },
+    {
+      "bytes": 2927,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_metadata_v4_20261006/intent.json",
+      "sha256": "add7d2ce44529688a6a69624d7f7f11bc810444354fb67e8494ed82e0af2e8ee"
+    },
+    {
+      "bytes": 273,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_dependencies_v6_20261007/completion.json",
+      "sha256": "5c0c17b6a61ab6a66bcb62b3523d6eab92dac5a996f8514267a36b0c532e55eb"
+    },
+    {
+      "bytes": 3435,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_dependencies_v6_20261007/intent.json",
+      "sha256": "d0d81fee899d465049b91073f018cd8b06639708c5236daa2fb4f3300d13d712"
+    },
+    {
+      "bytes": 266,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_final_v5_20261006/completion.json",
+      "sha256": "e794ac91749a19e3582b7016c8d6f5b18b5014e8475b8dd231f1c9ee3f941394"
+    },
+    {
+      "bytes": 3304,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_final_v5_20261006/intent.json",
+      "sha256": "2c8e499809e51e374192b4864910ce6702eeb32b93425f9f82f46ac3231446d0"
+    },
+    {
+      "bytes": 266,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_local_v5_20261006/completion.json",
+      "sha256": "21ab5ff7c6366dc23beb29209aef47178a48fa7ffb7a4d2afa15c4ef135765fa"
+    },
+    {
+      "bytes": 3304,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_local_v5_20261006/intent.json",
+      "sha256": "3a7aaf1f009efe5abb7f312ac18f64f8c01e0d7986332708e47f609552edaf03"
+    },
+    {
+      "bytes": 267,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_stream_v5_20261006/completion.json",
+      "sha256": "809dbdc962727e7f9861b2ccebf9f88f955d1d3b02e27652e6e456da8fa3dc36"
+    },
+    {
+      "bytes": 3304,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_stream_v5_20261006/intent.json",
+      "sha256": "23533811303f5488e24ba7b4588d0f24414035402c40882e110d0191d9f30cc2"
+    },
+    {
+      "bytes": 271,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_options_source_v4_20261006/completion.json",
+      "sha256": "37112b30f4a699d2215f7f07430bccba4ec532d648038fbb03785eef9e15af22"
+    },
+    {
+      "bytes": 3053,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_options_source_v4_20261006/intent.json",
+      "sha256": "0daba60cc15e21c8cbccdbc99a8c7d85a3eef32e76ed95df35da361eeaf79ff6"
+    },
+    {
+      "bytes": 261,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_release_20261006/completion.json",
+      "sha256": "73757384bd947527343dcfc371c0dc9e2e8aff780cbe199c19952b87a0fb4ff7"
+    },
+    {
+      "bytes": 2159,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_release_20261006/intent.json",
+      "sha256": "21ac3dc59b9fe3b1c7e5f664a0809c0ed05b5eeaf47fb3b30ce136fcbe650b35"
+    },
+    {
+      "bytes": 269,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_survivorship_v3_20261006/completion.json",
+      "sha256": "c4011b491c4f6f890cd6b1a82daef4058f9e32dc675286291eea2e7da1fd92e3"
+    },
+    {
+      "bytes": 2673,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_survivorship_v3_20261006/intent.json",
+      "sha256": "872179cf384d1a10c531c00ef55b8402ed6a5629a0ddac69189855f7572448d1"
+    },
+    {
+      "bytes": 263,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_trades_v3_20261006/completion.json",
+      "sha256": "78f36880c5af67c95caa19e7882451b2376c379113fbc788f6572182ece1ff48"
+    },
+    {
+      "bytes": 2799,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_trades_v3_20261006/intent.json",
+      "sha256": "62ddfaaca0567c185dc5fad82848a1ea655711c1f534473e8368616d949f1721"
+    },
+    {
+      "bytes": 257,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v16_20261008/completion.json",
+      "sha256": "4fdd7134f1435a41014b5fc131bded82a66f56c3d9323eef559b5d35b2f71503"
+    },
+    {
+      "bytes": 4069,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v16_20261008/intent.json",
+      "sha256": "4b1ea7440815237dac713a73de45e6e24bd7fb63d4d447d53480f578bd83e870"
+    },
+    {
+      "bytes": 257,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v17_20261008/completion.json",
+      "sha256": "8282ae29835ab678bd6cb5b1a3d99ffc231ee39c8b315e47e7bb998d9bd558f6"
+    },
+    {
+      "bytes": 4201,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v17_20261008/intent.json",
+      "sha256": "dfa9803561fa894992f50f672e1428b4c5a2313b437ec835afefeb4d275b98ec"
+    },
+    {
+      "bytes": 257,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v18_20261009/completion.json",
+      "sha256": "9671f750971102bcba33059ac4959746d7cf9fb3308beb9ebaa2f5cc62a6d5b6"
+    },
+    {
+      "bytes": 4328,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v18_20261009/intent.json",
+      "sha256": "e4626ada6e9bcee8bd357094c2827c87c7767a8db723833a21ea1c24b60b9391"
+    },
+    {
+      "bytes": 256,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v1_20261006/completion.json",
+      "sha256": "85c5a4e97f99f8060fe3f0c9ed057d6fad2754317e5d6ce9a4a2fad6ee9f15dc"
+    },
+    {
+      "bytes": 1887,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v1_20261006/intent.json",
+      "sha256": "d3d2d4985fbc529558d12a696c514da34d14cf3c522059128babf0f5392b0c32"
+    },
+    {
+      "bytes": 263,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v21_final_20261009/completion.json",
+      "sha256": "128cf84cbcd39505700f874c757309f0d534b62b3a977476835da12b93bfe727"
+    },
+    {
+      "bytes": 4451,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v21_final_20261009/intent.json",
+      "sha256": "34b32c9ead9279b3f310c79a6b01e4c50ac3d15f05ae29c42111761764f82220"
+    },
+    {
+      "bytes": 263,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v21_green_20261009/completion.json",
+      "sha256": "2e7c5b19e2f3653829ed09d9c2dbb216aee7271d120df01211677237b6c21afc"
+    },
+    {
+      "bytes": 4451,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v21_green_20261009/intent.json",
+      "sha256": "ff74e2d74c530b7f9c9fd0fe36357bc3a52d6a11b2ca06c5599c37912fbd7f7b"
+    },
+    {
+      "bytes": 271,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v21_red_20261009/completion.json",
+      "sha256": "8f8465f37c0d47b18691afe67100726ede5ff858c3de6e7f6129039c41b14cb4"
+    },
+    {
+      "bytes": 4328,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v21_red_20261009/intent.json",
+      "sha256": "31c9172ac05b3a61a5f9b5a81812fa8503605c8aefd247095cf0e2a17608c0eb"
+    },
+    {
+      "bytes": 256,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v2_20261006/completion.json",
+      "sha256": "986e6efa67868fa96c738332c1fa689469890aeda3002f73fcb63b63b56d8738"
+    },
+    {
+      "bytes": 2009,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v2_20261006/intent.json",
+      "sha256": "0f289498b73f0ee75ef436e59d7470910d9eb492ffcb77c8dd19c4732300a9cd"
+    },
+    {
+      "bytes": 256,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v3_20261006/completion.json",
+      "sha256": "03819443f0ed88ebd7486036abc8f2f0987e34bba527b65e4a395d0377b88bad"
+    },
+    {
+      "bytes": 2133,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v3_20261006/intent.json",
+      "sha256": "f9e56012ae1c42e374e020992f1859201d2b5f479780fc8d74b71cc36a323a42"
+    },
+    {
+      "bytes": 256,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v4_20261006/completion.json",
+      "sha256": "b7338b1aee5a78c977f22558a8449e500ba463b996494bd3bea4d4d95255652c"
+    },
+    {
+      "bytes": 2159,
+      "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v4_20261006/intent.json",
+      "sha256": "632db5400364a21c1fb02f4f2a28cac1989e4375e4fdd1397f60186c2cbd7cb4"
+    },
+    {
+      "bytes": 20102,
+      "path": "docs/plans/channel-strategy-validation-20261006-v1.json",
+      "sha256": "2d4235d6f779c3181f3a619e2c9414d020346df37d1e23fc6f46ad73679c474c"
+    }
+  ],
+  "max_bytes": 16777216,
+  "max_runtime_sec": 120,
+  "network": false,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runs": [
+    {
+      "completion": {
+        "bytes": 267,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_archive_discovery_v2_20261006/completion.json",
+        "sha256": "de2564deff81389c80facb4732b57a5caa3c942ec07546918538f53fccf0b65d"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2421,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_archive_discovery_v2_20261006/intent.json",
+        "sha256": "163efe4825414660d65bdd62726f8dfec0c56e5da434088f4dff6a89fa3496a1"
+      },
+      "run_id": "history_archive_discovery_v2_20261006",
+      "stage": "archive-audit"
+    },
+    {
+      "completion": {
+        "bytes": 262,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_catalog_v2_20261006/completion.json",
+        "sha256": "d27584d884a1d8d2e8abba175c5f19e9eb35492d4e824b9adcb86dc484208248"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2553,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_catalog_v2_20261006/intent.json",
+        "sha256": "41b2c692d4dfbd020f43d07509cb55887cfe18f41727524d8084ae5d6a4f4389"
+      },
+      "run_id": "history_gate_catalog_v2_20261006",
+      "stage": "gate-catalog-audit"
+    },
+    {
+      "completion": {
+        "bytes": 263,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_metadata_v4_20261006/completion.json",
+        "sha256": "0b0e6e659abac67982114ea5117b28abd0263b4435cdcd26410d29bded2ae19a"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2940,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_metadata_v4_20261006/intent.json",
+        "sha256": "5d56c566290609695b1f8e012c61ea438ad078a1537518cbe3e56e0a544f772d"
+      },
+      "run_id": "history_gate_metadata_v4_20261006",
+      "stage": "gate-metadata-audit"
+    },
+    {
+      "completion": {
+        "bytes": 268,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_paired_local_v17_20261008/completion.json",
+        "sha256": "3d36109c8904d0ab85d0beef203c251c088321cf00f9c7470bcb52d9759b3625"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 4212,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_paired_local_v17_20261008/intent.json",
+        "sha256": "3e166015e06ed0c32fd5e4e97a75ef064c20bef8f075d2b0185f0a3327a6c2fd"
+      },
+      "run_id": "history_gate_paired_local_v17_20261008",
+      "stage": "gate-paired-local"
+    },
+    {
+      "completion": {
+        "bytes": 262,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_paired_v16_20261008/completion.json",
+        "sha256": "9f9b2331a51a196388cbee43a962ddfe226e847a3618bcc8765cf2f06b855074"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 4080,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_paired_v16_20261008/intent.json",
+        "sha256": "27e59d5d4d165f560b5f74918dcda012569b4242f43fe9a0a6d07bf2a124545a"
+      },
+      "run_id": "history_gate_paired_v16_20261008",
+      "stage": "gate-paired-audit"
+    },
+    {
+      "completion": {
+        "bytes": 263,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_pairing_v18_20261009/completion.json",
+        "sha256": "5ab29db2dc212505a7a7a4f481277ebe9eb0b70206070af18cb2d0579dd67ec5"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 4334,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_pairing_v18_20261009/intent.json",
+        "sha256": "24ef890c0ddec1143735d813c9a4a7ccbb33eeffcbf55323f53096c533ce0281"
+      },
+      "run_id": "history_gate_pairing_v18_20261009",
+      "stage": "gate-pairing"
+    },
+    {
+      "completion": {
+        "bytes": 267,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_survivorship_v3_20261006/completion.json",
+        "sha256": "9dd1cffd26b082aa6093b9626e661c68e03ee5cd8daa335db6a09d2c67542f7c"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2690,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_survivorship_v3_20261006/intent.json",
+        "sha256": "0b04a228b2bb81d87319ae9c558ece4235506e8a7ff01b5e2d7154aa5acd099d"
+      },
+      "run_id": "history_gate_survivorship_v3_20261006",
+      "stage": "gate-survivorship-audit"
+    },
+    {
+      "completion": {
+        "bytes": 261,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_trades_v3_20261006/completion.json",
+        "sha256": "26a22b5c9d6c311ce651c82b5a1eaba97db7e344e49eba6cd014521dbf7c44af"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2810,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_trades_v3_20261006/intent.json",
+        "sha256": "76fd8a57008c8d50b8480f25c1d9bf982870aeffb6a0a65a0be91ba3711e47a3"
+      },
+      "run_id": "history_gate_trades_v3_20261006",
+      "stage": "gate-trades-audit"
+    },
+    {
+      "completion": {
+        "bytes": 260,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_units_v2_20261006/completion.json",
+        "sha256": "41707a6a62eb0693f9b7fa1990ff08de5fdacd180d44bc17547d334f678ec53a"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2426,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gate_units_v2_20261006/intent.json",
+        "sha256": "0c8701686eb5266945469d63bf3971fd119f162ea9cdc77ce7d1419ffcbef2fc"
+      },
+      "run_id": "history_gate_units_v2_20261006",
+      "stage": "gate-history-audit"
+    },
+    {
+      "completion": {
+        "bytes": 271,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gold_source_v7_20261007/completion.json",
+        "sha256": "d0126ad1b3fab62d61399b2cd567b7c16a75f27783354dbf756c9c2d826983a0"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3574,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gold_source_v7_20261007/intent.json",
+        "sha256": "ada3250b5adbb4bc440d532613f84472452068273f862bb766a5741c076b0db5"
+      },
+      "run_id": "history_gold_source_v7_20261007",
+      "stage": "gold-history-audit"
+    },
+    {
+      "completion": {
+        "bytes": 266,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gold_unattempted_v7_20261007/completion.json",
+        "sha256": "84f8441bad702711dc3b295a07a4045852dfb46788c2ef9d0f4b9043515413b2"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3578,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_gold_unattempted_v7_20261007/intent.json",
+        "sha256": "b1af06d84903ca3e0042b015a8c397fb12bf7f12401ce858908666a0fbbc0bc9"
+      },
+      "run_id": "history_gold_unattempted_v7_20261007",
+      "stage": "gold-history-remaining"
+    },
+    {
+      "completion": {
+        "bytes": 433,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_archive_v8_20261007/completion.json",
+        "sha256": "e03301e42c9ad13c6ee0da5d538450b50b1fcd35bd586a5b56d3c28eedab878d"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3695,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_archive_v8_20261007/intent.json",
+        "sha256": "a535de1fdda9a29c4bb4c5925f84d86f3f03e065d08698b23eb5db598589d138"
+      },
+      "run_id": "history_histdata_archive_v8_20261007",
+      "stage": "histdata-archive"
+    },
+    {
+      "completion": {
+        "bytes": 263,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_gold_v8_20261007/completion.json",
+        "sha256": "c6eb8f10b159997b26dfeb5a6a1a406905665e6f3b32890db59d3d0270185e11"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3694,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_gold_v8_20261007/intent.json",
+        "sha256": "1669842172d9c963148baeeec63d3e43efdc0cc5008af7bed15e6aea48247a67"
+      },
+      "run_id": "history_histdata_gold_v8_20261007",
+      "stage": "histdata-sample"
+    },
+    {
+      "completion": {
+        "bytes": 273,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_recovery_v8_20261007/completion.json",
+        "sha256": "2d2db7c6d32bc2613db29fade9ccbf4ce862bd79208ea753f73b5a223184e627"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3822,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_recovery_v8_20261007/intent.json",
+        "sha256": "82285fa7f1aca0b52e9202d14e97ccbc286ef98701e6edf6b7572b536e67ab62"
+      },
+      "run_id": "history_histdata_local_recovery_v8_20261007",
+      "stage": "histdata-local"
+    },
+    {
+      "completion": {
+        "bytes": 431,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_v8_20261007/completion.json",
+        "sha256": "0e9c130109e6023e56507954425b92b9ba908053d5c47c7d4e42518620acb4dd"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3822,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_local_v8_20261007/intent.json",
+        "sha256": "48f5de93ef23194312752a6b3bae9f679cfb93a32d73b7c4c0b2742c930943d1"
+      },
+      "run_id": "history_histdata_local_v8_20261007",
+      "stage": "histdata-local"
+    },
+    {
+      "completion": {
+        "bytes": 264,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_month_v9_20261007/completion.json",
+        "sha256": "c06a3c01692b2a19a06848b79d45093c30374e8caddbf0fdf0228db0c75130ee"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3951,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_histdata_month_v9_20261007/intent.json",
+        "sha256": "29f1cff30ca6d89cec45812603443d3248ed7f2c205a04c4d432c45af3f7f529"
+      },
+      "run_id": "history_histdata_month_v9_20261007",
+      "stage": "histdata-month"
+    },
+    {
+      "completion": {
+        "bytes": 269,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_final_20261006/completion.json",
+        "sha256": "b3750e82153405d6d3fc6fb88e455f7a54a0291b25c60589761c048024bf49f6"
+      },
+      "evaluation": {
+        "bytes": 13635,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_final_20261006/artifacts/evaluation.json",
+        "sha256": "b22d82f9c586cf513af1f374f1251958575e54be30b23e8363929bfab3186245"
+      },
+      "intent": {
+        "bytes": 2161,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_final_20261006/intent.json",
+        "sha256": "3c7246a3b2734687cf430a358a9b4f8c8215ed9fa2f23727760ece499391404b"
+      },
+      "run_id": "history_inventory_matrix_final_20261006",
+      "stage": "pipeline"
+    },
+    {
+      "completion": {
+        "bytes": 266,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_v1_20261006/completion.json",
+        "sha256": "e80a59f46bd3df2abefe0c7f041ecdf9e8ea80b5992e203e7602332266616a06"
+      },
+      "evaluation": {
+        "bytes": 13635,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_v1_20261006/artifacts/evaluation.json",
+        "sha256": "3c3a34dc28f0fce02f4a321bd5c568e9289d9405ce5b565c0a6833c0013cb68c"
+      },
+      "intent": {
+        "bytes": 2161,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_v1_20261006/intent.json",
+        "sha256": "905ecf1ed76ec5618e3a833a18f671ee94c2c36fbabb523e73fd0c621122c861"
+      },
+      "run_id": "history_inventory_matrix_v1_20261006",
+      "stage": "pipeline"
+    },
+    {
+      "completion": {
+        "bytes": 261,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_matrix_release_20261006/completion.json",
+        "sha256": "f2bb94475f35f1d6a049542e2fd4ba9048453de194763a1bcaaa2ff89a1d0fe7"
+      },
+      "evaluation": {
+        "bytes": 13635,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_matrix_release_20261006/artifacts/evaluation.json",
+        "sha256": "e0db5a49cfb62f291ae47e188511094a46def7d645c97f25226ba73e720690e6"
+      },
+      "intent": {
+        "bytes": 2161,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_matrix_release_20261006/intent.json",
+        "sha256": "682304253105760ce5f03b4a7714780aef4763b5ce018d2185a2ba670e059bed"
+      },
+      "run_id": "history_matrix_release_20261006",
+      "stage": "pipeline"
+    },
+    {
+      "completion": {
+        "bytes": 266,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/completion.json",
+        "sha256": "6de4bfd33a7e3e74a77c357f2bd7f33f931e9dff3eb4c82f5399d2ddee9a54b2"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3445,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_dependencies_v6_20261007/intent.json",
+        "sha256": "9061057e050ab7e2c01ce661905652bbfab70f37a7b0a9d6a423947ab0187035"
+      },
+      "run_id": "history_okx_dependencies_v6_20261007",
+      "stage": "okx-dependencies"
+    },
+    {
+      "completion": {
+        "bytes": 272,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_full_btc_v5_20261006/completion.json",
+        "sha256": "4b9a2603c527f371786d6aa95a8a1dc76401a9c6b7019d32f1f4d7a7ff8a1f91"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3315,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_full_btc_v5_20261006/intent.json",
+        "sha256": "82e55fc1368ca7cc9ece20f2bb5f39b2bb45da51ddd75c340d4ead91a8283b5d"
+      },
+      "run_id": "history_okx_full_btc_v5_20261006",
+      "stage": "okx-full-archive"
+    },
+    {
+      "completion": {
+        "bytes": 266,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_local_census_v5_20261006/completion.json",
+        "sha256": "455331b8ecbb72e565dff8700f5da0648b118dead474d6da4df91af2d2a4daca"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3317,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_local_census_v5_20261006/intent.json",
+        "sha256": "5a7a418028de14b96ad817dedb17f5df45d667f02ab37355c64201630c396631"
+      },
+      "run_id": "history_okx_local_census_v5_20261006",
+      "stage": "okx-archive-census"
+    },
+    {
+      "completion": {
+        "bytes": 267,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_option_source_v4_20261006/completion.json",
+        "sha256": "6305a164e98e636ebb21b15a24eae6de42e3a3c720792660b31fe5e679d2141e"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3064,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_option_source_v4_20261006/intent.json",
+        "sha256": "096f373aa2995d442417dcff6ca98f27e4e7ffa62e5797e47981c25a0362a1f2"
+      },
+      "run_id": "history_okx_option_source_v4_20261006",
+      "stage": "okx-history-audit"
+    },
+    {
+      "completion": {
+        "bytes": 256,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_report_v1_20261006/completion.json",
+        "sha256": "ba657de631391e18467565d2a50cd9b6d457e2b9898105ad13ba6e756b7bc5e2"
+      },
+      "evaluation": {
+        "bytes": 13635,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_inventory_matrix_v1_20261006/artifacts/evaluation.json",
+        "sha256": "3c3a34dc28f0fce02f4a321bd5c568e9289d9405ce5b565c0a6833c0013cb68c"
+      },
+      "intent": {
+        "bytes": 2328,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_report_v1_20261006/intent.json",
+        "sha256": "e9a5449d895d22381a3b429a15cf154d140992b6b4de7e36723641b4bdc421a9"
+      },
+      "run_id": "history_report_v1_20261006",
+      "stage": "report"
+    },
+    {
+      "completion": {
+        "bytes": 257,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_sources_v1_20261006/completion.json",
+        "sha256": "7a45318d895a3902b97a9040ab43aa02e7d1744340e5b1a7b286fab9ce30a6d8"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2010,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_sources_v1_20261006/intent.json",
+        "sha256": "8b7bf9127da8721830bfc17b27af3cab80182481a960673e29af171214fe74d7"
+      },
+      "run_id": "history_sources_v1_20261006",
+      "stage": "sources"
+    },
+    {
+      "completion": {
+        "bytes": 264,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_catalog_v2_20261006/completion.json",
+        "sha256": "1e07b5add3a6b1a5bfcc697edd9c3c9ff61513e22737094889b21a9697bdc4c8"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2541,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_catalog_v2_20261006/intent.json",
+        "sha256": "bd9c91be2ca56cd5b3b9cd3e87f7773eb68eb4112029f562a7607dd0b7ca7790"
+      },
+      "run_id": "history_verify_catalog_v2_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 259,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_final_20261006/completion.json",
+        "sha256": "7cd8f433802509b68b45aaa32316ff9cdd21867093a40692c3a8ad78df07ea5e"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2159,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_final_20261006/intent.json",
+        "sha256": "a9713e6028dd6f574b3407062920f409da320979824bffe6b693bf6dd400cb92"
+      },
+      "run_id": "history_verify_final_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 267,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gate_audit_v2_20261006/completion.json",
+        "sha256": "f4e6fb5f38f9023ba363393430adfc1ce792a3f39551b45f3b03da76f286c044"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2414,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gate_audit_v2_20261006/intent.json",
+        "sha256": "cfaf408c43e10a46a5b5630f7600e2cf3626dde2c0847c4dffe51a4836a7eb1c"
+      },
+      "run_id": "history_verify_gate_audit_v2_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 267,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gold_fixed_v7_20261007/completion.json",
+        "sha256": "71c5e0fca0748544f03e26e9b39085cf93dfa5fa9145d6460c4f2b5716ad6e3f"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3562,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gold_fixed_v7_20261007/intent.json",
+        "sha256": "983e767c5158d74a5e91ba5ec688fcb77b3c4f0700f6c3ee051600fb60ea1498"
+      },
+      "run_id": "history_verify_gold_fixed_v7_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 271,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gold_remaining_v7_20261007/completion.json",
+        "sha256": "622b90cdc8dd1292f4430e110b326f770fc3a3e316a032b1a5aa77d2a0c77e77"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3562,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gold_remaining_v7_20261007/intent.json",
+        "sha256": "0e0049a50e03cc97a29d49284e084fd3533fe58b95abfc510793a95d6dd4da27"
+      },
+      "run_id": "history_verify_gold_remaining_v7_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 271,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gold_v7_20261007/completion.json",
+        "sha256": "25cce662361003eb6ec375d0160d9b9c0aeeb2406a5f26850b0869fba991f6e2"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3562,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_gold_v7_20261007/intent.json",
+        "sha256": "f7499df67fe96d4241dab0bb46a97cfcd3f11087691869158cb8147bd31e88ed"
+      },
+      "run_id": "history_verify_gold_v7_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 277,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_cached_form_v8_20261007/completion.json",
+        "sha256": "526ebd60ede8a1f07afca78337eab0f62572bcc0a273a73a72e86eb0ff31e6cf"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3685,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_cached_form_v8_20261007/intent.json",
+        "sha256": "0e228079751aece2668440355354580b82b7feaa3a5d17714bed795483c7d953"
+      },
+      "run_id": "history_verify_histdata_cached_form_v8_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 285,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_handshake_v8_20261007/completion.json",
+        "sha256": "8c3eb6ee6de8d993a3909719fa15faf204868cb69fed969fe60f707b006169f6"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3685,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_handshake_v8_20261007/intent.json",
+        "sha256": "b92697788013b4c1b484ecc937413287dc2e4239f71bbe2d753db1ffeaa6fd5e"
+      },
+      "run_id": "history_verify_histdata_handshake_v8_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 271,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_local_v8_20261007/completion.json",
+        "sha256": "16ea75ed38107243019715e0ddef7f3fa080dbc5c3eab8b495f22a5c6c5302f3"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3814,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_local_v8_20261007/intent.json",
+        "sha256": "eb965507715a1aac62a8da25b5052175a3ef7b0c11d59b175434b94f2a68913e"
+      },
+      "run_id": "history_verify_histdata_local_v8_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 277,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_month_green_v9_20261007/completion.json",
+        "sha256": "9efd4c8d38c7e24833d7283365c30173e316c58a088acd0c08b3dd870b57e1e3"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3943,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_month_green_v9_20261007/intent.json",
+        "sha256": "1ab16a3a94406e3434facfa5e20f968b349559344a4b64c7e1815571632d4cd7"
+      },
+      "run_id": "history_verify_histdata_month_green_v9_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 285,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_month_red_v9_20261007/completion.json",
+        "sha256": "63c0506027102041a0f65fc90ba48d0c40e8bfcc0650da52e073714f270747ce"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3814,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_month_red_v9_20261007/intent.json",
+        "sha256": "2b35210276782a35bc55dac5a18a4d7a4320e0a6e4917eca7cfe3291353c712f"
+      },
+      "run_id": "history_verify_histdata_month_red_v9_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 274,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_recovery_v8_20261007/completion.json",
+        "sha256": "770f48f8b14ea9e60d092cc0c617d83233137efdf46498efc678fa430b867678"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3814,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_recovery_v8_20261007/intent.json",
+        "sha256": "9cee27b21b91c9a2c3a27e0c5971b6d16d597ba91366151f363d48cca5618db3"
+      },
+      "run_id": "history_verify_histdata_recovery_v8_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 272,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_report_v8_20261007/completion.json",
+        "sha256": "7ce75a8bcc816007819a36cc2c91542583d68cec4fa7357e3196572f0bb99ede"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3814,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_report_v8_20261007/intent.json",
+        "sha256": "f751c5d273ce88a4b846e978c5c7841719bab9e64dd514b71d9ce76866030842"
+      },
+      "run_id": "history_verify_histdata_report_v8_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 277,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_strict_time_v8_20261007/completion.json",
+        "sha256": "9fa175278035f0e903087628a3a160ff9bf9853e6965bcaa78ad193495b89f7e"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3685,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_strict_time_v8_20261007/intent.json",
+        "sha256": "31e3957c19ec75c75ae096f7971b3168dc24fa236a3c92efc05edcce8d326656"
+      },
+      "run_id": "history_verify_histdata_strict_time_v8_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": null,
+      "evaluation": null,
+      "intent": {
+        "bytes": 3685,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_histdata_v8_20261007/intent.json",
+        "sha256": "0c3c3d837b5e06b30244a43569937b8b5760977a0ff946d8cb59c61fa62b6db7"
+      },
+      "run_id": "history_verify_histdata_v8_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 265,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_metadata_v4_20261006/completion.json",
+        "sha256": "2309bfb2aefb6282eb615c9375b4c17e28e94a4ce86e6ae408bfa61ca7c3ab99"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2927,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_metadata_v4_20261006/intent.json",
+        "sha256": "add7d2ce44529688a6a69624d7f7f11bc810444354fb67e8494ed82e0af2e8ee"
+      },
+      "run_id": "history_verify_metadata_v4_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 273,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_dependencies_v6_20261007/completion.json",
+        "sha256": "5c0c17b6a61ab6a66bcb62b3523d6eab92dac5a996f8514267a36b0c532e55eb"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3435,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_dependencies_v6_20261007/intent.json",
+        "sha256": "d0d81fee899d465049b91073f018cd8b06639708c5236daa2fb4f3300d13d712"
+      },
+      "run_id": "history_verify_okx_dependencies_v6_20261007",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 266,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_final_v5_20261006/completion.json",
+        "sha256": "e794ac91749a19e3582b7016c8d6f5b18b5014e8475b8dd231f1c9ee3f941394"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3304,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_final_v5_20261006/intent.json",
+        "sha256": "2c8e499809e51e374192b4864910ce6702eeb32b93425f9f82f46ac3231446d0"
+      },
+      "run_id": "history_verify_okx_final_v5_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 266,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_local_v5_20261006/completion.json",
+        "sha256": "21ab5ff7c6366dc23beb29209aef47178a48fa7ffb7a4d2afa15c4ef135765fa"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3304,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_local_v5_20261006/intent.json",
+        "sha256": "3a7aaf1f009efe5abb7f312ac18f64f8c01e0d7986332708e47f609552edaf03"
+      },
+      "run_id": "history_verify_okx_local_v5_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 267,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_stream_v5_20261006/completion.json",
+        "sha256": "809dbdc962727e7f9861b2ccebf9f88f955d1d3b02e27652e6e456da8fa3dc36"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3304,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_stream_v5_20261006/intent.json",
+        "sha256": "23533811303f5488e24ba7b4588d0f24414035402c40882e110d0191d9f30cc2"
+      },
+      "run_id": "history_verify_okx_stream_v5_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 271,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_options_source_v4_20261006/completion.json",
+        "sha256": "37112b30f4a699d2215f7f07430bccba4ec532d648038fbb03785eef9e15af22"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 3053,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_options_source_v4_20261006/intent.json",
+        "sha256": "0daba60cc15e21c8cbccdbc99a8c7d85a3eef32e76ed95df35da361eeaf79ff6"
+      },
+      "run_id": "history_verify_options_source_v4_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 261,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_release_20261006/completion.json",
+        "sha256": "73757384bd947527343dcfc371c0dc9e2e8aff780cbe199c19952b87a0fb4ff7"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2159,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_release_20261006/intent.json",
+        "sha256": "21ac3dc59b9fe3b1c7e5f664a0809c0ed05b5eeaf47fb3b30ce136fcbe650b35"
+      },
+      "run_id": "history_verify_release_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 269,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_survivorship_v3_20261006/completion.json",
+        "sha256": "c4011b491c4f6f890cd6b1a82daef4058f9e32dc675286291eea2e7da1fd92e3"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2673,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_survivorship_v3_20261006/intent.json",
+        "sha256": "872179cf384d1a10c531c00ef55b8402ed6a5629a0ddac69189855f7572448d1"
+      },
+      "run_id": "history_verify_survivorship_v3_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 263,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_trades_v3_20261006/completion.json",
+        "sha256": "78f36880c5af67c95caa19e7882451b2376c379113fbc788f6572182ece1ff48"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2799,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_trades_v3_20261006/intent.json",
+        "sha256": "62ddfaaca0567c185dc5fad82848a1ea655711c1f534473e8368616d949f1721"
+      },
+      "run_id": "history_verify_trades_v3_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 257,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v16_20261008/completion.json",
+        "sha256": "4fdd7134f1435a41014b5fc131bded82a66f56c3d9323eef559b5d35b2f71503"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 4069,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v16_20261008/intent.json",
+        "sha256": "4b1ea7440815237dac713a73de45e6e24bd7fb63d4d447d53480f578bd83e870"
+      },
+      "run_id": "history_verify_v16_20261008",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 257,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v17_20261008/completion.json",
+        "sha256": "8282ae29835ab678bd6cb5b1a3d99ffc231ee39c8b315e47e7bb998d9bd558f6"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 4201,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v17_20261008/intent.json",
+        "sha256": "dfa9803561fa894992f50f672e1428b4c5a2313b437ec835afefeb4d275b98ec"
+      },
+      "run_id": "history_verify_v17_20261008",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 257,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v18_20261009/completion.json",
+        "sha256": "9671f750971102bcba33059ac4959746d7cf9fb3308beb9ebaa2f5cc62a6d5b6"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 4328,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v18_20261009/intent.json",
+        "sha256": "e4626ada6e9bcee8bd357094c2827c87c7767a8db723833a21ea1c24b60b9391"
+      },
+      "run_id": "history_verify_v18_20261009",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 256,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v1_20261006/completion.json",
+        "sha256": "85c5a4e97f99f8060fe3f0c9ed057d6fad2754317e5d6ce9a4a2fad6ee9f15dc"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 1887,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v1_20261006/intent.json",
+        "sha256": "d3d2d4985fbc529558d12a696c514da34d14cf3c522059128babf0f5392b0c32"
+      },
+      "run_id": "history_verify_v1_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 263,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v21_final_20261009/completion.json",
+        "sha256": "128cf84cbcd39505700f874c757309f0d534b62b3a977476835da12b93bfe727"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 4451,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v21_final_20261009/intent.json",
+        "sha256": "34b32c9ead9279b3f310c79a6b01e4c50ac3d15f05ae29c42111761764f82220"
+      },
+      "run_id": "history_verify_v21_final_20261009",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 263,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v21_green_20261009/completion.json",
+        "sha256": "2e7c5b19e2f3653829ed09d9c2dbb216aee7271d120df01211677237b6c21afc"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 4451,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v21_green_20261009/intent.json",
+        "sha256": "ff74e2d74c530b7f9c9fd0fe36357bc3a52d6a11b2ca06c5599c37912fbd7f7b"
+      },
+      "run_id": "history_verify_v21_green_20261009",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 271,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v21_red_20261009/completion.json",
+        "sha256": "8f8465f37c0d47b18691afe67100726ede5ff858c3de6e7f6129039c41b14cb4"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 4328,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v21_red_20261009/intent.json",
+        "sha256": "31c9172ac05b3a61a5f9b5a81812fa8503605c8aefd247095cf0e2a17608c0eb"
+      },
+      "run_id": "history_verify_v21_red_20261009",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 256,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v2_20261006/completion.json",
+        "sha256": "986e6efa67868fa96c738332c1fa689469890aeda3002f73fcb63b63b56d8738"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2009,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v2_20261006/intent.json",
+        "sha256": "0f289498b73f0ee75ef436e59d7470910d9eb492ffcb77c8dd19c4732300a9cd"
+      },
+      "run_id": "history_verify_v2_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 256,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v3_20261006/completion.json",
+        "sha256": "03819443f0ed88ebd7486036abc8f2f0987e34bba527b65e4a395d0377b88bad"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2133,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v3_20261006/intent.json",
+        "sha256": "f9e56012ae1c42e374e020992f1859201d2b5f479780fc8d74b71cc36a323a42"
+      },
+      "run_id": "history_verify_v3_20261006",
+      "stage": "verify"
+    },
+    {
+      "completion": {
+        "bytes": 256,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v4_20261006/completion.json",
+        "sha256": "b7338b1aee5a78c977f22558a8449e500ba463b996494bd3bea4d4d95255652c"
+      },
+      "evaluation": null,
+      "intent": {
+        "bytes": 2159,
+        "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_v4_20261006/intent.json",
+        "sha256": "632db5400364a21c1fb02f4f2a28cac1989e4375e4fdd1397f60186c2cbd7cb4"
+      },
+      "run_id": "history_verify_v4_20261006",
+      "stage": "verify"
+    }
+  ],
+  "runtime_hash": "4c5f7500923c732f984792ecff8b2efa226e0150f91cbf296e5791701f4dc700",
+  "schema": "content_audit_inputs_v1"
+}

@@ -1,0 +1,7 @@
+{
+  "attempts": 1,
+  "method": "POST",
+  "response_cap": 33554432,
+  "status": "SOURCE_UNAVAILABLE_OR_INVALID",
+  "url": "https://www.histdata.com/get.php"
+}

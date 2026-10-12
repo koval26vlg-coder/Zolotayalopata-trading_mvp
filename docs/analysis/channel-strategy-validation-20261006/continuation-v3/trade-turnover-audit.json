@@ -1,0 +1,5643 @@
+{
+  "audit_hash": "0913267e441f0506e8ff08258f901ccccffffbefda5b7eec1e3a20a82f34bd1b",
+  "evaluation_eligible": false,
+  "historical_universe_certified": false,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "records": [
+    {
+      "attempts": 1,
+      "base": "TRC",
+      "body": {
+        "bytes_read": 99065,
+        "complete": true,
+        "declared_length": 99065,
+        "reason": "COMPLETE"
+      },
+      "candle_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_survivorship_v3_20261006\\artifacts\\gate-survivorship-audit\\03.raw",
+      "candle_sha256": "969a64b051479d762ec79f591ff6d1e5499f37cd83f80130819c0fbcff169062",
+      "end": 1788220800,
+      "http_status": 200,
+      "raw_file": "TRC.csv.gz",
+      "reconciliation": {
+        "base_volume_matches": 432,
+        "candles_without_trades": [],
+        "historical_completeness_certified": false,
+        "hours_absent_from_both": 312,
+        "interpretation": "Two archives may share missing data; consistency is not a completeness proof",
+        "shared_hours": 432,
+        "trades_without_candles": [],
+        "volume_mismatch_hours": []
+      },
+      "sha256": "0343b34f2687b8cc30cd8e4fc54c44ecdb1177520bc6dd3ece6eedf87c84ca6b",
+      "start": 1785542400,
+      "status": "OBSERVED_TURNOVER_RECONSTRUCTED_NOT_CERTIFIED",
+      "summary": {
+        "days": [
+          {
+            "base_volume": "1320010.15",
+            "quote_turnover": "7975.191788983",
+            "trades": 501,
+            "ts": 1785542400
+          },
+          {
+            "base_volume": "15315.82",
+            "quote_turnover": "90.176298936",
+            "trades": 8,
+            "ts": 1785628800
+          },
+          {
+            "base_volume": "668950.95",
+            "quote_turnover": "3708.714313853",
+            "trades": 123,
+            "ts": 1785715200
+          },
+          {
+            "base_volume": "581712.02",
+            "quote_turnover": "3010.254030810",
+            "trades": 71,
+            "ts": 1785801600
+          },
+          {
+            "base_volume": "3516436.31",
+            "quote_turnover": "13136.091577588",
+            "trades": 425,
+            "ts": 1785888000
+          },
+          {
+            "base_volume": "891129.36",
+            "quote_turnover": "2748.515168766",
+            "trades": 326,
+            "ts": 1785974400
+          },
+          {
+            "base_volume": "4275427.94",
+            "quote_turnover": "5795.310151800",
+            "trades": 474,
+            "ts": 1786060800
+          },
+          {
+            "base_volume": "25322041.63",
+            "quote_turnover": "19259.288497266",
+            "trades": 1219,
+            "ts": 1786147200
+          },
+          {
+            "base_volume": "12221796.45",
+            "quote_turnover": "7074.403758585",
+            "trades": 496,
+            "ts": 1786233600
+          },
+          {
+            "base_volume": "28322694.21",
+            "quote_turnover": "7248.066947096",
+            "trades": 480,
+            "ts": 1786320000
+          },
+          {
+            "base_volume": "36332080.48",
+            "quote_turnover": "5620.521423931",
+            "trades": 447,
+            "ts": 1786406400
+          },
+          {
+            "base_volume": "29439317.31",
+            "quote_turnover": "3134.8671713957",
+            "trades": 285,
+            "ts": 1786492800
+          },
+          {
+            "base_volume": "11922960.70",
+            "quote_turnover": "960.0511350413",
+            "trades": 124,
+            "ts": 1786579200
+          },
+          {
+            "base_volume": "4409528.79",
+            "quote_turnover": "372.7479836737",
+            "trades": 64,
+            "ts": 1786665600
+          },
+          {
+            "base_volume": "1528864.0",
+            "quote_turnover": "117.011561720",
+            "trades": 21,
+            "ts": 1786752000
+          },
+          {
+            "base_volume": "2041786.0",
+            "quote_turnover": "184.286572710",
+            "trades": 23,
+            "ts": 1786838400
+          },
+          {
+            "base_volume": "235442.0",
+            "quote_turnover": "17.968934070",
+            "trades": 3,
+            "ts": 1786924800
+          },
+          {
+            "base_volume": "1723578.0",
+            "quote_turnover": "136.461372630",
+            "trades": 26,
+            "ts": 1787011200
+          },
+          {
+            "base_volume": "1126161.91",
+            "quote_turnover": "131.380238760",
+            "trades": 40,
+            "ts": 1787097600
+          },
+          {
+            "base_volume": "2787104.0",
+            "quote_turnover": "354.739689080",
+            "trades": 51,
+            "ts": 1787184000
+          },
+          {
+            "base_volume": "66812180.14",
+            "quote_turnover": "15393.333041463",
+            "trades": 439,
+            "ts": 1787270400
+          },
+          {
+            "base_volume": "3581828.0",
+            "quote_turnover": "485.688018830",
+            "trades": 57,
+            "ts": 1787356800
+          },
+          {
+            "base_volume": "934491.0",
+            "quote_turnover": "106.699944210",
+            "trades": 15,
+            "ts": 1787443200
+          },
+          {
+            "base_volume": "1332057.0",
+            "quote_turnover": "155.212654220",
+            "trades": 15,
+            "ts": 1787529600
+          },
+          {
+            "base_volume": "206552.0",
+            "quote_turnover": "23.927920150",
+            "trades": 8,
+            "ts": 1787616000
+          },
+          {
+            "base_volume": "45468651.00",
+            "quote_turnover": "2216.935715050",
+            "trades": 284,
+            "ts": 1787702400
+          },
+          {
+            "base_volume": "6018425.0",
+            "quote_turnover": "207.540981750",
+            "trades": 81,
+            "ts": 1787788800
+          },
+          {
+            "base_volume": "5220064.0",
+            "quote_turnover": "159.644451610",
+            "trades": 62,
+            "ts": 1787875200
+          },
+          {
+            "base_volume": "95964140.0",
+            "quote_turnover": "2678.745428890",
+            "trades": 225,
+            "ts": 1787961600
+          },
+          {
+            "base_volume": "11320258.0",
+            "quote_turnover": "281.972677290",
+            "trades": 72,
+            "ts": 1788048000
+          },
+          {
+            "base_volume": "34582710.0",
+            "quote_turnover": "1052.997363860",
+            "trades": 340,
+            "ts": 1788134400
+          }
+        ],
+        "empty_buckets": "NOT_FILLED_WITH_ZERO_WITHOUT_COMPLETENESS_EVIDENCE",
+        "evaluation_eligible": false,
+        "first": "1785542467.765837",
+        "historical_completeness_certified": false,
+        "hours": [
+          {
+            "base_volume": "84167.82",
+            "quote_turnover": "545.095131015",
+            "trades": 41,
+            "ts": 1785542400
+          },
+          {
+            "base_volume": "242340.93",
+            "quote_turnover": "1525.337403270",
+            "trades": 55,
+            "ts": 1785546000
+          },
+          {
+            "base_volume": "71555.54",
+            "quote_turnover": "440.273251211",
+            "trades": 35,
+            "ts": 1785549600
+          },
+          {
+            "base_volume": "55866.71",
+            "quote_turnover": "339.780182260",
+            "trades": 33,
+            "ts": 1785553200
+          },
+          {
+            "base_volume": "54194.59",
+            "quote_turnover": "325.849878650",
+            "trades": 33,
+            "ts": 1785556800
+          },
+          {
+            "base_volume": "56076.49",
+            "quote_turnover": "337.057476806",
+            "trades": 33,
+            "ts": 1785560400
+          },
+          {
+            "base_volume": "52240.07",
+            "quote_turnover": "311.854561163",
+            "trades": 33,
+            "ts": 1785564000
+          },
+          {
+            "base_volume": "68609.02",
+            "quote_turnover": "407.187456937",
+            "trades": 46,
+            "ts": 1785567600
+          },
+          {
+            "base_volume": "56978.78",
+            "quote_turnover": "335.535043583",
+            "trades": 35,
+            "ts": 1785571200
+          },
+          {
+            "base_volume": "32511.95",
+            "quote_turnover": "190.172186924",
+            "trades": 14,
+            "ts": 1785574800
+          },
+          {
+            "base_volume": "65460.33",
+            "quote_turnover": "383.155706790",
+            "trades": 24,
+            "ts": 1785578400
+          },
+          {
+            "base_volume": "30658.71",
+            "quote_turnover": "178.046668296",
+            "trades": 11,
+            "ts": 1785582000
+          },
+          {
+            "base_volume": "214148.58",
+            "quote_turnover": "1272.552865961",
+            "trades": 31,
+            "ts": 1785585600
+          },
+          {
+            "base_volume": "37347.84",
+            "quote_turnover": "221.498429067",
+            "trades": 16,
+            "ts": 1785589200
+          },
+          {
+            "base_volume": "42856.22",
+            "quote_turnover": "254.469209206",
+            "trades": 13,
+            "ts": 1785592800
+          },
+          {
+            "base_volume": "30489.58",
+            "quote_turnover": "180.107678615",
+            "trades": 12,
+            "ts": 1785596400
+          },
+          {
+            "base_volume": "31139.60",
+            "quote_turnover": "183.086906529",
+            "trades": 9,
+            "ts": 1785600000
+          },
+          {
+            "base_volume": "31348.96",
+            "quote_turnover": "183.338500033",
+            "trades": 10,
+            "ts": 1785603600
+          },
+          {
+            "base_volume": "16397.19",
+            "quote_turnover": "95.265788151",
+            "trades": 3,
+            "ts": 1785607200
+          },
+          {
+            "base_volume": "14267.28",
+            "quote_turnover": "82.750224",
+            "trades": 3,
+            "ts": 1785610800
+          },
+          {
+            "base_volume": "20873.79",
+            "quote_turnover": "121.582474610",
+            "trades": 7,
+            "ts": 1785614400
+          },
+          {
+            "base_volume": "10480.17",
+            "quote_turnover": "61.194765906",
+            "trades": 4,
+            "ts": 1785618000
+          },
+          {
+            "base_volume": "6667.56",
+            "quote_turnover": "39.165672629",
+            "trades": 4,
+            "ts": 1785628800
+          },
+          {
+            "base_volume": "4410.98",
+            "quote_turnover": "26.010674307",
+            "trades": 3,
+            "ts": 1785636000
+          },
+          {
+            "base_volume": "4237.28",
+            "quote_turnover": "24.999952",
+            "trades": 1,
+            "ts": 1785693600
+          },
+          {
+            "base_volume": "125643.29",
+            "quote_turnover": "720.431713057",
+            "trades": 29,
+            "ts": 1785740400
+          },
+          {
+            "base_volume": "30234.06",
+            "quote_turnover": "171.270824374",
+            "trades": 4,
+            "ts": 1785744000
+          },
+          {
+            "base_volume": "29853.89",
+            "quote_turnover": "168.021536759",
+            "trades": 11,
+            "ts": 1785762000
+          },
+          {
+            "base_volume": "33149.37",
+            "quote_turnover": "185.690109260",
+            "trades": 6,
+            "ts": 1785765600
+          },
+          {
+            "base_volume": "15452.37",
+            "quote_turnover": "86.535548142",
+            "trades": 3,
+            "ts": 1785769200
+          },
+          {
+            "base_volume": "28651.75",
+            "quote_turnover": "159.156569687",
+            "trades": 5,
+            "ts": 1785772800
+          },
+          {
+            "base_volume": "29425.77",
+            "quote_turnover": "162.988624653",
+            "trades": 10,
+            "ts": 1785776400
+          },
+          {
+            "base_volume": "32753.85",
+            "quote_turnover": "181.214915105",
+            "trades": 7,
+            "ts": 1785780000
+          },
+          {
+            "base_volume": "63690.12",
+            "quote_turnover": "354.899776208",
+            "trades": 9,
+            "ts": 1785783600
+          },
+          {
+            "base_volume": "169049.65",
+            "quote_turnover": "921.992860272",
+            "trades": 17,
+            "ts": 1785787200
+          },
+          {
+            "base_volume": "51294.80",
+            "quote_turnover": "277.421929454",
+            "trades": 10,
+            "ts": 1785790800
+          },
+          {
+            "base_volume": "31244.80",
+            "quote_turnover": "167.307790008",
+            "trades": 5,
+            "ts": 1785794400
+          },
+          {
+            "base_volume": "28507.23",
+            "quote_turnover": "151.782116874",
+            "trades": 7,
+            "ts": 1785798000
+          },
+          {
+            "base_volume": "132798.62",
+            "quote_turnover": "697.126077790",
+            "trades": 18,
+            "ts": 1785801600
+          },
+          {
+            "base_volume": "34428.98",
+            "quote_turnover": "178.209805932",
+            "trades": 4,
+            "ts": 1785816000
+          },
+          {
+            "base_volume": "107370.20",
+            "quote_turnover": "566.449946863",
+            "trades": 7,
+            "ts": 1785834000
+          },
+          {
+            "base_volume": "10369.97",
+            "quote_turnover": "54.443111566",
+            "trades": 3,
+            "ts": 1785841200
+          },
+          {
+            "base_volume": "19365.64",
+            "quote_turnover": "101.670262055",
+            "trades": 3,
+            "ts": 1785855600
+          },
+          {
+            "base_volume": "63741.26",
+            "quote_turnover": "331.228261502",
+            "trades": 8,
+            "ts": 1785859200
+          },
+          {
+            "base_volume": "50967.68",
+            "quote_turnover": "260.707178713",
+            "trades": 10,
+            "ts": 1785870000
+          },
+          {
+            "base_volume": "28072.89",
+            "quote_turnover": "143.445559968",
+            "trades": 6,
+            "ts": 1785873600
+          },
+          {
+            "base_volume": "50534.97",
+            "quote_turnover": "256.308982794",
+            "trades": 5,
+            "ts": 1785877200
+          },
+          {
+            "base_volume": "8167.51",
+            "quote_turnover": "41.184266151",
+            "trades": 3,
+            "ts": 1785880800
+          },
+          {
+            "base_volume": "75894.30",
+            "quote_turnover": "379.480577476",
+            "trades": 4,
+            "ts": 1785884400
+          },
+          {
+            "base_volume": "55387.16",
+            "quote_turnover": "276.968489146",
+            "trades": 4,
+            "ts": 1785888000
+          },
+          {
+            "base_volume": "62127.56",
+            "quote_turnover": "310.644348028",
+            "trades": 7,
+            "ts": 1785891600
+          },
+          {
+            "base_volume": "834061.07",
+            "quote_turnover": "3844.551968524",
+            "trades": 51,
+            "ts": 1785895200
+          },
+          {
+            "base_volume": "31851.54",
+            "quote_turnover": "136.991973678",
+            "trades": 3,
+            "ts": 1785898800
+          },
+          {
+            "base_volume": "97871.61",
+            "quote_turnover": "413.285086853",
+            "trades": 10,
+            "ts": 1785902400
+          },
+          {
+            "base_volume": "43834.60",
+            "quote_turnover": "183.267900247",
+            "trades": 8,
+            "ts": 1785906000
+          },
+          {
+            "base_volume": "1365321.50",
+            "quote_turnover": "4947.567943512",
+            "trades": 84,
+            "ts": 1785909600
+          },
+          {
+            "base_volume": "31666.13",
+            "quote_turnover": "101.562697725",
+            "trades": 18,
+            "ts": 1785913200
+          },
+          {
+            "base_volume": "144165.99",
+            "quote_turnover": "448.181618126",
+            "trades": 30,
+            "ts": 1785916800
+          },
+          {
+            "base_volume": "24515.40",
+            "quote_turnover": "74.779777455",
+            "trades": 3,
+            "ts": 1785920400
+          },
+          {
+            "base_volume": "14099.91",
+            "quote_turnover": "43.306019366",
+            "trades": 10,
+            "ts": 1785924000
+          },
+          {
+            "base_volume": "25318.11",
+            "quote_turnover": "77.986071062",
+            "trades": 3,
+            "ts": 1785927600
+          },
+          {
+            "base_volume": "112942.74",
+            "quote_turnover": "349.175160405",
+            "trades": 14,
+            "ts": 1785931200
+          },
+          {
+            "base_volume": "49108.37",
+            "quote_turnover": "152.374612443",
+            "trades": 5,
+            "ts": 1785934800
+          },
+          {
+            "base_volume": "229717.43",
+            "quote_turnover": "681.287804293",
+            "trades": 34,
+            "ts": 1785938400
+          },
+          {
+            "base_volume": "4647.42",
+            "quote_turnover": "13.691897664",
+            "trades": 5,
+            "ts": 1785942000
+          },
+          {
+            "base_volume": "37739.38",
+            "quote_turnover": "109.849660740",
+            "trades": 15,
+            "ts": 1785945600
+          },
+          {
+            "base_volume": "4631.21",
+            "quote_turnover": "13.491869205",
+            "trades": 4,
+            "ts": 1785949200
+          },
+          {
+            "base_volume": "8422.60",
+            "quote_turnover": "24.269121766",
+            "trades": 9,
+            "ts": 1785952800
+          },
+          {
+            "base_volume": "85570.15",
+            "quote_turnover": "239.750158608",
+            "trades": 20,
+            "ts": 1785956400
+          },
+          {
+            "base_volume": "38360.82",
+            "quote_turnover": "109.742681724",
+            "trades": 15,
+            "ts": 1785960000
+          },
+          {
+            "base_volume": "137791.48",
+            "quote_turnover": "374.309133352",
+            "trades": 43,
+            "ts": 1785963600
+          },
+          {
+            "base_volume": "59287.21",
+            "quote_turnover": "160.434314221",
+            "trades": 12,
+            "ts": 1785967200
+          },
+          {
+            "base_volume": "17996.92",
+            "quote_turnover": "48.621269445",
+            "trades": 18,
+            "ts": 1785970800
+          },
+          {
+            "base_volume": "39311.06",
+            "quote_turnover": "111.295855572",
+            "trades": 15,
+            "ts": 1785974400
+          },
+          {
+            "base_volume": "8808.51",
+            "quote_turnover": "24.789321408",
+            "trades": 7,
+            "ts": 1785978000
+          },
+          {
+            "base_volume": "45884.66",
+            "quote_turnover": "133.133646457",
+            "trades": 14,
+            "ts": 1785981600
+          },
+          {
+            "base_volume": "1388.0",
+            "quote_turnover": "3.99577440",
+            "trades": 1,
+            "ts": 1785985200
+          },
+          {
+            "base_volume": "11339.21",
+            "quote_turnover": "32.988647630",
+            "trades": 5,
+            "ts": 1785988800
+          },
+          {
+            "base_volume": "39340.45",
+            "quote_turnover": "106.314519911",
+            "trades": 26,
+            "ts": 1785992400
+          },
+          {
+            "base_volume": "35788.53",
+            "quote_turnover": "98.834488959",
+            "trades": 25,
+            "ts": 1785996000
+          },
+          {
+            "base_volume": "38395.58",
+            "quote_turnover": "98.231858842",
+            "trades": 29,
+            "ts": 1785999600
+          },
+          {
+            "base_volume": "134639.01",
+            "quote_turnover": "344.620541635",
+            "trades": 59,
+            "ts": 1786003200
+          },
+          {
+            "base_volume": "22159.91",
+            "quote_turnover": "56.013051857",
+            "trades": 17,
+            "ts": 1786006800
+          },
+          {
+            "base_volume": "4494.68",
+            "quote_turnover": "11.981468476",
+            "trades": 3,
+            "ts": 1786010400
+          },
+          {
+            "base_volume": "40268.30",
+            "quote_turnover": "102.310093387",
+            "trades": 25,
+            "ts": 1786014000
+          },
+          {
+            "base_volume": "20112.23",
+            "quote_turnover": "51.923759717",
+            "trades": 14,
+            "ts": 1786017600
+          },
+          {
+            "base_volume": "47290.08",
+            "quote_turnover": "125.844165697",
+            "trades": 23,
+            "ts": 1786021200
+          },
+          {
+            "base_volume": "19150.13",
+            "quote_turnover": "52.171623184",
+            "trades": 13,
+            "ts": 1786024800
+          },
+          {
+            "base_volume": "1047.87",
+            "quote_turnover": "2.777379435",
+            "trades": 1,
+            "ts": 1786028400
+          },
+          {
+            "base_volume": "8928.82",
+            "quote_turnover": "24.999999442",
+            "trades": 2,
+            "ts": 1786032000
+          },
+          {
+            "base_volume": "32605.90",
+            "quote_turnover": "86.421937950",
+            "trades": 2,
+            "ts": 1786035600
+          },
+          {
+            "base_volume": "313985.23",
+            "quote_turnover": "1205.080249203",
+            "trades": 27,
+            "ts": 1786042800
+          },
+          {
+            "base_volume": "14479.59",
+            "quote_turnover": "41.498616395",
+            "trades": 8,
+            "ts": 1786046400
+          },
+          {
+            "base_volume": "330.43",
+            "quote_turnover": "0.939379447",
+            "trades": 1,
+            "ts": 1786053600
+          },
+          {
+            "base_volume": "11381.18",
+            "quote_turnover": "32.348789762",
+            "trades": 9,
+            "ts": 1786057200
+          },
+          {
+            "base_volume": "140024.80",
+            "quote_turnover": "370.395394124",
+            "trades": 34,
+            "ts": 1786060800
+          },
+          {
+            "base_volume": "50508.78",
+            "quote_turnover": "126.082086806",
+            "trades": 28,
+            "ts": 1786064400
+          },
+          {
+            "base_volume": "3488.97",
+            "quote_turnover": "8.967980047",
+            "trades": 3,
+            "ts": 1786068000
+          },
+          {
+            "base_volume": "13044.63",
+            "quote_turnover": "32.594771160",
+            "trades": 10,
+            "ts": 1786071600
+          },
+          {
+            "base_volume": "19362.39",
+            "quote_turnover": "51.614469343",
+            "trades": 9,
+            "ts": 1786082400
+          },
+          {
+            "base_volume": "2676.58",
+            "quote_turnover": "7.506252199",
+            "trades": 3,
+            "ts": 1786089600
+          },
+          {
+            "base_volume": "3328.51",
+            "quote_turnover": "9.500186407",
+            "trades": 4,
+            "ts": 1786093200
+          },
+          {
+            "base_volume": "2164.93",
+            "quote_turnover": "6.003567383",
+            "trades": 2,
+            "ts": 1786111200
+          },
+          {
+            "base_volume": "12286.87",
+            "quote_turnover": "35.919937494",
+            "trades": 6,
+            "ts": 1786129200
+          },
+          {
+            "base_volume": "2568515.66",
+            "quote_turnover": "3628.265801764",
+            "trades": 199,
+            "ts": 1786132800
+          },
+          {
+            "base_volume": "217364.38",
+            "quote_turnover": "240.217620447",
+            "trades": 36,
+            "ts": 1786136400
+          },
+          {
+            "base_volume": "842853.29",
+            "quote_turnover": "883.720846109",
+            "trades": 73,
+            "ts": 1786140000
+          },
+          {
+            "base_volume": "399808.15",
+            "quote_turnover": "394.521238517",
+            "trades": 67,
+            "ts": 1786143600
+          },
+          {
+            "base_volume": "419747.17",
+            "quote_turnover": "414.109918773",
+            "trades": 50,
+            "ts": 1786147200
+          },
+          {
+            "base_volume": "30258.73",
+            "quote_turnover": "30.945436650",
+            "trades": 4,
+            "ts": 1786150800
+          },
+          {
+            "base_volume": "28317.40",
+            "quote_turnover": "27.266984104",
+            "trades": 5,
+            "ts": 1786154400
+          },
+          {
+            "base_volume": "40617.98",
+            "quote_turnover": "38.864399486",
+            "trades": 3,
+            "ts": 1786158000
+          },
+          {
+            "base_volume": "1405029.43",
+            "quote_turnover": "1506.923361554",
+            "trades": 93,
+            "ts": 1786161600
+          },
+          {
+            "base_volume": "51135.41",
+            "quote_turnover": "60.020849745",
+            "trades": 15,
+            "ts": 1786165200
+          },
+          {
+            "base_volume": "82496.40",
+            "quote_turnover": "91.231698687",
+            "trades": 12,
+            "ts": 1786168800
+          },
+          {
+            "base_volume": "103566.38",
+            "quote_turnover": "114.950563609",
+            "trades": 10,
+            "ts": 1786172400
+          },
+          {
+            "base_volume": "1024127.64",
+            "quote_turnover": "953.771514061",
+            "trades": 63,
+            "ts": 1786176000
+          },
+          {
+            "base_volume": "1169970.07",
+            "quote_turnover": "899.278763338",
+            "trades": 77,
+            "ts": 1786179600
+          },
+          {
+            "base_volume": "63901.27",
+            "quote_turnover": "48.169038795",
+            "trades": 13,
+            "ts": 1786183200
+          },
+          {
+            "base_volume": "116910.09",
+            "quote_turnover": "102.140744449",
+            "trades": 8,
+            "ts": 1786186800
+          },
+          {
+            "base_volume": "991614.63",
+            "quote_turnover": "743.199969110",
+            "trades": 41,
+            "ts": 1786190400
+          },
+          {
+            "base_volume": "648651.32",
+            "quote_turnover": "433.188564454",
+            "trades": 27,
+            "ts": 1786194000
+          },
+          {
+            "base_volume": "1082464.91",
+            "quote_turnover": "784.787880091",
+            "trades": 51,
+            "ts": 1786197600
+          },
+          {
+            "base_volume": "6241333.26",
+            "quote_turnover": "4637.316304013",
+            "trades": 73,
+            "ts": 1786201200
+          },
+          {
+            "base_volume": "3038912.23",
+            "quote_turnover": "2234.296030364",
+            "trades": 154,
+            "ts": 1786204800
+          },
+          {
+            "base_volume": "3455592.81",
+            "quote_turnover": "2621.637903352",
+            "trades": 284,
+            "ts": 1786208400
+          },
+          {
+            "base_volume": "1418797.81",
+            "quote_turnover": "949.479864392",
+            "trades": 58,
+            "ts": 1786212000
+          },
+          {
+            "base_volume": "439413.92",
+            "quote_turnover": "302.392551168",
+            "trades": 40,
+            "ts": 1786215600
+          },
+          {
+            "base_volume": "1838762.77",
+            "quote_turnover": "1251.888095644",
+            "trades": 45,
+            "ts": 1786219200
+          },
+          {
+            "base_volume": "901866.81",
+            "quote_turnover": "575.078423552",
+            "trades": 54,
+            "ts": 1786222800
+          },
+          {
+            "base_volume": "93181.41",
+            "quote_turnover": "55.696624121",
+            "trades": 11,
+            "ts": 1786226400
+          },
+          {
+            "base_volume": "635371.78",
+            "quote_turnover": "382.653013754",
+            "trades": 28,
+            "ts": 1786230000
+          },
+          {
+            "base_volume": "1678197.62",
+            "quote_turnover": "930.158607135",
+            "trades": 103,
+            "ts": 1786233600
+          },
+          {
+            "base_volume": "732208.10",
+            "quote_turnover": "390.215340884",
+            "trades": 33,
+            "ts": 1786237200
+          },
+          {
+            "base_volume": "494467.08",
+            "quote_turnover": "250.897975732",
+            "trades": 17,
+            "ts": 1786240800
+          },
+          {
+            "base_volume": "644588.38",
+            "quote_turnover": "343.061686118",
+            "trades": 32,
+            "ts": 1786244400
+          },
+          {
+            "base_volume": "544265.69",
+            "quote_turnover": "330.773174549",
+            "trades": 16,
+            "ts": 1786248000
+          },
+          {
+            "base_volume": "751354.69",
+            "quote_turnover": "455.474415360",
+            "trades": 25,
+            "ts": 1786251600
+          },
+          {
+            "base_volume": "186455.18",
+            "quote_turnover": "115.287253839",
+            "trades": 6,
+            "ts": 1786255200
+          },
+          {
+            "base_volume": "686584.86",
+            "quote_turnover": "430.693796107",
+            "trades": 17,
+            "ts": 1786258800
+          },
+          {
+            "base_volume": "1534498.91",
+            "quote_turnover": "1080.218005497",
+            "trades": 19,
+            "ts": 1786262400
+          },
+          {
+            "base_volume": "548425.52",
+            "quote_turnover": "343.810506062",
+            "trades": 35,
+            "ts": 1786266000
+          },
+          {
+            "base_volume": "68517.42",
+            "quote_turnover": "44.238469938",
+            "trades": 13,
+            "ts": 1786269600
+          },
+          {
+            "base_volume": "1073950.75",
+            "quote_turnover": "644.806867216",
+            "trades": 13,
+            "ts": 1786273200
+          },
+          {
+            "base_volume": "135554.44",
+            "quote_turnover": "80.990426268",
+            "trades": 12,
+            "ts": 1786276800
+          },
+          {
+            "base_volume": "462299.84",
+            "quote_turnover": "258.776582258",
+            "trades": 23,
+            "ts": 1786280400
+          },
+          {
+            "base_volume": "149674.27",
+            "quote_turnover": "86.020341454",
+            "trades": 7,
+            "ts": 1786284000
+          },
+          {
+            "base_volume": "917379.85",
+            "quote_turnover": "485.816857644",
+            "trades": 44,
+            "ts": 1786287600
+          },
+          {
+            "base_volume": "13352.10",
+            "quote_turnover": "7.217332878",
+            "trades": 3,
+            "ts": 1786291200
+          },
+          {
+            "base_volume": "554022.29",
+            "quote_turnover": "270.288590414",
+            "trades": 31,
+            "ts": 1786294800
+          },
+          {
+            "base_volume": "19711.63",
+            "quote_turnover": "9.979998269",
+            "trades": 1,
+            "ts": 1786298400
+          },
+          {
+            "base_volume": "13630.7",
+            "quote_turnover": "6.47730864",
+            "trades": 1,
+            "ts": 1786302000
+          },
+          {
+            "base_volume": "132185.67",
+            "quote_turnover": "69.038520126",
+            "trades": 8,
+            "ts": 1786305600
+          },
+          {
+            "base_volume": "322712.17",
+            "quote_turnover": "167.961179494",
+            "trades": 17,
+            "ts": 1786309200
+          },
+          {
+            "base_volume": "220993.18",
+            "quote_turnover": "107.014964813",
+            "trades": 10,
+            "ts": 1786312800
+          },
+          {
+            "base_volume": "336766.11",
+            "quote_turnover": "165.185557890",
+            "trades": 10,
+            "ts": 1786316400
+          },
+          {
+            "base_volume": "39590.12",
+            "quote_turnover": "18.639028496",
+            "trades": 1,
+            "ts": 1786334400
+          },
+          {
+            "base_volume": "21850.95",
+            "quote_turnover": "10.789999110",
+            "trades": 1,
+            "ts": 1786338000
+          },
+          {
+            "base_volume": "8361.76",
+            "quote_turnover": "3.935880432",
+            "trades": 1,
+            "ts": 1786341600
+          },
+          {
+            "base_volume": "98867.83",
+            "quote_turnover": "46.651798564",
+            "trades": 6,
+            "ts": 1786345200
+          },
+          {
+            "base_volume": "9824.93",
+            "quote_turnover": "4.654302035",
+            "trades": 2,
+            "ts": 1786348800
+          },
+          {
+            "base_volume": "946645.55",
+            "quote_turnover": "497.448754278",
+            "trades": 52,
+            "ts": 1786352400
+          },
+          {
+            "base_volume": "1657141.23",
+            "quote_turnover": "878.420446151",
+            "trades": 65,
+            "ts": 1786356000
+          },
+          {
+            "base_volume": "469408.24",
+            "quote_turnover": "241.400996279",
+            "trades": 19,
+            "ts": 1786363200
+          },
+          {
+            "base_volume": "22545.33",
+            "quote_turnover": "10.688740953",
+            "trades": 1,
+            "ts": 1786366800
+          },
+          {
+            "base_volume": "260315.88",
+            "quote_turnover": "125.209548162",
+            "trades": 8,
+            "ts": 1786370400
+          },
+          {
+            "base_volume": "151219.52",
+            "quote_turnover": "77.515435062",
+            "trades": 12,
+            "ts": 1786374000
+          },
+          {
+            "base_volume": "15133.20",
+            "quote_turnover": "7.607478648",
+            "trades": 4,
+            "ts": 1786377600
+          },
+          {
+            "base_volume": "136068.04",
+            "quote_turnover": "66.002414072",
+            "trades": 7,
+            "ts": 1786381200
+          },
+          {
+            "base_volume": "147325.20",
+            "quote_turnover": "67.210458610",
+            "trades": 14,
+            "ts": 1786384800
+          },
+          {
+            "base_volume": "5337.66",
+            "quote_turnover": "2.409419724",
+            "trades": 1,
+            "ts": 1786388400
+          },
+          {
+            "base_volume": "17043535.80",
+            "quote_turnover": "4101.420689917",
+            "trades": 189,
+            "ts": 1786392000
+          },
+          {
+            "base_volume": "952492.63",
+            "quote_turnover": "127.717409267",
+            "trades": 20,
+            "ts": 1786395600
+          },
+          {
+            "base_volume": "3290701.58",
+            "quote_turnover": "467.377452505",
+            "trades": 36,
+            "ts": 1786399200
+          },
+          {
+            "base_volume": "3046328.76",
+            "quote_turnover": "492.966694831",
+            "trades": 41,
+            "ts": 1786402800
+          },
+          {
+            "base_volume": "1486659.15",
+            "quote_turnover": "212.624344947",
+            "trades": 19,
+            "ts": 1786406400
+          },
+          {
+            "base_volume": "481205.75",
+            "quote_turnover": "76.689683251",
+            "trades": 11,
+            "ts": 1786410000
+          },
+          {
+            "base_volume": "1828628.55",
+            "quote_turnover": "338.281689635",
+            "trades": 17,
+            "ts": 1786413600
+          },
+          {
+            "base_volume": "1313224.87",
+            "quote_turnover": "211.966425654",
+            "trades": 12,
+            "ts": 1786417200
+          },
+          {
+            "base_volume": "3108026.65",
+            "quote_turnover": "590.124462552",
+            "trades": 20,
+            "ts": 1786420800
+          },
+          {
+            "base_volume": "118089.14",
+            "quote_turnover": "23.455331002",
+            "trades": 3,
+            "ts": 1786424400
+          },
+          {
+            "base_volume": "4353.5",
+            "quote_turnover": "0.99999895",
+            "trades": 1,
+            "ts": 1786428000
+          },
+          {
+            "base_volume": "87019.38",
+            "quote_turnover": "16.672318726",
+            "trades": 4,
+            "ts": 1786431600
+          },
+          {
+            "base_volume": "356763.81",
+            "quote_turnover": "67.7851239",
+            "trades": 3,
+            "ts": 1786435200
+          },
+          {
+            "base_volume": "233917.99",
+            "quote_turnover": "40.45377754",
+            "trades": 9,
+            "ts": 1786438800
+          },
+          {
+            "base_volume": "151292.60",
+            "quote_turnover": "27.305210003",
+            "trades": 4,
+            "ts": 1786442400
+          },
+          {
+            "base_volume": "60640.68",
+            "quote_turnover": "10.939526712",
+            "trades": 2,
+            "ts": 1786446000
+          },
+          {
+            "base_volume": "370826.64",
+            "quote_turnover": "72.410679589",
+            "trades": 10,
+            "ts": 1786449600
+          },
+          {
+            "base_volume": "3634606.57",
+            "quote_turnover": "850.444861485",
+            "trades": 61,
+            "ts": 1786453200
+          },
+          {
+            "base_volume": "1123382.92",
+            "quote_turnover": "345.492667259",
+            "trades": 25,
+            "ts": 1786456800
+          },
+          {
+            "base_volume": "150524.56",
+            "quote_turnover": "39.393482082",
+            "trades": 9,
+            "ts": 1786460400
+          },
+          {
+            "base_volume": "140425.91",
+            "quote_turnover": "35.730016152",
+            "trades": 10,
+            "ts": 1786464000
+          },
+          {
+            "base_volume": "12494.79",
+            "quote_turnover": "2.999999079",
+            "trades": 1,
+            "ts": 1786467600
+          },
+          {
+            "base_volume": "833608.08",
+            "quote_turnover": "208.543970368",
+            "trades": 26,
+            "ts": 1786471200
+          },
+          {
+            "base_volume": "97334.24",
+            "quote_turnover": "25.462637184",
+            "trades": 3,
+            "ts": 1786478400
+          },
+          {
+            "base_volume": "6555513.71",
+            "quote_turnover": "974.171206480",
+            "trades": 86,
+            "ts": 1786482000
+          },
+          {
+            "base_volume": "5104449.33",
+            "quote_turnover": "555.835914637",
+            "trades": 64,
+            "ts": 1786485600
+          },
+          {
+            "base_volume": "9079091.66",
+            "quote_turnover": "892.738096744",
+            "trades": 47,
+            "ts": 1786489200
+          },
+          {
+            "base_volume": "7198851.11",
+            "quote_turnover": "802.014468487",
+            "trades": 30,
+            "ts": 1786492800
+          },
+          {
+            "base_volume": "716415.66",
+            "quote_turnover": "86.901219558",
+            "trades": 2,
+            "ts": 1786496400
+          },
+          {
+            "base_volume": "1644536.81",
+            "quote_turnover": "192.5450571518",
+            "trades": 15,
+            "ts": 1786500000
+          },
+          {
+            "base_volume": "974845.54",
+            "quote_turnover": "110.3488129281",
+            "trades": 8,
+            "ts": 1786503600
+          },
+          {
+            "base_volume": "1081353.47",
+            "quote_turnover": "116.8735669356",
+            "trades": 19,
+            "ts": 1786507200
+          },
+          {
+            "base_volume": "300631.14",
+            "quote_turnover": "31.003834180",
+            "trades": 8,
+            "ts": 1786510800
+          },
+          {
+            "base_volume": "543617.42",
+            "quote_turnover": "59.743554458",
+            "trades": 3,
+            "ts": 1786514400
+          },
+          {
+            "base_volume": "176291.71",
+            "quote_turnover": "19.374458929",
+            "trades": 2,
+            "ts": 1786518000
+          },
+          {
+            "base_volume": "38442.71",
+            "quote_turnover": "4.21952181",
+            "trades": 2,
+            "ts": 1786521600
+          },
+          {
+            "base_volume": "1883557.21",
+            "quote_turnover": "198.5699068857",
+            "trades": 26,
+            "ts": 1786525200
+          },
+          {
+            "base_volume": "254118.56",
+            "quote_turnover": "23.2907384842",
+            "trades": 15,
+            "ts": 1786528800
+          },
+          {
+            "base_volume": "2674470.96",
+            "quote_turnover": "281.4988646219",
+            "trades": 24,
+            "ts": 1786532400
+          },
+          {
+            "base_volume": "37623.32",
+            "quote_turnover": "4.0399984468",
+            "trades": 2,
+            "ts": 1786536000
+          },
+          {
+            "base_volume": "2281796.64",
+            "quote_turnover": "221.9580154876",
+            "trades": 26,
+            "ts": 1786539600
+          },
+          {
+            "base_volume": "573554.03",
+            "quote_turnover": "57.4416659010",
+            "trades": 9,
+            "ts": 1786543200
+          },
+          {
+            "base_volume": "2982953.13",
+            "quote_turnover": "285.9160951252",
+            "trades": 20,
+            "ts": 1786546800
+          },
+          {
+            "base_volume": "4251084.78",
+            "quote_turnover": "435.4859250168",
+            "trades": 41,
+            "ts": 1786550400
+          },
+          {
+            "base_volume": "429754.50",
+            "quote_turnover": "47.4988932118",
+            "trades": 6,
+            "ts": 1786554000
+          },
+          {
+            "base_volume": "1256453.15",
+            "quote_turnover": "141.4518734210",
+            "trades": 15,
+            "ts": 1786557600
+          },
+          {
+            "base_volume": "83351.96",
+            "quote_turnover": "9.2790463370",
+            "trades": 6,
+            "ts": 1786561200
+          },
+          {
+            "base_volume": "4601.55",
+            "quote_turnover": "0.5521860",
+            "trades": 1,
+            "ts": 1786564800
+          },
+          {
+            "base_volume": "51011.95",
+            "quote_turnover": "4.8594680192",
+            "trades": 5,
+            "ts": 1786575600
+          },
+          {
+            "base_volume": "221916.66",
+            "quote_turnover": "24.4297988970",
+            "trades": 5,
+            "ts": 1786579200
+          },
+          {
+            "base_volume": "654580.89",
+            "quote_turnover": "62.8983735156",
+            "trades": 5,
+            "ts": 1786590000
+          },
+          {
+            "base_volume": "606433.11",
+            "quote_turnover": "62.2249621599",
+            "trades": 12,
+            "ts": 1786593600
+          },
+          {
+            "base_volume": "261143.45",
+            "quote_turnover": "25.2019386119",
+            "trades": 4,
+            "ts": 1786600800
+          },
+          {
+            "base_volume": "241545.89",
+            "quote_turnover": "24.9855068616",
+            "trades": 2,
+            "ts": 1786604400
+          },
+          {
+            "base_volume": "418605.72",
+            "quote_turnover": "39.7840062974",
+            "trades": 6,
+            "ts": 1786608000
+          },
+          {
+            "base_volume": "410204.16",
+            "quote_turnover": "39.2359266440",
+            "trades": 5,
+            "ts": 1786611600
+          },
+          {
+            "base_volume": "361288.01",
+            "quote_turnover": "35.2937521377",
+            "trades": 8,
+            "ts": 1786618800
+          },
+          {
+            "base_volume": "159086.33",
+            "quote_turnover": "15.4780391887",
+            "trades": 4,
+            "ts": 1786622400
+          },
+          {
+            "base_volume": "582801.59",
+            "quote_turnover": "55.0815103367",
+            "trades": 9,
+            "ts": 1786626000
+          },
+          {
+            "base_volume": "188622.22",
+            "quote_turnover": "19.6432188078",
+            "trades": 9,
+            "ts": 1786629600
+          },
+          {
+            "base_volume": "156956.28",
+            "quote_turnover": "15.893428000",
+            "trades": 2,
+            "ts": 1786633200
+          },
+          {
+            "base_volume": "261659.94",
+            "quote_turnover": "24.874869501",
+            "trades": 3,
+            "ts": 1786636800
+          },
+          {
+            "base_volume": "247854.47",
+            "quote_turnover": "25.1211607099",
+            "trades": 5,
+            "ts": 1786640400
+          },
+          {
+            "base_volume": "15999.73",
+            "quote_turnover": "1.5135157144",
+            "trades": 2,
+            "ts": 1786644000
+          },
+          {
+            "base_volume": "5107822.97",
+            "quote_turnover": "337.8186779597",
+            "trades": 33,
+            "ts": 1786651200
+          },
+          {
+            "base_volume": "80217.35",
+            "quote_turnover": "4.5178411520",
+            "trades": 1,
+            "ts": 1786654800
+          },
+          {
+            "base_volume": "1776221.93",
+            "quote_turnover": "135.8376085460",
+            "trades": 7,
+            "ts": 1786658400
+          },
+          {
+            "base_volume": "170000.00",
+            "quote_turnover": "10.217000000",
+            "trades": 2,
+            "ts": 1786662000
+          },
+          {
+            "base_volume": "17565.71",
+            "quote_turnover": "1.22959970",
+            "trades": 2,
+            "ts": 1786669200
+          },
+          {
+            "base_volume": "166228.94",
+            "quote_turnover": "11.63602580",
+            "trades": 1,
+            "ts": 1786672800
+          },
+          {
+            "base_volume": "14760.0",
+            "quote_turnover": "1.1808000",
+            "trades": 2,
+            "ts": 1786676400
+          },
+          {
+            "base_volume": "11111.11",
+            "quote_turnover": "0.99999990",
+            "trades": 1,
+            "ts": 1786680000
+          },
+          {
+            "base_volume": "127506.0",
+            "quote_turnover": "11.0299470",
+            "trades": 3,
+            "ts": 1786698000
+          },
+          {
+            "base_volume": "320125.33",
+            "quote_turnover": "28.7005030667",
+            "trades": 4,
+            "ts": 1786701600
+          },
+          {
+            "base_volume": "2188407.70",
+            "quote_turnover": "193.945356727",
+            "trades": 38,
+            "ts": 1786705200
+          },
+          {
+            "base_volume": "972939.0",
+            "quote_turnover": "77.294791880",
+            "trades": 5,
+            "ts": 1786708800
+          },
+          {
+            "base_volume": "110296.0",
+            "quote_turnover": "9.498748600",
+            "trades": 3,
+            "ts": 1786723200
+          },
+          {
+            "base_volume": "480589.0",
+            "quote_turnover": "37.232211000",
+            "trades": 5,
+            "ts": 1786748400
+          },
+          {
+            "base_volume": "179734.0",
+            "quote_turnover": "13.206909270",
+            "trades": 2,
+            "ts": 1786766400
+          },
+          {
+            "base_volume": "11259.0",
+            "quote_turnover": "1.059922260",
+            "trades": 1,
+            "ts": 1786770000
+          },
+          {
+            "base_volume": "20162.0",
+            "quote_turnover": "1.480697280",
+            "trades": 1,
+            "ts": 1786777200
+          },
+          {
+            "base_volume": "531142.0",
+            "quote_turnover": "39.681465500",
+            "trades": 5,
+            "ts": 1786784400
+          },
+          {
+            "base_volume": "617399.0",
+            "quote_turnover": "46.409770400",
+            "trades": 7,
+            "ts": 1786791600
+          },
+          {
+            "base_volume": "10527.0",
+            "quote_turnover": "0.999959730",
+            "trades": 1,
+            "ts": 1786795200
+          },
+          {
+            "base_volume": "41607.0",
+            "quote_turnover": "3.172918020",
+            "trades": 2,
+            "ts": 1786802400
+          },
+          {
+            "base_volume": "10640.0",
+            "quote_turnover": "0.999947200",
+            "trades": 1,
+            "ts": 1786816800
+          },
+          {
+            "base_volume": "106394.0",
+            "quote_turnover": "9.999972060",
+            "trades": 1,
+            "ts": 1786834800
+          },
+          {
+            "base_volume": "16000.0",
+            "quote_turnover": "1.503520000",
+            "trades": 1,
+            "ts": 1786852800
+          },
+          {
+            "base_volume": "59699.0",
+            "quote_turnover": "5.609915030",
+            "trades": 1,
+            "ts": 1786856400
+          },
+          {
+            "base_volume": "564632.0",
+            "quote_turnover": "52.738031750",
+            "trades": 5,
+            "ts": 1786863600
+          },
+          {
+            "base_volume": "21165.0",
+            "quote_turnover": "1.999931730",
+            "trades": 3,
+            "ts": 1786874400
+          },
+          {
+            "base_volume": "312135.0",
+            "quote_turnover": "23.842929840",
+            "trades": 4,
+            "ts": 1786885200
+          },
+          {
+            "base_volume": "140702.0",
+            "quote_turnover": "10.804988530",
+            "trades": 2,
+            "ts": 1786892400
+          },
+          {
+            "base_volume": "927453.0",
+            "quote_turnover": "87.787255830",
+            "trades": 7,
+            "ts": 1786896000
+          },
+          {
+            "base_volume": "235442.0",
+            "quote_turnover": "17.968934070",
+            "trades": 3,
+            "ts": 1787007600
+          },
+          {
+            "base_volume": "72217.0",
+            "quote_turnover": "5.716315330",
+            "trades": 4,
+            "ts": 1787018400
+          },
+          {
+            "base_volume": "20790.0",
+            "quote_turnover": "1.99999800",
+            "trades": 1,
+            "ts": 1787025600
+          },
+          {
+            "base_volume": "90419.0",
+            "quote_turnover": "7.254218520",
+            "trades": 4,
+            "ts": 1787043600
+          },
+          {
+            "base_volume": "103950.0",
+            "quote_turnover": "9.998713240",
+            "trades": 2,
+            "ts": 1787047200
+          },
+          {
+            "base_volume": "827385.0",
+            "quote_turnover": "63.097773510",
+            "trades": 5,
+            "ts": 1787068800
+          },
+          {
+            "base_volume": "15000.0",
+            "quote_turnover": "1.144350000",
+            "trades": 1,
+            "ts": 1787072400
+          },
+          {
+            "base_volume": "12703.0",
+            "quote_turnover": "0.999980160",
+            "trades": 1,
+            "ts": 1787079600
+          },
+          {
+            "base_volume": "581114.0",
+            "quote_turnover": "46.250023870",
+            "trades": 8,
+            "ts": 1787094000
+          },
+          {
+            "base_volume": "20790.0",
+            "quote_turnover": "1.767773700",
+            "trades": 1,
+            "ts": 1787140800
+          },
+          {
+            "base_volume": "318482.0",
+            "quote_turnover": "27.865739700",
+            "trades": 3,
+            "ts": 1787162400
+          },
+          {
+            "base_volume": "43710.0",
+            "quote_turnover": "3.999975710",
+            "trades": 3,
+            "ts": 1787166000
+          },
+          {
+            "base_volume": "92109.0",
+            "quote_turnover": "8.859964710",
+            "trades": 1,
+            "ts": 1787169600
+          },
+          {
+            "base_volume": "638544.91",
+            "quote_turnover": "87.497401020",
+            "trades": 31,
+            "ts": 1787173200
+          },
+          {
+            "base_volume": "12526.0",
+            "quote_turnover": "1.389383920",
+            "trades": 1,
+            "ts": 1787176800
+          },
+          {
+            "base_volume": "110969.0",
+            "quote_turnover": "10.049904690",
+            "trades": 2,
+            "ts": 1787198400
+          },
+          {
+            "base_volume": "529107.0",
+            "quote_turnover": "79.065982190",
+            "trades": 9,
+            "ts": 1787205600
+          },
+          {
+            "base_volume": "1298178.0",
+            "quote_turnover": "149.525175770",
+            "trades": 14,
+            "ts": 1787209200
+          },
+          {
+            "base_volume": "349867.0",
+            "quote_turnover": "50.086658910",
+            "trades": 9,
+            "ts": 1787216400
+          },
+          {
+            "base_volume": "120019.0",
+            "quote_turnover": "14.599638460",
+            "trades": 5,
+            "ts": 1787220000
+          },
+          {
+            "base_volume": "74303.0",
+            "quote_turnover": "10.682376180",
+            "trades": 3,
+            "ts": 1787223600
+          },
+          {
+            "base_volume": "180720.0",
+            "quote_turnover": "25.779601040",
+            "trades": 6,
+            "ts": 1787245200
+          },
+          {
+            "base_volume": "73559.0",
+            "quote_turnover": "7.710458440",
+            "trades": 2,
+            "ts": 1787248800
+          },
+          {
+            "base_volume": "50382.0",
+            "quote_turnover": "7.23989340",
+            "trades": 1,
+            "ts": 1787259600
+          },
+          {
+            "base_volume": "295975.14",
+            "quote_turnover": "42.958485570",
+            "trades": 6,
+            "ts": 1787270400
+          },
+          {
+            "base_volume": "48606.0",
+            "quote_turnover": "7.060840170",
+            "trades": 4,
+            "ts": 1787274000
+          },
+          {
+            "base_volume": "44475.0",
+            "quote_turnover": "5.166660750",
+            "trades": 1,
+            "ts": 1787277600
+          },
+          {
+            "base_volume": "5601.0",
+            "quote_turnover": "0.999890520",
+            "trades": 1,
+            "ts": 1787281200
+          },
+          {
+            "base_volume": "207765.0",
+            "quote_turnover": "37.039828650",
+            "trades": 3,
+            "ts": 1787284800
+          },
+          {
+            "base_volume": "473277.0",
+            "quote_turnover": "84.412121140",
+            "trades": 6,
+            "ts": 1787288400
+          },
+          {
+            "base_volume": "566066.0",
+            "quote_turnover": "95.617491690",
+            "trades": 4,
+            "ts": 1787292000
+          },
+          {
+            "base_volume": "47605.0",
+            "quote_turnover": "8.42132450",
+            "trades": 1,
+            "ts": 1787295600
+          },
+          {
+            "base_volume": "1375302.0",
+            "quote_turnover": "168.189821470",
+            "trades": 25,
+            "ts": 1787317200
+          },
+          {
+            "base_volume": "49440.0",
+            "quote_turnover": "6.027778640",
+            "trades": 3,
+            "ts": 1787320800
+          },
+          {
+            "base_volume": "48298433.00",
+            "quote_turnover": "11674.017232613",
+            "trades": 143,
+            "ts": 1787328000
+          },
+          {
+            "base_volume": "13758867.0",
+            "quote_turnover": "3023.497073410",
+            "trades": 210,
+            "ts": 1787331600
+          },
+          {
+            "base_volume": "605343.0",
+            "quote_turnover": "84.208839870",
+            "trades": 15,
+            "ts": 1787335200
+          },
+          {
+            "base_volume": "93824.0",
+            "quote_turnover": "13.085633280",
+            "trades": 1,
+            "ts": 1787338800
+          },
+          {
+            "base_volume": "658807.0",
+            "quote_turnover": "101.173286450",
+            "trades": 10,
+            "ts": 1787342400
+          },
+          {
+            "base_volume": "6415.0",
+            "quote_turnover": "1.079836950",
+            "trades": 1,
+            "ts": 1787346000
+          },
+          {
+            "base_volume": "121741.0",
+            "quote_turnover": "18.849159030",
+            "trades": 1,
+            "ts": 1787349600
+          },
+          {
+            "base_volume": "154638.0",
+            "quote_turnover": "21.527736760",
+            "trades": 4,
+            "ts": 1787353200
+          },
+          {
+            "base_volume": "7261.0",
+            "quote_turnover": "1.009932490",
+            "trades": 1,
+            "ts": 1787356800
+          },
+          {
+            "base_volume": "53449.0",
+            "quote_turnover": "7.419255690",
+            "trades": 1,
+            "ts": 1787360400
+          },
+          {
+            "base_volume": "1118108.0",
+            "quote_turnover": "150.392933150",
+            "trades": 9,
+            "ts": 1787374800
+          },
+          {
+            "base_volume": "331317.0",
+            "quote_turnover": "44.029524650",
+            "trades": 4,
+            "ts": 1787378400
+          },
+          {
+            "base_volume": "48843.0",
+            "quote_turnover": "6.566941350",
+            "trades": 2,
+            "ts": 1787382000
+          },
+          {
+            "base_volume": "130400.0",
+            "quote_turnover": "17.305698540",
+            "trades": 6,
+            "ts": 1787385600
+          },
+          {
+            "base_volume": "46119.0",
+            "quote_turnover": "6.260338810",
+            "trades": 2,
+            "ts": 1787389200
+          },
+          {
+            "base_volume": "172708.0",
+            "quote_turnover": "23.992836560",
+            "trades": 2,
+            "ts": 1787392800
+          },
+          {
+            "base_volume": "105156.0",
+            "quote_turnover": "13.824859320",
+            "trades": 1,
+            "ts": 1787396400
+          },
+          {
+            "base_volume": "287976.0",
+            "quote_turnover": "39.829960560",
+            "trades": 3,
+            "ts": 1787400000
+          },
+          {
+            "base_volume": "117043.0",
+            "quote_turnover": "16.516397740",
+            "trades": 2,
+            "ts": 1787403600
+          },
+          {
+            "base_volume": "183403.0",
+            "quote_turnover": "25.771789560",
+            "trades": 3,
+            "ts": 1787407200
+          },
+          {
+            "base_volume": "557189.0",
+            "quote_turnover": "77.196525420",
+            "trades": 12,
+            "ts": 1787410800
+          },
+          {
+            "base_volume": "127682.0",
+            "quote_turnover": "17.016471260",
+            "trades": 2,
+            "ts": 1787414400
+          },
+          {
+            "base_volume": "102269.0",
+            "quote_turnover": "13.499848630",
+            "trades": 2,
+            "ts": 1787421600
+          },
+          {
+            "base_volume": "142790.0",
+            "quote_turnover": "18.599888450",
+            "trades": 3,
+            "ts": 1787428800
+          },
+          {
+            "base_volume": "50115.0",
+            "quote_turnover": "6.454816650",
+            "trades": 2,
+            "ts": 1787432400
+          },
+          {
+            "base_volume": "66810.0",
+            "quote_turnover": "7.47147570",
+            "trades": 2,
+            "ts": 1787443200
+          },
+          {
+            "base_volume": "303574.0",
+            "quote_turnover": "34.108903700",
+            "trades": 2,
+            "ts": 1787464800
+          },
+          {
+            "base_volume": "128635.0",
+            "quote_turnover": "15.689952330",
+            "trades": 4,
+            "ts": 1787468400
+          },
+          {
+            "base_volume": "368510.0",
+            "quote_turnover": "41.855540660",
+            "trades": 6,
+            "ts": 1787500800
+          },
+          {
+            "base_volume": "66962.0",
+            "quote_turnover": "7.574071820",
+            "trades": 1,
+            "ts": 1787526000
+          },
+          {
+            "base_volume": "614363.0",
+            "quote_turnover": "69.507439540",
+            "trades": 3,
+            "ts": 1787544000
+          },
+          {
+            "base_volume": "74925.0",
+            "quote_turnover": "8.456470650",
+            "trades": 2,
+            "ts": 1787558400
+          },
+          {
+            "base_volume": "635069.0",
+            "quote_turnover": "76.248822030",
+            "trades": 9,
+            "ts": 1787572800
+          },
+          {
+            "base_volume": "7700.0",
+            "quote_turnover": "0.999922000",
+            "trades": 1,
+            "ts": 1787576400
+          },
+          {
+            "base_volume": "121645.0",
+            "quote_turnover": "13.008317000",
+            "trades": 6,
+            "ts": 1787648400
+          },
+          {
+            "base_volume": "7153.0",
+            "quote_turnover": "0.919661210",
+            "trades": 1,
+            "ts": 1787677200
+          },
+          {
+            "base_volume": "77754.0",
+            "quote_turnover": "9.999941940",
+            "trades": 1,
+            "ts": 1787688000
+          },
+          {
+            "base_volume": "27173.0",
+            "quote_turnover": "3.49988240",
+            "trades": 1,
+            "ts": 1787702400
+          },
+          {
+            "base_volume": "138547.0",
+            "quote_turnover": "14.436678170",
+            "trades": 3,
+            "ts": 1787706000
+          },
+          {
+            "base_volume": "738396.0",
+            "quote_turnover": "79.564881870",
+            "trades": 8,
+            "ts": 1787720400
+          },
+          {
+            "base_volume": "2744743.0",
+            "quote_turnover": "241.786528230",
+            "trades": 19,
+            "ts": 1787727600
+          },
+          {
+            "base_volume": "899961.0",
+            "quote_turnover": "65.305731830",
+            "trades": 8,
+            "ts": 1787731200
+          },
+          {
+            "base_volume": "4223648.0",
+            "quote_turnover": "266.234975660",
+            "trades": 21,
+            "ts": 1787734800
+          },
+          {
+            "base_volume": "2297010.0",
+            "quote_turnover": "138.253406340",
+            "trades": 13,
+            "ts": 1787738400
+          },
+          {
+            "base_volume": "1245892.0",
+            "quote_turnover": "74.693942060",
+            "trades": 13,
+            "ts": 1787742000
+          },
+          {
+            "base_volume": "2337197.0",
+            "quote_turnover": "122.730889430",
+            "trades": 13,
+            "ts": 1787745600
+          },
+          {
+            "base_volume": "2098440.0",
+            "quote_turnover": "120.576149810",
+            "trades": 29,
+            "ts": 1787749200
+          },
+          {
+            "base_volume": "208118.0",
+            "quote_turnover": "13.328805420",
+            "trades": 11,
+            "ts": 1787752800
+          },
+          {
+            "base_volume": "15794992.0",
+            "quote_turnover": "637.646055100",
+            "trades": 56,
+            "ts": 1787756400
+          },
+          {
+            "base_volume": "3540563.00",
+            "quote_turnover": "111.215607640",
+            "trades": 24,
+            "ts": 1787760000
+          },
+          {
+            "base_volume": "2005056.0",
+            "quote_turnover": "70.397746940",
+            "trades": 11,
+            "ts": 1787763600
+          },
+          {
+            "base_volume": "3938236.0",
+            "quote_turnover": "134.405709320",
+            "trades": 14,
+            "ts": 1787767200
+          },
+          {
+            "base_volume": "1498327.0",
+            "quote_turnover": "58.431474730",
+            "trades": 12,
+            "ts": 1787770800
+          },
+          {
+            "base_volume": "23843.0",
+            "quote_turnover": "0.999975420",
+            "trades": 1,
+            "ts": 1787774400
+          },
+          {
+            "base_volume": "66428.0",
+            "quote_turnover": "2.787983160",
+            "trades": 1,
+            "ts": 1787778000
+          },
+          {
+            "base_volume": "859421.0",
+            "quote_turnover": "32.760992850",
+            "trades": 16,
+            "ts": 1787781600
+          },
+          {
+            "base_volume": "782660.0",
+            "quote_turnover": "27.878298670",
+            "trades": 10,
+            "ts": 1787785200
+          },
+          {
+            "base_volume": "482117.0",
+            "quote_turnover": "16.060918610",
+            "trades": 6,
+            "ts": 1787788800
+          },
+          {
+            "base_volume": "373345.0",
+            "quote_turnover": "14.968412350",
+            "trades": 14,
+            "ts": 1787792400
+          },
+          {
+            "base_volume": "80192.0",
+            "quote_turnover": "3.137945070",
+            "trades": 2,
+            "ts": 1787796000
+          },
+          {
+            "base_volume": "59799.0",
+            "quote_turnover": "2.493020310",
+            "trades": 1,
+            "ts": 1787799600
+          },
+          {
+            "base_volume": "300297.0",
+            "quote_turnover": "10.919962250",
+            "trades": 7,
+            "ts": 1787806800
+          },
+          {
+            "base_volume": "265871.0",
+            "quote_turnover": "9.266529340",
+            "trades": 6,
+            "ts": 1787810400
+          },
+          {
+            "base_volume": "359758.0",
+            "quote_turnover": "12.651512860",
+            "trades": 4,
+            "ts": 1787828400
+          },
+          {
+            "base_volume": "509192.0",
+            "quote_turnover": "19.707411930",
+            "trades": 7,
+            "ts": 1787832000
+          },
+          {
+            "base_volume": "469379.0",
+            "quote_turnover": "16.588210230",
+            "trades": 6,
+            "ts": 1787846400
+          },
+          {
+            "base_volume": "27034.0",
+            "quote_turnover": "0.999987660",
+            "trades": 1,
+            "ts": 1787850000
+          },
+          {
+            "base_volume": "189744.0",
+            "quote_turnover": "7.017003960",
+            "trades": 4,
+            "ts": 1787853600
+          },
+          {
+            "base_volume": "475405.0",
+            "quote_turnover": "15.271540530",
+            "trades": 5,
+            "ts": 1787857200
+          },
+          {
+            "base_volume": "27063.0",
+            "quote_turnover": "0.999977850",
+            "trades": 1,
+            "ts": 1787860800
+          },
+          {
+            "base_volume": "72325.0",
+            "quote_turnover": "2.3144000",
+            "trades": 2,
+            "ts": 1787868000
+          },
+          {
+            "base_volume": "2326904.0",
+            "quote_turnover": "75.144148800",
+            "trades": 15,
+            "ts": 1787871600
+          },
+          {
+            "base_volume": "108892.0",
+            "quote_turnover": "3.908347060",
+            "trades": 5,
+            "ts": 1787875200
+          },
+          {
+            "base_volume": "856970.0",
+            "quote_turnover": "26.867779620",
+            "trades": 8,
+            "ts": 1787886000
+          },
+          {
+            "base_volume": "1331601.0",
+            "quote_turnover": "41.413284090",
+            "trades": 11,
+            "ts": 1787893200
+          },
+          {
+            "base_volume": "164219.0",
+            "quote_turnover": "5.503815240",
+            "trades": 4,
+            "ts": 1787896800
+          },
+          {
+            "base_volume": "49354.0",
+            "quote_turnover": "1.719986900",
+            "trades": 2,
+            "ts": 1787900400
+          },
+          {
+            "base_volume": "30889.0",
+            "quote_turnover": "1.069994960",
+            "trades": 1,
+            "ts": 1787904000
+          },
+          {
+            "base_volume": "296820.0",
+            "quote_turnover": "9.979990170",
+            "trades": 5,
+            "ts": 1787907600
+          },
+          {
+            "base_volume": "259381.0",
+            "quote_turnover": "8.790733240",
+            "trades": 4,
+            "ts": 1787918400
+          },
+          {
+            "base_volume": "126731.0",
+            "quote_turnover": "3.803523470",
+            "trades": 5,
+            "ts": 1787922000
+          },
+          {
+            "base_volume": "127706.0",
+            "quote_turnover": "3.902780190",
+            "trades": 3,
+            "ts": 1787925600
+          },
+          {
+            "base_volume": "521349.0",
+            "quote_turnover": "14.619743840",
+            "trades": 6,
+            "ts": 1787943600
+          },
+          {
+            "base_volume": "1037818.0",
+            "quote_turnover": "28.579117610",
+            "trades": 3,
+            "ts": 1787947200
+          },
+          {
+            "base_volume": "184976.0",
+            "quote_turnover": "5.495957500",
+            "trades": 4,
+            "ts": 1787950800
+          },
+          {
+            "base_volume": "123358.0",
+            "quote_turnover": "3.989397720",
+            "trades": 1,
+            "ts": 1787958000
+          },
+          {
+            "base_volume": "99019.0",
+            "quote_turnover": "2.8336000",
+            "trades": 2,
+            "ts": 1787965200
+          },
+          {
+            "base_volume": "1642695.0",
+            "quote_turnover": "42.724859350",
+            "trades": 9,
+            "ts": 1787972400
+          },
+          {
+            "base_volume": "134435.0",
+            "quote_turnover": "3.379695900",
+            "trades": 2,
+            "ts": 1787976000
+          },
+          {
+            "base_volume": "254875.0",
+            "quote_turnover": "6.999959070",
+            "trades": 2,
+            "ts": 1787983200
+          },
+          {
+            "base_volume": "375129.0",
+            "quote_turnover": "10.366070750",
+            "trades": 5,
+            "ts": 1787986800
+          },
+          {
+            "base_volume": "35714.0",
+            "quote_turnover": "1.0357060",
+            "trades": 1,
+            "ts": 1787994000
+          },
+          {
+            "base_volume": "104756.0",
+            "quote_turnover": "3.199984860",
+            "trades": 2,
+            "ts": 1788008400
+          },
+          {
+            "base_volume": "2550474.0",
+            "quote_turnover": "64.700620300",
+            "trades": 6,
+            "ts": 1788012000
+          },
+          {
+            "base_volume": "97232.0",
+            "quote_turnover": "2.446357120",
+            "trades": 2,
+            "ts": 1788019200
+          },
+          {
+            "base_volume": "166107.0",
+            "quote_turnover": "4.87079420",
+            "trades": 2,
+            "ts": 1788022800
+          },
+          {
+            "base_volume": "6652152.0",
+            "quote_turnover": "199.874661050",
+            "trades": 9,
+            "ts": 1788026400
+          },
+          {
+            "base_volume": "582916.0",
+            "quote_turnover": "18.921976220",
+            "trades": 12,
+            "ts": 1788030000
+          },
+          {
+            "base_volume": "3502147.0",
+            "quote_turnover": "90.992108310",
+            "trades": 7,
+            "ts": 1788033600
+          },
+          {
+            "base_volume": "67209978.0",
+            "quote_turnover": "1892.366615680",
+            "trades": 109,
+            "ts": 1788037200
+          },
+          {
+            "base_volume": "10825936.0",
+            "quote_turnover": "289.727975590",
+            "trades": 45,
+            "ts": 1788040800
+          },
+          {
+            "base_volume": "1730575.0",
+            "quote_turnover": "44.304444490",
+            "trades": 10,
+            "ts": 1788044400
+          },
+          {
+            "base_volume": "619004.0",
+            "quote_turnover": "15.036471470",
+            "trades": 4,
+            "ts": 1788048000
+          },
+          {
+            "base_volume": "622249.0",
+            "quote_turnover": "14.934381450",
+            "trades": 4,
+            "ts": 1788055200
+          },
+          {
+            "base_volume": "70323.0",
+            "quote_turnover": "1.6877520",
+            "trades": 1,
+            "ts": 1788058800
+          },
+          {
+            "base_volume": "317460.0",
+            "quote_turnover": "7.761077320",
+            "trades": 3,
+            "ts": 1788066000
+          },
+          {
+            "base_volume": "225696.0",
+            "quote_turnover": "5.418960960",
+            "trades": 1,
+            "ts": 1788069600
+          },
+          {
+            "base_volume": "42159.0",
+            "quote_turnover": "1.0924360",
+            "trades": 2,
+            "ts": 1788087600
+          },
+          {
+            "base_volume": "1569281.0",
+            "quote_turnover": "37.922646540",
+            "trades": 10,
+            "ts": 1788091200
+          },
+          {
+            "base_volume": "1469695.0",
+            "quote_turnover": "36.206178070",
+            "trades": 8,
+            "ts": 1788094800
+          },
+          {
+            "base_volume": "71490.0",
+            "quote_turnover": "1.810191000",
+            "trades": 3,
+            "ts": 1788098400
+          },
+          {
+            "base_volume": "33708.0",
+            "quote_turnover": "0.90000360",
+            "trades": 1,
+            "ts": 1788102000
+          },
+          {
+            "base_volume": "399986.0",
+            "quote_turnover": "9.92693140",
+            "trades": 5,
+            "ts": 1788105600
+          },
+          {
+            "base_volume": "256984.0",
+            "quote_turnover": "6.180742200",
+            "trades": 3,
+            "ts": 1788109200
+          },
+          {
+            "base_volume": "405011.0",
+            "quote_turnover": "9.721280660",
+            "trades": 3,
+            "ts": 1788112800
+          },
+          {
+            "base_volume": "570659.0",
+            "quote_turnover": "14.889948740",
+            "trades": 7,
+            "ts": 1788116400
+          },
+          {
+            "base_volume": "639788.0",
+            "quote_turnover": "14.854804730",
+            "trades": 3,
+            "ts": 1788120000
+          },
+          {
+            "base_volume": "3490137.0",
+            "quote_turnover": "91.002810690",
+            "trades": 10,
+            "ts": 1788123600
+          },
+          {
+            "base_volume": "142780.0",
+            "quote_turnover": "3.285367800",
+            "trades": 1,
+            "ts": 1788127200
+          },
+          {
+            "base_volume": "373848.0",
+            "quote_turnover": "9.340692660",
+            "trades": 3,
+            "ts": 1788130800
+          },
+          {
+            "base_volume": "963566.0",
+            "quote_turnover": "24.542979000",
+            "trades": 7,
+            "ts": 1788134400
+          },
+          {
+            "base_volume": "636623.0",
+            "quote_turnover": "15.395406300",
+            "trades": 3,
+            "ts": 1788138000
+          },
+          {
+            "base_volume": "1028589.0",
+            "quote_turnover": "26.881814170",
+            "trades": 5,
+            "ts": 1788166800
+          },
+          {
+            "base_volume": "37037.0",
+            "quote_turnover": "0.999628630",
+            "trades": 1,
+            "ts": 1788170400
+          },
+          {
+            "base_volume": "271757.0",
+            "quote_turnover": "6.855171950",
+            "trades": 2,
+            "ts": 1788184800
+          },
+          {
+            "base_volume": "651562.0",
+            "quote_turnover": "15.260692340",
+            "trades": 2,
+            "ts": 1788192000
+          },
+          {
+            "base_volume": "2562195.0",
+            "quote_turnover": "59.174582520",
+            "trades": 4,
+            "ts": 1788195600
+          },
+          {
+            "base_volume": "132031.0",
+            "quote_turnover": "3.146515790",
+            "trades": 3,
+            "ts": 1788199200
+          },
+          {
+            "base_volume": "1453923.0",
+            "quote_turnover": "37.195365530",
+            "trades": 6,
+            "ts": 1788202800
+          },
+          {
+            "base_volume": "18459563.0",
+            "quote_turnover": "657.638923630",
+            "trades": 221,
+            "ts": 1788206400
+          },
+          {
+            "base_volume": "2242890.0",
+            "quote_turnover": "55.626611960",
+            "trades": 39,
+            "ts": 1788210000
+          },
+          {
+            "base_volume": "844344.0",
+            "quote_turnover": "19.673752790",
+            "trades": 7,
+            "ts": 1788213600
+          },
+          {
+            "base_volume": "5298630.0",
+            "quote_turnover": "130.605919250",
+            "trades": 40,
+            "ts": 1788217200
+          }
+        ],
+        "last": "1788220052.413681",
+        "rows": 6805,
+        "turnover_method": "SUM_ARCHIVED_TRADE_PRICE_TIMES_AMOUNT"
+      },
+      "url": "https://download.gatedata.org/spot/deals/202608/TRC_USDT-202608.csv.gz"
+    },
+    {
+      "attempts": 1,
+      "base": "EYWA",
+      "body": {
+        "bytes_read": 59818,
+        "complete": true,
+        "declared_length": 59818,
+        "reason": "COMPLETE"
+      },
+      "candle_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_survivorship_v3_20261006\\artifacts\\gate-survivorship-audit\\06.raw",
+      "candle_sha256": "1721fb51a668b97aed4e04a6e6532613d5a227fc7699c97f2ce55fff5d9ccf92",
+      "end": 1788220800,
+      "http_status": 200,
+      "raw_file": "EYWA.csv.gz",
+      "reconciliation": {
+        "base_volume_matches": 427,
+        "candles_without_trades": [],
+        "historical_completeness_certified": false,
+        "hours_absent_from_both": 317,
+        "interpretation": "Two archives may share missing data; consistency is not a completeness proof",
+        "shared_hours": 427,
+        "trades_without_candles": [],
+        "volume_mismatch_hours": []
+      },
+      "sha256": "88604bd529e352d60d4e31e38f341d2cd8dc346a7a66a184487f0c800fdf8cf2",
+      "start": 1785542400,
+      "status": "OBSERVED_TURNOVER_RECONSTRUCTED_NOT_CERTIFIED",
+      "summary": {
+        "days": [
+          {
+            "base_volume": "3864365.0",
+            "quote_turnover": "1622.56306930",
+            "trades": 245,
+            "ts": 1785542400
+          },
+          {
+            "base_volume": "3741612.0",
+            "quote_turnover": "1562.86353550",
+            "trades": 238,
+            "ts": 1785628800
+          },
+          {
+            "base_volume": "3687420.0",
+            "quote_turnover": "1440.94689960",
+            "trades": 192,
+            "ts": 1785715200
+          },
+          {
+            "base_volume": "528564.0",
+            "quote_turnover": "189.55274220",
+            "trades": 22,
+            "ts": 1785801600
+          },
+          {
+            "base_volume": "1682686.0",
+            "quote_turnover": "597.10280340",
+            "trades": 47,
+            "ts": 1785888000
+          },
+          {
+            "base_volume": "2270218.0",
+            "quote_turnover": "715.41927920",
+            "trades": 75,
+            "ts": 1785974400
+          },
+          {
+            "base_volume": "6623063.0",
+            "quote_turnover": "1990.24225820",
+            "trades": 100,
+            "ts": 1786060800
+          },
+          {
+            "base_volume": "8889446.0",
+            "quote_turnover": "2897.93677820",
+            "trades": 249,
+            "ts": 1786147200
+          },
+          {
+            "base_volume": "2273093.0",
+            "quote_turnover": "809.94509960",
+            "trades": 93,
+            "ts": 1786233600
+          },
+          {
+            "base_volume": "3623749.0",
+            "quote_turnover": "1435.59780280",
+            "trades": 170,
+            "ts": 1786320000
+          },
+          {
+            "base_volume": "49765767.0",
+            "quote_turnover": "10958.69805710",
+            "trades": 402,
+            "ts": 1786406400
+          },
+          {
+            "base_volume": "40763785.0",
+            "quote_turnover": "6321.33656990",
+            "trades": 340,
+            "ts": 1786492800
+          },
+          {
+            "base_volume": "21161004.0",
+            "quote_turnover": "3940.54655570",
+            "trades": 248,
+            "ts": 1786579200
+          },
+          {
+            "base_volume": "5999839.0",
+            "quote_turnover": "913.67576460",
+            "trades": 61,
+            "ts": 1786665600
+          },
+          {
+            "base_volume": "1341093.0",
+            "quote_turnover": "198.95554680",
+            "trades": 12,
+            "ts": 1786752000
+          },
+          {
+            "base_volume": "1284788.0",
+            "quote_turnover": "182.14136540",
+            "trades": 24,
+            "ts": 1786838400
+          },
+          {
+            "base_volume": "3235344.0",
+            "quote_turnover": "540.17969870",
+            "trades": 39,
+            "ts": 1786924800
+          },
+          {
+            "base_volume": "1355670.0",
+            "quote_turnover": "189.38404270",
+            "trades": 40,
+            "ts": 1787011200
+          },
+          {
+            "base_volume": "2891854.0",
+            "quote_turnover": "447.20065180",
+            "trades": 60,
+            "ts": 1787097600
+          },
+          {
+            "base_volume": "38538408.0",
+            "quote_turnover": "6304.15857950",
+            "trades": 361,
+            "ts": 1787184000
+          },
+          {
+            "base_volume": "24576912.0",
+            "quote_turnover": "3804.38512320",
+            "trades": 208,
+            "ts": 1787270400
+          },
+          {
+            "base_volume": "5856173.0",
+            "quote_turnover": "862.12179690",
+            "trades": 68,
+            "ts": 1787356800
+          },
+          {
+            "base_volume": "7469652.0",
+            "quote_turnover": "1101.65566510",
+            "trades": 98,
+            "ts": 1787443200
+          },
+          {
+            "base_volume": "326881.0",
+            "quote_turnover": "46.09322610",
+            "trades": 10,
+            "ts": 1787529600
+          },
+          {
+            "base_volume": "22056880.0",
+            "quote_turnover": "3917.99105490",
+            "trades": 373,
+            "ts": 1787616000
+          },
+          {
+            "base_volume": "18292287.0",
+            "quote_turnover": "2410.94999480",
+            "trades": 218,
+            "ts": 1787702400
+          },
+          {
+            "base_volume": "5114865.0",
+            "quote_turnover": "613.32952240",
+            "trades": 76,
+            "ts": 1787788800
+          },
+          {
+            "base_volume": "812589.0",
+            "quote_turnover": "90.44903510",
+            "trades": 26,
+            "ts": 1787875200
+          },
+          {
+            "base_volume": "12055482.0",
+            "quote_turnover": "1520.44284300",
+            "trades": 148,
+            "ts": 1787961600
+          },
+          {
+            "base_volume": "3237890.0",
+            "quote_turnover": "384.69500390",
+            "trades": 116,
+            "ts": 1788048000
+          },
+          {
+            "base_volume": "297139.0",
+            "quote_turnover": "31.24360870",
+            "trades": 14,
+            "ts": 1788134400
+          }
+        ],
+        "empty_buckets": "NOT_FILLED_WITH_ZERO_WITHOUT_COMPLETENESS_EVIDENCE",
+        "evaluation_eligible": false,
+        "first": "1785542400.014680",
+        "historical_completeness_certified": false,
+        "hours": [
+          {
+            "base_volume": "156049.0",
+            "quote_turnover": "65.71996850",
+            "trades": 12,
+            "ts": 1785542400
+          },
+          {
+            "base_volume": "136775.0",
+            "quote_turnover": "57.58465600",
+            "trades": 8,
+            "ts": 1785546000
+          },
+          {
+            "base_volume": "119205.0",
+            "quote_turnover": "50.30097030",
+            "trades": 8,
+            "ts": 1785549600
+          },
+          {
+            "base_volume": "200676.0",
+            "quote_turnover": "84.56254790",
+            "trades": 12,
+            "ts": 1785553200
+          },
+          {
+            "base_volume": "224862.0",
+            "quote_turnover": "94.60052860",
+            "trades": 13,
+            "ts": 1785556800
+          },
+          {
+            "base_volume": "172355.0",
+            "quote_turnover": "72.36279930",
+            "trades": 11,
+            "ts": 1785560400
+          },
+          {
+            "base_volume": "120092.0",
+            "quote_turnover": "50.50178690",
+            "trades": 8,
+            "ts": 1785564000
+          },
+          {
+            "base_volume": "144258.0",
+            "quote_turnover": "60.53613140",
+            "trades": 9,
+            "ts": 1785567600
+          },
+          {
+            "base_volume": "147083.0",
+            "quote_turnover": "61.67500070",
+            "trades": 10,
+            "ts": 1785571200
+          },
+          {
+            "base_volume": "203554.0",
+            "quote_turnover": "85.46396650",
+            "trades": 12,
+            "ts": 1785574800
+          },
+          {
+            "base_volume": "177370.0",
+            "quote_turnover": "74.50494530",
+            "trades": 11,
+            "ts": 1785578400
+          },
+          {
+            "base_volume": "147494.0",
+            "quote_turnover": "62.11781080",
+            "trades": 9,
+            "ts": 1785582000
+          },
+          {
+            "base_volume": "271137.0",
+            "quote_turnover": "113.49982990",
+            "trades": 15,
+            "ts": 1785585600
+          },
+          {
+            "base_volume": "122754.0",
+            "quote_turnover": "51.36860030",
+            "trades": 8,
+            "ts": 1785589200
+          },
+          {
+            "base_volume": "118913.0",
+            "quote_turnover": "49.66949540",
+            "trades": 8,
+            "ts": 1785592800
+          },
+          {
+            "base_volume": "193048.0",
+            "quote_turnover": "80.68063180",
+            "trades": 12,
+            "ts": 1785596400
+          },
+          {
+            "base_volume": "137055.0",
+            "quote_turnover": "57.42859900",
+            "trades": 10,
+            "ts": 1785600000
+          },
+          {
+            "base_volume": "194003.0",
+            "quote_turnover": "81.33770000",
+            "trades": 12,
+            "ts": 1785603600
+          },
+          {
+            "base_volume": "120473.0",
+            "quote_turnover": "50.51429730",
+            "trades": 8,
+            "ts": 1785607200
+          },
+          {
+            "base_volume": "162338.0",
+            "quote_turnover": "68.26943300",
+            "trades": 11,
+            "ts": 1785610800
+          },
+          {
+            "base_volume": "136100.0",
+            "quote_turnover": "57.14586330",
+            "trades": 9,
+            "ts": 1785614400
+          },
+          {
+            "base_volume": "140784.0",
+            "quote_turnover": "59.12019710",
+            "trades": 9,
+            "ts": 1785618000
+          },
+          {
+            "base_volume": "142945.0",
+            "quote_turnover": "60.08225860",
+            "trades": 9,
+            "ts": 1785621600
+          },
+          {
+            "base_volume": "175042.0",
+            "quote_turnover": "73.51505140",
+            "trades": 11,
+            "ts": 1785625200
+          },
+          {
+            "base_volume": "121384.0",
+            "quote_turnover": "51.03769650",
+            "trades": 8,
+            "ts": 1785628800
+          },
+          {
+            "base_volume": "152627.0",
+            "quote_turnover": "64.13066000",
+            "trades": 10,
+            "ts": 1785632400
+          },
+          {
+            "base_volume": "159359.0",
+            "quote_turnover": "66.97473650",
+            "trades": 10,
+            "ts": 1785636000
+          },
+          {
+            "base_volume": "139163.0",
+            "quote_turnover": "58.33396080",
+            "trades": 9,
+            "ts": 1785639600
+          },
+          {
+            "base_volume": "138517.0",
+            "quote_turnover": "58.06594290",
+            "trades": 9,
+            "ts": 1785643200
+          },
+          {
+            "base_volume": "309929.0",
+            "quote_turnover": "129.59931120",
+            "trades": 19,
+            "ts": 1785646800
+          },
+          {
+            "base_volume": "116774.0",
+            "quote_turnover": "48.76430580",
+            "trades": 9,
+            "ts": 1785650400
+          },
+          {
+            "base_volume": "158266.0",
+            "quote_turnover": "66.05546410",
+            "trades": 10,
+            "ts": 1785654000
+          },
+          {
+            "base_volume": "122872.0",
+            "quote_turnover": "51.33264650",
+            "trades": 9,
+            "ts": 1785657600
+          },
+          {
+            "base_volume": "174360.0",
+            "quote_turnover": "72.75970290",
+            "trades": 11,
+            "ts": 1785661200
+          },
+          {
+            "base_volume": "140420.0",
+            "quote_turnover": "58.61009500",
+            "trades": 9,
+            "ts": 1785664800
+          },
+          {
+            "base_volume": "121175.0",
+            "quote_turnover": "50.59885170",
+            "trades": 8,
+            "ts": 1785668400
+          },
+          {
+            "base_volume": "187296.0",
+            "quote_turnover": "78.19538470",
+            "trades": 11,
+            "ts": 1785672000
+          },
+          {
+            "base_volume": "121483.0",
+            "quote_turnover": "50.74211770",
+            "trades": 8,
+            "ts": 1785675600
+          },
+          {
+            "base_volume": "123584.0",
+            "quote_turnover": "51.60733960",
+            "trades": 8,
+            "ts": 1785679200
+          },
+          {
+            "base_volume": "230431.0",
+            "quote_turnover": "96.15440350",
+            "trades": 13,
+            "ts": 1785682800
+          },
+          {
+            "base_volume": "123061.0",
+            "quote_turnover": "51.36794800",
+            "trades": 8,
+            "ts": 1785686400
+          },
+          {
+            "base_volume": "154238.0",
+            "quote_turnover": "64.41969490",
+            "trades": 10,
+            "ts": 1785690000
+          },
+          {
+            "base_volume": "128000.0",
+            "quote_turnover": "53.49437280",
+            "trades": 9,
+            "ts": 1785693600
+          },
+          {
+            "base_volume": "176418.0",
+            "quote_turnover": "73.76686620",
+            "trades": 11,
+            "ts": 1785697200
+          },
+          {
+            "base_volume": "139979.0",
+            "quote_turnover": "58.51550980",
+            "trades": 9,
+            "ts": 1785700800
+          },
+          {
+            "base_volume": "210226.0",
+            "quote_turnover": "87.67956850",
+            "trades": 11,
+            "ts": 1785704400
+          },
+          {
+            "base_volume": "153534.0",
+            "quote_turnover": "63.49459230",
+            "trades": 10,
+            "ts": 1785708000
+          },
+          {
+            "base_volume": "138516.0",
+            "quote_turnover": "57.16236360",
+            "trades": 9,
+            "ts": 1785711600
+          },
+          {
+            "base_volume": "206377.0",
+            "quote_turnover": "85.18691550",
+            "trades": 13,
+            "ts": 1785715200
+          },
+          {
+            "base_volume": "160523.0",
+            "quote_turnover": "66.22054380",
+            "trades": 11,
+            "ts": 1785718800
+          },
+          {
+            "base_volume": "141265.0",
+            "quote_turnover": "58.28883750",
+            "trades": 9,
+            "ts": 1785722400
+          },
+          {
+            "base_volume": "106931.0",
+            "quote_turnover": "44.07563850",
+            "trades": 7,
+            "ts": 1785726000
+          },
+          {
+            "base_volume": "142156.0",
+            "quote_turnover": "58.33626550",
+            "trades": 9,
+            "ts": 1785729600
+          },
+          {
+            "base_volume": "122500.0",
+            "quote_turnover": "50.27225700",
+            "trades": 8,
+            "ts": 1785733200
+          },
+          {
+            "base_volume": "153879.0",
+            "quote_turnover": "63.13631590",
+            "trades": 10,
+            "ts": 1785736800
+          },
+          {
+            "base_volume": "161946.0",
+            "quote_turnover": "66.61310000",
+            "trades": 10,
+            "ts": 1785740400
+          },
+          {
+            "base_volume": "158057.0",
+            "quote_turnover": "64.97007350",
+            "trades": 10,
+            "ts": 1785744000
+          },
+          {
+            "base_volume": "192808.0",
+            "quote_turnover": "78.96910910",
+            "trades": 11,
+            "ts": 1785747600
+          },
+          {
+            "base_volume": "103804.0",
+            "quote_turnover": "42.14520690",
+            "trades": 6,
+            "ts": 1785751200
+          },
+          {
+            "base_volume": "17032.0",
+            "quote_turnover": "6.87581840",
+            "trades": 1,
+            "ts": 1785762000
+          },
+          {
+            "base_volume": "80258.0",
+            "quote_turnover": "32.19899890",
+            "trades": 3,
+            "ts": 1785765600
+          },
+          {
+            "base_volume": "7841.0",
+            "quote_turnover": "3.11366110",
+            "trades": 1,
+            "ts": 1785769200
+          },
+          {
+            "base_volume": "1806315.0",
+            "quote_turnover": "674.82653540",
+            "trades": 78,
+            "ts": 1785787200
+          },
+          {
+            "base_volume": "125728.0",
+            "quote_turnover": "45.71762260",
+            "trades": 5,
+            "ts": 1785790800
+          },
+          {
+            "base_volume": "12452.0",
+            "quote_turnover": "4.50513360",
+            "trades": 1,
+            "ts": 1785816000
+          },
+          {
+            "base_volume": "10970.0",
+            "quote_turnover": "3.99966200",
+            "trades": 1,
+            "ts": 1785823200
+          },
+          {
+            "base_volume": "13054.0",
+            "quote_turnover": "4.73599120",
+            "trades": 1,
+            "ts": 1785826800
+          },
+          {
+            "base_volume": "27962.0",
+            "quote_turnover": "10.11665160",
+            "trades": 1,
+            "ts": 1785830400
+          },
+          {
+            "base_volume": "25214.0",
+            "quote_turnover": "9.077040",
+            "trades": 2,
+            "ts": 1785852000
+          },
+          {
+            "base_volume": "35644.0",
+            "quote_turnover": "12.86041360",
+            "trades": 2,
+            "ts": 1785866400
+          },
+          {
+            "base_volume": "403268.0",
+            "quote_turnover": "144.25785020",
+            "trades": 14,
+            "ts": 1785880800
+          },
+          {
+            "base_volume": "11479.0",
+            "quote_turnover": "4.13014420",
+            "trades": 1,
+            "ts": 1785895200
+          },
+          {
+            "base_volume": "39513.0",
+            "quote_turnover": "14.14960530",
+            "trades": 1,
+            "ts": 1785924000
+          },
+          {
+            "base_volume": "58837.0",
+            "quote_turnover": "20.87143300",
+            "trades": 2,
+            "ts": 1785938400
+          },
+          {
+            "base_volume": "33881.0",
+            "quote_turnover": "12.00065020",
+            "trades": 2,
+            "ts": 1785949200
+          },
+          {
+            "base_volume": "510824.0",
+            "quote_turnover": "178.25835880",
+            "trades": 14,
+            "ts": 1785956400
+          },
+          {
+            "base_volume": "297992.0",
+            "quote_turnover": "106.03052960",
+            "trades": 7,
+            "ts": 1785967200
+          },
+          {
+            "base_volume": "730160.0",
+            "quote_turnover": "261.66208230",
+            "trades": 20,
+            "ts": 1785970800
+          },
+          {
+            "base_volume": "16456.0",
+            "quote_turnover": "5.85997970",
+            "trades": 2,
+            "ts": 1785978000
+          },
+          {
+            "base_volume": "1753239.0",
+            "quote_turnover": "553.15823890",
+            "trades": 54,
+            "ts": 1786006800
+          },
+          {
+            "base_volume": "36890.0",
+            "quote_turnover": "11.41007700",
+            "trades": 1,
+            "ts": 1786010400
+          },
+          {
+            "base_volume": "132765.0",
+            "quote_turnover": "42.42819060",
+            "trades": 6,
+            "ts": 1786024800
+          },
+          {
+            "base_volume": "113204.0",
+            "quote_turnover": "35.84669940",
+            "trades": 3,
+            "ts": 1786028400
+          },
+          {
+            "base_volume": "119906.0",
+            "quote_turnover": "38.66364230",
+            "trades": 5,
+            "ts": 1786039200
+          },
+          {
+            "base_volume": "97758.0",
+            "quote_turnover": "28.05245130",
+            "trades": 4,
+            "ts": 1786053600
+          },
+          {
+            "base_volume": "336939.0",
+            "quote_turnover": "102.80937820",
+            "trades": 24,
+            "ts": 1786089600
+          },
+          {
+            "base_volume": "61409.0",
+            "quote_turnover": "18.10951410",
+            "trades": 1,
+            "ts": 1786093200
+          },
+          {
+            "base_volume": "469868.0",
+            "quote_turnover": "134.47786630",
+            "trades": 12,
+            "ts": 1786096800
+          },
+          {
+            "base_volume": "31996.0",
+            "quote_turnover": "17.86336680",
+            "trades": 1,
+            "ts": 1786100400
+          },
+          {
+            "base_volume": "354052.0",
+            "quote_turnover": "106.22099800",
+            "trades": 7,
+            "ts": 1786104000
+          },
+          {
+            "base_volume": "280197.0",
+            "quote_turnover": "84.059100",
+            "trades": 4,
+            "ts": 1786107600
+          },
+          {
+            "base_volume": "254203.0",
+            "quote_turnover": "76.260900",
+            "trades": 3,
+            "ts": 1786111200
+          },
+          {
+            "base_volume": "9074.0",
+            "quote_turnover": "2.722200",
+            "trades": 1,
+            "ts": 1786114800
+          },
+          {
+            "base_volume": "3448.0",
+            "quote_turnover": "1.15473520",
+            "trades": 1,
+            "ts": 1786125600
+          },
+          {
+            "base_volume": "88950.0",
+            "quote_turnover": "26.68609960",
+            "trades": 3,
+            "ts": 1786129200
+          },
+          {
+            "base_volume": "12283.0",
+            "quote_turnover": "3.684900",
+            "trades": 1,
+            "ts": 1786132800
+          },
+          {
+            "base_volume": "1314966.0",
+            "quote_turnover": "394.489800",
+            "trades": 8,
+            "ts": 1786140000
+          },
+          {
+            "base_volume": "3405678.0",
+            "quote_turnover": "1021.703400",
+            "trades": 34,
+            "ts": 1786143600
+          },
+          {
+            "base_volume": "3074223.0",
+            "quote_turnover": "922.29863240",
+            "trades": 24,
+            "ts": 1786147200
+          },
+          {
+            "base_volume": "39242.0",
+            "quote_turnover": "11.82923900",
+            "trades": 3,
+            "ts": 1786150800
+          },
+          {
+            "base_volume": "12233.0",
+            "quote_turnover": "3.669900",
+            "trades": 1,
+            "ts": 1786154400
+          },
+          {
+            "base_volume": "3238.0",
+            "quote_turnover": "1.00345620",
+            "trades": 1,
+            "ts": 1786161600
+          },
+          {
+            "base_volume": "284298.0",
+            "quote_turnover": "85.52885600",
+            "trades": 3,
+            "ts": 1786165200
+          },
+          {
+            "base_volume": "52876.0",
+            "quote_turnover": "15.9157020",
+            "trades": 2,
+            "ts": 1786168800
+          },
+          {
+            "base_volume": "5890.0",
+            "quote_turnover": "1.76817800",
+            "trades": 1,
+            "ts": 1786172400
+          },
+          {
+            "base_volume": "15357.0",
+            "quote_turnover": "4.61214390",
+            "trades": 2,
+            "ts": 1786176000
+          },
+          {
+            "base_volume": "1018919.0",
+            "quote_turnover": "331.60360010",
+            "trades": 30,
+            "ts": 1786179600
+          },
+          {
+            "base_volume": "1350582.0",
+            "quote_turnover": "499.27357050",
+            "trades": 76,
+            "ts": 1786183200
+          },
+          {
+            "base_volume": "2943.0",
+            "quote_turnover": "1.02857850",
+            "trades": 1,
+            "ts": 1786186800
+          },
+          {
+            "base_volume": "453852.0",
+            "quote_turnover": "164.81141150",
+            "trades": 19,
+            "ts": 1786194000
+          },
+          {
+            "base_volume": "551387.0",
+            "quote_turnover": "180.81197110",
+            "trades": 25,
+            "ts": 1786197600
+          },
+          {
+            "base_volume": "6993.0",
+            "quote_turnover": "2.11258530",
+            "trades": 1,
+            "ts": 1786201200
+          },
+          {
+            "base_volume": "118322.0",
+            "quote_turnover": "35.61575600",
+            "trades": 5,
+            "ts": 1786204800
+          },
+          {
+            "base_volume": "1465755.0",
+            "quote_turnover": "492.58911580",
+            "trades": 31,
+            "ts": 1786208400
+          },
+          {
+            "base_volume": "113111.0",
+            "quote_turnover": "34.55789750",
+            "trades": 6,
+            "ts": 1786212000
+          },
+          {
+            "base_volume": "228241.0",
+            "quote_turnover": "80.79214850",
+            "trades": 14,
+            "ts": 1786219200
+          },
+          {
+            "base_volume": "53131.0",
+            "quote_turnover": "16.25998560",
+            "trades": 2,
+            "ts": 1786222800
+          },
+          {
+            "base_volume": "38853.0",
+            "quote_turnover": "11.85405030",
+            "trades": 2,
+            "ts": 1786226400
+          },
+          {
+            "base_volume": "126126.0",
+            "quote_turnover": "38.46985070",
+            "trades": 7,
+            "ts": 1786251600
+          },
+          {
+            "base_volume": "265659.0",
+            "quote_turnover": "88.59154040",
+            "trades": 11,
+            "ts": 1786255200
+          },
+          {
+            "base_volume": "11983.0",
+            "quote_turnover": "3.99633050",
+            "trades": 1,
+            "ts": 1786262400
+          },
+          {
+            "base_volume": "33293.0",
+            "quote_turnover": "10.55095040",
+            "trades": 4,
+            "ts": 1786266000
+          },
+          {
+            "base_volume": "95313.0",
+            "quote_turnover": "25.47863480",
+            "trades": 4,
+            "ts": 1786269600
+          },
+          {
+            "base_volume": "32370.0",
+            "quote_turnover": "10.20949800",
+            "trades": 1,
+            "ts": 1786280400
+          },
+          {
+            "base_volume": "182861.0",
+            "quote_turnover": "49.04989590",
+            "trades": 2,
+            "ts": 1786284000
+          },
+          {
+            "base_volume": "125893.0",
+            "quote_turnover": "35.05902790",
+            "trades": 3,
+            "ts": 1786287600
+          },
+          {
+            "base_volume": "403000.0",
+            "quote_turnover": "154.73028400",
+            "trades": 21,
+            "ts": 1786294800
+          },
+          {
+            "base_volume": "336458.0",
+            "quote_turnover": "137.07889370",
+            "trades": 9,
+            "ts": 1786298400
+          },
+          {
+            "base_volume": "176510.0",
+            "quote_turnover": "57.91647540",
+            "trades": 8,
+            "ts": 1786302000
+          },
+          {
+            "base_volume": "35359.0",
+            "quote_turnover": "10.961290",
+            "trades": 2,
+            "ts": 1786309200
+          },
+          {
+            "base_volume": "306893.0",
+            "quote_turnover": "119.17665020",
+            "trades": 11,
+            "ts": 1786312800
+          },
+          {
+            "base_volume": "141375.0",
+            "quote_turnover": "68.67577770",
+            "trades": 9,
+            "ts": 1786316400
+          },
+          {
+            "base_volume": "298999.0",
+            "quote_turnover": "107.78712440",
+            "trades": 13,
+            "ts": 1786320000
+          },
+          {
+            "base_volume": "42751.0",
+            "quote_turnover": "15.56761170",
+            "trades": 5,
+            "ts": 1786323600
+          },
+          {
+            "base_volume": "123689.0",
+            "quote_turnover": "49.44714550",
+            "trades": 11,
+            "ts": 1786327200
+          },
+          {
+            "base_volume": "87156.0",
+            "quote_turnover": "29.97460310",
+            "trades": 6,
+            "ts": 1786334400
+          },
+          {
+            "base_volume": "10358.0",
+            "quote_turnover": "4.15799090",
+            "trades": 2,
+            "ts": 1786341600
+          },
+          {
+            "base_volume": "23052.0",
+            "quote_turnover": "9.19497360",
+            "trades": 4,
+            "ts": 1786345200
+          },
+          {
+            "base_volume": "90117.0",
+            "quote_turnover": "31.63582530",
+            "trades": 3,
+            "ts": 1786348800
+          },
+          {
+            "base_volume": "117446.0",
+            "quote_turnover": "40.05546030",
+            "trades": 10,
+            "ts": 1786352400
+          },
+          {
+            "base_volume": "44239.0",
+            "quote_turnover": "15.11556800",
+            "trades": 4,
+            "ts": 1786356000
+          },
+          {
+            "base_volume": "512709.0",
+            "quote_turnover": "179.47654110",
+            "trades": 29,
+            "ts": 1786359600
+          },
+          {
+            "base_volume": "61068.0",
+            "quote_turnover": "21.50275840",
+            "trades": 2,
+            "ts": 1786363200
+          },
+          {
+            "base_volume": "322908.0",
+            "quote_turnover": "142.87175770",
+            "trades": 8,
+            "ts": 1786366800
+          },
+          {
+            "base_volume": "208985.0",
+            "quote_turnover": "103.23594760",
+            "trades": 16,
+            "ts": 1786370400
+          },
+          {
+            "base_volume": "199601.0",
+            "quote_turnover": "96.31319630",
+            "trades": 9,
+            "ts": 1786374000
+          },
+          {
+            "base_volume": "795039.0",
+            "quote_turnover": "330.18926540",
+            "trades": 27,
+            "ts": 1786377600
+          },
+          {
+            "base_volume": "174090.0",
+            "quote_turnover": "66.79803840",
+            "trades": 13,
+            "ts": 1786381200
+          },
+          {
+            "base_volume": "11717.0",
+            "quote_turnover": "4.39153160",
+            "trades": 1,
+            "ts": 1786384800
+          },
+          {
+            "base_volume": "499825.0",
+            "quote_turnover": "187.88246350",
+            "trades": 7,
+            "ts": 1786392000
+          },
+          {
+            "base_volume": "9949.0",
+            "quote_turnover": "3.82340070",
+            "trades": 1,
+            "ts": 1786413600
+          },
+          {
+            "base_volume": "264384.0",
+            "quote_turnover": "99.79366750",
+            "trades": 4,
+            "ts": 1786431600
+          },
+          {
+            "base_volume": "14743489.0",
+            "quote_turnover": "4295.05322900",
+            "trades": 114,
+            "ts": 1786446000
+          },
+          {
+            "base_volume": "490064.0",
+            "quote_turnover": "125.50283160",
+            "trades": 7,
+            "ts": 1786449600
+          },
+          {
+            "base_volume": "2042324.0",
+            "quote_turnover": "466.08212610",
+            "trades": 28,
+            "ts": 1786453200
+          },
+          {
+            "base_volume": "2455699.0",
+            "quote_turnover": "437.29181240",
+            "trades": 32,
+            "ts": 1786456800
+          },
+          {
+            "base_volume": "1999328.0",
+            "quote_turnover": "410.28650260",
+            "trades": 20,
+            "ts": 1786460400
+          },
+          {
+            "base_volume": "363517.0",
+            "quote_turnover": "66.08720850",
+            "trades": 7,
+            "ts": 1786464000
+          },
+          {
+            "base_volume": "32892.0",
+            "quote_turnover": "5.48638560",
+            "trades": 1,
+            "ts": 1786467600
+          },
+          {
+            "base_volume": "6834707.0",
+            "quote_turnover": "1302.10136280",
+            "trades": 28,
+            "ts": 1786471200
+          },
+          {
+            "base_volume": "145895.0",
+            "quote_turnover": "29.62175440",
+            "trades": 6,
+            "ts": 1786474800
+          },
+          {
+            "base_volume": "144211.0",
+            "quote_turnover": "28.37560570",
+            "trades": 5,
+            "ts": 1786478400
+          },
+          {
+            "base_volume": "17719044.0",
+            "quote_turnover": "3234.39062880",
+            "trades": 116,
+            "ts": 1786482000
+          },
+          {
+            "base_volume": "1157952.0",
+            "quote_turnover": "209.97736590",
+            "trades": 18,
+            "ts": 1786485600
+          },
+          {
+            "base_volume": "1362312.0",
+            "quote_turnover": "244.82417550",
+            "trades": 15,
+            "ts": 1786489200
+          },
+          {
+            "base_volume": "65338.0",
+            "quote_turnover": "11.25339430",
+            "trades": 6,
+            "ts": 1786492800
+          },
+          {
+            "base_volume": "359559.0",
+            "quote_turnover": "64.22665700",
+            "trades": 3,
+            "ts": 1786500000
+          },
+          {
+            "base_volume": "645343.0",
+            "quote_turnover": "109.24231840",
+            "trades": 11,
+            "ts": 1786503600
+          },
+          {
+            "base_volume": "450302.0",
+            "quote_turnover": "74.92319980",
+            "trades": 9,
+            "ts": 1786507200
+          },
+          {
+            "base_volume": "5709814.0",
+            "quote_turnover": "933.46553620",
+            "trades": 37,
+            "ts": 1786510800
+          },
+          {
+            "base_volume": "6218.0",
+            "quote_turnover": "0.99985440",
+            "trades": 1,
+            "ts": 1786514400
+          },
+          {
+            "base_volume": "381880.0",
+            "quote_turnover": "62.76058790",
+            "trades": 7,
+            "ts": 1786518000
+          },
+          {
+            "base_volume": "10052702.0",
+            "quote_turnover": "1629.27845250",
+            "trades": 63,
+            "ts": 1786521600
+          },
+          {
+            "base_volume": "958551.0",
+            "quote_turnover": "161.59344750",
+            "trades": 19,
+            "ts": 1786525200
+          },
+          {
+            "base_volume": "932088.0",
+            "quote_turnover": "143.77165040",
+            "trades": 9,
+            "ts": 1786528800
+          },
+          {
+            "base_volume": "2281886.0",
+            "quote_turnover": "351.61162610",
+            "trades": 9,
+            "ts": 1786532400
+          },
+          {
+            "base_volume": "5228068.0",
+            "quote_turnover": "772.67712330",
+            "trades": 37,
+            "ts": 1786536000
+          },
+          {
+            "base_volume": "779939.0",
+            "quote_turnover": "123.38634980",
+            "trades": 3,
+            "ts": 1786539600
+          },
+          {
+            "base_volume": "119143.0",
+            "quote_turnover": "15.32545150",
+            "trades": 3,
+            "ts": 1786543200
+          },
+          {
+            "base_volume": "27634.0",
+            "quote_turnover": "4.05114440",
+            "trades": 1,
+            "ts": 1786546800
+          },
+          {
+            "base_volume": "2943191.0",
+            "quote_turnover": "405.35140750",
+            "trades": 37,
+            "ts": 1786550400
+          },
+          {
+            "base_volume": "1937718.0",
+            "quote_turnover": "273.74004650",
+            "trades": 28,
+            "ts": 1786554000
+          },
+          {
+            "base_volume": "1470642.0",
+            "quote_turnover": "229.91078970",
+            "trades": 12,
+            "ts": 1786561200
+          },
+          {
+            "base_volume": "2293195.0",
+            "quote_turnover": "340.00952340",
+            "trades": 11,
+            "ts": 1786564800
+          },
+          {
+            "base_volume": "2580950.0",
+            "quote_turnover": "361.16447760",
+            "trades": 18,
+            "ts": 1786568400
+          },
+          {
+            "base_volume": "1020048.0",
+            "quote_turnover": "170.24173670",
+            "trades": 13,
+            "ts": 1786572000
+          },
+          {
+            "base_volume": "519576.0",
+            "quote_turnover": "82.35179500",
+            "trades": 3,
+            "ts": 1786575600
+          },
+          {
+            "base_volume": "70335.0",
+            "quote_turnover": "11.253600",
+            "trades": 2,
+            "ts": 1786579200
+          },
+          {
+            "base_volume": "1183085.0",
+            "quote_turnover": "189.91404180",
+            "trades": 10,
+            "ts": 1786582800
+          },
+          {
+            "base_volume": "220628.0",
+            "quote_turnover": "34.99979100",
+            "trades": 3,
+            "ts": 1786586400
+          },
+          {
+            "base_volume": "37424.0",
+            "quote_turnover": "5.26300480",
+            "trades": 2,
+            "ts": 1786597200
+          },
+          {
+            "base_volume": "7142.0",
+            "quote_turnover": "1.00273680",
+            "trades": 1,
+            "ts": 1786600800
+          },
+          {
+            "base_volume": "8227179.0",
+            "quote_turnover": "1535.99982540",
+            "trades": 53,
+            "ts": 1786608000
+          },
+          {
+            "base_volume": "3612392.0",
+            "quote_turnover": "735.20740620",
+            "trades": 43,
+            "ts": 1786611600
+          },
+          {
+            "base_volume": "3032492.0",
+            "quote_turnover": "630.16022230",
+            "trades": 62,
+            "ts": 1786615200
+          },
+          {
+            "base_volume": "481483.0",
+            "quote_turnover": "97.94008550",
+            "trades": 10,
+            "ts": 1786618800
+          },
+          {
+            "base_volume": "175834.0",
+            "quote_turnover": "32.06183390",
+            "trades": 5,
+            "ts": 1786622400
+          },
+          {
+            "base_volume": "567647.0",
+            "quote_turnover": "117.81972880",
+            "trades": 8,
+            "ts": 1786626000
+          },
+          {
+            "base_volume": "532409.0",
+            "quote_turnover": "102.15012100",
+            "trades": 9,
+            "ts": 1786629600
+          },
+          {
+            "base_volume": "22816.0",
+            "quote_turnover": "4.11144320",
+            "trades": 3,
+            "ts": 1786633200
+          },
+          {
+            "base_volume": "354064.0",
+            "quote_turnover": "56.33440750",
+            "trades": 12,
+            "ts": 1786636800
+          },
+          {
+            "base_volume": "1423253.0",
+            "quote_turnover": "212.45822540",
+            "trades": 10,
+            "ts": 1786640400
+          },
+          {
+            "base_volume": "110825.0",
+            "quote_turnover": "17.76180320",
+            "trades": 4,
+            "ts": 1786644000
+          },
+          {
+            "base_volume": "306935.0",
+            "quote_turnover": "46.90539030",
+            "trades": 7,
+            "ts": 1786651200
+          },
+          {
+            "base_volume": "659611.0",
+            "quote_turnover": "90.63055140",
+            "trades": 1,
+            "ts": 1786654800
+          },
+          {
+            "base_volume": "135450.0",
+            "quote_turnover": "18.57233720",
+            "trades": 3,
+            "ts": 1786658400
+          },
+          {
+            "base_volume": "253922.0",
+            "quote_turnover": "39.15477240",
+            "trades": 1,
+            "ts": 1786672800
+          },
+          {
+            "base_volume": "252762.0",
+            "quote_turnover": "38.91061110",
+            "trades": 3,
+            "ts": 1786676400
+          },
+          {
+            "base_volume": "75454.0",
+            "quote_turnover": "13.47646260",
+            "trades": 2,
+            "ts": 1786683600
+          },
+          {
+            "base_volume": "867611.0",
+            "quote_turnover": "144.82531980",
+            "trades": 4,
+            "ts": 1786690800
+          },
+          {
+            "base_volume": "118935.0",
+            "quote_turnover": "18.09499400",
+            "trades": 4,
+            "ts": 1786698000
+          },
+          {
+            "base_volume": "641920.0",
+            "quote_turnover": "88.97159950",
+            "trades": 6,
+            "ts": 1786701600
+          },
+          {
+            "base_volume": "10294.0",
+            "quote_turnover": "1.64086360",
+            "trades": 1,
+            "ts": 1786708800
+          },
+          {
+            "base_volume": "1744035.0",
+            "quote_turnover": "266.40268610",
+            "trades": 8,
+            "ts": 1786716000
+          },
+          {
+            "base_volume": "279004.0",
+            "quote_turnover": "43.30854620",
+            "trades": 9,
+            "ts": 1786719600
+          },
+          {
+            "base_volume": "182798.0",
+            "quote_turnover": "29.49599450",
+            "trades": 3,
+            "ts": 1786723200
+          },
+          {
+            "base_volume": "7291.0",
+            "quote_turnover": "1.10167010",
+            "trades": 1,
+            "ts": 1786726800
+          },
+          {
+            "base_volume": "1129272.0",
+            "quote_turnover": "165.06447460",
+            "trades": 14,
+            "ts": 1786730400
+          },
+          {
+            "base_volume": "340136.0",
+            "quote_turnover": "49.97755570",
+            "trades": 2,
+            "ts": 1786734000
+          },
+          {
+            "base_volume": "65756.0",
+            "quote_turnover": "9.07275570",
+            "trades": 2,
+            "ts": 1786737600
+          },
+          {
+            "base_volume": "30649.0",
+            "quote_turnover": "4.17745870",
+            "trades": 1,
+            "ts": 1786744800
+          },
+          {
+            "base_volume": "701375.0",
+            "quote_turnover": "112.220000",
+            "trades": 1,
+            "ts": 1786759200
+          },
+          {
+            "base_volume": "38765.0",
+            "quote_turnover": "5.81087350",
+            "trades": 1,
+            "ts": 1786784400
+          },
+          {
+            "base_volume": "89830.0",
+            "quote_turnover": "12.17196500",
+            "trades": 1,
+            "ts": 1786791600
+          },
+          {
+            "base_volume": "246411.0",
+            "quote_turnover": "32.67696470",
+            "trades": 3,
+            "ts": 1786795200
+          },
+          {
+            "base_volume": "62267.0",
+            "quote_turnover": "8.37491150",
+            "trades": 1,
+            "ts": 1786798800
+          },
+          {
+            "base_volume": "19800.0",
+            "quote_turnover": "2.96406000",
+            "trades": 1,
+            "ts": 1786802400
+          },
+          {
+            "base_volume": "32347.0",
+            "quote_turnover": "4.83587650",
+            "trades": 1,
+            "ts": 1786816800
+          },
+          {
+            "base_volume": "115298.0",
+            "quote_turnover": "15.24239560",
+            "trades": 2,
+            "ts": 1786820400
+          },
+          {
+            "base_volume": "35000.0",
+            "quote_turnover": "4.65850000",
+            "trades": 1,
+            "ts": 1786824000
+          },
+          {
+            "base_volume": "38886.0",
+            "quote_turnover": "5.81345700",
+            "trades": 2,
+            "ts": 1786838400
+          },
+          {
+            "base_volume": "18154.0",
+            "quote_turnover": "2.74973200",
+            "trades": 3,
+            "ts": 1786860000
+          },
+          {
+            "base_volume": "137279.0",
+            "quote_turnover": "21.8273610",
+            "trades": 3,
+            "ts": 1786870800
+          },
+          {
+            "base_volume": "38904.0",
+            "quote_turnover": "6.1857360",
+            "trades": 1,
+            "ts": 1786896000
+          },
+          {
+            "base_volume": "69828.0",
+            "quote_turnover": "10.04993530",
+            "trades": 4,
+            "ts": 1786899600
+          },
+          {
+            "base_volume": "58367.0",
+            "quote_turnover": "7.78032110",
+            "trades": 1,
+            "ts": 1786903200
+          },
+          {
+            "base_volume": "494389.0",
+            "quote_turnover": "64.77211470",
+            "trades": 5,
+            "ts": 1786906800
+          },
+          {
+            "base_volume": "71991.0",
+            "quote_turnover": "9.36991170",
+            "trades": 2,
+            "ts": 1786910400
+          },
+          {
+            "base_volume": "356990.0",
+            "quote_turnover": "53.59279660",
+            "trades": 3,
+            "ts": 1786921200
+          },
+          {
+            "base_volume": "1348948.0",
+            "quote_turnover": "220.39504880",
+            "trades": 14,
+            "ts": 1786950000
+          },
+          {
+            "base_volume": "570844.0",
+            "quote_turnover": "104.66068400",
+            "trades": 8,
+            "ts": 1786953600
+          },
+          {
+            "base_volume": "578687.0",
+            "quote_turnover": "106.43845900",
+            "trades": 4,
+            "ts": 1786957200
+          },
+          {
+            "base_volume": "246413.0",
+            "quote_turnover": "32.96591260",
+            "trades": 4,
+            "ts": 1786964400
+          },
+          {
+            "base_volume": "50001.0",
+            "quote_turnover": "7.000140",
+            "trades": 1,
+            "ts": 1786968000
+          },
+          {
+            "base_volume": "253594.0",
+            "quote_turnover": "39.30932690",
+            "trades": 3,
+            "ts": 1786978800
+          },
+          {
+            "base_volume": "84359.0",
+            "quote_turnover": "12.4007730",
+            "trades": 1,
+            "ts": 1786982400
+          },
+          {
+            "base_volume": "92139.0",
+            "quote_turnover": "15.47207880",
+            "trades": 3,
+            "ts": 1786993200
+          },
+          {
+            "base_volume": "10359.0",
+            "quote_turnover": "1.53727560",
+            "trades": 1,
+            "ts": 1787007600
+          },
+          {
+            "base_volume": "35747.0",
+            "quote_turnover": "5.32987770",
+            "trades": 1,
+            "ts": 1787022000
+          },
+          {
+            "base_volume": "314592.0",
+            "quote_turnover": "45.61736130",
+            "trades": 11,
+            "ts": 1787050800
+          },
+          {
+            "base_volume": "22408.0",
+            "quote_turnover": "3.15280560",
+            "trades": 1,
+            "ts": 1787054400
+          },
+          {
+            "base_volume": "120643.0",
+            "quote_turnover": "17.48816380",
+            "trades": 6,
+            "ts": 1787058000
+          },
+          {
+            "base_volume": "35656.0",
+            "quote_turnover": "5.23786640",
+            "trades": 2,
+            "ts": 1787061600
+          },
+          {
+            "base_volume": "131746.0",
+            "quote_turnover": "18.54735120",
+            "trades": 5,
+            "ts": 1787065200
+          },
+          {
+            "base_volume": "18304.0",
+            "quote_turnover": "2.71631360",
+            "trades": 2,
+            "ts": 1787072400
+          },
+          {
+            "base_volume": "35810.0",
+            "quote_turnover": "4.89597770",
+            "trades": 2,
+            "ts": 1787079600
+          },
+          {
+            "base_volume": "18178.0",
+            "quote_turnover": "2.69761520",
+            "trades": 1,
+            "ts": 1787083200
+          },
+          {
+            "base_volume": "622586.0",
+            "quote_turnover": "83.70071020",
+            "trades": 9,
+            "ts": 1787094000
+          },
+          {
+            "base_volume": "101790.0",
+            "quote_turnover": "13.37520600",
+            "trades": 2,
+            "ts": 1787097600
+          },
+          {
+            "base_volume": "99891.0",
+            "quote_turnover": "13.20316530",
+            "trades": 2,
+            "ts": 1787101200
+          },
+          {
+            "base_volume": "166889.0",
+            "quote_turnover": "24.99997220",
+            "trades": 1,
+            "ts": 1787104800
+          },
+          {
+            "base_volume": "257232.0",
+            "quote_turnover": "37.52040970",
+            "trades": 6,
+            "ts": 1787108400
+          },
+          {
+            "base_volume": "52088.0",
+            "quote_turnover": "9.27043240",
+            "trades": 2,
+            "ts": 1787119200
+          },
+          {
+            "base_volume": "738821.0",
+            "quote_turnover": "131.76717800",
+            "trades": 7,
+            "ts": 1787130000
+          },
+          {
+            "base_volume": "52967.0",
+            "quote_turnover": "8.04568730",
+            "trades": 1,
+            "ts": 1787133600
+          },
+          {
+            "base_volume": "185051.0",
+            "quote_turnover": "28.62182500",
+            "trades": 6,
+            "ts": 1787140800
+          },
+          {
+            "base_volume": "357587.0",
+            "quote_turnover": "54.44758980",
+            "trades": 10,
+            "ts": 1787148000
+          },
+          {
+            "base_volume": "344898.0",
+            "quote_turnover": "50.96669510",
+            "trades": 8,
+            "ts": 1787151600
+          },
+          {
+            "base_volume": "346885.0",
+            "quote_turnover": "47.59047880",
+            "trades": 8,
+            "ts": 1787158800
+          },
+          {
+            "base_volume": "11250.0",
+            "quote_turnover": "1.65937500",
+            "trades": 1,
+            "ts": 1787162400
+          },
+          {
+            "base_volume": "176505.0",
+            "quote_turnover": "25.73263720",
+            "trades": 6,
+            "ts": 1787176800
+          },
+          {
+            "base_volume": "338299.0",
+            "quote_turnover": "52.00386700",
+            "trades": 7,
+            "ts": 1787187600
+          },
+          {
+            "base_volume": "163837.0",
+            "quote_turnover": "25.39859270",
+            "trades": 7,
+            "ts": 1787191200
+          },
+          {
+            "base_volume": "393980.0",
+            "quote_turnover": "61.01915780",
+            "trades": 9,
+            "ts": 1787194800
+          },
+          {
+            "base_volume": "412533.0",
+            "quote_turnover": "63.66063230",
+            "trades": 5,
+            "ts": 1787209200
+          },
+          {
+            "base_volume": "3594716.0",
+            "quote_turnover": "604.21580880",
+            "trades": 69,
+            "ts": 1787212800
+          },
+          {
+            "base_volume": "8804904.0",
+            "quote_turnover": "1472.53906020",
+            "trades": 101,
+            "ts": 1787216400
+          },
+          {
+            "base_volume": "5120381.0",
+            "quote_turnover": "834.88123640",
+            "trades": 28,
+            "ts": 1787220000
+          },
+          {
+            "base_volume": "2040093.0",
+            "quote_turnover": "333.66538770",
+            "trades": 12,
+            "ts": 1787223600
+          },
+          {
+            "base_volume": "2785136.0",
+            "quote_turnover": "458.81988980",
+            "trades": 15,
+            "ts": 1787227200
+          },
+          {
+            "base_volume": "4015605.0",
+            "quote_turnover": "651.14899120",
+            "trades": 23,
+            "ts": 1787230800
+          },
+          {
+            "base_volume": "2236882.0",
+            "quote_turnover": "366.07662210",
+            "trades": 16,
+            "ts": 1787234400
+          },
+          {
+            "base_volume": "3224708.0",
+            "quote_turnover": "529.45688070",
+            "trades": 21,
+            "ts": 1787238000
+          },
+          {
+            "base_volume": "2139872.0",
+            "quote_turnover": "348.26928570",
+            "trades": 12,
+            "ts": 1787241600
+          },
+          {
+            "base_volume": "1012939.0",
+            "quote_turnover": "151.77339330",
+            "trades": 16,
+            "ts": 1787245200
+          },
+          {
+            "base_volume": "114860.0",
+            "quote_turnover": "18.43857040",
+            "trades": 3,
+            "ts": 1787252400
+          },
+          {
+            "base_volume": "2114601.0",
+            "quote_turnover": "328.77125860",
+            "trades": 16,
+            "ts": 1787256000
+          },
+          {
+            "base_volume": "25062.0",
+            "quote_turnover": "4.01994480",
+            "trades": 1,
+            "ts": 1787263200
+          },
+          {
+            "base_volume": "997536.0",
+            "quote_turnover": "153.86859450",
+            "trades": 7,
+            "ts": 1787274000
+          },
+          {
+            "base_volume": "1772163.0",
+            "quote_turnover": "278.50083440",
+            "trades": 22,
+            "ts": 1787277600
+          },
+          {
+            "base_volume": "2615267.0",
+            "quote_turnover": "406.11744340",
+            "trades": 15,
+            "ts": 1787281200
+          },
+          {
+            "base_volume": "1379848.0",
+            "quote_turnover": "208.63833430",
+            "trades": 10,
+            "ts": 1787284800
+          },
+          {
+            "base_volume": "1849795.0",
+            "quote_turnover": "286.65961010",
+            "trades": 9,
+            "ts": 1787288400
+          },
+          {
+            "base_volume": "1442035.0",
+            "quote_turnover": "224.47135470",
+            "trades": 11,
+            "ts": 1787292000
+          },
+          {
+            "base_volume": "95148.0",
+            "quote_turnover": "14.99988980",
+            "trades": 2,
+            "ts": 1787295600
+          },
+          {
+            "base_volume": "2398024.0",
+            "quote_turnover": "367.08832760",
+            "trades": 27,
+            "ts": 1787299200
+          },
+          {
+            "base_volume": "911757.0",
+            "quote_turnover": "137.21907800",
+            "trades": 5,
+            "ts": 1787302800
+          },
+          {
+            "base_volume": "2106504.0",
+            "quote_turnover": "327.60438190",
+            "trades": 13,
+            "ts": 1787306400
+          },
+          {
+            "base_volume": "2272822.0",
+            "quote_turnover": "354.11567170",
+            "trades": 16,
+            "ts": 1787310000
+          },
+          {
+            "base_volume": "1112180.0",
+            "quote_turnover": "173.68603540",
+            "trades": 13,
+            "ts": 1787313600
+          },
+          {
+            "base_volume": "1537460.0",
+            "quote_turnover": "238.02689450",
+            "trades": 12,
+            "ts": 1787317200
+          },
+          {
+            "base_volume": "1573569.0",
+            "quote_turnover": "242.61489620",
+            "trades": 10,
+            "ts": 1787320800
+          },
+          {
+            "base_volume": "1100485.0",
+            "quote_turnover": "173.54647290",
+            "trades": 16,
+            "ts": 1787328000
+          },
+          {
+            "base_volume": "366158.0",
+            "quote_turnover": "57.78423530",
+            "trades": 7,
+            "ts": 1787331600
+          },
+          {
+            "base_volume": "21187.0",
+            "quote_turnover": "3.33059640",
+            "trades": 1,
+            "ts": 1787342400
+          },
+          {
+            "base_volume": "1024974.0",
+            "quote_turnover": "156.11247210",
+            "trades": 12,
+            "ts": 1787349600
+          },
+          {
+            "base_volume": "961513.0",
+            "quote_turnover": "152.21656190",
+            "trades": 8,
+            "ts": 1787356800
+          },
+          {
+            "base_volume": "113432.0",
+            "quote_turnover": "17.27401440",
+            "trades": 3,
+            "ts": 1787364000
+          },
+          {
+            "base_volume": "26623.0",
+            "quote_turnover": "4.08079620",
+            "trades": 2,
+            "ts": 1787367600
+          },
+          {
+            "base_volume": "1551422.0",
+            "quote_turnover": "225.22680780",
+            "trades": 18,
+            "ts": 1787378400
+          },
+          {
+            "base_volume": "2258379.0",
+            "quote_turnover": "328.54686850",
+            "trades": 24,
+            "ts": 1787382000
+          },
+          {
+            "base_volume": "71289.0",
+            "quote_turnover": "10.99989270",
+            "trades": 1,
+            "ts": 1787389200
+          },
+          {
+            "base_volume": "368988.0",
+            "quote_turnover": "51.20639340",
+            "trades": 6,
+            "ts": 1787410800
+          },
+          {
+            "base_volume": "32028.0",
+            "quote_turnover": "4.39744440",
+            "trades": 1,
+            "ts": 1787418000
+          },
+          {
+            "base_volume": "125705.0",
+            "quote_turnover": "17.30427010",
+            "trades": 2,
+            "ts": 1787421600
+          },
+          {
+            "base_volume": "346794.0",
+            "quote_turnover": "50.86874750",
+            "trades": 3,
+            "ts": 1787425200
+          },
+          {
+            "base_volume": "41792.0",
+            "quote_turnover": "6.10999040",
+            "trades": 1,
+            "ts": 1787443200
+          },
+          {
+            "base_volume": "2508249.0",
+            "quote_turnover": "380.59961700",
+            "trades": 25,
+            "ts": 1787446800
+          },
+          {
+            "base_volume": "32320.0",
+            "quote_turnover": "4.99990400",
+            "trades": 1,
+            "ts": 1787457600
+          },
+          {
+            "base_volume": "386320.0",
+            "quote_turnover": "55.89029060",
+            "trades": 5,
+            "ts": 1787461200
+          },
+          {
+            "base_volume": "554157.0",
+            "quote_turnover": "76.83665830",
+            "trades": 8,
+            "ts": 1787464800
+          },
+          {
+            "base_volume": "1385668.0",
+            "quote_turnover": "212.46514210",
+            "trades": 14,
+            "ts": 1787468400
+          },
+          {
+            "base_volume": "171929.0",
+            "quote_turnover": "25.36422920",
+            "trades": 4,
+            "ts": 1787472000
+          },
+          {
+            "base_volume": "1120113.0",
+            "quote_turnover": "152.05300650",
+            "trades": 12,
+            "ts": 1787482800
+          },
+          {
+            "base_volume": "151155.0",
+            "quote_turnover": "23.00266030",
+            "trades": 3,
+            "ts": 1787490000
+          },
+          {
+            "base_volume": "25839.0",
+            "quote_turnover": "3.99729330",
+            "trades": 1,
+            "ts": 1787493600
+          },
+          {
+            "base_volume": "325700.0",
+            "quote_turnover": "49.15936750",
+            "trades": 9,
+            "ts": 1787497200
+          },
+          {
+            "base_volume": "172642.0",
+            "quote_turnover": "25.30910140",
+            "trades": 5,
+            "ts": 1787508000
+          },
+          {
+            "base_volume": "172815.0",
+            "quote_turnover": "25.36168890",
+            "trades": 2,
+            "ts": 1787515200
+          },
+          {
+            "base_volume": "39003.0",
+            "quote_turnover": "5.71393950",
+            "trades": 1,
+            "ts": 1787522400
+          },
+          {
+            "base_volume": "381950.0",
+            "quote_turnover": "54.79277610",
+            "trades": 7,
+            "ts": 1787526000
+          },
+          {
+            "base_volume": "136066.0",
+            "quote_turnover": "18.74600780",
+            "trades": 2,
+            "ts": 1787536800
+          },
+          {
+            "base_volume": "23089.0",
+            "quote_turnover": "3.19551760",
+            "trades": 1,
+            "ts": 1787544000
+          },
+          {
+            "base_volume": "6802.0",
+            "quote_turnover": "0.9998940",
+            "trades": 1,
+            "ts": 1787558400
+          },
+          {
+            "base_volume": "39015.0",
+            "quote_turnover": "5.69218780",
+            "trades": 2,
+            "ts": 1787565600
+          },
+          {
+            "base_volume": "56254.0",
+            "quote_turnover": "7.77992820",
+            "trades": 1,
+            "ts": 1787569200
+          },
+          {
+            "base_volume": "6603.0",
+            "quote_turnover": "0.99314150",
+            "trades": 2,
+            "ts": 1787580000
+          },
+          {
+            "base_volume": "59052.0",
+            "quote_turnover": "8.68654920",
+            "trades": 1,
+            "ts": 1787587200
+          },
+          {
+            "base_volume": "113968.0",
+            "quote_turnover": "15.51865280",
+            "trades": 2,
+            "ts": 1787616000
+          },
+          {
+            "base_volume": "36321.0",
+            "quote_turnover": "4.94328810",
+            "trades": 1,
+            "ts": 1787619600
+          },
+          {
+            "base_volume": "29970.0",
+            "quote_turnover": "4.38161400",
+            "trades": 1,
+            "ts": 1787623200
+          },
+          {
+            "base_volume": "341315.0",
+            "quote_turnover": "49.99985300",
+            "trades": 6,
+            "ts": 1787626800
+          },
+          {
+            "base_volume": "20418.0",
+            "quote_turnover": "3.01778040",
+            "trades": 1,
+            "ts": 1787630400
+          },
+          {
+            "base_volume": "795994.0",
+            "quote_turnover": "122.53362050",
+            "trades": 26,
+            "ts": 1787641200
+          },
+          {
+            "base_volume": "846507.0",
+            "quote_turnover": "131.14907390",
+            "trades": 18,
+            "ts": 1787644800
+          },
+          {
+            "base_volume": "1963371.0",
+            "quote_turnover": "319.24691400",
+            "trades": 39,
+            "ts": 1787648400
+          },
+          {
+            "base_volume": "6162062.0",
+            "quote_turnover": "1210.07338160",
+            "trades": 83,
+            "ts": 1787652000
+          },
+          {
+            "base_volume": "1775049.0",
+            "quote_turnover": "328.08002160",
+            "trades": 20,
+            "ts": 1787655600
+          },
+          {
+            "base_volume": "1367837.0",
+            "quote_turnover": "231.45137810",
+            "trades": 15,
+            "ts": 1787659200
+          },
+          {
+            "base_volume": "3226125.0",
+            "quote_turnover": "565.58198140",
+            "trades": 53,
+            "ts": 1787662800
+          },
+          {
+            "base_volume": "779056.0",
+            "quote_turnover": "153.78213390",
+            "trades": 6,
+            "ts": 1787666400
+          },
+          {
+            "base_volume": "1056839.0",
+            "quote_turnover": "175.15968700",
+            "trades": 25,
+            "ts": 1787670000
+          },
+          {
+            "base_volume": "543990.0",
+            "quote_turnover": "89.93244190",
+            "trades": 7,
+            "ts": 1787673600
+          },
+          {
+            "base_volume": "107966.0",
+            "quote_turnover": "18.33262680",
+            "trades": 3,
+            "ts": 1787680800
+          },
+          {
+            "base_volume": "1329524.0",
+            "quote_turnover": "218.41061940",
+            "trades": 34,
+            "ts": 1787684400
+          },
+          {
+            "base_volume": "58072.0",
+            "quote_turnover": "9.54039120",
+            "trades": 2,
+            "ts": 1787688000
+          },
+          {
+            "base_volume": "153273.0",
+            "quote_turnover": "24.77612320",
+            "trades": 5,
+            "ts": 1787691600
+          },
+          {
+            "base_volume": "728553.0",
+            "quote_turnover": "137.13820210",
+            "trades": 22,
+            "ts": 1787695200
+          },
+          {
+            "base_volume": "620670.0",
+            "quote_turnover": "104.94127000",
+            "trades": 4,
+            "ts": 1787698800
+          },
+          {
+            "base_volume": "18760.0",
+            "quote_turnover": "3.29988400",
+            "trades": 1,
+            "ts": 1787702400
+          },
+          {
+            "base_volume": "72265.0",
+            "quote_turnover": "12.12479990",
+            "trades": 2,
+            "ts": 1787706000
+          },
+          {
+            "base_volume": "474693.0",
+            "quote_turnover": "83.16580730",
+            "trades": 9,
+            "ts": 1787709600
+          },
+          {
+            "base_volume": "683556.0",
+            "quote_turnover": "119.26898480",
+            "trades": 10,
+            "ts": 1787724000
+          },
+          {
+            "base_volume": "1540989.0",
+            "quote_turnover": "245.29662240",
+            "trades": 26,
+            "ts": 1787727600
+          },
+          {
+            "base_volume": "3702289.0",
+            "quote_turnover": "552.88240360",
+            "trades": 28,
+            "ts": 1787731200
+          },
+          {
+            "base_volume": "6715365.0",
+            "quote_turnover": "853.04367370",
+            "trades": 39,
+            "ts": 1787734800
+          },
+          {
+            "base_volume": "166866.0",
+            "quote_turnover": "17.04728750",
+            "trades": 10,
+            "ts": 1787738400
+          },
+          {
+            "base_volume": "1621659.0",
+            "quote_turnover": "160.98994190",
+            "trades": 10,
+            "ts": 1787742000
+          },
+          {
+            "base_volume": "808754.0",
+            "quote_turnover": "81.21132950",
+            "trades": 8,
+            "ts": 1787745600
+          },
+          {
+            "base_volume": "444554.0",
+            "quote_turnover": "52.82196780",
+            "trades": 8,
+            "ts": 1787749200
+          },
+          {
+            "base_volume": "765709.0",
+            "quote_turnover": "80.89488220",
+            "trades": 17,
+            "ts": 1787752800
+          },
+          {
+            "base_volume": "110933.0",
+            "quote_turnover": "12.06655470",
+            "trades": 4,
+            "ts": 1787756400
+          },
+          {
+            "base_volume": "18214.0",
+            "quote_turnover": "2.1492520",
+            "trades": 2,
+            "ts": 1787760000
+          },
+          {
+            "base_volume": "76300.0",
+            "quote_turnover": "11.14786790",
+            "trades": 5,
+            "ts": 1787763600
+          },
+          {
+            "base_volume": "471164.0",
+            "quote_turnover": "50.27392480",
+            "trades": 7,
+            "ts": 1787767200
+          },
+          {
+            "base_volume": "58346.0",
+            "quote_turnover": "6.7207420",
+            "trades": 4,
+            "ts": 1787770800
+          },
+          {
+            "base_volume": "13848.0",
+            "quote_turnover": "1.45819440",
+            "trades": 1,
+            "ts": 1787774400
+          },
+          {
+            "base_volume": "39068.0",
+            "quote_turnover": "4.88811440",
+            "trades": 4,
+            "ts": 1787778000
+          },
+          {
+            "base_volume": "461577.0",
+            "quote_turnover": "56.24139380",
+            "trades": 21,
+            "ts": 1787781600
+          },
+          {
+            "base_volume": "27378.0",
+            "quote_turnover": "3.95636620",
+            "trades": 2,
+            "ts": 1787785200
+          },
+          {
+            "base_volume": "19025.0",
+            "quote_turnover": "2.283000",
+            "trades": 1,
+            "ts": 1787810400
+          },
+          {
+            "base_volume": "12083.0",
+            "quote_turnover": "1.449960",
+            "trades": 1,
+            "ts": 1787821200
+          },
+          {
+            "base_volume": "133103.0",
+            "quote_turnover": "13.62571130",
+            "trades": 3,
+            "ts": 1787828400
+          },
+          {
+            "base_volume": "9748.0",
+            "quote_turnover": "0.99722040",
+            "trades": 1,
+            "ts": 1787832000
+          },
+          {
+            "base_volume": "244215.0",
+            "quote_turnover": "24.90589510",
+            "trades": 6,
+            "ts": 1787835600
+          },
+          {
+            "base_volume": "149851.0",
+            "quote_turnover": "15.15388860",
+            "trades": 3,
+            "ts": 1787850000
+          },
+          {
+            "base_volume": "42897.0",
+            "quote_turnover": "4.34117640",
+            "trades": 1,
+            "ts": 1787853600
+          },
+          {
+            "base_volume": "88007.0",
+            "quote_turnover": "8.93271050",
+            "trades": 1,
+            "ts": 1787857200
+          },
+          {
+            "base_volume": "35624.0",
+            "quote_turnover": "3.7405200",
+            "trades": 2,
+            "ts": 1787860800
+          },
+          {
+            "base_volume": "108362.0",
+            "quote_turnover": "11.9139760",
+            "trades": 7,
+            "ts": 1787868000
+          },
+          {
+            "base_volume": "4271950.0",
+            "quote_turnover": "525.98546410",
+            "trades": 50,
+            "ts": 1787871600
+          },
+          {
+            "base_volume": "602161.0",
+            "quote_turnover": "67.32267040",
+            "trades": 12,
+            "ts": 1787914800
+          },
+          {
+            "base_volume": "52575.0",
+            "quote_turnover": "5.37316500",
+            "trades": 2,
+            "ts": 1787918400
+          },
+          {
+            "base_volume": "45415.0",
+            "quote_turnover": "4.64141300",
+            "trades": 3,
+            "ts": 1787922000
+          },
+          {
+            "base_volume": "41612.0",
+            "quote_turnover": "5.34692700",
+            "trades": 4,
+            "ts": 1787940000
+          },
+          {
+            "base_volume": "17008.0",
+            "quote_turnover": "1.74161920",
+            "trades": 1,
+            "ts": 1787943600
+          },
+          {
+            "base_volume": "44645.0",
+            "quote_turnover": "5.07658690",
+            "trades": 3,
+            "ts": 1787950800
+          },
+          {
+            "base_volume": "9173.0",
+            "quote_turnover": "0.94665360",
+            "trades": 1,
+            "ts": 1787958000
+          },
+          {
+            "base_volume": "31163.0",
+            "quote_turnover": "3.19687300",
+            "trades": 4,
+            "ts": 1787965200
+          },
+          {
+            "base_volume": "30911.0",
+            "quote_turnover": "3.16219530",
+            "trades": 1,
+            "ts": 1787994000
+          },
+          {
+            "base_volume": "126254.0",
+            "quote_turnover": "12.92164340",
+            "trades": 6,
+            "ts": 1788012000
+          },
+          {
+            "base_volume": "23790.0",
+            "quote_turnover": "2.52205800",
+            "trades": 3,
+            "ts": 1788022800
+          },
+          {
+            "base_volume": "11627338.0",
+            "quote_turnover": "1476.22874120",
+            "trades": 129,
+            "ts": 1788040800
+          },
+          {
+            "base_volume": "216026.0",
+            "quote_turnover": "22.41133210",
+            "trades": 5,
+            "ts": 1788044400
+          },
+          {
+            "base_volume": "1155905.0",
+            "quote_turnover": "140.37921040",
+            "trades": 52,
+            "ts": 1788051600
+          },
+          {
+            "base_volume": "49818.0",
+            "quote_turnover": "6.49726200",
+            "trades": 12,
+            "ts": 1788055200
+          },
+          {
+            "base_volume": "19523.0",
+            "quote_turnover": "2.7006500",
+            "trades": 6,
+            "ts": 1788062400
+          },
+          {
+            "base_volume": "19429.0",
+            "quote_turnover": "2.7006310",
+            "trades": 6,
+            "ts": 1788066000
+          },
+          {
+            "base_volume": "43793.0",
+            "quote_turnover": "5.29851780",
+            "trades": 6,
+            "ts": 1788069600
+          },
+          {
+            "base_volume": "46408.0",
+            "quote_turnover": "5.46528410",
+            "trades": 5,
+            "ts": 1788073200
+          },
+          {
+            "base_volume": "235112.0",
+            "quote_turnover": "24.59019460",
+            "trades": 3,
+            "ts": 1788076800
+          },
+          {
+            "base_volume": "75899.0",
+            "quote_turnover": "7.94662530",
+            "trades": 2,
+            "ts": 1788098400
+          },
+          {
+            "base_volume": "54250.0",
+            "quote_turnover": "5.67935700",
+            "trades": 2,
+            "ts": 1788105600
+          },
+          {
+            "base_volume": "83268.0",
+            "quote_turnover": "8.50998960",
+            "trades": 2,
+            "ts": 1788109200
+          },
+          {
+            "base_volume": "52146.0",
+            "quote_turnover": "5.57440740",
+            "trades": 1,
+            "ts": 1788112800
+          },
+          {
+            "base_volume": "1150634.0",
+            "quote_turnover": "143.25587680",
+            "trades": 9,
+            "ts": 1788116400
+          },
+          {
+            "base_volume": "58708.0",
+            "quote_turnover": "6.27001440",
+            "trades": 2,
+            "ts": 1788120000
+          },
+          {
+            "base_volume": "67983.0",
+            "quote_turnover": "6.95466340",
+            "trades": 2,
+            "ts": 1788123600
+          },
+          {
+            "base_volume": "125014.0",
+            "quote_turnover": "12.87232010",
+            "trades": 6,
+            "ts": 1788127200
+          },
+          {
+            "base_volume": "29832.0",
+            "quote_turnover": "3.20395680",
+            "trades": 1,
+            "ts": 1788148800
+          },
+          {
+            "base_volume": "43604.0",
+            "quote_turnover": "4.61330320",
+            "trades": 2,
+            "ts": 1788174000
+          },
+          {
+            "base_volume": "42779.0",
+            "quote_turnover": "4.54740770",
+            "trades": 1,
+            "ts": 1788184800
+          },
+          {
+            "base_volume": "12351.0",
+            "quote_turnover": "1.31908680",
+            "trades": 1,
+            "ts": 1788192000
+          },
+          {
+            "base_volume": "70837.0",
+            "quote_turnover": "7.40628660",
+            "trades": 3,
+            "ts": 1788195600
+          },
+          {
+            "base_volume": "22849.0",
+            "quote_turnover": "2.35474280",
+            "trades": 2,
+            "ts": 1788199200
+          },
+          {
+            "base_volume": "63568.0",
+            "quote_turnover": "6.63975920",
+            "trades": 3,
+            "ts": 1788206400
+          },
+          {
+            "base_volume": "11319.0",
+            "quote_turnover": "1.15906560",
+            "trades": 1,
+            "ts": 1788210000
+          }
+        ],
+        "last": "1788210163.856278",
+        "rows": 4373,
+        "turnover_method": "SUM_ARCHIVED_TRADE_PRICE_TIMES_AMOUNT"
+      },
+      "url": "https://download.gatedata.org/spot/deals/202608/EYWA_USDT-202608.csv.gz"
+    }
+  ],
+  "request_plan_hash": "2d5b078796b59a2dd235728edba4c81371ccde69345d981292cd056f1bbf8eaa",
+  "requests": 2,
+  "runtime_binding": {
+    "tools/check_active_run_gate.ps1": "a3b1b735dba6681b18fdb2e9be637079a22391123eced0a316dc2b76855193fd",
+    "tools/check_trading_mvp_autopilot.ps1": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+    "tools/run_channel_strategy_validation_visible.ps1": "f73bacb2164f3d96622f6a0882aabad239f04122fcfba85376af779d12b6a969",
+    "trading_mvp/src/channel_validation/__init__.py": "dab9cae823a9b621cc47440d3a73630e9831110efd9f370fe7b689d2206f71e3",
+    "trading_mvp/src/channel_validation/adapters.py": "e3a090521c5da1dc6ff7afe600b4c52aad74f63ef1358a7f674d86af7b4377fe",
+    "trading_mvp/src/channel_validation/archive_audit.py": "fdbb487dc77de23176751e24f642e487d0da00fe05f83f27b92dcdbbba74124a",
+    "trading_mvp/src/channel_validation/contract.py": "d71f4e1834623bc8ea7234dd561604a26d89f010a2978092c9c9858d5f55465c",
+    "trading_mvp/src/channel_validation/data.py": "bf7d11039ac155ee70a21d0a1837e5af5ad7506ae7db3519472ac5d2e5322f61",
+    "trading_mvp/src/channel_validation/execution.py": "b8e119584e4b3b5c3abe2da93900711f74a630b0d94b7c570faf6883c35de4ab",
+    "trading_mvp/src/channel_validation/gate_catalog.py": "920183562362062ba516ea3b9859051f9aecad27f5eb8900d9b59716f11af0dd",
+    "trading_mvp/src/channel_validation/gate_history.py": "7297594b274bc6a9fb239be67e23825e55a6db7e45d65133ba252dcc3cde35df",
+    "trading_mvp/src/channel_validation/gate_survivorship.py": "85cc2300daa78a51159bcccee84f7f5e5ba290e05dff274ea66b26e2ab68e6f9",
+    "trading_mvp/src/channel_validation/gate_trades.py": "c437567a56bc2697183487bf9adf76465617553f17919486a078ca97fa20b9a0",
+    "trading_mvp/src/channel_validation/models.py": "9c1f0b142276e2e78e101036192486a603961422a9b1fb8ac4cf2dad532cc193",
+    "trading_mvp/src/channel_validation/portfolio.py": "cb63ff1b53751cec1b248b91c8e70c9686a04259e1f7636bc5be8749025332a4",
+    "trading_mvp/src/channel_validation/runner.py": "e2ce79d5a22560bbe2c66d8af3035680ec148fd8b1d7c6b2ecc1f08b592e3ebe",
+    "trading_mvp/src/channel_validation/sources.py": "e30cde7da64c7aefd58711f3678a9c814acef298a901bba8744d095ee87cdd10",
+    "trading_mvp/src/channel_validation/statistics.py": "e4b6f69e9a057f2ec5a7d33813d725f720239207f7728bd9e101a6cb0a2ce65d",
+    "trading_mvp/src/global_market_writer_claim.py": "bc0604267c9d709a17188eb9daf317417d2633bf4c31266f73db33ac2f5066d2",
+    "trading_mvp/tests/test_channel_validation.py": "332cdae0ac316eb59902ff85834b0831388909a5089550f06be4c262bd56e523"
+  },
+  "schema": "gate_archived_trade_turnover_audit_v1"
+}

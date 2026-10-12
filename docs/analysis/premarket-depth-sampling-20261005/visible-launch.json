@@ -1,0 +1,13 @@
+{
+  "pid": 19500,
+  "started_utc": "2026-10-05T12:14:29.8711060Z",
+  "cwd": "C:\\Users\\koval\\Documents\\ZolotyayLopata",
+  "window_style": "Normal",
+  "no_exit": true,
+  "command": "$ErrorActionPreference = 'Stop'\nSet-Location 'C:\\Users\\koval\\Documents\\ZolotyayLopata'\n$Host.UI.RawUI.WindowTitle = 'Premarket: offline sampling quality, no network'\n$log = 'docs\\analysis\\premarket-depth-sampling-20261005\\visible-audit.log'\ntry {\n    Write-Host 'OFFLINE ONLY. Stop: Ctrl+C. Limit: 300 sec. No market data writer.'\n    Write-Host 'Status: Get-Content docs\\analysis\\premarket-depth-sampling-20261005\\visible-audit.log -Tail 20'\n    & 'C:\\Program Files\\Python313\\python.exe' trading_mvp\\src\\premarket_depth_sampling_protocol.py --repo-root . --protocol docs\\plans\\premarket-depth-sampling-protocol-20261005-v1.json --freeze-only 2>&1 | Tee-Object -FilePath $log\n    if ($LASTEXITCODE -ne 0) { throw 'Protocol freeze failed' }\n    & 'C:\\Program Files\\Python313\\python.exe' trading_mvp\\src\\premarket_depth_sampling_protocol.py --repo-root . --protocol docs\\plans\\premarket-depth-sampling-protocol-20261005-v1.json --output docs\\analysis\\premarket-depth-sampling-20261005\\sampling-quality-v1.json 2>&1 | Tee-Object -FilePath $log -Append\n    if ($LASTEXITCODE -ne 0) { throw 'Quality audit failed' }\n    'OFFLINE_AUDIT_COMPLETE_NO_COLLECTOR' | Tee-Object -FilePath $log -Append\n} catch {\n    ('OFFLINE_AUDIT_FAILED: ' + $_.Exception.Message) | Tee-Object -FilePath $log -Append\n    Write-Host $_ -ForegroundColor Red\n}",
+  "expected_max_runtime_sec": 300,
+  "network_requests": 0,
+  "output_path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-depth-sampling-20261005\\sampling-quality-v1.json",
+  "status_command": "Get-Content 'C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\premarket-depth-sampling-20261005\\visible-audit.log' -Tail 20",
+  "stop_command": "Ctrl+C in the visible terminal"
+}

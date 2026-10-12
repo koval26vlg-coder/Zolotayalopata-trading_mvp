@@ -1,0 +1,2093 @@
+{
+  "audit_hash": "0d0e59c4e089204869b873d09db8a9b1589b146af2239a685fe16c34e4fb318f",
+  "eligible_for_evaluation": false,
+  "full_file_crc_checks": 6,
+  "input_binding_hash": "6fa24e7838758114d14e4f0b9cfdb791006c9440150164b01a83fc0ff40fcff5",
+  "metrics": null,
+  "network_requests": 0,
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "reports": [
+    {
+      "blank_lines": 0,
+      "decoded_bytes": 2987870,
+      "decoded_sha256": "6f5d47fd1646475e534a561ba6f2a3b681a2af88c734c10106a11ff177abbc8d",
+      "duplicate_record_count": 190,
+      "eligible_for_evaluation": false,
+      "equal_time_count": 199,
+      "first_time_us": 1672531202443000,
+      "gzip_crc_verified": true,
+      "input": {
+        "bytes": 303768,
+        "kind": "orderbooks_slice",
+        "market": "spot",
+        "month": "202301",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\01.quarantined.gz-part",
+        "sha256": "761fed48af785841dbab140bc1cda3284fe0cc3c12abea59936a442679b84fe9",
+        "source_url": "https://download.gatedata.org/spot/orderbooks_slice/202301/BTC_USDT-2023010100.gz",
+        "symbol": "BTC_USDT"
+      },
+      "invalid_examples": [
+        {
+          "error": "'current'",
+          "line": 925
+        },
+        {
+          "error": "'current'",
+          "line": 1999
+        },
+        {
+          "error": "'current'",
+          "line": 2416
+        }
+      ],
+      "invalid_rows": 3,
+      "largest_positive_gap_us": 3516000,
+      "last_time_us": 1672534798753000,
+      "max_depth": {
+        "asks": 20,
+        "bids": 20
+      },
+      "min_depth": {
+        "asks": 20,
+        "bids": 20
+      },
+      "missing_exchange_update_count": 0,
+      "normalized_sequence_hash": "818a1efea423d374db858035569558e966b53b157140ebc9335a9c85eb2349f5",
+      "out_of_window_count": 0,
+      "physical_lines": 3341,
+      "positive_gap_counts_us": {},
+      "samples": [
+        {
+          "line": 1,
+          "row": {
+            "asks": [
+              {
+                "price": "16543",
+                "raw_size": "0.0001"
+              },
+              {
+                "price": "16543.2",
+                "raw_size": "0.0125600459"
+              },
+              {
+                "price": "16543.3",
+                "raw_size": "0.0166"
+              },
+              {
+                "price": "16543.4",
+                "raw_size": "0.024"
+              },
+              {
+                "price": "16543.6",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16543.7",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16543.8",
+                "raw_size": "0.022"
+              },
+              {
+                "price": "16544",
+                "raw_size": "0.015"
+              },
+              {
+                "price": "16544.2",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16544.3",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16544.6",
+                "raw_size": "0.0238"
+              },
+              {
+                "price": "16544.7",
+                "raw_size": "0.0138"
+              },
+              {
+                "price": "16545",
+                "raw_size": "0.0177"
+              },
+              {
+                "price": "16545.1",
+                "raw_size": "0.0002"
+              },
+              {
+                "price": "16545.2",
+                "raw_size": "0.007"
+              },
+              {
+                "price": "16545.3",
+                "raw_size": "0.0001"
+              },
+              {
+                "price": "16545.4",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16545.7",
+                "raw_size": "0.0069"
+              },
+              {
+                "price": "16545.8",
+                "raw_size": "0.0002"
+              },
+              {
+                "price": "16545.9",
+                "raw_size": "0.0082"
+              }
+            ],
+            "bids": [
+              {
+                "price": "16542.6",
+                "raw_size": "0.0003"
+              },
+              {
+                "price": "16542.5",
+                "raw_size": "0.0003"
+              },
+              {
+                "price": "16542.3",
+                "raw_size": "0.0007"
+              },
+              {
+                "price": "16542.2",
+                "raw_size": "0.0007"
+              },
+              {
+                "price": "16541.9",
+                "raw_size": "0.0011"
+              },
+              {
+                "price": "16541.8",
+                "raw_size": "0.0096"
+              },
+              {
+                "price": "16541.7",
+                "raw_size": "0.01"
+              },
+              {
+                "price": "16541.4",
+                "raw_size": "0.0201"
+              },
+              {
+                "price": "16541.3",
+                "raw_size": "0.0151"
+              },
+              {
+                "price": "16541.2",
+                "raw_size": "0.0397"
+              },
+              {
+                "price": "16541.1",
+                "raw_size": "0.0233"
+              },
+              {
+                "price": "16541",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16540.9",
+                "raw_size": "0.0089"
+              },
+              {
+                "price": "16540.8",
+                "raw_size": "0.0001"
+              },
+              {
+                "price": "16540.7",
+                "raw_size": "0.0112"
+              },
+              {
+                "price": "16540.6",
+                "raw_size": "0.0215"
+              },
+              {
+                "price": "16540.5",
+                "raw_size": "0.0069"
+              },
+              {
+                "price": "16540.4",
+                "raw_size": "0.0069"
+              },
+              {
+                "price": "16540.3",
+                "raw_size": "0.0006"
+              },
+              {
+                "price": "16540.2",
+                "raw_size": "0.0184"
+              }
+            ],
+            "eligible_for_evaluation": false,
+            "event_time_us": 1672531202443000,
+            "exchange_update_us": 1672531202423000,
+            "historical_observation_time_verified": false,
+            "market": "spot",
+            "schema": "gate_book_diagnostic_v1",
+            "size_unit": "UNVERIFIED_NATIVE_SIZE",
+            "size_unit_verified": false,
+            "source_id": null,
+            "source_time_unit": "milliseconds",
+            "symbol": "BTC_USDT"
+          }
+        },
+        {
+          "line": 2,
+          "row": {
+            "asks": [
+              {
+                "price": "16543",
+                "raw_size": "0.0001"
+              },
+              {
+                "price": "16543.2",
+                "raw_size": "0.0125600459"
+              },
+              {
+                "price": "16543.3",
+                "raw_size": "0.0166"
+              },
+              {
+                "price": "16543.4",
+                "raw_size": "0.024"
+              },
+              {
+                "price": "16543.6",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16543.7",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16543.8",
+                "raw_size": "0.022"
+              },
+              {
+                "price": "16544",
+                "raw_size": "0.015"
+              },
+              {
+                "price": "16544.2",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16544.3",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16544.6",
+                "raw_size": "0.0238"
+              },
+              {
+                "price": "16544.7",
+                "raw_size": "0.0138"
+              },
+              {
+                "price": "16545",
+                "raw_size": "0.0177"
+              },
+              {
+                "price": "16545.1",
+                "raw_size": "0.0002"
+              },
+              {
+                "price": "16545.2",
+                "raw_size": "0.007"
+              },
+              {
+                "price": "16545.3",
+                "raw_size": "0.0001"
+              },
+              {
+                "price": "16545.4",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16545.7",
+                "raw_size": "0.0069"
+              },
+              {
+                "price": "16545.8",
+                "raw_size": "0.0002"
+              },
+              {
+                "price": "16545.9",
+                "raw_size": "0.0082"
+              }
+            ],
+            "bids": [
+              {
+                "price": "16542.6",
+                "raw_size": "0.0003"
+              },
+              {
+                "price": "16542.5",
+                "raw_size": "0.0003"
+              },
+              {
+                "price": "16542.3",
+                "raw_size": "0.0007"
+              },
+              {
+                "price": "16542.2",
+                "raw_size": "0.0007"
+              },
+              {
+                "price": "16541.9",
+                "raw_size": "0.0011"
+              },
+              {
+                "price": "16541.8",
+                "raw_size": "0.0096"
+              },
+              {
+                "price": "16541.7",
+                "raw_size": "0.01"
+              },
+              {
+                "price": "16541.4",
+                "raw_size": "0.0201"
+              },
+              {
+                "price": "16541.3",
+                "raw_size": "0.0151"
+              },
+              {
+                "price": "16541.2",
+                "raw_size": "0.0397"
+              },
+              {
+                "price": "16541.1",
+                "raw_size": "0.0233"
+              },
+              {
+                "price": "16541",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16540.9",
+                "raw_size": "0.0089"
+              },
+              {
+                "price": "16540.8",
+                "raw_size": "0.0001"
+              },
+              {
+                "price": "16540.7",
+                "raw_size": "0.0112"
+              },
+              {
+                "price": "16540.6",
+                "raw_size": "0.0215"
+              },
+              {
+                "price": "16540.5",
+                "raw_size": "0.0069"
+              },
+              {
+                "price": "16540.4",
+                "raw_size": "0.0069"
+              },
+              {
+                "price": "16540.3",
+                "raw_size": "0.0006"
+              },
+              {
+                "price": "16540.2",
+                "raw_size": "0.0184"
+              }
+            ],
+            "eligible_for_evaluation": false,
+            "event_time_us": 1672531202443000,
+            "exchange_update_us": 1672531202424000,
+            "historical_observation_time_verified": false,
+            "market": "spot",
+            "schema": "gate_book_diagnostic_v1",
+            "size_unit": "UNVERIFIED_NATIVE_SIZE",
+            "size_unit_verified": false,
+            "source_id": null,
+            "source_time_unit": "milliseconds",
+            "symbol": "BTC_USDT"
+          }
+        },
+        {
+          "line": 3341,
+          "row": {
+            "asks": [
+              {
+                "price": "16529.5",
+                "raw_size": "0.005"
+              },
+              {
+                "price": "16529.7",
+                "raw_size": "0.0003"
+              },
+              {
+                "price": "16529.8",
+                "raw_size": "0.0062"
+              },
+              {
+                "price": "16529.9",
+                "raw_size": "0.0015"
+              },
+              {
+                "price": "16530",
+                "raw_size": "0.0102"
+              },
+              {
+                "price": "16530.1",
+                "raw_size": "0.0012"
+              },
+              {
+                "price": "16530.2",
+                "raw_size": "0.0590787252"
+              },
+              {
+                "price": "16530.3",
+                "raw_size": "0.0053"
+              },
+              {
+                "price": "16530.4",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16530.6",
+                "raw_size": "0.0151"
+              },
+              {
+                "price": "16530.7",
+                "raw_size": "0.0151"
+              },
+              {
+                "price": "16530.8",
+                "raw_size": "0.0367"
+              },
+              {
+                "price": "16530.9",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16531.1",
+                "raw_size": "0.014"
+              },
+              {
+                "price": "16531.2",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16531.3",
+                "raw_size": "0.0236"
+              },
+              {
+                "price": "16531.4",
+                "raw_size": "0.0126"
+              },
+              {
+                "price": "16531.5",
+                "raw_size": "0.0151"
+              },
+              {
+                "price": "16531.6",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16531.7",
+                "raw_size": "0.0002"
+              }
+            ],
+            "bids": [
+              {
+                "price": "16529.1",
+                "raw_size": "0.0514"
+              },
+              {
+                "price": "16529",
+                "raw_size": "0.0115"
+              },
+              {
+                "price": "16528.9",
+                "raw_size": "0.0003"
+              },
+              {
+                "price": "16528.8",
+                "raw_size": "0.024"
+              },
+              {
+                "price": "16528.6",
+                "raw_size": "0.0069"
+              },
+              {
+                "price": "16528.5",
+                "raw_size": "0.0246"
+              },
+              {
+                "price": "16528.4",
+                "raw_size": "0.0151"
+              },
+              {
+                "price": "16528.3",
+                "raw_size": "0.0321"
+              },
+              {
+                "price": "16528.2",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16528.1",
+                "raw_size": "0.0164"
+              },
+              {
+                "price": "16528",
+                "raw_size": "0.0082"
+              },
+              {
+                "price": "16527.8",
+                "raw_size": "0.0069"
+              },
+              {
+                "price": "16527.7",
+                "raw_size": "0.0089"
+              },
+              {
+                "price": "16527.6",
+                "raw_size": "0.0099"
+              },
+              {
+                "price": "16527.5",
+                "raw_size": "0.022"
+              },
+              {
+                "price": "16527.1",
+                "raw_size": "0.0001"
+              },
+              {
+                "price": "16527",
+                "raw_size": "0.007"
+              },
+              {
+                "price": "16526.8",
+                "raw_size": "0.0002"
+              },
+              {
+                "price": "16526.6",
+                "raw_size": "0.027"
+              },
+              {
+                "price": "16526.5",
+                "raw_size": "0.0069"
+              }
+            ],
+            "eligible_for_evaluation": false,
+            "event_time_us": 1672534798753000,
+            "exchange_update_us": 1672534798752000,
+            "historical_observation_time_verified": false,
+            "market": "spot",
+            "schema": "gate_book_diagnostic_v1",
+            "size_unit": "UNVERIFIED_NATIVE_SIZE",
+            "size_unit_verified": false,
+            "source_id": null,
+            "source_time_unit": "milliseconds",
+            "symbol": "BTC_USDT"
+          }
+        }
+      ],
+      "structural_clean": false,
+      "time_reversal_count": 74,
+      "valid_rows": 3338,
+      "window_end_us": 1672534800000000,
+      "window_start_us": 1672531200000000
+    },
+    {
+      "blank_lines": 3339,
+      "decoded_bytes": 1956630,
+      "decoded_sha256": "5d0cd68b138d5debf29f8feab00d456788cb18c83d0a5f538e7071a41c016bee",
+      "duplicate_record_count": 0,
+      "eligible_for_evaluation": false,
+      "equal_time_count": 0,
+      "first_time_us": 1672531203667000,
+      "gzip_crc_verified": true,
+      "input": {
+        "bytes": 140117,
+        "kind": "orderbooks_slice",
+        "market": "futures_usdt",
+        "month": "202301",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\02.quarantined.gz-part",
+        "sha256": "fbfa64b80a53c9a3c7ba7a70d2c0a3f09e181698693f039e138799e175ee2011",
+        "source_url": "https://download.gatedata.org/futures_usdt/orderbooks_slice/202301/BTC_USDT-2023010100.gz",
+        "symbol": "BTC_USDT"
+      },
+      "invalid_examples": [],
+      "invalid_rows": 0,
+      "largest_positive_gap_us": 4699000,
+      "last_time_us": 1672534799229000,
+      "max_depth": {
+        "asks": 10,
+        "bids": 10
+      },
+      "min_depth": {
+        "asks": 10,
+        "bids": 10
+      },
+      "missing_exchange_update_count": 0,
+      "normalized_sequence_hash": "567abc095dc220fd47589851559c4544c55f31495d0ef46318895b793896e023",
+      "out_of_window_count": 0,
+      "physical_lines": 6678,
+      "positive_gap_counts_us": {},
+      "samples": [
+        {
+          "line": 1,
+          "row": {
+            "asks": [
+              {
+                "price": "16536.7",
+                "raw_size": "84463"
+              },
+              {
+                "price": "16536.8",
+                "raw_size": "1483"
+              },
+              {
+                "price": "16537.2",
+                "raw_size": "310"
+              },
+              {
+                "price": "16537.5",
+                "raw_size": "11"
+              },
+              {
+                "price": "16537.9",
+                "raw_size": "3331"
+              },
+              {
+                "price": "16538",
+                "raw_size": "20001"
+              },
+              {
+                "price": "16538.7",
+                "raw_size": "6795"
+              },
+              {
+                "price": "16538.8",
+                "raw_size": "12937"
+              },
+              {
+                "price": "16539.6",
+                "raw_size": "18842"
+              },
+              {
+                "price": "16539.7",
+                "raw_size": "20025"
+              }
+            ],
+            "bids": [
+              {
+                "price": "16536.6",
+                "raw_size": "347115"
+              },
+              {
+                "price": "16536.3",
+                "raw_size": "15055"
+              },
+              {
+                "price": "16536.2",
+                "raw_size": "15753"
+              },
+              {
+                "price": "16536.1",
+                "raw_size": "20000"
+              },
+              {
+                "price": "16535.3",
+                "raw_size": "15085"
+              },
+              {
+                "price": "16535.2",
+                "raw_size": "5745"
+              },
+              {
+                "price": "16535.1",
+                "raw_size": "15085"
+              },
+              {
+                "price": "16535",
+                "raw_size": "16097"
+              },
+              {
+                "price": "16534.9",
+                "raw_size": "35085"
+              },
+              {
+                "price": "16534.5",
+                "raw_size": "15940"
+              }
+            ],
+            "eligible_for_evaluation": false,
+            "event_time_us": 1672531203667000,
+            "exchange_update_us": 1672531203663000,
+            "historical_observation_time_verified": false,
+            "market": "futures_usdt",
+            "schema": "gate_book_diagnostic_v1",
+            "size_unit": "UNVERIFIED_NATIVE_SIZE",
+            "size_unit_verified": false,
+            "source_id": "25643690500",
+            "source_time_unit": "seconds",
+            "symbol": "BTC_USDT"
+          }
+        },
+        {
+          "line": 3,
+          "row": {
+            "asks": [
+              {
+                "price": "16536.7",
+                "raw_size": "97070"
+              },
+              {
+                "price": "16536.8",
+                "raw_size": "11"
+              },
+              {
+                "price": "16537.2",
+                "raw_size": "13"
+              },
+              {
+                "price": "16537.5",
+                "raw_size": "11"
+              },
+              {
+                "price": "16537.9",
+                "raw_size": "3331"
+              },
+              {
+                "price": "16538",
+                "raw_size": "20001"
+              },
+              {
+                "price": "16538.7",
+                "raw_size": "6795"
+              },
+              {
+                "price": "16538.8",
+                "raw_size": "12937"
+              },
+              {
+                "price": "16539.6",
+                "raw_size": "18842"
+              },
+              {
+                "price": "16539.7",
+                "raw_size": "20025"
+              }
+            ],
+            "bids": [
+              {
+                "price": "16536.6",
+                "raw_size": "334158"
+              },
+              {
+                "price": "16536.2",
+                "raw_size": "6492"
+              },
+              {
+                "price": "16536.1",
+                "raw_size": "20000"
+              },
+              {
+                "price": "16535.6",
+                "raw_size": "14314"
+              },
+              {
+                "price": "16535.5",
+                "raw_size": "10804"
+              },
+              {
+                "price": "16535.4",
+                "raw_size": "13327"
+              },
+              {
+                "price": "16535.3",
+                "raw_size": "15085"
+              },
+              {
+                "price": "16535.2",
+                "raw_size": "15823"
+              },
+              {
+                "price": "16535.1",
+                "raw_size": "15085"
+              },
+              {
+                "price": "16535",
+                "raw_size": "16097"
+              }
+            ],
+            "eligible_for_evaluation": false,
+            "event_time_us": 1672531204743000,
+            "exchange_update_us": 1672531204716000,
+            "historical_observation_time_verified": false,
+            "market": "futures_usdt",
+            "schema": "gate_book_diagnostic_v1",
+            "size_unit": "UNVERIFIED_NATIVE_SIZE",
+            "size_unit_verified": false,
+            "source_id": "25643690711",
+            "source_time_unit": "seconds",
+            "symbol": "BTC_USDT"
+          }
+        },
+        {
+          "line": 6677,
+          "row": {
+            "asks": [
+              {
+                "price": "16529.5",
+                "raw_size": "416185"
+              },
+              {
+                "price": "16529.6",
+                "raw_size": "5408"
+              },
+              {
+                "price": "16529.7",
+                "raw_size": "45174"
+              },
+              {
+                "price": "16530.1",
+                "raw_size": "5850"
+              },
+              {
+                "price": "16530.2",
+                "raw_size": "3189"
+              },
+              {
+                "price": "16530.4",
+                "raw_size": "9300"
+              },
+              {
+                "price": "16530.5",
+                "raw_size": "55102"
+              },
+              {
+                "price": "16530.6",
+                "raw_size": "1839"
+              },
+              {
+                "price": "16530.7",
+                "raw_size": "647"
+              },
+              {
+                "price": "16530.8",
+                "raw_size": "211"
+              }
+            ],
+            "bids": [
+              {
+                "price": "16529.4",
+                "raw_size": "45355"
+              },
+              {
+                "price": "16528.3",
+                "raw_size": "506"
+              },
+              {
+                "price": "16528",
+                "raw_size": "4697"
+              },
+              {
+                "price": "16527.7",
+                "raw_size": "20000"
+              },
+              {
+                "price": "16527.6",
+                "raw_size": "2000"
+              },
+              {
+                "price": "16527.3",
+                "raw_size": "22161"
+              },
+              {
+                "price": "16527.1",
+                "raw_size": "24"
+              },
+              {
+                "price": "16527",
+                "raw_size": "6996"
+              },
+              {
+                "price": "16526.8",
+                "raw_size": "7986"
+              },
+              {
+                "price": "16526.5",
+                "raw_size": "12539"
+              }
+            ],
+            "eligible_for_evaluation": false,
+            "event_time_us": 1672534799229000,
+            "exchange_update_us": 1672534799218000,
+            "historical_observation_time_verified": false,
+            "market": "futures_usdt",
+            "schema": "gate_book_diagnostic_v1",
+            "size_unit": "UNVERIFIED_NATIVE_SIZE",
+            "size_unit_verified": false,
+            "source_id": "25644777850",
+            "source_time_unit": "seconds",
+            "symbol": "BTC_USDT"
+          }
+        }
+      ],
+      "structural_clean": true,
+      "time_reversal_count": 0,
+      "valid_rows": 3339,
+      "window_end_us": 1672534800000000,
+      "window_start_us": 1672531200000000
+    },
+    {
+      "blank_lines": 0,
+      "decoded_bytes": 1842,
+      "decoded_sha256": "1c4cd4229b716af808f2eff67f4343c8b555c5345d5324b882975c581dac0472",
+      "duplicate_record_count": 0,
+      "eligible_for_evaluation": false,
+      "equal_time_count": 0,
+      "first_time_us": 1672531200000000,
+      "gzip_crc_verified": true,
+      "input": {
+        "bytes": 473,
+        "kind": "funding_applies",
+        "market": "futures_usdt",
+        "month": "202301",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\03.quarantined.gz-part",
+        "sha256": "062c1d564d5db9c8fb50cfd2cf0040eed21a176981077c08d252f988ea6ef5a1",
+        "source_url": "https://download.gatedata.org/futures_usdt/funding_applies/202301/BTC_USDT-202301.csv.gz",
+        "symbol": "BTC_USDT"
+      },
+      "invalid_examples": [],
+      "invalid_rows": 0,
+      "largest_positive_gap_us": 28800000000,
+      "last_time_us": 1675180800000000,
+      "max_depth": {
+        "asks": 0,
+        "bids": 0
+      },
+      "min_depth": {
+        "asks": null,
+        "bids": null
+      },
+      "missing_exchange_update_count": 0,
+      "normalized_sequence_hash": "0a2f10ab5448e53eca7e7962d67463ebcc02fb290e3067b7b791be06a9c45a92",
+      "out_of_window_count": 0,
+      "physical_lines": 93,
+      "positive_gap_counts_us": {
+        "28800000000": 92
+      },
+      "samples": [
+        {
+          "line": 1,
+          "row": {
+            "eligible_for_evaluation": false,
+            "event_time_us": 1672531200000000,
+            "historical_observation_time_verified": false,
+            "market": "futures_usdt",
+            "rate": "0.00010",
+            "schema": "gate_funding_diagnostic_v1",
+            "settlement_semantics_verified": false,
+            "source_time_unit": "seconds",
+            "symbol": "BTC_USDT"
+          }
+        },
+        {
+          "line": 2,
+          "row": {
+            "eligible_for_evaluation": false,
+            "event_time_us": 1672560000000000,
+            "historical_observation_time_verified": false,
+            "market": "futures_usdt",
+            "rate": "0.00010",
+            "schema": "gate_funding_diagnostic_v1",
+            "settlement_semantics_verified": false,
+            "source_time_unit": "seconds",
+            "symbol": "BTC_USDT"
+          }
+        },
+        {
+          "line": 93,
+          "row": {
+            "eligible_for_evaluation": false,
+            "event_time_us": 1675180800000000,
+            "historical_observation_time_verified": false,
+            "market": "futures_usdt",
+            "rate": "0.000070",
+            "schema": "gate_funding_diagnostic_v1",
+            "settlement_semantics_verified": false,
+            "source_time_unit": "seconds",
+            "symbol": "BTC_USDT"
+          }
+        }
+      ],
+      "structural_clean": true,
+      "time_reversal_count": 0,
+      "valid_rows": 93,
+      "window_end_us": 1675209600000000,
+      "window_start_us": 1672531200000000
+    },
+    {
+      "blank_lines": 0,
+      "decoded_bytes": 3092239,
+      "decoded_sha256": "fe6e2636e25a3e620963527980d6ddfd0a37caf49e05c6f0c29b3aa662ee3647",
+      "duplicate_record_count": 164,
+      "eligible_for_evaluation": false,
+      "equal_time_count": 168,
+      "first_time_us": 1735689600891000,
+      "gzip_crc_verified": true,
+      "input": {
+        "bytes": 288455,
+        "kind": "orderbooks_slice",
+        "market": "spot",
+        "month": "202501",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\06.quarantined.gz-part",
+        "sha256": "c012bde5936b494bcbcd69a70d6097a17b23a8c97c7e4a75e470af55eeb2524a",
+        "source_url": "https://download.gatedata.org/spot/orderbooks_slice/202501/BTC_USDT-2025010100.gz",
+        "symbol": "BTC_USDT"
+      },
+      "invalid_examples": [],
+      "invalid_rows": 0,
+      "largest_positive_gap_us": 5690000,
+      "last_time_us": 1735693198198000,
+      "max_depth": {
+        "asks": 20,
+        "bids": 20
+      },
+      "min_depth": {
+        "asks": 20,
+        "bids": 20
+      },
+      "missing_exchange_update_count": 0,
+      "normalized_sequence_hash": "6db6d9952cf7d7773cd730eb4a3f97fe05d91a5bcd099efdfbfad5633d50627c",
+      "out_of_window_count": 0,
+      "physical_lines": 3262,
+      "positive_gap_counts_us": {},
+      "samples": [
+        {
+          "line": 1,
+          "row": {
+            "asks": [
+              {
+                "price": "93585.9",
+                "raw_size": "0.47521"
+              },
+              {
+                "price": "93586",
+                "raw_size": "0.79347"
+              },
+              {
+                "price": "93586.8",
+                "raw_size": "0.05342"
+              },
+              {
+                "price": "93586.9",
+                "raw_size": "0.00585"
+              },
+              {
+                "price": "93590.1",
+                "raw_size": "0.85574"
+              },
+              {
+                "price": "93591.2",
+                "raw_size": "0.141"
+              },
+              {
+                "price": "93592.5",
+                "raw_size": "0.05215"
+              },
+              {
+                "price": "93593.8",
+                "raw_size": "0.04281"
+              },
+              {
+                "price": "93593.9",
+                "raw_size": "0.04939"
+              },
+              {
+                "price": "93595.4",
+                "raw_size": "0.29931"
+              },
+              {
+                "price": "93598.6",
+                "raw_size": "0.0005"
+              },
+              {
+                "price": "93598.7",
+                "raw_size": "0.29822"
+              },
+              {
+                "price": "93598.8",
+                "raw_size": "0.91074"
+              },
+              {
+                "price": "93599.6",
+                "raw_size": "0.08333"
+              },
+              {
+                "price": "93602",
+                "raw_size": "0.02763"
+              },
+              {
+                "price": "93602.1",
+                "raw_size": "0.08483"
+              },
+              {
+                "price": "93602.6",
+                "raw_size": "0.00726"
+              },
+              {
+                "price": "93605.2",
+                "raw_size": "0.09524"
+              },
+              {
+                "price": "93605.5",
+                "raw_size": "0.09615"
+              },
+              {
+                "price": "93605.7",
+                "raw_size": "0.00643"
+              }
+            ],
+            "bids": [
+              {
+                "price": "93585.8",
+                "raw_size": "0.29156"
+              },
+              {
+                "price": "93580",
+                "raw_size": "0.10686"
+              },
+              {
+                "price": "93578.3",
+                "raw_size": "0.05298"
+              },
+              {
+                "price": "93577.7",
+                "raw_size": "0.00019"
+              },
+              {
+                "price": "93577.3",
+                "raw_size": "0.04999"
+              },
+              {
+                "price": "93574.2",
+                "raw_size": "0.00364"
+              },
+              {
+                "price": "93572.6",
+                "raw_size": "0.00011"
+              },
+              {
+                "price": "93571.9",
+                "raw_size": "0.00014"
+              },
+              {
+                "price": "93571.4",
+                "raw_size": "0.00062"
+              },
+              {
+                "price": "93571.2",
+                "raw_size": "0.07878"
+              },
+              {
+                "price": "93570.4",
+                "raw_size": "0.01106"
+              },
+              {
+                "price": "93570.2",
+                "raw_size": "0.008"
+              },
+              {
+                "price": "93569.1",
+                "raw_size": "0.08496"
+              },
+              {
+                "price": "93562.8",
+                "raw_size": "0.0874"
+              },
+              {
+                "price": "93560.4",
+                "raw_size": "0.1721"
+              },
+              {
+                "price": "93559",
+                "raw_size": "0.008"
+              },
+              {
+                "price": "93558.7",
+                "raw_size": "0.00024"
+              },
+              {
+                "price": "93558.6",
+                "raw_size": "0.05345"
+              },
+              {
+                "price": "93557.5",
+                "raw_size": "0.01873"
+              },
+              {
+                "price": "93553.3",
+                "raw_size": "0.00083"
+              }
+            ],
+            "eligible_for_evaluation": false,
+            "event_time_us": 1735689600891000,
+            "exchange_update_us": 1735689600833000,
+            "historical_observation_time_verified": false,
+            "market": "spot",
+            "schema": "gate_book_diagnostic_v1",
+            "size_unit": "UNVERIFIED_NATIVE_SIZE",
+            "size_unit_verified": false,
+            "source_id": "21198467423",
+            "source_time_unit": "milliseconds",
+            "symbol": "BTC_USDT"
+          }
+        },
+        {
+          "line": 2,
+          "row": {
+            "asks": [
+              {
+                "price": "93585.9",
+                "raw_size": "0.66208"
+              },
+              {
+                "price": "93586",
+                "raw_size": "0.79347"
+              },
+              {
+                "price": "93586.8",
+                "raw_size": "0.05342"
+              },
+              {
+                "price": "93586.9",
+                "raw_size": "0.00585"
+              },
+              {
+                "price": "93590",
+                "raw_size": "0.0005"
+              },
+              {
+                "price": "93590.1",
+                "raw_size": "0.85574"
+              },
+              {
+                "price": "93591.2",
+                "raw_size": "0.141"
+              },
+              {
+                "price": "93592.5",
+                "raw_size": "0.05215"
+              },
+              {
+                "price": "93593.9",
+                "raw_size": "0.04939"
+              },
+              {
+                "price": "93595.4",
+                "raw_size": "0.29931"
+              },
+              {
+                "price": "93598.6",
+                "raw_size": "0.0005"
+              },
+              {
+                "price": "93599.6",
+                "raw_size": "0.08333"
+              },
+              {
+                "price": "93602",
+                "raw_size": "0.02763"
+              },
+              {
+                "price": "93602.1",
+                "raw_size": "0.08483"
+              },
+              {
+                "price": "93602.6",
+                "raw_size": "0.00726"
+              },
+              {
+                "price": "93605.2",
+                "raw_size": "0.09524"
+              },
+              {
+                "price": "93605.5",
+                "raw_size": "0.09615"
+              },
+              {
+                "price": "93605.7",
+                "raw_size": "0.00643"
+              },
+              {
+                "price": "93606.7",
+                "raw_size": "0.19784"
+              },
+              {
+                "price": "93608.4",
+                "raw_size": "0.02136"
+              }
+            ],
+            "bids": [
+              {
+                "price": "93585.8",
+                "raw_size": "0.29156"
+              },
+              {
+                "price": "93580.2",
+                "raw_size": "0.00012"
+              },
+              {
+                "price": "93580",
+                "raw_size": "0.10686"
+              },
+              {
+                "price": "93578.3",
+                "raw_size": "0.05298"
+              },
+              {
+                "price": "93577.7",
+                "raw_size": "0.00019"
+              },
+              {
+                "price": "93577.3",
+                "raw_size": "0.04999"
+              },
+              {
+                "price": "93574.2",
+                "raw_size": "0.00364"
+              },
+              {
+                "price": "93572.6",
+                "raw_size": "0.00011"
+              },
+              {
+                "price": "93571.9",
+                "raw_size": "0.00014"
+              },
+              {
+                "price": "93571.4",
+                "raw_size": "0.00062"
+              },
+              {
+                "price": "93571.2",
+                "raw_size": "0.07878"
+              },
+              {
+                "price": "93570.4",
+                "raw_size": "0.01106"
+              },
+              {
+                "price": "93569.1",
+                "raw_size": "0.08496"
+              },
+              {
+                "price": "93562.8",
+                "raw_size": "0.0874"
+              },
+              {
+                "price": "93560.5",
+                "raw_size": "0.00055"
+              },
+              {
+                "price": "93560.4",
+                "raw_size": "0.1721"
+              },
+              {
+                "price": "93559.1",
+                "raw_size": "0.008"
+              },
+              {
+                "price": "93558.7",
+                "raw_size": "0.00024"
+              },
+              {
+                "price": "93558.6",
+                "raw_size": "0.05345"
+              },
+              {
+                "price": "93557.5",
+                "raw_size": "0.01873"
+              }
+            ],
+            "eligible_for_evaluation": false,
+            "event_time_us": 1735689602268000,
+            "exchange_update_us": 1735689602261000,
+            "historical_observation_time_verified": false,
+            "market": "spot",
+            "schema": "gate_book_diagnostic_v1",
+            "size_unit": "UNVERIFIED_NATIVE_SIZE",
+            "size_unit_verified": false,
+            "source_id": "21198467484",
+            "source_time_unit": "milliseconds",
+            "symbol": "BTC_USDT"
+          }
+        },
+        {
+          "line": 3262,
+          "row": {
+            "asks": [
+              {
+                "price": "94388.7",
+                "raw_size": "0.16684"
+              },
+              {
+                "price": "94391.9",
+                "raw_size": "0.008"
+              },
+              {
+                "price": "94392.2",
+                "raw_size": "0.02122"
+              },
+              {
+                "price": "94395.3",
+                "raw_size": "0.06641"
+              },
+              {
+                "price": "94395.4",
+                "raw_size": "0.05629"
+              },
+              {
+                "price": "94397.6",
+                "raw_size": "0.05183"
+              },
+              {
+                "price": "94398.2",
+                "raw_size": "0.1721"
+              },
+              {
+                "price": "94399.7",
+                "raw_size": "0.01061"
+              },
+              {
+                "price": "94399.8",
+                "raw_size": "0.02027"
+              },
+              {
+                "price": "94399.9",
+                "raw_size": "0.04955"
+              },
+              {
+                "price": "94401.2",
+                "raw_size": "0.01"
+              },
+              {
+                "price": "94403.3",
+                "raw_size": "0.008"
+              },
+              {
+                "price": "94405",
+                "raw_size": "0.11002"
+              },
+              {
+                "price": "94405.4",
+                "raw_size": "0.13702"
+              },
+              {
+                "price": "94407.6",
+                "raw_size": "0.00201"
+              },
+              {
+                "price": "94408",
+                "raw_size": "0.00014"
+              },
+              {
+                "price": "94408.2",
+                "raw_size": "0.1721"
+              },
+              {
+                "price": "94408.9",
+                "raw_size": "0.08881"
+              },
+              {
+                "price": "94409.7",
+                "raw_size": "0.00363"
+              },
+              {
+                "price": "94415.4",
+                "raw_size": "0.00106"
+              }
+            ],
+            "bids": [
+              {
+                "price": "94388.6",
+                "raw_size": "0.29536"
+              },
+              {
+                "price": "94384.8",
+                "raw_size": "0.0868"
+              },
+              {
+                "price": "94383.2",
+                "raw_size": "0.02123"
+              },
+              {
+                "price": "94383",
+                "raw_size": "0.01816"
+              },
+              {
+                "price": "94382.1",
+                "raw_size": "0.05227"
+              },
+              {
+                "price": "94381.8",
+                "raw_size": "0.05099"
+              },
+              {
+                "price": "94381",
+                "raw_size": "0.00724"
+              },
+              {
+                "price": "94380.9",
+                "raw_size": "0.1721"
+              },
+              {
+                "price": "94380.1",
+                "raw_size": "0.0647"
+              },
+              {
+                "price": "94380",
+                "raw_size": "0.1721"
+              },
+              {
+                "price": "94379.7",
+                "raw_size": "0.05315"
+              },
+              {
+                "price": "94374.7",
+                "raw_size": "0.02066"
+              },
+              {
+                "price": "94374.6",
+                "raw_size": "0.00804"
+              },
+              {
+                "price": "94374.4",
+                "raw_size": "0.0463"
+              },
+              {
+                "price": "94374.3",
+                "raw_size": "0.08305"
+              },
+              {
+                "price": "94372.7",
+                "raw_size": "0.08145"
+              },
+              {
+                "price": "94371.1",
+                "raw_size": "0.05297"
+              },
+              {
+                "price": "94369.9",
+                "raw_size": "0.00824"
+              },
+              {
+                "price": "94369.3",
+                "raw_size": "0.07566"
+              },
+              {
+                "price": "94367.1",
+                "raw_size": "0.22525"
+              }
+            ],
+            "eligible_for_evaluation": false,
+            "event_time_us": 1735693198198000,
+            "exchange_update_us": 1735693198148000,
+            "historical_observation_time_verified": false,
+            "market": "spot",
+            "schema": "gate_book_diagnostic_v1",
+            "size_unit": "UNVERIFIED_NATIVE_SIZE",
+            "size_unit_verified": false,
+            "source_id": "21198962114",
+            "source_time_unit": "milliseconds",
+            "symbol": "BTC_USDT"
+          }
+        }
+      ],
+      "structural_clean": false,
+      "time_reversal_count": 56,
+      "valid_rows": 3262,
+      "window_end_us": 1735693200000000,
+      "window_start_us": 1735689600000000
+    },
+    {
+      "blank_lines": 0,
+      "decoded_bytes": 1827835,
+      "decoded_sha256": "8a95af6d72cca8000618ef3c8de3b2059c91132193f2f0f342e3b5e9ae978cfc",
+      "duplicate_record_count": 0,
+      "eligible_for_evaluation": false,
+      "equal_time_count": 0,
+      "first_time_us": 1735689602168000,
+      "gzip_crc_verified": true,
+      "input": {
+        "bytes": 173710,
+        "kind": "orderbooks_slice",
+        "market": "futures_usdt",
+        "month": "202501",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\07.quarantined.gz-part",
+        "sha256": "948b25b33d1752fa59b3f1a0d0c34594ad67fa5fbc4e92afeac1f6a70db69afe",
+        "source_url": "https://download.gatedata.org/futures_usdt/orderbooks_slice/202501/BTC_USDT-2025010100.gz",
+        "symbol": "BTC_USDT"
+      },
+      "invalid_examples": [],
+      "invalid_rows": 0,
+      "largest_positive_gap_us": 5502000,
+      "last_time_us": 1735693199892000,
+      "max_depth": {
+        "asks": 10,
+        "bids": 10
+      },
+      "min_depth": {
+        "asks": 10,
+        "bids": 10
+      },
+      "missing_exchange_update_count": 0,
+      "normalized_sequence_hash": "a1ba68e13ce6465793d3eadb0380e736b5c4f666ac78c34aa3a287ed47179f36",
+      "out_of_window_count": 0,
+      "physical_lines": 3315,
+      "positive_gap_counts_us": {},
+      "samples": [
+        {
+          "line": 1,
+          "row": {
+            "asks": [
+              {
+                "price": "93550.1",
+                "raw_size": "14979"
+              },
+              {
+                "price": "93550.7",
+                "raw_size": "1"
+              },
+              {
+                "price": "93551.5",
+                "raw_size": "214"
+              },
+              {
+                "price": "93553.3",
+                "raw_size": "986"
+              },
+              {
+                "price": "93553.4",
+                "raw_size": "3286"
+              },
+              {
+                "price": "93554.4",
+                "raw_size": "458"
+              },
+              {
+                "price": "93554.5",
+                "raw_size": "1128"
+              },
+              {
+                "price": "93555",
+                "raw_size": "214"
+              },
+              {
+                "price": "93555.8",
+                "raw_size": "1"
+              },
+              {
+                "price": "93557.2",
+                "raw_size": "1"
+              }
+            ],
+            "bids": [
+              {
+                "price": "93550",
+                "raw_size": "5868"
+              },
+              {
+                "price": "93549.6",
+                "raw_size": "5"
+              },
+              {
+                "price": "93549",
+                "raw_size": "1"
+              },
+              {
+                "price": "93548.8",
+                "raw_size": "5"
+              },
+              {
+                "price": "93548.2",
+                "raw_size": "1"
+              },
+              {
+                "price": "93548.1",
+                "raw_size": "140"
+              },
+              {
+                "price": "93548",
+                "raw_size": "214"
+              },
+              {
+                "price": "93547",
+                "raw_size": "4"
+              },
+              {
+                "price": "93546.4",
+                "raw_size": "1"
+              },
+              {
+                "price": "93546",
+                "raw_size": "11"
+              }
+            ],
+            "eligible_for_evaluation": false,
+            "event_time_us": 1735689602168000,
+            "exchange_update_us": 1735689602167000,
+            "historical_observation_time_verified": false,
+            "market": "futures_usdt",
+            "schema": "gate_book_diagnostic_v1",
+            "size_unit": "UNVERIFIED_NATIVE_SIZE",
+            "size_unit_verified": false,
+            "source_id": "72980084213",
+            "source_time_unit": "seconds",
+            "symbol": "BTC_USDT"
+          }
+        },
+        {
+          "line": 2,
+          "row": {
+            "asks": [
+              {
+                "price": "93550.1",
+                "raw_size": "15184"
+              },
+              {
+                "price": "93550.7",
+                "raw_size": "1"
+              },
+              {
+                "price": "93551.5",
+                "raw_size": "214"
+              },
+              {
+                "price": "93553.3",
+                "raw_size": "986"
+              },
+              {
+                "price": "93553.4",
+                "raw_size": "3286"
+              },
+              {
+                "price": "93554.4",
+                "raw_size": "458"
+              },
+              {
+                "price": "93554.5",
+                "raw_size": "1128"
+              },
+              {
+                "price": "93555",
+                "raw_size": "214"
+              },
+              {
+                "price": "93555.8",
+                "raw_size": "1"
+              },
+              {
+                "price": "93557",
+                "raw_size": "113"
+              }
+            ],
+            "bids": [
+              {
+                "price": "93550",
+                "raw_size": "1688"
+              },
+              {
+                "price": "93549.6",
+                "raw_size": "5"
+              },
+              {
+                "price": "93549",
+                "raw_size": "1"
+              },
+              {
+                "price": "93548.8",
+                "raw_size": "5"
+              },
+              {
+                "price": "93548.2",
+                "raw_size": "1"
+              },
+              {
+                "price": "93547",
+                "raw_size": "4"
+              },
+              {
+                "price": "93546.4",
+                "raw_size": "1"
+              },
+              {
+                "price": "93546",
+                "raw_size": "11"
+              },
+              {
+                "price": "93545.6",
+                "raw_size": "24"
+              },
+              {
+                "price": "93544.5",
+                "raw_size": "214"
+              }
+            ],
+            "eligible_for_evaluation": false,
+            "event_time_us": 1735689603309000,
+            "exchange_update_us": 1735689603270000,
+            "historical_observation_time_verified": false,
+            "market": "futures_usdt",
+            "schema": "gate_book_diagnostic_v1",
+            "size_unit": "UNVERIFIED_NATIVE_SIZE",
+            "size_unit_verified": false,
+            "source_id": "72980084714",
+            "source_time_unit": "seconds",
+            "symbol": "BTC_USDT"
+          }
+        },
+        {
+          "line": 3315,
+          "row": {
+            "asks": [
+              {
+                "price": "94371.2",
+                "raw_size": "12722"
+              },
+              {
+                "price": "94371.7",
+                "raw_size": "1"
+              },
+              {
+                "price": "94374",
+                "raw_size": "1456"
+              },
+              {
+                "price": "94374.1",
+                "raw_size": "3351"
+              },
+              {
+                "price": "94374.2",
+                "raw_size": "8"
+              },
+              {
+                "price": "94374.9",
+                "raw_size": "784"
+              },
+              {
+                "price": "94375.7",
+                "raw_size": "1"
+              },
+              {
+                "price": "94376.6",
+                "raw_size": "1"
+              },
+              {
+                "price": "94377.4",
+                "raw_size": "418"
+              },
+              {
+                "price": "94377.5",
+                "raw_size": "212"
+              }
+            ],
+            "bids": [
+              {
+                "price": "94371.1",
+                "raw_size": "2338"
+              },
+              {
+                "price": "94369.2",
+                "raw_size": "1"
+              },
+              {
+                "price": "94367.7",
+                "raw_size": "1"
+              },
+              {
+                "price": "94367.3",
+                "raw_size": "1"
+              },
+              {
+                "price": "94365.5",
+                "raw_size": "1"
+              },
+              {
+                "price": "94363.6",
+                "raw_size": "127"
+              },
+              {
+                "price": "94363.5",
+                "raw_size": "212"
+              },
+              {
+                "price": "94362.8",
+                "raw_size": "208"
+              },
+              {
+                "price": "94362.6",
+                "raw_size": "1"
+              },
+              {
+                "price": "94361.6",
+                "raw_size": "181"
+              }
+            ],
+            "eligible_for_evaluation": false,
+            "event_time_us": 1735693199892000,
+            "exchange_update_us": 1735693199881000,
+            "historical_observation_time_verified": false,
+            "market": "futures_usdt",
+            "schema": "gate_book_diagnostic_v1",
+            "size_unit": "UNVERIFIED_NATIVE_SIZE",
+            "size_unit_verified": false,
+            "source_id": "72981898913",
+            "source_time_unit": "seconds",
+            "symbol": "BTC_USDT"
+          }
+        }
+      ],
+      "structural_clean": true,
+      "time_reversal_count": 0,
+      "valid_rows": 3315,
+      "window_end_us": 1735693200000000,
+      "window_start_us": 1735689600000000
+    },
+    {
+      "blank_lines": 0,
+      "decoded_bytes": 1770,
+      "decoded_sha256": "51da3ada4d1b13383caa79a3337d3ea2d5c1a69f74dd87cd5f468ff0d6c7ed6b",
+      "duplicate_record_count": 0,
+      "eligible_for_evaluation": false,
+      "equal_time_count": 0,
+      "first_time_us": 1735689600000000,
+      "gzip_crc_verified": true,
+      "input": {
+        "bytes": 449,
+        "kind": "funding_applies",
+        "market": "futures_usdt",
+        "month": "202501",
+        "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_v16_20261008\\artifacts\\gate-paired-audit\\08.quarantined.gz-part",
+        "sha256": "3b761b0f5ce04bc4056e364391518c70ded8c4930ef55974e64930e7a942d0fc",
+        "source_url": "https://download.gatedata.org/futures_usdt/funding_applies/202501/BTC_USDT-202501.csv.gz",
+        "symbol": "BTC_USDT"
+      },
+      "invalid_examples": [],
+      "invalid_rows": 0,
+      "largest_positive_gap_us": 28800000000,
+      "last_time_us": 1738339200000000,
+      "max_depth": {
+        "asks": 0,
+        "bids": 0
+      },
+      "min_depth": {
+        "asks": null,
+        "bids": null
+      },
+      "missing_exchange_update_count": 0,
+      "normalized_sequence_hash": "3bed46194db26e7543d1ef2ebcedfd5e85bd89a4096fdbac7d574f6950525d54",
+      "out_of_window_count": 0,
+      "physical_lines": 93,
+      "positive_gap_counts_us": {
+        "28800000000": 92
+      },
+      "samples": [
+        {
+          "line": 1,
+          "row": {
+            "eligible_for_evaluation": false,
+            "event_time_us": 1735689600000000,
+            "historical_observation_time_verified": false,
+            "market": "futures_usdt",
+            "rate": "0.0001",
+            "schema": "gate_funding_diagnostic_v1",
+            "settlement_semantics_verified": false,
+            "source_time_unit": "seconds",
+            "symbol": "BTC_USDT"
+          }
+        },
+        {
+          "line": 2,
+          "row": {
+            "eligible_for_evaluation": false,
+            "event_time_us": 1735718400000000,
+            "historical_observation_time_verified": false,
+            "market": "futures_usdt",
+            "rate": "0.0001",
+            "schema": "gate_funding_diagnostic_v1",
+            "settlement_semantics_verified": false,
+            "source_time_unit": "seconds",
+            "symbol": "BTC_USDT"
+          }
+        },
+        {
+          "line": 93,
+          "row": {
+            "eligible_for_evaluation": false,
+            "event_time_us": 1738339200000000,
+            "historical_observation_time_verified": false,
+            "market": "futures_usdt",
+            "rate": "0.0001",
+            "schema": "gate_funding_diagnostic_v1",
+            "settlement_semantics_verified": false,
+            "source_time_unit": "seconds",
+            "symbol": "BTC_USDT"
+          }
+        }
+      ],
+      "structural_clean": true,
+      "time_reversal_count": 0,
+      "valid_rows": 93,
+      "window_end_us": 1738368000000000,
+      "window_start_us": 1735689600000000
+    }
+  ],
+  "runtime_binding": {
+    "tools/check_active_run_gate.ps1": "a3b1b735dba6681b18fdb2e9be637079a22391123eced0a316dc2b76855193fd",
+    "tools/check_trading_mvp_autopilot.ps1": "99313009f7b0648103f39cd60c2b12303c2b06b895aacf0e344e2df35824e0e3",
+    "tools/run_channel_strategy_validation_visible.ps1": "67ca5b83f21990d1bbf369f4ab6dbbc0ab03947a6d674faa71abc05ef1f8880f",
+    "trading_mvp/src/channel_validation/__init__.py": "dab9cae823a9b621cc47440d3a73630e9831110efd9f370fe7b689d2206f71e3",
+    "trading_mvp/src/channel_validation/adapters.py": "4868034eda3ce734bb3166402e90743f676263a4e35c5b9d41a1747bd1597f92",
+    "trading_mvp/src/channel_validation/archive_audit.py": "fdbb487dc77de23176751e24f642e487d0da00fe05f83f27b92dcdbbba74124a",
+    "trading_mvp/src/channel_validation/contract.py": "d71f4e1834623bc8ea7234dd561604a26d89f010a2978092c9c9858d5f55465c",
+    "trading_mvp/src/channel_validation/data.py": "d87c540faba04e2c6f8fe6eecdb76a85bf6b9d747c42c01478e70bb328996227",
+    "trading_mvp/src/channel_validation/execution.py": "b8e119584e4b3b5c3abe2da93900711f74a630b0d94b7c570faf6883c35de4ab",
+    "trading_mvp/src/channel_validation/gate_catalog.py": "920183562362062ba516ea3b9859051f9aecad27f5eb8900d9b59716f11af0dd",
+    "trading_mvp/src/channel_validation/gate_history.py": "7297594b274bc6a9fb239be67e23825e55a6db7e45d65133ba252dcc3cde35df",
+    "trading_mvp/src/channel_validation/gate_metadata.py": "f0eaff7d3edd1d9049a835574c69208451d9b99fbd50a214981bce3da581b866",
+    "trading_mvp/src/channel_validation/gate_paired.py": "dd796be51eae60e23d61b25431c400383e6975fafc76a571d6e122fad13f6f4e",
+    "trading_mvp/src/channel_validation/gate_paired_local.py": "b45fbeafd231f8cea6bd335cbae6119f64fffbddee8ed4eb5411981a2eba0f26",
+    "trading_mvp/src/channel_validation/gate_survivorship.py": "85cc2300daa78a51159bcccee84f7f5e5ba290e05dff274ea66b26e2ab68e6f9",
+    "trading_mvp/src/channel_validation/gate_trades.py": "c437567a56bc2697183487bf9adf76465617553f17919486a078ca97fa20b9a0",
+    "trading_mvp/src/channel_validation/gold_history.py": "30052dc72da45730d881a089ce3249bd4652c93fa4305b1c28b864483162f3cc",
+    "trading_mvp/src/channel_validation/histdata.py": "0766d8bf4478387916e684b5d077543a1b244b6f4ea1e5516469fea6cc9d0f18",
+    "trading_mvp/src/channel_validation/histdata_local.py": "d25a94a843cf63b403b1c3bd22a7bc3cd1c5e739b2b05443979a8896893d5b25",
+    "trading_mvp/src/channel_validation/histdata_month.py": "8d99f697b05b9e3b80516242d6ea9207e7c1e2be6708c34b5a1b6052a901137e",
+    "trading_mvp/src/channel_validation/models.py": "9c1f0b142276e2e78e101036192486a603961422a9b1fb8ac4cf2dad532cc193",
+    "trading_mvp/src/channel_validation/okx_acquire.py": "39e5e0c6b0b605cafca91b9f95bfe22e12af46025f2ac2aebadc6f0138281871",
+    "trading_mvp/src/channel_validation/okx_dependencies.py": "3ed27b1e2c805976e9e645024792a3830f7d8bd544cc77bbae0dc665fa5c62bf",
+    "trading_mvp/src/channel_validation/okx_history.py": "24ae82704fa4f6eb77365350848d694eab75d54ca4e777154db46b2b375bb18c",
+    "trading_mvp/src/channel_validation/okx_stream.py": "66f1df2b57673e629b4193995d230b5b1fd861b095a689e3042b953b3aac708f",
+    "trading_mvp/src/channel_validation/portfolio.py": "cb63ff1b53751cec1b248b91c8e70c9686a04259e1f7636bc5be8749025332a4",
+    "trading_mvp/src/channel_validation/runner.py": "7485741838fa130a9cd8921da75cf09d1f048da598db4a6f5ceecce6cdc7b89d",
+    "trading_mvp/src/channel_validation/sources.py": "e30cde7da64c7aefd58711f3678a9c814acef298a901bba8744d095ee87cdd10",
+    "trading_mvp/src/channel_validation/statistics.py": "e4b6f69e9a057f2ec5a7d33813d725f720239207f7728bd9e101a6cb0a2ce65d",
+    "trading_mvp/src/global_market_writer_claim.py": "bc0604267c9d709a17188eb9daf317417d2633bf4c31266f73db33ac2f5066d2",
+    "trading_mvp/tests/test_channel_validation.py": "87d00970d4acf9351d849fdb032c099c55090231573aa9c382bf63f2ab644147"
+  },
+  "schema": "gate_paired_local_census_v1",
+  "status": "LOCAL_CENSUS_COMPLETE_NOT_BACKTEST",
+  "total_decoded_bytes": 9868186,
+  "total_valid_rows": 13440
+}

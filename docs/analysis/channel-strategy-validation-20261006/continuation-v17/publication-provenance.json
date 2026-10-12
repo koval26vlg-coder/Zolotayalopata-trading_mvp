@@ -1,0 +1,35 @@
+{
+  "schema": "checkpoint_publication_provenance_v1",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "runtime_hash": "4be0b55d43dc7851c8d81910d46ea094aefc4266c8647b7f52eae026552b684f",
+  "parent_commit": "69a61fb94912b8cbc51824af8cbd4226f5ff667f",
+  "parent_evidence_index_sha256": "07c6a0f93c445dedbdddc3eedd55d25266b991bdfd218c91a783c60959b13dba",
+  "source_files": [
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_local_v17_20261008\\intent.json",
+      "sha256": "3e166015e06ed0c32fd5e4e97a75ef064c20bef8f075d2b0185f0a3327a6c2fd"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_local_v17_20261008\\owner.json",
+      "sha256": "bb7b246af4237dde6423322f71d1697f59b578f9daf82c1ec6a8bf85f109d2d8"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_local_v17_20261008\\dispatch.json",
+      "sha256": "2de5eaef42cb0d8f97d70a8145734a9e9be8b567f0a1059fc38721453dcc39f6"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_local_v17_20261008\\completion.json",
+      "sha256": "3d36109c8904d0ab85d0beef203c251c088321cf00f9c7470bcb52d9759b3625"
+    },
+    {
+      "path": "C:\\Users\\koval\\Documents\\ZolotyayLopata\\docs\\analysis\\channel-strategy-validation-20261006\\runs\\history_gate_paired_local_v17_20261008\\artifacts\\gate-paired-local\\audit.json",
+      "sha256": "80e2189fde2c690a69bb286ddb2d8ca2065cf0e4b9b74c3f66f50fc560e7394f"
+    }
+  ],
+  "terminal_ownership_verified": true,
+  "terminal_pid": 11012,
+  "worker_pid": 58124,
+  "legacy_outputs_not_consumed": true,
+  "listing_project_untouched": true,
+  "market_network_requests": 0
+}

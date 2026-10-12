@@ -1,0 +1,77 @@
+{
+  "schema": "historical_validation_evidence_index_v1",
+  "plan_hash": "8815ad9770e0cf0980a54c0295b4b6f734f2557bcdad058c7ef8259ad41842fb",
+  "files": [
+    {
+      "file": "acquisition-plan.json",
+      "sha256": "471736a5ff9407e97b02cf322c18d0ad8a7e3a0a491550e2c4ea2c50cd505bf3",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_full_btc_v5_20261006/artifacts/okx-full-archive/acquisition-plan.json"
+    },
+    {
+      "file": "download-receipt.json",
+      "sha256": "85ce29cd4bf244b0a694a96921472e5836eb8ab750628da496b509fd74c85be7",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_full_btc_v5_20261006/artifacts/okx-full-archive/download-receipt.json"
+    },
+    {
+      "file": "acquisition-completion.json",
+      "sha256": "4b9a2603c527f371786d6aa95a8a1dc76401a9c6b7019d32f1f4d7a7ff8a1f91",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_full_btc_v5_20261006/completion.json"
+    },
+    {
+      "file": "acquisition-failure.json",
+      "sha256": "196c4da60b487054a281301d03473794ddde7e19acca42501f36d7d56f6de3f8",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_full_btc_v5_20261006/failure.json"
+    },
+    {
+      "file": "local-plan.json",
+      "sha256": "bdae8e1a8ee084fcb58d68b42b4bbac111893807f6c93f0d81e84c9a57391de6",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_local_census_v5_20261006/artifacts/okx-archive-census/local-plan.json"
+    },
+    {
+      "file": "local-completion.json",
+      "sha256": "455331b8ecbb72e565dff8700f5da0648b118dead474d6da4df91af2d2a4daca",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_local_census_v5_20261006/completion.json"
+    },
+    {
+      "file": "census.json",
+      "sha256": "9a7b98e4448adee916bc4be1db1cadcd891c1af3a76838d7bdc22b528f33a4fc",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_local_census_v5_20261006/artifacts/okx-archive-census/census.json"
+    },
+    {
+      "file": "verification.json",
+      "sha256": "d1625b5a8b9649e98994b9ae0f217c7aca7fe2c1990c857b25ebda85835cbb16",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_local_v5_20261006/artifacts/tests.json"
+    },
+    {
+      "file": "verification-completion.json",
+      "sha256": "21ab5ff7c6366dc23beb29209aef47178a48fa7ffb7a4d2afa15c4ef135765fa",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_local_v5_20261006/completion.json"
+    },
+    {
+      "file": "data-readiness.json",
+      "sha256": "e801f65a6bc33d4e16ba2631a5e0e3304d157575cce0ed9691579d1537bea082"
+    },
+    {
+      "file": "model-input-queue.json",
+      "sha256": "7cba858287a0b26e6c9bf931e6f90e71d4778f39f47379c635dc3f7017db4e8b"
+    },
+    {
+      "file": "final-verification.json",
+      "sha256": "f62f0d929cf34018befe97407ddc9a2e10e2e4eb0fd9d403781f05e1898522b1",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_final_v5_20261006/artifacts/tests.json"
+    },
+    {
+      "file": "final-verification-completion.json",
+      "sha256": "e794ac91749a19e3582b7016c8d6f5b18b5014e8475b8dd231f1c9ee3f941394",
+      "source": "docs/analysis/channel-strategy-validation-20261006/runs/history_verify_okx_final_v5_20261006/completion.json"
+    }
+  ],
+  "raw_archive": {
+    "path": "docs/analysis/channel-strategy-validation-20261006/runs/history_okx_full_btc_v5_20261006/artifacts/okx-full-archive/BTC-USD-2025-01-06.tar.gz",
+    "sha256": "aa58f77452e9e2a4aa180a18c22eca4b1b1fc48127ca7d829ef87306c41ae91c",
+    "bytes": 255036575,
+    "tracked_in_git": false
+  },
+  "acceptance_status": "NOT_EVALUATED",
+  "all_twenty_models_present": true
+}

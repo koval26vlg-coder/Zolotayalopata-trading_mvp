@@ -1,0 +1,383 @@
+{
+  "audit_hash": "8cd82288b30c5967ede37c75f370c3ef0a521bd56d01b5b496d1c94e03f6dd5e",
+  "bytes_read": 4354632,
+  "eligible_for_evaluation": false,
+  "metrics": null,
+  "records": [
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 303768,
+        "complete": true,
+        "declared_length": 303768,
+        "reason": "COMPLETE",
+        "truncated": false
+      },
+      "eligible_for_evaluation": false,
+      "http_status": 200,
+      "inspection": {
+        "column_semantics_verified": false,
+        "complete_lines_in_prefix": 1118,
+        "decompressed_bytes": 1000000,
+        "decompressed_truncated": true,
+        "eligible_for_evaluation": false,
+        "first_line_previews": [
+          "{\"current\":1672531202443,\"update\":1672531202423,\"asks\":[[\"16543\",\"0.0001\"],[\"16543.2\",\"0.0125600459\"],[\"16543.3\",\"0.0166\"],[\"16543.4\",\"0.024\"],[\"16543.6\",\"0.0082\"],[\"16543.7\",\"0.0082\"],[\"16543.8\",\"0.022\"],[\"16544\",\"0.015\"],[\"16544.2\",\"0.0082\"],[\"16544.3\",\"0.0082\"],[\"16544.6\",\"0.0238\"],[\"16544.7\",\"0.0138\"],[\"16545\",\"0.0177\"],[\"16545.1\",\"0.0002\"],[\"16545.2\",\"0.007\"],[\"16545.3\",\"0.0001\"],[\"16545.4\",\"",
+          "{\"current\":1672531202443,\"update\":1672531202424,\"asks\":[[\"16543\",\"0.0001\"],[\"16543.2\",\"0.0125600459\"],[\"16543.3\",\"0.0166\"],[\"16543.4\",\"0.024\"],[\"16543.6\",\"0.0082\"],[\"16543.7\",\"0.0082\"],[\"16543.8\",\"0.022\"],[\"16544\",\"0.015\"],[\"16544.2\",\"0.0082\"],[\"16544.3\",\"0.0082\"],[\"16544.6\",\"0.0238\"],[\"16544.7\",\"0.0138\"],[\"16545\",\"0.0177\"],[\"16545.1\",\"0.0002\"],[\"16545.2\",\"0.007\"],[\"16545.3\",\"0.0001\"],[\"16545.4\",\""
+        ],
+        "gzip_complete": false,
+        "sample_csv_widths": [
+          36,
+          36
+        ]
+      },
+      "kind": "orderbooks_slice",
+      "market": "spot",
+      "month": "202301",
+      "raw_file": "01.quarantined.gz-part",
+      "raw_sha256": "761fed48af785841dbab140bc1cda3284fe0cc3c12abea59936a442679b84fe9",
+      "retrieved_at": "2026-10-08T13:25:23.985538+00:00",
+      "status": "GZIP_PREFIX_ONLY",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/spot/orderbooks_slice/202301/BTC_USDT-2023010100.gz"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 140117,
+        "complete": true,
+        "declared_length": 140117,
+        "reason": "COMPLETE",
+        "truncated": false
+      },
+      "eligible_for_evaluation": false,
+      "http_status": 200,
+      "inspection": {
+        "column_semantics_verified": false,
+        "complete_lines_in_prefix": 3416,
+        "decompressed_bytes": 1000000,
+        "decompressed_truncated": true,
+        "eligible_for_evaluation": false,
+        "first_line_previews": [
+          "{\"current\":1672531203.667,\"asks\":[{\"s\":84463,\"p\":\"16536.7\"},{\"s\":1483,\"p\":\"16536.8\"},{\"s\":310,\"p\":\"16537.2\"},{\"s\":11,\"p\":\"16537.5\"},{\"s\":3331,\"p\":\"16537.9\"},{\"s\":20001,\"p\":\"16538\"},{\"s\":6795,\"p\":\"16538.7\"},{\"s\":12937,\"p\":\"16538.8\"},{\"s\":18842,\"p\":\"16539.6\"},{\"s\":20025,\"p\":\"16539.7\"}],\"bids\":[{\"s\":347115,\"p\":\"16536.6\"},{\"s\":15055,\"p\":\"16536.3\"},{\"s\":15753,\"p\":\"16536.2\"},{\"s\":20000,\"p\":\"16536.1\"},{\"",
+          ""
+        ],
+        "gzip_complete": false,
+        "sample_csv_widths": [
+          30,
+          0
+        ]
+      },
+      "kind": "orderbooks_slice",
+      "market": "futures_usdt",
+      "month": "202301",
+      "raw_file": "02.quarantined.gz-part",
+      "raw_sha256": "fbfa64b80a53c9a3c7ba7a70d2c0a3f09e181698693f039e138799e175ee2011",
+      "retrieved_at": "2026-10-08T13:25:26.038039+00:00",
+      "status": "GZIP_PREFIX_ONLY",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/orderbooks_slice/202301/BTC_USDT-2023010100.gz"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 473,
+        "complete": true,
+        "declared_length": 473,
+        "reason": "COMPLETE",
+        "truncated": false
+      },
+      "eligible_for_evaluation": false,
+      "http_status": 200,
+      "inspection": {
+        "column_semantics_verified": false,
+        "complete_lines_in_prefix": 93,
+        "decompressed_bytes": 1842,
+        "decompressed_truncated": false,
+        "eligible_for_evaluation": false,
+        "first_line_previews": [
+          "1672531200,0.00010",
+          "1672560000,0.00010"
+        ],
+        "gzip_complete": true,
+        "sample_csv_widths": [
+          2,
+          2
+        ]
+      },
+      "kind": "funding_applies",
+      "market": "futures_usdt",
+      "month": "202301",
+      "raw_file": "03.quarantined.gz-part",
+      "raw_sha256": "062c1d564d5db9c8fb50cfd2cf0040eed21a176981077c08d252f988ea6ef5a1",
+      "retrieved_at": "2026-10-08T13:25:27.568166+00:00",
+      "status": "GZIP_ARCHIVE_COMPLETE_SCHEMA_UNVERIFIED",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/funding_applies/202301/BTC_USDT-202301.csv.gz"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 693116,
+        "complete": true,
+        "declared_length": 693116,
+        "reason": "COMPLETE",
+        "truncated": false
+      },
+      "eligible_for_evaluation": false,
+      "http_status": 200,
+      "inspection": {
+        "column_semantics_verified": false,
+        "complete_lines_in_prefix": 16621,
+        "decompressed_bytes": 1000000,
+        "decompressed_truncated": true,
+        "eligible_for_evaluation": false,
+        "first_line_previews": [
+          "1672531200,0.00010,0.00030,0.0,5.54,16542.24,16542.24,480",
+          "1672531260,0.00010,0.00030,0.0,6.61,16545.01,16543.36,1"
+        ],
+        "gzip_complete": false,
+        "sample_csv_widths": [
+          8,
+          8
+        ]
+      },
+      "kind": "funding_updates",
+      "market": "futures_usdt",
+      "month": "202301",
+      "raw_file": "04.quarantined.gz-part",
+      "raw_sha256": "9767aacc7d329df5f3e08884c1ae1b2598c14282213993cd375f80209b26cd3d",
+      "retrieved_at": "2026-10-08T13:25:27.835871+00:00",
+      "status": "GZIP_PREFIX_ONLY",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/funding_updates/202301/BTC_USDT-202301.csv.gz"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 1000000,
+        "complete": false,
+        "declared_length": 2974328,
+        "reason": "CAP_OR_LENGTH_MISMATCH",
+        "truncated": true
+      },
+      "eligible_for_evaluation": false,
+      "http_status": 200,
+      "inspection": {
+        "column_semantics_verified": false,
+        "complete_lines_in_prefix": 22832,
+        "decompressed_bytes": 1000000,
+        "decompressed_truncated": true,
+        "eligible_for_evaluation": false,
+        "first_line_previews": [
+          "1672531244.376227,16541.7,16543.35,16536.6",
+          "1672531256.089796,16543.36,16545.01,16538.3"
+        ],
+        "gzip_complete": false,
+        "sample_csv_widths": [
+          4,
+          4
+        ]
+      },
+      "kind": "mark_prices",
+      "market": "futures_usdt",
+      "month": "202301",
+      "raw_file": "05.quarantined.gz-part",
+      "raw_sha256": "5d3db9f8e93c7c8c2d29afd1f4d615143a739d03f31217b4f4e853436c7e378c",
+      "retrieved_at": "2026-10-08T13:25:29.905650+00:00",
+      "status": "GZIP_PREFIX_ONLY",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/mark_prices/202301/BTC_USDT-202301.csv.gz"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 288455,
+        "complete": true,
+        "declared_length": 288455,
+        "reason": "COMPLETE",
+        "truncated": false
+      },
+      "eligible_for_evaluation": false,
+      "http_status": 200,
+      "inspection": {
+        "column_semantics_verified": false,
+        "complete_lines_in_prefix": 1056,
+        "decompressed_bytes": 1000000,
+        "decompressed_truncated": true,
+        "eligible_for_evaluation": false,
+        "first_line_previews": [
+          "{\"id\":21198467423,\"current\":1735689600891,\"update\":1735689600833,\"asks\":[[\"93585.9\",\"0.47521\"],[\"93586\",\"0.79347\"],[\"93586.8\",\"0.05342\"],[\"93586.9\",\"0.00585\"],[\"93590.1\",\"0.85574\"],[\"93591.2\",\"0.141\"],[\"93592.5\",\"0.05215\"],[\"93593.8\",\"0.04281\"],[\"93593.9\",\"0.04939\"],[\"93595.4\",\"0.29931\"],[\"93598.6\",\"0.0005\"],[\"93598.7\",\"0.29822\"],[\"93598.8\",\"0.91074\"],[\"93599.6\",\"0.08333\"],[\"93602\",\"0.02763\"],[\"93",
+          "{\"id\":21198467484,\"current\":1735689602268,\"update\":1735689602261,\"asks\":[[\"93585.9\",\"0.66208\"],[\"93586\",\"0.79347\"],[\"93586.8\",\"0.05342\"],[\"93586.9\",\"0.00585\"],[\"93590\",\"0.0005\"],[\"93590.1\",\"0.85574\"],[\"93591.2\",\"0.141\"],[\"93592.5\",\"0.05215\"],[\"93593.9\",\"0.04939\"],[\"93595.4\",\"0.29931\"],[\"93598.6\",\"0.0005\"],[\"93599.6\",\"0.08333\"],[\"93602\",\"0.02763\"],[\"93602.1\",\"0.08483\"],[\"93602.6\",\"0.00726\"],[\"93605"
+        ],
+        "gzip_complete": false,
+        "sample_csv_widths": [
+          34,
+          34
+        ]
+      },
+      "kind": "orderbooks_slice",
+      "market": "spot",
+      "month": "202501",
+      "raw_file": "06.quarantined.gz-part",
+      "raw_sha256": "c012bde5936b494bcbcd69a70d6097a17b23a8c97c7e4a75e470af55eeb2524a",
+      "retrieved_at": "2026-10-08T13:25:32.239723+00:00",
+      "status": "GZIP_PREFIX_ONLY",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/spot/orderbooks_slice/202501/BTC_USDT-2025010100.gz"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 173710,
+        "complete": true,
+        "declared_length": 173710,
+        "reason": "COMPLETE",
+        "truncated": false
+      },
+      "eligible_for_evaluation": false,
+      "http_status": 200,
+      "inspection": {
+        "column_semantics_verified": false,
+        "complete_lines_in_prefix": 1813,
+        "decompressed_bytes": 1000000,
+        "decompressed_truncated": true,
+        "eligible_for_evaluation": false,
+        "first_line_previews": [
+          "{\"id\":72980084213,\"current\":1735689602.168,\"update\":1735689602.167,\"asks\":[{\"s\":14979,\"p\":\"93550.1\"},{\"s\":1,\"p\":\"93550.7\"},{\"s\":214,\"p\":\"93551.5\"},{\"s\":986,\"p\":\"93553.3\"},{\"s\":3286,\"p\":\"93553.4\"},{\"s\":458,\"p\":\"93554.4\"},{\"s\":1128,\"p\":\"93554.5\"},{\"s\":214,\"p\":\"93555\"},{\"s\":1,\"p\":\"93555.8\"},{\"s\":1,\"p\":\"93557.2\"}],\"bids\":[{\"s\":5868,\"p\":\"93550\"},{\"s\":5,\"p\":\"93549.6\"},{\"s\":1,\"p\":\"93549\"},{\"s\":5,\"p\":\"935",
+          "{\"id\":72980084714,\"current\":1735689603.309,\"update\":1735689603.27,\"asks\":[{\"s\":15184,\"p\":\"93550.1\"},{\"s\":1,\"p\":\"93550.7\"},{\"s\":214,\"p\":\"93551.5\"},{\"s\":986,\"p\":\"93553.3\"},{\"s\":3286,\"p\":\"93553.4\"},{\"s\":458,\"p\":\"93554.4\"},{\"s\":1128,\"p\":\"93554.5\"},{\"s\":214,\"p\":\"93555\"},{\"s\":1,\"p\":\"93555.8\"},{\"s\":113,\"p\":\"93557\"}],\"bids\":[{\"s\":1688,\"p\":\"93550\"},{\"s\":5,\"p\":\"93549.6\"},{\"s\":1,\"p\":\"93549\"},{\"s\":5,\"p\":\"9354"
+        ],
+        "gzip_complete": false,
+        "sample_csv_widths": [
+          31,
+          31
+        ]
+      },
+      "kind": "orderbooks_slice",
+      "market": "futures_usdt",
+      "month": "202501",
+      "raw_file": "07.quarantined.gz-part",
+      "raw_sha256": "948b25b33d1752fa59b3f1a0d0c34594ad67fa5fbc4e92afeac1f6a70db69afe",
+      "retrieved_at": "2026-10-08T13:25:34.191200+00:00",
+      "status": "GZIP_PREFIX_ONLY",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/orderbooks_slice/202501/BTC_USDT-2025010100.gz"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 449,
+        "complete": true,
+        "declared_length": 449,
+        "reason": "COMPLETE",
+        "truncated": false
+      },
+      "eligible_for_evaluation": false,
+      "http_status": 200,
+      "inspection": {
+        "column_semantics_verified": false,
+        "complete_lines_in_prefix": 93,
+        "decompressed_bytes": 1770,
+        "decompressed_truncated": false,
+        "eligible_for_evaluation": false,
+        "first_line_previews": [
+          "1735689600,0.0001",
+          "1735718400,0.0001"
+        ],
+        "gzip_complete": true,
+        "sample_csv_widths": [
+          2,
+          2
+        ]
+      },
+      "kind": "funding_applies",
+      "market": "futures_usdt",
+      "month": "202501",
+      "raw_file": "08.quarantined.gz-part",
+      "raw_sha256": "3b761b0f5ce04bc4056e364391518c70ded8c4930ef55974e64930e7a942d0fc",
+      "retrieved_at": "2026-10-08T13:25:35.017577+00:00",
+      "status": "GZIP_ARCHIVE_COMPLETE_SCHEMA_UNVERIFIED",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/funding_applies/202501/BTC_USDT-202501.csv.gz"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 754544,
+        "complete": true,
+        "declared_length": 754544,
+        "reason": "COMPLETE",
+        "truncated": false
+      },
+      "eligible_for_evaluation": false,
+      "http_status": 200,
+      "inspection": {
+        "column_semantics_verified": false,
+        "complete_lines_in_prefix": 17959,
+        "decompressed_bytes": 1000000,
+        "decompressed_truncated": true,
+        "eligible_for_evaluation": false,
+        "first_line_previews": [
+          "1735689600,0.0001,0.0003,0,28.31,93555.16,93578.41,480",
+          "1735689660,0.0001,0.0003,0,4.401127612761,93597.7,93611.55,1"
+        ],
+        "gzip_complete": false,
+        "sample_csv_widths": [
+          8,
+          8
+        ]
+      },
+      "kind": "funding_updates",
+      "market": "futures_usdt",
+      "month": "202501",
+      "raw_file": "09.quarantined.gz-part",
+      "raw_sha256": "b697b9b940e3326ce9b60df3133bf67580687bb81a877944722c8875a0999ec9",
+      "retrieved_at": "2026-10-08T13:25:35.380218+00:00",
+      "status": "GZIP_PREFIX_ONLY",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/funding_updates/202501/BTC_USDT-202501.csv.gz"
+    },
+    {
+      "attempts": 1,
+      "body": {
+        "bytes_read": 1000000,
+        "complete": false,
+        "declared_length": 16998886,
+        "reason": "CAP_OR_LENGTH_MISMATCH",
+        "truncated": true
+      },
+      "eligible_for_evaluation": false,
+      "http_status": 200,
+      "inspection": {
+        "column_semantics_verified": false,
+        "complete_lines_in_prefix": 23262,
+        "decompressed_bytes": 1000000,
+        "decompressed_truncated": true,
+        "eligible_for_evaluation": false,
+        "first_line_previews": [
+          "1735689604.627620,93578.07,93554.53,93550",
+          "1735689606.717760,93572.75,93549.05,93530.7"
+        ],
+        "gzip_complete": false,
+        "sample_csv_widths": [
+          4,
+          4
+        ]
+      },
+      "kind": "mark_prices",
+      "market": "futures_usdt",
+      "month": "202501",
+      "raw_file": "10.quarantined.gz-part",
+      "raw_sha256": "202f479569366a2970283f2b2d407b626a40a0e95f9ad1a0a8a94e7ed934be9c",
+      "retrieved_at": "2026-10-08T13:25:37.463145+00:00",
+      "status": "GZIP_PREFIX_ONLY",
+      "symbol": "BTC_USDT",
+      "url": "https://download.gatedata.org/futures_usdt/mark_prices/202501/BTC_USDT-202501.csv.gz"
+    }
+  ],
+  "repeat_authorized": false,
+  "request_plan_hash": "260606072411fc4d6dbe901f8e1919b30f204a3b9309d38582d41d1d158be38c",
+  "requests_attempted": 10,
+  "schema": "gate_paired_archive_probe_result_v1",
+  "status": "BOUNDED_PROBE_COMPLETE_NOT_BACKTEST"
+}
