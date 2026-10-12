@@ -251,3 +251,11 @@ docs/analysis/claude-control-tests-20261009/** -text whitespace=cr-at-eol
 docs/plans/2026-10-09-channel-strategy-validation-closure-handoff.md -text whitespace=cr-at-eol
 docs/analysis/claude-channel-tests-20261007/channel-strategies/final_digest.txt whitespace=cr-at-eol,-blank-at-eol
 docs/analysis/claude-control-tests-20261009/digest.txt whitespace=cr-at-eol,-blank-at-eol
+
+# Offline budgeted gateway: exact runtime and verification bytes.
+trading_mvp/src/premarket_depth_gateway.py -text whitespace=cr-at-eol
+trading_mvp/tests/test_premarket_depth_gateway.py -text whitespace=cr-at-eol
+tools/start_premarket_depth_gateway_visible.ps1 -text whitespace=cr-at-eol
+docs/plans/premarket-depth-gateway-runtime-20261012-v1.json -text whitespace=cr-at-eol
+docs/analysis/premarket-gateway-20261012/* -text whitespace=cr-at-eol
+docs/analysis/premarket-gateway-20261012/*.log -text whitespace=-blank-at-eol,cr-at-eol

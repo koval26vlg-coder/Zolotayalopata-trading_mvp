@@ -1,0 +1,25 @@
+{
+  "status": "OFFLINE_GATEWAY_VERIFIED_NOT_ACTIVATED",
+  "observed_utc": "2026-10-12T06:58:03.0794691Z",
+  "visible_terminal_pid": 3520,
+  "test_watchdog_sec": 300,
+  "test_exit_code": 0,
+  "tests_passed": 168,
+  "launcher_parse_errors": 0,
+  "preflight_exit_code": 2,
+  "preflight": {
+    "status": "BLOCKED",
+    "reason": "COLLECTION_DISABLED_NO_CAMPAIGN",
+    "network_requests": 0,
+    "writer_claim_created": false,
+    "output_created": false
+  },
+  "production_writer_claim_exists": false,
+  "production_capture_namespace_exists": false,
+  "production_campaign_namespace_exists": false,
+  "market_network_requests": 0,
+  "collection_enabled": false,
+  "schedules_enabled": false,
+  "runtime_file_sha256": "a638bc96803453a7ea25ca8e761d33ae8ef3edda97cfd58502ceee747585996b",
+  "runtime_manifest_hash": "c05617f801c941a5f381404665f4a065669cab2f28cd0a14f4a5090bda6c8a0d"
+}
